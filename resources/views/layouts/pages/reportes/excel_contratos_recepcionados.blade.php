@@ -77,6 +77,10 @@
                         $status = 'Solicitud Pago Rechazado';
                         $status_estilo = $nestilo;
                     break;
+                    case 'Contratado':
+                        $status = 'Contrato Validado';
+                        $status_estilo = $azestilo;
+                    break;
                 }
             @endphp
             <tr>

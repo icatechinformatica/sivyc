@@ -409,17 +409,18 @@ class PagoController extends Controller
             ->JOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
             ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
             ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-            ->JOIN('pagos','pagos.id_contrato','=', 'contratos.id_contrato')
+            ->LEFTJOIN('pagos','pagos.id_contrato','=', 'contratos.id_contrato')
             // ->WHERE('contratos.id_contrato', '=', '4228')
             ->WHERE('contratos.unidad_capacitacion', '=', $request->unidad)
             // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
-            ->WHERE('pagos.recepcion', '!=', NULL)
+            // ->WHERE('pagos.recepcion', '!=', NULL)
+            ->WHERE('folios.status', '!=', 'Contrato_Rechazado')
             ->WHEREBETWEEN('contratos.fecha_status', [$request->fecha1, $request->fecha2])
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
-            // dd($data);
-        $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FFECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
+            // dd($data[24]);
+        $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
         $title = "DOCUMENTOS RECEPCIONADOS";
         $name = $title."_".date('Ymd').".xlsx";
         $view = 'layouts.pages.reportes.excel_contratos_recepcionados';
@@ -626,7 +627,7 @@ class PagoController extends Controller
         $update = pago::WHERE('id_contrato',$request->id_contrato_cita)->first();
         $archivos = DB::TABLE('contratos')
             ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
-            'instructor_mespecialidad','espe','archivo_alta')
+            'instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
             ->WHERE('contratos.id_contrato', $request->id_contrato_cita)
             ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
             ->JOIN('folios','folios.id_folios','contratos.id_folios')
@@ -636,7 +637,7 @@ class PagoController extends Controller
 
         $especialidad_seleccionada = DB::Table('especialidad_instructores')
             ->SELECT('especialidad_instructores.id','especialidades.nombre')
-            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidad_instructores.id_instructor',$archivos->id_instructor)
             ->WHERE('especialidades.nombre', '=', $archivos->espe)
             ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
             ->FIRST();
@@ -774,7 +775,7 @@ class PagoController extends Controller
         $update = pago::WHERE('id_contrato',$request->id_contrato_entrega)->first();
         $archivos = DB::TABLE('contratos')
             ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
-            'instructor_mespecialidad','espe','archivo_alta')
+            'instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
             ->WHERE('contratos.id_contrato', $request->id_contrato_entrega)
             ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
             ->JOIN('folios','folios.id_folios','contratos.id_folios')
@@ -784,7 +785,7 @@ class PagoController extends Controller
 
         $especialidad_seleccionada = DB::Table('especialidad_instructores')
             ->SELECT('especialidad_instructores.id','especialidades.nombre')
-            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidad_instructores.id_instructor',$archivos->id_instructor)
             ->WHERE('especialidades.nombre', '=', $archivos->espe)
             ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
             ->FIRST();

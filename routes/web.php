@@ -555,6 +555,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/consultas/lotes/xls', 'Consultas\lotesController@xls')->name('consultas.lotes.xls');
     /*CONSULTA INSTRUCTORES */
     Route::get('/consultas/instructores', 'Consultas\instructorconsuController@index')->name('consultas.instructor')->middleware('can:consultas.instructor');
+    Route::post('/consultas/instructores', 'Consultas\instructorconsuController@index')->name('consultas.instructor')->middleware('can:consultas.instructor');
+    Route::post('/consultas/instructores/xls', 'Consultas\instructorconsuController@xls')->name('consultas.instructor.xls')->middleware('can:consultas.instructor');
 
    /*CURSOS FINALIZADOS*/
     Route::get('/consultas/cursosfinalizados', 'Consultas\cursosfinalizadosController@index')->name('consultas.cursosfinalizados')->middleware('can:consultas.cursosfinalizados');

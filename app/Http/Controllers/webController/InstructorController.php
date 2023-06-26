@@ -44,6 +44,7 @@ class InstructorController extends Controller
         $busquedaInstructor = $request->get('busquedaPorInstructor');
         $tipoInstructor = $request->get('tipo_busqueda_instructor');
         $tipoStatus = $request->get('tipo_status');
+        $tipoEspecialidad = $request->get('tipo_especialidad');
         $unidadUser = Auth::user()->unidad;
 
         $userId = Auth::user()->id;
@@ -55,19 +56,21 @@ class InstructorController extends Controller
             ->GET();
         if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor' || $roles[0]->role_name == 'auxiliar_cursos')
         {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
             ->WHEREIN('estado', [true,false])
-            ->WHEREIN('status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta','curso_extra']);
+            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra']);
         }
         else
         {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
             ->WHEREIN('estado', [true,false])
-            ->WHEREIN('status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta','curso_extra']);
+            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra']);
         }
-        return view('layouts.pages.initinstructor', compact('data'));
+
+        $especialidades = especialidad::SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
+        return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
     }
 
     public function prevalidar_index(Request $request)
@@ -3225,7 +3228,7 @@ class InstructorController extends Controller
         }
         else
         {
-            $arrstat = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION','BAJA EN PREVALIDACION');
+            $arrstat = array('REACTIVACION EN CAPTURA','BAJA EN CAPTURA','REVALIDACION EN CAPTURA','EN CAPTURA','PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION','BAJA EN PREVALIDACION');
         }
         set_time_limit(0);
 

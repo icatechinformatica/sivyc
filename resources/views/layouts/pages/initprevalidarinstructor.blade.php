@@ -113,7 +113,7 @@
                             </div>
                         @endcan
                         @break
-                    @elseif(isset($data) && $data->turnado == 'DTA' && ($data->status == 'PREVALIDACION' || $data->status == 'BAJA EN PREVALIDACION'))
+                    @elseif(isset($data) && ($data->status == 'PREVALIDACION' || $data->status == 'BAJA EN PREVALIDACION' || $data->status == 'EN CAPTURA'))
                     <div class="form-group col-md-6"></div>
                     <div class="form-group col-md-3">
                         <input value="{{$data->id_oficial}}" hidden id="idins" name="idins">

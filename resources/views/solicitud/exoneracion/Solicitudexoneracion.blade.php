@@ -65,8 +65,7 @@
                         <th rowspan="2">FECHA TERMINO</th>
                         <th rowspan="2">CUPO</th>
                         <th colspan="2">SEXO</th>
-                        <th colspan="2">FOLIAJE EXONERACION</th>
-                        <th rowspan="2">INSTRUCTOR</th> 
+                        <th colspan="2">FOLIAJE EXONERACION</th>                        
                         <th rowspan="2">EXO.</th>
                         <th rowspan="2">REDU.</th>
                         <th colspan="3">DEPENDENCIA O GRUPO BENEFICIADO</th>
@@ -99,8 +98,7 @@
                         <td>{{$item->mujer}}</td>
                         <td>{{$item->hombre}}</td>
                         <td>{{$item->fini}}</td>
-                        <td>{{$item->ffin}}</td>
-                        <td>{{$item->instructor}}</td>
+                        <td>{{$item->ffin}}</td>                        
                         <td >@if ($item->tipo_exoneracion == 'EXO') {{"X"}}  @endif</td>
                         <td >@if ($item->tipo_exoneracion == 'EPAR') {{"X"}} @endif</td>
                         <td>@if ($item->no_convenio) {{$item->no_convenio}} @else {{$item->noficio}} <br> {{$item->foficio}} @endif</td>
@@ -209,7 +207,7 @@
                             <th>TIPO DE CAPACITACIÓN</th>
                             <th>PRESENCIAL</th>
                             <th colspan="2">LUGAR DE CAPACITACIÓN</th>
-                            <th colspan="3" width='55%'>{{$item['lugar']}} </th>
+                            <th colspan="3" width="auto" >{{$item['lugar']}} </th>
                         @else
                         <th>TIPO DE CAPACITACIÓN</th>
                         <th colspan="6">A DISTANCIA</th>
@@ -218,11 +216,7 @@
                     <tr>
                         <th>DIAS</th>
                         <th colspan="6">{{$item['dias']}}</th>
-                    </tr>
-                    <tr>
-                        <th>NOMBRE DEL INSTRUCTOR</th>
-                        <th colspan="6">{{$item['instructor']}}</th>
-                    </tr>
+                    </tr>                   
                     <tr>
                         <th colspan="7">LISTA DE ALUMNOS</th>
                     </tr>
