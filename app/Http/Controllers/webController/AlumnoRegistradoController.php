@@ -34,6 +34,12 @@ class AlumnoRegistradoController extends Controller
                 ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
                 ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.cct')
+                ->LEFTJOIN('tbl_cursos', 'tbl_cursos.folio_grupo', '=', 'alumnos_registro.folio_grupo') /*SE REALIZA CAMBIO PARA MOSTRAR CLAVE Y FOLIO DEL ALUMNO */
+                ->LEFTJOIN('tbl_inscripcion',function($join){
+                    $join->on('tbl_inscripcion.id_curso', '=', 'tbl_cursos.id');
+                    $join->on('tbl_inscripcion.id_pre', '=', 'alumnos_pre.id');
+                })                
+                ->LEFTJOIN('tbl_folios', 'tbl_folios.id', '=', 'tbl_inscripcion.id_folio')
                 ->ORDERBY('id_registro', 'desc')
                 ->PAGINATE(25, [
                     'alumnos_pre.nombre', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno',
