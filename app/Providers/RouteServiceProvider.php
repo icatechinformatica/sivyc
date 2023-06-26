@@ -31,7 +31,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         // forzando el esquema a https
-        resolve(\Illuminate\Routing\UrlGenerator::class)->forceScheme('https');
+        // resolve(\Illuminate\Routing\UrlGenerator::class)->forceScheme('https');
 
         parent::boot();
     }
@@ -64,6 +64,7 @@ class RouteServiceProvider extends ServiceProvider
              ->group(function(){
                 require base_path('routes/web.php');
                 require base_path('routes/dta/dtaroutes.php');
+                require base_path('routes/mod_pat/routes_pat.php');
              });
     }
 
