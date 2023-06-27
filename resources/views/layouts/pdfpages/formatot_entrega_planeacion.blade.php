@@ -5,30 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ENTREGA FORMATO T PLANEACIÓN</title>
-    <style type="text/css">
+
+    <style>
         body{font-family: sans-serif}
-        /* margenes top 20px right 50px bottom 120px left 50px */
         @page {margin: 20px 50px 120px 50px;size: letter;}
-        header { position: fixed; left: 0px; top: 30px; right: 0px;text-align: center;width:100%;line-height: 30px;}
+        header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;}
         img.izquierda {float: left;width: 100%;height: 60px;}
         img.izquierdabot {
                 float: inline-end;
-                width: 100%;
-                height: 100%;
+                width: 712px;
+                height: 100px;
             }
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
-        img.derecha {float: right;width: 200px;height: 60px;}
+        img.derecha {float: right;width: 50%;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
+        /* agregamos a 3 el padding para que no salte a la otra pagina y la deje en blanco */
         .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;}
+        /* .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;} */
         .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
         .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
         .tablag tr td { font-size: 8px; padding: 0px;}
-        footer { position:fixed;left:0px;bottom:-100px;height:0px;width:100%;}
+        footer {position:fixed;left:0px;bottom:0px;width:100%;}
         footer .page:after { content: counter(page, sans-serif);}
         .contenedor {
         position:RELATIVE;
-        top:130px;
+        top:120px;
         width:100%;
         margin:auto;
 
@@ -42,10 +44,10 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 65px;
-                left: 25px;
+                bottom: 812px;
+                left: 20px;
                 font-size: 8.5px;
-                color: rgb(255, 255, 255);
+                color: white;
                 line-height: 1;
             }
     </style>
@@ -54,17 +56,18 @@
     {{-- SECCIÓN DE LA CABECERA --}}
     <header>
         <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-        <br>
-        <h6><b></b>{{$leyenda}}</h6>
-    </header>
+        <h6><small><small>{{$leyenda}}</small></small></h6><p class='direccion'>
+</header>
     {{-- SECCIÓN DE LA CABECERA FIN --}}
     {{-- SECCIÓN DE PIE DE PÁGINA --}}
     <footer>
+        <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach</b></p>
         <script type="text/php">
             if (isset($pdf))
             {
                 $x = 275;
-                $y = 700;
+                $y = 725;
                 $text = "Hoja {PAGE_NUM} de {PAGE_COUNT}";
                 $font = "Arial";
                 $size = 11;
@@ -75,11 +78,6 @@
                 $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
             }
         </script>
-        <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        {{-- <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p> --}}
-        <p class='direccion'><b><br> Av. Circunvalación Pichucalco núm. 212-B. Colonia Moctezuma
-            <br> C.P. 29030; Tuxtla Gutiérrez, Chiapas.Teléfono (961)6121621
-            <br> Email: dtecnicaacademica@gmail.com</b></p>
     </footer>
     {{-- SECCIÓN DE PIE DE PÁGINA FIN --}}
     {{-- SECCIÓN DE CONTENIDO --}}
