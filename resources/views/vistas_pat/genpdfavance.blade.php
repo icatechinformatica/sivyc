@@ -10,7 +10,7 @@
         .tablaf { border-collapse: collapse; width: 100%; font-size: 12px !important; text-align: center; margin-top:0px;}
         .tablaf tr, .tablaf td {padding: 0px}
         p {margin:5px; padding:0px;font-size: 10px;}
-        #titulo{position: fixed; top: 55px; text-align: center}
+        #titulo{position: fixed; top: 55px; left: 0; right: 0; text-align: center;}
         #titulo h2{padding:0px; margin:0px 0px 2px 0px; font-size: 13px; font-weight:normal;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:normal;}
         #titulo table{position: fixed; top: 93px;}
@@ -52,20 +52,20 @@
                   <th rowspan="3" width="40px">EXPLICACIÓN A LAS DESVIACIONES</th>
                 </tr>
                 <tr style="background: #EAECEE;">
-                  <th colspan="2" width="5px">METAS</th>
-                  <th colspan="2" width="5px">DESVIACIÓN</th>
-                  <th colspan="2" width="5px">METAS</th>
-                  <th colspan="2" width="5px">DESVIACIÓN</th>
+                  <th colspan="2" width="90px">METAS</th>
+                  <th colspan="2" width="90px">DESVIACIÓN</th>
+                  <th colspan="2" width="90px">METAS</th>
+                  <th colspan="2" width="90px">DESVIACIÓN</th>
                 </tr>
                 <tr style="background: #EAECEE;">
-                    <th>PROGR.</th>
-                    <th>ALCANZA</th>
-                    <th>NUM.</th>
-                    <th>%</th>
-                    <th>PROGR.</th>
-                    <th>ALCANZA</th>
-                    <th>NUM.</th>
-                    <th>%</th>
+                    <th width="45px">PROGR.</th>
+                    <th width="45px">ALCANZA</th>
+                    <th width="45px">NUM.</th>
+                    <th width="45px">%</th>
+                    <th width="45px">PROGR.</th>
+                    <th width="45px">ALCANZA</th>
+                    <th width="45px">NUM.</th>
+                    <th width="45px">%</th>
                 </tr>
             </thead>
             <tbody>
