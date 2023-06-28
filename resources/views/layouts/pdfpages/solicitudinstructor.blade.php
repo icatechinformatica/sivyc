@@ -108,10 +108,11 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 15px;
+                /* bottom: 0px; */
+                top: 45px;
                 left: 15px;
                 font-size: 8.5px;
-                color: rgb(255, 255, 255);
+                color: white;
                 line-height: 1;
             }
         </style>
@@ -125,7 +126,7 @@
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
-        <div class= "container">
+        <div>
             <div align=right> <b>Unidad de Capacitación {{$daesp}}</b> </div>
             <div align=right> <b>Memorandum No. @if($nomemosol != null){{$nomemosol}} @else BORRADOR @endif</b></div>
             <div align=right> <b>{{$data_unidad->municipio}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
