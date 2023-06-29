@@ -14,6 +14,7 @@ use App\Models\criterio_pago;
 use App\Models\tbl_unidades;
 use App\Models\contratos;
 use App\Models\contrato_directorio;
+use App\Models\ISR;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PDF;
@@ -95,6 +96,7 @@ class supreController extends Controller
     }
 
     public function store(Request $request) {
+        // dd($request);
         $generalarr = $arrmov = array();
         $memo = supre::SELECT('no_memo')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
         if (is_null($memo))
@@ -110,7 +112,7 @@ class supreController extends Controller
                     return redirect()->route('frm-supre')
                     ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE FOLIO INGRESADO YA SE ENCUENTRA REGISTRADO', $validacion_folio));
                  }
-                 $claveval = tbl_curso::SELECT('id')->WHERE('clave', '=', $value['clavecurso'])->FIRST();
+                 $claveval = tbl_curso::SELECT('id','modinstructor')->WHERE('clave', '=', $value['clavecurso'])->FIRST();
                  $validacion_curso = folio::SELECT('id_cursos')
                  ->WHERE('id_cursos', '=', $claveval->id)
                  ->WHERE('status', '!=', 'Cancelado')
@@ -148,6 +150,7 @@ class supreController extends Controller
             //Guarda Folios
             foreach ($request->addmore as $key => $value)
             {
+                // dd($value);
                 $folio = new folio();
                 $folio->folio_validacion = strtoupper($value['folio']);
                 $folio->iva = $value['iva'];
@@ -176,12 +179,23 @@ class supreController extends Controller
                     {
                         $horas = (int) $hora->dura;
                     }
-                    $importe_hora = $importe / $horas;
+                    $importe_hora = round($importe / $horas, 2);
                     $folio->importe_hora = $importe_hora;
                     $folio->importe_total = $value['importe'];
                     $folio->id_supre = $id;
                     $folio->id_cursos = $hora->id;
                     $folio->status = 'En_Proceso';
+
+                    //Calculo del nuevo campo impuestos
+                    if($claveval->modinstructor ==  'HONORARIOS')
+                    {
+                        $folio->impuestos = $this->honorarios(round($importe, 2));
+                    }
+                    else
+                    {
+                        $folio->impuestos = $this->asimilados(round($importe, 2));
+                    }
+
                     $folio->save();
 
                     $mvtobanc = tbl_curso::find($hora->id); //
@@ -300,7 +314,7 @@ class supreController extends Controller
             $folio->iva = $value['iva'];
             $folio->comentario = $value['comentario'];
             $clave = $value['clavecurso'];
-            $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
+            $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id','tbl_cursos.modinstructor')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
             if($value['iva'] == 0)
@@ -317,6 +331,16 @@ class supreController extends Controller
             $folio->id_supre = $id->id;
             $folio->id_cursos = $hora->id;
             $folio->status = 'En_Proceso';
+
+            if($hora->modinstructor ==  'HONORARIOS')
+            {
+                $folio->impuestos = $this->honorarios(round($importe, 2));
+            }
+            else
+            {
+                $folio->impuestos = $this->asimilados(round($importe, 2));
+            }
+
             $folio->save();
 
             $mvtobanc = tbl_curso::find($hora->id);
@@ -698,37 +722,57 @@ class supreController extends Controller
 
             if($Cursos != NULL)
             {
-                // $inicio = date("m-d-Y", strtotime($Cursos->inicio));
-                $inicio = carbon::parse($Cursos->inicio);
-                // $inicio = strtotime($inicio); 2022-11-28
-                $date1 = "2022-11-01";
-                // $date1 = date("m-d-Y", strtotime($date1));
-                $date1 = carbon::parse($date1);
-                // $date1 = strtotime($date1);
-                // dd($inicio);
+                // $inicio = carbon::parse($Cursos->inicio);
+                $inicio = date('Y-m-d', strtotime($Cursos->inicio));
+                // $date1 = "2022-11-01";
 
-                if ($date1 <= $inicio)
-                {
-                    $ze2 = 'ze2_2022 AS monto';
-                    $ze3 = 'ze3_2022 AS monto';
-                    // dd(gettype($date1) . ' entro1 ' . gettype($inicio));
-                }
-                else
-                {
-                    $ze2 = 'ze2_2021 AS monto';
-                    $ze3 = 'ze3_2021 AS monto';
-                    // dd(gettype($date1) . ' entro2 ' . gettype($inicio));
-                }
 
+                // $date1 = carbon::parse($date1);
+                // // $date1 = strtotime($date1);
+                // // dd($inicio);
+
+                // if ($date1 <= $inicio)
+                // {
+                //     $ze2 = 'ze2_2022 AS monto';
+                //     $ze3 = 'ze3_2022 AS monto';
+                //     // dd(gettype($date1) . ' entro1 ' . gettype($inicio));
+                // }
+                // else
+                // {
+                //     $ze2 = 'ze2_2021 AS monto';
+                //     $ze3 = 'ze3_2021 AS monto';
+                //     // dd(gettype($date1) . ' entro2 ' . gettype($inicio));
+                // }
+
+                // if ($Cursos->ze == 'II')
+                // {
+                //     $criterio = criterio_pago::SELECT($ze2)->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                // }
+                // else
+                // {
+                //     $criterio = criterio_pago::SELECT($ze3)->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                //     // printf('hola');
+                // }
                 if ($Cursos->ze == 'II')
                 {
-                    $criterio = criterio_pago::SELECT($ze2)->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                    $queryraw = "jsonb_array_elements(ze2->'vigencias') AS vigencia";
                 }
                 else
                 {
-                    $criterio = criterio_pago::SELECT($ze3)->WHERE('id', '=' , $Cursos->cp)->FIRST();
-                    // printf('hola');
+                    $queryraw = "jsonb_array_elements(ze3->'vigencias') AS vigencia";
                 }
+
+                $criterio = DB::table('criterio_pago')->select('fecha', 'monto')
+                    ->fromSub(function ($query) use ($Cursos, $inicio, $queryraw) {
+                        $query->selectRaw("(vigencia->>'fecha')::date AS fecha, (vigencia->>'monto')::numeric AS monto")
+                            ->from('criterio_pago')
+                            ->crossJoin(DB::raw($queryraw))
+                            ->where('id', $Cursos->cp)
+                            ->whereRaw("(vigencia->>'fecha')::date <= ?", [$inicio]);
+                    }, 'sub')
+                    ->orderBy('fecha', 'DESC')
+                    ->limit(1)
+                    ->first();
 
                 if($criterio != NULL)
                 {
@@ -758,6 +802,18 @@ class supreController extends Controller
             $total['fecha_movimiento_bancario'] = $Cursos->fecha_movimiento_bancario;
             $total['factura'] = $Cursos->factura;
             $total['fecha_factura'] = $Cursos->fecha_factura;
+
+            if($Cursos->modinstructor == 'HONORARIOS')
+            {
+                $total['iva'] = round($total[0] * 0.16, 2);
+                $total['importe_total'] = round($total[0] + $total['iva'], 2);
+            }
+            else
+            {
+                $total['iva'] = 0.00;
+                $total['importe_total'] = $total[0];
+            }
+
             $json=json_encode($total); //dura 10 cp 6
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
@@ -1569,6 +1625,48 @@ class supreController extends Controller
             return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
         }
     }
+
+    public function honorarios($importe)
+    {
+        $impuestos = array();
+        $impuestos['regimen'] = 'HONORARIOS';
+        $impuestos['IVA'] = round($importe * 0.16, 2);
+        $impuestos['subtotal'] = round($importe + $impuestos['IVA'], 2);
+        $impuestos['retencion_isr'] = round($importe * 0.1, 2);
+        $impuestos['retencion_iva'] = round($impuestos['IVA']/3*2, 2);
+        $impuestos['importe_neto'] = round($impuestos['subtotal']-$impuestos['retencion_isr']-$impuestos['retencion_iva'], 2);
+        return $impuestos;
+    }
+
+    public function asimilados($importe)
+    {
+        $impuestos = array();
+        $impuestos['regimen'] = 'ASIMILADOS A SALARIO';
+        $impuestos['IVA'] = round($importe * 0.16, 2);
+        $impuestos['subtotal'] = round($importe + $impuestos['IVA'], 2);
+        $impuestos['limite_inferior'] = $this->isr_finder($impuestos['subtotal'], '1');
+        $impuestos['excedente'] = round($impuestos['subtotal'] - $impuestos['limite_inferior'], 2);
+        $isr_info = $this->isr_finder($impuestos['excedente'], '2');
+        $impuestos['tasa_impuesto'] = $isr_info->porcentaje;
+        $impuestos['impuesto_marginal'] = round($impuestos['excedente'] * ($impuestos['tasa_impuesto'] / 100), 2);
+        $impuestos['cuota_fija'] = $isr_info->cuota_fija;
+        $impuestos['isr_determinado'] = round($impuestos['impuesto_marginal'] + $impuestos['cuota_fija'], 2);
+        $impuestos['ingreso_neto'] = round($impuestos['subtotal'] - $impuestos['isr_determinado'], 2);
+        return $impuestos;
+    }
+
+    public function isr_finder($importe, $consulta)
+    {
+        if($consulta == '1') //$consulta es la variable para saber si es la primera consulta del impuesto o el segundo
+        {
+            return ISR::WHERE('limite_inferior', '<=', $importe)->WHERE('limite_superior', '>=', $importe)->VALUE('limite_inferior');
+        }
+        else
+        {
+            return ISR::WHERE('limite_inferior', '<=', $importe)->WHERE('limite_superior', '>=', $importe)->FIRST();
+        }
+    }
+
     protected function generate_report_supre_xls($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
         set_time_limit(0);

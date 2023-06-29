@@ -280,21 +280,21 @@ function textLabel(text) {
                         document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Clave de Curso Invalida';
                     } else {
                         if(!respuesta.hasOwnProperty('error')){
-                            iva = respuesta[0] * 0.16;
-                            iva = parseFloat(iva).toFixed(2);
+                            // iva = respuesta[0] * 0.16;
+                            // iva = parseFloat(iva).toFixed(2);
                             if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS')
                             {
-                                total = respuesta[0]*1.16
-                                document.getElementById('addmore['+x+'][iva]').value = iva;
+                                // total = respuesta[0]*1.16
+                                document.getElementById('addmore['+x+'][iva]').value = respuesta['iva'];
                             }
                             else
                             {
-                                total = respuesta[0]
+                                // total = respuesta[0]
                                 document.getElementById('addmore['+x+'][iva]').value = 0.00;
                             }
-                            total = parseFloat(total).toFixed(2);
+                            // total = parseFloat(total).toFixed(2);
 
-                            document.getElementById('addmore['+x+'][importe]').value = total;
+                            document.getElementById('addmore['+x+'][importe]').value = respuesta['importe_total'];
                             document.getElementById('norecibo').value = respuesta['recibo'];
                             document.getElementById('movimiento_bancario').value = respuesta['movimiento_bancario'];
                             document.getElementById('fecha_movimiento_bancario').value = respuesta['fecha_movimiento_bancario'];
