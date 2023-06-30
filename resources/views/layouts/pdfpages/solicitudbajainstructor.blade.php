@@ -10,7 +10,7 @@
             body{
                 font-family: sans-serif;
                 /* border: 1px solid black; */
-                font-size: 1.3em;
+                font-size: 1.2em;
                 /* margin: 10px; */
             }
             @page {
@@ -123,7 +123,7 @@
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
-        <div>
+        <div>&nbsp;
             <div align=right> <b>Unidad de Capacitación {{$data_unidad->unidad}}</b> </div>
             <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_solicitud}}</b></div>
             <div align=right> <b>{{$data_unidad->municipio}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>

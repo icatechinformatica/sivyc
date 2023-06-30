@@ -195,7 +195,7 @@ class grupoController extends Controller
                     ->select('id as id_pre', 'matricula', DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"),'ultimo_grado_estudios as escolaridad',
                     'nombre','apellido_paterno','apellido_materno')
                     ->where('curp', $curp)->where('activo', true)->first(); //dd($alumno);
-                $valida_alumno = $this->valida_alumno($curp, $request);            
+                $valida_alumno = $this->valida_alumno($curp, $request);
                 if ($valida_alumno['valido']) {//Validación del alummnos en multiples criterios.
                 //if ($alumno) {
                     if ($alumno->escolaridad AND ($alumno->escolaridad != ' ')) {
@@ -1349,12 +1349,12 @@ class grupoController extends Controller
     private function valida_alumno($curp,$request)
     {
         $valido = false;
-        $message = null;  
+        $message = null;
         if($curp){
             //VALIDACION.- EL ALUMNO PODRÁ TOMAR EL MISMO CURSO DESPÚES DE 6 MESES DE CONCLUIRLO O POR DESERCIÓN LO PODRÁ TOMAR TANTAS VECES LO REQUIERA.
             $seis_meses =  DB::table('alumnos_registro as ar')->where('ar.curp',$curp)->where('ar.id_curso','=',$request->id_curso)
                 ->where(DB::raw("COALESCE((select status_curso from tbl_cursos c where ar.folio_grupo = c.folio_grupo and ar.curp='$curp' ),'0')"),'!=','CANCELADO')
-                ->where(DB::raw("COALESCE((select calificacion from tbl_inscripcion i where ar.folio_grupo = i.folio_grupo and i.curp='$curp'),'0')"),'!=','NP')                
+                ->where(DB::raw("COALESCE((select calificacion from tbl_inscripcion i where ar.folio_grupo = i.folio_grupo and i.curp='$curp'),'0')"),'!=','NP')
                 ->value(DB::raw("max(ar.termino)+'6 month'::interval"));
                // dd($seis_meses);
             if($seis_meses<$request->inicio) $valido = true;
@@ -1362,7 +1362,57 @@ class grupoController extends Controller
                 $message = "El alumno ya esta registrado en el curso o no ha cumplido 6 meses para volver a tomar el mismo curso.";
             }
         }else  $message = "Por favor, ingrese la curp.";
-        
+
         return ['valido' => $valido, 'message' => $message];
+    }
+
+    /**Jose Luis Generación PDF Convenio Especifico y Acta de acuerdo */
+
+    public function pdf_actaAcuerdo(){
+        $folio_grupo =  $_SESSION['folio_grupo'];
+
+        //Busqueda 1,2,3
+        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico',
+        DB::raw("extract(day from fcespe) as diaes, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
+        DB::raw("(hombre + mujer) as totalP"),
+        DB::raw("extract(day from inicio) as diaIni, to_char(inicio, 'TMmonth') as mesIni, extract(year from inicio) as anioIni"),
+        DB::raw("extract(day from termino) as diaFin, to_char(termino, 'TMmonth') as mesFin, extract(year from termino) as anioFin"))
+        ->where('folio_grupo','=',"$folio_grupo")->first();
+
+
+        //busqueda 4
+        $data2 = DB::table('tbl_unidades as u')->select('dunidad', 'delegado_administrativo', 'pdelegado_administrativo', 'academico', 'pacademico', 'vinculacion', 'pvinculacion')
+        ->Join('tbl_cursos as c', 'u.unidad', 'c.unidad')
+        ->where('c.folio_grupo', $folio_grupo)->first();
+
+        //Busqueda 6
+        $data3 = DB::table('alumnos_registro as ar')->select('ar.nombre', 'ar.apellido_paterno', 'ar.apellido_materno', 'ar.folio_grupo', 'ar.costo', 'ar.curp', 'a.correo')
+        ->Join('alumnos_pre as a', 'a.curp', 'ar.curp')
+        ->where('folio_grupo','=',"$folio_grupo")->get();
+
+        $pdf = PDF::loadView('reportes.acta_acuerdo_registro_grupo',compact('data1', 'data2','data3'));
+        return $pdf->stream('Acta_Acuerdo');
+    }
+    public function pdf_convenio(){
+        $folio_grupo =  $_SESSION['folio_grupo'];
+
+        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'dura', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'tcapacitacion', 'cespecifico', 'depen', 'costo', 'inicio', 'termino', 'observaciones',
+        DB::raw("extract(day from fcespe) as dia, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
+        DB::raw("extract(day from inicio) as diaini, to_char(inicio, 'TMmonth') as mesini, extract(year from inicio) as anioini"),
+        DB::raw("extract(day from termino) as diafin, to_char(termino, 'TMmonth') as mesfin, extract(year from termino) as aniofin"))
+        ->where('folio_grupo','=',"$folio_grupo")->first();
+
+
+        $data2 = DB::table('tbl_unidades as u')->select('dunidad', 'pdunidad', 'dgeneral', 'direccion',  'academico', 'pacademico', 'vinculacion', 'pvinculacion')
+        ->Join('tbl_cursos as c', 'u.unidad', 'c.unidad')
+        ->where('c.folio_grupo', $folio_grupo)->first();
+
+
+        $data3 = DB::table('organismos_publicos as u')->select('nombre_titular', 'direccion', 'logo_instituto', 'siglas_inst', 'cargo_fun', 'poder_pertenece')
+        ->Join('tbl_cursos as c', 'u.organismo', 'c.depen')
+        ->where('c.folio_grupo', $folio_grupo)->first();
+
+        $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3'));
+        return $pdf->stream('Convenio');
     }
 }

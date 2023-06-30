@@ -81,3 +81,12 @@ Route::post('/vista/pat/plane/valid', 'PatController\MetavanceController@registr
 Route::get('/vista/pat/buzon/index/', 'PatController\BuzonController@index')->name('pat.buzon.index')->middleware('can:metava.valid.index');
 // Generar pdf de todos los organismos
 Route::get('/vista/pat/buzon/pdf/general/{mes}/{opcion}', 'PatController\BuzonController@pdforg_direc')->name('pat.buzon.pdf.general');
+
+
+
+/**CREAMOS NUEVAS RUTAS PARA GENERACION DE PDF, HAGO ESTO DEBIDO A QUE "WEB" YA ESTA CARGADO DE MUCHAS RUTAS" */
+
+/*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/
+/**Generar pdf Acta de acuerdo y convenio JOSE LUIS */
+Route::post('/preinscripcion/grupo/pdfacta', 'Preinscripcion\grupoController@pdf_actaAcuerdo')->name('preinscripcion.grupo.acuerdo_pdf');
+Route::post('/preinscripcion/grupo/pdfconvenio', 'Preinscripcion\grupoController@pdf_convenio')->name('preinscripcion.grupo.convenio_pdf');

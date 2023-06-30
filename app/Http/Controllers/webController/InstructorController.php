@@ -36,7 +36,16 @@ class InstructorController extends Controller
 {
     public function prueba()
     {
-        dd('IDDQD');
+        $impuestos['IVA'] = 770.11;
+        $impuestos['retencion_iva'] = round($impuestos['IVA']/3*2);
+
+           dd($impuestos);
+    }
+
+    private function honorarios($total)
+    {
+
+        return $total;
     }
 
     public function index(Request $request)

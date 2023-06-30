@@ -94,7 +94,7 @@
                                 <option value="12">DICIEMBRE</option>
                             </select>
                         </Div>
-                        <Div id="divunidades" name="divunidades">
+                        <Div id="divunidades" name="divunidades" class="d-none d-print-none">
                             <select name="unidad" class="form-control mr-sm-2" id="unidad">
                                 <option value="">SELECCIONE UNIDAD</option>
                                 @foreach ($unidades as $cadwell)
