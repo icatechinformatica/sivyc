@@ -1,16 +1,17 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla agc -->
 @section('title', 'Agregar organismo | Sivyc Icatech')
-@section('content_script_css')    
+@section('content_script_css')
         <link rel="stylesheet" href="{{asset('css/global.css') }}" />
         <link rel="stylesheet" href="{{asset('css/preinscripcion/index.css') }}" />
         <link rel="stylesheet" href="{{asset('css/bootstrap4-toggle.min.css') }}"/>
-        <link rel="stylesheet" href="{{asset('css/tools/combox_edit.css') }}" />    
+        <link rel="stylesheet" href="{{asset('css/tools/combox_edit.css') }}" />
 @endsection
 @section('content')
     <?php
-    $area = $activo = $sec = $tip = $id_estado = $id_municipio = $id_localidad = 
-    $nombre = $nombre_ti = $telefono = $correo = $dir = $id = null;
+    $area = $activo = $sec = $tip = $id_estado = $id_municipio = $id_localidad =
+    $nombre = $nombre_ti = $telefono = $correo = $dir = $id = $cargo_titu =
+    $siglas_inst = $url_image = null;
     if($organismo){
         $id = $organismo->id;
         $nombre = $organismo->organismo;
@@ -24,6 +25,9 @@
         $id_estado= $organismo->id_estado;
         $id_municipio = $organismo->id_municipio;
         $id_localidad = $organismo->clave_localidad;
+        $cargo_titu = $organismo->cargo_fun;
+        $siglas_inst = $organismo->siglas_inst;
+        $url_image = $organismo->logo_instituto;
         if($organismo->activo=='true'){
             $activo = 'ACTIVO';
         }else{$activo='INACTIVO';}
@@ -44,7 +48,7 @@
         @endif
         <div class="row">
             <div>
-                <br />                    
+                <br />
             </div>
             <form method="post" id="frm" enctype="multipart/form-data" style="width: 100%;">
                 @csrf
@@ -112,8 +116,29 @@
                         <label for="tipo" class="control-label">Tipo</label>
                         {{ Form::select('tipo', $tipo,$tip, ['id'=>'tipo','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                     </div>
+                    {{-- Jose Luis Moreno / Add option for upload image about institution agreement --}}
+                     {{-- cargo --}}
+                    <div class="form-group col-md-4">
+                        <label for="cargo_titular" class="control-label">Cargo</label>
+                        <input type="text" class="form-control" id="cargo_titular" name="cargo_titular" placeholder="Cargo del titular" value="{{$cargo_titu}}">
+                    </div>
+                    {{-- siglas --}}
+                    <div class="form-group col-md-4">
+                        <label for="tipo" class="control-label">Siglas</label>
+                        <input type="text" class="form-control" placeholder="Siglas del Organismo" name="siglas" value="{{$siglas_inst}}">
+                    </div>
+                    {{-- Subir imagen --}}
+                    <div class="form-group col-md-4">
+                        <label for="imageLogo" class="control-label">Logo del Organismo</label>
+                        <input type="file" name="imageLogo" id="imageLogo" class="form-control-file" accept="image/*">
+                    </div>
+                    {{-- Visualizar imagen --}}
+                    <div class="form-group col-md-4">
+                        <img id="preview-image" src="{{$url_image}}" alt="Vista previa de la imagen" style="max-width: 20%; height: auto;">
+                        <input type="hidden" name="url_img" value="{{$url_image}}">
+                    </div>
                 </div>
-                <div class="form-row">
+                <div class="form-row mt-4">
                     <div class="form-group col-md-6">
                         <div class="pull-left">
                             <a type="submit" class="btn btn-red" href="{{route('organismos.index')}}">Regresar</a>
@@ -220,6 +245,25 @@
                     }
                 });
             });
+
+                // Visualizaciónn de imagen al cargar
+                const fileInput = document.getElementById('imageLogo');
+                const previewImage = document.getElementById('preview-image');
+
+                fileInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                            previewImage.style.display = 'block';
+                        }
+                        reader.readAsDataURL(file);
+                    } else {
+                        previewImage.src = '';
+                        previewImage.style.display = 'none';
+                    }
+                });
         </script>
     @endsection
 @endsection

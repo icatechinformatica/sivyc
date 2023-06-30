@@ -31,10 +31,21 @@
 @endsection
 @section('body')
     @for ($i = 0; $i < count($areas); $i++)
+    {{-- @dd($direcciones) --}}
+        {{-- @php
+            $nom_direccion = $nom_depto = 'null';
+            if ($direcciones) {
+                $nom_direccion = $direcciones[$i]->nom_direc;
+                $nom_depto = $direcciones[$i]->nom_depto;
+            }
+        @endphp --}}
         <div id="para">
-            <strong>DIRECCIÓN: </strong> {{$direcciones[$i]->nom_direc != 'DIRECCIÓN' ? $direcciones[$i]->nom_direc : $areas[$i]->nom_dpto}}
+            <strong>DIRECCIÓN: </strong> {{$direcciones[$i]->nom_direc != 'DIRECCIÓN' ? $direcciones[$i]->nom_direc : $direcciones[$i]->nom_depto}}
             <br>
-            <strong>DPTO: </strong> {{$direcciones[$i]->nom_direc != 'DIRECCIÓN' ? $areas[$i]->nom_dpto : $direcciones[$i]->nom_direc}}
+            <strong>DPTO: </strong> {{$direcciones[$i]->nom_direc != 'DIRECCIÓN' ? $direcciones[$i]->nom_depto : $direcciones[$i]->nom_direc}}
+            {{-- <strong>DIRECCIÓN: </strong> {{$direcciones[$i]->nom_direc}}
+            <br>
+            <strong>DPTO: </strong> {{$areas[$i]->nom_dpto}} --}}
         </div>
         <br><br><br><br>
 
