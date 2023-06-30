@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class organismosController extends Controller
 {
@@ -24,7 +25,7 @@ class organismosController extends Controller
                 break;
         }
         $organismos= $organismos->orderBy('organismo')->paginate(15);
-        $id_user = Auth::user()->id;    
+        $id_user = Auth::user()->id;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
                 ->WHERE('role_user.user_id', '=', $id_user)
                 ->value('roles.slug');
@@ -33,7 +34,7 @@ class organismosController extends Controller
     public function agregar(Request $request){
         $municipio = $localidad = [];
         $organismo = null;
-        $areas = ["PODER LEGISLATIVO"=>"PODER LEGISLATIVO","PODER JUDICIAL"=>"PODER JUDICIAL","PODER EJECUTIVO"=>"PODER EJECUTIVO", 
+        $areas = ["PODER LEGISLATIVO"=>"PODER LEGISLATIVO","PODER JUDICIAL"=>"PODER JUDICIAL","PODER EJECUTIVO"=>"PODER EJECUTIVO",
                     "ORGANISMOS AUTONOMOS"=>"ORGANISMOS AUTONOMOS","PRIVADO"=>"PRIVADO"];
         $sector = ["PUBLICO"=>"PUBLICO","PRIVADO"=>"PRIVADO","SOCIAL"=>"SOCIAL"];
         $tipo = ["DEPENDENCIA"=>"DEPENDENCIA","EMPRESAS DE PARTICIPACION ESTATAL"=>"EMPRESAS DE PARTICIPACION ESTATAL",
@@ -55,26 +56,48 @@ class organismosController extends Controller
                             ->pluck('localidad','clave');
             $update = true;
         }
-        $id_user = Auth::user()->id;    
+        // dd($organismo);
+        $id_user = Auth::user()->id;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
                 ->WHERE('role_user.user_id', '=', $id_user)
                 ->value('roles.slug');
         return view('organismos.vstaformorganismo',compact('organismo','areas','estados','sector','tipo','status','municipio','localidad','update','rol'));
     }
+
+    //Jose Luis Moreno / Función que guarda la imagen
+    protected function uploaded_file($file, $id, $name)
+    {
+        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
+        $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
+        # nuevo nombre del archivo
+        $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
+        $file->storeAs('/uploadFiles/organismoslogo', $documentFile); // guardamos el archivo en la carpeta storage
+        $documentUrl = Storage::url('/uploadFiles/organismoslogo/'.$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $documentUrl;
+    }
+
     public function store(Request $request){
-        //dd($request->all());
+        // dd($request->all());
         if ($request->status == 'ACTIVO') {
             $activo = true;
         } else {
             $activo = false;
         }
+
         $ID = DB::table('organismos_publicos')->value(DB::raw('max(id)+1'));
+         #verificamos la imagen
+        if (isset($request->imageLogo)) {
+            $url = $request->imageLogo;
+            $url_logotipo = $this->uploaded_file($url,$ID,'organismo_logo');
+        }
+
         $result = DB::table('organismos_publicos')->updateOrInsert(['id'=>$ID,'organismo'=>$request->nombre,'nombre_titular'=>$request->nombre_titular,
                                                     'telefono'=>$request->telefono,'correo'=>$request->correo_ins,'id_estado'=>$request->estado,
                                                     'id_municipio'=>$request->municipio,'clave_localidad'=>$request->localidad,'direccion'=>$request->direccion,
                                                     'poder_pertenece'=>$request->area,'activo'=>$activo,'sector'=>$request->sector,
-                                                    'tipo'=>$request->tipo,'created_at' => date('Y-m-d H:i:s')]);
-        
+                                                    'tipo'=>$request->tipo,'created_at' => date('Y-m-d H:i:s'), 'logo_instituto'=>$url_logotipo,
+                                                    'siglas_inst'=>$request->siglas, 'cargo_fun'=>$request->cargo_titular]);
+
         return redirect()->route('organismos.index')->with('success', sprintf('Carga de organismo exitoso!'));
     }
     public function update(Request $request){
@@ -84,11 +107,31 @@ class organismosController extends Controller
         } else {
             $activo = false;
         }
+        #imagen
+        #si ya hay imagen y esta cargando uno nuevo
+        $url_logotipo = $request->url_img;
+        if($request->imageLogo != null){
+            $url = $request->imageLogo;
+            $url_logotipo = $this->uploaded_file($url,$id,'organismo_logo'); #guardamos
+
+            #eliminamos el archivo antiguo
+            if($request->url_img != ''){
+                $filename = basename(parse_url($request->url_img, PHP_URL_PATH));
+                $filePath = 'uploadFiles/organismoslogo/'.$filename;
+                if (Storage::exists($filePath)) {
+                    Storage::delete($filePath);
+                } else { return redirect()->route('organismos.agregar',compact('id'))->with('error', sprintf('Error al sustituir la imagen!')); }
+
+            }
+
+        }
+
         $result = DB::table('organismos_publicos')->where('id',$id)->update(['organismo'=>$request->nombre,'nombre_titular'=>$request->nombre_titular,
                                                                     'telefono'=>$request->telefono,'correo'=>$request->correo_ins,'id_estado'=>$request->estado,
                                                                     'id_municipio'=>$request->municipio,'clave_localidad'=>$request->localidad,'direccion'=>$request->direccion,
                                                                     'poder_pertenece'=>$request->area,'activo'=>$activo,'sector'=>$request->sector,
-                                                                    'tipo'=>$request->tipo,'updated_at' => date('Y-m-d H:i:s')]);
+                                                                    'tipo'=>$request->tipo,'updated_at' => date('Y-m-d H:i:s'), 'logo_instituto'=>$url_logotipo, 'siglas_inst'=>$request->siglas,
+                                                                    'cargo_fun'=>$request->cargo_titular]);
         $id=base64_encode($id);
         return redirect()->route('organismos.agregar',compact('id'))->with('success', sprintf('Modificación exitosa!'));
     }
@@ -99,13 +142,13 @@ class organismosController extends Controller
                 $id= DB::table('tbl_localidades')
                     ->select('localidad','clave')
                     ->where('clave_municipio','=', $clave->clave)->where('id_estado',$clave->id_estado)
-                    ->get(); 
+                    ->get();
                 foreach($id as $titular){
                     $localidadArray[$titular->clave]= $titular->localidad;
                 }
                 return response()->json($localidadArray);
             }else {
-                $id= DB::table('tbl_municipios')->select('muni','id')->where('id_estado','=', $request->estado_id)->get(); 
+                $id= DB::table('tbl_municipios')->select('muni','id')->where('id_estado','=', $request->estado_id)->get();
                 foreach($id as $titular){
                     $localidadArray[$titular->id]= $titular->muni;
                 }
