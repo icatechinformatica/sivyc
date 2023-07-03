@@ -65,14 +65,32 @@ class organismosController extends Controller
     }
 
     //Jose Luis Moreno / Función que guarda la imagen
+    // protected function uploaded_file($file, $id, $name)
+    // {
+    //     $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
+    //     $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
+    //     # nuevo nombre del archivo
+    //     $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
+    //     $file->storeAs('/uploadFiles/organismoslogo', $documentFile); // guardamos el archivo en la carpeta storage
+    //     $documentUrl = Storage::url('/uploadFiles/organismoslogo/'.$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+    //     return $documentUrl;
+    // }
+    // protected function uploaded_file($file, $id, $name)
+    // {
+    //     $tamanio = $file->getSize();
+    //     $extensionFile = $file->getClientOriginalExtension();
+    //     $documentFile = trim($name . "_" . date('YmdHis') . "_" . $id . "." . $extensionFile);
+    //     $file->storeAs('public/img/organismos', $documentFile);
+    //     $documentUrl = '/img/organismos/' . $documentFile;
+    //     return $documentUrl;
+    // }
     protected function uploaded_file($file, $id, $name)
     {
-        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
-        $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
-        # nuevo nombre del archivo
-        $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
-        $file->storeAs('/uploadFiles/organismoslogo', $documentFile); // guardamos el archivo en la carpeta storage
-        $documentUrl = Storage::url('/uploadFiles/organismoslogo/'.$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $tamanio = $file->getSize();
+        $extensionFile = $file->getClientOriginalExtension();
+        $documentFile = trim($name . "_" . date('YmdHis') . "_" . $id . "." . $extensionFile);
+        $file->move(public_path('img/organismos'), $documentFile);
+        $documentUrl = '/img/organismos/' . $documentFile;
         return $documentUrl;
     }
 
@@ -85,11 +103,19 @@ class organismosController extends Controller
         }
 
         $ID = DB::table('organismos_publicos')->value(DB::raw('max(id)+1'));
-         #verificamos la imagen
-        if (isset($request->imageLogo)) {
+
+        #Validacion de subida de imagen
+        $url_logotipo = '';
+        #Si es por url de internet
+        if($request->imageLogo == null && $request->urlImgeExt != ''){
+            $url_logotipo = strtolower($request->urlImgeExt);
+        }
+        #Si es por carga al servidor
+        if ($request->imageLogo != null) {
             $url = $request->imageLogo;
             $url_logotipo = $this->uploaded_file($url,$ID,'organismo_logo');
         }
+
 
         $result = DB::table('organismos_publicos')->updateOrInsert(['id'=>$ID,'organismo'=>$request->nombre,'nombre_titular'=>$request->nombre_titular,
                                                     'telefono'=>$request->telefono,'correo'=>$request->correo_ins,'id_estado'=>$request->estado,
@@ -107,24 +133,20 @@ class organismosController extends Controller
         } else {
             $activo = false;
         }
-        #imagen
-        #si ya hay imagen y esta cargando uno nuevo
-        $url_logotipo = $request->url_img;
+
+        #Si no se sumple ninguna de la establecido, simplemente recuperamos la url de la bd
+        $url_logotipo = ($request->url_img) ? $request->url_img : '';
+
+        #Link de logo desde internet
+        if($request->imageLogo == null && $request->urlImgeExt != ''){
+            $url_logotipo = strtolower($request->urlImgeExt);
+        }
+        #Guardar imagen desde el sevidor y eliminar el ya existente
         if($request->imageLogo != null){
             $url = $request->imageLogo;
             $url_logotipo = $this->uploaded_file($url,$id,'organismo_logo'); #guardamos
-
-            #eliminamos el archivo antiguo
-            if($request->url_img != ''){
-                $filename = basename(parse_url($request->url_img, PHP_URL_PATH));
-                $filePath = 'uploadFiles/organismoslogo/'.$filename;
-                if (Storage::exists($filePath)) {
-                    Storage::delete($filePath);
-                } else { return redirect()->route('organismos.agregar',compact('id'))->with('error', sprintf('Error al sustituir la imagen!')); }
-
-            }
-
         }
+
 
         $result = DB::table('organismos_publicos')->where('id',$id)->update(['organismo'=>$request->nombre,'nombre_titular'=>$request->nombre_titular,
                                                                     'telefono'=>$request->telefono,'correo'=>$request->correo_ins,'id_estado'=>$request->estado,

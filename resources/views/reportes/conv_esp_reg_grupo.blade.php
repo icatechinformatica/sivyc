@@ -57,7 +57,7 @@
             .encabezado {
                 position: fixed;
                 top: 10px;
-                right: 0;
+                right: 0px;
                 padding: 10px;
                 float: right;
             }
@@ -73,10 +73,20 @@
 
     <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
-            <div class="encabezado">
-                {{-- <img src="{{$data3->logo_instituto}}" alt="Logo"> --}}
-                {{-- <img class="izquierda" src="{{public_path('img/organismos/organismo_logo_20230628120901_431.jpeg')}}"> --}}
-            </div>
+            @if ($data3->logo_instituto)
+                <div class="encabezado" style="position:fixed; top:10px; right:0px; padding:10px; float:right;">
+                    {{-- <img src="{{public_path($data3->logo_instituto)}}" alt="Logo"> --}}
+                    @if ($diferencia == 'local')
+                        <img src="{{public_path($data3->logo_instituto)}}" alt="Logo">
+                    @endif
+                    @if ($diferencia == 'web')
+                        <img src="{{$data3->logo_instituto}}" alt="Logo">
+                    @endif
+                </div>
+            @else
+            @endif
+
+            {{-- <img class="izquierda" src="{{public_path('img/organismos/organismo_logo_20230628120901_431.jpeg')}}"> --}}
     </header>
     <div class="contenedor">
         <h5 align=center>CONVENIO ESPECIFICO</h5>
@@ -235,7 +245,7 @@
                 <tbody>
                 <tr>
                     <td style="font-size:12px;">{{strtoupper($data1->curso)}}</td>
-                    <td style="font-size:12px;">{{$data1->cespecifico}} / {{$data1->dia}} DE {{strtoupper($data1->mes)}} DEL {{$data1->anio}}</td>
+                    <td style="font-size:12px;">{{$data1->cespecifico}} A {{$data1->dia}} DE {{strtoupper($data1->mes)}} DEL {{$data1->anio}}</td>
                     <td style="font-size:12px;">${{$data1->costo}}</td>
                     <td style="font-size:12px;">{{$data1->dura}}</td>
                     <td style="font-size:12px;">{{strtoupper($data1->hini)}} A {{strtoupper($data1->hfin)}} HRS {{$data1->observaciones != 'NINGUNO' ? '/ '.$data1->observaciones : ''}}</td>

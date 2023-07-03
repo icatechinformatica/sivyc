@@ -127,16 +127,31 @@
                         <label for="tipo" class="control-label">Siglas</label>
                         <input type="text" class="form-control" placeholder="Siglas del Organismo" name="siglas" value="{{$siglas_inst}}">
                     </div>
+                    {{-- select de opcion --}}
+                    <div class="mt-4 pt-2 form-group col-md-4" onchange="opcion_cargar()">
+                        <select name="valor_sel" id="valor_sel" class="form-control">
+                            <option selected value="">SUBI LOGO</option>
+                            <option value="1">URL DESDE INTERNET</option>
+                            <option value="2">CARGAR IMAGEN</option>
+                        </select>
+                    </div>
                     {{-- Subir imagen --}}
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-4" id="inputFileImg">
                         <label for="imageLogo" class="control-label">Logo del Organismo</label>
                         <input type="file" name="imageLogo" id="imageLogo" class="form-control-file" accept="image/*">
                     </div>
                     {{-- Visualizar imagen --}}
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-4 mt-3" id="verImg">
                         <img id="preview-image" src="{{$url_image}}" alt="Vista previa de la imagen" style="max-width: 20%; height: auto;">
                         <input type="hidden" name="url_img" value="{{$url_image}}">
                     </div>
+                    {{-- Subir url de imagen --}}
+                    <div class="form-group col-md-4" id="urlImageExt">
+                        <label for="urlImgeExt" class="control-label">URL del logo</label>
+                        <input type="text" name="urlImgeExt" value="" placeholder="Url de logo" class="form-control">
+                    </div>
+
+
                 </div>
                 <div class="form-row mt-4">
                     <div class="form-group col-md-6">
@@ -264,6 +279,29 @@
                         previewImage.style.display = 'none';
                     }
                 });
+
+                $("#inputFileImg").hide();
+                $("#urlImageExt").hide();
+                function opcion_cargar() {
+                    let valSel = document.getElementById('valor_sel').value;
+
+                    if (valSel == 1) {
+                        $("#urlImageExt").show();
+                    } else {
+                        $("#urlImageExt").hide();
+                    }
+
+                    if (valSel == 2) {
+                        $("#inputFileImg").show();
+                    } else {
+                        $("#inputFileImg").hide();
+                    }
+
+                    if (valSel == "") {
+                        $("#inputFileImg").hide();
+                        $("#urlImageExt").hide();
+                    }
+                }
         </script>
     @endsection
 @endsection
