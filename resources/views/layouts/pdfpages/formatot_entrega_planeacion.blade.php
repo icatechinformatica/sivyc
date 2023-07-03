@@ -61,8 +61,8 @@
     {{-- SECCIÓN DE LA CABECERA FIN --}}
     {{-- SECCIÓN DE PIE DE PÁGINA --}}
     <footer>
-        <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach</b></p>
+        <img class="izquierdabot" src="{{ public_path('img/footer.jpeg') }}">
+        {{-- <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach</b></p> --}}
         <script type="text/php">
             if (isset($pdf))
             {
