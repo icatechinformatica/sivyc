@@ -1391,6 +1391,7 @@ class grupoController extends Controller
         ->where('folio_grupo','=',"$folio_grupo")->get();
 
         $pdf = PDF::loadView('reportes.acta_acuerdo_registro_grupo',compact('data1', 'data2','data3'));
+        $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Acta_Acuerdo');
     }
     public function pdf_convenio(){
@@ -1412,7 +1413,20 @@ class grupoController extends Controller
         ->Join('tbl_cursos as c', 'u.organismo', 'c.depen')
         ->where('c.folio_grupo', $folio_grupo)->first();
 
-        $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3'));
+        #validar si la image es de internet o del servidor utilizado
+        $diferencia = '';
+        $subcadenas = explode("_", $data3->logo_instituto);
+        if($data3->logo_instituto != ''){
+            if($subcadenas[0] == "/img/organismos/organismo"){
+                $diferencia = 'local';
+            }else{
+                $diferencia = 'web';
+            }
+        }
+
+
+        $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3', 'diferencia'));
+        $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Convenio');
     }
 }
