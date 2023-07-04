@@ -80,16 +80,18 @@
                     </div>
                 @endif
                 @if (isset($grupo))
-                    <div class="row bg-light" style="padding:15px;">
-                        <div class="form-group col-md-5">MEMORANDUM DE VALIDACION DEL INSTRUCTOR:&nbsp;&nbsp;<strong>{{ $grupo->instructor_mespecialidad }}</strong></div>
-                        <div class="form-group col-md-2">TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></div>
-                        <div class="form-group col-md-5">DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></div>
+                    <div class="row bg-light form-inline" style="padding:15px 0 15px 0; text-indent:1.8em; line-height: 2.1em;">
+                        @if($grupo->clave)<span>CLAVE:&nbsp;&nbsp;<strong>{{$grupo->clave}}</strong></span>@endif
+                        <span>MEMORANDUM DE VALIDACION DEL INSTRUCTOR:&nbsp;&nbsp;<strong>{{ $grupo->instructor_mespecialidad }}</strong></span>
                         @if ($grupo->mexoneracion AND ($grupo->mexoneracion <> '0'))
-                        <div class="form-group col-md-5">MEMORÁNDUM DE EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong>{{$grupo->mexoneracion}}</strong></div>
-                        @endif
+                            <span>MEMORÁNDUM DE EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong>{{$grupo->mexoneracion}}</strong></span>
+                        @endif                        
+                        @if($grupo->tdias)<span>TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></span>@endif
+                        @if($grupo->dia)<span>DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></span>@endif
+                        
                         @if ($grupo->cgeneral!='0')
-                        <div class="form-group col-md-3">CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->cgeneral}}</strong></div>
-                        <div class="from-group col-md-3">FECHA CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->fcgen}}</strong></div>
+                            <span>CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->cgeneral}}</strong></span>
+                            <span>FECHA CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->fcgen}}</strong></span>
                         @endif
                     </div>
                 @endif

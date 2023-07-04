@@ -63,8 +63,9 @@ class grupoController extends Controller
                 THEN CONCAT('20',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
                 ELSE CONCAT('19',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
                 END AS fnacimiento"),'ar.id_especialidad','ar.id_instructor','ar.efisico','ar.escolaridad','ar.servicio','ar.medio_virtual','ar.link_virtual','ar.cespecifico',
-                'ar.fcespe','ar.observaciones','ar.mpreapertura','ar.depen_repre','ar.depen_telrepre')
+                'ar.fcespe','ar.observaciones','ar.mpreapertura','ar.depen_repre','ar.depen_telrepre','tc.clave')
             ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)
+            ->leftjoin('tbl_cursos as tc', 'tc.folio_grupo', 'ar.folio_grupo')
             ->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')->get();
             //var_dump($alumnos);exit;
             if (count($alumnos) > 0) {
