@@ -82,7 +82,7 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
-            ->WHERE('folios.status', '!=', 'Validado')
+            // ->WHERE('folios.status', '!=', 'Validado')
             ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
             ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
@@ -218,7 +218,7 @@ class ContratoController extends Controller
         {
             foreach($memoval as $me)
             {
-                if($me['memo_val'] == $data->instructor_mespecialidad)
+                if(isset($me['memo_val']) && $me['memo_val'] == $data->instructor_mespecialidad)
                 {
                     $memoval = $me['arch_val'];
                     break;
