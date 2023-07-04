@@ -83,6 +83,9 @@ class BuzonController extends Controller
             ->first();
             array_push($direcciones, $contenedor);
         }
+        // dd($direcciones);
+        // dd($direcciones);
+
 
         #PROCESO PARA OBTENER LOS VALORES DE AVANCE FUNCIONES Y PROCEDIMIENTOS
         $funciones_global = [];
@@ -456,7 +459,6 @@ class BuzonController extends Controller
 
         //(organismo), (funcion), (procedimientos), (valores)
         //dd($mes_meta_avance_global[1][0][0]);
-
 
         #GENERA EL PDF
         $pdf = PDF::loadView('vistas_pat.genpdfgeneral', compact('areas', 'direcciones', 'funciones_global', 'proced_global', 'mes_avance', 'mes_meta_avance_global', 'fechas_pdf_global'));

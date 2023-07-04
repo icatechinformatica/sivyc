@@ -153,7 +153,7 @@
                                 <td><small>{{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}}</small></td>
                                 <td><small>{{$data[$key]->especialidad}}</small></td>
                                 <td style="text-align:left; padding:5px;">
-                                @if($data[$key]->status == 'BAJA EN FIRMA' || $data[$key]->status == 'BAJA EN PREVALIDACION')<small>BAJA EN TODOS LOS CURSOS DE LA ESPECIALIDAD</small></td>
+                                @if($data[$key]->status == 'BAJA EN FIRMA' || $data[$key]->status == 'BAJA EN PREVALIDACION' || $data[$key]->status == 'BAJA EN CAPTURA')<small>BAJA EN TODOS LOS CURSOS DE LA ESPECIALIDAD</small></td>
                                 @else
                                     @foreach($cold as $moist => $cadwell)
                                         <ul style="margin-left: -30px; line-height:80%;">
@@ -188,7 +188,7 @@
                                 {{-- @if($data[$key]->status == 'BAJA EN FIRMA')
                                 <td><small>BAJA EN TODOS LOS CURSOS DE LA ESPECIALIDAD</small></td>
                                 @endif --}}
-                                <td><small>@if($data[$key]->status != 'BAJA EN FIRMA' && $data[$key]->status != 'BAJA EN PREVALIDACION'){{$data[$key]->observacion}} @else BAJA DE ESPECIALIDAD @endif</small></td>
+                                <td><small>@if($data[$key]->status != 'BAJA EN FIRMA' && $data[$key]->status != 'BAJA EN PREVALIDACION' && $data[$key]->status != 'BAJA EN CAPTURA'){{$data[$key]->observacion}} @else BAJA DE ESPECIALIDAD @endif</small></td>
                             </tr>
                         @endforeach
                     </tbody>

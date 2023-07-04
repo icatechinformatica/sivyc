@@ -54,17 +54,30 @@
                 font-weight: bold;
             }
             /* ESTILO DE LA IMAGEN QUE SE MUESTRA EN EL ENCABEZADO */
-            .encabezado {
+            /* .encabezado {
                 position: fixed;
                 top: 10px;
-                right: 0;
+                right: 0px;
                 padding: 10px;
                 float: right;
+            } */
+
+            .encabezado {
+                position: relative; /* Cambia de fixed a relative */
+                padding: 10px;
+                /* Resto de tus estilos */
+            }
+
+            .logo {
+                position: absolute; /* Posición absoluta dentro del contenedor */
+                top: -10px;
+                right: 100px;
+                z-index: 9999; /* Asegura que la imagen esté en el frente */
             }
 
             .encabezado img {
                 width: 100px; /* Ajusta el tamaño de la imagen según tus necesidades */
-                height: auto; /* Permite que la altura se ajuste automáticamente */
+                height: 100px; /* Permite que la altura se ajuste automáticamente */
             }
     </style>
 </head>
@@ -73,10 +86,19 @@
 
     <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
-            <div class="encabezado">
-                {{-- <img src="{{$data3->logo_instituto}}" alt="Logo"> --}}
-                {{-- <img class="izquierda" src="{{public_path('img/organismos/organismo_logo_20230628120901_431.jpeg')}}"> --}}
-            </div>
+            @if ($data3->logo_instituto)
+                <div class="encabezado">
+                    <div class="logo">
+                        @if ($diferencia == 'local')
+                            <img src="{{public_path($data3->logo_instituto)}}" alt="Logo">
+                        @endif
+                        @if ($diferencia == 'web')
+                            <img src="{{$data3->logo_instituto}}" alt="Logo">
+                        @endif
+                    </div>
+                </div>
+            @else
+            @endif
     </header>
     <div class="contenedor">
         <h5 align=center>CONVENIO ESPECIFICO</h5>
@@ -151,6 +173,8 @@
                 FACULTAD LEGAL PARA SUSCRIBIR EL PRESENTE CONVENIO ESPECÍFICO DE COLABORACIÓN.
             </div>
             <br>
+            <br>
+            <br>
             <div align="justify" style="font-size:12px;">
                 I.4     TIENE POR OBJETO IMPARTIR E IMPULSAR LA CAPACITACIÓN PARA EL TRABAJO EN LA ENTIDAD,
                 PROCURANDO LA MEJOR CALIDAD Y VINCULACIÓN DE ESTE SERVICIO CON EL APARATO
@@ -199,9 +223,11 @@
                 ACADÉMICO, LOGÍSTICO Y OPERATIVO, SUJETÁNDOSE PARA TAL EFECTO A LAS SIGUIENTES:
             </div>
             <br>
+            <br>
             <div align="center" style="font-size:14px;">
                 <b>C L Á U S U L A S</b>
             </div>
+            <br>
             <br>
             <div align="justify" style="font-size:12px;">
                 <b>PRIMERA. - DEL OBJETO.</b> EL PRESENTE CONVENIO TIENE POR OBJETO ESTABLECER LAS BASES
@@ -235,7 +261,7 @@
                 <tbody>
                 <tr>
                     <td style="font-size:12px;">{{strtoupper($data1->curso)}}</td>
-                    <td style="font-size:12px;">{{$data1->cespecifico}} / {{$data1->dia}} DE {{strtoupper($data1->mes)}} DEL {{$data1->anio}}</td>
+                    <td style="font-size:12px;">{{$data1->cespecifico}} A {{$data1->dia}} DE {{strtoupper($data1->mes)}} DEL {{$data1->anio}}</td>
                     <td style="font-size:12px;">${{$data1->costo}}</td>
                     <td style="font-size:12px;">{{$data1->dura}}</td>
                     <td style="font-size:12px;">{{strtoupper($data1->hini)}} A {{strtoupper($data1->hfin)}} HRS {{$data1->observaciones != 'NINGUNO' ? '/ '.$data1->observaciones : ''}}</td>
@@ -250,6 +276,8 @@
                 <b>EN LA MODALIDAD DE CURSO <span class="color_dina">{{$data1->tcapacitacion}}</span>,</b> EMITIÉNDOSE AL CONCLUIR LA MISMA, UNA
                 CONSTANCIA DE ACREDITACIÓN POR PARTE DE <b>“EL ICATECH”</b>.
             </div>
+            <br>
+            <br>
             <br>
             <div align="justify" style="font-size:12px;">
                 <b>CUARTA.</b> - <b><span class="color_dina">“{{$data3->siglas_inst}}”</span></b> ACEPTA LOS PLANES Y PROGRAMAS QUE <b>“EL ICATECH”</b> DESARROLLÓ PARA
