@@ -24,7 +24,7 @@ switch( $mes){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reporte RCDC08</title>
+    <title>Reporte RDCD-08</title>
 </head>
 <style type="text/ccs">
     @page{margin: 20px 30px 40px}
@@ -127,7 +127,7 @@ switch( $mes){
                 <td class="variable">DEL FOLIO:</td>
                 <td class="variable">AL FOLIO:</td>
                 <td class="variable">CANTIDAD</td>
-                <td class="variable">FECHA DEL ACTA ADMVA. DE ASIGANCIÓN:</td>
+                <td class="variable">FECHA DEL ACTA ADMVA. DE ASIGNACIÓN:</td>
             </tr>
             <tr>
                 <td class="variable">{{$consulta[0]->finicial}}</td>
