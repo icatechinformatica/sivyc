@@ -48,17 +48,17 @@
                         datasets: [{
                             label:'CURSOS',
                             data: curso.total,
-                            backgroundColor: 'rgba(176, 154, 91,0.7)'
+                            backgroundColor: 'rgba(176, 154, 91,0.8)'
                         },
                         {
                             label:'EXTEMPORANEIDAD ARC01',
                             data: curso.ex1,
-                            backgroundColor: 'rgba(98,17,50, 0.5)'
+                            backgroundColor: 'rgba(98,17,50, 0.8)'
                         },
                         {
                             label:'EXTEMPORANEIDAD ARC02',
                             data: curso.ex2,
-                            backgroundColor: 'rgba(51,51,51, 0.5)'
+                            backgroundColor: 'rgba(51,51,51, 0.8)'
                         }]
                     },
                     options: {
@@ -112,7 +112,7 @@
                         datasets: [{
                             label:'SOLICITUDES',
                             data: curso.total,
-                            backgroundColor: 'rgba(176, 154, 91, 0.7)'
+                            backgroundColor: 'rgba(98,17,50,0.8)'
                         },
                         ]
                     },
