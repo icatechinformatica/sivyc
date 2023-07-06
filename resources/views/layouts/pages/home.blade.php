@@ -104,7 +104,7 @@
                
                 /*RANKING SOLICITUDES DE APOYO O ASISTENCIA TÉCNICA*/
                 var ctx = document.getElementById('myChart2').getContext('2d');
-                var curso = JSON.parse('{"label":["CATAZAJA","COMITAN","JIQUIPILAS","OCOSINGO","REFORMA","SAN CRISTOBAL","TAPACHULA","TONALA","TUXTLA","VILLAFLORES","YAJALON","DTA"],"total":[6,6,1,7,0,3,3,2,13,2,7,9]}'); 
+                var curso = JSON.parse('{"label":["CATAZAJA","COMITAN","JIQUIPILAS","OCOSINGO","REFORMA","SAN CRISTOBAL","TAPACHULA","TONALA","TUXTLA","VILLAFLORES","YAJALON","DTA"],"total":[5,7,1,7,0,3,4,3,14,2,7,6]}'); 
                 var myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
