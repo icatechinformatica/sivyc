@@ -428,7 +428,9 @@ class grupoController extends Controller
                                     'especialidad_instructores.memorandum_validacion as mespecialidad',
                                     'especialidad_instructores.criterio_pago_id as cp',
                                     'tipo_identificacion',
-                                    'folio_ine')
+                                    'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
+                                    'banco','no_cuenta','interbancaria','tipo_honorario'
+                                    )
                                 ->WHERE('estado', true)
                                 ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')->where('instructores.id', $request->instructor)
                                 //->whereJsonContains('unidades_disponible', [$grupo->unidad])
@@ -536,7 +538,12 @@ class grupoController extends Controller
                                         ]
                                     );
                                     if ($result) {
-                                        $message = "Operación Exitosa!!";
+                                        //dd($instructor);
+                                      /**AQUI */
+                                        $soportes_instructor = ["domicilio"=>$instructor->domicilio, "archivo_domicilio"=>$instructor->archivo_domicilio,
+                                        "archivo_ine"=>$instructor->archivo_ine,"archivo_bancario"=>$instructor->archivo_bancario,"archivo_rfc"=>$instructor->archivo_rfc,
+                                        'banco'=>$instructor->banco,'no_cuenta'=>$instructor->no_cuenta,'interbancaria'=>$instructor->interbancaria,'tipo_honorario'=>$instructor->tipo_honorario];
+                                        
                                         //Si hay cambios y esta registrado en tbl_cursos se elimina el instructor para validarlo nuevamente
                                         // DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave', '0')->update(['nombre' => null, 'curp' => null, 'rfc' => null]);
                                         $result2 = DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(['folio_grupo' => $_SESSION['folio_grupo']],
@@ -557,7 +564,7 @@ class grupoController extends Controller
                                             'id_cerss' => $request->cerss,'created_at' => $created_at,'updated_at' => $updated_at,'num_revision' => null,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
-                                            'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel
+                                            'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>$soportes_instructor
                                             ]
                                         );
                                         if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
@@ -565,6 +572,7 @@ class grupoController extends Controller
                                             DB::table('agenda')->where('id_curso', $folio)->delete();
                                             DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
                                         }
+                                        if($result2)  $message = "Operación Exitosa!!"; 
                                     }
                                 }
                             } else {
