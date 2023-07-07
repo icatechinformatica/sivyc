@@ -33,6 +33,12 @@
         }else{$activo='INACTIVO';}
     }
     ?>
+    <style>
+        /* Quitamos la parte de mayusculas de manera forzada */
+        #urlImgeExt {
+            text-transform: none !important;
+        }
+    </style>
     <div class="card-header">
         @if ($update)
             Modificación Organismos Públicos
@@ -148,7 +154,7 @@
                     {{-- Subir url de imagen --}}
                     <div class="form-group col-md-4" id="urlImageExt">
                         <label for="urlImgeExt" class="control-label">URL del logo</label>
-                        <input type="text" name="urlImgeExt" value="" placeholder="Url de logo" class="form-control">
+                        <input type="text" name="urlImgeExt" id="urlImgeExt" value="" placeholder="Url de logo" class="form-control">
                     </div>
 
 
@@ -177,6 +183,9 @@
     @section('script_content_js')
         <script type="text/javascript">
             $(document).ready(function(){
+                /*Deshabilitamos la prate de convertir a mayusculas*/
+                $("#urlImgeExt").off("keyup");
+
                 $("#guardar").click(function(){ $('#frm').attr('action', "{{route('organismos.insert')}}"); $('#frm').submit(); });
                 $("#actualizar").click(function(){ $('#frm').attr('action', "{{route('organismos.update')}}"); $('#frm').submit(); });
                 $('#estado').change(function(){

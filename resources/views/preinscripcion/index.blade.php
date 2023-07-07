@@ -187,6 +187,22 @@
                         <label><input type="checkbox" value="cerss" id="cerss_ok" @if($id_cerss){{'checked'}}@endif>&nbsp;&nbsp;CERSS</label>
                         {{ Form::select('cerss', $cerss, $id_cerss, ['id'=>'cerss','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
                     </div>
+                    {{-- Jose Luis Moreno / Agregar campo de firmante  --}}
+                    {{-- Normal --}}
+                    <div class="form-group col-md-4 {{$id_cerss ? 'd-none' : ''}}" id="firma1_n">
+                        <label for="firmante">NOMBRE DEL FIRMANTE DE CONVENIO</label>
+                        <input type="text" class="form-control" name="firma" value="" placeholder="FIRMANTE">
+                    </div>
+                    {{-- Con cerss --}}
+                    <div class="form-group col-md-4 {{$id_cerss ? '' : 'd-none'}}" id="firma2_n">
+                        <label for="firmante">NOMBRE 1 DEL FIRMANTE DE CONVENIO</label>
+                        <input type="text" class="form-control" name="firmaone" value="" placeholder="Primera Persona">
+                    </div>
+                    <div class="form-group col-md-4 {{$id_cerss ? '' : 'd-none'}}" id="firma3_n">
+                        <label for="firmante">NOMBRE 2 DEL FIRMANTE DE CONVENIO</label>
+                        <input type="text" class="form-control" name="firmatwo" value="" placeholder="Segunda Persona">
+                    </div>
+
                     <div class="form-group col-md-4">
                         <label>INSTRUCTOR DISPONIBLE:</label>
                         <select name="instructor" id="instructor" class="form-control mr-sm--2">
@@ -406,6 +422,7 @@
             });
         </script>
         <script type="text/javascript">
+
             var calendarEl = document.getElementById('calendar');
             var calendar, idEvento, objEvento;
             $('#btnShowCalendar').click(function(e) {
@@ -613,6 +630,23 @@
                 }
                 return date;
             }
+
+            //Mostrar campos de firmas de acuerdo al check
+            $("#cerss_ok").click(function() {
+                let isChecked = $(this).is(":checked");
+                if (isChecked) {
+                    $("#firma2_n").removeClass("d-none");
+                    $("#firma3_n").removeClass("d-none");
+                    $("#firma1_n").addClass("d-none");
+                } else {
+                    $("#firma2_n").addClass("d-none");
+                    $("#firma3_n").addClass("d-none");
+                    $("#firma1_n").removeClass("d-none");
+                }
+            });
+
+
+
         </script>
     @endsection
 @endsection

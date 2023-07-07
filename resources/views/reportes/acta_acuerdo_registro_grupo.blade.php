@@ -103,7 +103,6 @@
                 {{$data1->mesini != $data1->mesfin ? 'DE '.strtoupper($data1->mesini) : ''}}
                 {{$data1->anioini != $data1->aniofin ? 'DEL '.$data1->anioIni : ''}}
                 AL {{$data1->diafin}} DE {{strtoupper($data1->mesfin)}} DEL AÑO {{$data1->aniofin}} </span>, EN EL HORARIO DE <span class="color_dina">{{strtoupper($data1->hini)}} A {{strtoupper($data1->hfin)}}</span>
-
                 HORAS, SEDE DEL CURSO MODALIDAD <span class="color_dina">{{$data1->tcapacitacion}}</span>, EN EL MUNICIPIO DE <span class="color_dina">{{$data1->muni}}</span>, CON UN
                 COSTO DE $<span class="color_dina">{{ $data3[1]->costo }}</span> PESOS M/N POR PERSONA, SEÑALANDO COMO INSTRUCTOR DEL CURSO AL (A LA) C.
                 <span class="color_dina">{{$data1->nombre}}</span>.
