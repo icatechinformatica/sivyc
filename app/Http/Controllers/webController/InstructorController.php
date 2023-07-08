@@ -36,7 +36,16 @@ class InstructorController extends Controller
 {
     public function prueba()
     {
-        dd('IDDQD');
+        $impuestos['IVA'] = 770.11;
+        $impuestos['retencion_iva'] = round($impuestos['IVA']/3*2);
+
+           dd($impuestos);
+    }
+
+    private function honorarios($total)
+    {
+
+        return $total;
     }
 
     public function index(Request $request)
@@ -3300,8 +3309,12 @@ class InstructorController extends Controller
             {
                 switch($item->status)
                 {
+                    case 'REVALIDACION EN CAPTURA';
+                        $tipo_doc = 'REVALIDACION';
+                    break;
                     case 'REVALIDACION EN FIRMA';
                         $tipo_doc = 'REVALIDACION';
+                        
                     break;
                     case 'REACTIVACION EN FIRMA';
                         $tipo_doc = 'REACTIVACION';

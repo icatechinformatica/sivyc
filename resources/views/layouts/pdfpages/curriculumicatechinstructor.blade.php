@@ -15,7 +15,7 @@
                 /* margin: 10px; */
             }
             @page {
-                margin: 20px 30px 80px;
+                margin: 20px 30px 110px;
 
             }
             .ftr{
@@ -48,7 +48,7 @@
             footer {
             position: fixed;
             /* left: 0px; */
-            bottom: 70px;
+            bottom: 20px;
             /* right: 0px; */
             /* height: 60px; */
             /* text-align: center; */
@@ -315,8 +315,8 @@
                     <thead>
                         <tr>
                             <td width="240px"><b>PUESTO</b></td>
-                            <td width="240px"><b>PERIODO</b></td>
-                            <td width="240px"><b>INSTITUCIÓN</b></td>
+                            <td width="120px"><b>PERIODO</b></td>
+                            <td width="300px"><b>INSTITUCIÓN</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -325,17 +325,17 @@
                                 <tr>
                                     <td>{{$cadwell['puesto']}}</td>
                                     <td>{{$cadwell['periodo']}}</td>
-                                    <td><p>{{$cadwell['institucion']}}</p></td>
+                                    <td style="font-size: 10px;">{{$cadwell['institucion']}}</td>
                                 </tr>
                             @endforeach
                         @endif
                     </tbody>
                 </table>
             </div>
-            <div align=center><b><small>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</small></b></div>
+            <div style="text-align: center; padding-left: 10%; padding-right: -15%"><b><small>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</small></b></div>
             
-            <div align=center><b><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></b></div>
-            <div align=center style="border: 1px"><b><small><small>
+            <div style="text-align: center; padding-left: 10%; padding-right: -15%"><b><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></b></div>
+            <div style="text-align: center; padding-left: 10%; padding-right: -15%"><b><small><small>
                 Se informa que no se realizarán tranferencias de datos personales,
                  salvo aquéllas que sean necesarias para atender requerimientos de información de una autoridad
                  competente, que estén debidamente fundados y motivados. En ese caso se atenderá a lo dispuesto

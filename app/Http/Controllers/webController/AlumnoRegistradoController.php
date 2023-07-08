@@ -28,14 +28,18 @@ class AlumnoRegistradoController extends Controller
      */
     public function index(Request $request) {
         $buscar = $request->get('busquedapor');
-
         $tipo = $request->get('tipo_busqueda');
-
-        $alumnos = Alumno::busqueda($tipo, $buscar)
+        $alumnos = Alumno::busqueda($buscar)
                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                 ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
                 ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.cct')
+                ->LEFTJOIN('tbl_cursos', 'tbl_cursos.folio_grupo', '=', 'alumnos_registro.folio_grupo') /*SE REALIZA CAMBIO PARA MOSTRAR CLAVE Y FOLIO DEL ALUMNO */
+                ->LEFTJOIN('tbl_inscripcion',function($join){
+                    $join->on('tbl_inscripcion.id_curso', '=', 'tbl_cursos.id');
+                    $join->on('tbl_inscripcion.id_pre', '=', 'alumnos_pre.id');
+                })                
+                ->LEFTJOIN('tbl_folios', 'tbl_folios.id', '=', 'tbl_inscripcion.id_folio')
                 ->ORDERBY('id_registro', 'desc')
                 ->PAGINATE(25, [
                     'alumnos_pre.nombre', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno',
@@ -43,9 +47,7 @@ class AlumnoRegistradoController extends Controller
                     'alumnos_registro.folio_grupo','alumnos_registro.inicio','alumnos_registro.termino',
                     'alumnos_registro.horario','cursos.nombre_curso', 'alumnos_pre.es_cereso'
                 ]);
-
         return view('layouts.pages.alumnos_registrados', compact('alumnos'));
-
     }
 
     /**

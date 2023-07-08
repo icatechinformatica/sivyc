@@ -108,10 +108,11 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 15px;
+                /* bottom: 0px; */
+                top: 45px;
                 left: 15px;
                 font-size: 8.5px;
-                color: rgb(255, 255, 255);
+                color: white;
                 line-height: 1;
             }
         </style>
@@ -125,7 +126,7 @@
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
-        <div class= "container">
+        <div>
             <div align=right> <b>Unidad de Capacitación {{$daesp}}</b> </div>
             <div align=right> <b>Memorandum No. @if($nomemosol != null){{$nomemosol}} @else BORRADOR @endif</b></div>
             <div align=right> <b>{{$data_unidad->municipio}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
@@ -152,7 +153,7 @@
                                 <td><small>{{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}}</small></td>
                                 <td><small>{{$data[$key]->especialidad}}</small></td>
                                 <td style="text-align:left; padding:5px;">
-                                @if($data[$key]->status == 'BAJA EN FIRMA' || $data[$key]->status == 'BAJA EN PREVALIDACION')<small>BAJA EN TODOS LOS CURSOS DE LA ESPECIALIDAD</small></td>
+                                @if($data[$key]->status == 'BAJA EN FIRMA' || $data[$key]->status == 'BAJA EN PREVALIDACION' || $data[$key]->status == 'BAJA EN CAPTURA')<small>BAJA EN TODOS LOS CURSOS DE LA ESPECIALIDAD</small></td>
                                 @else
                                     @foreach($cold as $moist => $cadwell)
                                         <ul style="margin-left: -30px; line-height:80%;">
@@ -187,7 +188,7 @@
                                 {{-- @if($data[$key]->status == 'BAJA EN FIRMA')
                                 <td><small>BAJA EN TODOS LOS CURSOS DE LA ESPECIALIDAD</small></td>
                                 @endif --}}
-                                <td><small>@if($data[$key]->status != 'BAJA EN FIRMA' && $data[$key]->status != 'BAJA EN PREVALIDACION'){{$data[$key]->observacion}} @else BAJA DE ESPECIALIDAD @endif</small></td>
+                                <td><small>@if($data[$key]->status != 'BAJA EN FIRMA' && $data[$key]->status != 'BAJA EN PREVALIDACION' && $data[$key]->status != 'BAJA EN CAPTURA'){{$data[$key]->observacion}} @else BAJA DE ESPECIALIDAD @endif</small></td>
                             </tr>
                         @endforeach
                     </tbody>

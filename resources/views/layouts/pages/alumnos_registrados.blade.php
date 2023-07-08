@@ -15,13 +15,11 @@
                 {{ Session::get('success') }}
             </div>
         @endif
-        {!! Form::open(['route' => 'alumnos.inscritos', 'method' => 'GET', 'class' => 'form-inline' ]) !!}  
-            @csrf
+        {!! Form::open(['route' => 'alumnos.inscritos', 'method' => 'GET', 'class' => 'form-inline' ]) !!}              
             <div class="row form-inline">       
                 {{ Form::text('busquedapor', '', ['id'=>'busquedapor', 'class' => 'form-control mr-sm-2', 'placeholder' => 'CURP / NOMBRE / No.CONTROL/ CURSO / No.GRUPO', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 48]) }}
                 {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
             </div>
-            {{csrf_field()}}
         {!! Form::close() !!}
             <table class="table table-bordered">
                 <caption>Catalogo de Alumnos</caption>

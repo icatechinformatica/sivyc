@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Alumno extends Model
 {
@@ -41,6 +42,21 @@ class Alumno extends Model
     }
 
     // scopes
+
+    public function scopeBusqueda($query, $buscar)
+    {
+        if (!empty(trim($buscar))) {
+            return $query->where(DB::raw(
+                "CONCAT(alumnos_registro.no_control,alumnos_registro.folio_grupo,
+                alumnos_pre.apellido_paterno, ' ',alumnos_pre.apellido_materno,' ',alumnos_pre.nombre,
+                cursos.nombre_curso,alumnos_pre.curp,alumnos_registro.no_control)") , 'LIKE', "%$buscar%"
+
+            );
+                
+        }
+    }
+
+    /*
     public function scopeBusqueda($query, $tipo, $buscar)
     {
         if (!empty($tipo)) {
@@ -75,5 +91,5 @@ class Alumno extends Model
                 }
             }
         }
-    }
+    }*/
 }

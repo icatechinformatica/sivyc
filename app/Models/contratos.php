@@ -125,7 +125,21 @@ class contratos extends Model
                 # busqueda por unidad capacitacion...
                 if (!empty($tipo_status))
                 {
-                    return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad)->WHERE('folios.status', '=', $tipo_status);
+                    if($tipo_status == 'En Espera' || $tipo_status == 'Citado')
+                    {
+                        if($tipo_status == 'En Espera')
+                        {
+                            return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad)->WHERE('pagos.status_recepcion', '=', $tipo_status)->ORDERBY('pagos.fecha_envio','ASC');
+                        }
+                        else
+                        {
+                            return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad)->WHERE('pagos.status_recepcion', '=', $tipo_status)->ORDERBY('pagos.updated_at','ASC');
+                        }
+                    }
+                    else
+                    {
+                        return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad)->WHERE('folios.status', '=', $tipo_status);
+                    }
                 }
                 else
                 {
