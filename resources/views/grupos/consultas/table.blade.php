@@ -8,12 +8,11 @@
                 <th scope="col">CLAVE</th>
                 <th scope="col">CURSO</th>
                 <th scope="col">INSTRUCTOR</th>
-                <th scope="col" width="86px">INICIO</th>
-                <th scope="col" width="86px">TERMINO</th>
+                <th scope="col" width="86px">FECHAS</th>                
                 <th scope="col" width="7%">HORARIO</th>
                 <th scope="col" width="7%">ESTATUS</th>
                 <th scope="col" width="7%">TURNADO A</th>
-                <th width="5%">CALIFICACIONES</th>
+                <th width="5%">CALIFIC</th>
                 <th width="5%">FOLIOS</th>
                 <th width="6%">CANCELAR</th>
             </tr>
@@ -25,20 +24,19 @@
                      <td>{{ $item->clave }}</td>
                      <td>{{ $item->curso }}</td>
                      <td>{{ $item->nombre }}</td>
-                     <td>{{ $item->inicio }}</td>
-                     <td>{{ $item->termino }}</td>
-                     <td>{{ $item->hini }}</td>
+                     <td>{{ $item->inicio }} AL </br>{{ $item->termino }}</td>                     
+                     <td>{{ $item->hini }} A </br>{{ $item->hfin }}</td>
                      <td>{{ $item->status}}</td>
                      <td>{{ $item->turnado}}</td>
                      <td class="text-center">
                             <a class="nav-link" alt="Registrar Calificaciones" onclick="editar('{{ $item->clave }}')">
-                                <i  class="fa fa-edit  fa-2x fa-lg text-dark"></i>
+                                <i  class="fa fa-edit  fa-2x fa-lg text-success"></i>
                             </a>
                     </td>
                     <td class="text-center">
 
                             <a class="nav-link" onclick="signar('{{ $item->clave }}')">
-                                <i  class="fa fa-edit  fa-2x fa-lg text-dark"></i>
+                                <i  class="fa fa-edit  fa-2x fa-lg text-primary"></i>
                             </a>
 
                     </td>
