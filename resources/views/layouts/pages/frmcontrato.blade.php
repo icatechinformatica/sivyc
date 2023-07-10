@@ -159,23 +159,23 @@
             <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputeremite">Nombre de Remitente</label>
-                        <input id="remitente" name="remitente" type="text" class="form-control">
+                        <input id="remitente" name="remitente" type="text" class="form-control" required>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto de Remitente</label>
-                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control">
-                        <input id="id_remitente" name="id_remitente" hidden>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" required>
+                        <input id="id_remitente" name="id_remitente" hidden required>
                     </div>
             </div>
             <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputelaboro">Nombre de Quien Elabora</label>
-                        <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control">
+                        <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" required>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto de Quien Elabora</label>
-                        <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control">
-                        <input id="id_elabora" name="id_elabora" hidden>
+                        <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" required>
+                        <input id="id_elabora" name="id_elabora" hidden required>
                     </div>
             </div>
             <div class="form-row">
@@ -200,12 +200,12 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
-                        <input type="text" name="liquido" id="liquido" class="form-control">
+                        <input type="text" name="liquido" id="liquido" class="form-control" required>
                     </div>
                 @else
                     <div class="form-group col-md-3">
                         <label for="inputliquido" class="control-label">Importe</label>
-                        <input type="text" name="liquido" id="liquido" class="form-control">
+                        <input type="text" name="liquido" id="liquido" class="form-control" required>
                     </div>
                 @endif
             </div>
@@ -220,7 +220,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control">
+                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control" required>
                         <input id="id_ccp1" name="id_ccp1" hidden>
                     </div>
                 </div>
@@ -232,7 +232,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control">
+                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control" required>
                         <input id="id_ccp2" name="id_ccp2" hidden>
                     </div>
                 </div>
@@ -244,7 +244,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control">
+                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control" required>
                         <input id="id_ccp3" name="id_ccp3" hidden>
                     </div>
                 </div>

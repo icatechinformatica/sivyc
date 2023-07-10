@@ -157,11 +157,11 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputno_memo">Numero de Memorandum</label>
-                    <input id="no_memo" name="no_memo" type="text" class="form-control" @if(isset($datap))value="{{$datap->no_memo}}"@endif>
+                    <input id="no_memo" name="no_memo" type="text" class="form-control" value="{{$datap->no_memo}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
-                    <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control" @if(isset($datap))value="{{$datap->solicitud_fecha}}@endif">
+                    <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control" value="{{$datap->solicitud_fecha}}">
                 </div>
                 {{-- <div class="form-group col-md-3">
                     <label for="inputfecha_agenda">Fecha de Entrega Fisica</label>
@@ -171,35 +171,35 @@
             <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputeremite">Nombre de Remitente</label>
-                        <input id="remitente" name="remitente" type="text" class="form-control" @if(isset($director))value="{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}" @endif>
+                        <input id="remitente" name="remitente" type="text" class="form-control" value="{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}" required>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto de Remitente</label>
-                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" @if(isset($director))value="{{$director->puesto}}" @endif>
-                        <input id="id_remitente" name="id_remitente" @if(isset($director))value="{{$director->id}}" @endif hidden>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" value="{{$director->puesto}}" required>
+                        <input id="id_remitente" name="id_remitente" value="{{$director->id}}" hidden required>
                     </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputelaboro">Nombre de Quien Elabora</label>
-                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" @if(isset($elaboro))value="{{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}"@endif>
+                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" value="{{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}">
 
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_para">Puesto de Quien Elabora</label>
-                    <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" @if(isset($elaboro))value="{{$para->puesto}}"@endif>
-                    <input id="id_elabora" name="id_elabora" hidden @if(isset($elaboro))value="{{$directorio->solpa_elaboro}}"@endif>
+                    <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" value="{{$para->puesto}}">
+                    <input id="id_elabora" name="id_elabora" hidden value="{{$directorio->solpa_elaboro}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre_para">Nombre del Destinatario</label>
-                    <input id="destino" name="destino" type="text" class="form-control" @if(isset($para))value="{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}"@endif>
+                    <input id="destino" name="destino" type="text" class="form-control" value="{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_para">Puesto del Destinatario</label>
-                    <input id="destino_puesto" readonly name="destino_puesto" type="text" class="form-control" @if(isset($para))value="{{$para->puesto}}"@endif>
-                    <input id="id_destino" name="id_destino" hidden @if(isset($para))value="{{$directorio->solpa_para}}"@endif>
+                    <input id="destino_puesto" readonly name="destino_puesto" type="text" class="form-control" value="{{$para->puesto}}">
+                    <input id="id_destino" name="id_destino" hidden value="{{$directorio->solpa_para}}">
                 </div>
             </div>
             <br>
@@ -216,12 +216,12 @@
                     </div> --}}
                     <div class="form-group col-md-3">
                         <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
-                        <input type="text" name="liquido" id="liquido" class="form-control" @if(isset($datap)) value="{{$datap->liquido}}" @endif>
+                        <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
                     </div>
                 @else
                     <div class="form-group col-md-3">
                         <label for="inputliquido" class="control-label">Importe</label>
-                        <input type="text" name="liquido" id="liquido" class="form-control" @if(isset($datap)) value="{{$datap->liquido}}" @endif>
+                        <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
                     </div>
                 @endif
             </div>
@@ -269,7 +269,7 @@
             <input id="id_folio" name="id_folio" hidden value='{{$data->id_folios}}'>
             <input id="id_directorio" name="id_directorio" hidden value='{{$data_directorio->id}}'>
             <input id="id_contrato" name="id_contrato" hidden value='{{$datacon->id_contrato}}'>
-            <input hidden id="id_pago" name="id_pago" @if(isset($datap))value="{{$datap->id}}"@endif>
+            <input hidden id="id_pago" name="id_pago" value="{{$datap->id}}">
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
