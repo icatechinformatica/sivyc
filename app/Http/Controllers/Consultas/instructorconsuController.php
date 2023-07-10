@@ -76,7 +76,7 @@ class instructorconsuController extends Controller
                             (select  min(tcx.inicio) from tbl_cursos as tcx
                             where tcx.id_instructor= instructores.id and tcx.inicio<=tc.inicio  and 
                                 tcx.inicio> COALESCE(
-                                    (select max(inicio) from tbl_cursos as c where c.id_instructor = instructores.id  and c.inicio<=tc.inicio 
+                                    (select max(inicio) from tbl_cursos as c where c.id_instructor = instructores.id  and c.termino<=tc.termino
                                     and COALESCE((select DATE_PART('day', tc3.inicio::timestamp - c.termino::timestamp ) from tbl_cursos as tc3 where tc3.id_instructor = instructores.id  and tc3.inicio>c.inicio order by tc3.inicio ASC limit 1  )-1,0)>30 ),
                                     (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = instructores.id ))
                                 )::timestamp)+1
