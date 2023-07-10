@@ -79,8 +79,12 @@
                                 <td class="text-center"> @if($a->folio) {{$a->folio}} @else {{ 'NINGUNO' }} @endif</td>                                
                                 <td>
                                 @if(!$a->folio OR $a->folio=='0')
-                                    <?php $cambios = true; ?>
-                                    {{ Form::text('calificacion['.$a->id.']', $a->calificacion , ['id'=>$a->id, 'class' => 'form-control numero', 'required' => 'required', 'size' => 1]) }}
+                                    @php 
+                                        $cambios = true;
+                                        $calificacion = null;
+                                        if($a->calificacion!='0')$calificacion = $a->calificacion;
+                                    @endphp
+                                    {{ Form::text('calificacion['.$a->id.']', $calificacion , ['id'=>$a->id, 'class' => 'form-control numero', 'size' => 1, 'placeholder'=>'0']) }}
                                 @else
                                     {{ $a->calificacion }}    
                                 @endif 
