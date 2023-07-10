@@ -15,10 +15,13 @@
         @endif
         <form action="{{ route('contrato-save') }}" method="post" id="registercontrato" enctype="multipart/form-data">
             @csrf
-            <div style="text-align: right;width:65%">
-                <label for="titulocontrato"><h1>Formulario de Contrato</h1></label>
+            <div style="text-align: right;width:80%">
+                <label for="titulocontrato"><h1>Formulario de Contrato y Solicitud de Pago</h1></label>
             </div>
              <hr style="border-color:dimgray">
+             <div style="text-align: right;width:60%">
+                <label for="titulocontrato"><h2>Apartado de Contrato</h2></label>
+            </div>
              <div class="form-row">
                  <div class="form-group col-md-6">
                     <label for="numero_contrato" class="control-label">Número de Contrato</label>
@@ -99,22 +102,6 @@
                     </select>
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputfactura" class="control-label">Factura de Instructor PDF</label>
-                    <input type="file" accept="application/pdf" id="factura" name="factura" class="form-control" placeholder="Archivo PDF">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputfactura_xml" class="control-label">Factura de Instructor XML</label>
-                    <input type="file" accept="application/xml" id="factura_xml" name="factura_xml" class="form-control" placeholder="Archivo XML">
-                </div>
-            </div>
-            @if ($term == TRUE)
-            <footer style="color:red;" class="control-footer">La fecha de termino del curso ha sido alcanzada. Anexar documento de factura en caso de contar con ella</footer>
-            @else
-                <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
-            @endif
-            <hr style="border-color:dimgray">
             <h2>Testigos</h2>
             <br>
             <div class="form-row">
@@ -150,6 +137,117 @@
                     <input type="text" name="id_testigo3" id="id_testigo3" hidden>
                 </div>
             </div>
+            <hr style="border-color:dimgray">
+            <div style="text-align: right;width:65%">
+                <label for="titulocontrato"><h2>Apartado de Solicitud de Pago</h2></label>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputno_memo">Numero de Memorandum</label>
+                    <input id="no_memo" name="no_memo" type="text" class="form-control">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
+                    <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control">
+                </div>
+                {{-- <div class="form-group col-md-3">
+                    <label for="inputfecha_agenda">Fecha de Entrega Fisica</label>
+                    <input id="fecha_agenda" name="fecha_agenda" type="date" class="form-control">
+                </div> --}}
+            </div>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputeremite">Nombre de Remitente</label>
+                        <input id="remitente" name="remitente" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto de Remitente</label>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" required>
+                        <input id="id_remitente" name="id_remitente" hidden required>
+                    </div>
+            </div>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputelaboro">Nombre de Quien Elabora</label>
+                        <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto de Quien Elabora</label>
+                        <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" required>
+                        <input id="id_elabora" name="id_elabora" hidden required>
+                    </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputnombre_para">Nombre del Destinatario</label>
+                    <input id="destino" name="destino" type="text" class="form-control">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputpuesto_para">Puesto del Destinatario</label>
+                    <input id="destino_puesto" readonly name="destino_puesto" type="text" class="form-control">
+                    <input id="id_destino" name="id_destino" hidden>
+                </div>
+            </div>
+            <br>
+            <h3>Información de factura para Soporte de Pago</h3>
+            <br>
+            <div class="form-row">
+                @if($regimen->modinstructor == 'HONORARIOS')
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_factura" class="control-label">Factura de Instructor PDF</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
+                        <input type="text" name="liquido" id="liquido" class="form-control" required>
+                    </div>
+                @else
+                    <div class="form-group col-md-3">
+                        <label for="inputliquido" class="control-label">Importe</label>
+                        <input type="text" name="liquido" id="liquido" class="form-control" required>
+                    </div>
+                @endif
+            </div>
+            <br>
+            <h2>Con Copia Para</h2>
+            <!-- START CCP -->
+                <h3>CCP 1</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputnombre_ccp1">Nombre</label>
+                        <input id="ccp1" name="ccp1" type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto</label>
+                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control" required>
+                        <input id="id_ccp1" name="id_ccp1" hidden>
+                    </div>
+                </div>
+                <h3>CCP 2</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputnombre_ccp2">Nombre</label>
+                        <input id="ccp2" name="ccp2" type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto</label>
+                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control" required>
+                        <input id="id_ccp2" name="id_ccp2" hidden>
+                    </div>
+                </div>
+                <h3>CCP 3</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputnombre_ccp3">Nombre</label>
+                        <input id="ccp3" name="ccp3" type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto</label>
+                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control" required>
+                        <input id="id_ccp3" name="id_ccp3" hidden>
+                    </div>
+                </div>
+            <!-- END CC -->
             <br>
             <input id="id_folio" name="id_folio" hidden value='{{$data->id_folios}}'>
             <div class="row">

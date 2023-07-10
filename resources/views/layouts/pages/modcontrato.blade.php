@@ -6,8 +6,8 @@
     <div class="container g-pt-50">
         <form action="{{ route('contrato-savemod') }}" method="post" id="registercontrato"  enctype="multipart/form-data">
             @csrf
-            <div style="text-align: right;width:65%">
-                <label for="titulocontrato"><h1>Modificación de Contrato</h1></label>
+            <div style="text-align: right;width:80%">
+                <label for="titulocontrato"><h1>Modificación de Contrato y Solicitud de Pago</h1></label>
             </div>
             <br><br>
             <div class="form-row">
@@ -17,6 +17,9 @@
                 </div>
             </div>
             <hr style="border-color:dimgray">
+             <div style="text-align: right;width:60%">
+                <label for="titulocontrato"><h2>Apartado de Contrato</h2></label>
+            </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                 <label for="numero_contrato" class="control-label">Número de Contrato</label>
@@ -145,10 +148,127 @@
                     <input type="text" name="id_testigo3" id="id_testigo3" value="{{$testigo3->id}}" hidden>
                 </div>
             </div>
+            {{-- seccion de solcitud de pago --}}
+            <hr style="border-color:dimgray">
+            <div style="text-align: right;width:65%">
+                <label for="titulocontrato"><h2>Apartado de Solicitud de Pago</h2></label>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputno_memo">Numero de Memorandum</label>
+                    <input id="no_memo" name="no_memo" type="text" class="form-control" value="{{$datap->no_memo}}">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
+                    <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control" value="{{$datap->solicitud_fecha}}">
+                </div>
+                {{-- <div class="form-group col-md-3">
+                    <label for="inputfecha_agenda">Fecha de Entrega Fisica</label>
+                    <input id="fecha_agenda" name="fecha_agenda" type="date" class="form-control" value="{{$datap->fecha_agenda}}">
+                </div> --}}
+            </div>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputeremite">Nombre de Remitente</label>
+                        <input id="remitente" name="remitente" type="text" class="form-control" value="{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto de Remitente</label>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" value="{{$director->puesto}}" required>
+                        <input id="id_remitente" name="id_remitente" value="{{$director->id}}" hidden required>
+                    </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputelaboro">Nombre de Quien Elabora</label>
+                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" value="{{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}">
+
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputpuesto_para">Puesto de Quien Elabora</label>
+                    <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" value="{{$para->puesto}}">
+                    <input id="id_elabora" name="id_elabora" hidden value="{{$directorio->solpa_elaboro}}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputnombre_para">Nombre del Destinatario</label>
+                    <input id="destino" name="destino" type="text" class="form-control" value="{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputpuesto_para">Puesto del Destinatario</label>
+                    <input id="destino_puesto" readonly name="destino_puesto" type="text" class="form-control" value="{{$para->puesto}}">
+                    <input id="id_destino" name="id_destino" hidden value="{{$directorio->solpa_para}}">
+                </div>
+            </div>
+            <br>
+            <h3>Información para Soporte de Pago</h3>
+            <div class="form-row">
+                @if($regimen->modinstructor == 'HONORARIOS' && $datac->created_at <= '2023-06-05')
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_factura" class="control-label">Factura de Instructor</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
+                    </div>
+                    {{-- <div class="form-group col-md-3">
+                        <label for="inputarch_factura_xml" class="control-label">Factura de Instructor XML</label>
+                        <input type="file" accept="application/xml" class="form-control" id="arch_factura_xml" name="arch_factura_xml" placeholder="Archivo XML">
+                    </div> --}}
+                    <div class="form-group col-md-3">
+                        <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
+                        <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
+                    </div>
+                @else
+                    <div class="form-group col-md-3">
+                        <label for="inputliquido" class="control-label">Importe</label>
+                        <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
+                    </div>
+                @endif
+            </div>
+            <h2>Con Copia Para</h2>
+            <br>
+            <!-- START CCP -->
+                <h3>CCP 1</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputnombre_ccp1">Nombre</label>
+                        <input id="ccp1" name="ccp1" type="text" class="form-control" @if(isset($ccp1->nombre))value="{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}"@endif>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto</label>
+                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control" @if(isset($ccp1->nombre))value="{{$ccp1->puesto}}"@endif>
+                        <input id="id_ccp1" name="id_ccp1" hidden @if(isset($ccp1->nombre))value="{{$directorio->solpa_ccp1}}"@endif>
+                    </div>
+                </div>
+                <h3>CCP 2</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputnombre_ccp2">Nombre</label>
+                        <input id="ccp2" name="ccp2" type="text" class="form-control" @if(isset($ccp2->nombre)) value="{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}" @endif>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto</label>
+                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control"  @if(isset($ccp2->nombre)) value="{{$ccp2->puesto}}" @endif>
+                        <input id="id_ccp2" name="id_ccp2" hidden  @if(isset($ccp2->nombre)) value="{{$directorio->solpa_ccp2}}" @endif>
+                    </div>
+                </div>
+                <h3>CCP 3</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputnombre_ccp3">Nombre</label>
+                        <input id="ccp3" name="ccp3" type="text" class="form-control" @if(isset($ccp3->nombre)) value="{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}" @endif>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto</label>
+                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control" @if(isset($ccp3->nombre)) value="{{$ccp3->puesto}}"@endif>
+                        <input id="id_ccp3" name="id_ccp3" hidden @if(isset($ccp3->nombre)) value="{{$directorio->solpa_ccp3}}"@endif>
+                    </div>
+                </div>
+            <!-- END CC -->
             <br>
             <input id="id_folio" name="id_folio" hidden value='{{$data->id_folios}}'>
             <input id="id_directorio" name="id_directorio" hidden value='{{$data_directorio->id}}'>
             <input id="id_contrato" name="id_contrato" hidden value='{{$datacon->id_contrato}}'>
+            <input hidden id="id_pago" name="id_pago" value="{{$datap->id}}">
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">

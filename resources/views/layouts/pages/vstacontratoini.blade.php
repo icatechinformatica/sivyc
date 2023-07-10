@@ -166,7 +166,7 @@
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                     @can('contratos.create')
-                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Crear Contrato" href="{{route('contratos.create', ['id' => $itemData->id_folios])}}">
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Crear Contrato y Solicitud de Pago" href="{{route('contratos.create', ['id' => $itemData->id_folios])}}">
                                             <i class="fa fa-file-text" aria-hidden="true"></i>
                                         </a>
                                     @endcan
@@ -196,7 +196,7 @@
                                         @endcan
                                     @endif
                                 @endif
-                                @if ($itemData->status == 'Validando_Contrato')
+                                {{-- @if ($itemData->status == 'Validando_Contrato')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
@@ -238,8 +238,8 @@
                                             </button>
                                         @endcan
                                     @endif
-                                @endif
-                                @if ($itemData->status == 'Contrato_Rechazado')
+                                @endif --}}
+                                {{-- @if ($itemData->status == 'Contrato_Rechazado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
@@ -276,7 +276,7 @@
                                             </button>
                                         @endcan
                                     @endif
-                                @endif
+                                @endif --}}
                                 @if ($itemData->status == 'Contratado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
@@ -375,18 +375,25 @@
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
-                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </a>
-                                    @can('contrato.restart')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
-                                            data-toggle="modal" data-placement="top"
-                                            data-target="#restartModalContrato"
-                                            data-id='{{$itemData->id_folios}}'
-                                            title="Reiniciar Contrato">
-                                            <i class="fa fa-history"></i>
-                                        </button>
+                                    @can('contratos.edit')
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Modificar Contrato y Pago" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}">
+                                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                                        </a>
                                     @endcan
+                                    {{-- <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a> --}}
+                                    @if(!is_null($itemData->status_recepcion))
+                                        @can('contrato.restart')
+                                            <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#restartModalContrato"
+                                                data-id='{{$itemData->id_folios}}'
+                                                title="Reiniciar Contrato">
+                                                <i class="fa fa-history"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                     @can('folio.cancel')
                                         <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
