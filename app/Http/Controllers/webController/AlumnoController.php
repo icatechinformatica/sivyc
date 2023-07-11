@@ -90,7 +90,7 @@ class AlumnoController extends Controller {
                 'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
                 'POSTGRADO' => 'POSTGRADO'
             ];
-            $medio_confirmacion = ["WHATSAPP"=>"WHATSAPP","MENSAJE DE TEXTO"=>"MENSAJE DE TEXTO","CORREO ELECTRÓNICO"=>"CORREO ELECTRÓNICO","FACEBOOK"=>"FACEBOOK","INSTAGRAM"=>"INSTAGRAM","TWITTER"=>"TWITTER","TELEGRAM"=>"TELEGRAM"];
+           
             $estado = DB::table('estados')->select('id','nombre')->get(); 
             foreach($estado as $item){
                 $estados[$item->id] = $item->nombre;
@@ -104,7 +104,7 @@ class AlumnoController extends Controller {
                 $localidades = DB::table('tbl_localidades')->where('id_estado',$alumno->id_estado)->where('clave_municipio', $alumno->clave_municipio)->pluck('localidad', 'clave');
             }
         }
-
+        $medio_confirmacion = ["WHATSAPP"=>"WHATSAPP","MENSAJE DE TEXTO"=>"MENSAJE DE TEXTO","CORREO ELECTRÓNICO"=>"CORREO ELECTRÓNICO","FACEBOOK"=>"FACEBOOK","INSTAGRAM"=>"INSTAGRAM","TWITTER"=>"TWITTER","TELEGRAM"=>"TELEGRAM"];
         return view('layouts.pages.valcurp', compact('curp','sexo','fnacimiento','estados','grado_estudio','estado_civil','etnias','alumno','gvulnerables', 'municipios',
             'localidades','medio_confirmacion'));
     }
