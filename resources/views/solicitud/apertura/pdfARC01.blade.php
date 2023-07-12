@@ -122,14 +122,14 @@
     <div style="page-break-inside: avoid;"><b>&nbsp;&nbsp;&nbsp;CRITERIO DE CONTRATACION Y PAGO</b><br/>
         <table class="tablad">
             <tr>
-                <td colspan="4"><br/><b>1. PRIMARIA INCONCLUSA 2. PRIMARIA 3. SECUNDARIA 4. BACHILLERATO / PREPARATORIA O CARRERA TECNICA </b></td>
+                <td colspan="4"><br/><b>1. PRIMARIA INCONCLUSA &nbsp;2. PRIMARIA &nbsp;3. SECUNDARIA &nbsp;4. BACHILLERATO / PREPARATORIA O CARRERA TECNICA &nbsp;5. PROFESIONAL TRUNCA &nbsp;6. PROFESIONAL PASANTE </b></td>
             </tr> 
             <tr>
-                <td colspan="4"><b>5. PROFESIONAL TRUNCA 6. PROFESIONAL PASANTE 7. PROFESIONAL(TITULO Y/O CEDULA) 8. MAESTRIA (PASANTE) </b></td>
+                     <td colspan="4"><b>7. PROFESIONAL(TITULO Y/O CEDULA) &nbsp;8. MAESTRIA (PASANTE) &nbsp;9. MAESTRIA (TITULO Y/O CEDULA) 10. DOCTORADO (PASANTE) 11. DOCTORADO(TITULO Y/O CEDULA)</b></td>
             </tr>
             <tr>
-                <td colspan="4"><b>9. MAESTRIA (TITULO Y/O CEDULA) 10. DOCTORADO (PASANTE) 11. DOCTORADO(TITULO Y/O CEDULA) </b><br/>&nbsp;</td>
-            </tr>
+                     <td colspan="4"><b>12. PROFESIONAL CERTIFICADO DE COMPETENCIA LABORAL EN CAPACITACIÓN ESPECIALIZADA Y TEMAS ESPECÍFICOS </b><br/>&nbsp;</td>
+            </tr>            
         </table>    
     </div>
         <table class="tablaf">
