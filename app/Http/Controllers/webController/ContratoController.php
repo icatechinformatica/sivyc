@@ -320,7 +320,7 @@ class ContratoController extends Controller
                                 ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
         // dd($uni_contrato);
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada','memoval','regimen'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada','memoval','regimen','contrato','director','testigo1','testigo2','testigo3'));
     }
 
     public function contrato_save(Request $request)
@@ -390,6 +390,7 @@ class ContratoController extends Controller
         //event((new NotificationEvent($users, $letter)));
 
         // GUARDADO DE SOLICITUD DE PAGO
+        if($this->setsolpa($request) == true) {
         $check_pago = pago::SELECT('no_memo')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
         $urldocs = $urldocs2 = null;
         $created = DB::TABLE('contratos')->WHERE('id_folios','=', $request->id_folio)->VALUE('created_at');
@@ -461,11 +462,11 @@ class ContratoController extends Controller
 
         contrato_directorio::where('id_contrato', '=', $idc)
         ->update(['solpa_iddirector' => $request->id_remitente,
-                  'solpa_elaboro' => $request->id_elabora,
-                  'solpa_para' => $request->id_destino,
-                  'solpa_ccp1' => $request->id_ccp1,
-                  'solpa_ccp2' => $request->id_ccp2,
-                  'solpa_ccp3' => $request->id_ccp3]);
+                'solpa_elaboro' => $request->id_elabora,
+                'solpa_para' => $request->id_destino,
+                'solpa_ccp1' => $request->id_ccp1,
+                'solpa_ccp2' => $request->id_ccp2,
+                'solpa_ccp3' => $request->id_ccp3]);
 
         if(isset($request->arch_factura))
         {
@@ -498,7 +499,8 @@ class ContratoController extends Controller
         }
 
         folio::where('id_folios', '=', $request->id_folio)
-        ->update(['status' => 'Verificando_Pago']);
+        ->update(['status' => 'Pago_Verificado']);
+        }
 
         //Notificacion!!
         $letter = [
@@ -508,6 +510,7 @@ class ContratoController extends Controller
             'unidad' => Auth::user()->unidad,
             'url' => '/pago/verificar_pago/' . $idc,
         ];
+
         //$users = User::where('id', 1)->get();
         // dd($users);
         //event((new NotificationEvent($users, $letter)));
@@ -653,6 +656,7 @@ class ContratoController extends Controller
         $idc = $request->id_contrato;
 
         // metodo de solicitud de pagos
+
         $id_instructor  = DB::TABLE('contratos')
         ->JOIN('folios','folios.id_folios','contratos.id_folios')
         ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
@@ -660,6 +664,28 @@ class ContratoController extends Controller
         ->VALUE('tbl_cursos.id_instructor');
 
         $pago = pago::find($request->id_pago);
+        if(is_null($pago))
+        {
+            $pago = new pago();
+            $check_pago = pago::SELECT('no_memo')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
+            $urldocs = $urldocs2 = null;
+            $created = DB::TABLE('contratos')->WHERE('id_folios','=', $request->id_folio)->VALUE('created_at');
+
+            if($created <= '2023-06-05')
+            {
+                $pago->status_recepcion = 'recepcion tradicional';
+            }
+            else
+            {
+                $pago->status_recepcion = null;
+            }
+
+            if(isset($check_pago))
+            {
+                return back()->withErrors(sprintf('LO SENTIMOS, EL MEMORANDUM DE PAGO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->no_memo));
+            }
+        }
+
         $pago->no_memo = $request->no_memo;
         $pago->id_contrato = $request->id_contrato;
         $pago->liquido = $request->liquido;
@@ -684,14 +710,15 @@ class ContratoController extends Controller
         }
 
         $pago->save();
-
-        contrato_directorio::where('id_contrato', '=', $request->id_contrato)
-        ->update(['solpa_iddirector' => $request->id_remitente,
+        contrato_directorio::updateOrInsert(
+            ['id_contrato' => $request->id_contrato],
+            ['solpa_iddirector' => $request->id_remitente,
                   'solpa_elaboro' => $request->id_elabora,
                   'solpa_para' => $request->id_destino,
                   'solpa_ccp1' => $request->id_ccp1,
                   'solpa_ccp2' => $request->id_ccp2,
-                  'solpa_ccp3' => $request->id_ccp3]);
+                  'solpa_ccp3' => $request->id_ccp3]
+        );
 
         if(isset($request->arch_factura))
         {
@@ -722,8 +749,10 @@ class ContratoController extends Controller
             $instructor->save();
         }
 
-        folio::where('id_folios', '=', $request->id_folio)
-        ->update(['status' => 'Verificando_Pago']);
+        if($this->setsolpa($request) == true) {
+            folio::where('id_folios', '=', $request->id_folio)
+            ->update(['status' => 'Pago_Verificado']);
+        }
 
         return redirect()->route('contrato-inicio')
                         ->with('success','Solicitud de Pago Modificado');

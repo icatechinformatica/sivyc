@@ -89,7 +89,7 @@
                                 <option value="Contrato_Rechazado">CONTRATO RECHAZADO</option>
                                 <option value="Verificando_Pago">VERIFICANDO PAGO</option> --}}
                                 <option value="Pago_Verificado">PAGO VERIFICADO</option>
-                                <option value="Pago_Rechazado">PAGO RECHAZADO</option>
+                                {{-- <option value="Pago_Rechazado">PAGO RECHAZADO</option> --}}
                                 <option value="Finalizado">FINALIZADO</option>
                             </select>
                         </Div>
@@ -279,7 +279,7 @@
                                         @endcan
                                     @endif
                                 @endif --}}
-                                @if ($itemData->status == 'Contratado')
+                                @if ($itemData->status == 'Capturando')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
@@ -443,9 +443,9 @@
                                             <i class="fa fa-file-text" aria-hidden="true"></i>
                                         </a>
                                     @endcan
-                                    {{-- <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </a> --}}
+                                    </a>
                                     @if(!is_null($itemData->status_recepcion))
                                         @can('contrato.restart')
                                             <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
