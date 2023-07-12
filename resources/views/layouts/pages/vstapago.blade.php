@@ -11,7 +11,7 @@
     <style>
         * {
         box-sizing: border-box;
-        font-size: 15px;
+        font-size: 14px !important;
         }
 
         #myInput {
@@ -108,9 +108,9 @@
                         <Div id="divstat" name="divstat" @if($tipoPago == 'agendar_fecha') class="d-none d-print-none" @endif>
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
                                 <option value="">BUSQUEDA POR STATUS</option>
-                                <option value="Verificando_Pago">VERIFICANDO PAGO</option>
+                                {{-- <option value="Verificando_Pago">VERIFICANDO PAGO</option> --}}
                                 <option value="Pago_Verificado">PAGO VERIFICADO</option>
-                                <option value="Pago_Rechazado">PAGO RECHAZADO</option>
+                                {{-- <option value="Pago_Rechazado">PAGO RECHAZADO</option> --}}
                                 <option value="Finalizado">FINALIZADO</option>
                                 <option value="En Espera">PARA VALIDAR DIGITAL</option>
                                 <option value="Citado">PARA RECEPCION</option>
@@ -154,15 +154,7 @@
                         </td>
                         <td style="font-size: 13px">{{$itemData->unidad_capacitacion}}</td>
                         <td style="font-size: 13px">{{$itemData->nombre}}</td>
-                        <td style="font-size: 13px">{{$itemData->status}}</td>
-                        {{-- <td>{{$itemData->fecha_status}}</td> --}}
-                        {{-- @can('contratos.create')
-                            @if($itemData->recepcion != NULL)
-                                <td>{{$itemData->recepcion}}</td>
-                            @else
-                                <td>N/A</td>
-                            @endif
-                        @endcan --}}
+                        <td style="font-size: 13px">@if($itemData->status == 'Finalizado') Pagado @elseif($itemData->status == 'Pago_Verificado' && ($itemData->status_recepcion == 'Recibido' || $itemData->status_recepcion == 'Citado' || $itemData->status_recepcion == 'recepcion tradicional')) Pago En Proceso @elseif($itemData->status = 'Pago_Verificado' && $itemData->status_recepcion == 'En Espera') Enviado @elseif($itemData->status = 'Pago_Verificado') Para Envío @else {{$itemData->status}}@endif</td>
                         <td style="font-size: 13px">
                             @switch($itemData->status)
                                 @case('Verificando_Pago')
