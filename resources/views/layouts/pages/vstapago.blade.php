@@ -1014,7 +1014,8 @@
                         <input id="id_contrato_agendac" name="id_contrato_agendac" hidden>
                         <input id="tipo_envioc" name="tipo_envioc" hidden>
                         <button style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" value="guardar" onclick="guardado(this.value)">Guardar</button>
-                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" value="guardar_enviar" onclick="guardado(this.value)">Sí, Confirmar</button>
+                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" value="guardar_enviar" onclick="guardado(this.value)">Guardar y Enviar</button>
+
                     </div>
                 </div>
                 <div class="modal-footer"><div class="form-group"></div>
@@ -1179,6 +1180,7 @@
     });
 
     $('#validarRecepcionModalOrdinaria').on('show.bs.modal', function(event){
+        console.log('hola');
         var button = $(event.relatedTarget);
         var attrid = button.attr('data-id');
         var id = JSON.parse(attrid)
@@ -1208,19 +1210,24 @@
         var button = $(event.relatedTarget);
         var attrid = button.attr('data-id');
         var id = JSON.parse(attrid)
-        var fecha = id[14];
+        if(typeof id[13] !== 'undefined'){
+            var fecha = id[13];
+            var fechaTexto = fecha.toString();
+        }
+        console.log(fecha);
+
 
         $('#div_val_certificacion').removeClass('d-none d-print-none');
         $('#div_val_certificacion').addClass('form-group');
 
-        var fechaTexto = fecha.toString();
+        // var fechaTexto = fecha.toString();
         // console.log(id);
         document.getElementById('id_contrato_agendavc').value = id[0];
         setAnchorHrefs(id, false, true);
         $('#rechazar_recepcionvc').data('id', id[0]);
-        $('#validar_citavc').data('id', [id[0],id[12].toString()]);
+        $('#validar_citavc').data('id', [id[0],fechaTexto]);
         console.log(id[12])
-        if(typeof id[12] !== 'undefined'){
+        if(typeof id[13] !== 'undefined'){
             $('#div_val_certificacion').removeClass('form-group');
             $('#div_val_certificacion').addClass('d-none d-print-none');
         }
@@ -1422,6 +1429,7 @@ function guardado(buttonValue) {
     console.log(buttonValue);
     var confirmacion = confirm("¿Está seguro de continuar?");
     document.getElementById('tipo_envio').value = buttonValue;
+    document.getElementById('tipo_envioc').value = buttonValue;
 
     // Si el usuario hace clic en "Aceptar", continuar con el envío del formulario
     if (confirmacion) {
