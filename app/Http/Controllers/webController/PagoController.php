@@ -599,7 +599,7 @@ class PagoController extends Controller
             ->update(['arch_evidencia' => $evidencia_fotografica_pdf]);
         }
 
-        if($request->tipo_envio == 'guardar_enviar')
+        if($request->tipo_envio == 'guardar_enviar' || $request->tipo_envioc == 'guardar_enviar')
         {
             pago::where('id_contrato', $id_contrato)
             ->update(['status_recepcion' => 'En Espera',
