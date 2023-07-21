@@ -27,13 +27,25 @@
             #loco{
                 width: 12%;
             }
-            table, input {
+            #tabla thead tr th{
+                padding: 3px;
+                margin: 0px;
+                vertical-align: middle;
+            }
+            #tabla tbody tr td{
+                padding: 3px;
+                margin: 0px;
+                vertical-align: middle;
+                /* font-size: 12px; */
+            }
+
+            #tabla input {
                 width: 28px;
                 padding-left: 7px !important;
                 border: none;
                 background-color: transparent !important;
             }
-            table, textarea {
+            #tabla textarea {
                 border: none;
                 background-color: transparent !important;
             }
@@ -127,7 +139,7 @@
                 border-collapse: collapse;
             }
 
-            .table-container th {
+            .table-container thead {
                 position: sticky;
                 top: 0;
                 background-color: #a19f9f;
@@ -155,6 +167,21 @@
                     <p>{{ $message }}</p>
                 </div>
             @endif --}}
+            {{-- Mostrar horario --}}
+            <div class="alert alert-info py-1" role="alert">
+                <strong>PERIODO DE ENTREGA</strong>
+                @if($datos_status_meta[0] == 'activo')
+                    <span class="my-2"> ({{$datos_status_meta[3][0]}}) al ({{$datos_status_meta[3][1]}})</span>
+                @endif
+
+                @if($datos_status_avance[0] == 'activo')
+                    <span class="my-2">({{$datos_status_avance[3][0]}}) al ({{$datos_status_avance[3][1]}})</span>
+                @endif
+
+                @if ($datos_status_meta[0] == 'inactivo' && $datos_status_avance[0] == 'inactivo')
+                    <span class="my-2">Inactivo</span>
+                @endif
+            </div>
 
             {{-- DATOS MOSTRADOS DESPUES DEL ENCABEZADO --}}
             <div class="row">
@@ -167,10 +194,10 @@
                                 </div>
                             @endif
                             <div class="pull-left">
-                                <h4><b>Dirección :</b> {{isset($org->nombre) ? $org->nombre : ''}}</h4>
+                                <h5><b>Dirección :</b> {{isset($org->nombre) ? $org->nombre : ''}}</h5>
                             </div>
                             <div class="pull-left">
-                                <h4><b>Area/Depto :</b> {{isset($area_org->nombre) ? $area_org->nombre : ''}}</h4>
+                                <h5><b>Area/Depto :</b> {{isset($area_org->nombre) ? $area_org->nombre : ''}}</h5>
                             </div>
                             {{-- Muestra la fecha dando click --}}
                             {{-- <a tabindex="0" class="btn-circle btn-circle-sm" role="button"
@@ -185,7 +212,8 @@
                                 ">
                             <i class="fa fa-calendar fa-2x mt-1 fa-heart" aria-hidden="true" style="color: #5f0f30;"></i>
                             </a> --}}
-                            <span class="badge fondo_fecha mt-3">
+                            {{-- Muestra la fecha de inicio y termino --}}
+                            {{-- <span class="badge fondo_fecha mt-3">
                                 <span class="d-block text-left pt-1"><u>Periodo de Entrega</u></span>
                                 @if($datos_status_meta[0] == 'activo')
                                     <p class="my-2"> ({{$datos_status_meta[3][0]}}) al ({{$datos_status_meta[3][1]}})</p>
@@ -198,41 +226,29 @@
                                 @if ($datos_status_meta[0] == 'inactivo' && $datos_status_avance[0] == 'inactivo')
                                     <p class="my-2">Inactivo</p>
                                 @endif
-                            </span>
+                            </span> --}}
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="d-flex flex-column align-items-end">
                             <div class="pull-right">
-                                <h4><b>Fecha actual :</b> {{isset($fechaNow) ? $fechaNow : ''}}</h4>
+                                <h5><b>Fecha actual :</b> {{isset($fechaNow) ? strtoupper($fechaNow) : ''}}</h5>
                             </div>
-                            <div class="pull-right">
-                                <h4><b>Asunto :</b>
-                                    {{$datos_status_meta[0] == 'activo' ? 'Meta' : ''}}
-                                    {{$datos_status_avance[0] == 'activo' ? 'Avances - '.$datos_status_avance[2] : ''}}
+                            <div class="row mb-2">
+                                <div class="pull-right mr-3">
+                                    <h5><b>Asunto :</b>
+                                        {{$datos_status_meta[0] == 'activo' ? 'Meta' : ''}}
+                                        {{$datos_status_avance[0] == 'activo' ? 'Avances - '.$datos_status_avance[2] : ''}}
 
-                                </h4>
+                                    </h5>
+                                </div>
+                                <div class="pull-right ml-2">
+                                    <h5><b>Estado :</b>
+                                        {{$datos_status_meta[0] == 'activo' ? $datos_status_meta[1] : ''}}
+                                        {{$datos_status_avance[0] == 'activo' ? $datos_status_avance[1] : ''}}
+                                    </h5>
+                                </div>
                             </div>
-                            <div class="pull-right">
-                                <h4><b>Status :</b>
-                                    {{$datos_status_meta[0] == 'activo' ? $datos_status_meta[1] : ''}}
-                                    {{$datos_status_avance[0] == 'activo' ? $datos_status_avance[1] : ''}}
-                                </h4>
-                            </div>
-                            {{-- <div class="pull-right mt-3">
-                                <label for="selOpenLink">Descargar pdfs firmados</label>
-                                <select name="selOpenLink" id="selOpenLink" class="form-control" onchange="pdfOpenfirm()">
-                                    <option value="">PDFs FIRMADOS</option>
-                                    @if ($fecha_meta_avance->fecha_meta['urldoc_firm'] != '')
-                                        <option value="{{$fecha_meta_avance->fecha_meta['urldoc_firm']}}">Metas</option>
-                                    @endif
-                                    @for ($i = 0; $i < count($mesGlob); $i++)
-                                        @if ($fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav'] != '')
-                                            <option value="{{$fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav']}}">AVANCE {{$mesGlob[$i]}} </option>
-                                        @endif
-                                    @endfor
-                                </select>
-                            </div> --}}
 
                             <div class="card" style="width: 15rem;">
                                 <div class="card-body px-2 py-2">
@@ -257,84 +273,16 @@
                 </div>
             </div>
 
-            {{-- FORMULARIO DE BUSQUEDA --}}
-            {{-- <div class="form-row">
-                <div class="col-8">
-                    <form class="form-inline"  action="" method="get" id="formBusqueda">
-                        <input type="text" class="form-control mr-sm-2" name="busqueda_funcion" id="busqueda_funcion" placeholder="BUSCAR FUNCION">
-                        <button type="submit" name="botonBuscar" id="botonBuscar" class="btn btn-outline-primary">BUSCAR</button>
-                    </form>
-                </div>
-            </div> --}}
-
 
             {{-- TABLA DE METAS Y AVANCES --}}
-            <div style="overflow:auto;" class="table-container">
-            <table id="tabla" class="table table-bordered table-striped mt-5 table-wrapper">
-                {{-- <thead>
-                    <tr>
-                        <th scope="col"  id="loco"></th>
-                        <th scope="col" class="col-10 v-center"></th>
-                        <th scope="col" class="col-10 v-center"></th>
-                        <th scope="col" class="col-4 v-center"></th>
-                        <th scope="col" class="col-3 v-center"></th>
-                        <th scope="col" class="col-3 v-center"></th>
-                        <th scope="col" class="text-center" colspan="2">ENE</th>
-                        <th scope="col" class="text-center" colspan="2">FEB</th>
-                        <th scope="col" class="text-center" colspan="2">MAR</th>
-                        <th scope="col" class="text-center" colspan="2">ABRIL</th>
-                        <th scope="col" class="text-center" colspan="2">MAY</th>
-                        <th scope="col" class="text-center" colspan="2">JUN</th>
-                        <th scope="col" class="text-center" colspan="2">JUL</th>
-                        <th scope="col" class="text-center" colspan="2">AGO</th>
-                        <th scope="col" class="text-center" colspan="2">SEP</th>
-                        <th scope="col" class="text-center" colspan="2">OCT</th>
-                        <th scope="col" class="text-center" colspan="2">NOV</th>
-                        <th scope="col" class="text-center" colspan="2">DIC</th>
-                        <th scope="col" class="col-7 v-center"></th>
-                        <th scope="col" class="col-7 v-center"></th>
-
-                    </tr>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th class="text-center">FUNCION</th>
-                        <th class="text-center">PROCEDIMIENTO</th>
-                        <th class="text-center">UNIDAD DE MEDIDA</th>
-                        <th class="text-center">TIPO DE U.M</th>
-                        <th class="text-center">META ANUAL</th>
-                        @for ($i = 1; $i <= 12; $i++)
-                            <th scope="col" class="text-center">
-                                <div class="diagonal mt--2">
-                                    <span class="letter small">M</span>
-                                    <span class="letter small ml-1">e</span>
-                                    <span class="letter small">t</span>
-                                    <span class="letter small">a</span>
-                                </div>
-                            </th>
-                            <th scope="col" class="text-center">
-                                <div class="diagonal">
-                                    <span class="letter small">A</span>
-                                    <span class="letter small">v</span>
-                                    <span class="letter small">a</span>
-                                    <span class="letter small">n</span>
-                                    <span class="letter small">c</span>
-                                    <span class="letter small">e</span>
-                                </div>
-                            </th>
-                        @endfor
-                        <th class="text-center">
-                            {{$datos_status_meta[0] == 'activo' ? 'OBSERVACIONES' : ''}}
-                            {{$datos_status_avance[0] == 'activo' ? 'EXPLICACIÓN A LAS DESVIACIONES': ''}}
-                        </th>
-                        <th class="text-center">OBSERVACIONES PLANEACIÓN</th>
-                    </tr>
-                </thead> --}}
+            <div style="overflow:auto; margin:0px; padding:0px;" class="table-container mt-2">
+            <table id="tabla" class="table table-bordered table-striped table-wrapper">
                 {{-- nuevo encabezado para ver que tal como funciona --}}
                 <thead>
                     <tr>
-                      <th rowspan="2" class="text-center">#</th>
-                      <th rowspan="2" class="text-center">FUNCIONES</th>
-                      <th rowspan="2" class="text-center">PROCEDIMIENTOS</th>
+                      <th rowspan="2" class="text-center">No.</th>
+                      <th rowspan="2" class="text-center"> <p style="width: 250px;">FUNCIONES</p></th>
+                      <th rowspan="2" class="text-center"> <p style="width: 250px;">PROCEDIMIENTOS</p></th>
                       <th rowspan="2" class="text-center">UNIDAD <br> DE <br> MEDIDA</th>
                       <th rowspan="2" class="text-center">TIPO <br> DE <br> U.M</th>
                       <th rowspan="2" class="text-center">META <br> ANUAL</th>
@@ -702,122 +650,6 @@
                 @endif
 
             </div>
-
-              {{-- tabla --}}
-              {{-- <div style="overflow:auto;">
-                <table id="tabla" class="table table-bordered table-striped mt-5 table-wrapper">
-                    <thead>
-                        <tr>
-                            <th scope="col"  id="loco"></th>
-                            <th scope="col" class="col-7 v-center"></th>
-                            <th scope="col" class="col-7 v-center"></th>
-                            <th scope="col" class="text-center" colspan="2">ENE</th>
-                            <th scope="col" class="text-center" colspan="2">FEB</th>
-                            <th scope="col" class="text-center" colspan="2">MAR</th>
-                            <th scope="col" class="text-center" colspan="2">ABRIL</th>
-                            <th scope="col" class="text-center" colspan="2">MAY</th>
-                            <th scope="col" class="text-center" colspan="2">JUN</th>
-                            <th scope="col" class="text-center" colspan="2">JUL</th>
-                            <th scope="col" class="text-center" colspan="2">AGO</th>
-                            <th scope="col" class="text-center" colspan="2">SEP</th>
-                            <th scope="col" class="text-center" colspan="2">OCT</th>
-                            <th scope="col" class="text-center" colspan="2">NOV</th>
-                            <th scope="col" class="text-center" colspan="2">DIC</th>
-                            <th scope="col" class="col-7 v-center"></th>
-
-                        </tr>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th>FUNCION</th>
-                            <th>PROCEDIMIENTO</th>
-                            @for ($i = 1; $i <= 12; $i++)
-                                <th scope="col" class="text-center">
-                                    <div class="diagonal mt--2">
-                                        <span class="letter small">M</span>
-                                        <span class="letter small ml-1">e</span>
-                                        <span class="letter small">t</span>
-                                        <span class="letter small">a</span>
-                                    </div>
-                                </th>
-                                <th scope="col" class="text-center">
-                                    <div class="diagonal">
-                                        <span class="letter small">A</span>
-                                        <span class="letter small">v</span>
-                                        <span class="letter small">a</span>
-                                        <span class="letter small">n</span>
-                                        <span class="letter small">c</span>
-                                        <span class="letter small">e</span>
-                                    </div>
-                                </th>
-                            @endfor
-                            <th>OBSERVACIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                            <tr>
-                                <td scope="row">1</td>
-                                <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy</td>
-                                <td>making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney</td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                            </tr>
-                            <tr>
-                                <td scope="row">2</td>
-                                <td></td>
-                                <td>when an unknown printer took a galley of type and scrambled it to make a type specimen book.</td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td><input type="text" value="0" required maxlength="4"></td>
-                                <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                            </tr>
-                    </tbody>
-                </table>
-              </div> --}}
-              {{-- tabla --}}
 
         </div>
     </div>

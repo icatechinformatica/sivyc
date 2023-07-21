@@ -39,6 +39,7 @@ class grupoController extends Controller
             $this->path_files = env("APP_URL").'/storage/uploadFiles';
 
             $this->data = $this->unidades_user('vincula');  //vincula
+            $this->admin =  $this->unidades_user('admin'); //admin
             $_SESSION['unidades'] =  $this->data['unidades'];
 
             return $next($request);
@@ -47,7 +48,6 @@ class grupoController extends Controller
 
     public function index(Request $request)
     {
-
         $curso = $cursos = $localidad  = $alumnos = $instructores = $instructor = [];
         $es_vulnerable = $edicion = false;
         $unidades = $this->data['unidades'];
@@ -135,9 +135,13 @@ class grupoController extends Controller
         $medio_virtual = $this->medio_virtual();
         if (session('message')) $message = session('message');
         $tinscripcion = $this->tinscripcion();
+
+        $id_usuario = null;
+        if($this->admin['slug']) $id_usuario = $this->id_user;
+
         return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'folio_pago', 'fecha_pago',
             'es_vulnerable', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','comprobante','edicion','instructores','instructor',
-            'medio_virtual','grupo'));
+            'medio_virtual','grupo', 'id_usuario'));
     }
 
 
@@ -543,7 +547,7 @@ class grupoController extends Controller
                                         $soportes_instructor = ["domicilio"=>$instructor->domicilio, "archivo_domicilio"=>$instructor->archivo_domicilio,
                                         "archivo_ine"=>$instructor->archivo_ine,"archivo_bancario"=>$instructor->archivo_bancario,"archivo_rfc"=>$instructor->archivo_rfc,
                                         'banco'=>$instructor->banco,'no_cuenta'=>$instructor->no_cuenta,'interbancaria'=>$instructor->interbancaria,'tipo_honorario'=>$instructor->tipo_honorario];
-                                        
+
                                         //Si hay cambios y esta registrado en tbl_cursos se elimina el instructor para validarlo nuevamente
                                         // DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave', '0')->update(['nombre' => null, 'curp' => null, 'rfc' => null]);
                                         $result2 = DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(['folio_grupo' => $_SESSION['folio_grupo']],
@@ -572,7 +576,7 @@ class grupoController extends Controller
                                             DB::table('agenda')->where('id_curso', $folio)->delete();
                                             DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
                                         }
-                                        $message = "Operación Exitosa!!"; 
+                                        $message = "Operación Exitosa!!";
                                     }
                                 }
                             } else {
@@ -1381,39 +1385,129 @@ class grupoController extends Controller
         $folio_grupo =  $_SESSION['folio_grupo'];
 
         //Busqueda 1,2,3
-        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico',
+        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino',
         DB::raw("extract(day from fcespe) as diaes, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
-        DB::raw("(hombre + mujer) as totalP"),
-        DB::raw("extract(day from inicio) as diaIni, to_char(inicio, 'TMmonth') as mesIni, extract(year from inicio) as anioIni"),
-        DB::raw("extract(day from termino) as diaFin, to_char(termino, 'TMmonth') as mesFin, extract(year from termino) as anioFin"))
-        ->where('folio_grupo','=',"$folio_grupo")->first();
-
-
-        //busqueda 4
-        $data2 = DB::table('tbl_unidades as u')->select('dunidad', 'delegado_administrativo', 'pdelegado_administrativo', 'academico', 'pacademico', 'vinculacion', 'pvinculacion')
-        ->Join('tbl_cursos as c', 'u.unidad', 'c.unidad')
-        ->where('c.folio_grupo', $folio_grupo)->first();
-
-        //Busqueda 6
-        $data3 = DB::table('alumnos_registro as ar')->select('ar.nombre', 'ar.apellido_paterno', 'ar.apellido_materno', 'ar.folio_grupo', 'ar.costo', 'ar.curp', 'a.correo')
-        ->Join('alumnos_pre as a', 'a.curp', 'ar.curp')
-        ->where('folio_grupo','=',"$folio_grupo")->get();
-
-        $pdf = PDF::loadView('reportes.acta_acuerdo_registro_grupo',compact('data1', 'data2','data3'));
-        $pdf->setPaper('A4', 'portrait');
-        return $pdf->stream('Acta_Acuerdo');
-    }
-    public function pdf_convenio(){
-        $folio_grupo =  $_SESSION['folio_grupo'];
-
-        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'dura', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'tcapacitacion', 'cespecifico', 'depen', 'costo', 'inicio', 'termino', 'observaciones',
-        DB::raw("extract(day from fcespe) as dia, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
+        DB::raw("(hombre + mujer) as totalp"),
         DB::raw("extract(day from inicio) as diaini, to_char(inicio, 'TMmonth') as mesini, extract(year from inicio) as anioini"),
         DB::raw("extract(day from termino) as diafin, to_char(termino, 'TMmonth') as mesfin, extract(year from termino) as aniofin"))
         ->where('folio_grupo','=',"$folio_grupo")->first();
 
 
-        $data2 = DB::table('tbl_unidades as u')->select('dunidad', 'pdunidad', 'dgeneral', 'direccion',  'academico', 'pacademico', 'vinculacion', 'pvinculacion')
+        //busqueda 4
+        $data2 = DB::table('tbl_unidades as u')->select('dunidad', 'delegado_administrativo', 'pdelegado_administrativo', 'academico', 'pacademico', 'vinculacion', 'pvinculacion', 'direccion')
+        ->Join('tbl_cursos as c', 'u.unidad', 'c.unidad')
+        ->where('c.folio_grupo', $folio_grupo)->first();
+
+        //Busqueda 6
+        $data3 = DB::table('alumnos_registro as ar')->select('ar.nombre', 'ar.apellido_paterno', 'ar.apellido_materno', 'ar.folio_grupo', 'ar.costo', 'ar.curp', 'a.correo', 'a.telefono_personal', 'a.medio_confirmacion')
+        ->Join('alumnos_pre as a', 'a.curp', 'ar.curp')
+        ->where('folio_grupo','=',"$folio_grupo")->get();
+
+        $direccion = $data2->direccion;
+
+
+        $pdf = PDF::loadView('reportes.acta_acuerdo_registro_grupo',compact('data1', 'data2','data3', 'direccion'));
+        // $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Acta_Acuerdo');
+    }
+    public function pdf_convenio(Request $request){
+        $folio_grupo =  $_SESSION['folio_grupo'];
+        $convenio_esp = DB::table('tbl_cursos')->select('cespecifico', 'firma_user', 'firma_cerss_one', 'firma_cerss_two')->where('folio_grupo','=',"$folio_grupo")->first();
+        $conv_especifico = $convenio_esp->cespecifico;
+
+        $bd_firm_user = $convenio_esp->firma_user; $bd_firm_cer1 = $convenio_esp->firma_cerss_one; $bd_firm_cer2 = $convenio_esp->firma_cerss_two;
+
+        #OBTENEMOS VALORES DE FIRMA 1 O EN CASO DE ESTAR ACIVO CERSS SERIA DE LOS DOS CAMPOS EXTRA
+        $valid_cerss = $request->valid_cerss;
+        $campo_fir = $request->firma;
+        $campo_firm1_cer = $request->firmaone;
+        $campo_firm2_cer = $request->firmatwo;
+
+        $part_firm_cer1 = $part_firm_cer2 = $part_firm_user = null;
+
+        // dd($request->all());
+        if($valid_cerss){
+            #validamos los campos si contienen datos
+            if($campo_firm1_cer != '' || $campo_firm2_cer != ''){
+                #partimos el texto del campo a partir de la coma
+                if($campo_firm1_cer != '')$part_firm_cer1 = explode(",", $campo_firm1_cer);
+                $part_firm_cer2 = explode(",", $campo_firm2_cer);
+
+                if($campo_firm1_cer != $bd_firm_cer1 || $campo_firm2_cer != $bd_firm_cer2){
+                    #guardamos los datos de los campos cerss
+                    DB::table('tbl_cursos')->where('cespecifico', $conv_especifico)
+                    ->update(['firma_cerss_one' => $campo_firm1_cer, 'firma_cerss_two' => $campo_firm2_cer]);
+                }
+            }else{
+                if($bd_firm_cer1 != null && $bd_firm_cer2 != null){
+                    DB::table('tbl_cursos')->where('cespecifico', $conv_especifico)
+                    ->update(['firma_cerss_one' => null, 'firma_cerss_two' => null]);
+                }
+            }
+
+        }else{
+            #validamos el campo si contiene dato
+            if($campo_fir != ''){
+                #partimos el texto a traves de la coma
+                $part_firm_user = explode(",", $campo_fir);
+                if($campo_fir != $bd_firm_user){
+                    #guardamos el datos del campo firma
+                    DB::table('tbl_cursos')->where('cespecifico', $conv_especifico)
+                    ->update(['firma_user' => $campo_fir]);
+                }
+            }else{
+                if($bd_firm_user != null){
+                    DB::table('tbl_cursos')->where('cespecifico', $conv_especifico)
+                    ->update(['firma_user' => null]);
+                }
+            }
+        }
+
+        #Consultamos los cursos vinculados con la clave de convenio
+        $allcourses = DB::table('tbl_cursos')->select( 'curso', 'costo', 'dura', 'hini', 'hfin', 'cespecifico', 'observaciones', 'folio_grupo', 'inicio', 'termino',
+        DB::raw("extract(day from fcespe) as diaconvenio, to_char(fcespe, 'TMmonth') as mesconvenio, extract(year from fcespe) as anioconvenio"),
+        DB::raw("extract(day from inicio) as diainic, extract(month from inicio) as mesinic, extract(year from inicio) as anioinic"),
+        DB::raw("extract(day from termino) as diafinc, extract(month from termino) as mesfinc, extract(year from termino) as aniofinc"))
+        ->where('cespecifico','=',"$conv_especifico")->get();
+
+        // dd($allcourses);
+
+        // dd($allcourses);
+        $array_folios = array();
+        for ($i=0; $i < count($allcourses); $i++) {
+            $folio = '';
+            $folio = $allcourses[$i]->folio_grupo;
+            $chainstr = substr($folio, 5, 4);
+            $intchain = intval($chainstr) * 1;
+            array_push($array_folios, $intchain);
+        }
+
+        #consulta con cerss y sin cerss
+        if($valid_cerss){
+            $data1 = DB::table('tbl_cursos as cur')->select( 'cur.muni', 'cur.fcespe', 'cur.dura', 'cur.unidad', 'cur.dia as letradia',
+            'cur.hini', 'cur.hfin', 'cur.tcapacitacion', 'cur.nombre', 'cur.curso', 'cur.cespecifico',
+            'cur.depen', 'cur.costo', 'cur.inicio', 'cur.termino', 'cur.observaciones','cur.id_cerss','cer.nombre as cernombre',
+            'cer.direccion as cerdirecc', 'cur.instructor_mespecialidad', 'cur.depen_representante',
+            DB::raw("extract(day from fcespe) as dia, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
+            DB::raw("(hombre + mujer) as totalp"),
+            DB::raw("extract(day from inicio) as diaini, to_char(inicio, 'TMmonth') as mesini, extract(year from inicio) as anioini"),
+            DB::raw("extract(day from termino) as diafin, to_char(termino, 'TMmonth') as mesfin, extract(year from termino) as aniofin"))
+            ->Join('cerss as cer', 'cer.id', 'cur.id_cerss')
+            ->where('cur.folio_grupo','=',"$folio_grupo")->first();
+        }else{
+            $data1 = DB::table('tbl_cursos as cur')->select( 'cur.muni', 'cur.fcespe', 'cur.dura', 'cur.unidad', 'cur.dia',
+            'cur.hini', 'cur.hfin', 'cur.tcapacitacion', 'cur.nombre', 'cur.curso', 'cur.tcapacitacion', 'cur.cespecifico',
+            'cur.depen', 'cur.costo', 'cur.inicio', 'cur.termino', 'cur.observaciones','cur.id_cerss', 'cur.instructor_mespecialidad',
+            'cur.depen_representante',
+            DB::raw("extract(day from fcespe) as dia, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
+            DB::raw("(hombre + mujer) as totalp"),
+            DB::raw("extract(day from inicio) as diaini, to_char(inicio, 'TMmonth') as mesini, extract(year from inicio) as anioini"),
+            DB::raw("extract(day from termino) as diafin, to_char(termino, 'TMmonth') as mesfin, extract(year from termino) as aniofin"))
+            ->where('cur.folio_grupo','=',"$folio_grupo")->first();
+        }
+
+
+        $data2 = DB::table('tbl_unidades as u')->select('dunidad', 'pdunidad', 'dgeneral', 'direccion',  'academico', 'pacademico', 'vinculacion', 'pvinculacion', 'direccion')
         ->Join('tbl_cursos as c', 'u.unidad', 'c.unidad')
         ->where('c.folio_grupo', $folio_grupo)->first();
 
@@ -1421,6 +1515,8 @@ class grupoController extends Controller
         $data3 = DB::table('organismos_publicos as u')->select('nombre_titular', 'direccion', 'logo_instituto', 'siglas_inst', 'cargo_fun', 'poder_pertenece')
         ->Join('tbl_cursos as c', 'u.organismo', 'c.depen')
         ->where('c.folio_grupo', $folio_grupo)->first();
+
+        $direccion = $data2->direccion;
 
         #validar si la image es de internet o del servidor utilizado
         $diferencia = '';
@@ -1433,9 +1529,75 @@ class grupoController extends Controller
             }
         }
 
+        // dd($part_firm_cer1, $part_firm_cer2, $part_firm_user);
 
-        $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3', 'diferencia'));
+        $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3', 'diferencia', 'part_firm_cer1', 'part_firm_cer2', 'part_firm_user', 'allcourses', 'array_folios', 'direccion'));
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Convenio');
+    }
+
+    /** Funcion para subir pdf al servidor
+     * @param string $pdf, $id (convenio especifico), $nom
+     */
+    protected function pdf_upload($pdf, $id, $nom)
+    {
+        # nuevo nombre del archivo
+        $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
+        $pdf->storeAs('/uploadFiles/acuerdoconvenios/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/acuerdoconvenios/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return [$pdfUrl, $pdfFile];
+    }
+
+    public function pdf_acta_firm(Request $request) {
+        $folio_grupo =  $_SESSION['folio_grupo'];
+        $convenio_esp = DB::table('tbl_cursos')->select('cespecifico')->where('folio_grupo','=',"$folio_grupo")->first();
+        $cadena_conv = $convenio_esp->cespecifico;
+        $cadenaSinGuiones = str_replace("-", "", $cadena_conv);
+        $mensaje = '';
+
+        if($request->hasFile('archivoPDF')){
+            if($request->acciondoc == 'libre'){}
+            else if($request->acciondoc == 'reemplazar'){
+                $filePath = 'uploadFiles/acuerdoconvenios/'.$cadenaSinGuiones.'/'.$request->nomDoc;
+                if (Storage::exists($filePath)) {
+                    Storage::delete($filePath);
+                    $mensaje = "ingreso a eliminar";
+                } else { return response()->json(['status' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
+            }
+            $doc = $request->file('archivoPDF'); # obtenemos el archivo
+            $urldoc = $this->pdf_upload($doc, $cadenaSinGuiones, 'actafirmado'); # invocamos el método
+            DB::table('tbl_cursos')->where('cespecifico', $cadena_conv)->update(['url_pdf_acta' => $urldoc[0]]);
+            $mensaje = "ARCHIVO CARGADO CORRECTAMENTE";
+
+
+        }else{ $mensaje = "ERROR AL SUBIR EL DOCUMENTO!"; }
+        return response()->json(['status' => 200, 'mensaje' => $mensaje]);
+    }
+
+    public function pdf_conv_firm(Request $request) {
+        $folio_grupo =  $_SESSION['folio_grupo'];
+        $convenio_esp = DB::table('tbl_cursos')->select('cespecifico')->where('folio_grupo','=',"$folio_grupo")->first();
+        $cadena_conv = $convenio_esp->cespecifico;
+        $cadenaSinGuiones = str_replace("-", "", $cadena_conv);
+        $mensaje = '';
+
+        if($request->hasFile('archivoPDF')){
+            if($request->acciondoc == 'libre'){}
+            else if($request->acciondoc == 'reemplazar'){
+                $filePath = 'uploadFiles/acuerdoconvenios/'.$cadenaSinGuiones.'/'.$request->nomDoc;
+                if (Storage::exists($filePath)) {
+                    Storage::delete($filePath);
+                    $mensaje = "ingreso a eliminar";
+                } else { return response()->json(['status' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
+            }
+
+            $doc = $request->file('archivoPDF'); # obtenemos el archivo
+            $urldoc = $this->pdf_upload($doc, $cadenaSinGuiones, 'conveniofirmado'); # invocamos el método
+            DB::table('tbl_cursos')->where('cespecifico', $cadena_conv)->update(['url_pdf_conv' => $urldoc[0]]);
+            $mensaje = "Archivo cargado correctamente";
+
+
+        }else{ $mensaje = "ERROR AL SUBIR EL DOCUMENTO!"; }
+        return response()->json(['status' => 200, 'mensaje' => $mensaje]);
     }
 }
