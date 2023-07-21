@@ -189,6 +189,23 @@
                         <label><input type="checkbox" value="cerss" id="cerss_ok" @if($id_cerss){{'checked'}}@endif>&nbsp;&nbsp;CERSS</label>
                         {{ Form::select('cerss', $cerss, $id_cerss, ['id'=>'cerss','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
                     </div>
+                    {{-- Jose Luis Moreno / Agregar campo de firmante  --}}
+                    {{-- Normal --}}
+                    <div class="form-group col-md-4 {{$id_cerss ? 'd-none' : ''}}" id="firma1_n">
+                        <label for="firmante">NOMBRE DEL FIRMANTE DE CONVENIO</label>
+                        <input type="text" class="form-control" name="firma" value="{{$grupo->firma_user}}" placeholder="NOMBRE COMPLETO, DEPENDENCIA, CARGO">
+                    </div>
+                    {{-- Con cerss --}}
+                    <div class="form-group col-md-4 {{$id_cerss ? '' : 'd-none'}}" id="firma2_n">
+                        <label for="firmante">NOMBRE 1 DEL FIRMANTE DE CONVENIO</label>
+                        <input type="text" class="form-control" name="firmaone" value="{{$grupo->firma_cerss_one}}" placeholder="NOMBRE COMPLETO, CARGO, DEPENDENCIA">
+                    </div>
+                    <div class="form-group col-md-4 {{$id_cerss ? '' : 'd-none'}}" id="firma3_n">
+                        <label for="firmante">NOMBRE 2 DEL FIRMANTE DE CONVENIO</label>
+                        <input type="text" class="form-control" name="firmatwo" value="{{$grupo->firma_cerss_two}}" placeholder="NOMBRE COMPLETO, CARGO, DEPENDENCIA">
+                    </div>
+                    <input type="hidden" name="valid_cerss" value="{{$id_cerss}}">
+
                     <div class="form-group col-md-4">
                         <label>INSTRUCTOR DISPONIBLE:</label>
                         <select name="instructor" id="instructor" class="form-control mr-sm--2">
@@ -615,6 +632,142 @@
                 }
                 return date;
             }
+
+            //Mostrar campos de firmas de acuerdo al check
+            $("#cerss_ok").click(function() {
+                let isChecked = $(this).is(":checked");
+                if (isChecked) {
+                    $("#firma2_n").removeClass("d-none");
+                    $("#firma3_n").removeClass("d-none");
+                    $("#firma1_n").addClass("d-none");
+                } else {
+                    $("#firma2_n").addClass("d-none");
+                    $("#firma3_n").addClass("d-none");
+                    $("#firma1_n").removeClass("d-none");
+                }
+            });
+
+            //Jose Luis Moreno Arcos funciones para subir y cargar pdf
+
+            function cargarNomFileActa() {
+                let inputFile = document.getElementById('pdfInputActa');
+                let nomArchivo = inputFile.files[0].name;
+                let labelNomArchivo = document.getElementById('nomPdfActa');
+                labelNomArchivo.value = nomArchivo;
+            }
+
+            function cargarNomFileConvenio() {
+                let inputFile = document.getElementById('pdfInputConvenio');
+                let nomArchivo = inputFile.files[0].name;
+                let labelNomArchivo = document.getElementById('nomPdfConvenio');
+                labelNomArchivo.value = nomArchivo;
+            }
+
+            //Upload pdf Acta
+            function upPdfActaFirm() {
+                let valorHiden = document.getElementById('url_acta_hiden').value;
+                let nomDoc = '';
+                if (valorHiden !='') {
+                    let partesDoc = valorHiden.split("actafirmado");
+                    nomDoc = 'actafirmado'+partesDoc[1];
+                }
+
+                let accion_doc = "";
+                if (nomDoc !== "") {
+                    if (confirm("YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE ¿DESEAS REEMPLAZAR EL DOCUMENTO CON UNO NUEVO?")) {
+                    // La opción "Aceptar" fue seleccionada
+                        accion_doc = "reemplazar";
+                    } else {
+                    // La opción "Cancelar" fue seleccionada o se cerró el cuadro de diálogo
+                    return;
+                    }
+                }else accion_doc = "libre";
+
+                let inputFile = document.getElementById('pdfInputActa');;
+                if (inputFile.files.length === 0) {
+                    alert("POR FAVOR, SELECCIONA UN ARCHIVO PDF.");
+                    return;
+                }
+
+                let archivo = inputFile.files[0];
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('archivoPDF', archivo);
+                formData.append('acciondoc', accion_doc);
+                formData.append('nomDoc', nomDoc);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('preinscripcion.grupo.firmactapdf') }}",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log(response);
+                        location.reload();
+                        // setTimeout(function() { location.reload(); }, 3000);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr.responseText);
+                        alert("Error al enviar el archivo.");
+                    }
+                });
+
+            }
+            //Upload pdf  Convenio
+            function upPdfConvFirm() {
+                let valorHiden = document.getElementById('url_conv_hiden').value;
+                let nomDoc = '';
+                if (valorHiden !='') {
+                    let partesDoc = valorHiden.split("conveniofirmado");
+                    nomDoc = 'conveniofirmado'+partesDoc[1];
+                }
+
+                let accion_doc = "";
+                if (nomDoc !== "") {
+                    if (confirm("YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE ¿DESEAS REEMPLAZAR EL DOCUMENTO CON UNO NUEVO?")) {
+                    // La opción "Aceptar" fue seleccionada
+                        accion_doc = "reemplazar";
+                    } else {return;}
+                }else accion_doc = "libre";
+
+                let inputFile = document.getElementById('pdfInputConvenio');;
+                if (inputFile.files.length === 0) {
+                    alert("POR FAVOR, SELECCIONA UN ARCHIVO PDF.");
+                    return;
+                }
+
+                let archivo = inputFile.files[0];
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('archivoPDF', archivo);
+                formData.append('acciondoc', accion_doc);
+                formData.append('nomDoc', nomDoc);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('preinscripcion.grupo.firmconvpdf') }}",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        alert(response.mensaje);
+                        location.reload();
+                        // setTimeout(function() { location.reload(); }, 3000);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr.responseText);
+                        alert("Error al enviar el archivo.");
+                    }
+                });
+
+            }
+
+
+
+
         </script>
     @endsection
 @endsection
