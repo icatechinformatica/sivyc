@@ -1532,7 +1532,7 @@ class grupoController extends Controller
         // dd($part_firm_cer1, $part_firm_cer2, $part_firm_user);
 
         $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3', 'diferencia', 'part_firm_cer1', 'part_firm_cer2', 'part_firm_user', 'allcourses', 'array_folios', 'direccion'));
-        $pdf->setPaper('A4', 'portrait');
+        // $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Convenio');
     }
 
