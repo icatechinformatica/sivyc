@@ -45,7 +45,7 @@ class AlumnoRegistradoController extends Controller
                     'alumnos_pre.nombre', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno',
                     'alumnos_registro.no_control', 'alumnos_registro.id AS id_registro',
                     'alumnos_registro.folio_grupo','alumnos_registro.inicio','alumnos_registro.termino',
-                    'alumnos_registro.horario','cursos.nombre_curso', 'alumnos_pre.es_cereso'
+                    'alumnos_registro.horario','cursos.nombre_curso', 'alumnos_pre.es_cereso','tbl_cursos.clave','tbl_folios.folio'
                 ]);
         return view('layouts.pages.alumnos_registrados', compact('alumnos'));
     }

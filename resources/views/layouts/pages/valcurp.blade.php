@@ -20,7 +20,7 @@
         $nombre = $apaterno = $amaterno = $nacionalidad = $telefono_casa = $telefono_cel = $email = $face = $twitter = $instagram = $tiktok = 
         $ecivil = $domicilio = $colonia = $estado = $muni = $localidad = $cp = $etnia = $gvulnerable = $escolaridad = $medio_entero =
         $motivo_eleccion = $empresa_trabaja = $puesto_empresa = $antiguedad = $direccion_empresa = $requisitos = $nexpediente_cerss = $fotografia = null;
-        $publicaciones = $redes = $lgbt = $madre_soltera = $faminmigra = $inmigra = $empleado = $ficha_cerss = $cerss = false;
+        $publicaciones = $redes = $lgbt = $madre_soltera = $faminmigra = $inmigra = $empleado = $ficha_cerss = $cerss = $confirmacion = false;
         if (isset($alumno)) {
             $nombre = $alumno->nombre;
             $apaterno = $alumno->apellido_paterno;
@@ -61,6 +61,7 @@
             if ($alumno->es_cereso) { $cerss = true; }
             $nexpediente_cerss = $alumno->numero_expediente;
             $fotografia = $alumno->fotografia;
+            $confirmacion = $alumno->medio_confirmacion;
         }
     ?>
     <div class="card card-body">
@@ -343,6 +344,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="ultimo_grado_estudios" class="control-label">MEDIO DE CONFIRMACIÓN:</label>
+                            {!! Form::select('medio_confirmacion', $medio_confirmacion, $confirmacion, ['id'=>'medio_confirmacion', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
+                        </div>
+                    </div>
                     <hr style="border-color: dimgray">
                     <div style="text-align: center;">
                         <h4><strong>DATOS DE EMPLEO</strong></h4>
@@ -384,13 +391,13 @@
                         <div class="form-group col-md-6">
                             <table class="table table-striped" style="width: 100%; text-align: left; border-collapse: collapse;">
                                 <tr>
-                                    <td style="width: 20%;">
-                                        <label><input id="chk_acta" name="chk_acta" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_acta_nacimiento) { checked } @endif @endisset/>&nbsp;&nbsp;Acta de Nacimiento</label> 
+                                    <td style="width: 50%;">
+                                        <label><input id="chk_acta" name="chk_acta" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_acta_nacimiento) { checked } @endif @endisset/>&nbsp;&nbsp;ACTA DE NACIMIENTO</label> 
                                     </td>
                                     <td>
-                                        FECHA DE EXPEDICIÓN ACTA DE NACIMIENTO
+                                        FECHA EXPEDICIÓN
                                     </td>
-                                    <td>
+                                    <td style="width: 30%;">
                                         <input type="date" name="fecha_expedicion_acta_nacimiento" class="form-control" id="fecha_expedicion_acta_nacimiento" @isset($requisitos) value="{{$requisitos->fecha_expedicion_acta_nacimiento}}" @endisset>
                                     </td>
                                 </tr>
@@ -399,7 +406,7 @@
                                         <label><input id="chk_curp" name="chk_curp" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_curp) { checked } @endif @endisset/>&nbsp;&nbsp;CURP</label>
                                     </td>
                                     <td>
-                                        FECHA DE EXPEDICIÓN CURP
+                                        FECHA EXPEDICIÓN
                                     </td>
                                     <td>
                                         <input type="date" name="fecha_expedicion_curp" id="fecha_expedicion_curp" class="form-control" @isset($requisitos) value="{{$requisitos->fecha_expedicion_curp}}" @endisset>
@@ -407,15 +414,15 @@
                                 </tr>
                                 <tr>
                                     <td colspan="3">
-                                        <label><input id="chk_escolaridad" name="chk_escolaridad" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_escolaridad) { checked } @endif @endisset/>&nbsp;&nbsp;&Uacute;ltimo Grado de Estudios</label>
+                                        <label><input id="chk_escolaridad" name="chk_escolaridad" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_escolaridad) { checked } @endif @endisset/>&nbsp;&nbsp;&Uacute;LTIMO GRADO DE ESTUDIOS</label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label><input id="chk_comprobante_migratorio" name="chk_comprobante_migratorio" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_comprobante_migracion) { checked } @endif @endisset/>&nbsp;&nbsp;Comprobante Migratorio</label>
+                                        <label><input id="chk_comprobante_migratorio" name="chk_comprobante_migratorio" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_comprobante_migracion) { checked } @endif @endisset/>&nbsp;&nbsp;COMPROBANTE MIGRATORIO</label>
                                     </td>
                                     <td>
-                                        FECHA DE VIGENCIA DE COMPROBANTE MIGRATORIO
+                                       FECHA VIGENCIA
                                     </td>
                                     <td>
                                         <input type="date" name="fecha_vigencia_migratorio" id="fecha_vigencia_migratorio" class="form-control" @isset($requisitos) value="{{$requisitos->fecha_vigencia_migratorio}}" @endisset>
@@ -423,7 +430,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="3">
-                                        <label><input id="chk_ficha_cerss" name="chk_ficha_cerss" type="checkbox" value="true" @if ($ficha_cerss) { checked } @endif/>&nbsp;&nbsp;Ficha Cerss</label>
+                                        <label><input id="chk_ficha_cerss" name="chk_ficha_cerss" type="checkbox" value="true" @if ($ficha_cerss) { checked } @endif/>&nbsp;&nbsp;FICHA CERSS</label>
                                     </td>
                                 </tr>
                             </table>
@@ -480,6 +487,22 @@
     @section('script_content_js')
         <script type="text/javascript">
             $(document).ready(function(){
+                $("#medio_confirmacion" ).change(function(){
+                    switch($("#medio_confirmacion" ).val()){
+                        case "WHATSAPP":
+                            if(!$("#telefono_cel" ).val()) alert("FAVOR DE INGRESAR EL NÚMERO DE CELULAR.")
+                        break;
+                        case "MENSAJE DE TEXTO":
+                            if(!$("#telefono_cel" ).val()) alert("FAVOR DE INGRESAR EL NÚMERO DE CELULAR.")
+                        break;
+                        default:
+                            if(!$("#correo" ).val()) alert("FAVOR DE INGRESAR EL CORREO ELECTRÓNICO.")
+                        break;
+                    }
+                    
+                });
+
+                
                 $("#nuevo").click(function(){ $('#frm2').attr({'action':"{{route('alumnos.valid')}}",'target':'_self'}); $('#frm2').submit(); });
                 $("#update").click(function(){
                     if ($("#frm").valid()) {

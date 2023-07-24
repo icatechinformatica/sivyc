@@ -4,7 +4,7 @@ namespace App\Http\Controllers\reportesController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\facade as PDF;
+use PDF;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

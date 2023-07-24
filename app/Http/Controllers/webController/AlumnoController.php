@@ -52,7 +52,7 @@ class AlumnoController extends Controller {
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
 
-    public function showl(Request $request) {  //vista inscripción aspirante
+    public function showl(Request $request) {  //EN PRODUCCION vista inscripción aspirante
         $curp = $sexo = $fnacimiento = $alumno = null;
         $grado_estudio = $estados = $estado_civil = $etnias = $gvulnerables = $municipios = $localidades = [];
         $curp = $request->busqueda;//dd($request->all());
@@ -90,6 +90,7 @@ class AlumnoController extends Controller {
                 'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
                 'POSTGRADO' => 'POSTGRADO'
             ];
+           
             $estado = DB::table('estados')->select('id','nombre')->get(); 
             foreach($estado as $item){
                 $estados[$item->id] = $item->nombre;
@@ -103,9 +104,9 @@ class AlumnoController extends Controller {
                 $localidades = DB::table('tbl_localidades')->where('id_estado',$alumno->id_estado)->where('clave_municipio', $alumno->clave_municipio)->pluck('localidad', 'clave');
             }
         }
-
+        $medio_confirmacion = ["WHATSAPP"=>"WHATSAPP","MENSAJE DE TEXTO"=>"MENSAJE DE TEXTO","CORREO ELECTRÓNICO"=>"CORREO ELECTRÓNICO","FACEBOOK"=>"FACEBOOK","INSTAGRAM"=>"INSTAGRAM","TWITTER"=>"TWITTER","TELEGRAM"=>"TELEGRAM"];
         return view('layouts.pages.valcurp', compact('curp','sexo','fnacimiento','estados','grado_estudio','estado_civil','etnias','alumno','gvulnerables', 'municipios',
-            'localidades'));
+            'localidades','medio_confirmacion'));
     }
 
     public function showlm(Request $request) { //obtención municipios
@@ -166,9 +167,10 @@ class AlumnoController extends Controller {
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     * 
      */     //insercción de aspiratntes a alumnos_pre//
-    public function store(Request $request) {
-        $curp= trim($request->curp); //dd($request->all());
+    public function store(Request $request) {  // EN PRODUCCION
+        $curp= trim($request->curp); 
         if ($request->trabajo) {
             $empleado = true;
         } else {
@@ -248,7 +250,8 @@ class AlumnoController extends Controller {
             'realizo' => $realizo,
             'iduser_updated' => Auth::user()->id,
             'tiene_documentacion'=> true,
-            'activo' => true
+            'activo' => true,
+            'medio_confirmacion'=>$request->medio_confirmacion
         ]);
         //si se pretende cargar nuevos archivos
         $AspiranteId = DB::table('alumnos_pre')->where('curp',$curp)->where('activo',true)->value('id');
