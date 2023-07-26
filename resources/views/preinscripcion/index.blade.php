@@ -198,11 +198,11 @@
                     {{-- Con cerss --}}
                     <div class="form-group col-md-4 {{$id_cerss ? '' : 'd-none'}}" id="firma2_n">
                         <label for="firmante">NOMBRE 1 DEL FIRMANTE DE CONVENIO</label>
-                        <input type="text" class="form-control" name="firmaone" value="{{$grupo->firma_cerss_one}}" placeholder="NOMBRE COMPLETO, CARGO, DEPENDENCIA">
+                        <input type="text" class="form-control" name="firmaone" value="{{$grupo->firma_cerss_one}}" placeholder="NOMBRE COMPLETO, PUESTO, CARGO">
                     </div>
                     <div class="form-group col-md-4 {{$id_cerss ? '' : 'd-none'}}" id="firma3_n">
                         <label for="firmante">NOMBRE 2 DEL FIRMANTE DE CONVENIO</label>
-                        <input type="text" class="form-control" name="firmatwo" value="{{$grupo->firma_cerss_two}}" placeholder="NOMBRE COMPLETO, CARGO, DEPENDENCIA">
+                        <input type="text" class="form-control" name="firmatwo" value="{{$grupo->firma_cerss_two}}" placeholder="NOMBRE COMPLETO, PUESTO, CARGO">
                     </div>
                     <input type="hidden" name="valid_cerss" value="{{$id_cerss}}">
 
@@ -648,7 +648,7 @@
                 }
             });
 
-            //Jose Luis Moreno Arcos funciones para subir y cargar pdf
+            //Jose Luis Moreno Arcos / funciones para subir y cargar pdf
 
             function cargarNomFileActa() {
                 let inputFile = document.getElementById('pdfInputActa');

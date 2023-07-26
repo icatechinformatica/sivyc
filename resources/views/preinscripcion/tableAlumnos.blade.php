@@ -82,36 +82,40 @@
     @endif
   </tbody>
 </table>
-<div class="col-md-12 text-right">
-  @if ($grupo)
-    <button id="btnShowCalendar" type="button" class="btn btn-info">AGENDAR</button>
 
-    @can('agenda.vinculacion' || $id_usuario != null)
-        @if ($grupo->cespecifico)
-                <button type="button" class="btn" id="gen_acta_acuerdo">ACTA DE ACUERDO</button>
-                <button type="button" class="btn" id="gen_convenio_esp">CONVENIO</button>
-        @endif
-         <button type="button" class="btn" id="gape">GENERAR SOLICITUD</button>
-    @endcan
-    <button type="button" class="btn" id="generar">GENERAR LISTA</button>
-  @endif
-  <button type="button" class="btn" id="nuevo" >NUEVO</button> &nbsp;&nbsp;
 
-  @if($activar AND $folio_grupo)
-    <button type="submit" class="btn" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;
-    <button type="button" class="btn bg-danger " id="turnar" >ENVIAR A LA UNIDAD >> </button>
-  @endif
+<div class="d-flex flex-lg-row flex-column col-12 col-lg-12 justify-content-end">
+    @if ($grupo)
+        <button id="btnShowCalendar" type="button" class="btn btn-info mt-1 btn-lg">AGENDAR</button>
+        @can('agenda.vinculacion' || $id_usuario != null)
+            @if ($grupo->cespecifico)
+                    <button type="button" class="btn mt-1 btn-lg" id="gen_acta_acuerdo">ACTA DE ACUERDO</button>
+                    <button type="button" class="btn mt-1 btn-lg" id="gen_convenio_esp">CONVENIO</button>
+            @endif
+            <button type="button" class="btn mt-1 btn-lg" id="gape">GENERAR SOLICITUD</button>
+        @endcan
+        <button type="button" class="btn mt-1 btn-lg" id="generar">GENERAR LISTA</button>
+    @endif
+
+    <button type="button" class="btn mt-1 btn-lg" id="nuevo" >NUEVO</button> &nbsp;&nbsp;
+
+    @if($activar AND $folio_grupo)
+        <button type="submit" class="btn mt-1 btn-lg" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;
+        <button type="button" class="btn mt-1 btn-lg bg-danger " id="turnar" >ENVIAR A LA UNIDAD >> </button>
+    @endif
 </div>
+
+
 {{-- Agregamos el apartado de subir PDF Jose Luis Moreno Arcos--}}
 <br>
-<div class="col-4 mb-1">
+<div class="col-12 col-lg-4 mt-3 mt-lg-0 mb-lg-1 ml-lg-4 text-center text-lg-left">
     <b class="">SUBIR DOCUMENTOS FIRMADOS</b>
 </div>
-<div class="col-12 d-flex row">
+<div class="col-12 d-flex flex-lg-column">
     <div class="col-12">
-        <div class="col-4 row mb-1">
+        <div class="col-12 col-lg-4 d-flex flex-row mb-1 px-0">
             <form method="POST" class="" enctype="multipart/form-data" action="" id="doc_acta">
-                <div class="ml-1">
+                <div class="">
                     <input type="file" id="pdfInputActa" accept=".pdf" style="display: none;" onchange="cargarNomFileActa()">
                     <input class="form-control py-2 mt-1" type="text" id="nomPdfActa" onclick="document.getElementById('pdfInputActa').click()" placeholder="PDF Acta de acuerdo">
                 </div>
@@ -124,7 +128,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-4 row mb-0 ml-1">
+        <div class="col-12 col-lg-4 d-flex flex-row mb-0">
             <form method="POST" class="d-flex row" enctype="multipart/form-data" action="" id="doc_convenio">
                 <div class="">
                     <input type="file" id="pdfInputConvenio" accept=".pdf" style="display: none;" onchange="cargarNomFileConvenio()">
@@ -180,111 +184,4 @@
   </div>
 </div>
 
-{{-- @section('script_content_js')
-    <script language="javascript">
-        function cargarNomFileActa() {
-            let inputFile = document.getElementById('pdfInputActa');
-            let nomArchivo = inputFile.files[0].name;
-            let labelNomArchivo = document.getElementById('nomPdfActa');
-            labelNomArchivo.value = nomArchivo;
-        }
 
-        function cargarNomFileConvenio() {
-            let inputFile = document.getElementById('pdfInputConvenio');
-            let nomArchivo = inputFile.files[0].name;
-            let labelNomArchivo = document.getElementById('nomPdfConvenio');
-            labelNomArchivo.value = nomArchivo;
-        }
-        function upPdfActaFirm (event, nomDoc){
-                event.preventDefault();
-                if (nomDoc !== "") {
-                    if (confirm("YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE ¿DESEAS REEMPLAZAR EL DOCUMENTO CON UNO NUEVO?")) {
-                    // La opción "Aceptar" fue seleccionada
-                        accion_doc = "reemplazar";
-                    } else {
-                    // La opción "Cancelar" fue seleccionada o se cerró el cuadro de diálogo
-                    return;
-                    }
-                }else accion_doc = "libre";
-
-
-                let inputFile = document.getElementById('pdfInputActa');
-                if (inputFile.files.length === 0) {
-                    alert("POR FAVOR, SELECCIONA UN ARCHIVO PDF.");
-                    return;
-                }
-
-                let archivo = inputFile.files[0];
-                let formData = new FormData();
-                formData.append('_token', '{{ csrf_token() }}');
-                formData.append('archivoPDF', archivo);
-                formData.append('acciondoc', accion_doc);
-                formData.append('nomDoc', nomDoc);
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('preinscripcion.grupo.firmacta_pdf') }}",
-                    data: formData,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        alert(response.mensaje);
-                        location.reload();
-                        // setTimeout(function() { location.reload(); }, 3000);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log(xhr.responseText);
-                        alert("Error al enviar el archivo.");
-                    }
-                });
-
-        }
-
-        function upPdfConvFirm (event, nomDoc){
-                event.preventDefault();
-                if (nomDoc !== "") {
-                    if (confirm("YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE ¿DESEAS REEMPLAZAR EL DOCUMENTO CON UNO NUEVO?")) {
-                    // La opción "Aceptar" fue seleccionada
-                        accion_doc = "reemplazar";
-                    } else {
-                    // La opción "Cancelar" fue seleccionada o se cerró el cuadro de diálogo
-                    return;
-                    }
-                }else accion_doc = "libre";
-
-
-                let inputFile = document.getElementById('pdfInputConvenio');
-                if (inputFile.files.length === 0) {
-                    alert("POR FAVOR, SELECCIONA UN ARCHIVO PDF.");
-                    return;
-                }
-
-                let archivo = inputFile.files[0];
-                let formData = new FormData();
-                formData.append('_token', '{{ csrf_token() }}');
-                formData.append('archivoPDF', archivo);
-                formData.append('acciondoc', accion_doc);
-                formData.append('nomDoc', nomDoc);
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('preinscripcion.grupo.firmconv_pdf') }}",
-                    data: formData,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        alert(response.mensaje);
-                        location.reload();
-                        // setTimeout(function() { location.reload(); }, 3000);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log(xhr.responseText);
-                        alert("Error al enviar el archivo.");
-                    }
-                });
-
-        }
-    </script>
-@endsection --}}

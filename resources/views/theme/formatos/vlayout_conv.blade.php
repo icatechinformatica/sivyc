@@ -45,6 +45,9 @@
             color:#FFF;
             font-weight: bold;
             line-height: 1;
+            width: 240px;
+            margin-top: 5px;
+            margin-left: 2px;
     }
     </style>
     @yield("css")
@@ -59,7 +62,10 @@
             <img style=" position: absolute;" src='img/formatos/footer_horizontal.jpeg' width="100%">
             {{-- <p class="direccion">@yield('footer')</p> --}}
             @php $direccion = explode("*", $direccion);  @endphp
-            <p class='direccion' style="width: 80%; margin: 0 auto;"><b>@foreach($direccion as $point => $ari)@if($point != 0) <br> @endif {{$ari}}@endforeach</b></p>
+            {{-- <p class='direccion' style="width: 80%; margin: 0 auto;"><b>@foreach($direccion as $point => $ari)@if($point != 0) <br> @endif {{$ari}}@endforeach</b></p> --}}
+            <div align="justify" class="direccion">
+                @foreach($direccion as $point => $ari){{$ari.' '}}@endforeach
+            </div>
         </div>
     </footer>
 
