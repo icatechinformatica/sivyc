@@ -163,13 +163,6 @@
         @endif
 @endsection
 
-{{-- @section('footer')
-    <span>
-        14 Poniente Norte No. 239 Colonia Moctezuma <br>
-        Tuxtla Gutiérrez, CP 29030 Télefono: +52 (961) 61-2-16-21 <br>
-        email: icatech@icatech.gob.mx
-    </span>
-@endsection --}}
 
 @section('body')
     <div class="contenedor">
@@ -202,7 +195,7 @@
                     DE {{$pdunidad}} {{$unidad}} Y POR LA OTRA PARTE EL (LA), {{$depen}}, REPRESENTADO POR EL (LA)
                     <span class="color_dina negrita">{{$nombre_titular}}</span>,
                     @if ($part_firm_cer1 != null && count($part_firm_cer1) == 3)
-                        QUIEN EN ESTE ACTO LO REPRESENTA EL (LA) <span class="color_dina negrita">{{$part_firm_cer1[0]}}</span> {{$part_firm_cer1[2]}}
+                        QUIEN EN ESTE ACTO LO REPRESENTA EL (LA) <span class="color_dina negrita">{{$part_firm_cer1[1].' '.$part_firm_cer1[0]}}</span> {{$part_firm_cer1[2]}}
                     @else
                         {{$cargo_fun}}
                     @endif
@@ -219,7 +212,7 @@
                     EL(LOS) CURSO(S) DENOMINADO(S),
                     <span class="color_dina negrita">"
                         @foreach ($allcourses as $index => $curso)
-                            {{$index+1 < count($allcourses) ? $curso->curso.', ' : $curso->curso}}
+                            {{$index+1 < count($allcourses) ? $curso->curso.', ' : $curso->curso.'"'}}
                         @endforeach
                     "</span>
                     QUE CELEBRAN POR UNA PARTE EL
@@ -257,7 +250,7 @@
             </div>
             <br>
             <div align="justify" style="font-size:12px;" class="estilo_p">
-                I.1     ES UN ORGANISMO DESCENTRALIZADO DE LA ADMINISTRACIÓN PÚBLICA
+                <b>I.1</b>     ES UN ORGANISMO DESCENTRALIZADO DE LA ADMINISTRACIÓN PÚBLICA
                 ESTATAL CON PERSONALIDAD JURÍDICA Y PATRIMONIO PROPIO, CONFORME A LO DISPUESTO
                 EN EL ARTÍCULO 1 DEL DECRETO NÚMERO 182, PUBLICADO EN EL PERIÓDICO OFICIAL
                 NÚMERO 032, DE FECHA 26 DE JULIO DEL AÑO 2000 Y DEL DECRETO NÚMERO 183, POR EL QUE
@@ -269,7 +262,7 @@
             <br>
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 @if ($id_cerss)
-                    I.2 EL (LA) <span class="color_dina negrita">{{$dunidad}}</span>, TIENE PERSONALIDAD JURÍDICA PARA
+                    <b>I.2</b> EL (LA) <span class="color_dina negrita">{{$dunidad}}</span>, TIENE PERSONALIDAD JURÍDICA PARA
                     REPRESENTAR EN ESTE ACTO A <span class="color_dina negrita">“ICATECH”</span>, EN SU CARÁCTER DE
                     <span class="color_dina negrita">{{$pdunidad}} {{$unidad}}</span>, COMO LO ACREDITA CON EL NOMBRAMIENTO EXPEDIDO A SU
                     FAVOR POR LA <span class="color_dina negrita">{{$dgeneral}}</span>, EN SU CARÁCTER DE <span class="color_dina negrita">TITULAR
@@ -278,7 +271,7 @@
                     ARTICULO 42 FRACCIÓN I Y II DEL REGLAMENTO INTERIOR DEL INSTITUTO DE
                     CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS.
                 @else
-                    I.2     CON FUNDAMENTO EN LO DISPUESTO POR EL ARTÍCULO 13 FRACCIÓN IV DEL REGLAMENTO
+                    <b>I.2</b>     CON FUNDAMENTO EN LO DISPUESTO POR EL ARTÍCULO 13 FRACCIÓN IV DEL REGLAMENTO
                     INTERIOR DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE
                     CHIAPAS, PUBLICADO EN EL PERIÓDICO OFICIAL NÚMERO 404, DE FECHA 31 DE OCTUBRE DEL
                     2018 EL (LA) <span class="color_dina">{{$dgeneral}}</span> EN SU CARÁCTER DE DIRECTOR(A)
@@ -290,7 +283,7 @@
             <br>
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 @if ($id_cerss)
-                    I.3 TIENE POR OBJETO IMPARTIR E IMPULSAR LA CAPACITACIÓN PARA EL TRABAJO EN LA
+                    <b>I.3</b> TIENE POR OBJETO IMPARTIR E IMPULSAR LA CAPACITACIÓN PARA EL TRABAJO EN LA
                     ENTIDAD, PROCURANDO LA MEJOR CALIDAD Y VINCULACIÓN DE ESTE SERVICIO CON EL
                     APARATO PRODUCTIVO Y LAS NECESIDADES DE DESARROLLO REGIONAL, ESTATAL Y
                     NACIONAL; PROMOVER LA IMPARTICIÓN DE CURSOS DE CAPACITACIÓN A OBREROS EN
@@ -301,7 +294,7 @@
                     PRIMARIAS, SECUNDARIAS O PREPARATORIAS Y AUMENTAR CON LOS PROGRAMAS DE
                     CAPACITACIÓN EL NIVEL DE PRODUCTIVIDAD DE LOS TRABAJADORES.
                 @else
-                    I.3     EN TÉRMINOS DE LO CITADO EN LA DECLARACIÓN ANTERIOR Y CON FUNDAMENTO EN LO
+                    <b>I.3</b>     EN TÉRMINOS DE LO CITADO EN LA DECLARACIÓN ANTERIOR Y CON FUNDAMENTO EN LO
                     DISPUESTO POR LOS ARTÍCULOS 16 FRACCIÓN XXIV Y 29 FRACCIONES I Y II DEL REGLAMENTO
                     INTERIOR DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE
                     CHIAPAS, A EL (LA) <span class="color_dina negrita">{{$dunidad}}</span>, SE ENCUENTRA
@@ -314,7 +307,7 @@
             <br>
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 @if (!$id_cerss)
-                    I.4     TIENE POR OBJETO IMPARTIR E IMPULSAR LA CAPACITACIÓN PARA EL TRABAJO EN LA ENTIDAD,
+                    <b>I.4</b>     TIENE POR OBJETO IMPARTIR E IMPULSAR LA CAPACITACIÓN PARA EL TRABAJO EN LA ENTIDAD,
                     PROCURANDO LA MEJOR CALIDAD Y VINCULACIÓN DE ESTE SERVICIO CON EL APARATO
                     PRODUCTIVO Y LAS NECESIDADES DE DESARROLLO REGIONAL, ESTATAL Y NACIONAL;
                     PROMOVER LA IMPARTICIÓN DE CURSOS DE CAPACITACIÓN A OBREROS EN MANO DE OBRA
@@ -324,15 +317,16 @@
                     PERSONAS SIN EMPLEO O DISCAPACITADAS, COMO NO EGRESADOS DE PRIMARIAS,
                     SECUNDARIAS O PREPARATORIAS Y AUMENTAR CON LOS PROGRAMAS DE CAPACITACIÓN EL
                     NIVEL DE PRODUCTIVIDAD DE LOS TRABAJADORES.
+                    <br>
                 @endif
             </div>
-            <br>
+
             <div align="justify" style="font-size:12px;" class="estilo_p">
-                I.5     PARA EFECTOS DEL PRESENTE CONVENIO, SEÑALA COMO SU DOMICILIO LEGAL, EL UBICADO
+                <b>I.5</b>     PARA EFECTOS DEL PRESENTE CONVENIO, SEÑALA COMO SU DOMICILIO LEGAL, EL UBICADO
                 {{-- EN LA 14 CALLE PONIENTE NORTE, NÚMERO 239, DE LA COLONIA MOCTEZUMA, C.P.
                 29030, EN LA CIUDAD DE TUXTLA GUTIÉRREZ, CHIAPAS. --}}
-                <span class="color_dina">{{$direccion}}</span>.
-                {{-- checar bien esta parte --}}
+                @php $direccionc = explode("*", $direccion);  @endphp
+                <span class="color_dina">@foreach($direccionc as $point => $ari){{$ari}}@endforeach</span>.
             </div>
             <br>
             <div align="left" style="font-size:12px;">
@@ -345,7 +339,7 @@
             <br>
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 @if ($id_cerss)
-                    II.1 DE CONFORMIDAD CON LO ESTABLECIDO EN LOS ARTÍCULOS 1, 2 FRACCIÓN I, 21, 28
+                    <b>II.1</b> DE CONFORMIDAD CON LO ESTABLECIDO EN LOS ARTÍCULOS 1, 2 FRACCIÓN I, 21, 28
                     FRACCIÓN XV Y 43 FRACCIÓN XVI, DE LA LEY ORGÁNICA DE LA ADMINISTRACIÓN PÚBLICA
                     DEL ESTADO DE CHIAPAS, ARTÍCULOS 1, 2, 4 FRACCIÓN V, IX Y XI Y 5 DE LA LEY QUE
                     ESTABLECE LAS BASES DE OPERACIÓN DE LA SECRETARÍA DE SEGURIDAD Y PROTECCIÓN
@@ -355,7 +349,15 @@
                     CENTRALIZADA DEL EJECUTIVO ESTATAL, CON LAS ATRIBUCIONES QUE LE CONFIEREN
                     DICHOS PROGRESIVOS.
                 @else
-                    II.1    EL (LA) <span class="color_dina negrita">{{$nombre_titular}}</span>, EN SU CARÁCTER DE <span class="color_dina">{{$cargo_fun}}</span> DEL <span class="color_dina">{{$poder_pertenece}}</span>, TIENE PLENA CAPACIDAD
+                    <b>II.1</b>    EL (LA)
+                    @if ($part_firm_user != null && count($part_firm_user) == 3)
+                        <span class="color_dina negrita">{{$part_firm_user[0]}}</span>, EN SU CARÁCTER DE
+                        <span class="color_dina">{{$part_firm_user[2]}},
+                    @else
+                        <span class="color_dina negrita">{{$nombre_titular}}</span>, EN SU CARÁCTER DE
+                        <span class="color_dina">{{$cargo_fun}},
+                    @endif
+                    TIENE PLENA CAPACIDAD
                     JURÍDICA Y VOLUNTAD PARA CELEBRAR Y SUSCRIBIR EL PRESENTE CONVENIO ESPECÍFICO DE
                     PRESTACIÓN DE SERVICIOS EN MATERIA DE CAPACITACIÓN, OBLIGÁNDOSE EN TODOS SUS
                     TÉRMINOS; DE CONFORMIDAD CON LO DISPUESTO EN LOS ARTÍCULOS 18, SEGUNDO PÁRRAFO,
@@ -368,26 +370,35 @@
             <br>
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 @if ($id_cerss)
-                    II.2 <span class="color_dina negrita">
-                    {{$part_firm_cer1 != null && count($part_firm_cer1) == 3 ? $part_firm_cer1[0] : $nombre_titular}}</span>,
-                    {{$part_firm_cer1 != null && count($part_firm_cer1) == 3 ? $part_firm_cer1[2] : $cargo_fun}},
-                    CUENTA CON FACULTADES LEGALES PARA SUSCRIBIR EL PRESENTE CONVENIO ESPECIFICO,
-                    ACREDITANDO SU PERSONALIDAD CON EL NOMBRAMIENTO DE FECHA {{sprintf("%02d", $diace).' DE '.strtoupper($mesce).' DEL '.$anioce}},
-                    EXPEDIDO POR EL (LA) <span class="color_dina">{{$nombre_titular}}</span>,
-                    <span class="color_dina">{{$cargo_fun}}</span>, EN TÉRMINOS DEL
-                    ARTÍCULO 36 FRACCIÓN VI Y 38 FRACCIÓN XXIII, DEL REGLAMENTO DE LA LEY QUE
-                    ESTABLECE LAS BASES DE OPERACIÓN DE LA SECRETARÍA DE SEGURIDAD Y PROTECCIÓN
-                    CIUDADANA DEL ESTADO DE CHIAPAS, TIENE FACULTAD DE SUSCRIBIR EL PRESENTE
-                    INSTRUMENTO LEGAL.
+                    <b>II.2</b> EL (LA)
+                    @if ($part_firm_cer1 != null && count($part_firm_cer1) == 3)
+                        <span class="color_dina negrita">{{$part_firm_cer1[1]}} {{$part_firm_cer1[0]}}</span> {{$part_firm_cer1[2].', '}}
+                        CUENTA CON FACULTADES LEGALES PARA SUSCRIBIR EL PRESENTE CONVENIO ESPECIFICO,
+                        ACREDITANDO SU PERSONALIDAD CON EL NOMBRAMIENTO DE FECHA {{sprintf("%02d", $diace).' DE '.strtoupper($mesce).' DEL '.$anioce}},
+                        EXPEDIDO POR EL (LA) <span class="color_dina">{{$nombre_titular}}</span>,
+                        <span class="color_dina">{{$cargo_fun}}</span>, EN TÉRMINOS DEL
+                        ARTÍCULO 36 FRACCIÓN VI Y 38 FRACCIÓN XXIII, DEL REGLAMENTO DE LA LEY QUE
+                        ESTABLECE LAS BASES DE OPERACIÓN DE LA SECRETARÍA DE SEGURIDAD Y PROTECCIÓN
+                        CIUDADANA DEL ESTADO DE CHIAPAS, TIENE FACULTAD DE SUSCRIBIR EL PRESENTE
+                        INSTRUMENTO LEGAL.
+                    @else
+                    <span class="color_dina negrita">{{$nombre_titular}}</span> {{$cargo_fun.', '}}
+                        TIENE PLENA CAPACIDAD JURÍDICA Y VOLUNTAD PARA CELEBRAR Y SUSCRIBIR EL PRESENTE CONVENIO
+                        ESPECÍFICO DE PRESTACIÓN DE SERVICIOS EN MATERIA DE CAPACITACIÓN, OBLIGÁNDOSE EN TODOS
+                        SUS TÉRMINOS; DE CONFORMIDAD CON LO DISPUESTO EN LOS ARTÍCULOS 18, SEGUNDO PÁRRAFO, DE
+                        LA LEY ORGÁNICA DE LA ADMINISTRACIÓN PÚBLICA DEL ESTADO DE CHIAPAS Y 14, FRACCIÓN VII DEL
+                        REGLAMENTO INTERIOR VIGENTE DE ESTA DEPENDENCIA DEL EJECUTIVO ESTATAL.
+                    @endif
+
                 @else
-                    II.2    SEÑALA COMO SU DOMICILIO PARA EFECTOS DEL PRESENTE CONVENIO, <span class="color_dina">{{$direccion_org}}</span>
+                    <b>II.2</b>    SEÑALA COMO SU DOMICILIO PARA EFECTOS DEL PRESENTE CONVENIO, <span class="color_dina">{{$direccion_org}}</span>
                 @endif
             </div>
             <br>
             {{-- SI ES CERSS SE CREA MAS CONTENIDO PARA EL CONVENIO --}}
             @if ($id_cerss)
                 <div align="justify" style="font-size:12px;" class="estilo_p">
-                    II.3. EL TITULAR DE LA SUBSECRETARÍA DE EJECUCIÓN DE SANCIONES PENALES Y MEDIDAS
+                    <b>II.3.</b> EL TITULAR DE LA SUBSECRETARÍA DE EJECUCIÓN DE SANCIONES PENALES Y MEDIDAS
                     DE SEGURIDAD, EN TÉRMINOS DEL ARTÍCULO 18, DE LA CONSTITUCIÓN POLÍTICA DE LOS
                     ESTADOS UNIDOS MEXICANOS, CONSECUTIVOS 1, FRACCIÓN III, 7 PÁRRAFO QUINTO, 14, 15
                     FRACCIÓN II, 72, 87, 88 Y 95, DE LA LEY NACIONAL DE EJECUCIÓN PENAL, NUMERAL 38,
@@ -400,7 +411,7 @@
                 </div>
                 <br>
                 <div align="justify" style="font-size:12px;" class="estilo_p">
-                    II.4. SU DOMICILIO CONVENCIONAL PARA LOS EFECTOS LEGALES DEL PRESENTE ACTO
+                    <b>II.4.</b> SU DOMICILIO CONVENCIONAL PARA LOS EFECTOS LEGALES DEL PRESENTE ACTO
                     JURÍDICO, SE ENCUENTRA UBICADO <span class="color_dina">{{$direccion_org}}</span>
                     {{-- pendiente --}}
                 </div>
@@ -423,9 +434,10 @@
                     INSTRUMENTO, POR LO QUE MANIFIESTAN SU INTERÉS EN CELEBRARLO PARA CONTRIBUIR A
                     LA REALIZACIÓN DE SUS OBJETIVOS COMUNES MEDIANTE EL INTERCAMBIO DE APOYO
                     ACADÉMICO, LOGÍSTICO Y OPERATIVO, SUJETÁNDOSE PARA TAL EFECTO A LAS SIGUIENTES:
+                    <br>
+                    <br>
                 @endif
             </div>
-            <br>
             <br>
             <div align="center" style="font-size:14px;">
                 <b>C L Á U S U L A S</b>
@@ -447,12 +459,12 @@
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 <b>SEGUNDA.- </b> PARA DAR CUMPLIMIENTO AL OBJETO DEL PRESENTE CONVENIO, <b>“LAS PARTES”</b>
                 CONVIENEN QUE <b>“EL ICATECH”</b> OFRECERÁ A <span class="color_dina negrita">“{{$siglas_inst}}”</span> LOS SERVICIOS DE CAPACITACIÓN
-                CONSISTENTES EN EL CURSO DE:
+                CONSISTENTES EN LOS CURSO DE:
                 <span class="color_dina negrita">“
-                    @foreach ($allcourses as $curso)
-                    {{$curso->curso.', '}}
+                    @foreach ($allcourses as $index => $curso)
+                        {{$index+1 < count($allcourses) ? $curso->curso.', ' : $curso->curso.'"'}}
                     @endforeach
-                ”</span>
+                </span>
                 A TRAVÉS DEL DEPARTAMENTO DE VINCULACIÓN DE LA UNIDAD DE CAPACITACIÓN <span class="color_dina">{{$unidad}}</span>.
             </div>
             <br>
@@ -469,9 +481,9 @@
                     </div>
                 @else
                     <b>TERCERA.- “LAS PARTES”</b> ACUERDAN QUE LA CAPACITACIÓN SE IMPARTIRÁ:
+                    <br>
                 @endif
             </div>
-            <br>
             {{-- tabla --}}
             @if (!$id_cerss)
                 <table class="tablas" border="1">
@@ -521,7 +533,7 @@
             <br>
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 @if ($id_cerss)
-                    <b>QUINTA.– “ICATECH”</b> DESIGNA AL (A LA) <span class="color_dina">C. {{$instructor}}</span> COMO INSTRUCTOR EXTERNO
+                    <b>QUINTA.– “ICATECH”</b> DESIGNA AL (A LA) <span class="color_dina negrita">C. {{$instructor}}</span> COMO INSTRUCTOR EXTERNO
                     PARA IMPARTIR EL CURSO MATERIA DE ESTE CONVENIO, QUIEN CUENTA CON NÚMERO DE
                     VALIDACIÓN MEMORÁNDUM NO. <span class="color_dina negrita">{{$instructor_mespecialidad}}</span> Y EXHIBE DOCUMENTACIÓN
                     CORRESPONDIENTE QUE LO ACRÉDITA Y FACULTA PARA ELLO.
@@ -535,7 +547,7 @@
             <br>
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 @if ($id_cerss)
-                    SEXTA.– LAS “PARTES” CONVIENEN QUE “ICATECH” ABSORBERÁ LOS HONORARIOS DEL
+                    <b>SEXTA.– LAS “PARTES”</b> CONVIENEN QUE “ICATECH” ABSORBERÁ LOS HONORARIOS DEL
                     INSTRUCTOR Y GASTOS DE ADMINISTRACIÓN CORRESPONDIENTES.
                 @else
                     <b>SEXTA-</b> PARA QUE LOS ALUMNOS PROPUESTOS POR <b><span class="color_dina">“{{$siglas_inst}}”</span></b> ESTÉN EN CONDICIONES DE RECIBIR
@@ -732,10 +744,11 @@
             {{-- <br><br><br> --}}
             <br><br>
             {{-- tabla para agregar las firmas --}}
-            <table align="center">
-                <thead>
-                    <tr>
-                        <th colspan="4" style="border: hidden; font-size:12px;" align="center">
+            @if($id_cerss)
+                <table align="center">
+                    <thead>
+                        <tr>
+                            <th colspan="4" style="border: hidden; font-size:12px;" align="center">
 
                                     <br>
                                     <br>_______________________________________
@@ -800,12 +813,12 @@
                     <b>ATRAVES DE LA SUBSECRETARÍA DE EJECUCIÓN DE SANCIONES PENALES Y MEDIDAS DE SEGURIDAD</b>, EN BENEFICIO DEL <span class="color_dina negrita">{{$cernombre}}</span>,
                     EL DÍA <span class="color_dina">{{sprintf("%02d", $diace)}} DEL MES DE {{strtoupper($mesce)}} DEL AÑO {{$anioce}}</span>.,
                     EN LA CIUDAD DE <span class="color_dina">{{$municipio}}</span>, CHIAPAS.
-                    @else
+                @else
                     LAS FIRMAS QUE ANTECEDEN, FORMAN PARTE DEL CONVENIO ESPECÍFICO DE PRESTACIÓN DE
                     SERVICIOS EN MATERIA DE CAPACITACIÓN, DE LOS CURSOS QUE CELEBRAN POR UNA PARTE EL
                     <b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS</b> Y POR LA
                     OTRA PARTE EL (LA) <span class="color_dina negrita">{{$depen}}</span>.
-                    @endif
+                @endif
 
             </div>
         </div>
