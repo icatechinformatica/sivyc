@@ -121,9 +121,9 @@
                 </div>
                 <div class="">
                     <a class="btn px-1 py-1 mr-0" id="btnEnvPdfActa" onclick="upPdfActaFirm()"><i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i></a>
-                    <input type="hidden" name="" id="url_acta_hiden" value="{{$grupo->url_pdf_acta != '' || $grupo->url_pdf_acta != null ? $grupo->url_pdf_acta : ''}}">
-                    @if ($grupo->url_pdf_acta)
-                        <a class="btn px-1 py-1" href="{{$grupo->url_pdf_acta != '' ? $grupo->url_pdf_acta : '#'}}" target="_blank"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
+                    <input type="hidden" name="" id="url_acta_hiden" value="{{$url_pdf_acta != '' || $url_pdf_acta != null ? $url_pdf_acta : ''}}">
+                    @if ($url_pdf_acta)
+                        <a class="btn px-1 py-1" href="{{$url_pdf_acta != '' ? $url_pdf_acta : '#'}}" target="_blank"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
                     @endif
                 </div>
             </form>
@@ -136,9 +136,9 @@
                 </div>
                 <div class="">
                     <a class="btn px-1 py-1 mr-0" id="btnEnvPdfConv" onclick="upPdfConvFirm()"><i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i></a>
-                    <input type="hidden" name="" id="url_conv_hiden" value="{{$grupo->url_pdf_conv != '' || $grupo->url_pdf_conv != null ? $grupo->url_pdf_conv : ''}}">
-                    @if ($grupo->url_pdf_conv)
-                        <a class="btn px-1 py-1" href="{{$grupo->url_pdf_conv != '' ? $grupo->url_pdf_conv : '#'}}" target="_blank"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
+                    <input type="hidden" name="" id="url_conv_hiden" value="{{$url_pdf_conv != '' || $url_pdf_conv != null ? $url_pdf_conv : ''}}">
+                    @if ($url_pdf_conv)
+                        <a class="btn px-1 py-1" href="{{$url_pdf_conv != '' ? $url_pdf_conv : '#'}}" target="_blank"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
                     @endif
                 </div>
             </form>

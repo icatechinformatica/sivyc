@@ -15,7 +15,16 @@
 @section('content')
     <?php
         $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable = $servicio = $nombre_curso = $cespe = $fcespe = $nota =
-        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = $efisico = $mvirtual = $lvirtual = $memo = $repre = $tel = "";    $costo = null;
+        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = $efisico = $mvirtual = $lvirtual = $memo = $repre = $tel =
+        $firm_user = $firm_cerss_one = $firm_cerss_two = $url_pdf_acta = $url_pdf_conv = "";    $costo = null;
+        if ($grupo) {
+            $firm_user = $grupo->firma_user;
+            $firm_cerss_one = $grupo->firma_cerss_one;
+            $firm_cerss_two = $grupo->firma_cerss_two;
+            $url_pdf_acta = $grupo->url_pdf_acta;
+            $url_pdf_conv = $grupo->url_pdf_conv;
+
+        }
         if($curso){
             $id_curso = $curso->id;
             $costo = $curso->costo;
@@ -193,16 +202,16 @@
                     {{-- Normal --}}
                     <div class="form-group col-md-4 {{$id_cerss ? 'd-none' : ''}}" id="firma1_n">
                         <label for="firmante">NOMBRE DEL FIRMANTE DE CONVENIO</label>
-                        <input type="text" class="form-control" name="firma" value="{{$grupo->firma_user}}" placeholder="NOMBRE COMPLETO, DEPENDENCIA, CARGO">
+                        <input type="text" class="form-control" name="firma" value="{{$firm_user}}" placeholder="NOMBRE COMPLETO, DEPENDENCIA, CARGO">
                     </div>
                     {{-- Con cerss --}}
                     <div class="form-group col-md-4 {{$id_cerss ? '' : 'd-none'}}" id="firma2_n">
                         <label for="firmante">NOMBRE 1 DEL FIRMANTE DE CONVENIO</label>
-                        <input type="text" class="form-control" name="firmaone" value="{{$grupo->firma_cerss_one}}" placeholder="NOMBRE COMPLETO, PUESTO, CARGO">
+                        <input type="text" class="form-control" name="firmaone" value="{{$firm_cerss_one}}" placeholder="NOMBRE COMPLETO, PUESTO, CARGO">
                     </div>
                     <div class="form-group col-md-4 {{$id_cerss ? '' : 'd-none'}}" id="firma3_n">
                         <label for="firmante">NOMBRE 2 DEL FIRMANTE DE CONVENIO</label>
-                        <input type="text" class="form-control" name="firmatwo" value="{{$grupo->firma_cerss_two}}" placeholder="NOMBRE COMPLETO, PUESTO, CARGO">
+                        <input type="text" class="form-control" name="firmatwo" value="{{$firm_cerss_two}}" placeholder="NOMBRE COMPLETO, PUESTO, CARGO">
                     </div>
                     <input type="hidden" name="valid_cerss" value="{{$id_cerss}}">
 
