@@ -1566,7 +1566,7 @@ class grupoController extends Controller
             }
             $doc = $request->file('archivoPDF'); # obtenemos el archivo
             $urldoc = $this->pdf_upload($doc, $cadenaSinGuiones, 'actafirmado'); # invocamos el método
-            DB::table('tbl_cursos')->where('cespecifico', $cadena_conv)->update(['url_pdf_acta' => $urldoc[0]]);
+            DB::table('tbl_cursos')->where('folio_grupo', $folio_grupo)->update(['url_pdf_acta' => $urldoc[0]]);
             $mensaje = "ARCHIVO CARGADO CORRECTAMENTE";
 
 
