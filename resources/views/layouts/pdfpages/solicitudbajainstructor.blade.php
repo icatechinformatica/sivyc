@@ -10,12 +10,12 @@
             body{
                 font-family: sans-serif;
                 /* border: 1px solid black; */
-                font-size: 1.3em;
+                font-size: 1.2em;
                 /* margin: 10px; */
             }
             @page {
                 margin: 20px 30px 40px;
-
+                padding: 5px;
             }
             .ftr{
                 position: fixed;
@@ -27,7 +27,7 @@
             header {
             position: fixed;
             left: 0px;
-            top: 0px;
+            top: -10px;
             right: 0px;
             color: black;
             text-align: center;
@@ -105,10 +105,11 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 15px;
+                /* bottom: 0px; */
+                top: 45px;
                 left: 15px;
                 font-size: 8.5px;
-                color: rgb(255, 255, 255);
+                color: white;
                 line-height: 1;
             }
         </style>
@@ -122,7 +123,7 @@
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
-        <div class= "container">
+        <div>&nbsp;
             <div align=right> <b>Unidad de Capacitación {{$data_unidad->unidad}}</b> </div>
             <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_solicitud}}</b></div>
             <div align=right> <b>{{$data_unidad->municipio}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>

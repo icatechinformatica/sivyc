@@ -418,7 +418,7 @@ class validacionDtaController extends Controller {
                                 $direccion = DB::table('tbl_unidades')->WHERE('unidad',$unidadSeleccionada)->VALUE('direccion');
                                 $direccion = explode("*", $direccion);
                                 $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional','direccion'));
-                                return $pdf->download('Memo_Unidad.pdf');
+                                return $pdf->stream('Memo_Unidad.pdf');
                             } else {
                                 return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
                             }

@@ -3309,8 +3309,12 @@ class InstructorController extends Controller
             {
                 switch($item->status)
                 {
+                    case 'REVALIDACION EN CAPTURA';
+                        $tipo_doc = 'REVALIDACION';
+                    break;
                     case 'REVALIDACION EN FIRMA';
                         $tipo_doc = 'REVALIDACION';
+                        
                     break;
                     case 'REACTIVACION EN FIRMA';
                         $tipo_doc = 'REACTIVACION';

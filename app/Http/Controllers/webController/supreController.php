@@ -994,7 +994,7 @@ class supreController extends Controller
 
     public function folio_edicion_especial($id)
     {
-        $id = base64_decode($id);
+        // $id = base64_decode($id);
         $getdestino = null;
         $getremitente = null;
         $getvalida = null;

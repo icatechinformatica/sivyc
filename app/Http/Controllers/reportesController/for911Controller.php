@@ -4,7 +4,7 @@ namespace App\Http\Controllers\reportesController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\faCADE as PDF;
+use PDF;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -190,9 +190,6 @@ class for911Controller extends Controller
         }
          //dd($consulta_inscritos);
         if(count($encabezado)==0){return redirect()->route('reportes.911.showForm')->with('success', 'No existen registros');}
-    //    dd($encabezado);
-
-
         $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
         $pdf->setPaper('A4', 'landscape');
     	//portrait

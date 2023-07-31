@@ -89,7 +89,11 @@
                                 <option value="Contrato_Rechazado">CONTRATO RECHAZADO</option>
                                 <option value="Verificando_Pago">VERIFICANDO PAGO</option> --}}
                                 <option value="Pago_Verificado">PAGO VERIFICADO</option>
+<<<<<<< HEAD
                                 {{-- <option value="Pago_Rechazado">PAGO RECHAZADO</option> --}}
+=======
+                                <option value="Pago_Rechazado">PAGO RECHAZADO</option>
+>>>>>>> d4d7a025a8fb8fc19be3cb69668d67555894c91f
                                 <option value="Finalizado">FINALIZADO</option>
                             </select>
                         </Div>

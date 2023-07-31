@@ -6,9 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>FORMATO T</title>
     <style>
+        /* *.{border: 1px solid red;} */
         body{font-family: sans-serif}
         @page {margin: 20px 50px 120px 50px;size: letter;}
-        header { position: fixed; left: 0px; top: 30px; right: 0px;text-align: center;width:100%;line-height: 30px;}
+        header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;}
         img.izquierda {float: left;width: 100%;height: 60px;}
         img.izquierdabot {
                 float: inline-end;
@@ -49,8 +50,7 @@
 <body>
     <header>
         <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-            <br>
-            <h6><small><small>{{$leyenda}}</small></small></h6>
+            <h6><small><small>{{$leyenda}}</small></small></h6><p class='direccion'>
     </header>
     <footer>
         <script type="text/php">

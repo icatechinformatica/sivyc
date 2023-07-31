@@ -79,7 +79,7 @@ if($data->tipo_curso=='CERTIFICACION'){
             {
                 text-align: left;
                 position: absolute;
-                bottom: 25px;
+                bottom: 5px;
                 left: 65px;
                 font-size: 8.5px;
                 color: rgb(255, 255, 255);

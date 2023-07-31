@@ -26,9 +26,9 @@
     <div class="encabezado">
         <img class="izquierda" src="{{ public_path('img/sep1.png') }}">
         @if ($alumnos->chk_fotografia == TRUE)
-           <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
+           <img class="derecha img-thumbnail mb-3" src="{{ asset($pathimg) }}">
         @else
-           <img class="derecha img-thumbnail mb-3" src="{{ public_path('img/blade_icons/nophoto.png') }}">
+           <img class="derecha img-thumbnail mb-3" src="{{ asset('img/blade_icons/nophoto.png') }}">
         @endif
         <p><strong>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN EN EL CERESO<br> ( SID - CERSS 01 )</strong></p>
     </div>

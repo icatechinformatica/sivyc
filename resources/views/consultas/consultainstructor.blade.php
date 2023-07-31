@@ -19,27 +19,16 @@
                 </ul>
             </div> <br>
         @endif
-        {{ Form::open(['route' => 'consultas.instructor','method' => 'get','id'=>'frm', 'enctype' => 'multipart/form-data']) }}
+        {{ Form::open(['route' => 'consultas.instructor','method' => 'post','id'=>'frm', 'enctype' => 'multipart/form-data']) }}
             @csrf
-            <div class="form-row">
-                <div class="from-group col-md-2">
-                    {{ Form::select('unidad', $unidades, $request->unidad ,['id'=>'unidad','class' => 'form-control','title' => 'UNIDADES','placeholder' => 'UNIDADES']) }}    
-                </div>
-                <div class="form-group col-md-2">
-                    {{ Form::select('tipo', ['curp'=>'CURP DEL INSTRUCTOR','instructor'=>'NOMBRE DEL INSTRUCTOR','curso'=>'NOMBRE DEL CURSO','clave'=>'CLAVE DE CURSO'], $request->tipo ,['id'=>'tipo','class' => 'form-control','title' => 'BUSCAR POR','placeholder' => 'BUSCAR POR']) }}
-                </div>
-                <div class="form-group col-md-3">
-                    {{ Form::text('busqueda', $request->busqueda, ['id'=>'busqueda','class' => 'form-control', 'placeholder' => 'BUSCAR', 'title' => 'BUSCAR','size' => 38]) }}                    
-                </div>
-                <div class="form-group col-md-2">
-                    {{ Form::date('fecha_inicio', $request->fecha_inicio , ['id'=>'fecha_inicio', 'class' => 'form-control datepicker', 'placeholder' => 'FECHA INICIO', 'title' => 'FECHA INICIO']) }}                    
-                </div>
-                <div class="form-group col-md-2">
-                    {{ Form::date('fecha_termino', $request->fecha_termino , ['id'=>'fecha_termino', 'class' => 'form-control datepicker ', 'placeholder' => 'FECHA TERMINO', 'title' => 'FECHA TERMINO']) }}                    
-                </div>
-                <div class="form-group col-md-1">
-                    <input type="submit" value="BUSCAR" class="btn btn-green">
-                </div>
+            <div class="row form-inline">                
+                    {{ Form::select('unidad', $unidades, $request->unidad ,['id'=>'unidad','class' => 'form-control mr-sm-2','title' => 'UNIDADES','placeholder' => 'UNIDADES']) }}                
+                    {{ Form::select('tipo', ['instructor'=>'INSTRUCTOR','curp'=>'CURP','curso'=>'CURSO','clave'=>'CLAVE'], $request->tipo ,['id'=>'tipo','class' => 'form-control mr-sm-2','title' => 'BUSCAR POR','placeholder' => 'BUSCAR POR']) }}
+                    {{ Form::text('busqueda', $request->busqueda, ['id'=>'busqueda','class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'title' => 'BUSCAR','size' => 38]) }}                    
+                    {{ Form::date('fecha_inicio', $request->fecha_inicio , ['id'=>'fecha_inicio', 'class' => 'form-control datepicker mr-sm-2', 'placeholder' => 'FECHA INICIO', 'title' => 'FECHA INICIO']) }}                    
+                    {{ Form::date('fecha_termino', $request->fecha_termino , ['id'=>'fecha_termino', 'class' => 'form-control datepicker mr-sm-2', 'placeholder' => 'FECHA TERMINO', 'title' => 'FECHA TERMINO']) }}
+                    {{ Form::button('FILTRAR', ['id' => 'botonFILTRAR', 'name'=> 'boton', 'value' => 'FILTRAR', 'class' => 'btn mr-sm-1']) }}
+                    {{ Form::button('XLS', ['id' => 'botonXLS', 'value' => 'XLS', 'class' => 'btn']) }}                                  
             </div>
             {{csrf_field()}}
         {!! Form::close() !!}
@@ -64,7 +53,11 @@
                         <td>HINI</td>
                         <td>HFIN</td>
                         <td>DIAS</td>
+<<<<<<< HEAD
                         <td>OCUPADOS</td>
+=======
+                        <td>LABORADOS</td>
+>>>>>>> d4d7a025a8fb8fc19be3cb69668d67555894c91f
                         <td>LUGAR O ESPACIO FISICO</td>
                         <td>OBSERVACIONES</td>
                     </tr>
@@ -87,7 +80,11 @@
                         <td>{{$item->hini}}</td>
                         <td>{{$item->hfin}}</td>
                         <td>{{$item->dia}}</td>
+<<<<<<< HEAD
                         <td>@if($item->tdias>0) {{ $item->tdias }} @else {{0}}@endif DIAS</td>
+=======
+                        <td>@if($item->tdias>0) {{ $item->tdias }} @else {{ $item->dias }}@endif DIAS</td>
+>>>>>>> d4d7a025a8fb8fc19be3cb69668d67555894c91f
                         <td><div style="width: 250px;">{{$item->efisico }}</div></td>
                         <td><div style="width: 450px;">{{$item->nota}}</div></td>
                     </tr>
@@ -102,4 +99,17 @@
             </div>
         </div>
     </div>
+    @section('script_content_js')
+        <script language="javascript">
+            $(document).ready(function(){
+                $("#botonFILTRAR" ).click(function(){ $('#frm').attr('action', "{{route('consultas.instructor')}}"); $("#frm").attr("target", '_self'); $('#frm').submit(); });
+                $("#botonXLS" ).click(function(){ $('#frm').attr('action', "{{route('consultas.instructor.xls')}}"); $("#frm").attr("target", '_blanck');$('#frm').submit();});
+            });
+            $(function() {
+                $( ".datepicker" ).datepicker({
+                    dateFormat: "yy-mm-dd"
+                });
+            });
+        </script>
+    @endsection
 @endsection

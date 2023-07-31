@@ -80,8 +80,13 @@
                         $status = 'Documentacion Digital Rechazada';
                         $status_estilo = $nestilo;
                     break;
+<<<<<<< HEAD
                     case 'recepcion tradicional':
                         $status = 'Recepcion Tradicional';
+=======
+                    case 'Contratado':
+                        $status = 'Contrato Validado';
+>>>>>>> d4d7a025a8fb8fc19be3cb69668d67555894c91f
                         $status_estilo = $azestilo;
                     break;
                 }

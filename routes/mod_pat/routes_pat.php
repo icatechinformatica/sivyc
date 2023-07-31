@@ -18,7 +18,7 @@ Route::post('/vista/pat/um/update/', 'PatController\UmController@update')->name(
 
 
 /**Funciones */
-Route::get('/vista/pat/funciones', 'PatController\FuncionesController@index')->name('pat.funciones.mostrar')->middleware('can:funproc.pat.index');
+Route::get('/vista/pat/funciones/{idorg?}', 'PatController\FuncionesController@index')->name('pat.funciones.mostrar')->middleware('can:funproc.pat.index');
 //Eliminar
 //Route::get('/vista/pat/funciones/{id}', 'PatController\FuncionesController@destroy')->name('funciones.destroy');
 //inactivar o desactivar con ajax
@@ -26,12 +26,12 @@ Route::post('/vista/pat/funciones/status/', 'PatController\FuncionesController@s
 //Agregar
 Route::post('/vista/pat/funciones/save', 'PatController\FuncionesController@store')->name('funciones.guardar');
 //Editar
-Route::get('/vista/pat/funciones/show/{id}', 'PatController\FuncionesController@show')->name('funciones.edit.show');
+Route::get('/vista/pat/funciones/show/{id}/{idorg}', 'PatController\FuncionesController@show')->name('funciones.edit.show');
 Route::post('/vista/pat/funciones/update/{id}', 'PatController\FuncionesController@update')->name('funciones.update');
 
 
 /**Procedimientos */
-Route::get('/vista/pat/procedimientos/{id}', 'PatController\ProcedController@index')->name('pat.proced.mostrar');
+Route::get('/vista/pat/procedimientos/{id}/{idorg}', 'PatController\ProcedController@index')->name('pat.proced.mostrar');
 //Eliminar
 //Route::get('/vista/pat/procedimientos/delete/{idd}/{id}', 'PatController\ProcedController@destroy')->name('proced.destroy');
 //inactivar o desactivar con ajax
@@ -39,7 +39,7 @@ Route::post('/vista/pat/procedimientos/status/', 'PatController\ProcedController
 //Agregar
 Route::post('/vista/pat/procedimientos/save/{id}', 'PatController\ProcedController@store')->name('proced.guardar');
 //Editar
-Route::get('/vista/pat/procedimientos/show/{idedi}/{id}', 'PatController\ProcedController@show')->name('pat.proced.edit.show');
+Route::get('/vista/pat/procedimientos/show/{idedi}/{id}/{idorg}', 'PatController\ProcedController@show')->name('pat.proced.edit.show');
 Route::post('/vista/pat/procedimientos/update/{idedi}/{id}', 'PatController\ProcedController@update')->name('proced.update');
 //post para el autocompletado
 Route::post('/vista/pat/procedimientos/auto', 'PatController\ProcedController@autocomplete')->name('pat.proced.autocomp');
@@ -81,3 +81,17 @@ Route::post('/vista/pat/plane/valid', 'PatController\MetavanceController@registr
 Route::get('/vista/pat/buzon/index/', 'PatController\BuzonController@index')->name('pat.buzon.index')->middleware('can:metava.valid.index');
 // Generar pdf de todos los organismos
 Route::get('/vista/pat/buzon/pdf/general/{mes}/{opcion}', 'PatController\BuzonController@pdforg_direc')->name('pat.buzon.pdf.general');
+
+
+
+/**CREAMOS NUEVAS RUTAS PARA GENERACION DE PDF, HAGO ESTO DEBIDO A QUE "WEB" YA ESTA CARGADO DE MUCHAS RUTAS" */
+
+/*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/
+/**Generar pdf Acta de acuerdo y convenio JOSE LUIS */
+Route::post('/preinscripcion/grupo/pdfacta', 'Preinscripcion\grupoController@pdf_actaAcuerdo')->name('preinscripcion.grupo.acuerdo_pdf');
+Route::post('/preinscripcion/grupo/pdfconvenio', 'Preinscripcion\grupoController@pdf_convenio')->name('preinscripcion.grupo.convenio_pdf');
+
+/**Agregamos ruta para subir pdfs acta y convenio firmados */
+//Subir al serv pdf de avances por mes
+Route::post('/preinscripcion/grupo/uploadacta/firmacta', 'Preinscripcion\grupoController@pdf_acta_firm')->name('preinscripcion.grupo.firmactapdf');
+Route::post('/preinscripcion/grupo/uploadconv/firconv', 'Preinscripcion\grupoController@pdf_conv_firm')->name('preinscripcion.grupo.firmconvpdf');

@@ -80,7 +80,7 @@ class aperturaController extends Controller
                 DB::raw("cast(replace(replace(hfin,'a.m.','am'),'p.m.','pm') as time) as hfin"),
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
                 'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','c.rango_criterio_pago_maximo as cp',
-                'ar.folio_pago','ar.fecha_pago','ar.observaciones as nota_vincu')
+                'ar.folio_pago','ar.fecha_pago','ar.observaciones as nota_vincu','tc.mexoneracion')
                 ->join('alumnos_pre as ap','ap.id','ar.id_pre')
                 ->join('cursos as c','ar.id_curso','c.id')
                 ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')

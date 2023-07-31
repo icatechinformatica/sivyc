@@ -4,7 +4,8 @@ namespace App\Http\Controllers\reportesController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\facade as PDF;
+// use Barryvdh\DomPDF\facade as PDF;
+use PDF;
 use Illuminate\Support\Facades\Auth;
 
 class rdcdController extends Controller
@@ -122,7 +123,7 @@ class rdcdController extends Controller
          $modalidad=$consulta[0]->mod;
 
          $pdf = PDF::loadView('reportes.rdcd08.rdcd', compact('cuerpo','consulta','cct','unidad','modalidad','fcancelados'));
-         $pdf->setPaper('A4', 'portrait');
+        //  $pdf->setPaper('A4', 'portrait');
          //portrait
          return $pdf-> stream('rdcd.pdf');
      }
