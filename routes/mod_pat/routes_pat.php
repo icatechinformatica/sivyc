@@ -90,3 +90,8 @@ Route::get('/vista/pat/buzon/pdf/general/{mes}/{opcion}', 'PatController\BuzonCo
 /**Generar pdf Acta de acuerdo y convenio JOSE LUIS */
 Route::post('/preinscripcion/grupo/pdfacta', 'Preinscripcion\grupoController@pdf_actaAcuerdo')->name('preinscripcion.grupo.acuerdo_pdf');
 Route::post('/preinscripcion/grupo/pdfconvenio', 'Preinscripcion\grupoController@pdf_convenio')->name('preinscripcion.grupo.convenio_pdf');
+
+/**Agregamos ruta para subir pdfs acta y convenio firmados */
+//Subir al serv pdf de avances por mes
+Route::post('/preinscripcion/grupo/uploadacta/firmacta', 'Preinscripcion\grupoController@pdf_acta_firm')->name('preinscripcion.grupo.firmactapdf');
+Route::post('/preinscripcion/grupo/uploadconv/firconv', 'Preinscripcion\grupoController@pdf_conv_firm')->name('preinscripcion.grupo.firmconvpdf');
