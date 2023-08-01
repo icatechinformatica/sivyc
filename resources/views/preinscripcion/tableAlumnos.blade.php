@@ -87,7 +87,7 @@
 <div class="d-flex flex-lg-row flex-column col-12 col-lg-12 justify-content-end">
     @if ($grupo)
         <button id="btnShowCalendar" type="button" class="btn btn-info mt-1 btn-lg">AGENDAR</button>
-        @can('agenda.vinculacion' || $id_usuario != null)
+        @can('agenda.vinculacion')
             @if ($grupo->cespecifico)
                     <button type="button" class="btn mt-1 btn-lg" id="gen_acta_acuerdo">ACTA DE ACUERDO</button>
                     <button type="button" class="btn mt-1 btn-lg" id="gen_convenio_esp">CONVENIO</button>
