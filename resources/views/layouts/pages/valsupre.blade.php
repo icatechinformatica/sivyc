@@ -80,7 +80,7 @@
                         <select class="form-control" name="financiamiento" id="financiamiento" required>
                             {{-- <option value="">SELECCIONE</option> --}}
                             <option value="FEDERAL" selected>FEDERAL</option>
-                            {{-- <option value="ESTATAL">ESTATAL</option> --}}
+                            <option value="ESTATAL">ESTATAL</option>
                         </select>
                     </div>
                 </div>
