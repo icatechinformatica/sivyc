@@ -4,7 +4,7 @@
     <style> 
          body { margin-top: 140px;  margin-bottom: 36px;} 
         .tablas{border-collapse: collapse; width: 100%; margin-top:1px; }        
-        .tablas tr th {padding:0px;margin:0px;}
+        .tablas tr th {padding:1px;margin:0px;}
         .tablas th, .tablas td{font-size: 7px; border: gray 1px solid; text-align: center;font-weight:bold;}
         
         .tablaf { page-break-inside: avoid; border-collapse: collapse; width: 100%; white-space: nowrap; height: auto; margin-top:15px;}     
@@ -58,7 +58,7 @@
                 <th rowspan="2">ESPECIALIDAD</th>   
                 <th rowspan="2">NOMBRE</th>  
                 <th rowspan="2">MOD</th>               
-                <th colspan="2">TIPO<br>DE<br>CAPACITACIÓN</th>       
+                <th colspan="2">TIPO DE<br>CAPACITACIÓN</th>       
                 <th rowspan="2">D<br>U<br>R<br>A</th>         
                 <th rowspan="2">FECHA DE<br>INICIO</th>  
                 <th rowspan="2">FECHA DE<br>TERMINO</th>             
