@@ -65,20 +65,20 @@ class InstructorController extends Controller
             ->GET();
         if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor' || $roles[0]->role_name == 'auxiliar_cursos')
         {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')           
             ->WHEREIN('estado', [true,false])
-            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra']);
+            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])           
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado']);
         }
         else
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
-            ->WHEREIN('estado', [true,false])
+           ->WHEREIN('estado', [true,false])
             ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra']);
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado']);
         }
 
-        $especialidades = especialidad::SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
+        $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
     }
 
@@ -4009,6 +4009,21 @@ class InstructorController extends Controller
         // dd($request);
         instructor::where('id', '=', $request->id_instructor_cursoext)->update(['curso_extra' => $request->extra]);
         return redirect()->route('instructor-inicio');
+    }
+
+    public function iestado(Request $request)
+    {     
+        if($request->id_instructor and $request->estado){
+
+            $id_instructor = $request->id_instructor;
+            $estado = $request->estado;
+            $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
+        }
+        if($result){ 
+            if($estado == "true") $msg = "INSTRUCTOR ACTIVADO.";
+            else $msg = "INSTRUCTOR DESACTIVADO.";
+        }else $msg = "F5 para actualizar y volver a intentar";
+        return $msg;
     }
 
     protected function getlocalidades(Request $request)
