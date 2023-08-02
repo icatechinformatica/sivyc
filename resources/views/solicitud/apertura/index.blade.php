@@ -193,14 +193,14 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-2">
-                    <label for="">NÚMERO DE RECIBO DE PAGO:</label>
+                    <label for="">NO. RECIBO DE PAGO:</label>
                     <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}">
                 </div>
                 <div class="form-group col-md-2">
-                    <label for="">FECHA DE EMISI&Oacute;N DEL RECIBO:</label>
+                    <label for="">EMISI&Oacute;N DEL RECIBO:</label>
                     <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}">
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="">SUBIR PDF DEL RECIBO:</label>
                     <div class="custom-file">
                     <input type="file" id="file_pago" name="file_pago" accept="application/pdf" class="custom-file-input"/>

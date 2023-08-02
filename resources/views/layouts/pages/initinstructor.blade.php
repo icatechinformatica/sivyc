@@ -2,28 +2,21 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
 @section('title', 'Instructor | SIVyC Icatech')
-<!--seccion-->
-@section('content')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" /> 
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
+    <link rel="stylesheet" href="{{ asset('assets/bootstrap-5.0.1/css/bootstrap.css') }}"> 
     <style>
-        * {
-        box-sizing: border-box;
-        }
-
-        #myInput {
-        background-image: url('img/search.png');
-        background-position: 5px 10px;
-        background-repeat: no-repeat;
-        background-size: 32px;
-        width: 100%;
-        font-size: 16px;
-        padding: 12px 20px 12px 40px;
-        border: 1px solid #ddd;
-        margin-bottom: 12px;
-        }
-    </style>
+        .form-check-input{
+            width:22px;
+            height:22px;
+        }        
+    </style>   
+@endsection
+<!--seccion-->
+@section('content')     
     <div class="card-header">
-        <h3>REGISTRO DE INSTRUCTORES</h3>
+        <h3>Registro de Instructores</h3>
     </div>
     <div class="card card-body">
         @if ($message = Session::get('success'))
@@ -36,12 +29,13 @@
                 <div class="pull-left">
                     {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipo_busqueda_instructor" class="form-control mr-sm-2" id="tipo_busqueda_instructor">
-                            <option value="">BUSCAR POR TIPO</option>
-                            <option value="clave_instructor">CLAVE INSTRUCTOR</option>
+                            <option value="">BUSCAR POR TIPO</option>                            
+                            <option value="clave_instructor">CLAVE</option>
                             <option value="nombre_instructor">NOMBRE</option>
+                            <option value="curp">CURP</option>
                             <option value="telefono_instructor">TELÉFONO</option>
                             <option value="estatus_instructor">ESTATUS</option>
-                            <option value="especialidad">ESPECIALIDAD VALIDADA</option>
+                            <option value="especialidad">ESPECIALIDAD</option>
                         </select>
                         <Div id="divcampo" name="divcampo">
                             {!! Form::text('busquedaPorInstructor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
@@ -79,18 +73,20 @@
                     @endcan
                 </div>
             </div>
-        </div>
-        <hr style="border-color:dimgray">
+        </div>        
         <table  id="table-instructor" class="table table-bordered table-responsive-md">
             <caption>Catalogo de Instructrores</caption>
             <thead>
                 <tr>
-                    <th scope="col">Clave Instructor</th>
-                    <th scope="col">Nombre</th>
+                    <th scope="col">CLAVE INSTRUCTOR</th>
+                    <th scope="col">INSTRUCTOR</th>
                     <th scope="col">CURP</th>
-                    <th scope="col">telefono</th>
-                    <th scope="col">Status</th>
-                    <th width="160px">Acciones</th>
+                    <th scope="col">TELEFONO</th>
+                    <th scope="col">ESTATUS</th>
+                    <th width="160px">ACCIONES</th>
+                    <th>VALIDACIÓN</th>
+                    @can('only.admin') <th class="text-center">CURSO EXTRA</th> @endcan
+                    @can('instructor.validar') <th class="text-center">ACTIVAR</th> @endcan
                 </tr>
             </thead>
             <tbody>
@@ -100,51 +96,56 @@
                         <td>{{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}} {{$itemData->nombre}}</td>
                         <td>{{$itemData->curp}}</td>
                         <td>{{$itemData->telefono}}</td>
-                        <td>{{$itemData->status}}</td>
-                        <td>
+                        <td>{{$itemData->status}} {{$itemData->fecha_validacion}}</td>
+                        <td class="text-center">
                             @if ($itemData->status == 'EN CAPTURA' || $itemData->status == 'REACTIVACION EN CAPTURA')
                                 {{-- @can('instructor.validar')
                                     <a class="btn btn-info" href="{{route('instructor-validar', ['id' => itemData->id])}}">Validar</a>
                                 @endcan --}}
                                 @if($itemData->numero_control == 'Pendiente')
                                     @can('instructor.create')
-                                        <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                        <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                                     @endcan
                                 @else
-                                    <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                                 @endif
                             @endif
                             @if($itemData->status == 'PREVALIDACION')
-                                <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             @endif
                             @if ($itemData->status == 'RETORNO')
                                 @if($itemData->numero_control == 'Pendiente')
                                     @can('instructor.create')
-                                        <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                        <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                                     @endcan
                                 @else
-                                    <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                                 @endif
                             @endif
                             @if ($itemData->status == 'EN FIRMA')
-                                <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             @endif
                             @if ($itemData->status == 'Aprobado' || $itemData->status == 'BAJA')
-                                    <a style="color: white;" class="btn mr-sm-4 mt-3" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                                    <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                             @endif
                             @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')
-                                    <a style="color: white;" class="btn mr-sm-4 mt-3" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                                    <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>                                    
+
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')                                    
                                     @if($itemData->archivo_alta == NULL)
                                         <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                                     @else
-                                        <a href={{$itemData->archivo_alta}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                        <a href="{{$itemData->archivo_alta}}" target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
                                     @endif
 
                             @endif
                         </td>
                         @can('only.admin')
-                            <td>
-                                <button type="button" class="btn mr-sm-4 mt-3"
+                            <td class="text-center">
+                                <button type="button" class="btn mr-sm-4"
                                     id = 'curso_ext'
                                     data-toggle="modal"
                                     data-placement="top"
@@ -153,6 +154,13 @@
                                 </button>
                             </td>
                             {{-- @php dd($itemData->curso_extra); @endphp --}}
+                        @endcan
+                        @can('instructor.validar')
+                            <td class="text-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'))"  @if($itemData->estado==true){{'checked'}} @endif >                                
+                                </div>                                        
+                            </td>                            
                         @endcan
                     </tr>
                 @endforeach
@@ -239,7 +247,7 @@
                 </form>
             </div>
         </div>
-    <!-- END -->
+    <!-- END -->   
 @endsection
 @section('script_content_js')
     <script>
@@ -261,7 +269,7 @@
                     $('#divcampo').prop("class", "form-row d-none d-print-none")
                     $('#divespecialidad').prop("class", "form-row d-none d-print-none")
                 }
-                else if(inputText == 'ESPECIALIDAD VALIDADA')
+                else if(inputText == 'ESPECIALIDAD')
                 {
                     $('#divespecialidad').prop("class", "")
                     $('#divcampo').prop("class", "form-row d-none d-print-none")
@@ -286,5 +294,21 @@
             document.getElementById('id_instructor_cursoext').value = id['1'];
             // document.getElementById('loc2del').value = id['1'];
         });
+        
     </script>
+    <script>
+        function cambia_estado(id,status){           
+            $.ajax({
+                method: "POST", 
+                url: "estado", 
+                data: { 
+                    id_instructor: id,
+                    estado: status
+                    }
+                })
+                .done(function( msg ) {  
+                    alert(msg);                
+                });            
+        }
+    </script>   
 @endsection
