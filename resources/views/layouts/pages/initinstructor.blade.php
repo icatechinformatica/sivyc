@@ -158,7 +158,7 @@
                         @can('instructor.validar')
                             <td class="text-center">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'))"  @if($itemData->estado==true){{'checked'}} @endif >                                
+                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->estado==true){{'checked'}} @endif >                                
                                 </div>                                        
                             </td>                            
                         @endcan
@@ -297,18 +297,21 @@
         
     </script>
     <script>
-        function cambia_estado(id,status){           
-            $.ajax({
-                method: "POST", 
-                url: "estado", 
-                data: { 
-                    id_instructor: id,
-                    estado: status
+        function cambia_estado(id, status, obj){         
+            if (confirm("Está seguro de realizar el cambio?") == true) {
+                $.ajax({
+                    method: "POST", 
+                    url: "estado", 
+                    data: { 
+                        id_instructor: id,
+                        estado: status
                     }
                 })
-                .done(function( msg ) {  
-                    alert(msg);                
-                });            
+                .done(function( msg ) { alert(msg); }); 
+            }else{                
+                if(obj.prop('checked')) obj.prop('checked', false); 
+                else obj.prop('checked', true); 
+            }
         }
     </script>   
 @endsection
