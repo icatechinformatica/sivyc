@@ -78,14 +78,15 @@
             <caption>Catalogo de Instructrores</caption>
             <thead>
                 <tr>
-                    <th scope="col">CLAVE INSTRUCTOR</th>
+                    <th scope="col">CLAVE</th>
                     <th scope="col">INSTRUCTOR</th>
                     <th scope="col">CURP</th>
                     <th scope="col">TELEFONO</th>
                     <th scope="col">ESTATUS</th>
-                    <th width="160px">ACCIONES</th>
+                    <th scope="col">FEC.VALIDA</th>
+                    <th width="160px" class="text-center">ACCIONES</th>
                     <th>VALIDACIÓN</th>
-                    @can('only.admin') <th class="text-center">CURSO EXTRA</th> @endcan
+                    @can('only.admin') <th class="text-center">EXTRA</th> @endcan
                     @can('instructor.validar') <th class="text-center">ACTIVAR</th> @endcan
                 </tr>
             </thead>
@@ -96,7 +97,18 @@
                         <td>{{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}} {{$itemData->nombre}}</td>
                         <td>{{$itemData->curp}}</td>
                         <td>{{$itemData->telefono}}</td>
-                        <td>{{$itemData->status}} {{$itemData->fecha_validacion}}</td>
+                        <td>{{$itemData->status}}</td>
+                        <td>
+                            @if(date('Y-m-d') >= $itemData->vigencia)    
+                                <span class="font-weight-bold text-danger">
+                            @elseif(date('Y-m-d') > $itemData->por_vencer)
+                                <span class="font-weight-bold" style="color:#FF8002">
+                            @else 
+                                <span>
+                            @endif                                
+                                {{$itemData->fecha_validacion}} 
+                            </span>                        
+                        </td>
                         <td class="text-center">
                             @if ($itemData->status == 'EN CAPTURA' || $itemData->status == 'REACTIVACION EN CAPTURA')
                                 {{-- @can('instructor.validar')
@@ -132,7 +144,7 @@
                                     <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>                                    
 
                             @endif
-                        </td>
+                        </td>                      
                         <td class="text-center">
                             @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')                                    
                                     @if($itemData->archivo_alta == NULL)
@@ -145,15 +157,10 @@
                         </td>
                         @can('only.admin')
                             <td class="text-center">
-                                <button type="button" class="btn mr-sm-4"
-                                    id = 'curso_ext'
-                                    data-toggle="modal"
-                                    data-placement="top"
-                                    data-target="#cursoExtraModal"
-                                    data-id='["{{$itemData->curso_extra ? "true" : "false"}}","{{$itemData->id}}"]'><small>Curso Extra</small>
-                                </button>
-                            </td>
-                            {{-- @php dd($itemData->curso_extra); @endphp --}}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="curso_extra({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->curso_extra==true){{'checked'}} @endif >                                
+                                </div>                                        
+                            </td>                            
                         @endcan
                         @can('instructor.validar')
                             <td class="text-center">
@@ -174,80 +181,7 @@
             </tfoot>
         </table>
         <br>
-    </div>
-    <br>
-    <!-- Modal -->
-    <div class="modal fade" id="cursoExtraModal" role="dialog">
-        <div class="modal-dialog">
-            <form method="POST" action="{{ route('mod-curso-extra') }}" id="mod_curso_extra">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">¿Esta seguro de ir al siguiente paso?<b></b></h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="form-row">
-                    <div class="form-group col-md-3"></div>
-                        <div class="form-group col-md-6">
-                            <label for="unidad" class="control-label">Curso Extra Actualmente</label>
-                            <select class="form-control" name="extra" id="extra">
-                                <option value="false">Inactivo</option>
-                                <option value="true">Activo</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-2"></div>
-                        <div class="form-group col-md-4">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                        </div>
-                        <input name="id_instructor_cursoext" id="id_instructor_cursoext" hidden>
-                        <div class="form-group col-md-4">
-                            <button type="submit" class="btn btn-primary">Confirmar</button>
-                            {{-- <a id="valsupre_confirm" href="#"  >Confirmar</a> --}}
-                        </div>
-                        <div class="form-group col-md-1"></div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-<!-- END -->
-    <!-- Modal -->
-        <div class="modal fade" id="confirmsaveins" role="dialog">
-            <div class="modal-dialog">
-                <form method="POST" action="{{ route('folio-permiso-mod') }}" id="mod_folio">
-                    @csrf
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">CURSO EXTRA<b></b></h5>
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="form-row">
-                        <div class="form-group col-md-3"></div>
-                            {{-- <div class="form-group col-md-6">
-                                <label for="unidad" class="control-label">Esto Regresara la Validación Suficiencia Presupuestal a planeación para su correción</label>
-                            </div> --}}
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-2"></div>
-                            <div class="form-group col-md-4">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <a id="valsupre_confirm" href="#" class="btn btn-primary" >Confirmar</a>
-                            </div>
-                            <div class="form-group col-md-1"></div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    <!-- END -->   
+    </div>    
 @endsection
 @section('script_content_js')
     <script>
@@ -283,20 +217,20 @@
                 }
             }
         });
-    </script>
+    </script>   
     <script>
-        $('#cursoExtraModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            // console.log(id);
-            var selectElement = document.getElementById('extra');
-            selectElement.value = id['0'];
-            document.getElementById('id_instructor_cursoext').value = id['1'];
-            // document.getElementById('loc2del').value = id['1'];
-        });
-        
-    </script>
-    <script>
+        function curso_extra(id, status, obj){                    
+             $.ajax({
+                method: "POST", 
+                url: "cursoExtra", 
+                data: { 
+                        id_instructor: id,
+                        estado: status
+                 }
+            })
+            .done(function( msg ) { alert(msg); });            
+        }
+
         function cambia_estado(id, status, obj){         
             if (confirm("Está seguro de realizar el cambio?") == true) {
                 $.ajax({
