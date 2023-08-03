@@ -63,22 +63,24 @@ class InstructorController extends Controller
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
-        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor' || $roles[0]->role_name == 'auxiliar_cursos')
-        {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')           
-            ->WHEREIN('estado', [true,false])
-            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])           
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado']);
-        }
-        else
-        {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
-           ->WHEREIN('estado', [true,false])
-            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado']);
-        }
 
-        $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
+        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
+            ->LEFTJOIN('especialidad_instructores',function($join){
+                $join->on('instructores.id','=','especialidad_instructores.id_instructor');
+                $join->where('especialidad_instructores.status','=','VALIDADO');
+                $join->groupby('especialidad_instructores.id_instructor');
+            })
+            //->JOIN('especialidad_instructores','instructores.id','especialidad_instructores.id_instructor')
+            //->WHERE('especialidad_instructores','especialidad_instructores.status','VALIDADO')
+            ->WHEREIN('estado', [true,false])
+            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
+                'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado', DB::raw('min(fecha_validacion) as fecha_validacion'),
+                DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
+                DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia")
+            ]);        
+
+        $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->GET();
         return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
     }
 
@@ -4007,8 +4009,19 @@ class InstructorController extends Controller
     public function curso_extra_upd(Request $request)
     {
         // dd($request);
-        instructor::where('id', '=', $request->id_instructor_cursoext)->update(['curso_extra' => $request->extra]);
-        return redirect()->route('instructor-inicio');
+        //instructor::where('id', '=', $request->id_instructor_cursoext)->update(['curso_extra' => $request->extra]);
+       // return redirect()->route('instructor-inicio');
+        if($request->id_instructor and $request->estado){
+            $id_instructor = $request->id_instructor;
+            $estado = $request->estado;
+            $result =  instructor::where('id', '=', $request->id_instructor)->update(['curso_extra' => $estado]);
+        }
+        if($result){ 
+            if($estado == "true") $msg = "CURSO EXTRA ACTIVADO.";
+            else $msg = "CURSO EXTRA DESACTIVADO.";
+        }else $msg = "F5 para actualizar y volver a intentar";
+        return $msg;
+
     }
 
     public function iestado(Request $request)
