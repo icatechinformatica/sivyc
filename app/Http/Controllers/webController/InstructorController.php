@@ -65,9 +65,9 @@ class InstructorController extends Controller
             ->GET();
         if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor' || $roles[0]->role_name == 'auxiliar_cursos')
         {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')           
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
             ->WHEREIN('estado', [true,false])
-            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])           
+            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
             ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado']);
         }
         else
@@ -3314,7 +3314,7 @@ class InstructorController extends Controller
                     break;
                     case 'REVALIDACION EN FIRMA';
                         $tipo_doc = 'REVALIDACION';
-                        
+
                     break;
                     case 'REACTIVACION EN FIRMA';
                         $tipo_doc = 'REACTIVACION';
@@ -3505,7 +3505,8 @@ class InstructorController extends Controller
         $especialidades = $this->make_collection($especialidades);
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
-        ->WHERE('unidad', '!=', 'VILLA CORZO')->FIRST();
+        ->WHERE('unidad', '!=', 'VILLA CORZO')
+        ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
         $direccion = $data_unidad->direccion;
         $direccion = explode("*", $data_unidad->direccion);
         $date = strtotime($especialidades[0]->fecha_solicitud);
@@ -4012,14 +4013,14 @@ class InstructorController extends Controller
     }
 
     public function iestado(Request $request)
-    {     
+    {
         if($request->id_instructor and $request->estado){
 
             $id_instructor = $request->id_instructor;
             $estado = $request->estado;
             $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
         }
-        if($result){ 
+        if($result){
             if($estado == "true") $msg = "INSTRUCTOR ACTIVADO.";
             else $msg = "INSTRUCTOR DESACTIVADO.";
         }else $msg = "F5 para actualizar y volver a intentar";

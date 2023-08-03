@@ -224,6 +224,9 @@ else{
                                 <td style="text-align: center; font-size: 10px;"><small>
                                     @if($data2->financiamiento == NULL)
                                         {{$recursos[$key]}}
+                                    @elseif($data2->financiamiento == 'FEDERAL Y ESTATAL')
+                                        Federal 60%<br>
+                                        Estatal 40%
                                     @else
                                         {{$data2->financiamiento}}
                                     @endif
@@ -245,7 +248,8 @@ else{
                 <FONT SIZE=0><b>C.c.p.</b>FABIOLA LIZBETH ASTUDILLO REYES.-DIRECTORA GENERAL.-Para su conocimiento</FONT><br/>
                 <FONT SIZE=0><b>C.c.p.</b>SALVADOR BETANZOS SOLIS.-DIRECTOR DE PLANEACION.-mismo fin</FONT><br/>
                 <FONT SIZE=0><b>C.c.p.</b>JORGE LUIS BARRAGAN LOPEZ.-JEFE DE DEPARTAMENTO DE RECURSOS FINANCIEROS.-mismo fin</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br>
+                {{-- <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br> --}}
+                <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->delegado_administrativo}}.-{{$getccp4->pdelegado_administrativo}}.-mismo fin</FONT><br>
                 <FONT SIZE=0><b>C.c.p.</b>Archivo/ Minutario</FONT>
             </div>
         </div>
