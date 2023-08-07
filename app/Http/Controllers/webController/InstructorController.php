@@ -78,7 +78,7 @@ class InstructorController extends Controller
                 'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado', DB::raw('min(fecha_validacion) as fecha_validacion'),
                 DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
                 DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia")
-            ]);        
+            ]);
 
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->GET();
         return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
@@ -4017,7 +4017,7 @@ class InstructorController extends Controller
             $estado = $request->estado;
             $result =  instructor::where('id', '=', $request->id_instructor)->update(['curso_extra' => $estado]);
         }
-        if($result){ 
+        if($result){
             if($estado == "true") $msg = "CURSO EXTRA ACTIVADO.";
             else $msg = "CURSO EXTRA DESACTIVADO.";
         }else $msg = "F5 para actualizar y volver a intentar";

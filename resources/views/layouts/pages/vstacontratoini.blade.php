@@ -141,14 +141,14 @@
                                     @case('Validado')
                                         Suficiencia Validada
                                         @break
-                                    @case('Contratado')
-                                        Contrato Validado
+                                    @case('Capturando')
+                                        Capturando
                                         @break
                                     @case('Validando_Contrato')
                                         Contrato en Revision
                                         @break
                                     @default
-                                    @if($itemData->status = 'Pago_Verificado' && ($itemData->status_recepcion == 'Recibido' || $itemData->status_recepcion == 'recepcion tradicional')) Para Pago @elseif($itemData->status = 'Pago_Verificado') Para Envío @else{{$itemData->status}}@endif
+                                    @if($itemData->status == 'Pago_Verificado' && ($itemData->status_recepcion == 'Recibido' || $itemData->status_recepcion == 'recepcion tradicional')) Para Pago @elseif($itemData->status == 'Pago_Verificado') Para Envío @else{{$itemData->status}} @endif
                                         @break
                                 @endswitch
                             </td>

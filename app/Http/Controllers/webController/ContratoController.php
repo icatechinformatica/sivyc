@@ -175,7 +175,7 @@ class ContratoController extends Controller
             break;
         }
         // dd($querySupre2);
-        // dd($querySupre);
+        // dd($querySupre[2]);
         return view('layouts.pages.vstacontratoini', compact('querySupre','unidades','array_ejercicio', 'año_pointer'));
     }
 
