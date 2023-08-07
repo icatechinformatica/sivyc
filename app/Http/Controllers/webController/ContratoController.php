@@ -1384,7 +1384,7 @@ class ContratoController extends Controller
     }
 
     public function solicitudpago_pdf($id){
-
+        // dd($id);
         $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso','tbl_cursos.instructor_mespecialidad',
                               'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','instructores.nombre',
@@ -1428,7 +1428,7 @@ class ContratoController extends Controller
         $ccp1 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp1)->FIRST();
         $ccp2 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp2)->FIRST();
         $ccp3 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp3)->FIRST();
-        //dd($data);
+        // dd($para);
 
         $direccion = tbl_unidades::WHERE('unidad',$data->unidad_capacitacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
