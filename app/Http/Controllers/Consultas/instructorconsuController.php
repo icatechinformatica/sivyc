@@ -46,18 +46,6 @@ class instructorconsuController extends Controller
         if($unidad OR ($tipo AND $buscar) OR $fecha_inicio OR $fecha_termino){
             $consulta = DB::table('instructores')            
             ->select('tc.nombre', 'unidad','folio_grupo','clave','munidad','curso','espe','tipo_curso','dura','tcapacitacion','status_curso',
-<<<<<<< HEAD
-            'inicio','termino','hini','hfin','dia','efisico','nota',           
-             DB::raw(" DATE_PART('day', tc.termino::timestamp -
-             (select  min(tcx.inicio) from tbl_cursos as tcx
-             where tcx.id_instructor= instructores.id and 
-                  tcx.inicio> COALESCE(
-                     (select max(inicio) from tbl_cursos as c where c.id_instructor = instructores.id  and c.inicio<=tc.inicio 
-                        and COALESCE((select DATE_PART('day', tc3.inicio::timestamp - c.termino::timestamp ) from tbl_cursos as tc3 where tc3.id_instructor = instructores.id  and tc3.inicio>c.inicio order by tc3.inicio ASC limit 1  )-1,0)>30 ),
-                     (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = instructores.id ))
-                 )::timestamp)+1
-              as tdias")
-=======
                 'inicio','termino','hini','hfin','dia',
                 DB::raw("
                     CASE 
@@ -84,7 +72,6 @@ class instructorconsuController extends Controller
                 DB::raw("DATE_PART('day', tc.inicio::timestamp -  
                 (select  max(tcx.termino) from tbl_cursos as tcx where tcx.id_instructor= instructores.id  and tc.inicio>=tcx.inicio)::timestamp
             )as dias")
->>>>>>> d4d7a025a8fb8fc19be3cb69668d67555894c91f
             )
             ->join('tbl_cursos as tc','instructores.id','=','tc.id_instructor');
             if (!empty($tipo) AND !empty($buscar)) {
@@ -121,11 +108,7 @@ class instructorconsuController extends Controller
             if(isset($request->unidad)){
                 $consulta = $consulta->where('tc.unidad','=',$request->unidad);
             }
-<<<<<<< HEAD
-            $consulta = $consulta->orderBy('tc.termino','desc')->paginate(50,[DB::raw('CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores."nombre") as nombre'),
-=======
             $consulta = $consulta->orderBy('tc.inicio','desc')->paginate(50,[DB::raw('CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores."nombre") as nombre'),
->>>>>>> d4d7a025a8fb8fc19be3cb69668d67555894c91f
                 'tc.efisico','tc.folio_grupo','tc.unidad','tc.curso','tc.status_curso','tc.inicio','tc.termino','tc.dia','tc.hini','tc.hfin','tc.horas','tipo_curso',
                 'tc.dura','tcapacitacion','espe','tc.clave','tc.nota','tc.munidad'])->setPath('');
         }//dd($consulta);
