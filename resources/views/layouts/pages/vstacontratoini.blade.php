@@ -89,11 +89,7 @@
                                 <option value="Contrato_Rechazado">CONTRATO RECHAZADO</option>
                                 <option value="Verificando_Pago">VERIFICANDO PAGO</option> --}}
                                 <option value="Pago_Verificado">PAGO VERIFICADO</option>
-<<<<<<< HEAD
                                 {{-- <option value="Pago_Rechazado">PAGO RECHAZADO</option> --}}
-=======
-                                <option value="Pago_Rechazado">PAGO RECHAZADO</option>
->>>>>>> d4d7a025a8fb8fc19be3cb69668d67555894c91f
                                 <option value="Finalizado">FINALIZADO</option>
                             </select>
                         </Div>
@@ -145,14 +141,14 @@
                                     @case('Validado')
                                         Suficiencia Validada
                                         @break
-                                    @case('Contratado')
-                                        Contrato Validado
+                                    @case('Capturando')
+                                        Capturando
                                         @break
                                     @case('Validando_Contrato')
                                         Contrato en Revision
                                         @break
                                     @default
-                                    @if($itemData->status = 'Pago_Verificado' && ($itemData->status_recepcion == 'Recibido' || $itemData->status_recepcion == 'recepcion tradicional')) Para Pago @elseif($itemData->status = 'Pago_Verificado') Para Envío @else{{$itemData->status}}@endif
+                                    @if($itemData->status == 'Pago_Verificado' && ($itemData->status_recepcion == 'Recibido' || $itemData->status_recepcion == 'recepcion tradicional')) Para Pago @elseif($itemData->status == 'Pago_Verificado') Para Envío @else{{$itemData->status}} @endif
                                         @break
                                 @endswitch
                             </td>

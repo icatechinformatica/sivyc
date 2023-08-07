@@ -54,11 +54,13 @@ class instructor extends Model
 
     public function scopeSearchInstructor($query, $tipo, $buscar, $tipo_status, $tipo_especialidad)
     {
-        if (!empty($tipo))
-        {
+        $query->GROUPBY('instructores.id','instructores.nombre');
+        $query->ORDERBY('status','DESC');
+        $query->ORDERBY('fecha_validacion','ASC');
+
+        if (!empty($tipo)){
             # entramos y validamos
-            if (!empty(trim($buscar)))
-            {
+            if (!empty(trim($buscar))){                
                 # empezamos
                 switch ($tipo) {
                     case 'clave_instructor':
