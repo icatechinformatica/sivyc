@@ -135,7 +135,7 @@ $(function(){
                 $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
             }
         }
-        else if(id['4'] == 'Validando_Contrato')
+        else if(id['4'] == 'Validando_Contrato' || id['4'] == 'Capturando')
         {
             $('#sol_pdf').attr("class", "btn btn-danger disabled");
             $('#contrato_pdf').attr("class", "btn btn-danger");

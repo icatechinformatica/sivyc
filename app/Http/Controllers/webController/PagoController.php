@@ -404,7 +404,7 @@ class PagoController extends Controller
     {
         // dd($request);
         $data = contratos::SELECT('contratos.fecha_status', 'contratos.numero_contrato', 'contratos.fecha_firma',
-            'contratos.chk_rechazado', 'contratos.fecha_rechazo', 'pagos.recepcion', 'tbl_cursos.clave',
+            'contratos.chk_rechazado', 'contratos.fecha_rechazo', 'pagos.status_recepcion', 'pagos.recepcion','pagos.historial', 'tbl_cursos.clave',
 		    'tbl_cursos.inicio', 'tbl_cursos.nombre','folios.status')
             ->JOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
             ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -415,11 +415,12 @@ class PagoController extends Controller
             // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
             // ->WHERE('pagos.recepcion', '!=', NULL)
-            ->WHERE('folios.status', '!=', 'Contrato_Rechazado')
+            ->WHERE('pagos.status_recepcion', '!=', 'Rechazado')
             ->WHEREBETWEEN('contratos.fecha_status', [$request->fecha1, $request->fecha2])
+            // ->WHERE('pagos.historial','!=',null)
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
-            // dd($data[24]);
+            // dd(json_decode($data[7]->historial));
         $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
         $title = "DOCUMENTOS RECEPCIONADOS";
         $name = $title."_".date('Ymd').".xlsx";

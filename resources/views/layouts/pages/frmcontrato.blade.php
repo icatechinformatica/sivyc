@@ -15,10 +15,13 @@
         @endif
         <form action="{{ route('contrato-save') }}" method="post" id="registercontrato" enctype="multipart/form-data">
             @csrf
-            <div style="text-align: right;width:65%">
-                <label for="titulocontrato"><h1>Formulario de Contrato</h1></label>
+            <div style="text-align: right;width:80%">
+                <label for="titulocontrato"><h1>Formulario de Contrato y Solicitud de Pago</h1></label>
             </div>
              <hr style="border-color:dimgray">
+             <div style="text-align: right;width:60%">
+                <label for="titulocontrato"><h2>Apartado de Contrato</h2></label>
+            </div>
              <div class="form-row">
                  <div class="form-group col-md-6">
                     <label for="numero_contrato" class="control-label">Número de Contrato</label>
@@ -72,84 +75,180 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="lugar_expedicion" class="control-label">Municipio de la Firma</label>
-                    <input type="text" class="form-control" id="lugar_expedicion" name="lugar_expedicion" placeholder="Lugar de Expedición">
+                    <input type="text" class="form-control" id="lugar_expedicion" name="lugar_expedicion" placeholder="Lugar de Expedición" @if(isset($contrato))value="{{$contrato->municipio}}"@endif>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="fecha_firma" class="control-label">Fecha de Firma</label>
-                    <input type="date" class="form-control" id="fecha_firma" name="fecha_firma">
+                    <input type="date" class="form-control" id="fecha_firma" name="fecha_firma" @if(isset($contrato))value="{{$contrato->fecha_firma}}"@endif>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputnombre_director" class="control-label">Nombre del Director/Encargado de Unidad de Capacitación</label>
-                    <input type="text" class="form-control" id="nombre_director" name="nombre_director" placeholder="Director de Unidad de Capacitación">
-                    <input type="text" class="form-control" id="id_director" name="id_director" hidden>
+                    <input type="text" class="form-control" id="nombre_director" name="nombre_director" placeholder="Director de Unidad de Capacitación" @if(isset($director))value="{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}"@endif>
+                    <input type="text" class="form-control" id="id_director" name="id_director" @if(isset($director))value="{{$director->id}}"@endif hidden>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_testigo1" class="control-label">Puesto del Director/Encargado de Unidad de Capacitación</label>
-                    <input readonly type="text" class="form-control" id="puesto_director" name="puesto_director">
+                    <input readonly type="text" class="form-control" id="puesto_director" name="puesto_director" @if(isset($director))value="{{$director->puesto}}"@endif>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
-                    <select name="unidad_capacitacion" class="form-control mr-sm-2" id="unidad_capacitacion">
+                    <input readonly type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion" @if(isset($contrato))value="{{$contrato->unidad_capacitacion}}" @else value="{{$data->unidad}}" @endif>
+                    {{-- <select name="unidad_capacitacion" class="form-control mr-sm-2" id="unidad_capacitacion">
                         <option value="">SELECCIONE UNIDAD</option>
                         @foreach ($unidades as $cadwell)
-                            <option value="{{$cadwell->unidad}}">{{$cadwell->unidad}}</option>
+                            <option value="{{$cadwell->unidad}}" @if(isset($contrato) && $contrato->unidad_capacitacion == $cadwell->unidad) selected @endif>{{$cadwell->unidad}}</option>
                         @endforeach
-                    </select>
+                    </select> --}}
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputfactura" class="control-label">Factura de Instructor PDF</label>
-                    <input type="file" accept="application/pdf" id="factura" name="factura" class="form-control" placeholder="Archivo PDF">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputfactura_xml" class="control-label">Factura de Instructor XML</label>
-                    <input type="file" accept="application/xml" id="factura_xml" name="factura_xml" class="form-control" placeholder="Archivo XML">
-                </div>
-            </div>
-            @if ($term == TRUE)
-            <footer style="color:red;" class="control-footer">La fecha de termino del curso ha sido alcanzada. Anexar documento de factura en caso de contar con ella</footer>
-            @else
-                <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
-            @endif
-            <hr style="border-color:dimgray">
             <h2>Testigos</h2>
             <br>
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputtestigo1" class="control-label">Nombre de Testigo de Departamento Académico</label>
-                    <input type="text" class="form-control" id="testigo1" name="testigo1">
+                    <input type="text" class="form-control" id="testigo1" name="testigo1" @if(isset($testigo1))value="{{$testigo1->nombre}} {{$testigo1->apellidoPaterno}} {{$testigo1->apellidoMaterno}}"@endif>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_testigo1" class="control-label">Puesto de Testigo</label>
-                    <input readonly type="text" class="form-control" id="puesto_testigo1" name="puesto_testigo1">
-                    <input type="text" name="id_testigo1" id="id_testigo1" hidden>
+                    <input readonly type="text" class="form-control" id="puesto_testigo1" name="puesto_testigo1" @if(isset($testigo1))value="{{$testigo1->puesto}}"@endif>
+                    <input type="text" name="id_testigo1" id="id_testigo1" @if(isset($testigo1))value="{{$testigo1->id}}"@endif hidden>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputtestigo2" class="control-label">Nombre de Testigo del Departamento de Vinculación</label>
-                    <input type="text" class="form-control" id="testigo2" name="testigo2" h>
+                    <input type="text" class="form-control" id="testigo2" name="testigo2" @if(isset($testigo2))value="{{$testigo2->nombre}} {{$testigo2->apellidoPaterno}} {{$testigo2->apellidoMaterno}}"@endif>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_testigo2" class="control-label">Puesto del Testigo</label>
-                    <input readonly type="text" class="form-control" id="puesto_testigo2" name="puesto_testigo2">
-                    <input type="text" name="id_testigo2" id="id_testigo2" hidden>
+                    <input readonly type="text" class="form-control" id="puesto_testigo2" name="puesto_testigo2" @if(isset($testigo2))value="{{$testigo2->puesto}}"@endif>
+                    <input type="text" name="id_testigo2" id="id_testigo2" @if(isset($testigo2))value="{{$testigo2->id}}"@endif hidden>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputtestigo2" class="control-label">Nombre de Testigo de la Delegación Administrativa</label>
-                    <input type="text" class="form-control" id="testigo3" name="testigo3">
+                    <input type="text" class="form-control" id="testigo3" name="testigo3" @if(isset($testigo3))value="{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}"@endif>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_testigo2" class="control-label">Puesto del Testigo</label>
-                    <input readonly type="text" class="form-control" id="puesto_testigo3" name="puesto_testigo3">
-                    <input type="text" name="id_testigo3" id="id_testigo3" hidden>
+                    <input readonly type="text" class="form-control" id="puesto_testigo3" name="puesto_testigo3" @if(isset($testigo3))value="{{$testigo3->puesto}}"@endif>
+                    <input type="text" name="id_testigo3" id="id_testigo3" @if(isset($testigo3))value="{{$testigo3->id}}"@endif hidden>
                 </div>
             </div>
+            <hr style="border-color:dimgray">
+            <div style="text-align: right;width:65%">
+                <label for="titulocontrato"><h2>Apartado de Solicitud de Pago</h2></label>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputno_memo">Numero de Memorandum</label>
+                    <input id="no_memo" name="no_memo" type="text" class="form-control">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
+                    <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control">
+                </div>
+                {{-- <div class="form-group col-md-3">
+                    <label for="inputfecha_agenda">Fecha de Entrega Fisica</label>
+                    <input id="fecha_agenda" name="fecha_agenda" type="date" class="form-control">
+                </div> --}}
+            </div>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputeremite">Nombre de Remitente</label>
+                        <input id="remitente" name="remitente" type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto de Remitente</label>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control">
+                        <input id="id_remitente" name="id_remitente" hidden>
+                    </div>
+            </div>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputelaboro">Nombre de Quien Elabora</label>
+                        <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto de Quien Elabora</label>
+                        <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control">
+                        <input id="id_elabora" name="id_elabora" hidden>
+                    </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputnombre_para">Nombre del Destinatario</label>
+                    <input id="destino" name="destino" type="text" class="form-control">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputpuesto_para">Puesto del Destinatario</label>
+                    <input id="destino_puesto" readonly name="destino_puesto" type="text" class="form-control">
+                    <input id="id_destino" name="id_destino" hidden>
+                </div>
+            </div>
+            <br>
+            <h3>Información de factura para Soporte de Pago</h3>
+            <br>
+            <div class="form-row">
+                @if($regimen->modinstructor == 'HONORARIOS')
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_factura" class="control-label">Factura de Instructor PDF</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
+                        <input type="text" name="liquido" id="liquido" class="form-control">
+                    </div>
+                @else
+                    <div class="form-group col-md-3">
+                        <label for="inputliquido" class="control-label">Importe</label>
+                        <input type="text" name="liquido" id="liquido" class="form-control">
+                    </div>
+                @endif
+            </div>
+            <br>
+            <h2>Con Copia Para</h2>
+            <!-- START CCP -->
+                <h3>CCP 1</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputnombre_ccp1">Nombre</label>
+                        <input id="ccp1" name="ccp1" type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto</label>
+                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control">
+                        <input id="id_ccp1" name="id_ccp1" hidden>
+                    </div>
+                </div>
+                <h3>CCP 2</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputnombre_ccp2">Nombre</label>
+                        <input id="ccp2" name="ccp2" type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto</label>
+                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control">
+                        <input id="id_ccp2" name="id_ccp2" hidden>
+                    </div>
+                </div>
+                <h3>CCP 3</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputnombre_ccp3">Nombre</label>
+                        <input id="ccp3" name="ccp3" type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto</label>
+                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control">
+                        <input id="id_ccp3" name="id_ccp3" hidden>
+                    </div>
+                </div>
+            <!-- END CC -->
             <br>
             <input id="id_folio" name="id_folio" hidden value='{{$data->id_folios}}'>
             <div class="row">

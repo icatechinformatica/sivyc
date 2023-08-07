@@ -15,7 +15,11 @@
                 /* margin: 10px; */
             }
             @page {
+<<<<<<< HEAD
+                margin: 20px 30px 80px;
+=======
                 margin: 20px 30px 110px;
+>>>>>>> d4d7a025a8fb8fc19be3cb69668d67555894c91f
 
             }
             .ftr{
@@ -325,7 +329,11 @@
                                 <tr>
                                     <td>{{$cadwell['puesto']}}</td>
                                     <td>{{$cadwell['periodo']}}</td>
+<<<<<<< HEAD
+                                    <td><p>{{$cadwell['institucion']}}</p></td>
+=======
                                     <td style="font-size: 10px;">{{$cadwell['institucion']}}</td>
+>>>>>>> d4d7a025a8fb8fc19be3cb69668d67555894c91f
                                 </tr>
                             @endforeach
                         @endif
