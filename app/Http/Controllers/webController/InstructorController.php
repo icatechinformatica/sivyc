@@ -3316,7 +3316,7 @@ class InstructorController extends Controller
                     break;
                     case 'REVALIDACION EN FIRMA';
                         $tipo_doc = 'REVALIDACION';
-                        
+
                     break;
                     case 'REACTIVACION EN FIRMA';
                         $tipo_doc = 'REACTIVACION';
@@ -3507,7 +3507,8 @@ class InstructorController extends Controller
         $especialidades = $this->make_collection($especialidades);
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
-        ->WHERE('unidad', '!=', 'VILLA CORZO')->FIRST();
+        ->WHERE('unidad', '!=', 'VILLA CORZO')
+        ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
         $direccion = $data_unidad->direccion;
         $direccion = explode("*", $data_unidad->direccion);
         $date = strtotime($especialidades[0]->fecha_solicitud);
@@ -4025,14 +4026,14 @@ class InstructorController extends Controller
     }
 
     public function iestado(Request $request)
-    {     
+    {
         if($request->id_instructor and $request->estado){
 
             $id_instructor = $request->id_instructor;
             $estado = $request->estado;
             $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
         }
-        if($result){ 
+        if($result){
             if($estado == "true") $msg = "INSTRUCTOR ACTIVADO.";
             else $msg = "INSTRUCTOR DESACTIVADO.";
         }else $msg = "F5 para actualizar y volver a intentar";

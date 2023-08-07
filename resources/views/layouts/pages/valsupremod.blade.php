@@ -18,6 +18,10 @@
                         <label for="dropfecha_memo">Fecha de Memorandum</label>
                     <input name="fecha_memo" id="fecha_memo" type="date" disabled value="{{$data->fecha}}" class="form-control">
                     </div>
+                    <div class="form-group col-md-5">
+                        <label for="dropcrit_pago">Criterio de Pago</label>
+                        <input name="crit_pago" id="crit_pago" type="text" disabled value="{{$criterio_pago->cp}} - {{$criterio_pago->perfil_profesional}}" class="form-control">
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
@@ -49,6 +53,7 @@
                             <option value="">SELECCIONE</option>
                             <option value="FEDERAL" @if($data->financiamiento == 'FEDERAL') selected @endif>FEDERAL</option>
                             <option value="ESTATAL" @if($data->financiamiento == 'ESTATAL') selected @endif>ESTATAL</option>
+                            <option value="FEDERAL Y ESTATAL" @if($data->financiamiento == 'FEDERAL Y ESTATAL') selected @endif>FEDERAL Y ESTATAL</option>
                         </select>
                     </div>
                 </div>
@@ -97,11 +102,11 @@
                 </div>-->
                 <div id="div7" class="form-row ">
                     <div class="form-group col-md-4">
-                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" required @if(isset($getccp4->nombre)) value="{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}" @endif>
+                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" value="{{$delegado->delegado_administrativo}}" readonly>
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" required @if(isset($getccp4->puesto)) value="{{$getccp4->puesto}}" @endif>
-                        <input id="id_ccp4" name="id_ccp4" required hidden @if((isset($getccp4->id))) value='{{$getccp4->id}}' @endif>
+                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" value="{{$delegado->pdelegado_administrativo}}" readonly>
+                        {{-- <input id="id_ccp4" name="id_ccp4" hidden required> --}}
                     </div>
                 </div>
             <!--END CCP-->
