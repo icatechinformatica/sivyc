@@ -350,10 +350,11 @@ class validacionDtaController extends Controller {
                                     // ->orWhere('turnado', '=', 'MEMO_TURNADO_RETORNO')
 
                                 // $sum_total = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion + $total;
+                                $fecha_envio = $fechaTurnado[0]->fecha_envio;
                                 $sum_total = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion;
                                 $totalReportados = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion - $total;
 
-                                $mesReportado = Carbon::parse($fechaTurnado[0]->fecha_turnado);
+                                $mesReportado = Carbon::parse($fechaTurnado[0]->fecha_envio);
                                 $mesReportado2 = $mesReportado->format("F");
                                 switch ($mesReportado2) {
                                     case 'January':
@@ -417,7 +418,7 @@ class validacionDtaController extends Controller {
                                 $leyenda = $leyenda->distintivo;
                                 $direccion = DB::table('tbl_unidades')->WHERE('unidad',$unidadSeleccionada)->VALUE('direccion');
                                 $direccion = explode("*", $direccion);
-                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional','direccion'));
+                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional','direccion','fecha_envio'));
                                 return $pdf->stream('Memo_Unidad.pdf');
                             } else {
                                 return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);

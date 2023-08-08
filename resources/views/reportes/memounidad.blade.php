@@ -97,7 +97,7 @@
                 </div> --}}
 
                 <div align="justify" style="font-size:11px;">
-                    En seguimiento a la integración del Formato T del mes de {{@strtolower($mesReportado2)}} del presente
+                    En seguimiento a la integración del Formato T del día {{substr($fecha_envio,8,2)}} con mes de {{@strtolower($mesReportado2)}} del presente
                     año de su Unidad de Capacitación, le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
                     RIACD-02 ACREDITACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
                     digitalizados con firmas y sellos de {{ $sum_total }} cursos pertenecientes a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
@@ -158,3 +158,5 @@
     </div>
 </body>
 </html>
+
+
