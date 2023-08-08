@@ -513,7 +513,7 @@ class turnarAperturaController extends Controller
                         AND generate_series::date NOT IN(SELECT fecha FROM dias_inhabiles dh WHERE fecha BETWEEN c.inicio AND c.inicio+ CAST('2 days' AS INTERVAL)) 
                         AND date_part('dow',generate_series::date) not in(0,6)=true group by c.id,c.termino
                            
-                    ) as global WHERE now()::date>=fecha_extemp or now()::date>=termino",[$memo]);
+                    ) as global WHERE now()::date>=fecha_extemp or now()::date>termino",[$memo]);
         return $resultArray = array_column(json_decode(json_encode($result), true),'id'); 
     }   
 }
