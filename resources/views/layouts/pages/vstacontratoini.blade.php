@@ -279,7 +279,7 @@
                                         @endcan
                                     @endif
                                 @endif --}}
-                                @if ($itemData->status == 'Capturando')
+                                @if ($itemData->status == 'Capturando' || $itemData->status_recepcion == 'Rechazado' || ($itemData->status_recepcion == null && $itemData->id_contrato != null))
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
@@ -494,7 +494,7 @@
                                         @endcan
                                     @endif
                                 @endif --}}
-                                @if ($itemData->status == 'Pago_Verificado')
+                                @if ($itemData->status == 'Pago_Verificado' || ($itemData->status_recepcion == null && $itemData->id_contrato != null))
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
