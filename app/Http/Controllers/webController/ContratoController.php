@@ -325,6 +325,7 @@ class ContratoController extends Controller
 
     public function contrato_save(Request $request)
     {
+        $id_curso = folio::where('id_folios', '=', $request->id_folio)->value('id_cursos');
         $check_contrato = contratos::SELECT('numero_contrato')
             ->WHERE('numero_contrato', '=', $request->numero_contrato)
             ->FIRST();
@@ -347,6 +348,8 @@ class ContratoController extends Controller
         $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->id_folios = $request->id_folio;
+        $contrato->folio_fiscal = $request->folio_fiscal;
+        $contrato->id_curso = $id_curso;
         $contrato->fecha_status = carbon::now();
         // $contrato->tipo_factura = $request->tipo_factura;
         $file = $request->file('factura'); # obtenemos el archivo
@@ -456,7 +459,8 @@ class ContratoController extends Controller
                 'fecha_status' => carbon::now(),
                 'created_at' => carbon::now(),
                 'updated_at' => carbon::now(),
-                'status_recepcion' => $status_recepcion
+                'status_recepcion' => $status_recepcion,
+                'id_curso' => $id_curso
             ]
         );
 
@@ -612,6 +616,7 @@ class ContratoController extends Controller
     }
 
     public function save_mod(Request $request){
+        $id_curso = folio::where('id_folios', '=', $request->id_folio)->value('id_cursos');
         $contrato = contratos::find($request->id_contrato);
         $contrato->numero_contrato = $request->numero_contrato;
         // if($request->perfilinstructor != NULL)
@@ -623,6 +628,8 @@ class ContratoController extends Controller
         $contrato->municipio = $request->lugar_expedicion;
         $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
+        $contrato->folio_fiscal = $request->folio_fiscal;
+        $contrato->id_curso = $id_curso;
         $contrato->fecha_status = carbon::now();
         // $contrato->tipo_facutra = $request->tipo_factura;
 
@@ -690,6 +697,7 @@ class ContratoController extends Controller
         $pago->id_contrato = $request->id_contrato;
         $pago->liquido = $request->liquido;
         $pago->solicitud_fecha = $request->solicitud_fecha;
+        $pago->id_curso = $id_curso;
         // $pago->fecha_agenda = $request->fecha_agenda;
         $pago->fecha_status = carbon::now();
 
