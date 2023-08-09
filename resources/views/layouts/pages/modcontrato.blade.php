@@ -103,14 +103,6 @@
                         @endforeach
                     </select> --}}
                 </div>
-                <div class="form-group col-md-3">
-                    <label for="inputfactura" class="control-label">Factura de Instructor o Anexo</label>
-                    <input type="file" accept="application/pdf" id="factura" name="factura" class="form-control" placeholder="Archivo PDF">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputfactura_xml" class="control-label">Factura de Instructor XML</label>
-                    <input type="file" accept="application/xml" id="factura_xml" name="factura_xml" class="form-control" placeholder="Archivo XML">
-                </div>
             </div>
             <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
             <hr style="border-color:dimgray">
@@ -205,7 +197,7 @@
             <br>
             <h3>Información para Soporte de Pago</h3>
             <div class="form-row">
-                @if($regimen->modinstructor == 'HONORARIOS' && $datac->created_at <= '2023-06-05')
+                @if($regimen->modinstructor == 'HONORARIOS')
                     <div class="form-group col-md-3">
                         <label for="inputarch_factura" class="control-label">Factura de Instructor</label>
                         <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
