@@ -218,6 +218,10 @@
                         <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
                         <input type="text" name="liquido" id="liquido" class="form-control" @if(isset($datap)) value="{{$datap->liquido}}" @endif>
                     </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputfolio_fiscal" class="control-label">Folio Fiscal</label>
+                        <input type="text" name="folio_fiscal" id="folio_fiscal" class="form-control" value="{{$datacon->folio_fiscal}}">
+                    </div>
                 @else
                     <div class="form-group col-md-3">
                         <label for="inputliquido" class="control-label">Importe</label>
