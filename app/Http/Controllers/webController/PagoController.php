@@ -850,7 +850,7 @@ class PagoController extends Controller
         $update = pago::WHERE('id_contrato',$request->id_contrato_noentrega)->first();
         $archivos = DB::TABLE('contratos')
             ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
-            'instructor_mespecialidad','espe','archivo_alta')
+            'instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
             ->WHERE('contratos.id_contrato', $request->id_contrato_noentrega)
             ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
             ->JOIN('folios','folios.id_folios','contratos.id_folios')
@@ -860,7 +860,7 @@ class PagoController extends Controller
 
         $especialidad_seleccionada = DB::Table('especialidad_instructores')
             ->SELECT('especialidad_instructores.id','especialidades.nombre')
-            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidad_instructores.id_instructor',$archivos->id_instructor)
             ->WHERE('especialidades.nombre', '=', $archivos->espe)
             ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
             ->FIRST();
@@ -913,6 +913,11 @@ class PagoController extends Controller
         $update->save();
         return redirect()->route('pago-inicio')
                 ->with('success', 'No Recepción de Documentos Guardado Correctamente');
+    }
+
+    public function retorno_validacion_entrega_fisica($id)
+    {
+
     }
 
 
