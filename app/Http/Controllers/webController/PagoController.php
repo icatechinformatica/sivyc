@@ -798,7 +798,7 @@ class PagoController extends Controller
         {
             foreach($memoval as $me)
             {
-                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                if(isset($me['memo_val']) &&$me['memo_val'] == $archivos->instructor_mespecialidad)
                 {
                     $archivos->instructor_mespecialidad = $me['arch_val'];
                     break;
