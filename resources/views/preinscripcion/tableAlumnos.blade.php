@@ -88,10 +88,11 @@
     @if ($grupo)
         <button id="btnShowCalendar" type="button" class="btn btn-info mt-1 btn-lg">AGENDAR</button>
         @can('agenda.vinculacion')
-            @if ($grupo->cespecifico)
+        {{-- @can('agenda.vinculacion' || $slug == 'admin') temporalmente se comentó hasta que homologuen --}}
+            {{-- @if ($grupo->cespecifico)
                     <button type="button" class="btn mt-1 btn-lg" id="gen_acta_acuerdo">ACTA DE ACUERDO</button>
                     <button type="button" class="btn mt-1 btn-lg" id="gen_convenio_esp">CONVENIO</button>
-            @endif
+            @endif --}}
             <button type="button" class="btn mt-1 btn-lg" id="gape">GENERAR SOLICITUD</button>
         @endcan
         <button type="button" class="btn mt-1 btn-lg" id="generar">GENERAR LISTA</button>
@@ -107,7 +108,8 @@
 
 
 {{-- Agregamos el apartado de subir PDF Jose Luis Moreno Arcos--}}
-<br>
+{{-- temporalmente de comentó hasta que se homologue se revisa --}}
+{{-- <br>
 <div class="col-12 col-lg-4 mt-3 mt-lg-0 mb-lg-1 ml-lg-4 text-center text-lg-left">
     <b class="">SUBIR DOCUMENTOS FIRMADOS</b>
 </div>
@@ -144,7 +146,7 @@
             </form>
         </div>
     </div>
-</div>
+</div> --}}
 {{-- Termina el elemento de subir archivo --}}
 
 <!-- Modal -->

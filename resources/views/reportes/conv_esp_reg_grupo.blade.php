@@ -34,15 +34,15 @@
             }
 
             .logo {
-                position: absolute; /* Posición absoluta dentro del contenedor */
-                top: -10px;
+                position: absolute;
+                top: -0px;
                 right: 100px;
                 z-index: 9999; /* Asegura que la imagen esté en el frente */
             }
 
             .encabezado img {
-                width: 85px;
-                height: 85px;
+                width: auto;
+                height: 60px;
             }
 
             /* Estilos en el logo de cerss */
@@ -670,11 +670,10 @@
                 <table align="center">
                     <thead>
                         <tr>
-                            <th colspan="4" style="border: hidden; font-size:12px;" align="center">
+                            <th colspan="4" style="border: hidden; font-size:12px; vertical-align: top;" align="center">
                                 POR <span class="color_dina negrita">"{{$siglas_inst}}"</span>
-                                    <br>
-                                    <br>
-                                    <br>_______________________________________
+                                <br><br><br>
+                                    <span>_______________________________________</span>
                                     <br><span class="color_dina negrita">{{$part_firm_cer1 != null ? $part_firm_cer1[0] : $nombre_titular}}</span>
                                     <br>
                                     <br><span class="color_dina" style="font-weight: normal;">
@@ -687,11 +686,10 @@
                                     </span>
 
                             </th>
-                            <th colspan="4" style="border: hidden; font-size:12px;" align="center">
+                            <th colspan="4" style="border: hidden; font-size:12px; vertical-align: top;" align="center">
                                 POR "EL ICATECH"
-                                    <br>
-                                    <br>
-                                    <br>________________________________________
+                                <br><br><br>
+                                    <span>________________________________________</span>
                                     <br><span class="color_dina negrita">{{$dunidad}}</span>
                                     <br>
                                     <br><span class="color_dina" style="font-weight: normal;">{{$pdunidad}} <br> {{$unidad}}</span>
@@ -705,7 +703,7 @@
                 <table align="center">
                     <thead>
                         <tr>
-                            <th colspan="4" style="border: hidden; font-size:12px;" align="center">
+                            <th colspan="4" style="border: hidden; font-size:12px; vertical-align: top;" align="center">
                                 POR <span class="color_dina negrita">"{{$siglas_inst}}"</span>
                                     <br>
                                     <br>
@@ -722,7 +720,7 @@
 
                                     </span>
                             </th>
-                            <th colspan="4" style="border: hidden; font-size:12px;" align="center">
+                            <th colspan="4" style="border: hidden; font-size:12px; vertical-align: top;" align="center">
                                 POR "EL ICATECH"
                                     <br>
                                     <br>
@@ -748,7 +746,7 @@
                 <table align="center">
                     <thead>
                         <tr>
-                            <th colspan="4" style="border: hidden; font-size:12px;" align="center">
+                            <th colspan="4" style="border: hidden; font-size:12px; vertical-align: top;" align="center">
 
                                     <br>
                                     <br>_______________________________________
@@ -762,7 +760,7 @@
                                         @endif
                                         {{-- {{$part_firm_cer2 != null ? $part_firm_cer2[1] : ''}}</span> --}}
                             </th>
-                            <th colspan="4" style="border: hidden; font-size:12px;" align="center">
+                            <th colspan="4" style="border: hidden; font-size:12px; vertical-align: top;" align="center">
 
                                     <br>
                                     <br>________________________________________
@@ -780,7 +778,7 @@
                 <table align="center">
                     <thead>
                         <tr>
-                            <th colspan="4" style="border: hidden; font-size:12px;" align="center">
+                            <th colspan="4" style="border: hidden; font-size:12px; vertical-align: top;" align="center">
 
                                     <br>
                                     <br>_______________________________________
@@ -788,7 +786,7 @@
                                     <br>
                                     <br><span class="color_dina" style="font-weight: normal;">{{$pvinculacion}}</span><span class="color_dina" style="font-weight: normal;">DE LA UNIDAD DE CAPACTITACIÓN {{$unidad}}</span>
                             </th>
-                            <th colspan="4" style="border: hidden; font-size:12px;" align="center">
+                            <th colspan="4" style="border: hidden; font-size:12px; vertical-align: top;" align="center">
 
                                     <br>
                                     <br>________________________________________
