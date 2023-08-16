@@ -125,7 +125,7 @@ class contratos extends Model
                 # busqueda por unidad capacitacion...
                 if (!empty($tipo_status))
                 {
-                    if($tipo_status == 'En Espera' || $tipo_status == 'Citado')
+                    if($tipo_status == 'En Espera' || $tipo_status == 'VALIDADO')
                     {
                         if($tipo_status == 'En Espera')
                         {
@@ -166,7 +166,7 @@ class contratos extends Model
                 # busqueda por unidad capacitacion...
                 if (!empty($tipo_status))
                 {
-                    if($tipo_status == 'En Espera' || $tipo_status == 'Citado')
+                    if($tipo_status == 'En Espera' || $tipo_status == 'VALIDADO')
                     {
                         return $query->whereDate('pagos.fecha_envio', '>=', $dateini)->whereDate('pagos.fecha_envio', '<=', $datefin)->WHERE('pagos.status_recepcion', '=', $tipo_status);
                     }
@@ -199,14 +199,15 @@ class contratos extends Model
             {
                 if(isset($unidad))
                 {
-                    $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad);
+                    $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad)->WHERE('pagos.status_recepcion', 'VALIDADO');
                 }
                 return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
+                                ->WHERE('pagos.status_recepcion', 'VALIDADO')
                                 ->WHERE('pagos.recepcion',NULL);
             }
         }
         if (!empty($tipo_status)) {
-            if($tipo_status == 'En Espera' || $tipo_status == 'Citado')
+            if($tipo_status == 'En Espera' || $tipo_status == 'VALIDADO')
             {
                 if($tipo_status == 'En Espera')
                 {
