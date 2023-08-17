@@ -87,6 +87,7 @@
                             <option value="fecha_firma">FECHA</option>
                             <option value="mes">MES</option>
                             <option value="agendar_fecha" @if($tipoPago == 'agendar_fecha') selected @endif>LISTOS PARA ENTREGA FISICA</option>
+                            <option value="entregado_fisicamente" @if($tipoPago == 'entregado_fisicamente') selected @endif>ENTREGADO FISICAMENTE</option>
                         </select>
                         <Div id="divmes" name="divmes" class="d-none d-print-none">
                             <select name="mes" class="form-control mr-sm-2" id="mes">
@@ -1248,6 +1249,13 @@
             $('#divcampo').prop("class", "")
         }
         if(inputText == 'LISTOS PARA ENTREGA FISICA')
+        {
+            $('#divstat').prop("class", "form-row d-none d-print-none")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
+            $('#divunidades').prop("class", "")
+            $('#divcampo').prop("class", "form-row d-none d-print-none")
+        }
+        if(inputText == 'ENTREGADO FISICAMENTE')
         {
             $('#divstat').prop("class", "form-row d-none d-print-none")
             $('#divmes').prop("class", "form-row d-none d-print-none")
