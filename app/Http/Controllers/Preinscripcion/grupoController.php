@@ -342,7 +342,7 @@ class grupoController extends Controller
     public function update(Request $request)
     {
         //dd($request->all());
-        if ($_SESSION['folio_grupo']) {            
+        if ($_SESSION['folio_grupo']) {
 
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
