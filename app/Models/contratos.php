@@ -205,6 +205,16 @@ class contratos extends Model
                                 ->WHERE('pagos.status_recepcion', 'VALIDADO')
                                 ->WHERE('pagos.recepcion',NULL);
             }
+            if($tipo == 'entregado_fisicamente')
+            {
+                if(isset($unidad))
+                {
+                    $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad);
+                }
+                return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
+                                ->WHERE('pagos.status_recepcion', 'VALIDADO')
+                                ->WHERE('pagos.recepcion','!=',NULL);
+            }
         }
         if (!empty($tipo_status)) {
             if($tipo_status == 'En Espera' || $tipo_status == 'VALIDADO')
