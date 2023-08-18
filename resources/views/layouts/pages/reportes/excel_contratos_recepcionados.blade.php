@@ -68,13 +68,14 @@
                 $no_memo = explode('/',$cadwell->numero_contrato);
                 switch ($cadwell->status_recepcion)
                 {
-                    case 'Citado':
-                        $status = 'Citado para entrega fisica';
-                        $status_estilo = $azestilo;
-                    break;
-                    case 'Recibido':
-                        $status = 'Entrega Fisica Recibida';
-                        $status_estilo = $azestilo;
+                    case 'VALIDADO':
+                        if(is_null($cadwell->recepcion)) {
+                            $status = 'Entrega Fisica Recibida';
+                            $status_estilo = $azestilo;
+                        } else {
+                            $status = 'Validado y listo para entrega fisica';
+                            $status_estilo = $azestilo;
+                        }
                     break;
                     case  'Rechazado':
                         $status = 'Documentacion Digital Rechazada';
