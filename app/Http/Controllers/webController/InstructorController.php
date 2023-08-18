@@ -174,7 +174,7 @@ class InstructorController extends Controller
             {
                 foreach($especialidades as $boromir)
                 {
-                    if(isset($boromir->hvalidacion) && $boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO')
+                    if(isset($boromir->hvalidacion) && $boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA')
                     {
                         $arch_sol = end($boromir->hvalidacion)['arch_sol'];
                     }
