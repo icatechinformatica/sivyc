@@ -1117,7 +1117,8 @@ class MetavanceController extends Controller
 
             //Convertir fechas
             $fech_carbon = Carbon::parse($fecha_enviar); // seperador[1] contiene el mes
-            $mes_avance = $mesGlob[$fech_carbon->month-1].'-'.$fech_carbon->day; // Obtenemos
+            // $mes_avance = $mesGlob[$fech_carbon->month-1].'-'.$fech_carbon->day; // Obtenemos
+            $mes_avance = $separador[1];
             $fecha_avance = $fech_carbon->format('d/m/Y');
 
             $pdf = PDF::loadView('vistas_pat.genpdfavance', compact('area_org', 'org', 'funciones', 'procedimientos', 'mes_meta_avance', 'mes_avance', 'fecha_avance'));
@@ -1216,7 +1217,8 @@ class MetavanceController extends Controller
     {
         //Obtenemos los id org, area del usuario quien ingresa
         try {
-            $organismo = Auth::user()->id_organismo;
+            // $organismo = Auth::user()->id_organismo;
+            $organismo = $id_org;
         } catch (\Throwable $th) {
             //throw $th;
             return redirect('/login');
