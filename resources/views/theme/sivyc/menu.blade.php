@@ -326,7 +326,7 @@
                             <a class="dropdown-item" href="{{route('consultas.poa')}}">POA&Autorizados</a>
                         @endcan
                         @can('show.cursos.validados')
-                            <a class="nav-link g-mx-5--lg" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
+                            <a class="dropdown-item" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
                         @endcan
                     </div>
                 </li>
