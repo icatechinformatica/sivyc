@@ -18,6 +18,30 @@
             <div style="text-align: right;width:80%">
                 <label for="titulocontrato"><h1>Formulario de Contrato y Solicitud de Pago</h1></label>
             </div>
+            <hr style="border-color:dimgray">
+            <div class="form-container">
+                <label for="titulocontrato"><h2>Apartado de Instructor</h2></label>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label class="control_label" for="forbanco">Banco</label>
+                        <input class="form-control" type="text" id="banco" name="banco" readonly @if(isset($data->soportes_instructor)) value="{{$data->soportes_instructor->banco}}" @else value={{"$data->banco"}} @endif>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control_label" for="fornocuenta">Numero de cuenta</label>
+                        <input class="form-control" type="text" id="nocuenta" name="nocuenta" readonly @if(isset($data->soportes_instructor)) value="{{$data->soportes_instructor->no_cuenta}}" @else value={{"$data->no_cuenta"}} @endif>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control_label" for="forclabe">Clabe</label>
+                        <input class="form-control" type="text" id="clabe" name="clabe" readonly @if(isset($data->soportes_instructor)) value="{{$data->soportes_instructor->interbancaria}}" @else value={{"$data->interbancaria"}} @endif>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control_label" for="forshow_banco">Archivo</label>
+                        <a class="nav-link form-control" style="border: none !important;" target="_blank" title="Archivo de Banco" id="show_banco" name="show_banco" @if(isset($data->soportes_instructor)) href="{{$data->soportes_instructor->archivo_bancario}}" @else href={{"$data->archivo_bancario"}} @endif>
+                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" style="margin: 0; padding: 0;" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
              <hr style="border-color:dimgray">
              <div style="text-align: right;width:60%">
                 <label for="titulocontrato"><h2>Apartado de Contrato</h2></label>

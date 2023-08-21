@@ -245,6 +245,15 @@
                             @endswitch
                         </td>
                         <td style="font-size: 13px">
+                            @php
+                                if(isset($itemData->soportes_instructor)){
+                                    $itemData->soportes_instructor = json_decode($itemData->soportes_instructor);
+                                    $itemData->archivo_ine = $itemData->soportes_instructor->archivo_ine;
+                                    $itemData->archivo_rfc = $itemData->soportes_instructor->archivo_rfc;
+                                    $itemData->archivo_bancario = $itemData->soportes_instructor->archivo_bancario;
+                                    $itemData->archivo_domicilio = $itemData->soportes_instructor->archivo_domicilio;
+                                }
+                            @endphp
                             @if($itemData->status_recepcion == 'VALIDADO' && isset($itemData->recepcion))
                                 Documentacion Validada
                                 Entregado: {{$itemData->recepcion}}

@@ -202,12 +202,15 @@ class ContratoController extends Controller
         // dd($contrato);
         $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
                             'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad',
-                            'tbl_cursos.curso','tbl_cursos.clave_especialidad','tbl_cursos.espe','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                            'instructores.apellidoMaterno','instructores.id','instructores.archivo_alta')
+                            'tbl_cursos.curso','tbl_cursos.clave_especialidad','tbl_cursos.espe','tbl_cursos.soportes_instructor','instructores.nombre AS insnom',
+                            'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.id','instructores.archivo_alta','instructores.banco',
+                            'instructores.no_cuenta','instructores.interbancaria','instructores.archivo_bancario')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->FIRST();
+        $data->soportes_instructor = json_decode($data->soportes_instructor);
+        // dd($data->soportes_instructor->banco);
         $data->unidad = DB::table('tbl_unidades')->WHERE('unidad', $data->unidad)->VALUE('ubicacion');
 
         $especialidad_seleccionada = DB::Table('especialidad_instructores')
