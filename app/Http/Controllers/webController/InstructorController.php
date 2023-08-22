@@ -23,6 +23,7 @@ use App\Models\Inscripcion;
 use App\Models\localidad;
 use App\Models\Calificacion;
 use App\Models\tbl_curso;
+use App\Models\banco;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -262,8 +263,9 @@ class InstructorController extends Controller
     {
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
+        $bancos = banco::all();
 
-        return view('layouts.pages.frminstructor', compact('lista_civil','estados'));
+        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos'));
     }
 
     #----- instructor/guardar -----#
@@ -323,6 +325,8 @@ class InstructorController extends Controller
         $idestnac = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad_nacimiento)->FIRST();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
                         ->ORDERBY('muni','ASC')->GET();
+        $bancos = banco::all();
+
         if(isset($idestnac->id))
         {
             $municipios_nacimiento = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idestnac->id)
@@ -391,7 +395,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
         // dd($nrevisionlast);
-        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast'));
+        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos'));
     }
 
     public function send_to_dta(Request $request)
@@ -1567,6 +1571,8 @@ class InstructorController extends Controller
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $instructor_perfil = new InstructorPerfil();
+        $bancos = banco::all();
+
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
             $datainstructor = NULL;
@@ -1687,7 +1693,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
 
-        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser'));
+        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos'));
     }
 
     public function save_ins(Request $request)
