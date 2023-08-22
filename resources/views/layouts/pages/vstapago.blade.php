@@ -902,7 +902,7 @@
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
-                                        <input style='display:none;' type="file" accept="application/pdf" id="factura_xml" name="factura_xml" hidden>
+                                        <input style='display:none;' type="file" accept="application/xml" id="factura_xml" name="factura_xml" hidden>
                                         <label for="factura_xml">
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;

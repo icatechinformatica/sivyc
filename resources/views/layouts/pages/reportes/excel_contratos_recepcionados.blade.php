@@ -92,6 +92,7 @@
                 <td style="{{$td}}">{{$cadwell->fecha_status}}</td>
                 <td style="{{$td}}">{{$no_memo[3]}}</td>
                 <td style="{{$td}}">{{$cadwell->clave}}</td>
+
                 <td style="{{$status_estilo}}">{{$status}}</td>
                 <td style="{{$td}}">{{$cadwell->fecha_firma}}</td>
                 <td style="{{$td}}">{{$cadwell->nombre}}</td>

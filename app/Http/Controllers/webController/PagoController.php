@@ -417,10 +417,11 @@ class PagoController extends Controller
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
             // ->WHERE('pagos.recepcion', '!=', NULL)
             ->WHERE('pagos.status_recepcion', '!=', 'Rechazado')
+            // ->WHERE('pagos.status_recepcion', '!=', 'En Espera')
             ->WHEREBETWEEN('contratos.fecha_status', [$request->fecha1, $request->fecha2])
             // ->WHERE('pagos.historial','!=',null)
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
-            ->GET();
+            ->GET();dd($data);
             // dd(json_decode($data[7]->historial));
         $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
         $title = "DOCUMENTOS RECEPCIONADOS";
