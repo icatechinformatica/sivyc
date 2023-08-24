@@ -318,6 +318,13 @@
                                     @break
                                 @endswitch
                             @endif
+                            @if ($itemData->status_recepcion == 'recepcion tradicional')
+                                @can('contrato.validate')
+                                    <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
+                                        Retornar Recepción
+                                    </a>
+                                @endcan
+                            @endif
                         </td>
                         @if (!is_null($itemData->status_recepcion))
                             <td style="font-size: 13px">
