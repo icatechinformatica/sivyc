@@ -23,7 +23,7 @@ use App\Models\Inscripcion;
 use App\Models\localidad;
 use App\Models\Calificacion;
 use App\Models\tbl_curso;
-use App\Models\banco;
+use App\Models\Banco;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -263,7 +263,7 @@ class InstructorController extends Controller
     {
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
-        $bancos = banco::all();
+        $bancos = Banco::all();
 
         return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos'));
     }
@@ -325,7 +325,7 @@ class InstructorController extends Controller
         $idestnac = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad_nacimiento)->FIRST();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
                         ->ORDERBY('muni','ASC')->GET();
-        $bancos = banco::all();
+        $bancos = Banco::all();
 
         if(isset($idestnac->id))
         {
@@ -1571,7 +1571,7 @@ class InstructorController extends Controller
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $instructor_perfil = new InstructorPerfil();
-        $bancos = banco::all();
+        $bancos = Banco::all();  
 
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
