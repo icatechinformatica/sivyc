@@ -923,73 +923,81 @@ class PagoController extends Controller
 
         $updarray = $arrhistorial = array();
         $update = pago::WHERE('id_contrato',$request->id_retorno_recepcion)->first();
-        $archivos = DB::TABLE('contratos')
-            ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
-            'instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
-            ->WHERE('contratos.id_contrato', $request->id_retorno_recepcion)
-            ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
-            ->JOIN('folios','folios.id_folios','contratos.id_folios')
-            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
-            ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
-            ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')->FIRST();
+        if($update->status_recepcion == 'recepcion tradicional') {
+            $contrato_id = DB::TABLE('contratos')->WHERE('contratos.id_contrato', $update->id_contrato)->VALUE('id_folios');
+            $folio_rt = folio::FIND($contrato_id);
+            $folio_rt->status = 'Capturando';
+            $folio_rt->save();
 
-        $especialidad_seleccionada = DB::Table('especialidad_instructores')
-            ->SELECT('especialidad_instructores.id','especialidades.nombre')
-            ->WHERE('especialidad_instructores.id_instructor',$archivos->id_instructor)
-            ->WHERE('especialidades.nombre', '=', $archivos->espe)
-            ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
-            ->FIRST();
+        } else {
+            $archivos = DB::TABLE('contratos')
+                ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
+                'instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
+                ->WHERE('contratos.id_contrato', $request->id_retorno_recepcion)
+                ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
+                ->JOIN('folios','folios.id_folios','contratos.id_folios')
+                ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+                ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
+                ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')->FIRST();
 
-        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
-            ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
-        if(isset($memoval))
-        {
-            foreach($memoval as $me)
+            $especialidad_seleccionada = DB::Table('especialidad_instructores')
+                ->SELECT('especialidad_instructores.id','especialidades.nombre')
+                ->WHERE('especialidad_instructores.id_instructor',$archivos->id_instructor)
+                ->WHERE('especialidades.nombre', '=', $archivos->espe)
+                ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+                ->FIRST();
+
+            $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+                ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+            if(isset($memoval))
             {
-                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                foreach($memoval as $me)
                 {
-                    $archivos->instructor_mespecialidad = $me['arch_val'];
-                    break;
+                    if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                    {
+                        $archivos->instructor_mespecialidad = $me['arch_val'];
+                        break;
+                    }
                 }
             }
-        }
-        else
-        {
-            $archivos->instructor_mespecialidad = $archivos->archivo_alta;
-        }
+            else
+            {
+                $archivos->instructor_mespecialidad = $archivos->archivo_alta;
+            }
 
-        $update->status_recepcion = 'Rechazado';
-        $update->recepcion = null;
-        $updarray = ['status' => 'Retorno de Validacion',
-                     'observacion' => $update->observacion_rechazo_recepcion,
-                     'fecha_retorno' => carbon::now()->format('d-m-Y'),
-                     'solicitud_pago' => $update->arch_solicitud_pago,
-                     'cuenta_bancaria' => $archivos->archivo_bancario,
-                     'validacion_instructor' => $archivos->instructor_mespecialidad,
-                     'arc' => $archivos->pdf_curso,
-                     'valsupre' => $archivos->doc_validado,
-                     'factura_pdf' => $archivos->arch_factura,
-                     'factura_xml' => $archivos->arch_factura_xml,
-                     'contrato' => $archivos->arch_contrato,
-                     'identificacion' => $archivos->archivo_ine,
-                     'asistencia' => $update->arch_asistencia,
-                     'calificacion' => $update->arch_calificaciones,
-                     'evidencia' => $update->arch_evidencia,
-                     'usuario_retorno' => Auth::user()->name,];
-
+            $update->status_recepcion = 'Rechazado';
+            $update->recepcion = null;
+            $updarray = ['status' => 'Retorno de Validacion',
+                        'observacion' => $update->observacion_rechazo_recepcion,
+                        'fecha_retorno' => carbon::now()->format('d-m-Y'),
+                        'solicitud_pago' => $update->arch_solicitud_pago,
+                        'cuenta_bancaria' => $archivos->archivo_bancario,
+                        'validacion_instructor' => $archivos->instructor_mespecialidad,
+                        'arc' => $archivos->pdf_curso,
+                        'valsupre' => $archivos->doc_validado,
+                        'factura_pdf' => $archivos->arch_factura,
+                        'factura_xml' => $archivos->arch_factura_xml,
+                        'contrato' => $archivos->arch_contrato,
+                        'identificacion' => $archivos->archivo_ine,
+                        'asistencia' => $update->arch_asistencia,
+                        'calificacion' => $update->arch_calificaciones,
+                        'evidencia' => $update->arch_evidencia,
+                        'usuario_retorno' => Auth::user()->name,];
 
 
-        if(!isset($update->historial))
-        {
-            array_push($arrhistorial,$updarray);
+
+            if(!isset($update->historial))
+            {
+                array_push($arrhistorial,$updarray);
+            }
+            else
+            {
+                $arrhistorial = $update->historial;
+                array_push($arrhistorial,$updarray);
+            }
+            $update->historial = $arrhistorial;
+            $update->save();
         }
-        else
-        {
-            $arrhistorial = $update->historial;
-            array_push($arrhistorial,$updarray);
-        }
-        $update->historial = $arrhistorial;
-        $update->save();
         return redirect()->route('pago-inicio')
                 ->with('success', 'Valdiación de Documentos Digitales Retornado Correctamente');
     }
