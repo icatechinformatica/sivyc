@@ -182,6 +182,10 @@
                                             @else
                                                 <span class="">Sin movimiento</span>
                                             @endif
+                                            <a class="btn-transparent" id=""
+                                                href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}" target="_blank">
+                                                <i class="fa fa-arrow-circle-o-right" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
+                                            </a>
                                         </td>
                                         <td>
                                             {{-- validacion v2 --}}
@@ -289,6 +293,10 @@
                                             @else
                                                 <span class="">Sin movimiento</span>
                                             @endif
+                                            <a class="btn-transparent" id=""
+                                                    href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}" target="_blank">
+                                                    <i class="fa fa-arrow-circle-o-right" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
+                                            </a>
                                         </td>
                                         <td>
                                             {{-- Otra validacion nueva --}}

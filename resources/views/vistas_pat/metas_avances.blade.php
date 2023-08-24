@@ -11,146 +11,167 @@
             box-sizing: border-box;
         }
 
-        .tabla-contenedor {
-            /* overflow: auto;
-            max-height: 100%; */
-            }
-            /* table {
-            table-layout: fixed;
-            width: 160%!important;
-            } */
-            /* th, td {
-            width: 60%;
-            padding-left: 6px !important;
-            } */
+        /* Estilo del loader */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+            z-index: 9999; /* Asegura que esté por encima de otros elementos */
+            display: none; /* Ocultar inicialmente */
+        }
 
-            #loco{
-                width: 12%;
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
             }
-            #tabla thead tr th{
-                padding: 3px;
-                margin: 0px;
-                vertical-align: middle;
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
             }
-            #tabla tbody tr td{
-                padding: 3px;
-                margin: 0px;
-                vertical-align: middle;
-                /* font-size: 12px; */
-            }
+        }
 
-            #tabla input {
-                width: 28px;
-                padding-left: 7px !important;
-                border: none;
-                background-color: transparent !important;
-            }
-            #tabla textarea {
-                border: none;
-                background-color: transparent !important;
-            }
-            .diagonal {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                transform: rotate(-45deg);
-                /* transform-origin: top left; */
-            }
-            .letter {
-                width: 6px;
-                text-align: center;
-            }
-            /* tamaño del input busqueda */
-            #busqueda_funcion{
-                width: 40% !important;
-            }
-            .color_car {
-                background-color: #880e4f;
-            }
-            .fa-heart {
+        #tabla thead tr th{
+            padding: 3px;
+            margin: 0px;
+            vertical-align: middle;
+        }
+        #tabla tbody tr td{
+            padding: 3px;
+            margin: 0px;
+            vertical-align: middle;
+            /* font-size: 12px; */
+        }
+
+        #tabla input {
+            width: 28px;
+            padding-left: 7px !important;
+            border: none;
+            background-color: transparent !important;
+        }
+        #tabla textarea {
+            border: none;
+            background-color: transparent !important;
+        }
+        .diagonal {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            transform: rotate(-45deg);
+            /* transform-origin: top left; */
+        }
+        .letter {
+            width: 6px;
+            text-align: center;
+        }
+        /* tamaño del input busqueda */
+        #busqueda_funcion{
+            width: 40% !important;
+        }
+        .color_car {
+            background-color: #880e4f;
+        }
+        .fa-heart {
+        color: white;
+        }
+
+        .card-header{
+            font-variant: small-caps;
+            background-color: #621132;
             color: white;
-            }
+            margin: 1.7% 1.7% 1% 1.7%;
+            padding: 1.3% 39px 1.3% 39px;
+            font-style: normal;
+            font-size: 22px;
+        }
 
-            .card-header{
-                font-variant: small-caps;
-                background-color: #621132;
-                color: white;
-                margin: 1.7% 1.7% 1% 1.7%;
-                padding: 1.3% 39px 1.3% 39px;
-                font-style: normal;
-                font-size: 22px;
-            }
+        .card-body{
+            margin: 1%;
+            margin-left: 1.7%;
+            margin-right: 1.7%;
+            /* padding: 55px; */
+            -webkit-box-shadow: 0 8px 6px -6px #999;
+            -moz-box-shadow: 0 8px 6px -6px #999;
+            box-shadow: 0 8px 6px -6px #999;
+        }
+        .card-body.card-msg{
+            background-color: yellow;
+            margin: .5% 1.7% .5% 1.7%;
+            padding: .5% 5px .5% 25px;
+        }
 
-            .card-body{
-                margin: 1%;
-                margin-left: 1.7%;
-                margin-right: 1.7%;
-                /* padding: 55px; */
-                -webkit-box-shadow: 0 8px 6px -6px #999;
-                -moz-box-shadow: 0 8px 6px -6px #999;
-                box-shadow: 0 8px 6px -6px #999;
-            }
-            .card-body.card-msg{
-                background-color: yellow;
-                margin: .5% 1.7% .5% 1.7%;
-                padding: .5% 5px .5% 25px;
-            }
+        body { background-color: #E6E6E6; }
 
-            body { background-color: #E6E6E6; }
+        .btn, .btn:focus{ color: white; background: #12322b; font-size: 14px; border-color: #12322b; margin: 0 5px 0 5px; padding: 10px 13px 10px 13px; }
+        .btn:hover { color: white; background:#2a4c44; border-color: #12322b; }
 
-            .btn, .btn:focus{ color: white; background: #12322b; font-size: 14px; border-color: #12322b; margin: 0 5px 0 5px; padding: 10px 13px 10px 13px; }
-            .btn:hover { color: white; background:#2a4c44; border-color: #12322b; }
+        /* Se agrega cuando el usuario este inacitvo */
+        .fondo_celda {
+            /* rgb(129, 129, 134); */
+            background-color:  #d4d4d4;
+        }
+        .colortext{
+            color: #8b8888;
+            font-weight: bold;
+        }
+        /* cuando el usuario este activo */
+        .activo_celda {
+            /* background-color: #ffff; */
+        }
+        .texto_activo{
+            color: #000;
+            font-weight: bold;
+        }
+        /* de la caja que muestra la fecha */
+        .fondo_fecha{
+            background-color: #5f0f30;
+        }
+        /*Deshabilitamos la parte de forzar mayusculas*/
+        input[type=text],
+        select,
+        textarea {
+            text-transform: none !important;
+        }
+        /* Estilo de la tabla */
+        .table-container {
+            max-height: 500px;
+            overflow-y: scroll;
+        }
 
-            /* Se agrega cuando el usuario este inacitvo */
-            .fondo_celda {
-                /* rgb(129, 129, 134); */
-                background-color:  #d4d4d4;
-            }
-            .colortext{
-                color: #8b8888;
-                font-weight: bold;
-            }
-            /* cuando el usuario este activo */
-            .activo_celda {
-                /* background-color: #ffff; */
-            }
-            .texto_activo{
-                color: #000;
-                font-weight: bold;
-            }
-            /* de la caja que muestra la fecha */
-            .fondo_fecha{
-                background-color: #5f0f30;
-            }
-            /*Deshabilitamos la parte de forzar mayusculas*/
-            input[type=text],
-            select,
-            textarea {
-                text-transform: none !important;
-            }
-            /* Estilo de la tabla */
-            .table-container {
-                max-height: 500px;
-                overflow-y: scroll;
-            }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-            .table-container table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            .table-container thead {
-                position: sticky;
-                top: 0;
-                background-color: #a19f9f;
-                color: #1a1919;
-                font-weight: bold;
-            }
+        .table-container thead {
+            position: sticky;
+            top: 0;
+            background-color: #a19f9f;
+            color: #1a1919;
+            font-weight: bold;
+        }
 
     </style>
 
 
-    {{-- <link rel="stylesheet" href="{{asset('css/global.css') }}" /> --}}
+    {{-- Loader --}}
+    <div id="loader-overlay">
+        <div id="loader"></div>
+    </div>
+
     <div class="card-header">
         @if (isset($dif_perfil))
             Validación de Metas y Avances PAT
@@ -161,12 +182,7 @@
 
     <div class="card card-body" style="min-height:450px;">
         <div class="">
-            {{-- container-fluid px-5 g-pt-30 --}}
-            {{-- @if ($message = Session::get('success'))
-                <div class="alert alert-success">
-                    <p>{{ $message }}</p>
-                </div>
-            @endif --}}
+
             {{-- Mostrar horario --}}
             <div class="alert alert-info py-1" role="alert">
                 <strong>PERIODO DE ENTREGA</strong>
@@ -183,6 +199,19 @@
                 @endif
             </div>
 
+            {{-- contenedor del select de organismos cuando son mas de uno --}}
+            {{-- @if (isset($array_organismos) && count($array_organismos) > 1)
+            <div class="col-12 px-0 mb-2">
+                <div class="col-12 col-lg-5 px-0">
+                    <select name="org_new" id="org_new" class="form-control" onchange="cambiar_organismo()">
+                        @foreach ($array_organismos as $arrItem)
+                            <option {{$organismo == $arrItem->id ? 'selected' : ''}} value="{{$arrItem->id}}">{{$arrItem->nombre}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            @endif --}}
+
             {{-- DATOS MOSTRADOS DESPUES DEL ENCABEZADO --}}
             <div class="row">
                 <div class="col-lg-12 row">
@@ -193,12 +222,25 @@
                                     <b><span class="badge badge-success">Planeación</span></b>
                                 </div>
                             @endif
+
+                            {{-- contenedor del select de organismos cuando son mas de uno --}}
+                            @if (isset($array_organismos) && count($array_organismos) > 1)
+                                <div class="mb-2 col-12 px-0">
+                                    <select name="org_new" id="org_new" class="form-control" onchange="cambiar_organismo()">
+                                        @foreach ($array_organismos as $arrItem)
+                                            <option {{$organismo == $arrItem->id ? 'selected' : ''}} value="{{$arrItem->id}}">{{$arrItem->nombre}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
                             <div class="pull-left">
                                 <h5><b>Dirección :</b> {{isset($org->nombre) ? $org->nombre : ''}}</h5>
                             </div>
                             <div class="pull-left">
                                 <h5><b>Area/Depto :</b> {{isset($area_org->nombre) ? $area_org->nombre : ''}}</h5>
                             </div>
+
                             {{-- Muestra la fecha dando click --}}
                             {{-- <a tabindex="0" class="btn-circle btn-circle-sm" role="button"
                                 data-toggle="popover" data-trigger="focus" title="Fechas de llenado"
@@ -212,21 +254,6 @@
                                 ">
                             <i class="fa fa-calendar fa-2x mt-1 fa-heart" aria-hidden="true" style="color: #5f0f30;"></i>
                             </a> --}}
-                            {{-- Muestra la fecha de inicio y termino --}}
-                            {{-- <span class="badge fondo_fecha mt-3">
-                                <span class="d-block text-left pt-1"><u>Periodo de Entrega</u></span>
-                                @if($datos_status_meta[0] == 'activo')
-                                    <p class="my-2"> ({{$datos_status_meta[3][0]}}) al ({{$datos_status_meta[3][1]}})</p>
-                                @endif
-
-                                @if($datos_status_avance[0] == 'activo')
-                                    <p class="my-2">({{$datos_status_avance[3][0]}}) al ({{$datos_status_avance[3][1]}})</p>
-                                @endif
-
-                                @if ($datos_status_meta[0] == 'inactivo' && $datos_status_avance[0] == 'inactivo')
-                                    <p class="my-2">Inactivo</p>
-                                @endif
-                            </span> --}}
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -676,6 +703,11 @@
                 }
 
            });
+            function loader(make) {
+                if(make == 'hide') make = 'none';
+                if(make == 'show') make = 'block';
+                document.getElementById('loader-overlay').style.display = make;
+            }
 
             function confirmacionMeta(tipo_accion) {
                 switch (tipo_accion) {
@@ -1223,6 +1255,21 @@
                 console.log(link);
                 window.open(link, "_blank");
             }
+
+            function cambiar_organismo() {
+                loader('show');
+                let id_org = document.getElementById("org_new").value;
+                let url = "{{ route('pat.metavance.mostrar', [':idorg']) }}";
+                url = url.replace(':idorg', id_org);
+                window.open(url, "_self");
+            }
+            // function cambiar_organismo_plane() {
+            //     loader('show');
+            //     let id_org = document.getElementById("org_new_plane").value;
+            //     let url = "{{ route('pat.metavance.envioplane', [':id']) }}";
+            //     url = url.replace(':id', id_org);
+            //     window.open(url, "_self");
+            // }
 
         </script>
         @endsection

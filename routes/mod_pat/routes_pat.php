@@ -46,7 +46,7 @@ Route::post('/vista/pat/procedimientos/auto', 'PatController\ProcedController@au
 
 
 /**Metas y avances*/
-Route::get('/vista/pat/metasav/', 'PatController\MetavanceController@index')->name('pat.metavance.mostrar')->middleware('can:metasavances.index');
+Route::get('/vista/pat/metasav/{idorg?}', 'PatController\MetavanceController@index')->name('pat.metavance.mostrar')->middleware('can:metasavances.index');
 //Agregar datos metas
 Route::post('/vista/pat/metasav/guardar/meta/', 'PatController\MetavanceController@store')->name('pat.metavance.guardar.meta');
 //Agregar datos avances
@@ -95,3 +95,4 @@ Route::post('/preinscripcion/grupo/pdfconvenio', 'Preinscripcion\grupoController
 //Subir al serv pdf de avances por mes
 Route::post('/preinscripcion/grupo/uploadacta/firmacta', 'Preinscripcion\grupoController@pdf_acta_firm')->name('preinscripcion.grupo.firmactapdf');
 Route::post('/preinscripcion/grupo/uploadconv/firconv', 'Preinscripcion\grupoController@pdf_conv_firm')->name('preinscripcion.grupo.firmconvpdf');
+
