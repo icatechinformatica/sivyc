@@ -60,7 +60,7 @@ class instructor extends Model
 
         if (!empty($tipo)){
             # entramos y validamos
-            if (!empty(trim($buscar))){                
+            if (!empty(trim($buscar))){
                 # empezamos
                 switch ($tipo) {
                     case 'clave_instructor':
@@ -89,7 +89,7 @@ class instructor extends Model
             }
             if(!empty($tipo_especialidad))
             {
-                return $query->where( 'especialidad_instructores.especialidad_id', $tipo_especialidad)->WHERE('especialidad_instructores.status','VALIDADO')->JOIN('especialidad_instructores','especialidad_instructores.id_instructor','=','instructores.id');
+                return $query->where( 'especialidad_instructores.especialidad_id', $tipo_especialidad)->WHERE('especialidad_instructores.status','VALIDADO');
             }
         }
     }
