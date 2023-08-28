@@ -25,8 +25,9 @@ class ProcedController extends Controller
                 $organismo = $idorg;
             }
             else{
-                // $organismo = Auth::user()->id_organismo;
-                $organismo = Auth::user()->id_organismo;
+                $json_org = Auth::user()->id_organismos_json;
+                $array_org = json_decode($json_org, true);
+                $organismo = $json_org[0];
             }
         } catch (\Throwable $th) {
             //throw $th;

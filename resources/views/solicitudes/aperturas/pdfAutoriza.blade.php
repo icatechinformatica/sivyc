@@ -89,7 +89,7 @@
                  <th style="padding: 0px;" rowspan="2" >FECHA DE<br>INICIO</th>
                  <th style="padding: 0px;" rowspan="2" >FECHA DE<br>TÉRMINO</th>
                  <th style="padding: 0px;" rowspan="2" >HORARIO</th>
-                 <th style="padding: 0px;" rowspan="2" >DIAS</th>
+                 <th style="padding: 0px;" rowspan="2" width='8%'>DIAS</th>
                  <th style="padding: 0px;" rowspan="2" >C<br>U<br>P<br>O</th>
                  <th style="padding: 0px;" rowspan="2" width="8%" >INSTRUCTOR</th>
                  <th style="padding: 0px;" rowspan="2" >CRITE<br>RIO<br>DE<br>PAGO</th>
