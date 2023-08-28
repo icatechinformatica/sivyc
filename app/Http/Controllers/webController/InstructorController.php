@@ -81,7 +81,7 @@ class InstructorController extends Controller
                 DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia")
             ]);
 
-        $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->GET();
+        $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
     }
 
@@ -1571,7 +1571,7 @@ class InstructorController extends Controller
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $instructor_perfil = new InstructorPerfil();
-        $bancos = Banco::all();  
+        $bancos = Banco::all();
 
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
