@@ -25,10 +25,10 @@
                 align-items: center;
                 justify-content: center;
                 position: fixed;
-                top: 1700px;
+                top: 30%;
                 right: 0;
                 bottom: 0;
-                left: 1100px;
+                left: 10%;
                 transform: rotate(-25deg);
                 }
             </style>
