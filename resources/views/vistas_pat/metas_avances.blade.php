@@ -778,56 +778,58 @@
                 let regex = /^[0-9]+$/;
 
                 //ciclo para ir guardando los datos de todos los eses por cada registro
+                let valorInt = 0;
                 for (var i = 0; i < inputs.length; i++) {
                     if (inputs[i].value != "" && regex.test(inputs[i].value)) {
                         palabrasSeparadas = inputs[i].name.split("_");
 
+                        valorInt = parseInt(inputs[i].value); //convertimos a entero el valor
                         if (palabrasSeparadas[0] == "enero") {
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                             enero.push(palabrasSeparadas);
 
                         }else if(palabrasSeparadas[0] == "febrero"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            febrero.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "marzo"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            marzo.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "abril"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            abril.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "mayo"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            mayo.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "junio"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            junio.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "julio"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            julio.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "agosto"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            agosto.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "septiembre"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            septiembre.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "octubre"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            octubre.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "noviembre"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            noviembre.push(palabrasSeparadas);
                         }
                         else if(palabrasSeparadas[0] == "diciembre"){
-                            palabrasSeparadas.push(inputs[i].value);
+                            palabrasSeparadas.push(valorInt);
                            diciembre.push(palabrasSeparadas);
                         }
                     }else{
@@ -899,6 +901,7 @@
                 //VERIFICA SI LOS CAMPOS MARCADOS ESTAN VACIOS
                 let valAreaDesv = validAreaDesv(validDesv[0]);
                 let regex = /^[0-9]+$/;
+                let valorInt = 0;
 
                 //CONDICION (validDesv[1] true si hay desviacion, valAreaDesv == true si esta lleno el campo)
                 if (valAreaDesv != false) {
@@ -907,7 +910,8 @@
                         if (inputs[i].value != "" && regex.test(inputs[i].value)) {
                             palabrasSeparadas = inputs[i].name.split("-");
                             if (palabrasSeparadas[0] == mes_activo) {
-                                valores = [palabrasSeparadas[0], palabrasSeparadas[1], palabrasSeparadas[2], inputs[i].value];
+                                valorInt = parseInt(inputs[i].value);//convertimos a entero los valores
+                                valores = [palabrasSeparadas[0], palabrasSeparadas[1], palabrasSeparadas[2], valorInt];
                                 array_avance.push(valores);
                             }
                         }else{
