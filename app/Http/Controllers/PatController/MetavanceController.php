@@ -83,7 +83,9 @@ class MetavanceController extends Controller
                   ->where('id_parent', '=', $val)
                   ->where('activo', '=', 'true')
                   ->where(DB::raw("date_part('year' , created_at )"), '=', $obtAnio);
-            })->get();
+            })
+            ->orderBy('f.id')
+            ->get();
             array_push($datos, $funciones[$i]['fun_proc'], $proced);
         }
 
