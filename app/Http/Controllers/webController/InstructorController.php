@@ -147,7 +147,7 @@ class InstructorController extends Controller
                 $especialidades = $this->make_collection($data->data_especialidad);
                 foreach($especialidades as $moist)
                 {
-                    if($moist->status != 'VALIDADO' || $moist->status != 'BAJA')
+                    if($moist->status != 'VALIDADO' && $moist->status != 'BAJA')
                     {
                         $chk_mod_espec = TRUE;
                     }
