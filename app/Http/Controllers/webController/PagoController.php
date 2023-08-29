@@ -421,7 +421,7 @@ class PagoController extends Controller
             ->WHEREBETWEEN('contratos.fecha_status', [$request->fecha1, $request->fecha2])
             // ->WHERE('pagos.historial','!=',null)
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
-            ->GET();dd($data);
+            ->GET();
             // dd(json_decode($data[7]->historial));
         $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
         $title = "DOCUMENTOS RECEPCIONADOS";

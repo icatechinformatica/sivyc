@@ -505,6 +505,7 @@ class supreController extends Controller
             $idcontrato = contratos::SELECT('id_contrato')->WHERE('id_folios', '=', $item->id_folios)->FIRST();
             if($idcontrato != NULL)
             {
+                pago::WHERE('id_contrato', $idcontrato->id_contrato)->DELETE();
                 contrato_directorio::WHERE('id_contrato', '=', $idcontrato->id_contrato)->DELETE();
                 contratos::where('id_folios', '=', $item->id_folios)->DELETE();
             }
