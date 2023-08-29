@@ -213,6 +213,13 @@ $(function(){
         $('#confirm_restart').attr("href","/supre/reiniciar/" + id);
     });
 
+    //Modal de cancelacion de supre en supre
+    $('#cancelModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#confirm_cancel').attr("href","/supre/eliminar/" + id);
+    });
+
     //Modal de reincio de Contrato
     $('#restartModalContrato').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
