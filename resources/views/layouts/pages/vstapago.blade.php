@@ -307,7 +307,14 @@
                                         @endcan
                                     @break
                                     @case('recepcion tradicional')
-                                            LA ENTREGA SERA POR RECEPCION TRADICIONAL
+                                        LA ENTREGA SERA POR RECEPCION TRADICIONAL
+                                        @if(is_null($itemData->arch_contrato))
+                                            @can('contratos.create')
+                                                <a class="btn btn-info" id="subir_contrato_rezagado" name="subir_contrato_rezagado" data-toggle="modal" data-placement="top" data-target="#subirContratoRezagadoModal" data-id='["{{$itemData->id_contrato}}"]'>
+                                                    SUBIR CONTRATO
+                                                </a>
+                                            @endcan
+                                        @endif
                                     @break
                                     @default
                                         @can('contratos.create')
@@ -1207,6 +1214,37 @@
     </div>
 </div>
 <!-- END -->
+<!-- Modal Subir Contrato Rezagado-->
+<div class="modal fade" id="subirContratoRezagadoModal" role="dialog">
+    <div class="modal-dialog">
+        <form method="POST" enctype="multipart/form-data" action="{{ route('subir-contrato-rezagado') }}" id="doc_pago">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Subir Contrato</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center">
+                    <p>Subir archivo de contrato firmado:</p>
+                    <div class="form-group col-md-2"></div>
+                    <div style="text-align:center" class="form-group col-md-10">
+                        <input type="file" accept="application/pdf" id="contrato_rezagado_doc" name="contrato_rezagado_doc" placeholder="Archivo PDF">
+                        <input id="idcontrato_rezagado" name="idcontrato_rezagado" hidden>
+
+                    </div>
+                    <button type="submit" class="btn btn-danger" >Subir Archivo</button>
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END -->
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/modals.js") }}"></script>
@@ -1401,6 +1439,12 @@
         var id = button.data('id');
         // console.log(id)
         document.getElementById('id_contrato_retorno_recepcion').value = id;
+    });
+    $('#subirContratoRezagadoModal').on('show.bs.modal', function(event){
+        // console.log('hola');
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        document.getElementById('idcontrato_rezagado').value = id;
     });
 
     function setAnchorHrefs(idx, ordinario, validacion) {
