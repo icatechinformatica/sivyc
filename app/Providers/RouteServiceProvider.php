@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -44,8 +45,8 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         $this->mapApiRoutes();
-
         $this->mapWebRoutes();
+        $this->mapAdditionalRoutes();
 
         //
     }
@@ -58,15 +59,15 @@ class RouteServiceProvider extends ServiceProvider
      * @return void
      */
     protected function mapWebRoutes()
-    {
+    {        
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(function(){
-                require base_path('routes/web.php');
-                require base_path('routes/dta/dtaroutes.php');
-                require base_path('routes/mod_pat/routes_pat.php');
+                require base_path('routes/web.php');                
              });
+       
     }
+    
 
     /**
      * Define the "api" routes for the application.
@@ -82,4 +83,15 @@ class RouteServiceProvider extends ServiceProvider
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
     }
+    
+    protected function mapAdditionalRoutes()
+    {
+        $routeFiles = File::glob(base_path('routes') . '/*/*.php');        
+        foreach ($routeFiles as $routeFile) {
+            Route::middleware('web')
+                ->namespace($this->namespace)
+                ->group($routeFile);
+        }
+    }
+
 }
