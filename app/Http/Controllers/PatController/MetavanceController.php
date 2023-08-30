@@ -287,7 +287,9 @@ class MetavanceController extends Controller
                   ->where('id_parent', '=', $val)
                   ->where('activo', '=', 'true')
                   ->where(DB::raw("date_part('year' , created_at )"), '=', $obtAnio);
-            })->get();
+            })
+            ->orderBy('f.id')
+            ->get();
             array_push($datos, $funciones[$i]['fun_proc'], $proced);
         }
 
@@ -690,6 +692,11 @@ class MetavanceController extends Controller
         ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
         ->where('o.id', $area_org->id_parent)->first();
 
+        // dd($area_org);
+        #Validacion en caso de que sea dirección
+        $firm_logueado =  array();
+        if($area_org->id_parent == 1) $firm_logueado = array('user'=>Auth::user()->name, 'puesto'=>Auth::user()->puesto);
+
 
         //CONSULTA DE FUNCIONES
         $funciones = Metavance::select('id', 'id_parent', 'fun_proc')
@@ -716,7 +723,9 @@ class MetavanceController extends Controller
                   ->where('id_parent', '=', $val)
                   ->where('activo', '=', 'true') //validar si esta activo
                   ->where(DB::raw("date_part('year' , created_at )"), '=', $obtAnio);
-            })->get();
+            })
+            ->orderBy('f.id')
+            ->get();
 
             array_push($procedimientos, $proced);
         }
@@ -1059,7 +1068,7 @@ class MetavanceController extends Controller
             //Guardamos la fecha antes de la generación
             $fech_carbon = Carbon::parse($fecha_enviar);
             $fecha_meta = $fech_carbon->format('d/m/Y');
-            $pdf = PDF::loadView('vistas_pat.genpdfmeta', compact('area_org', 'org', 'funciones', 'procedimientos', 'fecha_meta', 'marca'));
+            $pdf = PDF::loadView('vistas_pat.genpdfmeta', compact('area_org', 'org', 'funciones', 'procedimientos', 'fecha_meta', 'marca', 'firm_logueado'));
             $pdf->setpaper('letter', 'landscape');
             return $pdf->stream('PAT-ICATECH-002.1.pdf');
 
@@ -1131,7 +1140,7 @@ class MetavanceController extends Controller
             $mes_avance = $separador[1];
             $fecha_avance = $fech_carbon->format('d/m/Y');
 
-            $pdf = PDF::loadView('vistas_pat.genpdfavance', compact('area_org', 'org', 'funciones', 'procedimientos', 'mes_meta_avance', 'mes_avance', 'fecha_avance', 'marca'));
+            $pdf = PDF::loadView('vistas_pat.genpdfavance', compact('area_org', 'org', 'funciones', 'procedimientos', 'mes_meta_avance', 'mes_avance', 'fecha_avance', 'marca', 'firm_logueado'));
             $pdf->setpaper('letter', 'landscape');
             return $pdf->stream('PAT-ICATECH-002.2.pdf');
         }
@@ -1273,7 +1282,9 @@ class MetavanceController extends Controller
                     ->where('id_parent', '=', $val)
                     ->where('activo', '=', 'true') //validar si esta activo
                     ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'));
-            })->get();
+            })
+            ->orderBy('f.id')
+            ->get();
 
             array_push($procedimientos, $proced);
         }
