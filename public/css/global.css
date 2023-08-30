@@ -1,4 +1,4 @@
-/* Elabor� Romelia P�rez Nang�el� - rpnanguelu@gmail.com*/
+/* Elaboro Romelia Perez Nanguelu - rpnanguelu@gmail.com*/
 body { background-color: #E6E6E6; }
 input[type=text], select, textarea {
     text-transform: none;
@@ -26,6 +26,7 @@ input[type=text], select, textarea {
     -webkit-box-shadow: 0 8px 6px -6px #999;
     -moz-box-shadow: 0 8px 6px -6px #999;
     box-shadow: 0 8px 6px -6px #999;
+    min-height:450px;
 }
 
 .card-body.card-msg{
@@ -33,7 +34,7 @@ input[type=text], select, textarea {
     margin: .5% 1.7% .5% 1.7%;
     padding: .5% 5px .5% 25px;
 }
-.row{    margin-bottom: 25px; }
+.row{  margin-bottom: 15px; }
 th{ font-size: 13px; }
 td{ font-size: 13px; }
 
@@ -42,3 +43,4 @@ td{ font-size: 13px; }
 
 .pagination { justify-content: center;   font-size: 12px; }
 .pagination a{ color: #646464;}
+.custom-select-mov { font-size: 16px; }

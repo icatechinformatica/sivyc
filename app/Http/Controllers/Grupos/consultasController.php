@@ -42,7 +42,7 @@ class consultasController extends Controller
                 else $data = $data->where('clave',$clave);
             }
            if($_SESSION['unidades'])$data = $data->whereIn('unidad',$_SESSION['unidades']);
-            $data = $data->orderby('created_at','DESC')->paginate(15);
+            $data = $data->orderby('inicio','DESC')->paginate(15);
 
         if(!$data) $message = "Clave inválida.";
         return view('grupos.consultas.index', compact('message','data'));

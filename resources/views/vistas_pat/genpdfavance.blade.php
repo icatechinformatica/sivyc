@@ -153,28 +153,54 @@
         {{-- aqui termina la tabla --}}
         <br/>
         <br/>
-        <table class="tablaf">
-            <tr>
-                <td>
-                    <p>ELABORÓ</p><br><br><br>
-                    <p>{{isset($area_org) ? $area_org->func : ''}}</p>
-                    <p>_________________________________________</p>
-                    <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
-                </td>
-                <td>
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                    <p>Fecha: {{isset($fecha_avance) ? $fecha_avance : ''}}</p>
-                </td>
-                <td>
-                    <p>Vo. Bo.</p><br><br><br>
-                    <p>{{isset($org) ? $org->fun : ''}}</p>
-                    <p>_________________________________________</p>
-                    <p><b>{{isset($org) ? $org->cargo : ''}}</b></p>
-                </td>
-            </tr>
-        </table>
+
+        @if (isset($firm_logueado) and count($firm_logueado) > 0)
+            <table class="tablaf">
+                <tr>
+                    <td>
+                        <p>ELABORÓ</p><br><br><br>
+                        <p>{{$firm_logueado['user'] != '' ? $firm_logueado['user'] : 'Usuario'}}</p>
+                        <p>_________________________________________</p>
+                        <p><b>{{$firm_logueado['puesto'] != '' ? $firm_logueado['puesto'] : 'Puesto'}}</b></p>
+                    </td>
+                    <td>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p>Fecha: {{isset($fecha_avance) ? $fecha_avance : ''}}</p>
+                    </td>
+                    <td>
+                        <p>Vo. Bo.</p><br><br><br>
+                        <p>{{isset($area_org) ? $area_org->func : ''}}</p>
+                        <p>_________________________________________</p>
+                        <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
+                    </td>
+                </tr>
+            </table>
+        @else
+            <table class="tablaf">
+                <tr>
+                    <td>
+                        <p>ELABORÓ</p><br><br><br>
+                        <p>{{isset($area_org) ? $area_org->func : ''}}</p>
+                        <p>_________________________________________</p>
+                        <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
+                    </td>
+                    <td>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p>Fecha: {{isset($fecha_avance) ? $fecha_avance : ''}}</p>
+                    </td>
+                    <td>
+                        <p>Vo. Bo.</p><br><br><br>
+                        <p>{{isset($org) ? $org->fun : ''}}</p>
+                        <p>_________________________________________</p>
+                        <p><b>{{isset($org) ? $org->cargo : ''}}</b></p>
+                    </td>
+                </tr>
+            </table>
+        @endif
 
 {{-- $pdf->text(40, 530, "Pág. $PAGE_NUM de $PAGE_COUNT", $font, 8); pienso que 530 es la parte del eje y--}}
 @endsection
