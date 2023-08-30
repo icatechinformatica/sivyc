@@ -245,6 +245,15 @@
                             @endswitch
                         </td>
                         <td style="font-size: 13px">
+                            @php
+                                if(isset($itemData->soportes_instructor)){
+                                    $itemData->soportes_instructor = json_decode($itemData->soportes_instructor);
+                                    $itemData->archivo_ine = $itemData->soportes_instructor->archivo_ine;
+                                    $itemData->archivo_rfc = $itemData->soportes_instructor->archivo_rfc;
+                                    $itemData->archivo_bancario = $itemData->soportes_instructor->archivo_bancario;
+                                    $itemData->archivo_domicilio = $itemData->soportes_instructor->archivo_domicilio;
+                                }
+                            @endphp
                             @if($itemData->status_recepcion == 'VALIDADO' && isset($itemData->recepcion))
                                 Documentacion Validada
                                 Entregado: {{$itemData->recepcion}}
@@ -308,6 +317,13 @@
                                         @endcan
                                     @break
                                 @endswitch
+                            @endif
+                            @if ($itemData->status_recepcion == 'recepcion tradicional')
+                                @can('contrato.validate')
+                                    <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
+                                        Retornar Recepción
+                                    </a>
+                                @endcan
                             @endif
                         </td>
                         @if (!is_null($itemData->status_recepcion))
@@ -893,7 +909,7 @@
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
-                                        <input style='display:none;' type="file" accept="application/pdf" id="factura_xml" name="factura_xml" hidden>
+                                        <input style='display:none;' type="file" accept="application/xml" id="factura_xml" name="factura_xml" hidden>
                                         <label for="factura_xml">
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;

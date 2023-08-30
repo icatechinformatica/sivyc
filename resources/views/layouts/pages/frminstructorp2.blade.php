@@ -242,7 +242,12 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputbanco">Nombre del Banco</label>
-                    <input name="banco" id="banco" type="text" class="form-control" aria-required="true" value="{{$datainstructor->banco}}">
+                    <select class="form-control" name="banco" id="banco">
+                        <option selected value="">SELECCIONE</option>
+                        @foreach ($bancos as $juicy)
+                            <option value="{{$juicy->nombre}}" @if($juicy->nombre == $datainstructor->banco) selected @endif>{{$juicy->nombre}}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputclabe">Clabe Interbancaria</label>

@@ -16,13 +16,13 @@
             </ul>
         @else
             <ul class="navbar-nav mr-auto">
-                @can('show.cursos.validados')
+                {{-- @can('show.cursos.validados')
                     <li class="nav-item active">
                         <a class="nav-link g-mx-5--lg" href="{{ route('cursos_validados.index') }}">
                             Cursos Validados
                         </a>
                     </li>
-                @endcan
+                @endcan --}}
                 {{--  <!--SUPERVISIONES
                 @can('supervision.escolar')
                     <li class="nav-item g-mx-5--lg dropdown">
@@ -324,6 +324,9 @@
                         @endcan
                         @can('consultas.poa')
                             <a class="dropdown-item" href="{{route('consultas.poa')}}">POA&Autorizados</a>
+                        @endcan
+                        @can('show.cursos.validados')
+                            <a class="dropdown-item" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
                         @endcan
                     </div>
                 </li>

@@ -88,9 +88,11 @@
                         <br>
                         <pre id="resultado" name='resultado'></pre>
                     </div>
+                    @can('alumnos.inscripcion-paso2')
                     <div class="form-group col-md-3">
                         <button type="button" class="btn btn-success" id="nuevo" name="nuevo">NUEVO</button>
                     </div>
+                    @endcan
                     <div class="form-group col-md-3">
                         <div class="pull-left">
                             <a class="btn btn-danger" href="{{ route('alumnos.index') }}">Regresar</a>
@@ -472,14 +474,16 @@
                             </div>
                         </div>
                     </div>
-                    <hr style="border-color: dimgray">
-                    <div class="row">
-                        <div class="col-lg-12 margin-tb">
-                            <div class="pull-right">
-                                <button type="submit" class="btn btn-primary" id="update" >GUARDAR CAMBIOS</button>
+                    @can('alumnos.inscripcion-paso2')
+                        <hr style="border-color: dimgray">
+                        <div class="row">
+                            <div class="col-lg-12 margin-tb">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-primary" id="update" >GUARDAR CAMBIOS</button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </div>  
+                    @endcan
                 </div>
             @endif
         </form>

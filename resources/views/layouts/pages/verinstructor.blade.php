@@ -253,7 +253,16 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputbanco">Nombre del Banco</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name="banco" id="banco" type="text" class="form-control" aria-required="true" value="{{$datainstructor->banco}}">
+                    @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3)
+                        <input disabled name="banco" id="banco" type="text" class="form-control" aria-required="true" value="{{$datainstructor->banco}}">
+                    @else
+                        <select class="form-control" name="banco" id="banco">
+                            <option selected value="">SELECCIONE</option>
+                            @foreach ($bancos as $juicy)
+                                <option value="{{$juicy->nombre}}" @if($juicy->nombre == $datainstructor->banco) selected @endif>{{$juicy->nombre}}</option>
+                            @endforeach
+                        </select>
+                    @endif
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputclabe">Clabe Interbancaria</label>

@@ -226,10 +226,14 @@
                                             <i class="fa fa-upload"></i>
                                         </button>
                                     @endcan
-                                    @can('supre.delete')
-                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $idh])}}">
-                                            <i class="fa fa-wrench" aria-hidden="true"></i>
-                                        </a>
+                                    @can('supre.validar')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#cancelModal"
+                                            data-id='{{$itemData->id}}'
+                                            title="Cancelar Suficiencia Presupuestal">
+                                            <i class="fa fa-close"></i>
+                                        </button>
                                     @endcan
                                 @endif
                             </td>
@@ -387,10 +391,17 @@
                                             <i class="fa fa-upload"></i>
                                         </button>
                                     @endcan
-                                    @can('supre.delete')
-                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                    @can('supre.validar')
+                                        {{-- <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
-                                        </a>
+                                        </a> --}}
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#cancelModal"
+                                            data-id='{{$itemData->id}}'
+                                            title="Cancelar Suficiencia Presupuestal">
+                                            <i class="fa fa-close"></i>
+                                        </button>
                                     @endcan
                                 @endif
                             </td>
@@ -576,6 +587,31 @@
                 </div>
             </div>
         <!-- END -->
+         <!-- END -->
+        <!-- Modal -->
+            <div class="modal fade" id="cancelModal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>¿Esta seguro de cancelar este proceso?</b></h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-2"></div>
+                            <div class="form-group col-md-4">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <a class="btn btn-success" id="confirm_cancel" name="confirm_cancel" href="#">Aceptar</a>
+                            </div>
+                            <div class="form-group col-md-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!-- END -->
         <!-- Modal -->
             <div class="modal fade" id="modfolioModal" role="dialog">
                 <div class="modal-dialog">

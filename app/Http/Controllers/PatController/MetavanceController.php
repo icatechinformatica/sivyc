@@ -20,6 +20,8 @@ class MetavanceController extends Controller
 
     public function __construct()
     {
+        session_start();
+
         $this->arrayMes = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre',
         'octubre', 'noviembre', 'diciembre'];
     }
@@ -30,15 +32,14 @@ class MetavanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $idorg = null)
     {
-        //Obtenemos los id org, area del usuario quien ingresa
-        try {
-            $organismo = Auth::user()->id_organismo;
-        } catch (\Throwable $th) {
-            //throw $th;
-            return redirect('/login');
-        }
+        $json_org = Auth::user()->id_organismos_json;
+        $array_org = json_decode($json_org, true);
+        $id_orgconst = $idorg;
+        $id_organismo = ($id_orgconst) ? $id_orgconst = intval($id_orgconst) : $id_orgconst = $array_org[0];
+        $_SESSION['id_organsmog'] = $id_organismo;
+        $organismo = $_SESSION['id_organsmog'];
 
         //MOSTRAR FECHA
         $mesGlob = $this->arrayMes;
@@ -46,15 +47,17 @@ class MetavanceController extends Controller
         $fechaNow =  $obtDia.'/'.$mesGlob[$obtMes-1].'/'.$obtAnio;
 
         //AREA DEL USUARIO / (AREA DPTO)
+
+        #consultamos organismos
+        $array_organismos = DB::table('tbl_organismos')->select('id', 'nombre')
+        ->whereIn('id', $array_org)->get();
+
         $area_org = DB::table('tbl_organismos as o')->select('o.id', 'nombre', 'id_parent')
-        ->Join('users as u', 'u.id_organismo', 'o.id')
-        ->where('u.id_organismo', $organismo)->first();
+        ->where('o.id', $organismo)->first();
 
         // ORGANISMO DEL USUARIO / (DIRECCION)
         $org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
         ->where('o.id', $area_org->id_parent)->first();
-
-
 
         //CONSULTA DE FUNCIONES
         $funciones = Metavance::select('id', 'id_parent', 'fun_proc')
@@ -80,7 +83,9 @@ class MetavanceController extends Controller
                   ->where('id_parent', '=', $val)
                   ->where('activo', '=', 'true')
                   ->where(DB::raw("date_part('year' , created_at )"), '=', $obtAnio);
-            })->get();
+            })
+            ->orderBy('f.id')
+            ->get();
             array_push($datos, $funciones[$i]['fun_proc'], $proced);
         }
 
@@ -90,7 +95,7 @@ class MetavanceController extends Controller
         $datos_status_avance = $dosarray[1];
         $fecha_meta_avance = $dosarray[2]; //para ir verificando el status
 
-        return view('vistas_pat.metas_avances', compact('datos', 'datos_status_meta', 'fecha_meta_avance', 'datos_status_avance', 'area_org', 'org', 'fechaNow', 'mesGlob'));
+        return view('vistas_pat.metas_avances', compact('datos', 'datos_status_meta', 'fecha_meta_avance', 'datos_status_avance', 'area_org', 'org', 'fechaNow', 'mesGlob', 'array_organismos', 'organismo'));
     }
 
     public function validacionMeta($organismo)
@@ -167,15 +172,6 @@ class MetavanceController extends Controller
 
                 }
             }
-            //$obtMes = intval(date('m')); // esto se tiene que cambiar
-
-            // $fech_avan_emi = $fecha_meta_avance->fechas_avance[$mesGlob[$obtMes-1]]['fechaemision'];
-            // $fech_avan_lim = $fecha_meta_avance->fechas_avance[$mesGlob[$obtMes-1]]['fechafin'];
-            // $fech_avan_emi_conv = strtotime($fech_avan_emi);
-            // $fech_avan_lim_conv = strtotime($fech_avan_lim);
-
-            // $mes_convert = Carbon::parse($fech_avan_emi);
-            // $mes_enviar = $mesGlob[$mes_convert->month-1];
             $mes_enviar = $obtMes;
 
             //VALIDAMOS CON FECHAS Y STATUS DE AVANCE
@@ -367,7 +363,6 @@ class MetavanceController extends Controller
         }else{
             $datos_status_avance = [$fecha_meta_avance->status_avance['statusavance'], 'inactivo', 'inactivo', $fechas_texto_enviar, 'inactivo'];
         }
-
 
         return view('vistas_pat.metas_avances', compact('datos', 'datos_status_meta', 'fecha_meta_avance', 'datos_status_avance', 'area_org', 'org', 'fechaNow', 'dif_perfil', 'id_organismo', 'mesGlob'));
     }
@@ -563,7 +558,7 @@ class MetavanceController extends Controller
             $metavances->save();
         }
         /**Busqueda de id para agregar fechas al registro */
-        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', Auth::user()->id_organismo)->first();
+        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])->first();
         $statusmeta = FechasPat::find($id_reg_fecha->id);
         $statusf = $statusmeta->fecha_meta;
         $statusf['fecmetasave'] = date("Y-m-d H:i");
@@ -604,7 +599,7 @@ class MetavanceController extends Controller
         $datos = $request->datos;
         $mesUpdate = $datos[0][0];
 
-        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', Auth::user()->id_organismo)->first();
+        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])->first();
         $statusavance = FechasPat::find($id_reg_fecha->id);
 
         for ($i=0; $i < count($datos); $i++) {
@@ -668,12 +663,15 @@ class MetavanceController extends Controller
             if ($idorg != 'null') {
                 $organismo = $idorg;
             }else {
-                $organismo = Auth::user()->id_organismo;
+                // $organismo = $_SESSION['id_organsmog'];
+                $organismo = $_SESSION['id_organsmog'];
             }
         } catch (\Throwable $th) {
             //throw $th;
             return redirect('/login');
         }
+
+        // dd($organismo);
 
         //MOSTRAR FECHA
         $mesGlob = $this->arrayMes;
@@ -683,14 +681,15 @@ class MetavanceController extends Controller
 
         //AREA DEL USUARIO / (AREA DPTO)
         $area_org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as area_org', 'id_parent', 'fun.nombre as func', 'fun.cargo')
-        ->Join('tbl_funcionarios as fun', 'fun.id_org', 'o.id')
+        ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
         ->where('o.id', $organismo)->first();
 
 
         // ORGANISMO DEL USUARIO / (DIRECCION)
         $org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as org', 'fun.nombre as fun', 'fun.cargo')
-        ->Join('tbl_funcionarios as fun', 'fun.id_org', 'o.id')
+        ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
         ->where('o.id', $area_org->id_parent)->first();
+
 
         //CONSULTA DE FUNCIONES
         $funciones = Metavance::select('id', 'id_parent', 'fun_proc')
@@ -727,6 +726,7 @@ class MetavanceController extends Controller
             $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)->first();
             return $tblFechas;
         };
+
 
         //Funcion Generar porcentaje
         $porcentaje = function($resta, $meta) {
@@ -1026,19 +1026,19 @@ class MetavanceController extends Controller
 
         if($separador[0] == 'meta'){
             $fecha_enviar = '';
-
+            $tblFechas =  $fechasPat($organismo); #ejecutamos solo una vez en lugar de varias veces
             switch ($separador[1]) {
                 case 'crear':
-                    $tblFechas =  $fechasPat($organismo);
+                    // $tblFechas =  $fechasPat($organismo);
                     $fechapdf = $savefechmeta_pdf($tblFechas->id);
                     $fecha_enviar = $tblFechas->fecha_meta['fecmetapdf'];
                     break;
                 case 'generar':
-                    $tblFechas =  $fechasPat($organismo);
+                    // $tblFechas =  $fechasPat($organismo);
                     $fecha_enviar = $tblFechas->fecha_meta['fecmetapdf'];
                     break;
                 case 'genOrigin':
-                    $tblFechas =  $fechasPat($organismo);
+                    // $tblFechas =  $fechasPat($organismo);
                     $fecha_enviar = $tblFechas->fecha_meta['fecmetapdf'];
                     break;
                 case 'genActual':
@@ -1050,11 +1050,16 @@ class MetavanceController extends Controller
                     break;
             }
 
-            //Guardamos la fecha antes de la generación
+            #Validacion de borrador de pdf
+            $borrador_meta = $tblFechas->fecha_meta['fecmetvalid'];
+            $marca = true;
+            if($borrador_meta != "") $marca = false;
 
+
+            //Guardamos la fecha antes de la generación
             $fech_carbon = Carbon::parse($fecha_enviar);
             $fecha_meta = $fech_carbon->format('d/m/Y');
-            $pdf = PDF::loadView('vistas_pat.genpdfmeta', compact('area_org', 'org', 'funciones', 'procedimientos', 'fecha_meta'));
+            $pdf = PDF::loadView('vistas_pat.genpdfmeta', compact('area_org', 'org', 'funciones', 'procedimientos', 'fecha_meta', 'marca'));
             $pdf->setpaper('letter', 'landscape');
             return $pdf->stream('PAT-ICATECH-002.1.pdf');
 
@@ -1090,19 +1095,20 @@ class MetavanceController extends Controller
 
             //condicion de fechas
             $fecha_enviar = '';
+            $tblFechas =  $fechasPat($organismo); #Ejecutamos solo una vez
             switch ($separador[2]) {
                 case 'crear':
-                    $tblFechas =  $fechasPat($organismo);
+                    // $tblFechas =  $fechasPat($organismo);
                     //(id, mes)
                     $savefechava_pdf($tblFechas->id, $separador[1]);
                     $fecha_enviar = $tblFechas->fechas_avance[$separador[1]]['fecavanpdf'];
                     break;
                 case 'generar':
-                    $tblFechas =  $fechasPat($organismo);
+                    // $tblFechas =  $fechasPat($organismo);
                     $fecha_enviar = $tblFechas->fechas_avance[$separador[1]]['fecavanpdf'];
                     break;
                 case 'genOrigin':
-                    $tblFechas =  $fechasPat($organismo);
+                    // $tblFechas =  $fechasPat($organismo);
                     $fecha_enviar = $tblFechas->fechas_avance[$separador[1]]['fecavanpdf'];
                     break;
                 case 'genActual':
@@ -1114,13 +1120,18 @@ class MetavanceController extends Controller
                     break;
             }
 
+            #Validacion de borrador de pdf
+            $borrador_avance = $tblFechas->fechas_avance[$separador[1]]['fecavanvalid'];
+            $marca = true;
+            if($borrador_avance != "") $marca = false;
 
             //Convertir fechas
             $fech_carbon = Carbon::parse($fecha_enviar); // seperador[1] contiene el mes
-            $mes_avance = $mesGlob[$fech_carbon->month-1].'-'.$fech_carbon->day; // Obtenemos
+            // $mes_avance = $mesGlob[$fech_carbon->month-1].'-'.$fech_carbon->day; // Obtenemos
+            $mes_avance = $separador[1];
             $fecha_avance = $fech_carbon->format('d/m/Y');
 
-            $pdf = PDF::loadView('vistas_pat.genpdfavance', compact('area_org', 'org', 'funciones', 'procedimientos', 'mes_meta_avance', 'mes_avance', 'fecha_avance'));
+            $pdf = PDF::loadView('vistas_pat.genpdfavance', compact('area_org', 'org', 'funciones', 'procedimientos', 'mes_meta_avance', 'mes_avance', 'fecha_avance', 'marca'));
             $pdf->setpaper('letter', 'landscape');
             return $pdf->stream('PAT-ICATECH-002.2.pdf');
         }
@@ -1146,7 +1157,7 @@ class MetavanceController extends Controller
      */
     public function uploadpdfmeta(Request $request)
     {
-        $id = FechasPat::select('id')->where('id_org', '=', Auth::user()->id_organismo)->first();
+        $id = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])->first();
         $mensaje = "";
 
         if($request->hasFile('archivoPDF') and $id->id != null){
@@ -1180,7 +1191,7 @@ class MetavanceController extends Controller
      */
     public function uploadpdfavance(Request $request)
     {
-        $id = FechasPat::select('id')->where('id_org', '=', Auth::user()->id_organismo)->first();
+        $id = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])->first();
         $mensaje = "";
 
         if($request->hasFile('archivoPDF') and $id->id != null){
@@ -1216,7 +1227,8 @@ class MetavanceController extends Controller
     {
         //Obtenemos los id org, area del usuario quien ingresa
         try {
-            $organismo = Auth::user()->id_organismo;
+            // $organismo = $_SESSION['id_organsmog'];
+            $organismo = $id_org;
         } catch (\Throwable $th) {
             //throw $th;
             return redirect('/login');
