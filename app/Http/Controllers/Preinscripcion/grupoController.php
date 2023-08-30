@@ -820,14 +820,14 @@ class grupoController extends Controller
                     ->select(
                         'tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                         'tc.costo',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante as depen_repre',
-                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad'
+                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad','ar.fecha_turnado'
                     )
                     ->leftJoin('alumnos_registro as ar', 'tc.folio_grupo', 'ar.folio_grupo')
                     ->where('ar.mpreapertura', $memo)
                     ->where('ar.eliminado', false)
                     ->groupBy('tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                     'tc.costo','tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante','tc.depen_telrepre','tc.nombre','ar.realizo',
-                    'ar.observaciones','ar.efisico','tc.unidad')
+                    'ar.observaciones','ar.efisico','tc.unidad','ar.fecha_turnado')
                     ->orderBy('folio_grupo')
                     ->get(); //dd($cursos);
                 if (count($cursos) > 0) {
@@ -873,9 +873,10 @@ class grupoController extends Controller
                         $data[$key]['efisico'] = $value->efisico;
                         $data[$key]['unidad'] = $value->unidad;
                     }
-                }
+                }// dd($cursos[0]->fecha_turnado);
                 if (count($data) > 0) {
                     $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
+                    if($cursos[0]->fecha_turnado>0) $date = $cursos[0]->fecha_turnado;
                     $mes = $meses[date('m',strtotime($date))];
                     $date = date('d',strtotime($date)).' de '.$mes.' del '.date('Y',strtotime($date));
                     $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first(); //dd($reg_unidad);
