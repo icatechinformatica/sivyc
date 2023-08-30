@@ -18,10 +18,10 @@ $gpo=0;
 <style type="text/css">
     .tabla-madre{
         border: 1px solid gray;
-        
+
     }
     .variable{
-        
+
         border: 1px solid gray;
         text-align: center
     }
@@ -33,13 +33,56 @@ $gpo=0;
     .variable4{text-align:center; border-bottom-style: solid; border-width: 1px;}
     .variable5{border-spacing:0px 0px;}
 
+    /* Estilos de agregar titulos separados a una tabla */
+    .container {
+        overflow: hidden;
+        display: inline-block;
+        margin-right: 20px;
+        font-size: 10px;
+    }
+
+    .tamano1{
+        width: 85px;
+    }
+    .tamano2{
+        width: 95px;
+        margin-left: 32px;
+    }
+    .tamano3{
+        width: 110px;
+        margin-left: 20px;
+    }
+    .tamano4{
+        width: 100px;
+        margin-left: 15px;
+    }
+    .tamano5{
+        width: 100px;
+        margin-left: 17px;
+    }
+
+    .contenedor{
+        margin-left: 28%;
+    }
+    .container p {
+        margin-left: -10px;
+        text-align: center;
+    }
+    .variable6{
+        width: auto;
+        border-spacing:10px 0px;
+        text-align: left;
+    }
+    .tamano_celda{
+        width: 60px;
+    }
 </style>
 <body>
     <div class="tabla-madre" style="font_size: 12px">
         <div class='variable3'>
             <h2>1.ALUMNOS POR ESPECIALIDAD</h2>
-        <P>1.Escriba por cada especialidad impartida de a {{$fecha_inicio}} a {{$fecha_termino}} , el número progresivo, la clave de especialidad, nombre, grupos, el total de alumnos, desglosándolos por sexo, inscripcion total, existencia,
-        acreditados y rango de edad.</P>
+        <p>1.Escriba por cada especialidad impartida de a {{$fecha_inicio}} a {{$fecha_termino}} , el número progresivo, la clave de especialidad, nombre, grupos, el total de alumnos, desglosándolos por sexo, inscripcion total, existencia,
+        acreditados y rango de edad.</p>
         <p>2.Verifique que las sumas de los alumnos por rango de edad sean igual al total.</p>
         <br>
         </div>
@@ -133,7 +176,7 @@ $gpo=0;
                     <td class='variable'>@isset($consulta_inscritos[$key]){{$consulta_inscritos[$key]->insm7}}@else{{''}}@endisset</td>
                     <td class='variable'>@isset($consulta_inscritos[$key]){{$consulta_inscritos[$key]->insm8}}@else{{''}}@endisset</td>
                     <td class='variable'>@isset($consulta_inscritos[$key]){{$consulta_inscritos[$key]->insm9}}@else{{''}}@endisset</td>
-                    
+
                 </tr>
                 <tr>
                     <td class='variable5'>MUJERES</td>
@@ -194,7 +237,7 @@ $gpo=0;
                 </tr>
                 <tr>
                     <td></td>
-                    <td>INSCRIPCIÓN TOTAL</td> 
+                    <td>INSCRIPCIÓN TOTAL</td>
                     <td class='variable'>@foreach($consulta_inscritos as $consulta_inscrito)@php $value1 += $consulta_inscrito->insh1; @endphp@endforeach{{$value1}}</td>
                     <td class='variable'>@foreach($consulta_inscritos as $consulta_inscrito)@php $value2 += $consulta_inscrito->insh2; @endphp@endforeach{{$value2}}</td>
                     <td class='variable'>@foreach($consulta_inscritos as $consulta_inscrito)@php $value3 += $consulta_inscrito->insh3; @endphp@endforeach{{$value3}}</td>
@@ -272,7 +315,393 @@ $gpo=0;
                 </tr>
             </table>
         </div>
+        {{-- Complementar el reporte 911 Made by Jose Luis Moreno Arcos --}}
+        <br><br>
+        <div><p>
+            Del total de la matrícula existente reportada en la pregunta anterior,
+            anote a los alumnos con discapacidades, dificultades, trasntornos, aptitudes sobresalientes u otras condiciones (no
+            consideradas en los rubros anteriores) y desglóselos por sexo.
+        </p></div>
         <br>
+        {{-- tabla de discapacidades --}}
+        <div class='table'>
+            <table class='variable3'>
+                <tr>
+                    <td align="center">CONDICIÓN DEL ALUMNO</td>
+                    <td class='variable2'>HOMBRES</td>
+                    <td class='variable2'>MUJERES</td>
+                    <td class='variable2'><b>TOTAL</b></td>
+                </tr>
+                <tr>
+                    <td>CEGUERA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>BAJA VISIÓN</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>SORDERA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>HIPOACUSIA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>SORDOCEGUERA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>DISCAPACIDAD MOTRIZ</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>DISCAPACIDAD INTELECTUAL</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>DISCAPACIDAD PSICOSOCIAL</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>TRANSTORNO DEL ESPECTRO AUTISTA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>DISCAPACIDAD MÚLTIPLE</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>DIFICULTAD SEVERA DE CONDUCTA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>DIFICULTAD SEVERA DE COMUNICACIÓN</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>DIFICULTAD SEVERA DE APRENDIZAJE</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>TRANSTORNO POR DEFICIT DE ATENCIÓN E HIPERACTIVIDAD</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>APTITUDES SOBRESALIENTES</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>OTRAS CONDICIONES</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>TOTAL</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {{-- Ultimo bloque --}}
+    <br><br>
+    <div class="tabla-madre" style="font_size: 12px">
+        <div class='variable3'> <h2 class="variable2">PERSONAL POR FUNCIÓN</h2> <br></div>
+        <div><p>1. Escriba el personal que realiza funciones de directivo (con o sin grupo), docente, servicios profesionales especiales,
+            administrativo, auxiliar y de servicio, independientemente de su nombramiento, tipo y fuente de pago, desglóse segun su función,
+            nivel maximo de estudios y sexo, Nota: Si una persona desempeña dos o más funciones anótela en aquélla a la que dedique más tiempo.</p>
+        </div>
+        <div class='table'>
+            <div class="contenedor">
+                <div class="container tamano1">
+                    <p id="movable-paragraph">PERSONAL DIRECTIVO CON GRUPO</p>
+                </div>
+                <div class="container tamano2">
+                    <p id="movable-paragraph">PERSONAL DIRECTIVO SIN GRUPO</p>
+                </div>
+                <div class="container tamano3">
+                    <p id="movable-paragraph">PERSONAL DOCENTE</p>
+                </div>
+                <div class="container tamano4">
+                    <p id="movable-paragraph">PERSONAL DE SERVICIOS PROFECIONALES Y ESPECIALES</p>
+                </div>
+                <div class="container tamano5">
+                    <p id="movable-paragraph">PERSONAL ADMINISTRATIVO, AUXILIAR Y DE SERVICIOS</p>
+                </div>
+            </div>
+
+            <table class='variable3'>
+                <tr>
+                    <td><b>NIVEL EDUCATIVO</b></td>
+                    <td class='variable2'>HOM</td>
+                    <td class='variable2'>MUJ</td>
+                    <td class='variable2'>HOM</td>
+                    <td class='variable2'>MUJ</td>
+                    <td class='variable2'>HOM</td>
+                    <td class='variable2'>MUJ</td>
+                    <td class='variable2'>HOM</td>
+                    <td class='variable2'>MUJ</td>
+                    <td class='variable2'>HOM</td>
+                    <td class='variable2'>MUJ</td>
+                </tr>
+                <tr>
+                    <td>PRIMARIA INCOMPLETA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['primaria_inc'] }}</td>
+                    <td class='variable'>{{ $instruc_m['primaria_inc'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>PRIMARIA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['primaria'] }}</td>
+                    <td class='variable'>{{ $instruc_m['primaria'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>SECUNDARIA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['secundaria'] }}</td>
+                    <td class='variable'>{{ $instruc_m['secundaria'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>BACHILLERATO / PROFESIONAL TÉCNICO</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['bachiller_tecnico'] }}</td>
+                    <td class='variable'>{{ $instruc_m['bachiller_tecnico'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                {{-- <tr>
+                    <td>BACHILLERATO</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr> --}}
+                <tr>
+                    <td>NORMAL PREESCOLAR</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>NORMAL PRIMARIA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>NORMAL SUPERIOR</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>LICENCIATURA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['licenciatura'] }}</td>
+                    <td class='variable'>{{ $instruc_m['licenciatura'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>MAESTRIA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['maestria'] }}</td>
+                    <td class='variable'>{{ $instruc_m['maestria'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>DOCTORADO</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['doctorado'] }}</td>
+                    <td class='variable'>{{ $instruc_m['doctorado'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>OTROS*</td>
+                </tr>
+                <tr>
+                    <td>*ESPECIFIQUE:</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td><b>SUBTOTAL</b></td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['subtotal'] }}</td>
+                    <td class='variable'>{{ $instruc_m['subtotal'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td colspan="10" align="right">TOTAL DE PERSONAL (SUMA DE SUBTOTALES)</td>
+                    <td class='variable'>{{ $instruc_h['subtotal'] + $instruc_m['subtotal'] }}</td>
+                </tr>
+
+            </table>
+        </div>
+        {{-- punto 2 --}}
+        <br><br>
+        <div><p> 2. Desglose el personal docente, según el tiempo que dedica a la función académica, Nota: Si en la instutución no
+            se utiliza el término tres cuartos de tiempo, no lo considere.
+        </p>
+        </div>
+        <br><br>
+        <table class='variable6'>
+            <tr>
+                <td>TIEMPO COMPLETO</td>
+                <td class='variable tamano_celda'>0</td>
+            </tr>
+            <tr>
+                <td>TRES CUARTOS DE TIEMPO</td>
+                <td class='variable tamano_celda'>0</td>
+            </tr>
+            <tr>
+                <td>MEDIO TIEMPO</td>
+                <td class='variable tamano_celda'>0</td>
+            </tr>
+            <tr>
+                <td>POR HORAS</td>
+                <td class='variable tamano_celda'>{{ $instruc_h['subtotal'] + $instruc_m['subtotal'] }}</td>
+            </tr>
+            <tr>
+                <td><b>TOTAL</b></td>
+                <td class='variable tamano_celda'>{{ $instruc_h['subtotal'] + $instruc_m['subtotal'] }}</td>
+            </tr>
+        </table>
     </div>
 </body>
 </html>
@@ -288,4 +717,3 @@ $gpo=0;
 
 
 
-       

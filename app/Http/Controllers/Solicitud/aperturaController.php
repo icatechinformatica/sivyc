@@ -17,6 +17,7 @@ use App\Models\tbl_curso;
 use App\Models\Inscripcion;
 use App\Models\Alumno;
 use App\Agenda;
+use PDF;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
@@ -1039,5 +1040,86 @@ class aperturaController extends Controller
         $insert_dias ['nombre'] = $dias_a;
         $insert_dias ['total'] = $tdias;
         return $insert_dias;
+    }
+    # Made by Jose Luis Moreno Arcos / Funcion que genera pdf de soporte de constancias.
+    public function genpdf_soporte(Request $request){
+        $idorg = $request->idorg;
+        $numficio = $request->num_oficio;
+        $datos_titular = $request->datos_titular;
+        $distintivo = DB::table('tbl_instituto')->value('distintivo');
+        $folio_grupo =  $_SESSION['folio'];
+
+        #CONSULTA DEL ORGANISMO
+        $partes_titu = [];
+        $organismo = '';
+        if($datos_titular != '') {
+            $partes_titu = explode(",", $datos_titular);
+        }else{
+            $organismo = DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $idorg)->first();
+        }
+
+        // dd($organismo, $partes_titu);
+
+        #CONSULTA PARA LLENAR EL ENCABEZAADO Y PIE DEL DOCUMENTO
+        $data = DB::table('tbl_cursos as cur')->select('cur.fcespe', 'cur.munidad','tu.unidad', 'tu.dunidad', 'tu.pdunidad', 'cur.realizo', 'cur.valido', 'tu.municipio', 'tu.direccion',
+        DB::raw("(hombre + mujer) as totalp"))
+        ->Join('tbl_unidades as tu', 'tu.unidad', 'cur.unidad')
+        ->where('cur.folio_grupo','=',"$folio_grupo")->first();
+
+        // $cursos = DB::table('tbl_cursos')->select('curso', 'nombre', 'clave', 'inicio', 'termino')
+        // ->where('id', '=', $idorg)->first();
+
+        $direccion = $data->direccion;
+        $unidad = strtoupper($data->unidad);
+        $municipio = mb_strtoupper($data->municipio, 'UTF-8');
+
+        // $dunidad = ucwords(strtolower($data->dunidad));
+        // $pdunidad = ucwords(strtolower($data->pdunidad));
+        // $realizo = ucwords(strtolower($data->realizo));
+        // $valido = ucwords(strtolower($data->valido));
+
+        #OBTENEMOS LA LISTA DE CURSOS
+        $tabla_contenido = DB::table('tbl_cursos')
+        ->select('id', 'curso', 'folio_grupo', 'clave', 'cespecifico', 'inicio', 'termino', 'tcapacitacion', 'mod')
+        ->selectRaw('(SELECT COUNT(id_curso) FROM public.tbl_folios WHERE id_curso = tbl_cursos.id) AS cantidad_folios')
+        ->selectRaw('(SELECT MIN(folio) FROM public.tbl_folios WHERE id_curso = tbl_cursos.id) AS primer_folio')
+        ->selectRaw('(SELECT MAX(folio) FROM public.tbl_folios WHERE id_curso = tbl_cursos.id) AS ultimo_folio')
+        ->where('cgeneral', 'S048T42020')
+        ->where('unidad', 'CHAMULA')
+        ->whereYear('termino', 2022)
+        ->orderByRaw('EXTRACT(MONTH FROM termino)')
+        ->get();
+
+        $rango_mes = DB::table(function ($query) {
+            $query->selectRaw('MIN(termino) AS termino_minimo, MAX(termino) AS termino_maximo')
+                  ->from('tbl_cursos')
+                  ->where('cgeneral', 'S048T42020')
+                  ->where('unidad', 'CHAMULA')
+                  ->whereYear('termino', 2022);
+        }, 'subquery')
+        ->selectRaw("TO_CHAR(subquery.termino_minimo, 'TMmonth') AS mes_minimo")
+        ->selectRaw("TO_CHAR(subquery.termino_maximo, 'TMmonth') AS mes_maximo")
+        ->first();
+
+        $total_folios = 0;
+        for ($i=0; $i < count($tabla_contenido); $i++) {
+            $total_folios += $tabla_contenido[$i]->cantidad_folios;
+        }
+        $total_folios = ($total_folios < 10) ? '0'+ $total_folios : $total_folios;
+        $total_cursos = count($tabla_contenido);
+        $total_cursos = ($total_cursos < 10) ? '0'+ $total_cursos : $total_cursos;
+
+
+        #OBTENEMOS LA FECHA ACTUAL
+        $fechaActual = getdate();
+        $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
+        $dia = ($dia < 10) ? '0'.$dia : $dia;
+
+        $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
+
+        $pdf = PDF::loadView('reportes.soporte_entrega_constancia',compact('distintivo', 'direccion', 'data', 'unidad', 'organismo', 'numficio',
+        'partes_titu', 'municipio', 'fecha_comp', 'tabla_contenido', 'rango_mes', 'total_cursos', 'total_folios'));
+        return $pdf->stream('Soporte de Entrega');
     }
 }

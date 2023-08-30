@@ -61,6 +61,8 @@ class for911Controller extends Controller
 
         $encabezado='0';
         $consulta_inscritos='0';
+        $instruc_h = '0';
+        $instruc_m = '0';
 
 
 //dd($b);
@@ -69,6 +71,7 @@ class for911Controller extends Controller
         ->join('especialidades as e','tc.espe','=','e.nombre')
         ->select(DB::raw('count(e.id)'), 'e.clave','e.nombre as especialidad')
         //->select('tc.clave')
+
         ->where('tc.termino','>=',$fecha_inicio)
         ->where('tc.termino','<=',$fecha_termino)
         ->where('tc.unidad','=',$unidades)
@@ -82,6 +85,30 @@ class for911Controller extends Controller
         //->orderBy('tc.clave')
         //->get();
         //dd($sql);
+
+        // #consults made by Jose Luis Moreno Arcos
+        // $subquery = DB::table('tbl_cursos AS tc')
+        //     ->join('criterio_pago AS cr', 'tc.cp', '=', 'cr.id')
+        //     ->where('tc.unidad', $unidades)
+        //     ->where('tc.inicio', '>=', $fecha_inicio)
+        //     ->where('tc.termino', '<=', $fecha_termino)
+        //     ->where('tc.status_curso', '!=', 'CANCELADO')
+        //     ->where('tc.status', '=', 'REPORTADO')
+        //     ->where('tc.instructor_sexo', '=', 'MASCULINO')
+        //     // ->where('tc.hini', '>=', '2:00 p.m')
+        //     ->select('tc.id_instructor', 'cr.perfil_profesional', 'hini',  DB::raw('ROW_NUMBER() OVER (PARTITION BY tc.id_instructor ORDER BY tc.termino DESC) AS rn'));
+
+        // $results = DB::table(DB::raw('('.$subquery->toSql().') as ranked_cursos'))
+        //     ->mergeBindings($subquery)
+        //     ->where('rn', 1)
+        //     ->groupBy('perfil_profesional', 'hini')
+        //     ->select('perfil_profesional', 'hini', DB::raw('COUNT(*) AS cantidad'))
+        //     ->get();
+
+
+
+
+
 
         //$temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
 //dd($temptblinner);
@@ -149,7 +176,8 @@ class for911Controller extends Controller
         ->groupBy('tc.espe')
         ->orderBy('tc.espe');
         //->get();
-        //dd($consulta);
+
+
 
         if($turno=='MATUTINO'){
             /*$encabezado=$sql->where(function ($query) {
@@ -165,7 +193,11 @@ class for911Controller extends Controller
                       ->orWhere('tc.hini', 'like', '%12:30 p.m.%')
                       ->orWhere('tc.hini', 'like', '%12:00 p.m.%');})->get();*/
             $consulta_inscritos= $consulta->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
-            $encabezado= $sql->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();          
+            $encabezado= $sql->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
+            // $instructores= $results->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
+
+            $instruc_h = $this->funcionInterna($unidades, $fecha_inicio, $fecha_termino, 'MASCULINO', 'DIAS');
+            $instruc_m = $this->funcionInterna($unidades, $fecha_inicio, $fecha_termino, 'FEMENINO', 'DIAS');
 
         }elseif($turno=='VESPERTINO'){
             /*$encabezado=$sql->where(function ($query) {
@@ -187,14 +219,93 @@ class for911Controller extends Controller
             $consulta_inscritos=$consulta->whereRaw("cast(replace(hini, '.', '') as time) >= '14:00:00' and hini !=''")->get();
             $encabezado=$sql->whereRaw("cast(replace(hini, '.', '') as time) >= '14:00:00' and hini !=''")->get();
 
+            $instruc_h = $this->funcionInterna($unidades, $fecha_inicio, $fecha_termino, 'MASCULINO', 'TARDES');
+            $instruc_m = $this->funcionInterna($unidades, $fecha_inicio, $fecha_termino, 'FEMENINO', 'TARDES');
+            // dd($instruc_m, $instruc_h);
         }
          //dd($consulta_inscritos);
         if(count($encabezado)==0){return redirect()->route('reportes.911.showForm')->with('success', 'No existen registros');}
-        $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
+        $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino', 'instruc_h', 'instruc_m'));
         $pdf->setPaper('A4', 'landscape');
     	//portrait
         //return view('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
     	return $pdf-> stream('forna.pdf');
+
+    }
+
+    private function funcionInterna($unidades, $fecha_inicio, $fecha_termino, $sexo, $turno)
+    {
+
+        #consults made by Jose Luis Moreno Arcos
+        // $subquery = DB::table('tbl_cursos AS tc')
+        //     ->join('criterio_pago AS cr', 'tc.cp', '=', 'cr.id')
+        //     ->where('tc.unidad', $unidades)
+        //     ->where('tc.inicio', '>=', $fecha_inicio)
+        //     ->where('tc.termino', '<=', $fecha_termino)
+        //     ->where('tc.status_curso', '!=', 'CANCELADO')
+        //     ->where('tc.status', '=', 'REPORTADO')
+        //     ->where('tc.instructor_sexo', '=', $sexo)
+        //     // ->where('tc.hini', '>=', '2:00 p.m')
+        //     ->select('tc.id_instructor', 'cr.perfil_profesional', 'hini',  DB::raw('ROW_NUMBER() OVER (PARTITION BY tc.id_instructor ORDER BY tc.termino DESC) AS rn'));
+
+        // $results = DB::table(DB::raw('('.$subquery->toSql().') as ranked_cursos'))
+        //     ->mergeBindings($subquery)
+        //     ->where('rn', 1)
+        //     ->groupBy('perfil_profesional', 'hini')
+        //     ->select('perfil_profesional', 'hini', DB::raw('COUNT(*) AS cantidad'))
+        //     ->get();
+
+        ## AL PARECER FUNCIONA MEJOR JEJEJE
+        $subquery = DB::table('tbl_cursos AS tc')
+            ->join('criterio_pago AS cr', 'tc.cp', '=', 'cr.id')
+            ->where('tc.unidad', $unidades)
+            ->where('tc.inicio', '>=', $fecha_inicio)
+            ->where('tc.termino', '<=', $fecha_termino)
+            ->where('tc.status_curso', '!=', 'CANCELADO')
+            ->where('tc.status', '=', 'REPORTADO')
+            ->where('tc.instructor_sexo', '=', $sexo)
+            ->select('tc.id_instructor', 'cr.id', 'hini',  DB::raw('ROW_NUMBER() OVER (PARTITION BY tc.id_instructor ORDER BY tc.termino DESC) AS rn'));
+
+        $results = DB::table(DB::raw('('.$subquery->toSql().') as ranked_cursos'))
+            ->mergeBindings($subquery)
+            ->where('rn', 1)
+            ->select('id', 'hini')
+            ->get();
+
+        if($turno == 'DIAS'){
+            $instructores = $results->filter(function ($item) {
+                if ($item->hini != '') {
+                    $hora_inicio_24h = date('H:i:s', strtotime(str_replace('.', '', $item->hini)));
+                    return $hora_inicio_24h < '14:00:00';
+                }
+                return false;
+            });
+        }else if($turno == 'TARDES'){
+            $instructores = $results->filter(function ($item) {
+                if ($item->hini != '') {
+                    $hora_inicio_24h = date('H:i:s', strtotime(str_replace('.', '', $item->hini)));
+                    return $hora_inicio_24h >= '14:00:00';
+                }
+                return false;
+            });
+        }
+
+        #HACEMOS EL PROCESO DE CONTEO PARA SOLO ENVIARLO A LA VISTA COMO ARRAY
+        $prim_i = $prim = $secu = $bach_tecnico = $profesional = $maestria = $doctorado = 0;
+        foreach ($instructores as $valor) {
+            if ($valor->id == 1) $prim_i +=1;
+            if ($valor->id == 2) $prim +=1;
+            if ($valor->id == 3) $secu +=1;
+            if ($valor->id == 4) $bach_tecnico +=1;
+            if ($valor->id == 5 || $valor->id == 6 || $valor->id == 7) $profesional +=1;
+            if ($valor->id == 8 || $valor->id == 9) $maestria +=1;
+            if ($valor->id == 10 || $valor->id == 11) $doctorado +=1;
+        }
+        $array_instruc = array("primaria_inc" => $prim, "primaria" => $prim, "secundaria" => $secu,
+                            "bachiller_tecnico" => $bach_tecnico, "licenciatura" => $profesional,
+                            "maestria" => $maestria, "doctorado" => $doctorado, "subtotal" => count($instructores));
+
+        return $array_instruc;
 
     }
 

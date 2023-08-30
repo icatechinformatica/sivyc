@@ -36,188 +36,202 @@
             }
             if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;
         ?>
-    {{ Form::open(['route' => 'solicitud.apertura', 'method' => 'post', 'id'=>'frm']) }}
-        @csrf
-         <div class="row">
-            <div class="form-group col-md-3">
-                    {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control', 'placeholder' => 'No. GRUPO', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 25]) }}
-            </div>
-            <div class="form-group col-md-2">
-                    {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-            </div>
+        {{ Form::open(['route' => 'solicitud.apertura', 'method' => 'post', 'id'=>'frm']) }}
+            @csrf
+            <div class="row">
+                <div class="form-group col-md-3">
+                        {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control', 'placeholder' => 'No. GRUPO', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 25]) }}
+                </div>
+                <div class="form-group col-md-2">
+                        {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
+                </div>
 
-        </div>
-        @if ($message)
-            <div class="row ">
-                <div class="col-md-12 alert alert-danger">
-                    <p>{{ $message }}</p>
-                </div>
             </div>
-        @endif
-
-        @if(isset($grupo))
-            <h5><b>DEL CURSO</b></h5>
-            @if($grupo->clave)
-                <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 2.1em;">
-                        @if($grupo->clave)<span>CLAVE:&nbsp;&nbsp;<strong>{{$grupo->clave}}</strong></span>@endif                        
-                        @if($grupo->arc)<span>ARC:&nbsp;&nbsp;<strong>{{$grupo->arc}}</strong></span>@endif
-                        @if($grupo->status_curso)<span>ESTATUS ARC:&nbsp;&nbsp;<strong>{{$grupo->status_curso}}</strong></span>@endif
-                        @if($grupo->status)<span>ESTATUS FORMATOT:&nbsp;&nbsp;<strong>{{$grupo->status}}</strong></span>@endif
-                </div>               
-            @endif
-            <div class="row bg-light form-inline" style="padding:15px 10px 15px 0px; text-indent:3em; line-height: 3em;">                       
-                <span>UNIDAD/ACCI&Oacute;N M&Oacute;VIL:&nbsp;&nbsp;<strong>{{ $grupo->unidad }}</strong></span>
-                <span>CURSO:&nbsp;&nbsp;<strong>@if($grupo->clave){{ $grupo->id }}@endif {{ $grupo->curso }}</strong></span>
-                <span>ESPECIALIDAD: &nbsp;&nbsp;<strong>{{ $grupo->clave_especialidad }} &nbsp{{ $grupo->espe }}</strong></span>
-                <span>&Aacute;REA: &nbsp;&nbsp;<strong>{{ $grupo->area }}</strong></span>
-                <span>MODALIDAD: &nbsp;&nbsp;<strong>{{ $grupo->mod}}</strong></span>
-                <span>TIPO CAPACITACI&Oacute;N: &nbsp;&nbsp;<strong>{{ $grupo->tcapacitacion}}</strong></span>
-                <span>DURACI&Oacute;N: &nbsp;&nbsp;<strong>
-                @if ($grupo->dura)
-                    {{ $grupo->dura }}
-                @else
-                    {{ $grupo->horas }}
-                @endif hrs.</strong></span>                
-                <input type="hidden" name="hini" id="hini" value="{{$hini}}">
-                
-                <div id="hora">HORARIO: <b>{{ $grupo->horario }}</b></div> <input type="hidden" name="hfin" id="hfin" value="{{$hfin}}">
-                <span>COSTO ALUMNO: &nbsp;&nbsp;<strong>{{ $grupo->costo_individual }}</strong></span>
-                <span>HOMBRES: &nbsp;&nbsp;<strong>{{ $grupo->hombre }}</strong></span>                
-                <span>MUJERES: &nbsp;&nbsp;<strong>{{ $grupo->mujer }}</strong></span>                                
-                <span>FECHA INICIO:  &nbsp;&nbsp;<strong>{{ $grupo->inicio }}</strong></span> <input type="hidden" name="inicio" id="inicio" value="{{$grupo->inicio}}">
-                <span>FECHA TERMINO:  &nbsp;&nbsp;<strong>{{ $grupo->termino }}</strong></span> <input type="hidden" name="termino" id="termino" value="{{$grupo->termino}}">
-                @if ($grupo->tdias)
-                    <span>TOTAL DIAS: &nbsp;&nbsp;<strong>{{ $grupo->tdias }}</strong></span>  
-                    <span>DIAS: &nbsp;&nbsp;<strong>{{ $grupo->dia }}</strong></span>  
-                @endif
-                    <span>MUNICIPIO: &nbsp;&nbsp;<strong>{{ $muni }}</strong></span>
-                    <span>LOCALIDAD: &nbsp;&nbsp;<strong>{{ $localidad }}</strong></span>
-                    <span>ORGANISMO PUBLICO: &nbsp;&nbsp;<strong>{{ $grupo->organismo_publico }}</strong></span>
-                        
-            </div>
-            <h5><b>DE LA APERTURA</b></h5>
-            <hr />
-                           
-            <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 3em;"> 
-                @if($munidad)
-                    <span>COUTA TOTAL: &nbsp;&nbsp;<strong>{{ $grupo->costo }}</strong></span>
-                    <span>TIPO CUOTA: &nbsp;&nbsp;<strong>{{ $tcuota }}</strong></span>
-                @endif
-                <span>MEMORANDUM DE VALIDACION DEL INSTRUCTOR:&nbsp;&nbsp;<strong>{{ $grupo->instructor_mespecialidad }}</strong></span>                   
-            </div>        
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label>INSTRUCTOR:</label>
-                    <select name="instructor" id="instructor" class="form-control mr-sm--2" @if ($exonerado) style="background-color: lightGray;" @endif>
-                        @if ($instructor)
-                            <option value="{{$instructor->id}}">{{$instructor->instructor}}</option>
-                        @else
-                            <option value="">- SELECCIONAR -</option>
-                        @endif
-
-                        @foreach ($instructores as $item)
-                            <option value="{{$item->id}}">{{$item->instructor}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label>MEMOR&aacute;NDUM DE APERTURA:</label>
-                    <input name='munidad' id='munidad' type="text" class="form-control" aria-required="true" value="@if($munidad){{$munidad}}@else{{old('nombre')}}@endif"/>
-                </div>
-                <div class="form-group col-md-3">
-                    <label>PLANTEL:</label>
-                    {{ Form::select('plantel', $plantel, $grupo->plantel, ['id'=>'plantel','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
-                </div>
-            </div>
-            <div class="form-row" >
-                <div class="form-group col-md-4">
-                    <label>PROGRAMA ESTRAT&eacute;GICO:</label>
-                    {{ Form::select('programa', $programa, $grupo->programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
-                </div>
-                <div class="form-group col-md-2">
-                    <label>CONVENIO GENERAL:</label>
-                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" readonly/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label>FECHA CONVENIO GENERAL:</label>
-                   <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" readonly/ >
-                </div>
-                <div class="form-group col-md-3">
-                    <label>SECTOR:</label>
-                    <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" readonly/>
-                </div>
-            </div>
-            <div class="form-row" >
-                <div class="form-group col-md-4">
-                    <label>CONVENIO ESPEC&Iacute;FICO:</label>
-                    <input name='cespecifico' id='cespecifico' type="text" class="form-control" aria-required="true" value="{{ $grupo->cespecifico}}"/>
-                </div>
-                <div class="form-group col-md-3">
-                    <label>FECHA CONVENIO ESPEC&Iacute;FICO:</label>
-                    <input type="date" id="fcespe" name="fcespe" aria-required="true" class="form-control" value="{{$grupo->fcespe}}">
-                </div>
-                <div class="form-group col-md-4">
-                     <label>MEMOR&Aacute;NDUM DE EXONERACI&Oacute;N:</label>
-                     <input name='mexoneracion' id='mexoneracion' type="text" class="form-control" aria-required="true" value="{{$grupo->mexoneracion}}" readonly/>
-                </div>
-                </div>
-            <div class="form-row" >
-                <div class="form-group col-md-12">
-                    <label>DOMICILIO, LUGAR O ESPACIO F&Iacute;SICO:</label>
-                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}" @if ($exonerado) readonly @endif>
-                </div>
-            </div>
-            <div class="form-row" >
-                <div class="form-group col-md-2">
-                    <label>TIPO DE CAPACITACI&Oacute;N:</label>
-                    {{ Form::select('tcurso', $tcurso, $grupo->tipo_curso, ['id'=>'tcurso','class' => 'form-control mr-sm-2'] ) }}
-                </div>
-                <div class="form-group col-md-2">
-                     <label>MEDIO VIRTUAL:</label>
-                     {{ Form::select('medio_virtual', $medio_virtual, $grupo->medio_virtual, ['id'=>'medio_virtual','class' => 'form-control mr-sm-2','disabled'=>$disabled] ) }}
-                </div>
-                <div class="form-group col-md-8">
-                     <label>LINK VIRTUAL:</label>
-                     <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$grupo->link_virtual}}" {{$disabled}} />
-                </div>
-            </div>
-            <div class="form-row" >
-                <div class="form-group col-md-12">
-                    <label>OBSERVACIONES DE VINCILACI&Oacute;N:</label>
-                    <textarea name='obs_vincu' id='obs_vincu'  class="form-control" rows="5" readonly>{{$grupo->nota_vincu}}</textarea>
-                </div>
-                <div class="form-group col-md-12">
-                    <label>OBSERVACIONES:</label>
-                    <textarea name='observaciones' id='observaciones'  class="form-control" rows="5" >{{$grupo->nota}}</textarea>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-2">
-                    <label for="">NÚMERO DE RECIBO DE PAGO:</label>
-                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}">
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="">FECHA DE EMISI&Oacute;N DEL RECIBO:</label>
-                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="">SUBIR PDF DEL RECIBO:</label>
-                    <div class="custom-file">
-                    <input type="file" id="file_pago" name="file_pago" accept="application/pdf" class="custom-file-input"/>
-                    <label for="file_pago" class="custom-file-label">Seleccionar Archivo PDF</label>
+            @if ($message)
+                <div class="row ">
+                    <div class="col-md-12 alert alert-danger">
+                        <p>{{ $message }}</p>
                     </div>
                 </div>
-            </div>
-            <hr/>
+            @endif
 
-            <h4><b>ALUMNOS</b></h4>
-            <div class="row">
-                @include('solicitud.apertura.table')
-            </div>
+            @if(isset($grupo))
+                <h5><b>DEL CURSO</b></h5>
+                @if($grupo->clave)
+                    <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 2.1em;">
+                            @if($grupo->clave)<span>CLAVE:&nbsp;&nbsp;<strong>{{$grupo->clave}}</strong></span>@endif
+                            @if($grupo->arc)<span>ARC:&nbsp;&nbsp;<strong>{{$grupo->arc}}</strong></span>@endif
+                            @if($grupo->status_curso)<span>ESTATUS ARC:&nbsp;&nbsp;<strong>{{$grupo->status_curso}}</strong></span>@endif
+                            @if($grupo->status)<span>ESTATUS FORMATOT:&nbsp;&nbsp;<strong>{{$grupo->status}}</strong></span>@endif
+                    </div>
+                @endif
+                <div class="row bg-light form-inline" style="padding:15px 10px 15px 0px; text-indent:3em; line-height: 3em;">
+                    <span>UNIDAD/ACCI&Oacute;N M&Oacute;VIL:&nbsp;&nbsp;<strong>{{ $grupo->unidad }}</strong></span>
+                    <span>CURSO:&nbsp;&nbsp;<strong>@if($grupo->clave){{ $grupo->id }}@endif {{ $grupo->curso }}</strong></span>
+                    <span>ESPECIALIDAD: &nbsp;&nbsp;<strong>{{ $grupo->clave_especialidad }} &nbsp{{ $grupo->espe }}</strong></span>
+                    <span>&Aacute;REA: &nbsp;&nbsp;<strong>{{ $grupo->area }}</strong></span>
+                    <span>MODALIDAD: &nbsp;&nbsp;<strong>{{ $grupo->mod}}</strong></span>
+                    <span>TIPO CAPACITACI&Oacute;N: &nbsp;&nbsp;<strong>{{ $grupo->tcapacitacion}}</strong></span>
+                    <span>DURACI&Oacute;N: &nbsp;&nbsp;<strong>
+                    @if ($grupo->dura)
+                        {{ $grupo->dura }}
+                    @else
+                        {{ $grupo->horas }}
+                    @endif hrs.</strong></span>
+                    <input type="hidden" name="hini" id="hini" value="{{$hini}}">
 
-        @endif
-    {!! Form::close() !!}
-</div>
+                    <div id="hora">HORARIO: <b>{{ $grupo->horario }}</b></div> <input type="hidden" name="hfin" id="hfin" value="{{$hfin}}">
+                    <span>COSTO ALUMNO: &nbsp;&nbsp;<strong>{{ $grupo->costo_individual }}</strong></span>
+                    <span>HOMBRES: &nbsp;&nbsp;<strong>{{ $grupo->hombre }}</strong></span>
+                    <span>MUJERES: &nbsp;&nbsp;<strong>{{ $grupo->mujer }}</strong></span>
+                    <span>FECHA INICIO:  &nbsp;&nbsp;<strong>{{ $grupo->inicio }}</strong></span> <input type="hidden" name="inicio" id="inicio" value="{{$grupo->inicio}}">
+                    <span>FECHA TERMINO:  &nbsp;&nbsp;<strong>{{ $grupo->termino }}</strong></span> <input type="hidden" name="termino" id="termino" value="{{$grupo->termino}}">
+                    @if ($grupo->tdias)
+                        <span>TOTAL DIAS: &nbsp;&nbsp;<strong>{{ $grupo->tdias }}</strong></span>
+                        <span>DIAS: &nbsp;&nbsp;<strong>{{ $grupo->dia }}</strong></span>
+                    @endif
+                        <span>MUNICIPIO: &nbsp;&nbsp;<strong>{{ $muni }}</strong></span>
+                        <span>LOCALIDAD: &nbsp;&nbsp;<strong>{{ $localidad }}</strong></span>
+                        <span>ORGANISMO PUBLICO: &nbsp;&nbsp;<strong>{{ $grupo->organismo_publico }}</strong></span>
+
+                </div>
+                <h5><b>DE LA APERTURA</b></h5>
+                <hr />
+
+                <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 3em;">
+                    @if($munidad)
+                        <span>COUTA TOTAL: &nbsp;&nbsp;<strong>{{ $grupo->costo }}</strong></span>
+                        <span>TIPO CUOTA: &nbsp;&nbsp;<strong>{{ $tcuota }}</strong></span>
+                    @endif
+                    <span>MEMORANDUM DE VALIDACION DEL INSTRUCTOR:&nbsp;&nbsp;<strong>{{ $grupo->instructor_mespecialidad }}</strong></span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>INSTRUCTOR:</label>
+                        <select name="instructor" id="instructor" class="form-control mr-sm--2" @if ($exonerado) style="background-color: lightGray;" @endif>
+                            @if ($instructor)
+                                <option value="{{$instructor->id}}">{{$instructor->instructor}}</option>
+                            @else
+                                <option value="">- SELECCIONAR -</option>
+                            @endif
+
+                            @foreach ($instructores as $item)
+                                <option value="{{$item->id}}">{{$item->instructor}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>MEMOR&aacute;NDUM DE APERTURA:</label>
+                        <input name='munidad' id='munidad' type="text" class="form-control" aria-required="true" value="@if($munidad){{$munidad}}@else{{old('nombre')}}@endif"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>PLANTEL:</label>
+                        {{ Form::select('plantel', $plantel, $grupo->plantel, ['id'=>'plantel','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                    </div>
+                </div>
+                <div class="form-row" >
+                    <div class="form-group col-md-4">
+                        <label>PROGRAMA ESTRAT&eacute;GICO:</label>
+                        {{ Form::select('programa', $programa, $grupo->programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>CONVENIO GENERAL:</label>
+                        <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" readonly/>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>FECHA CONVENIO GENERAL:</label>
+                    <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" readonly/ >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>SECTOR:</label>
+                        <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" readonly/>
+                    </div>
+                </div>
+                <div class="form-row" >
+                    <div class="form-group col-md-4">
+                        <label>CONVENIO ESPEC&Iacute;FICO:</label>
+                        <input name='cespecifico' id='cespecifico' type="text" class="form-control" aria-required="true" value="{{ $grupo->cespecifico}}"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>FECHA CONVENIO ESPEC&Iacute;FICO:</label>
+                        <input type="date" id="fcespe" name="fcespe" aria-required="true" class="form-control" value="{{$grupo->fcespe}}">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>MEMOR&Aacute;NDUM DE EXONERACI&Oacute;N:</label>
+                        <input name='mexoneracion' id='mexoneracion' type="text" class="form-control" aria-required="true" value="{{$grupo->mexoneracion}}" readonly/>
+                    </div>
+                    </div>
+                <div class="form-row" >
+                    <div class="form-group col-md-12">
+                        <label>DOMICILIO, LUGAR O ESPACIO F&Iacute;SICO:</label>
+                        <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}" @if ($exonerado) readonly @endif>
+                    </div>
+                </div>
+                <div class="form-row" >
+                    <div class="form-group col-md-2">
+                        <label>TIPO DE CAPACITACI&Oacute;N:</label>
+                        {{ Form::select('tcurso', $tcurso, $grupo->tipo_curso, ['id'=>'tcurso','class' => 'form-control mr-sm-2'] ) }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>MEDIO VIRTUAL:</label>
+                        {{ Form::select('medio_virtual', $medio_virtual, $grupo->medio_virtual, ['id'=>'medio_virtual','class' => 'form-control mr-sm-2','disabled'=>$disabled] ) }}
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label>LINK VIRTUAL:</label>
+                        <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$grupo->link_virtual}}" {{$disabled}} />
+                    </div>
+                </div>
+                <div class="form-row" >
+                    <div class="form-group col-md-12">
+                        <label>OBSERVACIONES DE VINCILACI&Oacute;N:</label>
+                        <textarea name='obs_vincu' id='obs_vincu'  class="form-control" rows="5" readonly>{{$grupo->nota_vincu}}</textarea>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label>OBSERVACIONES:</label>
+                        <textarea name='observaciones' id='observaciones'  class="form-control" rows="5" >{{$grupo->nota}}</textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="">NÚMERO DE RECIBO DE PAGO:</label>
+                        <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="">FECHA DE EMISI&Oacute;N DEL RECIBO:</label>
+                        <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="">SUBIR PDF DEL RECIBO:</label>
+                        <div class="custom-file">
+                        <input type="file" id="file_pago" name="file_pago" accept="application/pdf" class="custom-file-input"/>
+                        <label for="file_pago" class="custom-file-label">Seleccionar Archivo PDF</label>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+
+                <h4><b>ALUMNOS</b></h4>
+                <div class="row">
+                    @include('solicitud.apertura.table')
+                </div>
+
+            @endif
+        {!! Form::close() !!}
+
+        {{-- Formulario pdf soporte --}}
+        <form action="{{route('solicitud.genpdf.soporte')}}" method="post" id="frmgen" target="_blank">
+            @csrf
+            <div class="col-12 row px-0">
+                <input type="hidden" name="idorg" value="{{isset($grupo->id_organismo) ? $grupo->id_organismo : ''}}">
+                <div class="col-3">
+                    <input type="text" class="form-control" style="" id="num_oficio" name="num_oficio" placeholder="NUMERO DE OFICIO">
+                </div>
+                <div class="col-3 px-0">
+                    <input type="text" class="form-control" style="" id="datos_titular" name="datos_titular" placeholder="TITULAR DE LA DEPENDENCIA, CARGO">
+                </div>
+            </div>
+        </form>
+    </div>
 @if (isset($grupo))
 <!-- modal para mostrar el calendario -->
 <div class="modal fade" id="modalCalendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -344,6 +358,10 @@
         <script language="javascript">
             $(document).ready(function(){
                 $('#medio_virtual').editableSelect();
+                //Generar pdf soporte / Made by Jose Luis Moreno Arcos
+                $("#genpdf_soporte").click(function(){
+                    $('#frmgen').submit();
+                });
 
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura')}}"); $('#frm').submit();});
                 $("#regresar" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.regresar')}}"); $('#frm').submit();}});
@@ -655,6 +673,14 @@
                     console.log('no se selecciono instructor');
                 }
             }
+            //Fun gen pdf soporte Made by Jose Luis Moreno Arcos
+            // function genpdf_soportef(id_org) {
+            //     let num_oficio = document.getElementById('num_oficio').value;
+            //     let datos_titular = document.getElementById('datos_titular').value;
+            //     let url = "{{ route('solicitud.genpdf.soporte', [':idorg']) }}";
+            //     url = url.replace(':idorg', id_org);
+            //     window.open(url, "_blank");
+            // }
         </script>
     @endsection
 @endsection
