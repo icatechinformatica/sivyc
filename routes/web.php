@@ -771,6 +771,7 @@ Route::post('/exoneraciones/sid/municipios', 'webController\ExoneracionesControl
 Route::get('/financieros/reporte', 'webController\PagoController@financieros_reporte')->name('financieros.reporte')->middleware('can:financieros.reporte');
 Route::post('/financieros/reporte/pdf','webController\PagoController@financieros_reportepdf')->name('financieros.reportepdf');
 Route::post('/financieros/upload/pago-autorizado','webController\PagoController@upload_pago_autorizado')->name('doc-pago-guardar');
+Route::post('/financieros/upload/subir-contrato-rezagado','webController\PagoController@subir_contrato_rezagado')->name('subir-contrato-rezagado');
 Route::post('/financieros/reporte/tramites_valrec','webController\PagoController@reporte_validados_recepcionados')->name('reporte_valrecep');
 Route::post('/financieros/agendar-fecha-entrega-pago','webController\PagoController@agendar_entrega_pago')->name('agendar-entrega-pago');
 Route::post('/financieros/recepcion-entrega-fisica','webController\PagoController@confirmar_entrega_fisica')->name('confirmar-entrega-fisica');
