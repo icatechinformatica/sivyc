@@ -15,4 +15,5 @@ yarn-error.log
 /.vscode
 /config/app.php
 /app/Providers/AppServiceProvider.php
-/app/RouteServiceProvider.php
+/app/Providers/RouteServiceProvider.php
+composer.lock

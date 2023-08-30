@@ -368,13 +368,20 @@ class supreController extends Controller
         $data =  $supre::WHERE('id', '=', $id)->FIRST();
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        $criterio_pago = DB::TABLE('criterio_pago')
+            ->SELECT('cp','perfil_profesional')
+            ->JOIN('tbl_cursos','tbl_cursos.cp','criterio_pago.id')
+            ->JOIN('folios','folios.id_cursos','tbl_cursos.id')
+            ->WHERE('folios.id_supre', $data->id)
+            ->FIRST();
+        $delegado = DB::TABLE('tbl_unidades')->SELECT('delegado_administrativo','pdelegado_administrativo')->WHERE('unidad',$data->unidad_capacitacion)->FIRST();
 
         // $notification = DB::table('notifications')
         //                 ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
         //                 ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
         // dd($notification);
 
-        return view('layouts.pages.valsupre',compact('data','getremitente','directorio'));
+        return view('layouts.pages.valsupre',compact('data','getremitente','directorio','criterio_pago','delegado'));
     }
 
     public function supre_rechazo(Request $request){
@@ -463,8 +470,15 @@ class supreController extends Controller
         $getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
         $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
         $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
+        $criterio_pago = DB::TABLE('criterio_pago')
+            ->SELECT('cp','perfil_profesional')
+            ->JOIN('tbl_cursos','tbl_cursos.cp','criterio_pago.id')
+            ->JOIN('folios','folios.id_cursos','tbl_cursos.id')
+            ->WHERE('folios.id_supre', $data->id)
+            ->FIRST();
+        $delegado = DB::TABLE('tbl_unidades')->SELECT('delegado_administrativo','pdelegado_administrativo')->WHERE('unidad',$data->unidad_capacitacion)->FIRST();
 
-        return view('layouts.pages.valsupremod', compact('data', 'directorio','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
+        return view('layouts.pages.valsupremod', compact('data', 'directorio','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','criterio_pago','delegado'));
     }
 
     public function delete($id)
@@ -491,6 +505,7 @@ class supreController extends Controller
             $idcontrato = contratos::SELECT('id_contrato')->WHERE('id_folios', '=', $item->id_folios)->FIRST();
             if($idcontrato != NULL)
             {
+                pago::WHERE('id_contrato', $idcontrato->id_contrato)->DELETE();
                 contrato_directorio::WHERE('id_contrato', '=', $idcontrato->id_contrato)->DELETE();
                 contratos::where('id_folios', '=', $item->id_folios)->DELETE();
             }
@@ -1281,14 +1296,14 @@ class supreController extends Controller
             //printf($item->id_cursos  . $h . ' + ' . $m . '=' . $hm . ' // ');
             if($data2->financiamiento == NULL)
             {
-                if ($hm < 10)
-                {
-                    $recursos[$i] = "Estatal";
-                }
-                else
-                {
+                // if ($hm < 10)
+                // {
+                //     $recursos[$i] = "Estatal";
+                // }
+                // else
+                // {
                     $recursos[$i] = "Federal";
-                }
+                // }
             }
             $i++;
         }
@@ -1313,8 +1328,8 @@ class supreController extends Controller
         //$getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
         //$getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
         //$getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
-        $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
-
+        // $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
+        $getccp4 = DB::TABLE('tbl_unidades')->SELECT('delegado_administrativo','pdelegado_administrativo')->WHERE('unidad',$data2->unidad_capacitacion)->FIRST();
         $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp4','recursos','distintivo','direccion'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
@@ -1690,8 +1705,8 @@ class supreController extends Controller
                     \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99') AS importe_hora"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99') AS importe_iva_16"),
                     \DB::raw("'12101 Honorarios' AS partida_concepto"),
-                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
-                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
+                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.6, '999,999.99') END AS importe_federal"),
+                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.4, '999,999.99') END AS importe_estatal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
                     \DB::raw("ROUND(folios.importe_total * 0.10, 2) AS retencion_isr"),
@@ -1802,6 +1817,8 @@ class supreController extends Controller
                     \DB::raw("'12101 Honorarios'"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento = NULL THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
+                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.6, '999,999.99') END AS importe_federal"),
+                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.4, '999,999.99') END AS importe_estatal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
                     \DB::raw("ROUND(folios.importe_total * 0.10, 2)"),

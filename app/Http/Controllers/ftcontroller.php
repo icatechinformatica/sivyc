@@ -186,7 +186,7 @@ class ftcontroller extends Controller {
                     $fechaActual = Carbon::parse($fecha_ahora);
                     $date = $fecha_ahora->format('Y-m-d'); // fecha
                     $numero_memo = $request->get('numero_memo'); // número de memo
-                    $fecha_nueva=$fecha_ahora->format('d-m-Y');
+                    $fecha_nueva=$fecha_ahora->format('Y-m-d');
 
                     $anioActual = $fecha_ahora->year; // año actual
 
@@ -215,12 +215,13 @@ class ftcontroller extends Controller {
                     ];
 
                     if ($fechaEntregaSpring >= $fecha_actual) {
-
-                        $actualMonth = $mesesCalendarizado[($fechaActual->format('n')) - 1];
-                        $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $actualMonth)->first();
+                        // dd($fecha_nueva);
+                        $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('fecha','>=', $fecha_nueva)->orderby('id','asc')->first();
+                        // $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $actualMonth)->first();
                         $fechActualSpring = $actualSpring->fecha_entrega."-".$anioActual;
                         $fechActSpring = date_create_from_format('d-m-Y', $fechActualSpring);
                         $formatFechaActual = date_format($fechActSpring, 'Y-m-d');
+                        // dd($formatFechaActual);
                         # la fecha de entrega debe siempre ser mayor o igual sobre la fecha actual que se envía el paquete.
 
                         /**
@@ -261,6 +262,7 @@ class ftcontroller extends Controller {
                     } else {
                         # si la condición no se cumple se tiene que tomar el envío con fecha del siguiente spring
                         #obtenemos el mes después
+                        dd('a');
                         $nextMonth = $mesesCalendarizado[($fechaActual->format('n')) + 0];
                         $fechaNextSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $nextMonth)->first();
                         $fechNextSpring = $fechaNextSpring->fecha_entrega."-".$anioActual;

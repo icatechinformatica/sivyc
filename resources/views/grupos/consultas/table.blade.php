@@ -5,6 +5,7 @@
         <thead>
             <tr>
                 <th scope="col">UNIDAD</th>
+                <th scope="col">FOL.GRUPO</th>
                 <th scope="col">CLAVE</th>
                 <th scope="col">CURSO</th>
                 <th scope="col">INSTRUCTOR</th>
@@ -21,6 +22,7 @@
             @foreach ($data as $item)
                 <tr>
                      <td>{{ $item->unidad }}</td>
+                     <td>{{ $item->folio_grupo }}</td>
                      <td>{{ $item->clave }}</td>
                      <td>{{ $item->curso }}</td>
                      <td>{{ $item->nombre }}</td>

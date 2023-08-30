@@ -189,10 +189,6 @@ class grupoController extends Controller
         $matricula = $message = NULL;
         $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
 
-        //VALIDACIÓN DE INSTRUCTOR EN OBSERVACIÓN
-        //$instructor_valido = $this->valida_instructor($request->instructor);
-        //if(!$instructor_valido['valido'])  return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
-
         if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
             if ($curp) {
                 $date = date('d-m-Y');
@@ -347,10 +343,6 @@ class grupoController extends Controller
     {
         //dd($request->all());
         if ($_SESSION['folio_grupo']) {
-            ///VALIDA INSTRUCTOR
-            $instructor_valido = $this->valida_instructor($request->instructor);
-            if(!$instructor_valido['valido'])  return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]); ;
-
 
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
@@ -643,27 +635,6 @@ class grupoController extends Controller
                                     $conteo += 1;
                                 }
                             }
-                            // foreach ($alumnos as $a) {
-                            //     if ($a->mod=='CAE' AND $a->abrinscri!='PI') {
-                            //         $exoneraciones = DB::table('alumnos_registro')
-                            //             ->where('id_pre',$a->id_pre)
-                            //             ->where('eliminado',false)
-                            //             ->where('ejercicio',date('y'))
-                            //             ->where('abrinscri','!=','PI')
-                            //             ->where('mod','CAE')
-                            //             ->where('turnado','!=','VINCULACION')
-                            //             ->value(DB::raw('count(id)'));
-                            //         if ($exoneraciones > 2) {
-                            //             if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
-                            //                 $quitar_permiso = DB::table('alumnos_pre')->where('id',$a->id_pre)->update(['permiso_exoneracion'=>false]);
-                            //             } else {
-                            //                 $message = "El alumno excede el limite de exoneraciones permitidas " .$a->curp. ".";
-                            //                 return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
-                            //             }
-                            //         }
-                            //     }
-                            // }
-
                             $instructor_valido = $this->valida_instructor($alumnos[0]->id_instructor);
                             if($instructor_valido['valido']){
                                 $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);

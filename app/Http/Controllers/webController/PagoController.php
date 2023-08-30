@@ -100,9 +100,10 @@ class PagoController extends Controller
             'contratos.observacion', 'contratos.arch_factura', 'contratos.arch_factura_xml','folios.permiso_editar',
             'folios.status','pagos.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.status_recepcion','pagos.created_at','pagos.arch_solicitud_pago',
             'pagos.arch_asistencia','pagos.arch_evidencia','pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo',
-            'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor',
+            'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.soportes_instructor',
             'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
-            'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio','pagos.updated_at',
+            'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio',
+            'pagos.updated_at','pagos.status_transferencia',
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
             // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
@@ -161,9 +162,9 @@ class PagoController extends Controller
                     'contratos.arch_factura', 'contratos.arch_factura_xml','folios.status','folios.id_folios','folios.id_supre','pagos.recepcion',
                     'folios.permiso_editar','pagos.status_recepcion','pagos.arch_solicitud_pago','pagos.fecha_agenda','pagos.created_at','pagos.arch_asistencia','pagos.arch_evidencia',
                     'pagos.arch_calificaciones','pagos.arch_evidencia','pagos.agendado_extemporaneo','pagos.observacion_rechazo_recepcion',
-                    'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso',
+                    'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso','tbl_cursos.soportes_instructor',
                     'tabla_supre.doc_validado','instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
-                    'tbl_cursos.nombre','pagos.fecha_envio','pagos.updated_at',
+                    'tbl_cursos.nombre','pagos.fecha_envio','pagos.updated_at','pagos.status_transferencia',
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
                     // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
@@ -404,7 +405,7 @@ class PagoController extends Controller
     {
         // dd($request);
         $data = contratos::SELECT('contratos.fecha_status', 'contratos.numero_contrato', 'contratos.fecha_firma',
-            'contratos.chk_rechazado', 'contratos.fecha_rechazo', 'pagos.recepcion', 'tbl_cursos.clave',
+            'contratos.chk_rechazado', 'contratos.fecha_rechazo', 'pagos.status_recepcion', 'pagos.recepcion','pagos.historial', 'tbl_cursos.clave',
 		    'tbl_cursos.inicio', 'tbl_cursos.nombre','folios.status')
             ->JOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
             ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -415,11 +416,13 @@ class PagoController extends Controller
             // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
             // ->WHERE('pagos.recepcion', '!=', NULL)
-            ->WHERE('folios.status', '!=', 'Contrato_Rechazado')
+            ->WHERE('pagos.status_recepcion', '!=', 'Rechazado')
+            // ->WHERE('pagos.status_recepcion', '!=', 'En Espera')
             ->WHEREBETWEEN('contratos.fecha_status', [$request->fecha1, $request->fecha2])
+            // ->WHERE('pagos.historial','!=',null)
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
-            // dd($data[24]);
+            // dd(json_decode($data[7]->historial));
         $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
         $title = "DOCUMENTOS RECEPCIONADOS";
         $name = $title."_".date('Ymd').".xlsx";
@@ -648,7 +651,7 @@ class PagoController extends Controller
         {
             foreach($memoval as $me)
             {
-                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                if(isset($me['memo_val']) && $me['memo_val'] == $archivos->instructor_mespecialidad)
                 {
                     $archivos->instructor_mespecialidad = $me['arch_val'];
                     break;
@@ -661,8 +664,8 @@ class PagoController extends Controller
         }
 
         $update->fecha_agenda = $request->fecha_confirmada;
-        $update->status_recepcion = 'Citado';
-        $updarray = ['status' => 'Citado',
+        $update->status_recepcion = 'VALIDADO';
+        $updarray = ['status' => 'VALIDADO',
                      'fecha_agenda' => $request->fecha_confirmada,
                      'fecha_validacion' => carbon::now()->format('d-m-Y'),
                      'solicitud_pago' => $update->arch_solicitud_pago,
@@ -691,7 +694,7 @@ class PagoController extends Controller
         $update->historial = $arrhistorial;
         $update->save();
         return redirect()->route('pago-inicio')
-                ->with('success', 'Fecha de Cita Confirmada Correctamente');
+                ->with('success', 'Documentación Digital Confirmada Correctamente');
     }
 
     public function rechazar_entrega_fisica(Request $request)
@@ -701,7 +704,7 @@ class PagoController extends Controller
         $update = pago::WHERE('id_contrato',$request->id_contrato_entrega_rechazo)->first();
         $archivos = DB::TABLE('contratos')
             ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
-            'instructor_mespecialidad','espe','archivo_alta')
+            'instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
             ->WHERE('contratos.id_contrato', $request->id_contrato_entrega_rechazo)
             ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
             ->JOIN('folios','folios.id_folios','contratos.id_folios')
@@ -711,10 +714,11 @@ class PagoController extends Controller
 
         $especialidad_seleccionada = DB::Table('especialidad_instructores')
             ->SELECT('especialidad_instructores.id','especialidades.nombre')
-            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidad_instructores.id_instructor',$archivos->id_instructor)
             ->WHERE('especialidades.nombre', '=', $archivos->espe)
             ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
             ->FIRST();
+            // dd($especialidad_seleccionada);
 
         $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
             ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
@@ -796,7 +800,7 @@ class PagoController extends Controller
         {
             foreach($memoval as $me)
             {
-                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                if(isset($me['memo_val']) &&$me['memo_val'] == $archivos->instructor_mespecialidad)
                 {
                     $archivos->instructor_mespecialidad = $me['arch_val'];
                     break;
@@ -808,9 +812,9 @@ class PagoController extends Controller
             $archivos->instructor_mespecialidad = $archivos->archivo_alta;
         }
 
-        $update->status_recepcion = 'Recibido';
+        $update->status_recepcion = 'VALIDADO';
         $update->recepcion = carbon::now()->format('d-m-Y');
-        $updarray = ['status' => 'Recibido',
+        $updarray = ['status' => 'VALIDADO Y RECIBIDO',
                      'fecha_recibido' => carbon::now()->format('d-m-Y'),
                      'solicitud_pago' => $update->arch_solicitud_pago,
                      'cuenta_bancaria' => $archivos->archivo_bancario,
@@ -848,7 +852,7 @@ class PagoController extends Controller
         $update = pago::WHERE('id_contrato',$request->id_contrato_noentrega)->first();
         $archivos = DB::TABLE('contratos')
             ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
-            'instructor_mespecialidad','espe','archivo_alta')
+            'instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
             ->WHERE('contratos.id_contrato', $request->id_contrato_noentrega)
             ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
             ->JOIN('folios','folios.id_folios','contratos.id_folios')
@@ -858,7 +862,7 @@ class PagoController extends Controller
 
         $especialidad_seleccionada = DB::Table('especialidad_instructores')
             ->SELECT('especialidad_instructores.id','especialidades.nombre')
-            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidad_instructores.id_instructor',$archivos->id_instructor)
             ->WHERE('especialidades.nombre', '=', $archivos->espe)
             ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
             ->FIRST();
@@ -911,6 +915,91 @@ class PagoController extends Controller
         $update->save();
         return redirect()->route('pago-inicio')
                 ->with('success', 'No Recepción de Documentos Guardado Correctamente');
+    }
+
+    public function retorno_validacion_entrega_fisica(Request $request)
+    {
+        // dd($request);
+
+        $updarray = $arrhistorial = array();
+        $update = pago::WHERE('id_contrato',$request->id_retorno_recepcion)->first();
+        if($update->status_recepcion == 'recepcion tradicional') {
+            $contrato_id = DB::TABLE('contratos')->WHERE('contratos.id_contrato', $update->id_contrato)->VALUE('id_folios');
+            $folio_rt = folio::FIND($contrato_id);
+            $folio_rt->status = 'Capturando';
+            $folio_rt->save();
+
+        } else {
+            $archivos = DB::TABLE('contratos')
+                ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
+                'instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
+                ->WHERE('contratos.id_contrato', $request->id_retorno_recepcion)
+                ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
+                ->JOIN('folios','folios.id_folios','contratos.id_folios')
+                ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+                ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
+                ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')->FIRST();
+
+            $especialidad_seleccionada = DB::Table('especialidad_instructores')
+                ->SELECT('especialidad_instructores.id','especialidades.nombre')
+                ->WHERE('especialidad_instructores.id_instructor',$archivos->id_instructor)
+                ->WHERE('especialidades.nombre', '=', $archivos->espe)
+                ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+                ->FIRST();
+
+            $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+                ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+            if(isset($memoval))
+            {
+                foreach($memoval as $me)
+                {
+                    if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                    {
+                        $archivos->instructor_mespecialidad = $me['arch_val'];
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                $archivos->instructor_mespecialidad = $archivos->archivo_alta;
+            }
+
+            $update->status_recepcion = 'Rechazado';
+            $update->recepcion = null;
+            $updarray = ['status' => 'Retorno de Validacion',
+                        'observacion' => $update->observacion_rechazo_recepcion,
+                        'fecha_retorno' => carbon::now()->format('d-m-Y'),
+                        'solicitud_pago' => $update->arch_solicitud_pago,
+                        'cuenta_bancaria' => $archivos->archivo_bancario,
+                        'validacion_instructor' => $archivos->instructor_mespecialidad,
+                        'arc' => $archivos->pdf_curso,
+                        'valsupre' => $archivos->doc_validado,
+                        'factura_pdf' => $archivos->arch_factura,
+                        'factura_xml' => $archivos->arch_factura_xml,
+                        'contrato' => $archivos->arch_contrato,
+                        'identificacion' => $archivos->archivo_ine,
+                        'asistencia' => $update->arch_asistencia,
+                        'calificacion' => $update->arch_calificaciones,
+                        'evidencia' => $update->arch_evidencia,
+                        'usuario_retorno' => Auth::user()->name,];
+
+
+
+            if(!isset($update->historial))
+            {
+                array_push($arrhistorial,$updarray);
+            }
+            else
+            {
+                $arrhistorial = $update->historial;
+                array_push($arrhistorial,$updarray);
+            }
+            $update->historial = $arrhistorial;
+            $update->save();
+        }
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Valdiación de Documentos Digitales Retornado Correctamente');
     }
 
 

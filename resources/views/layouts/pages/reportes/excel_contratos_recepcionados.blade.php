@@ -9,11 +9,14 @@
     $conteo = 0; $total_rows = 4; $par_row = 2;
     foreach ($data as $ari)
     {
-        if(isset($ari->fecha_rechazo))
+        if(isset($ari->historial))
         {
-            foreach ($ari->fecha_rechazo as $cadwell)
+            foreach (json_decode($ari->historial) as $cadwell)
             {
-                $conteo++;
+                if($cadwell->status == 'Rechazado')
+                {
+                    $conteo++;
+                }
             }
 
             $conteo = $conteo*2;
@@ -63,22 +66,23 @@
         @foreach ($data as $key => $cadwell)
             @php
                 $no_memo = explode('/',$cadwell->numero_contrato);
-                switch ($cadwell->status)
+                switch ($cadwell->status_recepcion)
                 {
-                    case 'Verificando_Pago':
-                        $status = 'Verificando Solicitud Pago';
-                        $status_estilo = $azestilo;
+                    case 'VALIDADO':
+                        if(is_null($cadwell->recepcion)) {
+                            $status = 'Entrega Fisica Recibida';
+                            $status_estilo = $azestilo;
+                        } else {
+                            $status = 'Validado y listo para entrega fisica';
+                            $status_estilo = $azestilo;
+                        }
                     break;
-                    case 'Pago_Verificado':
-                        $status = 'Solicitud Pago Verificado';
-                        $status_estilo = $azestilo;
-                    break;
-                    case  'Pago_Rechazado':
-                        $status = 'Solicitud Pago Rechazado';
+                    case  'Rechazado':
+                        $status = 'Documentacion Digital Rechazada';
                         $status_estilo = $nestilo;
                     break;
-                    case 'Contratado':
-                        $status = 'Contrato Validado';
+                    case 'recepcion tradicional':
+                        $status = 'Recepcion Tradicional';
                         $status_estilo = $azestilo;
                     break;
                 }
@@ -88,17 +92,30 @@
                 <td style="{{$td}}">{{$cadwell->fecha_status}}</td>
                 <td style="{{$td}}">{{$no_memo[3]}}</td>
                 <td style="{{$td}}">{{$cadwell->clave}}</td>
+
                 <td style="{{$status_estilo}}">{{$status}}</td>
                 <td style="{{$td}}">{{$cadwell->fecha_firma}}</td>
                 <td style="{{$td}}">{{$cadwell->nombre}}</td>
                 <td></td>
-                @if(isset($cadwell->fecha_rechazo))
-                    @foreach($cadwell->fecha_rechazo as $moist)
-                        <th style="{{$td}}">{{$moist['fecha']}}</th>
-                        <th style="{{$nestilo}}">RECHAZADO</th>
+                @php $rl = 0; @endphp
+                @if(isset($cadwell->historial))
+
+                    @foreach(json_decode($cadwell->historial) as $moist)
+                        @if($moist->status == 'Rechazado')
+                        {{-- @php dd($par_row); @endphp --}}
+                            <th style="{{$td}}">{{$moist->fecha_rechazo}}</th>
+                            <th style="{{$nestilo}}">RECHAZADO</th>
+                            @php $rl++; @endphp
+                        @elseif($moist->status == 'Citado')
+                            <th style="{{$td}}">{{$moist->fecha_validacion}}</th>
+                            <th style="{{$vestilo}}">CITADO</th>
+                            @php $rl++; @endphp
+                        @endif
                     @endforeach
-                        <th style="{{$td}}">{{$cadwell->fecha_status}}</th>
-                        <th style="{{$vestilo}}">VALIDADO</th>
+                    @for($m = $rl; $m < $par_row; $m++)
+                        <th width='11px;' style="{{$td}}"> - </th>
+                        <th width='14px;' style="{{$td}}"> - </th>
+                    @endfor
                 @else
                     <th style="{{$td}}">{{$cadwell->fecha_status}}</th>
                     <th style="{{$vestilo}}">VALIDADO</th>

@@ -83,12 +83,13 @@
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
                                 <option value="">BUSQUEDA POR STATUS</option>
                                 <option value="Validado">SUFICIENCIA VALIDADA</option>
-                                <option value="Validando_Contrato">CONTRATO EN REVISION</option>
+                                <option value="Capturando">CAPTURANDO</option>
+                                {{-- <option value="Validando_Contrato">CONTRATO EN REVISION</option>
                                 <option value="Contratado">CONTRATO VALIDADO</option>
                                 <option value="Contrato_Rechazado">CONTRATO RECHAZADO</option>
-                                <option value="Verificando_Pago">VERIFICANDO PAGO</option>
+                                <option value="Verificando_Pago">VERIFICANDO PAGO</option> --}}
                                 <option value="Pago_Verificado">PAGO VERIFICADO</option>
-                                <option value="Pago_Rechazado">PAGO RECHAZADO</option>
+                                {{-- <option value="Pago_Rechazado">PAGO RECHAZADO</option> --}}
                                 <option value="Finalizado">FINALIZADO</option>
                             </select>
                         </Div>
@@ -135,18 +136,19 @@
                                 @endif
                             </td>
                             <td>
+
                                 @switch($itemData->status)
                                     @case('Validado')
                                         Suficiencia Validada
                                         @break
-                                    @case('Contratado')
-                                        Contrato Validado
+                                    @case('Capturando')
+                                        Capturando
                                         @break
                                     @case('Validando_Contrato')
                                         Contrato en Revision
                                         @break
                                     @default
-                                    {{$itemData->status}}
+                                    @if($itemData->status == 'Pago_Verificado' && ($itemData->status_recepcion == 'Recibido' || $itemData->status_recepcion == 'recepcion tradicional')) Para Pago @elseif($itemData->status == 'Pago_Verificado') Para Envío @else{{$itemData->status}} @endif
                                         @break
                                 @endswitch
                             </td>
@@ -166,7 +168,7 @@
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                     @can('contratos.create')
-                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Crear Contrato" href="{{route('contratos.create', ['id' => $itemData->id_folios])}}">
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Crear Contrato y Solicitud de Pago" href="{{route('contratos.create', ['id' => $itemData->id_folios])}}">
                                             <i class="fa fa-file-text" aria-hidden="true"></i>
                                         </a>
                                     @endcan
@@ -196,7 +198,7 @@
                                         @endcan
                                     @endif
                                 @endif
-                                @if ($itemData->status == 'Validando_Contrato')
+                                {{-- @if ($itemData->status == 'Validando_Contrato')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
@@ -238,8 +240,8 @@
                                             </button>
                                         @endcan
                                     @endif
-                                @endif
-                                @if ($itemData->status == 'Contrato_Rechazado')
+                                @endif --}}
+                                {{-- @if ($itemData->status == 'Contrato_Rechazado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
@@ -276,28 +278,30 @@
                                             </button>
                                         @endcan
                                     @endif
-                                @endif
-                                @if ($itemData->status == 'Contratado')
+                                @endif --}}
+                                @if ($itemData->status == 'Capturando' || $itemData->status_recepcion == 'Rechazado' || ($itemData->status_recepcion == null && $itemData->id_contrato != null))
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
-                                    @can('solicitud_pago.create')
-                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Solicitar Pago" href="{{route('solicitud-pago', ['id' => $itemData->id_folios])}}">
-                                            <i class="fa fa-money" aria-hidden="true"></i>
+                                    @can('contratos.edit')
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Modificar Contrato y Pago" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}">
+                                            <i class="fa fa-file-text" aria-hidden="true"></i>
                                         </a>
                                     @endcan
-                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                    {{-- <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </a>
-                                    @can('contrato.restart')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
-                                            data-toggle="modal" data-placement="top"
-                                            data-target="#restartModalContrato"
-                                            data-id='{{$itemData->id_folios}}'
-                                            title="Reiniciar Contrato">
-                                            <i class="fa fa-history"></i>
-                                        </button>
-                                    @endcan
+                                    </a> --}}
+                                    @if(!is_null($itemData->status_recepcion))
+                                        @can('contrato.restart')
+                                            <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#restartModalContrato"
+                                                data-id='{{$itemData->id_folios}}'
+                                                title="Reiniciar Contrato">
+                                                <i class="fa fa-history"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                     @can('folio.cancel')
                                         <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
@@ -323,8 +327,67 @@
                                             </button>
                                         @endcan
                                     @endif
+                                    @if($itemData->recepcion == NULL)
+                                        @can('contrato.recepcion')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#recepcionModal"
+                                                data-id='{{$itemData->id_folios}}'
+                                                title="Recepción de documentos">
+                                                <i class="fa fa-book"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
+
                                 @endif
-                                @if ($itemData->status == 'Pago_Rechazado')
+                                {{-- @if ($itemData->status == 'Contratado')
+                                        <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
+                                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                        </a>
+                                        @can('solicitud_pago.create')
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Solicitar Pago" href="{{route('solicitud-pago', ['id' => $itemData->id_folios])}}">
+                                                <i class="fa fa-money" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
+                                        <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </a>
+                                        @can('contrato.restart')
+                                            <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#restartModalContrato"
+                                                data-id='{{$itemData->id_folios}}'
+                                                title="Reiniciar Contrato">
+                                                <i class="fa fa-history"></i>
+                                            </button>
+                                        @endcan
+                                        @can('folio.cancel')
+                                            <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#cancelModalFolio"
+                                                data-id='{{$itemData->id_folios}}'
+                                                title="Cancelar Folio">
+                                                <i class="fa fa-window-close"></i>
+                                            </button>
+                                        @endcan
+                                        @if($itemData->permiso_editar == TRUE)
+                                            @can('folio.especialedit')
+                                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
+                                                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                                                </a>
+                                            @endcan
+                                            @can('supre.upload_supre')
+                                                <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                    data-toggle="modal" data-placement="top"
+                                                    data-target="#DocSupreModal2"
+                                                    data-id='{{$itemData->id_supre}}'
+                                                    title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                    <i class="fa fa-upload"></i>
+                                                </button>
+                                            @endcan
+                                        @endif
+                                @endif --}}
+                                {{-- @if ($itemData->status == 'Pago_Rechazado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
@@ -370,23 +433,30 @@
                                             </button>
                                         @endcan
                                     @endif
-                                @endif
-                                @if ($itemData->status == 'Verificando_Pago')
+                                @endif --}}
+                                {{-- @if ($itemData->status == 'Verificando_Pago')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
+                                    @can('contratos.edit')
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Modificar Contrato y Pago" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}">
+                                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
-                                    @can('contrato.restart')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
-                                            data-toggle="modal" data-placement="top"
-                                            data-target="#restartModalContrato"
-                                            data-id='{{$itemData->id_folios}}'
-                                            title="Reiniciar Contrato">
-                                            <i class="fa fa-history"></i>
-                                        </button>
-                                    @endcan
+                                    @if(!is_null($itemData->status_recepcion))
+                                        @can('contrato.restart')
+                                            <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#restartModalContrato"
+                                                data-id='{{$itemData->id_folios}}'
+                                                title="Reiniciar Contrato">
+                                                <i class="fa fa-history"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                     @can('folio.cancel')
                                         <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
@@ -423,8 +493,8 @@
                                             </button>
                                         @endcan
                                     @endif
-                                @endif
-                                @if ($itemData->status == 'Pago_Verificado')
+                                @endif --}}
+                                @if ($itemData->status == 'Pago_Verificado' || ($itemData->status_recepcion == null && $itemData->id_contrato != null))
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>

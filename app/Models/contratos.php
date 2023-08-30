@@ -13,7 +13,7 @@ class contratos extends Model
 
     protected $fillable = ['id_contrato','numero_contrato','cantidad_letras1','fecha_firma','municipio',
     'id_folios','instructor_perfilid','unidad_capacitacion','docs','observacion','cantidad_numero','arch_factura','arch_factura_xml',
-    'fecha_status','chk_rechazado','fecha_rechazo','tipo_factura','arch_contrato'
+    'fecha_status','chk_rechazado','fecha_rechazo','tipo_factura','arch_contrato','folio_fiscal','id_curso'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -125,7 +125,7 @@ class contratos extends Model
                 # busqueda por unidad capacitacion...
                 if (!empty($tipo_status))
                 {
-                    if($tipo_status == 'En Espera' || $tipo_status == 'Citado')
+                    if($tipo_status == 'En Espera' || $tipo_status == 'VALIDADO')
                     {
                         if($tipo_status == 'En Espera')
                         {
@@ -166,7 +166,7 @@ class contratos extends Model
                 # busqueda por unidad capacitacion...
                 if (!empty($tipo_status))
                 {
-                    if($tipo_status == 'En Espera' || $tipo_status == 'Citado')
+                    if($tipo_status == 'En Espera' || $tipo_status == 'VALIDADO')
                     {
                         return $query->whereDate('pagos.fecha_envio', '>=', $dateini)->whereDate('pagos.fecha_envio', '<=', $datefin)->WHERE('pagos.status_recepcion', '=', $tipo_status);
                     }
@@ -199,14 +199,25 @@ class contratos extends Model
             {
                 if(isset($unidad))
                 {
+                    $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad)->WHERE('pagos.status_recepcion', 'VALIDADO');
+                }
+                return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
+                                ->WHERE('pagos.status_recepcion', 'VALIDADO')
+                                ->WHERE('pagos.recepcion',NULL);
+            }
+            if($tipo == 'entregado_fisicamente')
+            {
+                if(isset($unidad))
+                {
                     $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad);
                 }
                 return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
-                                ->WHERE('pagos.recepcion',NULL);
+                                ->WHERE('pagos.status_recepcion', 'VALIDADO')
+                                ->WHERE('pagos.recepcion','!=',NULL);
             }
         }
         if (!empty($tipo_status)) {
-            if($tipo_status == 'En Espera' || $tipo_status == 'Citado')
+            if($tipo_status == 'En Espera' || $tipo_status == 'VALIDADO')
             {
                 if($tipo_status == 'En Espera')
                 {

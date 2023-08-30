@@ -23,6 +23,7 @@ use App\Models\Inscripcion;
 use App\Models\localidad;
 use App\Models\Calificacion;
 use App\Models\tbl_curso;
+use App\Models\Banco;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -63,22 +64,24 @@ class InstructorController extends Controller
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
-        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor' || $roles[0]->role_name == 'auxiliar_cursos')
-        {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
-            ->WHEREIN('estado', [true,false])
-            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra']);
-        }
-        else
-        {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
-            ->WHEREIN('estado', [true,false])
-            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'instructores.id', 'archivo_alta','curso_extra']);
-        }
 
-        $especialidades = especialidad::SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
+        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
+            ->LEFTJOIN('especialidad_instructores',function($join){
+                $join->on('instructores.id','=','especialidad_instructores.id_instructor');
+                $join->where('especialidad_instructores.status','=','VALIDADO');
+                $join->groupby('especialidad_instructores.id_instructor');
+            })
+            //->JOIN('especialidad_instructores','instructores.id','especialidad_instructores.id_instructor')
+            //->WHERE('especialidad_instructores','especialidad_instructores.status','VALIDADO')
+            ->WHEREIN('estado', [true,false])
+            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
+                'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado', DB::raw('min(fecha_validacion) as fecha_validacion'),
+                DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
+                DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia")
+            ]);
+
+        $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
     }
 
@@ -144,7 +147,7 @@ class InstructorController extends Controller
                 $especialidades = $this->make_collection($data->data_especialidad);
                 foreach($especialidades as $moist)
                 {
-                    if($moist->status != 'VALIDADO')
+                    if($moist->status != 'VALIDADO' && $moist->status != 'BAJA')
                     {
                         $chk_mod_espec = TRUE;
                     }
@@ -172,7 +175,7 @@ class InstructorController extends Controller
             {
                 foreach($especialidades as $boromir)
                 {
-                    if(isset($boromir->hvalidacion) && $boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO')
+                    if(isset($boromir->hvalidacion) && $boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA')
                     {
                         $arch_sol = end($boromir->hvalidacion)['arch_sol'];
                     }
@@ -260,8 +263,9 @@ class InstructorController extends Controller
     {
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
+        $bancos = Banco::all();
 
-        return view('layouts.pages.frminstructor', compact('lista_civil','estados'));
+        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos'));
     }
 
     #----- instructor/guardar -----#
@@ -321,6 +325,8 @@ class InstructorController extends Controller
         $idestnac = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad_nacimiento)->FIRST();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
                         ->ORDERBY('muni','ASC')->GET();
+        $bancos = Banco::all();
+
         if(isset($idestnac->id))
         {
             $municipios_nacimiento = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idestnac->id)
@@ -389,7 +395,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
         // dd($nrevisionlast);
-        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast'));
+        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos'));
     }
 
     public function send_to_dta(Request $request)
@@ -1565,6 +1571,8 @@ class InstructorController extends Controller
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $instructor_perfil = new InstructorPerfil();
+        $bancos = Banco::all();
+
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
             $datainstructor = NULL;
@@ -1685,7 +1693,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
 
-        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser'));
+        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos'));
     }
 
     public function save_ins(Request $request)
@@ -3314,7 +3322,7 @@ class InstructorController extends Controller
                     break;
                     case 'REVALIDACION EN FIRMA';
                         $tipo_doc = 'REVALIDACION';
-                        
+
                     break;
                     case 'REACTIVACION EN FIRMA';
                         $tipo_doc = 'REACTIVACION';
@@ -3505,7 +3513,8 @@ class InstructorController extends Controller
         $especialidades = $this->make_collection($especialidades);
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
-        ->WHERE('unidad', '!=', 'VILLA CORZO')->FIRST();
+        ->WHERE('unidad', '!=', 'VILLA CORZO')
+        ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
         $direccion = $data_unidad->direccion;
         $direccion = explode("*", $data_unidad->direccion);
         $date = strtotime($especialidades[0]->fecha_solicitud);
@@ -4007,8 +4016,34 @@ class InstructorController extends Controller
     public function curso_extra_upd(Request $request)
     {
         // dd($request);
-        instructor::where('id', '=', $request->id_instructor_cursoext)->update(['curso_extra' => $request->extra]);
-        return redirect()->route('instructor-inicio');
+        //instructor::where('id', '=', $request->id_instructor_cursoext)->update(['curso_extra' => $request->extra]);
+       // return redirect()->route('instructor-inicio');
+        if($request->id_instructor and $request->estado){
+            $id_instructor = $request->id_instructor;
+            $estado = $request->estado;
+            $result =  instructor::where('id', '=', $request->id_instructor)->update(['curso_extra' => $estado]);
+        }
+        if($result){
+            if($estado == "true") $msg = "CURSO EXTRA ACTIVADO.";
+            else $msg = "CURSO EXTRA DESACTIVADO.";
+        }else $msg = "F5 para actualizar y volver a intentar";
+        return $msg;
+
+    }
+
+    public function iestado(Request $request)
+    {
+        if($request->id_instructor and $request->estado){
+
+            $id_instructor = $request->id_instructor;
+            $estado = $request->estado;
+            $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
+        }
+        if($result){
+            if($estado == "true") $msg = "INSTRUCTOR ACTIVADO.";
+            else $msg = "INSTRUCTOR DESACTIVADO.";
+        }else $msg = "F5 para actualizar y volver a intentar";
+        return $msg;
     }
 
     protected function getlocalidades(Request $request)

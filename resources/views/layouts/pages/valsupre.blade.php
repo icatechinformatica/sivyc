@@ -18,6 +18,10 @@
                         <label for="dropfecha_memo">Fecha de Memorandum</label>
                     <input name="fecha_memo" id="fecha_memo" type="date" disabled value="{{$data->fecha}}" class="form-control">
                     </div>
+                    <div class="form-group col-md-5">
+                        <label for="dropcrit_pago">Criterio de Pago</label>
+                        <input name="crit_pago" id="crit_pago" type="text" disabled value="{{$criterio_pago->cp}} - {{$criterio_pago->perfil_profesional}}" class="form-control">
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
@@ -79,8 +83,9 @@
                         <label for="inputfinanciamiento">Fuente de Financiamiento</label>
                         <select class="form-control" name="financiamiento" id="financiamiento" required>
                             {{-- <option value="">SELECCIONE</option> --}}
-                            <option value="FEDERAL" selected>FEDERAL</option>
+                            <option value="FEDERAL" @if($criterio_pago->cp != '12') selected @endif>FEDERAL</option>
                             {{-- <option value="ESTATAL">ESTATAL</option> --}}
+                            <option value="FEDERAL Y ESTATAL" @if($criterio_pago->cp == '12') selected @endif>FEDERAL Y ESTATAL</option>
                         </select>
                     </div>
                 </div>
@@ -129,11 +134,11 @@
                 </div>
                 <div id="div7" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
-                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" required>
+                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" value="{{$delegado->delegado_administrativo}}" readonly>
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" required>
-                        <input id="id_ccp4" name="id_ccp4" hidden required>
+                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" value="{{$delegado->pdelegado_administrativo}}" readonly>
+                        {{-- <input id="id_ccp4" name="id_ccp4" hidden required> --}}
                     </div>
                 </div>
             <!--END CCP-->

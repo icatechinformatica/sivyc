@@ -184,7 +184,7 @@
                     <label for="inputtelefono">Numero de Telefono de Casa</label>
                     <input name="telefono_casa" id="telefono_casa" type="tel" class="form-control" aria-required="true" required>
                 </div>
-                <div class="form-group col-md-4>
+                <div class="form-group col-md-4">
                     <label for="inputcorreo">Correo Electronico</label>
                     <input name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" required>
                 </div>
@@ -192,7 +192,12 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputbanco">Nombre del Banco</label>
-                    <input name="banco" id="banco" type="text" class="form-control" aria-required="true">
+                    <select class="form-control" name="banco" id="banco">
+                        <option value="">SELECCIONE</option>
+                        @foreach ($bancos as $juicy)
+                            <option value="{{$juicy->nombre}}">{{$juicy->nombre}}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputclabe">Clabe Interbancaria</label>

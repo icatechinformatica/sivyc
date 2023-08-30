@@ -54,11 +54,13 @@ class instructor extends Model
 
     public function scopeSearchInstructor($query, $tipo, $buscar, $tipo_status, $tipo_especialidad)
     {
-        if (!empty($tipo))
-        {
+        $query->GROUPBY('instructores.id','instructores.nombre');
+        $query->ORDERBY('status','DESC');
+        $query->ORDERBY('fecha_validacion','ASC');
+
+        if (!empty($tipo)){
             # entramos y validamos
-            if (!empty(trim($buscar)))
-            {
+            if (!empty(trim($buscar))){
                 # empezamos
                 switch ($tipo) {
                     case 'clave_instructor':
@@ -69,6 +71,10 @@ class instructor extends Model
                         # code...
                         return $query->where( \DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',nombre)'), 'LIKE', "%$buscar%");
                         break;
+                    case 'curp':
+                            # code...
+                            return $query->where('curp', '=', $buscar);
+                            break;
                     case 'telefono_instructor':
                         return $query->where( 'telefono', 'LIKE', "%$buscar%");
                         break;
@@ -83,7 +89,7 @@ class instructor extends Model
             }
             if(!empty($tipo_especialidad))
             {
-                return $query->where( 'especialidad_id', $tipo_especialidad)->JOIN('especialidad_instructores','especialidad_instructores.id_instructor','=','instructores.id');
+                return $query->where( 'especialidad_instructores.especialidad_id', $tipo_especialidad)->WHERE('especialidad_instructores.status','VALIDADO');
             }
         }
     }

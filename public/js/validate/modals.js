@@ -135,7 +135,7 @@ $(function(){
                 $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
             }
         }
-        else if(id['4'] == 'Validando_Contrato')
+        else if(id['4'] == 'Validando_Contrato' || id['4'] == 'Capturando')
         {
             $('#sol_pdf').attr("class", "btn btn-danger disabled");
             $('#contrato_pdf').attr("class", "btn btn-danger");
@@ -211,6 +211,13 @@ $(function(){
         var button = $(event.relatedTarget);
         var id = button.data('id');
         $('#confirm_restart').attr("href","/supre/reiniciar/" + id);
+    });
+
+    //Modal de cancelacion de supre en supre
+    $('#cancelModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#confirm_cancel').attr("href","/supre/eliminar/" + id);
     });
 
     //Modal de reincio de Contrato

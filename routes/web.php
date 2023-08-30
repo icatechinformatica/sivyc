@@ -354,6 +354,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/instructor/institucional/guardar', 'webController\InstructorController@institucional_save')->name('instructor-institucional-save');
     Route::post('/instructor/sendtodta', 'webController\InstructorController@send_to_dta')->name('ins-to-dta');
     Route::post('/instructor/cursoExtra', 'webController\InstructorController@curso_extra_upd')->name('mod-curso-extra');
+    Route::get('/instructor/estado/', 'webController\InstructorController@iestado')->name('instructor.estado');
+    Route::post('/instructor/estado/', 'webController\InstructorController@iestado')->name('instructor.estado');
+
 
     // Solicitud de Suficiencia Presupuestal
     Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')
@@ -776,6 +779,7 @@ Route::post('/financieros/rechazo/recepcion-entrega-fisica','webController\PagoC
 Route::post('/financieros/denegado/recepcion-entrega-fisica','webController\PagoController@norecibido_entrega_fisica')->name('norecibido-entrega-fisica');
 Route::post('/financieros/aceptado/recepcion-entrega-fisica','webController\PagoController@recibido_entrega_fisica')->name('recibido-entrega-fisica');
 Route::get('/financieros/download-rar/{id_contrato}', 'webController\PagoController@downloadRar')->name('downloadRarPagos');
+Route::post('/financieros/retorno/entrega-fisica','webController\PagoController@retorno_validacion_entrega_fisica')->name('retorno-entrega-fisica');
 
 //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
 Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');

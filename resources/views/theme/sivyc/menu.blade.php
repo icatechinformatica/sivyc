@@ -16,13 +16,13 @@
             </ul>
         @else
             <ul class="navbar-nav mr-auto">
-                @can('show.cursos.validados')
+                {{-- @can('show.cursos.validados')
                     <li class="nav-item active">
                         <a class="nav-link g-mx-5--lg" href="{{ route('cursos_validados.index') }}">
                             Cursos Validados
                         </a>
                     </li>
-                @endcan
+                @endcan --}}
                 {{--  <!--SUPERVISIONES
                 @can('supervision.escolar')
                     <li class="nav-item g-mx-5--lg dropdown">
@@ -91,8 +91,7 @@
                         </div>
                     </li>
                 {{--  <!--@endcan-->  --}}
-                {{-- Grupo calificaciones --}}
-                @can('grupos.calificaciones')
+                    @canany(['grupos.calificaciones', 'grupos.recibos'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Grupos
@@ -110,9 +109,12 @@
                             @can('grupos.consultas')
                             <a class="dropdown-item" href="{{route('grupos.consultas')}}">B&uacute;squeda</a>
                              @endcan
+                            @can('grupos.recibos')
+                                <a class="dropdown-item" href="{{route('grupos.recibos')}}">Recibos de Pago</a>
+                            @endcan
                         </div>
                     </li>
-                @endcan
+                @endcanany
                 {{-- grupo calificaciones end --}}
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
@@ -191,8 +193,9 @@
                             @can('fechaspat.index')
                                 <a class="dropdown-item" href="{{route('pat.fechaspat.mostrar')}}">Programación de Fechas de Entrega PAT</a>
                             @endcan
-
-
+                            @can('transferencia.index')
+                                <a class="dropdown-item" href="{{route('solicitudes.transferencia.index')}}">Transferencia BANCARIA</a>
+                            @endcan
                         </div>
                     </li>
                 @endcan
@@ -324,6 +327,9 @@
                         @endcan
                         @can('consultas.poa')
                             <a class="dropdown-item" href="{{route('consultas.poa')}}">POA&Autorizados</a>
+                        @endcan
+                        @can('show.cursos.validados')
+                            <a class="dropdown-item" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
                         @endcan
                     </div>
                 </li>

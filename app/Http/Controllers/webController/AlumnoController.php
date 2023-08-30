@@ -26,25 +26,25 @@ use App\Models\cerss_a;
 use PharIo\Manifest\Author;
 
 class AlumnoController extends Controller {
-    
-    public function index(Request $request) {
-        $buscar_aspirante = $request->get('busqueda_aspirantepor'); 
 
-        $tipoaspirante = $request->get('busqueda_aspirante');   
+    public function index(Request $request) {
+        $buscar_aspirante = $request->get('busqueda_aspirantepor');
+
+        $tipoaspirante = $request->get('busqueda_aspirante');
         $tipo=null;
         if(isset($buscar_aspirante)) {
             if(ctype_alpha($buscar_aspirante)) {
                 $tipo='nombre_aspirante';
             } else {
                 $cay= str_split($buscar_aspirante);
-                $cay= $cay[0].$cay[1].$cay[2].$cay[3];    
+                $cay= $cay[0].$cay[1].$cay[2].$cay[3];
                 if(ctype_alpha($cay)) {
                     if(ctype_alnum($buscar_aspirante)){$tipo='curp_aspirante';}else{$tipo='nombre_aspirante';}
                 } else {
                     $tipo='matricula_aspirante';
                 }
             }
-        }  
+        }
 
         $retrieveAlumnos = Alumnopre::busquedapor($tipo, $buscar_aspirante)->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')
         ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso','matricula','permiso_exoneracion']);
@@ -67,10 +67,10 @@ class AlumnoController extends Controller {
             $anio = $curp_d[4].$curp_d[5];
             if($anio <= $hoy){
                 $i = 20;
-                $anio = $i.$anio; 
+                $anio = $i.$anio;
             } elseif ($anio>=$hoy) {
                 $i = 19;
-                $anio = $i.$anio;    
+                $anio = $i.$anio;
             } else {
                 $i = 19;
                 $anio = $i.$anio;
@@ -78,8 +78,8 @@ class AlumnoController extends Controller {
             $año = $anio;
             $mes = $curp_d[6].$curp_d[7];
             $dia = $curp_d[8].$curp_d[9];
-            $fnacimiento =  $año.'-'.$mes.'-'.$dia;  
-            $grado_estudio = [  
+            $fnacimiento =  $año.'-'.$mes.'-'.$dia;
+            $grado_estudio = [
                 'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
                 'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
                 'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
@@ -90,8 +90,8 @@ class AlumnoController extends Controller {
                 'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
                 'POSTGRADO' => 'POSTGRADO'
             ];
-           
-            $estado = DB::table('estados')->select('id','nombre')->get(); 
+
+            $estado = DB::table('estados')->select('id','nombre')->get();
             foreach($estado as $item){
                 $estados[$item->id] = $item->nombre;
             }
@@ -140,11 +140,11 @@ class AlumnoController extends Controller {
             $anio=$curp_d[4].$curp_d[5];
             if($anio<=$hoy){
                 $i=20;
-                $anio= $i.$anio; 
+                $anio= $i.$anio;
             }
             elseif($anio>=$hoy){
                 $i=19;
-                $anio= $i.$anio;    
+                $anio= $i.$anio;
             }
             else{
                 $i=19;
@@ -154,7 +154,7 @@ class AlumnoController extends Controller {
             $mes= $curp_d[6].$curp_d[7];
             $dia= $curp_d[8].$curp_d[9];
             $fecha=  $año.'-'.$mes.'-'.$dia; //dd($fecha);
-            
+
             $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd(gettype($fecha_t));
         $low['fecha']=$fecha_t;
         $low['sexo']=$sexo;
@@ -167,10 +167,10 @@ class AlumnoController extends Controller {
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      */     //insercción de aspiratntes a alumnos_pre//
     public function store(Request $request) {  // EN PRODUCCION
-        $curp= trim($request->curp); 
+        $curp= trim($request->curp);
         if ($request->trabajo) {
             $empleado = true;
         } else {
@@ -279,13 +279,13 @@ class AlumnoController extends Controller {
             return redirect()->route('alumnos.index')->with('success', sprintf('OPERACIÓN EXITOSA!', $curp));
         }
     }
-    
+
     //vista modificación de aspirantes Catalogo aspirantes
     protected function showUpdate($id) {
-        $id_user = Auth::user()->id;    
+        $id_user = Auth::user()->id;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
                 ->WHERE('role_user.user_id', '=', $id_user)
-                ->value('roles.slug');  
+                ->value('roles.slug');
         //$rol='unidad_vinculacion';
         $grado_estudio = [
             'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
@@ -308,8 +308,8 @@ class AlumnoController extends Controller {
         $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DE COMUNICACIÓN"=>"DE COMUNICACIÓN","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
         $idpre = base64_decode($id);
         $alumnos = new Alumnopre();
-        $alumno = $alumnos->findOrfail($idpre);     
-        $requisitos= json_decode($alumno->requisitos); 
+        $alumno = $alumnos->findOrfail($idpre);
+        $requisitos= json_decode($alumno->requisitos);
         //obtención de vigencia de los rquisitos ingresados en la BD para su actualización
         $vigencia_curp = '';
         $vigencia_acta = '';
@@ -328,21 +328,21 @@ class AlumnoController extends Controller {
             $vigencia_acta= $vigencia_acta->days;
             if(isset($requisitos->fecha_vigencia_comprobante_migratorio)){$vigencia_migracion= strtotime($requisitos->fecha_vigencia_comprobante_migratorio);}
             if(isset($requisitos->fecha_vigencia_migratorio)){$vigencia_migracion= strtotime($requisitos->fecha_vigencia_migratorio);}
-            $hoys= strtotime(date("Y-m-d",time()));; 
+            $hoys= strtotime(date("Y-m-d",time()));;
             if ($vigencia_migracion<$hoys) {
                 $vigencia_migracion= true;
             } else {
                 $vigencia_migracion=false;
             }
-            $vigencia_migracion= $vigencia_migracion; 
+            $vigencia_migracion= $vigencia_migracion;
         }/*else{
-            $vigencia_doc=explode('/',$alumno->acta_nacimiento);    
+            $vigencia_doc=explode('/',$alumno->acta_nacimiento);
             $vigencia_doc = $vigencia_doc[7];
             $vigencia_doc = explode('_',$vigencia_doc);
             $vigencia_doc= str_split($vigencia_doc[2],8);
             $vigencia_doc= $vigencia_doc[0];
         }*/
-        $fecha_nac = explode("-", $alumno->fecha_nacimiento);   
+        $fecha_nac = explode("-", $alumno->fecha_nacimiento);
         $anio_nac = $fecha_nac[0];
         $mes_nac = $fecha_nac[1];
         $dia_nac = $fecha_nac[2];
@@ -371,7 +371,7 @@ class AlumnoController extends Controller {
     // modificación de aspirantes en alumnos_pre
     public function updateSid(Request $request, $idAspirante) {
         if (isset($idAspirante)) {
-            $hoy=date('Y-m-d H:i:s');  
+            $hoy=date('Y-m-d H:i:s');
             //obtener el valor de la empresa
             if (!empty($request->empresa_mod)) {
                 # si no está vacio tenemos que cargar el dato puro
@@ -389,8 +389,8 @@ class AlumnoController extends Controller {
                 }
             }
             if(is_null($request->cerss_chk_mod)){$chk_cerss=false;}else{$chk_cerss=$request->cerss_chk_mod;}
-            if(is_null($request->trabajo_mod)){$empleado=false;}else{$empleado=$request->trabajo_mod;}       
-            
+            if(is_null($request->trabajo_mod)){$empleado=false;}else{$empleado=$request->trabajo_mod;}
+
             $AspiranteId = base64_decode($idAspirante);
             if($request->sexo_mod=='HOMBRE'){
                 $sexo='MASCULINO';
@@ -398,7 +398,7 @@ class AlumnoController extends Controller {
             if($request->sexo_mod=='MUJER'){
                 $sexo='FEMENINO';
             }
-            
+
             $id_estado = DB::table('estados')->where('nombre',$request->estados_mod)->value('id');
             $municipio = Municipio::where('clave', $request->municipios_mod)->where('id_estado',$id_estado)->first();
 
@@ -455,7 +455,7 @@ class AlumnoController extends Controller {
                 'chk_comprobante_ultimo_grado'=>$request->chk_escolaridad_mod,
                 'chk_comprobante_calidad_migratoria'=>$request->chk_comprobante_migratorio_mod,
                 'chk_ficha_cerss' => $request->chk_ficha_cerss_mod == 'true' ? true : false,
-                
+
                 'iduser_updated'=>Auth::user()->id,
                 'tiene_documentacion'=> true,
                 'updated_at'=>$hoy,
@@ -469,7 +469,7 @@ class AlumnoController extends Controller {
             $AlumnoPre_mod=DB::table('alumnos_pre')->WHERE('id', '=', $AspiranteId)->UPDATE($array);
             //si se pretende cargar nuevos archivos
             if (isset($request->customFile_mod)) {
-                $arc = $request->file('customFile_mod'); 
+                $arc = $request->file('customFile_mod');
                 $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos'); #invocamos el método
                 $arregloDocs = [
                     'documento'=>$url_documento,
@@ -509,7 +509,7 @@ class AlumnoController extends Controller {
                 $empresa = 'DESEMPLEADO';
             }
             if(is_null($request->cerss_chk_vin_mod)){$chk_cerss=false;}else{$chk_cerss=$request->cerss_chk_vin_mod;}
-            if(is_null($request->trabajo_vin_mod)){$empleado=false;}else{$empleado=$request->trabajo_vin_mod;}       
+            if(is_null($request->trabajo_vin_mod)){$empleado=false;}else{$empleado=$request->trabajo_vin_mod;}
                 //dd($empresa);
             $array = [
                 'id_unidad'=>Auth::user()->unidad,
@@ -549,7 +549,7 @@ class AlumnoController extends Controller {
                 'chk_curp'=>$request->chk_curp_vin_mod,
                 'chk_comprobante_ultimo_grado'=>$request->chk_escolaridad_vin_mod,
                 'chk_comprobante_calidad_migratoria'=>$request->chk_comprobante_migratorio_vin_mod,
-                
+
                 'iduser_updated'=>Auth::user()->id,
                 'tiene_documentacion'=> true,
                 'updated_at'=>$hoy
@@ -579,7 +579,7 @@ class AlumnoController extends Controller {
                 $url_fotografia_mod= $this->uploaded_file($url,$AspiranteId,'fotografia');
                 $opps = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['fotografia' => $url_fotografia_mod,'chk_fotografia'=>true]);
             }
-            
+
 
             $curpAlumno = $request->curp_vin_mod;
             return redirect()->route('alumnos.index')
@@ -615,8 +615,8 @@ class AlumnoController extends Controller {
         $sexo=$curp_d[10];
         $año=date_create_from_format('y', $curp_d[4].$curp_d[5])->format("Y"); //dd($año);
         $mes=date_create_from_format('m', $curp_d[6].$curp_d[7])->format('m');
-        $dia=date_create_from_format('d', $curp_d[8].$curp_d[9])->format('d'); 
-        $fecha=  $año.$mes.$dia; 
+        $dia=date_create_from_format('d', $curp_d[8].$curp_d[9])->format('d');
+        $fecha=  $año.$mes.$dia;
         $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd(gettype($fecha_t));
         //dd($sexo);
         // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
@@ -644,7 +644,7 @@ class AlumnoController extends Controller {
             return redirect()->route('alumnos.valid')
                 ->withErrors(sprintf('LO SENTIMOS, LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
         }}
-        
+
     }
     public function createcerss()
     {
@@ -950,7 +950,7 @@ class AlumnoController extends Controller {
                                 }
                             }
 
-                            $documento_curp = $request->file('customFile'); # obtenemos el archivo 
+                            $documento_curp = $request->file('customFile'); # obtenemos el archivo
                             $url_documento = $this->uploaded_file($documento_curp, $idPre, 'documento_curp'); #invocamos el método
                             $chk_documento = true;
                             // creamos un arreglo
@@ -1542,7 +1542,7 @@ class AlumnoController extends Controller {
         $documentUrl = Storage::url('/uploadFiles/alumnos/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
-    
+
     protected function modifyUpdateChief($id){
         $grado_estudio = [
             'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
