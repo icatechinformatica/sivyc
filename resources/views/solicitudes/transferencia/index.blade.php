@@ -2,19 +2,13 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Financieros Transferencia | SIVyC Icatech')
 @section('content_script_css')            
-    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
-    <style>
-        .form-check-input{
-            width:22px;
-            height:22px;
-        }        
-    </style> 
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
 @endsection
 @section('content')   
     <div class="card-header">
         Solicitudes / Transferencia BANCARIA
     </div>
-    <div class="card card-body" style=" min-height:450px;">
+    <div class="card card-body p-4 " style=" min-height:450px;">
         @if($message)
             <div class="row ">
                 <div class="col-md-12 alert alert-success">
@@ -24,29 +18,35 @@
         @endif        
         {{ Form::open(['method' => 'post', 'id'=>'frmfiltrar', 'enctype' => 'multipart/form-data']) }}
             @csrf
-            <div class="row form-inline">
+            <div class="row form-inline pl-4">
                 {{ Form::select('ejercicio', $ejercicio, $request->ejercicio ,array('id'=>'ejericio','class' => 'form-control  mr-sm-3')) }}
                 {{ Form::select('unidad', $unidades, $request->unidad ,array('id'=>'unidad','placeholder' => '- UNIDAD -','class' => 'form-control  mr-sm-3')) }}
-                {{ Form::select('status_transferencia', ['PENDIENTE'=>'1. PENDIENTES','MARCADO'=>'2. MARCADOS','GENERADO'=>'3. GENERADOS','PAGADO'=>' 4. PAGADOS'], $request->status_transferencia ,['id'=>'status_transferencia','placeholder' => '- ESTATUS -','class' => 'form-control  mr-sm-3']) }}
+                {{ Form::select('status_transferencia', ['PENDIENTE'=>'1. PENDIENTES','MARCADO'=>'2. MARCADOS','GENERADO'=>'3. GENERADOS','PAGADO'=>' 4. PAGADOS', 'FINALIZADO'=>' 5. FINALIZADO'], $request->status_transferencia ,['id'=>'status_transferencia','placeholder' => '- ESTATUS -','class' => 'form-control  mr-sm-3']) }}
                 {{ Form::text('valor',$request->valor, ['id'=>'valor', 'class' => 'form-control mr-sm-3', 'placeholder' => '#LAYOUT/#CONTRATO/#SOLIC. PAGO/INSTRUCTOR', 'title' => 'DATO DE BUSQUEDA','size' => 45]) }}        
                 {{ Form::submit('FILTRAR', ['id'=>'filtrar','class' => 'btn', 'value'=>'filtrar']) }}                
             </div>
         {!! Form::close() !!}
-            <div class="col-md-12table-responsive">
+            <div class="table-responsive p-0 m-0">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th class="text-center">#</th>
-                            <th class="text-center">UNIDAD</th>
-                            <th class="text-center">CONTRATO / SOL. PAGO</th>
-                            <th class="text-center">CLAVE / CURSO</th>
-                            <th class="text-center">INSTRUCTOR / RFC</th>                            
-                            <th class="text-center">FOLIO FISCAL</th>                            
-                            <th class="text-center">BANCO / CUENTA/CLABE</th>                            
-                            <th class="text-center">IMPORTE</th>
-                            <th class="text-center">FACTURA</th>                
-                            <th class="text-center">#LAYOUT</th>                      
-                            <th class="text-center">STATUS</th>
+                            <th>#</th>
+                            <th>UNIDAD</th>
+                            <th class="text-center small">CONTRATO / SOL. PAGO</th>
+                            <th class="text-center small">CLAVE / CURSO</th>
+                            <th class="text-center small">INSTRUCTOR / RFC</th>                            
+                            <th class="text-center small">FOLIO FISCAL</th>                            
+                            <th class="text-center small">BANCO / CUENTA/CLABE</th>                            
+                            <th class="text-center small">IMPORTE</th>
+                            <th class="text-center small">FACTURA</th> 
+                            @can('transferencia.layout')
+                                <th class="text-center small">#LAYOUT</th>                     
+                                <th class="text-center small">ESTATUS</th>    
+                            @endcan
+                            @can('transferencia.pagado')
+                                <th class="text-center small">CONTRATO</th> 
+                                <th class="text-center small">PAGADO</th>                            
+                            @endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -64,26 +64,53 @@
                                     <td>{{ $item->folio_fiscal }}</td>                                
                                     <td>{{ $item->banco }}: {{ $item->cuenta }} <br/> {{ $item->clabe }}</td>
                                     <td>{{ $item->importe_neto }}</td>
-                                    <td> 
-                                        <a id="botonRIAC-ACRED" class="nav-link" href="{{ $item->factura}}" target="_blank">
-                                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
-                                        </a>
+                                    <td class="text-center"> 
+                                        @if($item->factura)
+                                            <a class="nav-link" href="{{ $item->factura}}" target="_blank">
+                                                <i  class="far fa-file-pdf  fa-2x text-danger"></i>
+                                            </a>
+                                        @else
+                                            NO DISPONIBLE
+                                        @endif
+                                        
                                     </td>
-                                    <td>{{ $item->num_layout }}</td>
-                                    <td class="text-center">
-                                        @if($item->status=='PENDIENTE' || $item->status=='MARCADO')                                                                          
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="{{ $item->id }}" name="status"   onchange="marcar({{$item->id}},$(this).prop('checked'),$(this))"  @if($item->status=='MARCADO'){{'checked'}} @endif >                                
-                                            </div>                                                                     
-                                        @else 
-                                            {{ $item->status}}
-                                        @endif                                                          
-                                    </td>
+                                    @can('transferencia.layout')
+                                        <td>{{ $item->num_layout }}</td>
+                                        <td class="text-center">
+                                            @if($item->status=='PENDIENTE' || $item->status=='MARCADO')                                                                          
+                                                <div class="form-check">
+                                                    <input class="custom-check" type="checkbox" value="{{ $item->id }}" name="status"   onchange=marcar({{$item->id}},$(this).prop("checked"),$(this),"MARCADO")  @if($item->status=='MARCADO'){{'checked'}} @endif >                                
+                                                </div>                                                                     
+                                            @else 
+                                                {{ $item->status}}
+                                            @endif                                                          
+                                        </td>        
+                                    @endcan
+                                    @can('transferencia.pagado')                           
+                                        <td class="text-center"> 
+                                            @if( $item->contrato)
+                                                <a class="nav-link" href="{{$item->contrato}}" target="_blank">
+                                                    <i  class="far fa-file-pdf  fa-2x text-danger"></i>
+                                                </a>
+                                            @else
+                                                NO DISPONIBLE
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if($item->status == "PENDIENTE" OR ($item->status == "PAGADO" AND !$request->num_layout))
+                                                <div class="form-check">
+                                                    <input class="custom-check" type="checkbox" value="{{ $item->id }}" name="status"   onchange=marcar({{$item->id}},$(this).prop("checked"),$(this),"PAGADO")  @if($item->status=='PAGADO'){{'checked'}} @endif >
+                                                </div>                                                                     
+                                            @else 
+                                                {{ $item->status}}
+                                            @endif                                                          
+                                        </td>
+                                    @endcan
                                 </tr>
                             @endforeach                                
                         @else
                             <tr>
-                                <td class="text-center" colspan="11" >
+                                <td class="text-center" colspan="13" >
                                     <b>NO SE ENCONTRARON REGISTROS</b>
                                 </td>
                             </tr>
@@ -93,22 +120,24 @@
                     </tfoot>
             </table>
         </div>
-        @if(count($data)>0 AND ($request->status_transferencia == "PENDIENTE" OR $request->status_transferencia == "MARCADO" OR $request->status_transferencia == "GENERADO" ))
-            {{ Form::open(['method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data','accept-charset'=>'UTF-8']) }}
-                @csrf
-                <div class="row form-inline justify-content-end">
-                    {{ Form::select('cuenta_retiro', $cuentas_retiro, null ,array('id'=>'cuenta_retiro','class' => 'form-control  mr-sm-3')) }}
-                    {{ Form::text('num_layout',$request->num_layout, ['id'=>'num_layout', 'class' => 'form-control mr-sm-3', 'placeholder' => '#LAYOUT', 'title' => '#LAYOUT','size' => 25]) }}        
-                    @if($request->status_transferencia == "GENERADO")
-                        {{ Form::select('movimiento', ['DESHACER'=>'DESHACER GENERADOS', 'PAGADO' =>'SUBIR PAGADOS'], '', ['id'=>'movimiento','class' => 'form-control  col-md-3 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }} 
-                        {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger']) }}
-                        {{ Form::button('GENERAR', ['id'=>'generar','class' => 'btn']) }}
-                    @else
-                        {{ Form::button('GENERAR', ['id'=>'generar','class' => 'btn']) }}
-                    @endif                    
-                </div>
-            {!! Form::close() !!}
-        @endif
+        @can('transferencia.layout')
+            @if(count($data)>0 AND ($request->status_transferencia == "PENDIENTE" OR $request->status_transferencia == "MARCADO" OR $request->status_transferencia == "GENERADO" ))
+                {{ Form::open(['method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data','accept-charset'=>'UTF-8']) }}
+                    @csrf
+                    <div class="row form-inline justify-content-end">
+                        {{ Form::select('cuenta_retiro', $cuentas_retiro, null ,array('id'=>'cuenta_retiro','class' => 'form-control  mr-sm-3')) }}
+                        {{ Form::text('num_layout',$request->num_layout, ['id'=>'num_layout', 'class' => 'form-control mr-sm-3', 'placeholder' => '#LAYOUT', 'title' => '#LAYOUT','size' => 25]) }}        
+                        @if($request->status_transferencia == "GENERADO")
+                            {{ Form::select('movimiento', ['DESHACER'=>'DESHACER GENERADOS', 'PAGADO' =>'SUBIR PAGADOS'], '', ['id'=>'movimiento','class' => 'form-control  col-md-3 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }} 
+                            {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger']) }}
+                            {{ Form::button('GENERAR', ['id'=>'generar','class' => 'btn']) }}
+                        @else
+                            {{ Form::button('GENERAR', ['id'=>'generar','class' => 'btn']) }}
+                        @endif                    
+                    </div>
+                {!! Form::close() !!}
+            @endif
+        @endcan
     </div>
 @endsection
 @section('script_content_js')        
@@ -121,18 +150,20 @@
                 }
             });
          });
-        function marcar(id, status, obj){ 
-            if( $("#num_layout").val()){
+        function marcar(id, check, obj, status){ 
+            if( $("#num_layout").val() || status==="PAGADO"){ 
                 $.ajax({
                     method: "POST", 
                     url: "marcar", 
                     data: { 
                         id: id,
+                        check: check,
                         estado: status,
                         num_layout: $("#num_layout").val()
+                        
                     }
                 })
-                //.done(function( msg ) { alert(msg); });   
+                .done(function( msg ) { alert(msg); });   
             }else{
                 alert("Por favor, ingrese el NÚMERO DE LAYOUT, la opción se localiza en la parte inferior de la pantalla.");
                 if(obj.prop('checked')) obj.prop('checked', false); 
