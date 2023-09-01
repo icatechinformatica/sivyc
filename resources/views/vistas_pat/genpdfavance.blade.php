@@ -3,8 +3,8 @@
 @section('title', 'PAT-ICATECH-002.2 | SIVyC Icatech')
 @section('css')
     <style>
-         @page { margin-bottom: 107px; } /*107*/
-        .tb {width: 100%; border-collapse: collapse; text-align: center; }
+         @page { margin-bottom: 20px; } /*107*/
+        .tb {width: 98%; border-collapse: collapse; text-align: center; }
         .tb th{border: 1px solid black; padding: 1px; font-weight: normal; font-size: 9px;}
         .tb td{border: 1px solid black; padding: 1px; font-size: 9px; height: auto;}
         .tablaf { border-collapse: collapse; width: 100%; font-size: 12px !important; text-align: center; margin-top:0px;}
@@ -19,6 +19,7 @@
         .showlast{border-top: none; border-left: 1px solid #000 !important; border-bottom: 1px;}
         .showborders{border-left: 1px solid #000 !important; border-top: none; border-bottom: none;}
         .prueba{page-break-inside: avoid;}
+
     </style>
 @endsection
 @section('header')
@@ -74,7 +75,7 @@
                     @if (count($procedimientos[$key]) == 1))
                         <tr>
                             <td>{{$conta+1}}</td>
-                            <td align="left">{{$item->fun_proc}}</td>
+                            <td align="left" style="padding: 3px;">{{$item->fun_proc}}</td>
                             <td align="left">{{$procedimientos[$key][0]->fun_proc}}</td>
                             <td>({{$procedimientos[$key][0]->numero}}) {{$procedimientos[$key][0]->unidadm}}</td>
                             <td>{{$procedimientos[$key][0]->tipo_unidadm}}</td>
@@ -117,15 +118,15 @@
 
                                 <td align="left"
                                     @if ($i == $ultimo-1)
-                                        style="border-top: none; border-left: 1px solid #000 !important; border-bottom: 1px;"
+                                        style="padding: 3px; border-top: none; border-left: 1px solid #000 !important; border-bottom: 1px; "
                                     @else
-                                        style="border-left: 1px solid #000 !important; border-bottom: none; border-top: none;"
+                                        style="padding:3px; border-left: 1px solid #000 !important; border-bottom: none; border-top: none;"
                                     @endif
                                 >
                                     @if ($i == $res-1) {{$item->fun_proc}} @endif
                                 </td>
 
-                                <td align="left">
+                                <td align="left" style="padding: 3px;">
                                     {{$procedimientos[$key][$i]->fun_proc}}
                                 </td>
                                 <td>({{$procedimientos[$key][$i]->numero}}) {{$procedimientos[$key][$i]->unidadm}}</td>
@@ -149,18 +150,13 @@
 
             </tbody>
         </table>
-        <br><br><br>
-        {{-- aqui termina la tabla --}}
-        <br/>
-        <br/>
 
         @if (isset($firm_logueado) and count($firm_logueado) > 0)
-            <table class="tablaf">
+            <table class="tablaf" style="margin-top: 20px;">
                 <tr>
-                    <td>
-                        <p>ELABORÓ</p><br><br><br>
-                        <p>{{$firm_logueado['user'] != '' ? $firm_logueado['user'] : 'Usuario'}}</p>
-                        <p>_________________________________________</p>
+                    <td style="line-height: 1;">
+                        <p style="margin-bottom: 35px;">ELABORÓ</p>
+                        <p>___<u>{{$firm_logueado['user'] != '' ? $firm_logueado['user'] : 'Usuario'}}</u>___</p>
                         <p><b>{{$firm_logueado['puesto'] != '' ? $firm_logueado['puesto'] : 'Puesto'}}</b></p>
                     </td>
                     <td>
@@ -169,21 +165,19 @@
                         <p></p>
                         <p>Fecha: {{isset($fecha_avance) ? $fecha_avance : ''}}</p>
                     </td>
-                    <td>
-                        <p>Vo. Bo.</p><br><br><br>
-                        <p>{{isset($area_org) ? $area_org->func : ''}}</p>
-                        <p>_________________________________________</p>
+                    <td style="line-height: 1;">
+                        <p style="margin-bottom: 35px;">Vo. Bo.</p>
+                        <p>___<u>{{isset($area_org) ? $area_org->func : ''}}</u>___</p>
                         <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
                     </td>
                 </tr>
             </table>
         @else
-            <table class="tablaf">
+            <table class="tablaf" style="margin-top: 20px;">
                 <tr>
-                    <td>
-                        <p>ELABORÓ</p><br><br><br>
-                        <p>{{isset($area_org) ? $area_org->func : ''}}</p>
-                        <p>_________________________________________</p>
+                    <td style="line-height: 1;">
+                        <p style="margin-bottom: 35px;">ELABORÓ</p>
+                        <p>___<u>{{isset($area_org) ? $area_org->func : ''}}</u>___</p>
                         <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
                     </td>
                     <td>
@@ -192,10 +186,9 @@
                         <p></p>
                         <p>Fecha: {{isset($fecha_avance) ? $fecha_avance : ''}}</p>
                     </td>
-                    <td>
-                        <p>Vo. Bo.</p><br><br><br>
-                        <p>{{isset($org) ? $org->fun : ''}}</p>
-                        <p>_________________________________________</p>
+                    <td style="line-height: 1;">
+                        <p style="margin-bottom: 35px;">Vo. Bo.</p>
+                        <p>___<u>{{isset($org) ? $org->fun : ''}}</u>___</p>
                         <p><b>{{isset($org) ? $org->cargo : ''}}</b></p>
                     </td>
                 </tr>
