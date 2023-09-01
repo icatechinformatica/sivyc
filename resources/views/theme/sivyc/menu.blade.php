@@ -15,14 +15,7 @@
                 </li>
             </ul>
         @else
-            <ul class="navbar-nav mr-auto">
-                {{-- @can('show.cursos.validados')
-                    <li class="nav-item active">
-                        <a class="nav-link g-mx-5--lg" href="{{ route('cursos_validados.index') }}">
-                            Cursos Validados
-                        </a>
-                    </li>
-                @endcan --}}
+            <ul class="navbar-nav mr-auto">                
                 {{--  <!--SUPERVISIONES
                 @can('supervision.escolar')
                     <li class="nav-item g-mx-5--lg dropdown">
@@ -57,7 +50,7 @@
                         </div>
                     </li>
                 @endcan
-               {{--  <!-- @can('solicitud.apertura')-->  --}}
+                @canany(['solicitud.apertura', 'solicitud.exoneracion','supre.index','contratos.index','pagos.inicio','prevalidar_index-instructor','metasavances.index'])               
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitud
@@ -70,7 +63,7 @@
                                 <a class="dropdown-item" href="{{route('solicitud.apertura.turnar')}}">Turnar Solicitud ARC</a>
                             @endcan
                             @can('solicitud.exoneracion')
-                                <a class="dropdown-item" href="{{ route('solicitud.exoneracion')}}">Exoneración y/o Reducción de Cuotas</a>
+                                <a class="dropdown-item" href="{{ route('solicitud.exoneracion')}}">Exoneración / Reducción de Cuotas</a>
                                 <a class="dropdown-item" href="{{ route('solicitud.exoneracion.search')}}">Buscar Exoneración</a>
                             @endcan
                             @can('supre.index')
@@ -90,7 +83,7 @@
                             @endcan
                         </div>
                     </li>
-                {{--  <!--@endcan-->  --}}
+                    @endcanany
                     @canany(['grupos.calificaciones', 'grupos.recibos'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -114,8 +107,7 @@
                             @endcan
                         </div>
                     </li>
-                @endcanany
-                {{-- grupo calificaciones end --}}
+                @endcanany                
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -160,10 +152,7 @@
                                 <a class="dropdown-item" href="{{route('seguimento.avance.unidades.formatot.ejecutiva.index')}}">Seguimiento Ejecutivo a Unidades Para el Formato T</a>
                         </div>
                     </li>
-                @endcan
-
-                {{-- modificaciones en el curso del menu --}}
-                {{-- consultas folios asignados --}}
+                @endcan                
                 @can('solicitudes')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -192,8 +181,14 @@
                             @endcan
                             @can('fechaspat.index')
                                 <a class="dropdown-item" href="{{route('pat.fechaspat.mostrar')}}">Programación de Fechas de Entrega PAT</a>
+                            @endcan  
+                            @can('solicitudes.contratos.index')
+                                <a class="dropdown-item" href="{{route('contrato-inicio')}}">Contratos</a>
+                            @endcan                         
+                            @can('solicitudes.pagos.inicio')
+                                <a class="dropdown-item" href="{{route('pago-inicio')}}">Recepci&oacute;n Digital para Pagos</a>
                             @endcan
-                            @can('transferencia.index')
+                            @can('solicitudes.transferencia')
                                 <a class="dropdown-item" href="{{route('solicitudes.transferencia.index')}}">Transferencia BANCARIA</a>
                             @endcan
                         </div>
@@ -243,8 +238,6 @@
                         @can('unidades.medida.index')
                         <a class="dropdown-item" href="{{route('pat.unidadesmedida.mostrar')}}">Unidades de Medida</a>
                         @endcan
-
-
                     </div>
                 </li>
                 <li class="nav-item g-mx-5--lg dropdown">
@@ -252,12 +245,7 @@
                         Reportes
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        {{-- <a class="dropdown-item" href="https://datastudio.google.com/reporting/7c518e16-99ea-4cb2-8509-7064c0604e00" target="_blank">CURSOS VS OBJETIVOS</a>
-                        <a class="dropdown-item" href="https://datastudio.google.com/reporting/512e11eb-babf-4476-8827-8d4243e2c219" target="_blank">STATUS PAGO INSTRUCTORES</a> --}}
-                        {{-- <a class="dropdown-item" href="{{route('reportes.formatoT')}}">Reporte de Formato T</a>                         --}}
-                        {{--@can('academicos.arc')
-                            <a class="dropdown-item" href="{{route('reportes.vista_arc')}}">Solicitudes ARC01 y ARC02 </a>
-                        @endcan--}}
+                        {{-- <a class="dropdown-item" href="{{route('reportes.formatoT')}}">Reporte de Formato T</a>                         --}}                        
                         @can('reportes.cursos')
                             <a class="dropdown-item" href="{{route('reportes.cursos.index')}}">Cursos Autorizados</a>
                         @endcan
@@ -284,10 +272,8 @@
                         @can('reportes.rf001')
                             <a class="dropdown-item" href="{{route('reportes.concentradoingresos')}}">RF-001</a>
                         @endcan
-                        @can('financieros.reportevalrec')
-                        {{-- <a class="dropdown-item" data-toggle="modal" data-placement="top"
-                                data-target="#ModalFinanciero">TRAMITES VALIDADOS Y RECEPCIONADOS</a>--}}
-                            <a class="dropdown-item" href="{{route('docummentospago.reporte')}}">TRAMITES RECEPCIONADOS</a>
+                        @can('financieros.reportevalrec')                        
+                            <a class="dropdown-item" href="{{route('docummentospago.reporte')}}">Trámites Recepcionados</a>
                         @endcan
 
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
@@ -335,7 +321,6 @@
                 </li>
 
                 @can('estadisticas.ecursos')
-
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Estadísticas
@@ -415,100 +400,4 @@
         @endguest
     </div>
 </nav>
-<!--/.Navbar -->
-<!-- Modal Cancel Folio -->
-{{-- <div class="modal fade" id="ModalFinanciero" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title"><b>Generador de Reporte de Tramites Validados/Recepcionados</b></h6>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{{ route('reporte_valrecep') }}" method="post" id="valrecep">
-                @csrf
-                <div class="form-row">
-                    <div class="form-group col-md-2"></div>
-                    <div class="form-group col-md-4">
-                        <label for="fini"><b>Mes Inicial</b></label>
-                        <select name="fini" id="fini">
-                                <option value="01">ENERO</option>
-                                <option value="02">FEBRERO</option>
-                                <option value="03">MARZO</option>
-                                <option value="04">ABRIL</option>
-                                <option value="05">MAYO</option>
-                                <option value="06">JUNIO</option>
-                                <option value="07">JULIO</option>
-                                <option value="08">AGOSTO</option>
-                                <option value="09">SEPTIEMBRE</option>
-                                <option value="10">OCTUBRE</option>
-                                <option value="11">NOVIEMBRE</option>
-                                <option value="12">DICIEMBRE</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-1"></div>
-                    <div class="form-group col-md-4">
-                        <label for="ffin"><b>Mes Final</b></label>
-                        <select name="ffin" id="ffin">
-                                <option value="01">ENERO</option>
-                                <option value="02">FEBRERO</option>
-                                <option value="03">MARZO</option>
-                                <option value="04">ABRIL</option>
-                                <option value="05">MAYO</option>
-                                <option value="06">JUNIO</option>
-                                <option value="07">JULIO</option>
-                                <option value="08">AGOSTO</option>
-                                <option value="09">SEPTIEMBRE</option>
-                                <option value="10">OCTUBRE</option>
-                                <option value="11">NOVIEMBRE</option>
-                                <option value="12">DICIEMBRE</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-2"></div>
-                    <div class="form-group col-md-4">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                    </div>
-                    <div class="form-group col-md-1"></div>
-                    <div class="form-group col-md-4">
-                        <button type="submit" class="btn btn-primary" >Aceptar</button>
-                    </div>
-                    <div class="form-group col-md-1"></div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div> --}}
-<!-- END -->
-<!-- Modal Cancel Folio -->
-<div class="modal fade" id="ModalExpIns" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title"><b>Exportar Instructores</b></h6>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-1"></div>
-                <div class="form-group col-md-5">
-                    <a class="btn btn-info" href="{{route('academico.exportar.instructores')}}">Exportar Por Instructor</a>
-                </div>
-                <div class="form-group col-md-5">
-                    <a class="btn btn-info" href="{{route('academico.exportar.instructoresByespecialidad')}}">Exportar Por Especialidad</a>
-                </div>
-                <div class="form-group col-md-1"></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-5"></div>
-                <div class="form-group col-md-3">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- END -->
+

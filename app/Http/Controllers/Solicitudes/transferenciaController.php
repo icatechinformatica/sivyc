@@ -47,7 +47,7 @@ class transferenciaController extends Controller
                         WHEN  f.status='Finalizado' THEN 'PAGADO'                     
                         ELSE p.status_transferencia END as status
                     "), 
-                    'p.num_layout','tc.curso','tc.clave'
+                    'p.num_layout','tc.curso','tc.clave','c.arch_contrato as contrato'
                 )
                 ->join('contratos as c','c.id_contrato','p.id_contrato')
                 ->join('folios as f','f.id_folios','c.id_folios')
@@ -60,6 +60,9 @@ class transferenciaController extends Controller
                             $data = $data->where('p.status_transferencia', NULL)->where('p.fecha_status', 'like', $request->ejercicio.'%');
                         break;
                         case "PAGADO":
+                            $data = $data->where('p.status_transferencia', 'PAGADO')->where('p.fecha_status', 'like', $request->ejercicio.'%');
+                        break;
+                        case "FINALIZADO":
                             $data = $data->where('f.status', 'Finalizado')->where('p.fecha_status', 'like', $request->ejercicio.'%');
                         break;
                         default:
@@ -70,7 +73,7 @@ class transferenciaController extends Controller
                     $data = $data->where('p.fecha_status', 'like', $request->ejercicio.'%');
                 }      
                 if($request->valor) $data = $data->where(DB::raw('CONCAT(p.num_layout,c.numero_contrato,p.no_memo,tc.nombre)'),'ilike', '%'.$request->valor.'%');
-                $data = $data->wherein('status_recepcion',['Citado','Recibido','VALIDADO'])->get();        
+                $data = $data->wherein('status_recepcion',['Citado','Recibido','VALIDADO','recepcion tradicional'])->get();        
             }        
             if(session('message')) $message = session('message');
             elseif(!isset($message)) $message = null;
@@ -79,14 +82,24 @@ class transferenciaController extends Controller
 
     public function marcar(Request $request)
     {        
-        $result = []; 
-        if($request->id and $request->estado and $request->num_layout){            
-            if($request->estado == "true") 
-                $result =  DB::table('pagos')->where('id', '=', $request->id)->update(['status_transferencia' => 'MARCADO','num_layout'=> $request->num_layout, 'fecha_transferencia'=>date('Y-m-d')]);
-            else 
-                $result =  DB::table('pagos')->where('id', '=', $request->id)->update(['status_transferencia' => NULL,'num_layout'=> NULL, 'fecha_transferencia'=>NULL]);            
-        }        
-        return $result;
+        $msg = "OPERACION NO VALIDA.";        
+        if($request->id and $request->check and (($request->num_layout AND $request->estado == "MARCADO") OR $request->estado == "PAGADO")){
+            
+            if( $request->estado == "MARCADO"){
+                if($request->check == "true")
+                    $result =  DB::table('pagos')->where('id', '=', $request->id)->update(['status_transferencia' => 'MARCADO','num_layout'=> $request->num_layout, 'fecha_transferencia'=>date('Y-m-d')]);
+                else
+                    $result =  DB::table('pagos')->where('id', '=', $request->id)->update(['status_transferencia' => NULL,'num_layout'=> NULL, 'fecha_transferencia'=>NULL]);
+            }elseif( $request->estado == "PAGADO"){
+                if($request->check == "true")
+                    $result =  DB::table('pagos')->where('id', '=', $request->id)->whereNull('status_transferencia')->update(['status_transferencia' => 'PAGADO', 'fecha_transferencia'=>date('Y-m-d')]);
+                else
+                    $result =  DB::table('pagos')->where('id', '=', $request->id)->whereNull('num_layout')->update(['status_transferencia' => NULL,'fecha_transferencia'=>NULL]);
+            }
+
+            if($result) $msg = "OPERACION EXITOSA.";
+        }
+        return $msg;
     }
 
     public function deshacer(Request $request)
