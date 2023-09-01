@@ -112,7 +112,8 @@ class FuncionesController extends Controller
         $funciones['iduser_updated'] = $id_user;
         $funciones->save();
 
-        return redirect()->route('pat.funciones.mostrar')->with('success', '¡Registro guardado exitosamente!');
+        // return redirect()->route('pat.funciones.mostrar')->with('success', '¡Registro guardado exitosamente!');
+        return redirect()->route('pat.funciones.mostrar', ['idorg' => $id_organismo])->with('success', '¡Registro guardado exitosamente!');
     }
 
     /**
