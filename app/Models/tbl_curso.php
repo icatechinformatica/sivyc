@@ -21,12 +21,13 @@ class tbl_curso extends Model
     'pdf_curso','json_supervision','turnado','fecha_turnado','tipo_curso','id_especialidad','instructor_escolaridad',
     'instructor_titulo','instructor_sexo','instructor_mespecialidad','medio_virtual','link_virtual','folio_grupo',
     'id_municipio','clave_especialidad','id_cerss','tdias','movimiento_bancario','fecha_movimeinto_bancario',
-    'factura','fecha_factura'
+    'factura','fecha_factura','mov_bancario','soportes_instructor','firma_user','firma_cerss_one','firma_cerss_two','url_pdf_acta','url_pdf_conv'
 ];
 
     protected $hidden = ['created_at', 'updated_at'];
     protected $casts = ['json_supervision' => 'array',
-                        'mov_bancario' => 'array'];
+                        'mov_bancario' => 'array',
+                        'soportes_instructor' => 'array'];
 
     public function curso() {
         return $this->belongsTo(curso::class, 'id_curso');

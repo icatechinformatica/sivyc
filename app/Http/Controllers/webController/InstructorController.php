@@ -24,6 +24,8 @@ use App\Models\localidad;
 use App\Models\Calificacion;
 use App\Models\tbl_curso;
 use App\Models\Banco;
+use App\Models\pago;
+use App\Models\contratos;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -734,7 +736,7 @@ class InstructorController extends Controller
                 $modInstructor->status = 'VALIDADO';
                 $modInstructor->registro_activo = FALSE;
                 $movimiento = 'prevalidacion de las modificaciones de informacion basica del instructor';
-                $this->guardado_oficial($modInstructor);
+                $this->guardado_oficial($modInstructor);//a
             }
 
             $modInstructor->save();
@@ -4263,6 +4265,34 @@ class InstructorController extends Controller
         $instructor->curriculum = $saveInstructor->curriculum;
         $instructor->clave_loc_nacimiento = $saveInstructor->clave_loc_nacimiento;
         $instructor->save();
+
+        $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
+        ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
+        ->Where('id_instructor',$saveInstructor->id)
+        ->where(function ($query) {
+            $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
+                ->orWhereNull('pagos.status_recepcion');
+        })
+        ->Get();
+
+        if(isset($data_ins_curso)) {
+
+            foreach($data_ins_curso as $prime) {
+                $upd_curso = tbl_curso::Find($prime->id);
+                $upd_curso->soportes_instructor = [
+                    'banco' => $instructor->banco,
+                    'domicilio' => $instructor->domicilio,
+                    'no_cuenta' => $instructor->no_cuenta,
+                    'archivo_ine' => $instructor->archivo_ine,
+                    'archivo_rfc' => $instructor->archivo_rfc,
+                    'interbancaria' => $instructor->interbancaria,
+                    'tipo_honorario' => $instructor->tipo_honorario,
+                    'archivo_bancario' => $instructor->archivo_bancario,
+                    'archivo_domicilio' => $instructor->archivo_domicilio
+                ];
+                $upd_curso->save();
+            }
+        }
 
         return $instructor;
     }
