@@ -245,10 +245,11 @@
 
                     {{-- APARTADO DE AVANCES --}}
                     <div id="menu1" class="tab-pane fade {{$mes != null ? 'show active' : ''}} mt-4">
-                        @php if($mes == null) $mes = 'enero'; @endphp
+                        @php if($mes == null) $mes = 'seleccionar'; @endphp
                         <div class="col-3 px-0">
                             <form action="" id="formConsul">
                                 <select name="sel_mes" id="sel_mes" class="form-control" onchange="cambiarMes()">
+                                    <option value="seleccionar">Seleccionar Mes</option>
                                     @for ($i = 0; $i < count($mesGlob); $i++)
                                         <option {{$mesGlob[$i] == $mes ? 'selected' : ''}} value="{{$mesGlob[$i]}}">{{$mesGlob[$i]}}</option>
                                     @endfor
@@ -256,116 +257,85 @@
                             </form>
                         </div>
 
-                        <h4 class="mt-2 text-center font-weight-bold"><u>AVANCES {{strtoupper($mes)}}</u></h4>
-                        <table class="table table-responsive-md" id='tableperfiles'>
-                            <thead>
-                                <tr>
-                                    <th scope="col">No</th>
-                                    <th scope="col">ORGANISMO</th>
-                                    <th scope="col">PERIODO</th>
-                                    {{-- <th scope="col">MES DE AVANCE</th> --}}
-                                    <th scope="col">FECHA DE ENVIO</th>
-                                    <th scope="col">STATUS</th>
-                                    <th scope="col">ACCION</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{-- @dd($data[2]) --}}
-                                @for ($i = 0; $i < count($data); $i++)
+                        @if ($mes != 'seleccionar')
+                            <h4 class="mt-2 text-center font-weight-bold"><u>AVANCES {{strtoupper($mes)}}</u></h4>
+                            <table class="table table-responsive-md" id='tableperfiles'>
+                                <thead>
                                     <tr>
-                                        <td class="font-weight-bold">{{$i+1}}</td>
-                                        <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->nombre}}</td>
-                                        <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->periodo}}</td>
-                                        {{-- <td class="font-weight-bold">{{$mes}}</td> --}}
-                                        <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->fechas_avance[$mes]['fecenvioplane_a'] != '' ? $data[$i]->fechas_avance[$mes]['fecenvioplane_a'] : 'Pendiente por enviar'}}</td>
-                                        <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">
-
-                                            {{-- if de nueva validacion para ver si funciona mejor --}}
-                                            @if ($data[$i]->status_avance['proceso'] == '1' && $data[$i]->fechas_avance[$mes]['fecenvioplane_a'] != '' && $data[$i]->fechas_avance[$mes]['statusmes'] == '')
-                                                <span class="pendiente">Pendiente</span>
-
-                                            @elseif($data[$i]->status_avance['retornado'] == '1' && $data[$i]->fechas_avance[$mes]['fecavanreturn'] != '' && $data[$i]->fechas_avance[$mes]['statusmes'] == '')
-                                                <span class="pendiente">Retornado</span>
-
-                                            @elseif ($data[$i]->fechas_avance[$mes]['statusmes'] == 'autorizado')
-                                                <span class="validado">Autorizado</span>
-
-                                            @else
-                                                <span class="">Sin movimiento</span>
-                                            @endif
-                                            <a class="btn-transparent" id=""
-                                                    href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}" target="_blank">
-                                                    <i class="fa fa-arrow-circle-o-right" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {{-- Otra validacion nueva --}}
-                                            @if ($data[$i]->status_avance['proceso'] == '1' && $data[$i]->fechas_avance[$mes]['fecenvioplane_a'] != '' && $data[$i]->fechas_avance[$mes]['statusmes'] == '')
-                                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                                    data-placement="top" title="Ir a validación" id=""
-                                                    href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}" target="_blank">
-                                                    <i class="fa fa-search fa-2x mt-2" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
-                                                </a>
-
-                                            @elseif ($data[$i]->fechas_avance[$mes]['statusmes'] == 'autorizado')
-                                                @if ($data[$i]->fechas_avance[$mes]['urldoc_firmav'] != '')
-                                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                                    data-placement="top" title="Ver pdf firmado" id=""
-                                                    href="{{$data[$i]->fechas_avance[$mes]['urldoc_firmav']}}" target="_blank">
-                                                    <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                                </a>
-                                                @else
-                                                    <span class="">Pendiente PDF</span>
-                                                @endif
-                                            @else
-
-                                            @endif
-                                        </td>
+                                        <th scope="col">No</th>
+                                        <th scope="col">ORGANISMO</th>
+                                        <th scope="col">PERIODO</th>
+                                        {{-- <th scope="col">MES DE AVANCE</th> --}}
+                                        <th scope="col">FECHA DE ENVIO</th>
+                                        <th scope="col">STATUS</th>
+                                        <th scope="col">ACCION</th>
                                     </tr>
-                                @endfor
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {{-- @dd($data[2]) --}}
+                                    @for ($i = 0; $i < count($data); $i++)
+                                        <tr>
+                                            <td class="font-weight-bold">{{$i+1}}</td>
+                                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->nombre}}</td>
+                                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->periodo}}</td>
+                                            {{-- <td class="font-weight-bold">{{$mes}}</td> --}}
+                                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->fechas_avance[$mes]['fecenvioplane_a'] != '' ? $data[$i]->fechas_avance[$mes]['fecenvioplane_a'] : 'Pendiente por enviar'}}</td>
+                                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">
+
+                                                {{-- if de nueva validacion para ver si funciona mejor --}}
+                                                @if ($data[$i]->status_avance['proceso'] == '1' && $data[$i]->fechas_avance[$mes]['fecenvioplane_a'] != '' && $data[$i]->fechas_avance[$mes]['statusmes'] == '')
+                                                    <span class="pendiente">Pendiente</span>
+
+                                                @elseif($data[$i]->status_avance['retornado'] == '1' && $data[$i]->fechas_avance[$mes]['fecavanreturn'] != '' && $data[$i]->fechas_avance[$mes]['statusmes'] == '')
+                                                    <span class="pendiente">Retornado</span>
+
+                                                @elseif ($data[$i]->fechas_avance[$mes]['statusmes'] == 'autorizado')
+                                                    <span class="validado">Autorizado</span>
+
+                                                @else
+                                                    <span class="">Sin movimiento</span>
+                                                @endif
+                                                <a class="btn-transparent" id=""
+                                                        href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}" target="_blank">
+                                                        <i class="fa fa-arrow-circle-o-right" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                {{-- Otra validacion nueva --}}
+                                                @if ($data[$i]->status_avance['proceso'] == '1' && $data[$i]->fechas_avance[$mes]['fecenvioplane_a'] != '' && $data[$i]->fechas_avance[$mes]['statusmes'] == '')
+                                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                                        data-placement="top" title="Ir a validación" id=""
+                                                        href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}" target="_blank">
+                                                        <i class="fa fa-search fa-2x mt-2" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
+                                                    </a>
+
+                                                @elseif ($data[$i]->fechas_avance[$mes]['statusmes'] == 'autorizado')
+                                                    @if ($data[$i]->fechas_avance[$mes]['urldoc_firmav'] != '')
+                                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                                        data-placement="top" title="Ver pdf firmado" id=""
+                                                        href="{{$data[$i]->fechas_avance[$mes]['urldoc_firmav']}}" target="_blank">
+                                                        <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                                    </a>
+                                                    @else
+                                                        <span class="">Pendiente PDF</span>
+                                                    @endif
+                                                @else
+
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endfor
+                                </tbody>
+                            </table>
+                        @else
+                            <div class="alert alert-primary mt-3" role="alert">
+                                <strong>Seleccione un mes para ver lista de organismos</strong>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
             </div>
-
-
-            {{-- Tabla de Avances --}}
-            {{-- <table class="table table-bordered table-striped d-none" id="tabla_avance">
-                <p class="h4 text-center font-weight-bold mt-5 mb-3" id="tituloTabla">REGISTROS DE FECHAS (META)</p>
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col" class="col-5 v-center">ORGANISMO/AREA</th>
-                        <th scope="col" class="col-5 v-center">FECHA DE EMISIÓN    ({{strtoupper($mesLetra)}})</th>
-                        <th scope="col" class="col-5 v-center">FECHA LIMITE   ({{strtoupper($mesLetra)}})</th>
-                        <th scope="col" class="text-center">MODIFICAR</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for ($i = 0; $i < count($data); $i++)
-                        <tr>
-                            <td scope="row">{{($i+1)}}</td>
-                            <td>{{$data[$i]['nombre']}}</td>
-                            <td>{{
-                                isset($data[$i]['fechas_avance'][$mesLetra]['fechaemision']) ? $data[$i]['fechas_avance'][$mesLetra]['fechaemision'] : ''
-                                }}
-                            </td>
-                            <td>{{
-                                isset($data[$i]['fechas_avance'][$mesLetra]['fechafin']) ? $data[$i]['fechas_avance'][$mesLetra]['fechafin'] : ''
-                                }}
-                            </td>
-                            <td class="d-block text-center">
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                        data-placement="top" title="EDITAR" id=""
-                                        href="#" onclick="ModalUpdate({{$data[$i]['id']}}, 'avance', '{{$mesLetra}}' )">
-                                        <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    @endfor
-                </tbody>
-            </table> --}}
         </div>
 
          {{-- Paginación --}}
