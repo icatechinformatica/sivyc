@@ -4,6 +4,13 @@
 @section('title', 'Inicio | Sivyc Icatech')
 
 @section('content')
+    @php    
+        if($data=='[]') $data = '{"label":["CATAZAJA","COMITAN","JIQUIPILAS","OCOSINGO","REFORMA","SAN CRISTOBAL","TAPACHULA","TONALA","TUXTLA","VILLAFLORES","YAJALON"],"total":[0,0,0,0,0,0,0,0,0,0,0]}';
+        if($data_asistencia== null){
+            $data_asistencia = '{"label":["CATAZAJA","COMITAN","JIQUIPILAS","OCOSINGO","REFORMA","SAN CRISTOBAL","TAPACHULA","TONALA","TUXTLA","VILLAFLORES","YAJALON"],"total":[0,0,0,0,0,0,0,0,0,0,0]}';
+            $subtit = "NO DISPONBILE";
+        }else $subtit = $mes_ant." ". date("Y");
+    @endphp
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <div class="card card-body">        
         <h3 class="text-center text-muted font-weight-bold">RANKING</h2>
@@ -22,17 +29,13 @@
                 {!! Form::close() !!}
             </div>
             <div class="form-group col-md-6">                
-                <h4 class="text-center">SOLICITUDES DE ASISTENCIA TÉCNICA</h4><h5 class="text-center">JUNIO 2023</h5><BR/>
+                <h4 class="text-center">SOLICITUDES DE ASISTENCIA TÉCNICA</h4><h5 class="text-center">{{$subtit}}</h5><BR/>
                 <div class="form-group">
                     <canvas id="myChart2" width="600" height="320"></canvas>
                 </div>
             </div>
         </div>
     </div>
-    @php    
-        if($data=='[]') $data = '{"label":["CATAZAJA","COMITAN","JIQUIPILAS","OCOSINGO","REFORMA","SAN CRISTOBAL","TAPACHULA","TONALA","TUXTLA","VILLAFLORES","YAJALON"],"total":[0,0,0,0,0,0,0,0,0,0,0]}';
-    @endphp
-
     @section('script_content_js') 
         <script src="{{ asset('js/tablero/Chart.min.js') }}"></script>        	
         <script language="javascript"> 
@@ -104,7 +107,8 @@
                
                 /*RANKING SOLICITUDES DE APOYO O ASISTENCIA TÉCNICA*/
                 var ctx = document.getElementById('myChart2').getContext('2d');
-                var curso = JSON.parse('{"label":["CATAZAJA","COMITAN","JIQUIPILAS","OCOSINGO","REFORMA","SAN CRISTOBAL","TAPACHULA","TONALA","TUXTLA","VILLAFLORES","YAJALON","DTA"],"total":[5,7,1,7,0,3,4,3,14,2,7,6]}'); 
+                //var curso = JSON.parse('{"label":["CATAZAJA","COMITAN","JIQUIPILAS","OCOSINGO","REFORMA","SAN CRISTOBAL","TAPACHULA","TONALA","TUXTLA","VILLAFLORES","YAJALON","DTA"],"total":[5,7,1,7,0,3,4,3,14,2,7,6]}'); 
+                var curso = JSON.parse('<?php echo $data_asistencia; ?>'); 
                 var myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {

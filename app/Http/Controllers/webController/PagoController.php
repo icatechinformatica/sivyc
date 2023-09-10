@@ -1088,6 +1088,20 @@ class PagoController extends Controller
         return $pdf->stream('RF-001.pdf');
     }
 
+    public function subir_contrato_rezagado(Request $request)
+    {
+        $contrato = contratos::Find($request->idcontrato_rezagado);
+        $id_instructor = DB::Table('tbl_cursos')->WHERE('id', $contrato->id_curso)->Value('id_instructor');
+
+        $doc_contrato = $request->file('contrato_rezagado_doc'); # obtenemos el archivo
+        $contrato_pdf = $this->pdf_upload($doc_contrato, $contrato->id_contrato, $id_instructor, 'contrato'); # invocamos el método
+        $contrato->arch_contrato = $contrato_pdf;
+        $contrato->save();
+
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Contrato Firmado Cargado Correctamente');
+    }
+
     protected function pdf_upload($pdf, $id, $idins, $nom)
     {
         # nuevo nombre del archivo

@@ -58,6 +58,19 @@ class HomeController extends Controller
             $data['ex2'][] = $value->extemporaneos_02;
         }
         $data = json_encode($data);
-        return view('layouts.pages.home', compact('cursos','meses','ejercicios','mes','anio','data'));
+        
+        if($request->mes)$mes_ant = $request->mes;
+        else $mes_ant = date("n")-1;
+        $mes_ant = $meses[($mes_ant==0) ? 12 : str_pad($mes_ant, 2, '0', STR_PAD_LEFT)];
+        
+        //dd($mes_ant);
+        $data_asistencia = DB::table('tbl_instituto')->where('id',1)->value('asistencia_tecnica->'.$mes_ant);
+        if(!$data_asistencia){
+            $mes_ant = date("n")-1;
+            $mes_ant = $meses[($mes_ant==0) ? 12 : str_pad($mes_ant, 2, '0', STR_PAD_LEFT)];
+             $data_asistencia = DB::table('tbl_instituto')->where('id',1)->value('asistencia_tecnica->'.$mes_ant);
+        }
+             //dd($data_asistencia);
+        return view('layouts.pages.home', compact('cursos','meses','ejercicios','mes','anio','data','data_asistencia','mes_ant'));
     }
 }

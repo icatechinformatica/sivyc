@@ -16,9 +16,9 @@
         <link rel="stylesheet" href="{{asset('vendor/bootstrap/bootstrap.min.css') }}">
         <link rel="stylesheet" href="https://mail.cdn.wpchile.com/assets/vendor/icon-hs/style.css">
         
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> 
         {{--EN DEPURACION
         <link rel="stylesheet" href="{{asset('vendor/bootstrap/offcanvas.css') }}">        
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> 
         <link rel="stylesheet" href="{{asset('vendor/icon-line-pro/style.css') }}">
         <link rel="stylesheet" href="{{asset('vendor/icon-line/css/simple-line-icons.css') }} ">        
         <link rel="stylesheet" href="{{asset('vendor/dzsparallaxer/dzsparallaxer.css') }}">
