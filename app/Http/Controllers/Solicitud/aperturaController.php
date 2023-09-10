@@ -20,6 +20,7 @@ use App\Agenda;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
+use PDF;
 
 class aperturaController extends Controller
 {
