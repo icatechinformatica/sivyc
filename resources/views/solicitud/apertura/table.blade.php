@@ -42,7 +42,7 @@
 
  <div class="col-md-12 col-lg-12 text-right">
     {{-- Boton y cajas para generar pdf Made by Jose Luis Moreno Arcos--}}
-        <button type="button" class="btn" id="genpdf_soporte">GENERAR PDF</button>
+        <button type="button" class="btn" id="genpdf_soporte">GENERAR PDF SOPORTE</button>
 
         @if ($comprobante)
         <a href="{{$comprobante}}" target="_blank" class="btn  bg-warning">IMPRIMIR COMPROBANTE DE PAGO</a>
