@@ -54,6 +54,12 @@
                 </div>
             </div>
         @endif
+        {{-- Mensaje de error - Jose Luis Moreno Arcos --}}
+        @if($errors->has('error'))
+            <div class="alert alert-danger">
+                {{ $errors->first('error') }}
+            </div>
+        @endif
 
         @if(isset($grupo))
             <h5><b>DEL CURSO</b></h5>
@@ -218,19 +224,28 @@
             @endif
         {!! Form::close() !!}
 
-        {{-- Formulario pdf soporte --}}
-        <form action="{{route('solicitud.genpdf.soporte')}}" method="post" id="frmgen" target="_blank">
-            @csrf
-            <div class="col-12 row px-0">
-                <input type="hidden" name="idorg" value="{{isset($grupo->id_organismo) ? $grupo->id_organismo : ''}}">
-                <div class="col-3">
-                    <input type="text" class="form-control" style="" id="num_oficio" name="num_oficio" placeholder="NUMERO DE OFICIO">
+        {{-- Formulario pdf generar soporte by Jose Luis Moreno Arcos  --}}
+        @if (isset($grupo))
+            <form action="" method="post" id="frmgen" target="_blank">
+                @csrf
+                <div class="col-12 row px-0">
+                    <input type="hidden" name="idorg" value="{{isset($grupo->id_organismo) ? $grupo->id_organismo : ''}}">
+                    <input type="hidden" name="unidad_sop" value="{{isset($grupo->unidad) ? $grupo->unidad : ''}}">
+                    <input type="hidden" name="cgeneral_sop" value="{{isset($grupo->cgeneral) ? $grupo->cgeneral : ''}}">
+                    <div class="col-3">
+                        <label for="num_oficio">*Obligatorio para generar PDF</label>
+                        <input type="text" class="form-control" style="" id="num_oficio" name="num_oficio" placeholder="NUMERO DE OFICIO" value="{{$num_oficio_sop != NULL ? $num_oficio_sop : ''}}">
+                    </div>
+                    <div class="col-3 px-0">
+                        <label for="datos_titular">*Opcional</label>
+                        <input type="text" class="form-control" style="" id="datos_titular" name="datos_titular" placeholder="TITULAR DE LA DEPENDENCIA, CARGO" value="{{$titular_sop != NULL ? $titular_sop : ''}}">
+                    </div>
                 </div>
-                <div class="col-3 px-0">
-                    <input type="text" class="form-control" style="" id="datos_titular" name="datos_titular" placeholder="TITULAR DE LA DEPENDENCIA, CARGO">
-                </div>
-            </div>
-        </form>
+            </form>
+        @endif
+
+        {{-- Boton y cajas para generar pdf Made by Jose Luis Moreno Arcos--}}
+        {{-- <button type="button" class="btn" id="genpdf_soporte">GENERAR PDF</button> --}}
     </div>
 @if (isset($grupo))
 <!-- modal para mostrar el calendario -->
@@ -360,7 +375,9 @@
                 $('#medio_virtual').editableSelect();
                 //Generar pdf soporte / Made by Jose Luis Moreno Arcos
                 $("#genpdf_soporte").click(function(){
-                    $('#frmgen').submit();
+                    if ($("#num_oficio").val().trim() != "") {
+                        $('#frmgen').attr('action', "{{route('solicitud.genpdf.soporte')}}"); $('#frmgen').submit();
+                    }else alert("El campo 'NUMERO DE OFICIO' es requerido para generar el pdf");
                 });
 
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura')}}"); $('#frm').submit();});

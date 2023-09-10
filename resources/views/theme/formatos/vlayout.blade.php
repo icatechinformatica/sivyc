@@ -14,7 +14,8 @@
         /* margin-bottom: 80px; */
     }
     @page {
-        margin: 110px 20px 53px;
+        /* margin: 110px 20px 53px; */
+        margin: 120px 30px 40px 30px;
     }
     header {
         position: fixed;
