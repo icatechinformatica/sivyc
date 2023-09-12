@@ -14,12 +14,12 @@
         img.derecha {float: right;width: 50%;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
         /* agregamos a 3 el padding para que no salte a la otra pagina y la deje en blanco */
-        .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;}
+        .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px; font-weight: normal;}
         /* .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;} */
-        .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}
+        /* .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
         .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
-        .tablag tr td { font-size: 8px; padding: 0px;}
+        .tablag tr td { font-size: 8px; padding: 0px;} */
 
         .color_dina{
             color: #000;
@@ -79,7 +79,7 @@
 
 @section('body')
     <div class="contenedor">
-        <h6 align=center style="margin-top: 5px;">ACTA DE ACUERDO</h6>
+        <p align=center style="margin-top: 5px; font-size: 14px; font-weight:bold;">ACTA DE ACUERDO</p>
         {{-- crear un div para encerrar todo lo que lleva al inicio --}}
         <div>
             <div align=right style="font-size:12px;"><b>NO. {{$cespecifico}}</b></div>
@@ -126,12 +126,15 @@
             {{-- se llenan de datos esta tabla --}}
             <table class="tablas" border="1">
                 <thead>
-                    <tr><th colspan="2" style="font-size:12px;">LISTADO DE QUIENES INTEGRAN "EL GRUPO DE CAPACITACIÓN ABIERTA"</th></tr>
+                    <tr><th colspan="2" style="font-size:11px; font-weight:bold;">LISTADO DE QUIENES INTEGRAN "EL GRUPO DE CAPACITACIÓN ABIERTA"</th></tr>
                     <tr>
-                        <th style="font-size:12px;">NOMBRE COMPLETO DE CADA ALUMNO</th>
-                        <th style="font-size:12px;">INDICAR MEDIO DE COMUNICACIÓN FIRMA O TECNOLOGÍA <br>
-                            DIGITAL (CORREO ELECTRÓNICO Y/O MENSAJE DE DATOS Y/O <br>
-                            MEDIOS ELECTRÓNICOS SEÑALADOS POR EL INTERESADO)</th>
+                        <th style="font-size:11px; font-weight:bold; width:50%px;">NOMBRE COMPLETO DE CADA ALUMNO</th>
+                        <th style=""><span style="font-size: 11px; font-weight:bold; width:50%;">FIRMA AUTOGRAFA</span>
+                            <br>
+                            <span style="font-size: 8px;">PARA CURSOS DE CAPACITACIÓN CON ACTIVIDAD NO PRESENCIAL: INDICAR MEDIO COMUNICACIÓN
+                                (CORREO ELECTRÓNICO Y/O MENSAJE DE DATOS Y/O MEDIOS ELECTRÓNICOS SEÑALADOS POR EL INTERESADO).
+                            </span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -153,17 +156,17 @@
                 @endforeach
                 </tbody>
             </table>
-            {{-- contenido despues de la tabla --}}
-            <br><br><br><br>
-            <div align=center style="font-size:12px;"><b>TITULAR DE LA DIRECCIÓN DE LA UNIDAD DE CAPACITACIÓN.</b></div>
-            <br><br><br>
-            <div align=center style="font-size:12px;"><b><span class="color_dina">{{$dunidad}}</span></b></div>
-            <br><br>
+            {{-- Firmantes --}}
+            <div style="margin-top: 30px;">
+                <div align=center style="font-size:12px; margin-bottom:60px;"><b>TITULAR DE LA DIRECCIÓN DE LA UNIDAD DE CAPACITACIÓN.</b></div>
+                <div align=center style="font-size:12px;"><b><span class="color_dina">{{$dunidad}}</span></b></div>
+            </div>
             {{-- Tabla para las firmas --}}
-            <table class="tablas" border="1">
+            <table class="tablas" border="1" style="margin-top: 20px;">
                     <tr style="padding-bottom: 10px">
-                        <td colspan="2" style="font-size:12px;"><p><b>TESTIGOS <br><span class="color_dina">{{$delegado_administrativo}}</span></b></p>
-                            <br><br><br>
+                        <td colspan="2" style="font-size:12px;"><p><b>TESTIGOS <br>
+                            <span class="color_dina">{{$delegado_administrativo}}</span></b></p>
+                            <br><br>
                             <p><b><span class="color_dina">{{$pdelegado_administrativo}}</span></b></p></td>
                     </tr>
                     <tr>
@@ -172,8 +175,8 @@
                     </tr>
             </table>
             <br><br>
-            {{-- <span class="color_dina"></span> --}}
-            {{-- el texto de NOTA --}}
+
+            {{-- Texto NOTA --}}
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 NOTA: LAS TECNOLOGÍAS DIGITALES COMO MEDIO DE COMUNICACIÓN (CORREO ELECTRÓNICO Y/O MENSAJE
                 DE DATOS Y/O CUALQUIER OTRO DE LOS MEDIOS ELECTRÓNICOS SEÑALADOS POR EL (LA) INTERESADO (A)),

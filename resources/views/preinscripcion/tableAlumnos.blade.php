@@ -89,10 +89,10 @@
         <button id="btnShowCalendar" type="button" class="btn btn-info mt-1 btn-lg">AGENDAR</button>
         @can('agenda.vinculacion')
         {{-- @can('agenda.vinculacion' || $slug == 'admin') temporalmente se comentó hasta que homologuen --}}
-            {{-- @if ($grupo->cespecifico)
+            @if ($grupo->cespecifico)
                     <button type="button" class="btn mt-1 btn-lg" id="gen_acta_acuerdo">ACTA DE ACUERDO</button>
-                    <button type="button" class="btn mt-1 btn-lg" id="gen_convenio_esp">CONVENIO</button>
-            @endif --}}
+                    {{-- <button type="button" class="btn mt-1 btn-lg" id="gen_convenio_esp">CONVENIO</button> --}}
+            @endif
             <button type="button" class="btn mt-1 btn-lg" id="gape">GENERAR SOLICITUD</button>
         @endcan
         <button type="button" class="btn mt-1 btn-lg" id="generar">GENERAR LISTA</button>
