@@ -415,7 +415,7 @@
             $(document).ready(function(){
                 // BOTONES DE PDF
                 //Temporalmente se comentó hasta que se homologue se libera
-                // $("#gen_acta_acuerdo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.acuerdo_pdf')}}",'target':'_blank'}); $('#frm').submit(); });
+                $("#gen_acta_acuerdo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.acuerdo_pdf')}}",'target':'_blank'}); $('#frm').submit(); });
                 // $("#gen_convenio_esp").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.convenio_pdf')}}",'target':'_blank'}); $('#frm').submit(); });
                 $("#agregar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.save')}}",'target':'_self'}); $('#frm').submit(); });
                 $("#nuevo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.nuevo')}}",'target':'_self'}); $('#frm').submit(); });

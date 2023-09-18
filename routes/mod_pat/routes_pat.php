@@ -96,3 +96,5 @@ Route::post('/preinscripcion/grupo/pdfconvenio', 'Preinscripcion\grupoController
 Route::post('/preinscripcion/grupo/uploadacta/firmacta', 'Preinscripcion\grupoController@pdf_acta_firm')->name('preinscripcion.grupo.firmactapdf');
 Route::post('/preinscripcion/grupo/uploadconv/firconv', 'Preinscripcion\grupoController@pdf_conv_firm')->name('preinscripcion.grupo.firmconvpdf');
 
+/**SOLICITUD -> CLAVE DE APERTURA ARC01 GEN PDF SOPORTE CONSTANCIAS*/
+Route::post('/solicitud/apertura/pdfsoporte/', 'Solicitud\aperturaController@genpdf_soporte')->name('solicitud.genpdf.soporte');

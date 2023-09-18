@@ -10,10 +10,12 @@
     body{
         font-family: sans-serif;
         font-size: 1.3em;
-        margin: 10px;
+        /* margin: 10px; */
+        /* margin-bottom: 80px; */
     }
     @page {
-        margin: 110px 20px 60px;
+        /* margin: 110px 20px 53px; */
+        margin: 120px 30px 40px 30px;
     }
     header {
         position: fixed;
@@ -34,18 +36,31 @@
         text-align: center;
         line-height: 60px;
     }
-    .direccion {position: absolute;  top: 1.3cm; width:380px; margin-left:28px; height:auto; font-family: sans-serif; font-size: 9px; color:#FFF; }
+    /* .direccion {position: absolute;  top: 0.1cm; width:380px; margin-left:0px; height:auto; font-family: sans-serif; font-size: 9px; color:#FFF; } */
+    .direccion {
+            top: 0.85cm;
+            text-align: left;
+            position: absolute;
+            bottom: 60px;
+            left: 6px;
+            font-size: 8px;
+            color:#FFF;
+            font-weight: bold;
+            line-height: 1;
+    }
     </style>
     @yield("content_script_css")
 </head>
 {{-- cambio prueba --}}
-@section('content')
+{{-- @section('content') --}}
+<body>
     <header>
-        <img src='img/formatos/bannervertical.jpeg' width="100%">
-        <p style="text-align: center; font-weight: bold; font-style: italic; margin-top:-10px; padding:0px; font-size: 11px;">{{$distintivo}}</p>
+            <img src='img/formatos/bannervertical.jpeg' width="100%">
+            <p style="text-align: center; font-weight: bold; font-style: italic; margin-top:-10px; padding:0px; font-size: 11px;">{{$distintivo}}</p>
+        </div>
     </header>
     <footer>
-        <div style="position: relative;";>
+        <div style="position: relative;">
             <img style=" position: absolute;" src='img/formatos/footer_horizontal.jpeg' width="100%">
             @php $direccion = explode("*", $direccion);  @endphp
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
@@ -56,4 +71,4 @@
     @yield("script_content_js")
 </body>
 </html>
-@endsection
+{{-- @endsection --}}

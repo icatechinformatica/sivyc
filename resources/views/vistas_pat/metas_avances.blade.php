@@ -277,20 +277,25 @@
                                 </div>
                             </div>
 
-                            <div class="card" style="width: 15rem;">
+                            <div class="card bg-warning" style="width: 17rem;">
                                 <div class="card-body px-2 py-2">
-                                    <p class="card-text text-center mb-2">Descargar pdfs firmados</p>
+                                    {{-- <p class="card-text text-center mb-2">Descargar pdfs firmados</p> --}}
                                     <div class="d-flex justify-content-center">
+                                        {{-- <i  class="fa fa-file-pdf-o ml-2 text-danger"></i> --}}
                                         <select name="selOpenLink" id="selOpenLink" class="form-control" onchange="pdfOpenfirm()">
-                                            <option value="">PDFs FIRMADOS</option>
+                                            <option value="" disabled selected >Descargar PDF Oficializado</option>
                                             @if ($fecha_meta_avance->fecha_meta['urldoc_firm'] != '')
-                                                <option value="{{$fecha_meta_avance->fecha_meta['urldoc_firm']}}">Metas</option>
+                                                <optgroup label="METAS PDF">
+                                                    <option value="{{$fecha_meta_avance->fecha_meta['urldoc_firm']}}">Meta Anual</option>
+                                                </optgroup>
                                             @endif
-                                            @for ($i = 0; $i < count($mesGlob); $i++)
-                                                @if ($fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav'] != '')
-                                                    <option value="{{$fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav']}}">AVANCE {{$mesGlob[$i]}} </option>
-                                                @endif
-                                            @endfor
+                                            <optgroup label="AVANCES PDF">
+                                                @for ($i = 0; $i < count($mesGlob); $i++)
+                                                    @if ($fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav'] != '')
+                                                        <option value="{{$fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav']}}"> {{ucfirst($mesGlob[$i])}}</option>
+                                                    @endif
+                                                @endfor
+                                            </optgroup>
                                         </select>
                                     </div>
                                 </div>
@@ -620,8 +625,8 @@
 
 
               {{-- SEGUIMIENTO DE STATUS --}}
-            <div class="col-12 row ml-1 mt-5">
-                <div class="col-4 shadow-sm p-3 mb-5 {{$datos_status_meta[0] == 'activo' ? 'color_car text-white' : 'bg-light'}} rounded row d-flex justify-content-between mr-5">
+            <div class="col-12 row ml-1 d-flex justify-content-between mt-5">
+                <div class="col-4 shadow-sm p-3 mb-5 {{$datos_status_meta[0] == 'activo' ? 'color_car text-white' : 'bg-light'}} rounded row d-flex justify-content-between">
                     <div>
                         <div><h5 class="font-weight-bold mr-2">Metas</h5></div>
                         <div class="{{$fecha_meta_avance->status_meta['captura'] == '1' ? 'font-weight-bold' : ''}}"><i class="{{$fecha_meta_avance->status_meta['captura'] == '1' ? 'fa fa-arrow-circle-right' : ''}} " aria-hidden="true"></i> Registro de metas</div>
@@ -639,7 +644,7 @@
                     </div>
                 </div>
 
-                <div class="col-4 shadow-sm p-3 mb-5 {{$datos_status_avance[0] == 'activo' ? 'color_car text-white' : 'bg-light'}} rounded row d-flex justify-content-between mr-5">
+                <div class="col-4 shadow-sm p-3 mb-5 {{$datos_status_avance[0] == 'activo' ? 'color_car text-white' : 'bg-light'}} rounded row d-flex justify-content-between">
                     <div>
                         <div><h5 class="font-weight-bold mr-2">Avances {{ $datos_status_avance[2] != 'no_mes' ? '('.$datos_status_avance[2].')' : ''}}</h5></div>
                         <div class="{{$fecha_meta_avance->status_avance['captura'] == '1' ? 'font-weight-bold' : ''}}"><i class="{{$fecha_meta_avance->status_avance['captura'] == '1' ? 'fa fa-arrow-circle-right' : ''}} " aria-hidden="true"></i> Registro de metas</div>
@@ -657,16 +662,18 @@
                 </div>
                 {{-- MUESTRA LOS MESES DE AVANCE VALIDADOS --}}
                 @if (isset($mesGlob))
-                <div class="col-2 shadow-sm p-3 mb-5 bg-light rounded row d-flex justify-content-between mr-5">
+                <div class="col-4 shadow-sm p-1 mb-5 bg-light rounded row d-flex justify-content-between">
                     <div>
-                        <h6 class="font-weight-bold">Meses validados</h6>
+                        <h6 class="font-weight-bold ml-2 mt-2">Generar Avances Validados</h6>
                         <div class="row mx-1">
                                 @for ($i = 0; $i < count($mesGlob); $i++)
                                     @if ($fecha_meta_avance->fechas_avance[$mesGlob[$i]]['statusmes'] == 'autorizado')
                                     <div>
-                                        <a href="#" rel="noopener noreferrer" onclick="generarPdfA('avance', '{{$mesGlob[$i]}}', '{{isset($id_organismo) ? $id_organismo : 'null'}}', '{{$fecha_meta_avance->fechas_avance[$mesGlob[$i]]['fecavanpdf'] }}')">
+                                        <a href="#" rel="noopener noreferrer" onclick="generarPdfA('avance', '{{$mesGlob[$i]}}', '{{isset($id_organismo) ? $id_organismo : 'null'}}', '{{$fecha_meta_avance->fechas_avance[$mesGlob[$i]]['fecavanpdf'] }}')"
+                                            data-toggle="tooltip" data-placement="top" title="Generar PDF Mes de {{$mesGlob[$i]}}">
                                             {{-- generarPdfA('avance', '{{$datos_status_avance[2]}}', '{{isset($id_organismo) ? $id_organismo : 'null'}}', '{{$fecha_meta_avance->fechas_avance[$datos_status_avance[2]]['fecavanpdf']}}') --}}
-                                            <span class="badge badge-pill badge-success ml-1">{{$mesGlob[$i]}}</span>
+                                            {{-- <span class="badge badge-pill badge-warning ml-1">{{$mesGlob[$i]}}<i class="fa fa-file-pdf-o ml-2 text-danger" aria-hidden="true"></i></span> --}}
+                                            <span class="btn btn-sm m-1 p-2">{{$mesGlob[$i]}} pdf<i class="fa fa-file-pdf-o ml-2 text-white" aria-hidden="true"></i></span>
                                         </a>
                                     </div>
                                     @endif
@@ -1084,7 +1091,7 @@
 
                 }else {
                     // let mensaje = "¿Le gustaría generar el PDF con la fecha original (" + fechapdf + ")?";
-                    let mensaje = "Clic 'Aceptar' para generar con fecha  (" + fechapdf + "). 'Cancelar' para generar con fecha actual?";
+                    let mensaje = "Clic 'Aceptar' para generar con fecha  (" + fechapdf + "). 'Cancelar' para generar con fecha actual.";
                     let respuesta = confirm(mensaje);
 
                     if (respuesta) {
@@ -1123,7 +1130,7 @@
 
                 }else {
                     // let mensaje = "¿Le gustaría generar el PDF con la fecha original (" + fechapdf + ")?";
-                    let mensaje = "Clic 'Aceptar' para generar con fecha  (" + fechapdf + "). 'Cancelar' para generar con fecha actual?";
+                    let mensaje = "Clic 'Aceptar' para generar con fecha  (" + fechapdf + "). 'Cancelar' para generar con fecha actual.";
                     let respuesta = confirm(mensaje);
 
                     if (respuesta) {
