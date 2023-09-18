@@ -20,6 +20,7 @@ use App\Agenda;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
+use PDF;
 
 class aperturaController extends Controller
 {
@@ -66,11 +67,19 @@ class aperturaController extends Controller
 
     public function index(Request $request){
         $valor = $efisico = $grupo = $alumnos = $message = $medio_virtual = $depen = $exoneracion = $instructor = $plantel = $programa = $sector = $tcurso = $tcuota =
-        $muni = $instructores = $convenio = $localidad = $comprobante = $exonerado = NULL;
+        $muni = $instructores = $convenio = $localidad = $comprobante = $exonerado = $num_oficio_sop = $titular_sop = NULL;
         if($request->valor)  $valor = $request->valor;
         elseif(isset($_SESSION['folio'])) $valor = $_SESSION['folio'];
         $_SESSION['alumnos'] = NULL;
         if($valor){
+            #consultamos registros para generar pdf soporte de constancias
+            $sop_expediente = DB::table('tbl_cursos_expedientes')->select('sop_constancias')->where('folio_grupo', '=', $valor)->first();
+            if($sop_expediente){
+                $sop_constancias = json_decode($sop_expediente->sop_constancias);
+                $num_oficio_sop = $sop_constancias->num_oficio;
+                $titular_sop = ($sop_constancias->titular_depen != "" && $sop_constancias->cargo_titular != "") ? $sop_constancias->titular_depen.', '.$sop_constancias->cargo_titular : '';
+            }
+
             $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
                 'ar.folio_grupo','ar.tipo_curso as tcapacitacion','c.nombre_curso as curso','ar.mod','ar.horario','c.horas','c.costo as costo_individual','c.id_especialidad','ar.comprobante_pago',
                 DB::raw("SUM(CASE WHEN substring(ar.curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),DB::raw("SUM(CASE WHEN substring(ar.curp,11,1)='M' THEN 1 ELSE 0 END) as mujer"),'c.memo_validacion as mpaqueteria',
@@ -170,7 +179,7 @@ class aperturaController extends Controller
         $tinscripcion = $this->tinscripcion();
         if(session('message')) $message = session('message');//dd($grupo);
         return view('solicitud.apertura.index', compact('comprobante','efisico','message','grupo','alumnos','plantel','depen','sector','programa',
-            'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad','exonerado'));
+            'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad','exonerado', 'num_oficio_sop', 'titular_sop'));
     }
 
     public function search(Request $request){
@@ -1039,5 +1048,109 @@ class aperturaController extends Controller
         $insert_dias ['nombre'] = $dias_a;
         $insert_dias ['total'] = $tdias;
         return $insert_dias;
+    }
+
+    # Made by Jose Luis Moreno Arcos / Funcion que genera pdf de soporte de constancias.
+    public function genpdf_soporte(Request $request){
+        $idorg = $request->idorg; #organismo
+        $numficio = $request->num_oficio; #numero de oficio
+        $datos_titular = $request->datos_titular; #datos del titular en caso de que no firme el titular del org
+        $unidad_sop = $request->unidad_sop; #unidad
+        $cgeneral_sop = $request->cgeneral_sop; #convenio general
+        $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        $distintivo = DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+
+        #recuperamos el id del curso a traves del folio
+        $folio_grupo =  $_SESSION['folio']; #folio de grupo
+        $id_curso = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio'])->pluck('id')->first(); #id curso
+        $dta_certificacion = DB::table('tbl_funcionarios')->where('id', 18)->pluck('nombre')->first();
+
+         #consulta de organismo o en su caso partimos el texto del campo titular
+         $partes_titu = []; $organismo = '';
+         if($datos_titular != '') {
+            $partes_titu = explode(",", $datos_titular);
+         }else{
+             $organismo = DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $idorg)->first();
+         }
+
+        #Insertamos o actualizamos registros en la tabla de expedientes unicos
+        $parte1 = (count($partes_titu)>0) ? $partes_titu[0] : "";
+        $parte2 = (count($partes_titu)>0) ? $partes_titu[1] : "";
+
+        $soporte_const = [
+            "num_oficio" => $numficio,
+            "titular_depen" => $parte1,
+            "cargo_titular" => $parte2,
+            "fecha_gen" => date("Y-m-d"),
+            "url_pdf" => "",
+        ];
+        $soporte_const_json = json_encode($soporte_const);
+
+        $resquery = DB::table('tbl_cursos_expedientes')->updateOrInsert(
+            ['folio_grupo' => $folio_grupo, 'id' => $id_curso], // Buscar por el campo 'id' folio_grupo
+            ['id_curso' =>$id_curso, 'folio_grupo' => $folio_grupo, 'sop_constancias' => $soporte_const_json,
+            'created_at' => date('Y-m-d'), 'updated_at' => date('Y-m-d'),
+            'iduser_created' => Auth::user()->id, 'iduser_updated' => Auth::user()->id]
+        );
+        if(!$resquery){
+            return redirect()->back()->withErrors(['menssage' => 'Hubo un problema al realizar la operación.']);
+        }
+
+
+        #Datos de encabezado y pie de pagina
+        $data = DB::table('tbl_cursos as cur')->select('cur.fcespe', 'cur.munidad','tu.unidad', 'tu.dunidad',
+        'tu.pdunidad', 'cur.realizo', 'cur.valido', 'tu.municipio', 'tu.direccion', 'tu.ubicacion')
+        ->Join('tbl_unidades as tu', 'tu.unidad', 'cur.unidad')
+        ->where('cur.folio_grupo','=',"$folio_grupo")->first();
+
+
+        $direccion = $data->direccion;
+        $unidad = strtoupper($data->ubicacion);
+        $municipio = mb_strtoupper($data->municipio, 'UTF-8');
+
+        #OBTENEMOS LA LISTA DE CURSOS
+        $tabla_contenido = DB::table('tbl_cursos as c')
+        ->select('c.id', 'c.curso', 'c.folio_grupo', 'c.clave', 'c.cespecifico', 'c.inicio',
+        'c.termino', 'c.tcapacitacion', 'c.mod', 'c.nombre', 'c.hini', 'c.hfin')
+        ->selectRaw('(SELECT COUNT(id_curso) FROM public.tbl_folios WHERE id_curso = c.id) AS cantidad_folios')
+        ->selectRaw('(SELECT MIN(folio) FROM public.tbl_folios WHERE id_curso = c.id) AS primer_folio')
+        ->selectRaw('(SELECT MAX(folio) FROM public.tbl_folios WHERE id_curso = c.id) AS ultimo_folio')
+        ->join('tbl_cursos_expedientes as e', 'c.folio_grupo', '=', 'e.folio_grupo')
+        ->whereJsonContains('e.sop_constancias->num_oficio', $numficio)
+        ->orderByRaw('EXTRACT(MONTH FROM c.termino)')
+        ->get();
+
+
+        #RANGO DE MESES
+        $bd_rango_mes = DB::table('tbl_cursos as c')
+        ->join('tbl_cursos_expedientes as e', 'c.folio_grupo', '=', 'e.folio_grupo')
+        ->whereRaw("jsonb_extract_path_text(e.sop_constancias, 'num_oficio') = 'ICATECH/1700/0046/2023'")
+        ->selectRaw("MIN(DATE_PART('month', termino)) as mes_minimo, MAX(DATE_PART('month', termino)) as mes_maximo")
+        ->get();
+        $mesmin = $bd_rango_mes[0]->mes_minimo;
+        $mesmax = $bd_rango_mes[0]->mes_maximo;
+        $rango_mes = ($mesmin != $mesmax) ? $meses[$mesmin-1].' - '.$meses[$mesmax-1] : $meses[$mesmin-1];
+
+
+        #TOTAL DE FOLIOS
+        $total_folios = 0;
+        for ($i=0; $i < count($tabla_contenido); $i++) {
+            $total_folios += $tabla_contenido[$i]->cantidad_folios;
+        }
+        $total_folios = ($total_folios < 10) ? '0'+ $total_folios : $total_folios;
+        $total_cursos = count($tabla_contenido);
+        $total_cursos = ($total_cursos < 10) ? '0'+ $total_cursos : $total_cursos;
+
+
+        #OBTENEMOS LA FECHA ACTUAL
+        $fechaActual = getdate();
+        $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
+        $dia = ($dia < 10) ? '0'.$dia : $dia;
+
+        $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
+
+        $pdf = PDF::loadView('reportes.soporte_entrega_constancia',compact('distintivo', 'direccion', 'data', 'unidad', 'organismo', 'numficio',
+        'partes_titu', 'municipio', 'fecha_comp', 'tabla_contenido', 'rango_mes', 'total_cursos', 'total_folios', 'dta_certificacion'));
+        return $pdf->stream('Soporte de Entrega');
     }
 }
