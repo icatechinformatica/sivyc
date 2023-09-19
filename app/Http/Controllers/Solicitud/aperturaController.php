@@ -1120,11 +1120,10 @@ class aperturaController extends Controller
         ->orderByRaw('EXTRACT(MONTH FROM c.termino)')
         ->get();
 
-
         #RANGO DE MESES
         $bd_rango_mes = DB::table('tbl_cursos as c')
         ->join('tbl_cursos_expedientes as e', 'c.folio_grupo', '=', 'e.folio_grupo')
-        ->whereRaw("jsonb_extract_path_text(e.sop_constancias, 'num_oficio') = 'ICATECH/1700/0046/2023'")
+        ->whereRaw("jsonb_extract_path_text(e.sop_constancias, 'num_oficio') = ?", [$numficio])
         ->selectRaw("MIN(DATE_PART('month', termino)) as mes_minimo, MAX(DATE_PART('month', termino)) as mes_maximo")
         ->get();
         $mesmin = $bd_rango_mes[0]->mes_minimo;
