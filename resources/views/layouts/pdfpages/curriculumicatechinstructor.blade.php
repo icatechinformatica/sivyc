@@ -314,18 +314,18 @@
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td width="240px"><b>PUESTO</b></td>
-                            <td width="120px"><b>PERIODO</b></td>
-                            <td width="300px"><b>INSTITUCIÓN</b></td>
+                            <td width="220px"><b>PUESTO</b></td>
+                            <td width="160px"><b>PERIODO</b></td>
+                            <td width="280px"><b>INSTITUCIÓN</b></td>
                         </tr>
                     </thead>
                     <tbody>
                         @if(isset($data->exp_laboral))
                             @foreach($data->exp_laboral AS $cadwell)
                                 <tr>
-                                    <td>{{$cadwell['puesto']}}</td>
-                                    <td>{{$cadwell['periodo']}}</td>
-                                    <td style="font-size: 10px;">{{$cadwell['institucion']}}</td>
+                                    <td style="font-size: 9px;">{{$cadwell['puesto']}}</td>
+                                    <td style="font-size: 9px;">{{$cadwell['periodo']}}</td>
+                                    <td style="font-size: 9px;">{{$cadwell['institucion']}}</td>
                                 </tr>
                             @endforeach
                         @endif
