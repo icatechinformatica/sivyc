@@ -34,35 +34,55 @@ $gpo=0;
     .variable5{border-spacing:0px 0px;}
 
     /* Estilos de agregar titulos separados a una tabla */
-    .container {
+    /* .container {
         overflow: hidden;
         display: inline-block;
         margin-right: 20px;
         font-size: 10px;
-    }
+        background-color: aqua !important;
+    } */
 
     .tamano1{
         width: 85px;
+        margin-left: 6% !important;
+        margin-top: -10px;
+        /* position: absolute;
+        left: 46%; */
     }
     .tamano2{
         width: 95px;
-        margin-left: 32px;
+        position: absolute;
+        left: 63% !important;
+        /* margin-top: 15px; */
+        /* margin-left: 32px; */
     }
     .tamano3{
         width: 110px;
-        margin-left: 20px;
+        position: absolute;
+        left: 80% !important;
+        margin-top: 15px;
+        /* margin-left: 25px; */
     }
     .tamano4{
         width: 100px;
-        margin-left: 15px;
+        position: absolute;
+        left: 99% !important;
+        margin-bottom: 17px;
+        /* margin-left: 29px; */
     }
     .tamano5{
         width: 100px;
-        margin-left: 17px;
+        position: absolute;
+        left: 117% !important;
+        margin-bottom: 17px;
+        /* margin-left: 17px; */
     }
 
     .contenedor{
         margin-left: 28%;
+        position:static;
+        display: flex;
+
     }
     .container p {
         margin-left: -10px;
@@ -334,15 +354,15 @@ $gpo=0;
                 </tr>
                 <tr>
                     <td>CEGUERA</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
+                    <td class='variable'></td>
+                    <td class='variable'></td>
+                    <td class='variable'></td>
                 </tr>
                 <tr>
                     <td>BAJA VISIÓN</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $vulnerav_h['disc_ver'] }}</td>
+                    <td class='variable'>{{ $vulnerav_m['disc_ver'] }}</td>
+                    <td class='variable'>{{ $vulnerav_h['disc_ver'] + $vulnerav_m['disc_ver'] }}</td>
                 </tr>
                 <tr>
                     <td>SORDERA</td>
@@ -352,9 +372,9 @@ $gpo=0;
                 </tr>
                 <tr>
                     <td>HIPOACUSIA</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $vulnerav_h['disc_oir'] }}</td>
+                    <td class='variable'>{{ $vulnerav_m['disc_oir'] }}</td>
+                    <td class='variable'>{{ $vulnerav_h['disc_oir'] + $vulnerav_m['disc_oir'] }}</td>
                 </tr>
                 <tr>
                     <td>SORDOCEGUERA</td>
@@ -364,15 +384,15 @@ $gpo=0;
                 </tr>
                 <tr>
                     <td>DISCAPACIDAD MOTRIZ</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $vulnerav_h['disc_motriz'] }}</td>
+                    <td class='variable'>{{ $vulnerav_m['disc_motriz'] }}</td>
+                    <td class='variable'>{{ $vulnerav_h['disc_motriz'] + $vulnerav_m['disc_motriz'] }}</td>
                 </tr>
                 <tr>
                     <td>DISCAPACIDAD INTELECTUAL</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $vulnerav_h['disc_mental'] }}</td>
+                    <td class='variable'>{{ $vulnerav_m['disc_mental'] }}</td>
+                    <td class='variable'>{{ $vulnerav_h['disc_mental'] + $vulnerav_m['disc_mental'] }}</td>
                 </tr>
                 <tr>
                     <td>DISCAPACIDAD PSICOSOCIAL</td>
@@ -430,9 +450,9 @@ $gpo=0;
                 </tr>
                 <tr>
                     <td>TOTAL</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $vulnerav_h['totalreg'] }}</td>
+                    <td class='variable'>{{ $vulnerav_m['totalreg'] }}</td>
+                    <td class='variable'>{{ $vulnerav_h['totalreg'] +  $vulnerav_m['totalreg']}}</td>
                 </tr>
             </table>
         </div>
@@ -445,8 +465,9 @@ $gpo=0;
             administrativo, auxiliar y de servicio, independientemente de su nombramiento, tipo y fuente de pago, desglóse segun su función,
             nivel maximo de estudios y sexo, Nota: Si una persona desempeña dos o más funciones anótela en aquélla a la que dedique más tiempo.</p>
         </div>
+
         <div class='table'>
-            <div class="contenedor">
+            <div class="contenedor" style="background-color: aqua">
                 <div class="container tamano1">
                     <p id="movable-paragraph">PERSONAL DIRECTIVO CON GRUPO</p>
                 </div>
