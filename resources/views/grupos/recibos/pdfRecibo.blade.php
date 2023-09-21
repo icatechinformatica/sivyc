@@ -21,11 +21,11 @@
             <tr><td class="negro" style="width:15%;">RECIBÍ DE:</td><td> {{ $data->recibide }}</td></tr>
         </table>
         <table>
-            <tr><td class="negro" style="width:21%;">LA CANTIDAD DE:</td><td> {{ $letras }} </td></tr>
+            <tr><td class="negro" style="width:21%;">LA CANTIDAD DE:</td><td> {{ $data->importe_letra }} </td></tr>
         </table>
         <table>
             <tr><td class="negro" style="width:33%;">POR CONCEPTO DE PAGO DE:</td><td></td></tr>
-            <tr ><td colspan="2"> {{ $data->tipo_curso }}.- {{ $data->curso }} {{ $data->curso }}   </td></tr>
+            <tr ><td colspan="2"> {{ $data->tipo_curso }}.- {{ $data->curso }}  </td></tr>
         </table>
         <table>
             <tr><td class="negro">INFORMACIÓN GENERAL:</td><td></td></tr>
@@ -42,7 +42,7 @@
             </tr>
             <tr>
                 <td style=" border: 1px solid; text-align:center;"><br/> {{ $data->municipio }} <br/> &nbsp;</td>
-                <td style=" border: 1px solid; text-align:center;">{{ $data->fecha_expedicion }}</td>
+                <td style=" border: 1px solid; text-align:center;">{{ $fecha }}</td>
                 <td style=" border: 1px solid; text-align:center; height:75px;"><br/>{{ $data->recibio }}</td>
             </tr>
             

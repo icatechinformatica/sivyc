@@ -103,7 +103,10 @@
                             <a class="dropdown-item" href="{{route('grupos.consultas')}}">B&uacute;squeda</a>
                              @endcan
                             @can('grupos.recibos')
-                                <a class="dropdown-item" href="{{route('grupos.recibos')}}">Recibos de Pago</a>
+                                <a class="dropdown-item" href="{{route('grupos.recibos')}}">Asignar Recibo de Pago</a>
+                            @endcan
+                            @can('grupos.recibos')
+                                <a class="dropdown-item" href="{{route('grupos.recibos.buscar')}}">Buscar Recibo de Pago</a>
                             @endcan
                         </div>
                     </li>
