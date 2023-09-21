@@ -95,7 +95,7 @@
         <div class="contenido" align="justify">
             Reciba un cordial saludo y respetuosamente me dirijo a usted, con la finalidad de hacer entrega física de <span class="color_text">{{$total_folios}}</span>
             constancias de cursos de Capacitación "originales", los cuales han sido agrupados en <span class="color_text"> {{$total_cursos}}</span> curso(s) diferente(s) e
-            impartido(s) por esta Unida de Capacitación a mi cargo, durante el periodo <span class="color_text"> {{$rango_mes}}</span> de la presente anualidad.
+            impartido(s) por esta Unidad de Capacitación a mi cargo, durante el periodo <span class="color_text"> {{$rango_mes}}</span> de la presente anualidad.
             <br><br>
             De igual forma adjunto original del formato RIACD-02 de certificación
             correspondiente a cada curso, para su conocimiento y validación de los folios de constancias que pertenecen al número
