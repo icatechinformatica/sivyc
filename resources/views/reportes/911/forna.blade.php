@@ -43,23 +43,23 @@ $gpo=0;
 
     .tamano1{
         width: 85px;
-        margin-left: 45px;
+        margin-left: 125px;
     }
     .tamano2{
         width: 95px;
-        margin-left: 42px;
+        margin-left: 25px;
     }
     .tamano3{
         width: 110px;
-        margin-left: 25px;
+        margin-left: 7px;
     }
     .tamano4{
         width: 100px;
-        margin-left: 28px;
+        margin-left: 8px;
     }
     .tamano5{
         width: 100px;
-        margin-left: 34px;
+        margin-left: 12px;
     }
 
     .contenedor{
@@ -336,9 +336,9 @@ $gpo=0;
                 </tr>
                 <tr>
                     <td>CEGUERA</td>
-                    <td class='variable'></td>
-                    <td class='variable'></td>
-                    <td class='variable'></td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
                 </tr>
                 <tr>
                     <td>BAJA VISIÓN</td>
