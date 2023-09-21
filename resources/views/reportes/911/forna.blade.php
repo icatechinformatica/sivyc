@@ -34,56 +34,38 @@ $gpo=0;
     .variable5{border-spacing:0px 0px;}
 
     /* Estilos de agregar titulos separados a una tabla */
-    /* .container {
+    .container {
         overflow: hidden;
         display: inline-block;
-        margin-right: 20px;
+        /* margin-right: 20px; */
         font-size: 10px;
-        background-color: aqua !important;
-    } */
+    }
 
     .tamano1{
         width: 85px;
-        margin-left: 6% !important;
-        margin-top: -10px;
-        /* position: absolute;
-        left: 46%; */
+        margin-left: 45px;
     }
     .tamano2{
         width: 95px;
-        position: absolute;
-        left: 63% !important;
-        /* margin-top: 15px; */
-        /* margin-left: 32px; */
+        margin-left: 42px;
     }
     .tamano3{
         width: 110px;
-        position: absolute;
-        left: 80% !important;
-        margin-top: 15px;
-        /* margin-left: 25px; */
+        margin-left: 25px;
     }
     .tamano4{
         width: 100px;
-        position: absolute;
-        left: 99% !important;
-        margin-bottom: 17px;
-        /* margin-left: 29px; */
+        margin-left: 28px;
     }
     .tamano5{
         width: 100px;
-        position: absolute;
-        left: 117% !important;
-        margin-bottom: 17px;
-        /* margin-left: 17px; */
+        margin-left: 34px;
     }
 
     .contenedor{
         margin-left: 28%;
-        position:static;
-        display: flex;
-
     }
+
     .container p {
         margin-left: -10px;
         text-align: center;
@@ -335,6 +317,13 @@ $gpo=0;
                 </tr>
             </table>
         </div>
+        {{-- Complementar el reporte 911 Made by Jose Luis Moreno Arcos --}}
+        <br><br>
+        <div class="variable3">
+            <p>Del total de la matrícula existente reportada en la pregunta anterior,
+            anote a los alumnos con discapacidades, dificultades, trasntornos, aptitudes sobresalientes u otras condiciones (no
+            consideradas en los rubros anteriores) y desglóselos por sexo.</p>
+        </div>
         <br>
         {{-- tabla de discapacidades --}}
         <div class='table'>
@@ -460,21 +449,21 @@ $gpo=0;
         </div>
 
         <div class='table'>
-            <div class="contenedor" style="background-color: aqua">
+            <div class="contenedor">
                 <div class="container tamano1">
-                    <p id="movable-paragraph">PERSONAL DIRECTIVO CON GRUPO</p>
+                    <p>PERSONAL DIRECTIVO CON GRUPO</p>
                 </div>
                 <div class="container tamano2">
-                    <p id="movable-paragraph">PERSONAL DIRECTIVO SIN GRUPO</p>
+                    <p>PERSONAL DIRECTIVO SIN GRUPO</p>
                 </div>
                 <div class="container tamano3">
-                    <p id="movable-paragraph">PERSONAL DOCENTE</p>
+                    <p>PERSONAL DOCENTE</p>
                 </div>
                 <div class="container tamano4">
-                    <p id="movable-paragraph">PERSONAL DE SERVICIOS PROFECIONALES Y ESPECIALES</p>
+                    <p>PERSONAL DE SERVICIOS PROFECIONALES Y ESPECIALES</p>
                 </div>
                 <div class="container tamano5">
-                    <p id="movable-paragraph">PERSONAL ADMINISTRATIVO, AUXILIAR Y DE SERVICIOS</p>
+                    <p>PERSONAL ADMINISTRATIVO, AUXILIAR Y DE SERVICIOS</p>
                 </div>
             </div>
 
