@@ -332,10 +332,10 @@
                     </tbody>
                 </table>
             </div>
-            <div style="text-align: center; padding-left: 10%; padding-right: -15%"><b><small>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</small></b></div>
-            
-            <div style="text-align: center; padding-left: 10%; padding-right: -15%"><b><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></b></div>
-            <div style="text-align: center; padding-left: 10%; padding-right: -15%"><b><small><small>
+            <div style="text-align: center; padding-left: 0%; padding-right: 0%"><b><small>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</small></b></div>
+            <br><br><br><br>
+            <div style="text-align: center; padding-left: 0%; padding-right: 0%"><b><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></b></div>
+            <div style="text-align: center; padding-left: 0%; padding-right: 0%"><b><small><small>
                 Se informa que no se realizarán tranferencias de datos personales,
                  salvo aquéllas que sean necesarias para atender requerimientos de información de una autoridad
                  competente, que estén debidamente fundados y motivados. En ese caso se atenderá a lo dispuesto
