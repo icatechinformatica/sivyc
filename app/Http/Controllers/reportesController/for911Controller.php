@@ -88,7 +88,6 @@ class for911Controller extends Controller
         //->get();
         //dd($sql);
 
-
         $consulta=DB::table('tbl_cursos as tc')
         ->leftjoin('tbl_inscripcion as i','tc.id','=','i.id_curso')
         ->select(DB::raw("count(extract(year from (age(tc.termino,i.fecha_nacimiento)))) as total_inscritos"), 'tc.espe as especialidad',
@@ -148,9 +147,22 @@ class for911Controller extends Controller
 
 
 
+
+
         if($turno=='MATUTINO'){
 
+
             $consulta_inscritos= $consulta->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
+            $encabezado= $sql->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
+            // $instructores= $results->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
+
+            #OBTENEMOS EL PERSONAL DOCENTE QUE IMPARTE EL CURSO
+            $instruc_h = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'MASCULINO', 'DIAS');
+            $instruc_m = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'FEMENINO', 'DIAS');
+
+            #OBETEMOS LA CONSULTA DE DISCAPACIDADES DE LOS ALUMNOS
+            $vulnerav_h = $this->alumnoVulnerable($unidades, $fecha_inicio, $fecha_termino, 'H', 'DIAS');
+            $vulnerav_m = $this->alumnoVulnerable($unidades, $fecha_inicio, $fecha_termino, 'M', 'DIAS');
             $encabezado= $sql->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
             // $instructores= $results->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
 

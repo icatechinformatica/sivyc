@@ -267,12 +267,8 @@ class AlumnoRegistradoController extends Controller
         // DOMPDF según el tipo de documento a imprimir o la cantidad puede ser muy exigente así que aumentamos la memoria disponible
         //ini_set("memory_limit", "128MB");
         set_time_limit(300);
-
-        // Descomentar este pathimg si se trabajara con el archivo de forma local
-        // $pathimg = substr($alumnos[0]->fotografia,22);
-
-        // Comentar este pathimg si se trabajara con el archivo de forma local
-        $pathimg = substr($alumnos->fotografia ,33);
+        
+        $pathimg = $alumnos->fotografia;
 
         return PDF::loadView('layouts.pdfpages.registroalumno_cerss', compact('alumnos', 'edad','date','pathimg'))
                 ->setPaper('Letter', 'portrait')->stream('documento_sid_cerrs'.$alumnos->no_control.'.pdf');
