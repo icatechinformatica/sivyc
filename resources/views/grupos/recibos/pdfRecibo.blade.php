@@ -14,7 +14,7 @@
         <h1>UNIDAD DE CAPACITACIÓN {{$data->ubicacion}}</h1>    
         <table> 
             <tr>
-            <td class="negro" style="width:15%;">RECIBO No.</td><td style="width:33%;"> <span class="bold" style="font-size: 18px;"> {{$data->uc}}</span> <span class="rojo">{{$data->folio_recibo}}</span></td>
+            <td class="negro" style="width:15%;">RECIBO No.</td><td style="width:33%;"> <span class="bold" style="font-size: 18px;"> {{$data->uc}}</span> <span class="rojo">{{$data->num_recibo}}</span></td>
             <td class="negro" style="width:17%;">BUENO POR &nbsp;$</td><td style="width:35%; font-size: 18px;">{{ number_format($data->costo, 2, ".", ",")}}</td></tr>
         </table>
         <table>

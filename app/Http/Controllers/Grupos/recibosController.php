@@ -108,6 +108,7 @@ class recibosController extends Controller
                     'recibide'=>null,
                     'fecha_expedicion' => null,
                     'file_pdf' => null,
+                    'folio_recibo' => null,
                     'iduser_updated' => $this->user->id,
                     'updated_at'=> date('Y-m-d')               
                 ]
@@ -221,7 +222,7 @@ class recibosController extends Controller
                         ELSE  tr.status
                         END) as status_recibo"),
                     DB::raw("(CASE
-                        WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is not null and status!='ENVIADO') THEN true                        
+                        WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is not null and status!='CANCELADO') THEN true                        
                         ELSE false
                         END) as deshacer")
                 )
@@ -234,7 +235,7 @@ class recibosController extends Controller
                 })
                 ->join('tbl_recibos as max', function ($join) {
                         $join->on('max.unidad', '=', 'tu.ubicacion')                    
-                        ->where('max.num_recibo', '=', DB::raw("(SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and ( status!='ENVIADO' or status is null ))")); 
+                        ->where('max.num_recibo', '=', DB::raw("(SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and ( status!='CANCELADO' or status is null ))")); 
                 })
                 ->first();                     
                 $_SESSION['data'] = $data;
@@ -256,9 +257,11 @@ class recibosController extends Controller
             $direccion = $data->direccion;
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
             $fecha = date('d/m/Y', strtotime($data->fecha_expedicion));            
+            $file_name = $data->folio_recibo.'_'.date('Ymd').'.pdf';
+            
             $pdf = PDF::loadView('grupos.recibos.pdfRecibo',compact('data','distintivo','direccion','fecha'));
             $pdf->setpaper('letter','portrait');            
-            return $pdf->stream('nombre_del_archivo.pdf');            
+            return $pdf->stream($file_name, ['Content-Type' => 'application/pdf']);
         }else return "ACCIÓN INVÁlIDA";exit;
     }
     
