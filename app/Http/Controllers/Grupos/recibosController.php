@@ -28,7 +28,7 @@ class recibosController extends Controller
     }
 
     public function index(Request $request){   
-        //dd( $this->user);
+        //dd( $this->unidades);
         $movimientos = [];
         if(session('folio_grupo'))$request->folio_grupo = session('folio_grupo');  
 
@@ -50,7 +50,10 @@ class recibosController extends Controller
         $data = $message = [];
         $data = DB::table('tbl_recibos as tr')  
             ->select('tc.curso','tc.nombre','tc.hombre','tc.mujer', 'tc.costo','tc.inicio','tc.termino','tc.hini','tc.hfin',
-                DB::raw("CASE WHEN tr.status='ENVIADO' THEN 'ENVIADO' ELSE 'ASIGNADO'  END as status_recibo"),
+                DB::raw("CASE 
+                    WHEN tr.status='CANCELADO' THEN 'CANCELADO' 
+                    WHEN tr.status='ENVIADO' THEN 'ENVIADO' 
+                    ELSE 'ASIGNADO'  END as status_recibo"),
                 'tr.*', 'tu.ubicacion')          
             ->wherein('tc.unidad',$this->unidades);
             if($request->folio_grupo){
@@ -195,7 +198,6 @@ class recibosController extends Controller
     private function data(Request $request){        
         $data = $message = [];
         if($request->folio_grupo){
-
             $data = DB::table('tbl_cursos as tc')  
                 ->select('tc.id','tc.folio_grupo','tc.unidad','tu.ubicacion', 'tc.clave','tc.curso','tc.nombre','tc.tipo_curso',
                     'tc.status_curso','tc.inicio', 'tc.termino', 'tc.hini', 'tc.hfin','tc.costo','tc.hombre','tc.mujer','tr.recibide',
@@ -210,7 +212,7 @@ class recibosController extends Controller
                     DB::raw("LEFT(tu.ubicacion,2) as uc"), 'tc.id','tc.clave',
                     DB::raw("(CASE
                         WHEN  tr.status is not null THEN tr.num_recibo 
-                        WHEN max.status is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is null and status !='CANCELADO')
+                        WHEN max.status is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is null)
                         ELSE max.num_recibo+1
                         END) as num_recibo"),
                     DB::raw("(
@@ -219,7 +221,7 @@ class recibosController extends Controller
                         ELSE  tr.status
                         END) as status_recibo"),
                     DB::raw("(CASE
-                        WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is not null and status!='ENVIADO' and status !='CANCELADO') THEN true                        
+                        WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is not null and status!='ENVIADO') THEN true                        
                         ELSE false
                         END) as deshacer")
                 )
@@ -232,14 +234,16 @@ class recibosController extends Controller
                 })
                 ->join('tbl_recibos as max', function ($join) {
                         $join->on('max.unidad', '=', 'tu.ubicacion')                    
-                        ->where('max.num_recibo', '=', DB::raw("(SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status !='CANCELADO')")); 
+                        ->where('max.num_recibo', '=', DB::raw("(SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and ( status!='ENVIADO' or status is null ))")); 
                 })
-                ->first();     
-                if(!$data->recibide) $data->recibide = DB::table('alumnos_registro')->where('folio_grupo',$request->folio_grupo)->value('realizo');                
-                if(!$data->fecha_expedicion) $data->fecha_expedicion = date('Y-m-d');
-                if(!$data->recibio) $data->recibio = $data->delegado_administrativo;
+                ->first();                     
                 $_SESSION['data'] = $data;
-                if(!$data) $message["ERROR"]= "EL FOLIO INGRESADO NO CORRESPONDE A LA UNIDAD $this->ubicacion.";                
+                if(!$data) $message["ERROR"]= "EL FOLIO INGRESADO NO CORRESPONDE A LA UNIDAD $this->ubicacion.";           
+                else{
+                    if(!$data->recibide) $data->recibide = DB::table('alumnos_registro')->where('folio_grupo',$request->folio_grupo)->value('realizo');                
+                    if(!$data->fecha_expedicion) $data->fecha_expedicion = date('Y-m-d');
+                    if(!$data->recibio) $data->recibio = $data->delegado_administrativo;
+                }     
         }elseif($request->BUSCAR) $message["ERROR"] = "INGRESE EL FOLIO DE GRUPO PARA EJECUTAR LA BUSQUEDA";
 
         return [$data, $message];
