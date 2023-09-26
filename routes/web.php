@@ -886,3 +886,7 @@ Route::post('/instructores/busqueda/nrevision', 'webController\InstructorControl
 
 // Ranking de solicitudes de apoyo
 Route::get('/reportes/solicitudesApoyo', 'solicitudes\SolApoyoController@index')->name('solapoyos.index');
+
+// Formato T
+Route::post('/formatoT/resumenUnidad', 'Validacion\validacionDtaController@resumen_unidad_pdf')->name('resumen.unidad.formatot');
+Route::post('/formatoT/subir/resumenUnidad', 'Validacion\validacionDtaController@subir_resumen_unidad_pdf')->name('subir.resumen.unidad.formatot');
