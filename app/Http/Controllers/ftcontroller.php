@@ -745,6 +745,8 @@ class ftcontroller extends Controller {
         return view('reportes.memorandum_unidad_formatot', compact('meses', 'queryGetMemo', 'unidadstr', 'queryGetMemoRetorno'));
     }
 
+
+
     // protected function cursosreportados(Request $request){
     //     $setMes = $request->get('messeleccionado');
 
