@@ -23,10 +23,9 @@
         @endif
         {{ Form::open(['method' => 'post', 'id'=>'frm',  'enctype' => 'multipart/form-data']) }}
             @csrf
-            <div class="row form-inline">                 
+            <div class="row form-inline">                                 
                 {{ Form::text('folio_grupo', $request->folio_grupo, ['id'=>'folio_grupo', 'class' => 'form-control mr-2', 'placeholder' => 'FOLIO DE GRUPO', 'aria-label' => 'FOLIO DE GRUPO', 'required' => 'required', 'size' => 30]) }}
-                {{ Form::button('BUSCAR', ['id' => 'buscar','name' => 'BUSCAR', 'class' => 'btn']) }}
-                
+                {{ Form::button('BUSCAR', ['id' => 'buscar','name' => 'BUSCAR', 'class' => 'btn']) }}                
             </div>        
             @if($data)  
                 <div class="row form-inline"> 
@@ -37,6 +36,8 @@
                             <h4 class="text-center text-white p-2" style="background-color: #33A731;">&nbsp;DISPONIBLE &nbsp;</h4>
                         @elseif($data->status_recibo == 'ENVIADO') 
                             <h4 class="text-center text-white bg-danger p-2" >&nbsp;ENVIADO &nbsp;</h4>
+                        @elseif($data->status_recibo == 'IMPRENTA') 
+                            <h4 class="text-center text-white bg-danger p-2" >&nbsp;DE IMPRENTA &nbsp;</h4>
                         @else
                             <h4 class="bg-warning text-center p-2">&nbsp;ASIGNADO &nbsp;</h4>
                         @endif
@@ -64,7 +65,7 @@
                     <div class="form-group col-md-6">TOTAL CUOTA DE RECUPERACIÓN: <b>$ {{ number_format($data->costo, 2, '.', ',') }}</b></div>
                     <div class="form-group col-md-6">ESTATUS: <b>{{ $data->status_curso }}</b></div>                    
                 </div>                
-                @if($data->status_recibo == 'ASIGNANDO')                    
+                @if(!in_array($data->status_recibo, ['ENVIADO', 'IMPRENTA','DISPONIBLE']))
                     <h4 class="pt-2 pb-2">DEL RECIBO DE PAGO</h4>                     
                     <div class="form-row bg-light p-5">
                         <div class="form-group col-md-3 m-1 ">
@@ -106,7 +107,7 @@
                         {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control col-md-3 m-1 ', 'placeholder' => 'RECIBIÓ', 'size' => 150, 'title' => 'RECIBIÓ' ]) }}
                         {{ Form::button('ASIGNAR', ['id'=>'asignar','class' => 'btn btn-danger']) }}
                     @else
-                        @if($data->status_recibo != "ENVIADO") 
+                        @if($data->status_recibo != "ENVIADO" AND $data->status_recibo != "IMPRENTA") 
                             {{ Form::button('GENERAR RECIBO', ['id'=>'pdfRecibo','class' => 'btn']) }}
                         @endif
                         @if($data->status_recibo == "CARGADO") 
@@ -145,10 +146,9 @@
                     }
                 }); 
 
-                $("#pdfRecibo").click(function(){ 
-                    $('#frm').attr('action', "{{route('grupos.recibos.pdf')}}"); 
-                    $('#frm').attr('target', '_blank');
-                    $('#frm').submit();
+                $("#pdfRecibo").click(function(){                     
+                    let url = "{{ route('grupos.recibos.pdf') }}";                    
+                    window.open(url, "_blank");
                  });
 
                  $("#movimiento" ).change(function(){
