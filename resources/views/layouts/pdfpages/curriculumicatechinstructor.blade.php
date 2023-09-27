@@ -131,14 +131,16 @@
             </div>
         </header>
         <footer>
-            <div style="position: relative; top:-40px;">
+            <div style="position: relative;">
                 <img class="izquierdabot" src="{{ public_path('img/franja2.png') }}">
                 <div align="justify" class="direccion">
                     14 Poniente Norte No.239 Colonia Moctezuma <br>
                     Tuxtla Gutiérrez, CP 29030 Telefono: +52 (961) 61-2-16-21 <br>
                     email: icatech@icatech.chiapas.gob.mx
                 </div>
-                <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
+            </div>
+            <div style="position: relative; margin-left: 167%;">
+                <img class="" style="width: 200px; height:60px" src="{{ public_path('img/icatech-imagen.png') }}">
             </div>
             <div class="page-break-non"></div>
         </footer>
