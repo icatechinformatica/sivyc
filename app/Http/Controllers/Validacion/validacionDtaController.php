@@ -109,15 +109,24 @@ class validacionDtaController extends Controller {
         $ac = Carbon::now()->year; // año actual obtenido del servidor
         $cursos_validar = dataFormatoT2do($unidades_busqueda, ['REVISION_DTA'], null, $mesSearch, 'REVISION_DTA');
 
+        $formato_respuesta = DB::Table('tbl_cursos')->Select('tbl_cursos.id','tbl_cursos.resumen_formatot_unidad')
+        ->Join('tbl_unidades','tbl_unidades.unidad', 'tbl_cursos.unidad')
+        ->Where('tbl_unidades.ubicacion', $unidades_busqueda)
+        ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
+        ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
+        ->WhereMonth('tbl_cursos.fecha_turnado', $mesSearch)
+        ->Where('tbl_cursos.resumen_formatot_unidad', '!=', null)
+        ->First();
+
         $memorandum = DB::table('tbl_cursos')
             ->select(
-                DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum, memos->'TURNADO_EN_FIRMA'->>'NUMERO' AS num_memo, tbl_unidades.unidad")
+                DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum, memos->'TURNADO_EN_FIRMA'->>'NUMERO' AS num_memo, tbl_unidades.unidad, tbl_cursos.resumen_formatot_unidad")
             )->join('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
             ->where('tbl_unidades.cct', 'LIKE', '%07EIC%') // verificar que solo sean unidades
             ->where('tbl_cursos.turnado', '=', 'REVISION_DTA')
             ->where('tbl_cursos.status', '=', 'REVISION_DTA')
             ->whereMonth('tbl_cursos.fecha_turnado', $mesSearch)
-            ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM', memos->'TURNADO_EN_FIRMA'->>'NUMERO', tbl_unidades.unidad"))
+            ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM', memos->'TURNADO_EN_FIRMA'->>'NUMERO', tbl_unidades.unidad, tbl_cursos.resumen_formatot_unidad"))
             ->get();
 
         $unidades = DB::table('tbl_unidades')->select('unidad')->where('cct', 'LIKE', '%07EIC%')->orderBy('unidad', 'asc')->get();
@@ -136,7 +145,7 @@ class validacionDtaController extends Controller {
 
         $diasParaEntrega = $this->getFechaDiff();
 
-        return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'unidades_busqueda', 'diasParaEntrega', 'mesInformar', 'fechaEntregaFormatoT', 'diasParaEntrega', 'mesSearch'));
+        return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'unidades_busqueda', 'diasParaEntrega', 'mesInformar', 'fechaEntregaFormatoT', 'diasParaEntrega', 'mesSearch', 'formato_respuesta'));
     }
 
     /**
@@ -1808,5 +1817,179 @@ class validacionDtaController extends Controller {
 
 
         return view('reportes.cursos_reportados_direccion_dta', compact('cursosReporados', 'meses', 'unidades_indice'));
+    }
+
+    public function resumen_unidad_pdf(Request $request)
+    {
+        // dd($request);
+        $leyenda = Instituto::first();
+        $leyenda = $leyenda->distintivo;
+        $numero_memo = $request->memo_reporte_unidad; // proceso
+        // Fecha
+        $fecha_ahora = strtotime(Carbon::now());
+        $D = date('d', $fecha_ahora);
+        $M = $this->monthToString(date('m',$fecha_ahora));
+        $Y = date("Y",$fecha_ahora);
+        $MT = $this->monthToString($request->mes_reporte);
+        // Fin Fecha
+        // Info cursos
+        $count_cursos = array();
+        $cursos = DB::Table('tbl_cursos')->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
+            ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
+            ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
+            ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
+            ->Where('fecha_turnado', 'LIKE', '%-'.$request->mes_reporte)
+            ->Where('tbl_unidades.ubicacion', $request->unidad_reporte)
+            ->OrderBy('fecha_envio', 'DESC')
+            ->Get();
+
+        $info_cursos = [
+            'fecha_envio' => date('d', strtotime($cursos[0]->fecha_envio)) . ' de ' . $this->monthToString(date('m', strtotime($cursos[0]->fecha_envio))),
+            'total_cursos' => count($cursos)
+        ];
+
+        foreach($cursos as $data) {
+            if(array_key_exists($data->unidad,$count_cursos)) {
+                $count_cursos[$data->unidad]++;
+            } else {
+                $count_cursos[$data->unidad] = 1;
+            }
+        }
+        // Fin info cursos
+        // Info meses anteriores va con la fecha final del curso
+        $mes_reporte_anterior = (int)$request->mes_reporte;
+        $moist = 1;
+        $historial_meses = $historial_fin = null;
+        while($moist <= $mes_reporte_anterior) {
+            $cursos_validar = null;
+            $mes_fin = Carbon::createFromDate($Y, $moist,1)->endOfMonth();
+            $mes_inicio = Carbon::createFromDate($Y, $moist,1)->startOfMonth();
+            $mes_fin = $mes_fin->toDateString();
+            $mes_inicio = $mes_inicio->toDateString();
+
+            $cursos_validar = DB::Table('tbl_cursos')->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
+                ->Where('tbl_unidades.ubicacion',$request->unidad_reporte)
+                ->WhereBetween('tbl_cursos.termino',[$mes_inicio,$mes_fin])
+                ->WhereIn('tbl_cursos.status',['NO REPORTADO','RETORNO_UNIDAD'])
+                ->Where('tbl_cursos.status_curso','AUTORIZADO')
+                ->First();
+
+            if(!is_null($cursos_validar)){
+                if(isset($historial_fin)){
+                    $historial_meses = $historial_meses . $historial_fin;
+                }
+                break;
+                // $historial_meses[$moist] = ['mes' => $this->monthToString($moist),
+                //                             'pendiente' => true];
+            } else {
+                if(is_null($historial_meses)){
+                    $historial_meses = $this->monthToString($moist);
+                } else {
+                    $historial_fin = '-' . $this->monthToString($moist);
+                }
+                // $historial_meses[$moist] = ['mes' => $this->monthToString($moist),
+                //                             'pendiente' => false];
+            }
+            $moist++;
+        }
+        // Fin info meses anteriores
+
+        $unidad = DB::Table('tbl_unidades')->Where('unidad', $request->unidad_reporte)->FIRST();
+        $elabora = ['nombre' => $elabora = Auth::user()->name, 'puesto' => $elabora = Auth::user()->puesto];
+        $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
+        $direccion = explode("*", $direccion);
+        $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','elabora','direccion'));
+        return $pdf->Stream('Memo_unidad_para_DTA.pdf');
+    }
+
+    public function subir_resumen_unidad_pdf(Request $request)
+    {
+        // dd($request);
+        $archivo = $request->file('subir_memo_reporte_unidad'); # obtenemos el archivo
+        $url = $this->pdf_upload($archivo, $request->unidad_reporte, 'Resumen_formatoT'); # invocamos el método
+
+        $cursos = DB::Table('tbl_cursos')->Select('tbl_cursos.id')
+            ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
+            ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
+            ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
+            ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
+            ->Where('fecha_turnado', 'LIKE', '%-'.$request->mes_reporte)
+            ->Where('tbl_unidades.ubicacion', $request->unidad_reporte)
+            ->OrderBy('fecha_turnado', 'DESC')
+            ->Get();
+
+        foreach ($cursos as $data) {
+            // dd($data);
+            $update = DB::Table('tbl_cursos')->WHERE('id',$data->id)
+                ->Update([
+                    'resumen_formatot_unidad' => $url
+                ]);
+        }
+
+        return redirect()->route('validacion.dta.revision.cursos.indice')
+                            ->with('success', sprintf('ARCHIVO CARGADO CORRECTAMENTE!'));
+    }
+
+    protected function pdf_upload($pdf, $id, $nom)
+    {
+        # nuevo nombre del archivo
+        $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
+        $pdf->storeAs('/uploadFiles/DTA/FormatoT/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/DTA/FormatoT/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $pdfUrl;
+    }
+
+    protected function monthToString($month)
+    {
+        switch ($month)
+        {
+            case 1:
+                return 'ENERO';
+            break;
+
+            case 2:
+                return 'FEBRERO';
+            break;
+
+            case 3:
+                return 'MARZO';
+            break;
+
+            case 4:
+                return 'ABRIL';
+            break;
+
+            case 5:
+                return 'MAYO';
+            break;
+
+            case 6:
+                return 'JUNIO';
+            break;
+
+            case 7:
+                return 'JULIO';
+            break;
+
+            case 8:
+                return 'AGOSTO';
+            break;
+
+            case 9:
+                return 'SEPTIEMBRE';
+            break;
+
+            case 10:
+                return 'OCTUBRE';
+            break;
+
+            case 11:
+                return 'NOVIEMBRE';
+            break;
+
+            case 12:
+                return 'DICIEMBRE';
+            break;
+        }
     }
 }
