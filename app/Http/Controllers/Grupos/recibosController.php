@@ -5,9 +5,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Utilities\MyUtility;
 use App\Models\Unidad;
 use Carbon\Carbon;
 use PDF;
+use Illuminate\Http\Response;
 
 class recibosController extends Controller
 {   
@@ -38,7 +40,7 @@ class recibosController extends Controller
 
         if($data){            
             if($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'DESHACER'=>'DESHACER ASIGNACION'];
-            elseif (!in_array($data->status_recibo, ['ENVIADO','DISPONIBLE'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF'];
+            elseif (!in_array($data->status_recibo, ['ENVIADO','DISPONIBLE','IMPRENTA'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF'];
 
             if($data->status_recibo=="ENVIADO") $movimientos = [ 'RECHAZADAR' => 'SOLICITUD DE RETORNO', 'REEMPLAZAR'=>'SOLICITUD DE REEMPLAZO DE RECIBO', 'CANCELAR' => 'SOLICITUD DE CANCELACIÓN'];
         }     
@@ -48,19 +50,38 @@ class recibosController extends Controller
     
     public function buscar(Request $request){ 
         $data = $message = [];
-        $data = DB::table('tbl_recibos as tr')  
+        if(!$request->ejercicio)$request->ejercicio = date('Y');
+        $data = DB::table('tbl_cursos as tc')  
             ->select('tc.curso','tc.nombre','tc.hombre','tc.mujer', 'tc.costo','tc.inicio','tc.termino','tc.hini','tc.hfin',
+                'tc.clave','tc.folio_grupo',
                 DB::raw("CASE 
                     WHEN tr.status='CANCELADO' THEN 'CANCELADO' 
                     WHEN tr.status='ENVIADO' THEN 'ENVIADO' 
-                    ELSE 'ASIGNADO'  END as status_recibo"),
-                'tr.*', 'tu.ubicacion')          
-            ->wherein('tc.unidad',$this->unidades);
+                    ELSE 'ASIGNADO'  
+                    END as status_recibo"),
+                DB::raw("
+                    CASE 
+                        WHEN tc.folio_pago <> 'null' THEN tc.folio_pago
+                        WHEN tr.folio_recibo <> 'null' THEN tr.folio_recibo
+                        ELSE 'NO DISPONIBLE'
+                    END as folio_recibo
+                "),
+                DB::raw(" 
+                    CASE
+                        WHEN tc.comprobante_pago <> 'null' THEN tc.comprobante_pago
+                        WHEN tr.file_pdf <> 'null' THEN tr.file_pdf
+                    END as file_pdf
+
+                "),                
+                
+                'tu.ubicacion')          
+            ->wherein('tc.unidad',$this->unidades)
+            ->whereYear('tc.inicio', $request->ejercicio)->where('tc.status_curso','AUTORIZADO')->where('tc.tipo','!=','EXO');
             if($request->folio_grupo){
                 $data = $data->where(DB::raw('CONCAT(folio_recibo,tc.folio_grupo,tc.clave)'),'LIKE','%'.$request->folio_grupo.'%');
             }
             
-            $data = $data->leftjoin('tbl_cursos as tc', function ($join) {                    
+            $data = $data->leftjoin('tbl_recibos as tr', function ($join) {                    
                 $join->on('tc.folio_grupo','=','tr.folio_grupo'); 
             })
             ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')
@@ -69,13 +90,15 @@ class recibosController extends Controller
 
             $data->appends($request->except('page'));            
             $path_files = $this->path_files;
-        return  view('grupos.recibos.buscar', compact('message','data','request','path_files')); 
+            $anios = MyUtility::ejercicios();
+            //dd($anios);
+        return  view('grupos.recibos.buscar', compact('message','data','request','path_files','anios')); 
     }
 
     public function asignar(Request $request) {         
         [$data , $message] = $this->data($request);
         if($data){
-            $letras = $this->letras($data->costo);
+            $letras = MyUtility::letras($data->costo);
             $result = DB::table('tbl_recibos')->updateOrInsert(
                 ['num_recibo' => $data->num_recibo, 'unidad' => $data->ubicacion],
                 [ 'importe' => $data->costo, 'importe_letra' => $letras,'status' => 'ASIGNADO',
@@ -206,24 +229,29 @@ class recibosController extends Controller
                     'tr.importe_letra', 'tr.folio_recibo',
                     DB::raw('UPPER(tu.municipio) as municipio'),
                     DB::raw("
-                        CASE WHEN tc.tipo = 'EXO' THEN 'EXONERACIÓN'
-                        WHEN tc.tipo = 'PINS' THEN 'ORDINARIO'
-                        WHEN tc.tipo = 'EPAR' THEN 'REDUCCIÓN DE CUOTA' 
+                        CASE 
+                            WHEN tc.tipo = 'EXO' THEN 'EXONERACIÓN'
+                            WHEN tc.tipo = 'PINS' THEN 'ORDINARIO'
+                            WHEN tc.tipo = 'EPAR' THEN 'REDUCCIÓN DE CUOTA' 
                         END as tpago"),                       
                     DB::raw("LEFT(tu.ubicacion,2) as uc"), 'tc.id','tc.clave',
-                    DB::raw("(CASE
-                        WHEN  tr.status is not null THEN tr.num_recibo 
-                        WHEN max.status is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is null)
-                        ELSE max.num_recibo+1
+                    DB::raw("(
+                        CASE
+                            WHEN tc.comprobante_pago IS NOT NULL THEN (regexp_match(tc.folio_pago, '[0-9]+'))[1]::INTEGER 
+                            WHEN  tr.status is not null THEN tr.num_recibo 
+                            WHEN max.status is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is null)
+                            ELSE max.num_recibo+1
                         END) as num_recibo"),
                     DB::raw("(
                         CASE
-                        WHEN tr.status is null THEN 'DISPONIBLE'
-                        ELSE  tr.status
+                            WHEN tc.comprobante_pago IS NOT NULL  THEN 'IMPRENTA'
+                            WHEN tr.status is null THEN 'DISPONIBLE'
+                            ELSE  tr.status
                         END) as status_recibo"),
-                    DB::raw("(CASE
-                        WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is not null and status!='CANCELADO') THEN true                        
-                        ELSE false
+                    DB::raw("(
+                        CASE
+                            WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is not null and status!='CANCELADO') THEN true                        
+                            ELSE false
                         END) as deshacer")
                 )
                 ->where('tc.folio_grupo',$request->folio_grupo)
@@ -257,10 +285,12 @@ class recibosController extends Controller
             $direccion = $data->direccion;
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
             $fecha = date('d/m/Y', strtotime($data->fecha_expedicion));            
-            $file_name = $data->folio_recibo.'_'.date('Ymd').'.pdf';
+            $file_name = "Recibo_".$data->folio_recibo.'.pdf';
             
             $pdf = PDF::loadView('grupos.recibos.pdfRecibo',compact('data','distintivo','direccion','fecha'));
-            $pdf->setpaper('letter','portrait');            
+            
+            $pdf->setpaper('letter','portrait');      
+        
             return $pdf->stream($file_name, ['Content-Type' => 'application/pdf']);
         }else return "ACCIÓN INVÁlIDA";exit;
     }
@@ -290,52 +320,6 @@ class recibosController extends Controller
     }
    
 
-    private function letras($cantidad){
-        $unidades = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
-        $decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];
-        $especiales = ["diez", "once", "doce", "trece", "catorce", "quince"];
-        $centenas = ["", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"];
     
-        $entero = floor($cantidad);
-        $decimal = round(($cantidad - $entero) * 100);    
-        $pesos = ($entero == 1) ? "peso" : "pesos";
-        $centavos = ($decimal == 1) ? "centavo" : "centavos";    
-        $parteEntera = "";
-        $parteDecimal = "";
-    
-        if ($entero >= 1 && $entero <= 999999999) {
-            $millones = floor($entero / 1000000);
-            $millar = floor(($entero % 1000000) / 1000); //dd($millar);
-            $centena =  floor(($entero % 1000) / 100); //dd($centena);            
-            $decena = floor(($entero % 100) / 10); //dd($decena);
-            $unidad = $entero % 10;
-
-            if ($millones > 0) $parteEntera .= $this->letras($millones) . " millón ";
-            if ($millar > 0) {
-                if ($millar == 1) $parteEntera .= "mil ";
-                else $parteEntera .= $unidades[$millar] . " mil ";            
-            }
-            if ($centena > 0) $parteEntera .= $centenas[$centena] . " ";
-            if ($decena > 0) $parteEntera .= $decenas[$decena] . " ";
-            if ($unidad > 0) {
-                if ($unidad == 1) $parteEntera .= "un ";                
-                if ($unidad >= 2 && $unidad <= 9) $parteEntera .= $unidades[$unidad] . " ";                
-            }    
-            $parteEntera .= " ";
-        } else $parteEntera = "No soportado";
-        
-        if ($decimal > 0) {
-            if ($decimal >= 10 && $decimal <= 15) {
-                $parteDecimal .= $especiales[$decimal - 10];
-            } else {
-                $d = floor($decimal / 10);
-                $u = $decimal % 10;    
-                if ($d > 0) $parteDecimal .= $decenas[$d] . " y ";                
-                if ($u > 0) $parteDecimal .= $unidades[$u];                
-            }    
-            $parteDecimal = " $decimal/100 MN ";
-        } else $parteDecimal = " 00/100 MN ";
-        return strtoupper(trim($parteEntera) . " $pesos" . $parteDecimal );
-    }
     
 }
