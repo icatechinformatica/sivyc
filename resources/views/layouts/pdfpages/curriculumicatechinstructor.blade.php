@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <style> 
+        <style>
         /* *{border: 1px solid red;} */
             body{
                 font-family: sans-serif;
@@ -15,7 +15,7 @@
                 /* margin: 10px; */
             }
             @page {
-                margin: 20px 30px 110px;
+                margin: 20px 30px 20px;
 
             }
             .ftr{
@@ -63,7 +63,7 @@
 
             img.izquierdabot {
                 float: inline-end;
-                width: 350px;
+                width: 330px;
                 height: 60px;
             }
 
@@ -101,11 +101,25 @@
         .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
         .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
         .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
-        .tablad { border-collapse: collapse;font-size: 10px; border-color: black; border: black 1px solid; border-bottom-color: black; border-top-color: black; text-align: center; padding:0.5px;}
+        .tablad { border-collapse: collapse;font-size: 10px; width: 100%; border-color: black; border: black 1px solid; border-bottom-color: black; border-top-color: black; text-align: center; padding:0.5px;}
         .tablaz { border-collapse: collapse;font-size: 10px;border: black 1px solid; text-align: center; padding:0.5px; margin-right: 0px; margin-left: auto;}
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
+        .direccion {
+            top: 0.20cm;
+            text-align: left;
+            position: absolute;
+            bottom: 60px;
+            left: 6px;
+            font-size: 11px;
+            color:#FFF;
+            font-weight: bold;
+            line-height: 1;
+            width: 320px;
+            margin-top: 5px;
+            margin-left: 3px;
+            }
         </style>
     </head>
     <body style="margin-top:90px; margin-bottom:70px; border: 1px">
@@ -117,14 +131,23 @@
             </div>
         </header>
         <footer>
-            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
-            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
+            <div style="position: relative;">
+                <img class="izquierdabot" src="{{ public_path('img/franja2.png') }}">
+                <div align="justify" class="direccion">
+                    14 Poniente Norte No.239 Colonia Moctezuma <br>
+                    Tuxtla Gutiérrez, CP 29030 Telefono: +52 (961) 61-2-16-21 <br>
+                    email: icatech@icatech.chiapas.gob.mx
+                </div>
+            </div>
+            <div style="position: relative; margin-left: 167%;">
+                <img class="" style="width: 200px; height:60px" src="{{ public_path('img/icatech-imagen.png') }}">
+            </div>
             <div class="page-break-non"></div>
         </footer>
         <div>
             @if($data->archivo_fotografia != FALSE)
                 {{-- <img class="derechaf img-thumbnail mb-3" src="{{ asset($data->archivo_fotografia) }}"> --}}
-                <img style="border: 2px solid black; margin-top: -5px; margin-right: -160px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
+                <img style="border: 2px solid black; margin-top: -5px; margin-right: 30px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
             @endif
             <br><br><br><br>
             <table class="tablaz" style="border-color: black">
@@ -310,7 +333,7 @@
             </div>
             <b><small>IV. EXPERIENCIA LABORAL (ANTERIOR Y ACTUAL)</small></b>
             <br>
-            <div class="table table-responsive">
+            <div class="table table-responsive" style="margin-bottom: 2px;">
                 <table class="tablad">
                     <thead>
                         <tr>
@@ -332,16 +355,18 @@
                     </tbody>
                 </table>
             </div>
-            <div style="text-align: center; padding-left: 0%; padding-right: 0%"><b><small>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</small></b></div>
-            <br><br><br><br>
-            <div style="text-align: center; padding-left: 0%; padding-right: 0%"><b><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></b></div>
-            <div style="text-align: center; padding-left: 0%; padding-right: 0%"><b><small><small>
+            <div style="d-block text-align: center;">
+                <div style="text-align: center; padding-left: 0%; padding-right: 0%; margin-bottom:30px"><b><small>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</small></b></div>
+                <div style="text-align: center; padding-left: 0%; padding-right: 0%"><b><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></b></div>
+                <div style="text-align: center; padding-left: 0%; padding-right: 0%"><b><small><small>
                 Se informa que no se realizarán tranferencias de datos personales,
                  salvo aquéllas que sean necesarias para atender requerimientos de información de una autoridad
                  competente, que estén debidamente fundados y motivados. En ese caso se atenderá a lo dispuesto
                  en el Art. 18 de la Ley de Protección de Datos Personales en Posesión de Sujetos Obligados
                  del Estado de Chiapas.
             </small></small></b></div>
+            </div>
+
         </div>
     </body>
 </html>
