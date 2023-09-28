@@ -407,7 +407,7 @@ class InstructorController extends Controller
         $chk_mod_perfil = $chk_mod_esp = false;
         $movimiento = NULL;
         $newb = $newc = $arrtemp = array();
-        $stat_arr = array('EN CAPTURA','REACTIVACION EN CAPTURA','REVALIDACION EN CAPTURA','BAJA EN CAPTURA','RETORNO');
+        $stat_arr = array('EN CAPTURA','REACTIVACION EN CAPTURA','REVALIDACION EN CAPTURA','BAJA EN CAPTURA','RETORNO','REVALIDACION RETORNADA','BAJA RETORNADA');
 
             $bajachk = FALSE;
             $movimiento = 'Envio a DTA para su prevalidacion ';
