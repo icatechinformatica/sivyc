@@ -902,10 +902,10 @@ class grupoController extends Controller
         if (isset($request->id) and isset($request->inicio) and isset($request->termino)) {
             $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
             ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
-            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"),date('Y'))
-            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
+            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($request->inicio)))
+            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($request->inicio)))
             ->havingRaw('count(*) >= 2')
-            ->groupby('i.id');
+            ->groupby('i.id'); 
 
             $id_especialidad = DB::table('cursos')->where('id',$request->id)->value('id_especialidad');
             $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
