@@ -68,12 +68,30 @@ class for911Controller extends Controller
 
 
 //dd($b);
+        // $sql= DB::table('tbl_cursos as tc')
+        // ->join('cursos as c','tc.id_curso','=','c.id')
+        // ->join('especialidades as e','tc.espe','=','e.nombre')
+        // ->select(DB::raw('count(e.id)'), 'e.clave','e.nombre as especialidad')
+        // //->select('tc.clave')
+
+        // ->where('tc.termino','>=',$fecha_inicio)
+        // ->where('tc.termino','<=',$fecha_termino)
+        // ->where('tc.unidad','=',$unidades)
+        // //->where('tc.hini','>=',$a)
+        // //->where('tc.hini','<=',$b)
+        // //->where('tc.status_curso', '!=', 'CANCELADO')
+        // ->where('tc.status', '=', 'REPORTADO')
+        // ->groupBy('e.id','e.clave','e.nombre')
+        // //->groupByRaw('e.clave, e.nombre')
+        // ->orderBy('e.nombre');
+        // //->orderBy('tc.clave')
+        // //->get();
+
         $sql= DB::table('tbl_cursos as tc')
         ->join('cursos as c','tc.id_curso','=','c.id')
-        ->join('especialidades as e','tc.espe','=','e.nombre')
-        ->select(DB::raw('count(e.id)'), 'e.clave','e.nombre as especialidad')
+        ->leftjoin('especialidades as e','tc.espe','=','e.nombre')
+        ->select(DB::raw('count(tc.espe)'), 'e.clave','tc.espe as especialidad')
         //->select('tc.clave')
-
         ->where('tc.termino','>=',$fecha_inicio)
         ->where('tc.termino','<=',$fecha_termino)
         ->where('tc.unidad','=',$unidades)
@@ -81,12 +99,11 @@ class for911Controller extends Controller
         //->where('tc.hini','<=',$b)
         //->where('tc.status_curso', '!=', 'CANCELADO')
         ->where('tc.status', '=', 'REPORTADO')
-        ->groupBy('e.id','e.clave','e.nombre')
+        ->groupBy('tc.espe','e.clave')
         //->groupByRaw('e.clave, e.nombre')
-        ->orderBy('e.nombre');
-        //->orderBy('tc.clave')
-        //->get();
-        //dd($sql);
+        ->orderBy('tc.espe');
+
+
 
         $consulta=DB::table('tbl_cursos as tc')
         ->leftjoin('tbl_inscripcion as i','tc.id','=','i.id_curso')
