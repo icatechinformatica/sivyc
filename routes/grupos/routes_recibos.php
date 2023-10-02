@@ -13,4 +13,5 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/grupos/recibos/subir', 'Grupos\recibosController@subir')->name('grupos.recibos.subir')->middleware('can:grupos.recibos');
     Route::post('/grupos/recibos/enviar', 'Grupos\recibosController@enviar')->name('grupos.recibos.enviar')->middleware('can:grupos.recibos');
 });
+Route::get('/grupos/recibos/pdf', 'Grupos\recibosController@pdfRecibo')->name('grupos.recibos.pdf');
 Route::post('/grupos/recibos/pdf', 'Grupos\recibosController@pdfRecibo')->name('grupos.recibos.pdf');
