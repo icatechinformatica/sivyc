@@ -153,8 +153,15 @@ class for911Controller extends Controller
             // $instructores= $results->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
 
             #OBTENEMOS EL PERSONAL DOCENTE QUE IMPARTE EL CURSO
-            $instruc_h = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'MASCULINO', 'DIAS');
-            $instruc_m = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'FEMENINO', 'DIAS');
+            $instruc_h = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'MASCULINO', true);
+            $instruc_m = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'FEMENINO', true);
+
+
+            #OBETEMOS LA CONSULTA DE DISCAPACIDADES DE LOS ALUMNOS
+            $vulnerav_h = $this->alumnoVulnerable($unidades, $fecha_inicio, $fecha_termino, 'H', 'DIAS');
+            $vulnerav_m = $this->alumnoVulnerable($unidades, $fecha_inicio, $fecha_termino, 'M', 'DIAS');
+            $encabezado= $sql->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
+            // $instructores= $results->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
 
             #OBETEMOS LA CONSULTA DE DISCAPACIDADES DE LOS ALUMNOS
             $vulnerav_h = $this->alumnoVulnerable($unidades, $fecha_inicio, $fecha_termino, 'H', 'DIAS');
@@ -166,8 +173,8 @@ class for911Controller extends Controller
             $encabezado=$sql->whereRaw("cast(replace(hini, '.', '') as time) >= '14:00:00' and hini !=''")->get();
 
             #OBTENEMOS EL PERSONAL DOCENTE QUE IMPARTE EL CURSO
-            $instruc_h = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'MASCULINO', 'TARDES');
-            $instruc_m = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'FEMENINO', 'TARDES');
+            $instruc_h = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'MASCULINO', false);
+            $instruc_m = $this->personalDocente($unidades, $fecha_inicio, $fecha_termino, 'FEMENINO', false);
 
             #OBETEMOS LA CONSULTA DE DISCAPACIDADES DE LOS ALUMNOS
             $vulnerav_h = $this->alumnoVulnerable($unidades, $fecha_inicio, $fecha_termino, 'H', 'TARDES');
@@ -183,60 +190,86 @@ class for911Controller extends Controller
 
     }
 
-    private function personalDocente($unidades, $fecha_inicio, $fecha_termino, $sexo, $turno)
+    private function personalDocente($unidades, $fecha_inicio, $fecha_termino, $sexo, $isMorning)
     {
 
         #consults made by Jose Luis Moreno Arcos
+        // $consulta = DB::table(DB::raw("(
+        //     SELECT
+        //         tc.id_instructor,
+        //         cr.perfil_profesional,
+        //         ROW_NUMBER() OVER (PARTITION BY tc.id_instructor ORDER BY tc.termino DESC) AS rn
+        //     FROM tbl_cursos AS tc
+        //     JOIN criterio_pago AS cr ON tc.cp = cr.id
+        //     WHERE tc.unidad = '$unidades'
+        //         AND tc.termino >= '$fecha_inicio'
+        //         AND tc.termino <= '$fecha_termino'
+        //         AND tc.status_curso != 'CANCELADO'
+        //         AND tc.status = 'REPORTADO'
+        //         AND tc.instructor_sexo = '$sexo'
+        //         " . ($isMorning ? "
+        //             AND (tc.hini LIKE '%a.m.' OR tc.hini = '12:00 p.m.' OR tc.hini = '1:00 p.m.' OR tc.hini = '12:30 p.m.' OR tc.hini = '1:30 p.m.')
+        //         " : "
+        //             AND ((tc.hini LIKE '%p.m.' AND tc.hini NOT IN ('12:00 p.m.', '12:30 p.m.', '1:00 p.m.', '1:30 p.m.')))
+        //         ") . "
+        // ) ranked_cursos"))
+        //     ->select('perfil_profesional', DB::raw('COUNT(*) AS cantidad'))
+        //     ->where('rn', 1)
+        //     ->groupBy('perfil_profesional')
+        //     ->get();
 
-        ## AL PARECER FUNCIONA MEJOR JEJEJE
-        $subquery = DB::table('tbl_cursos AS tc')
-            ->join('criterio_pago AS cr', 'tc.cp', '=', 'cr.id')
-            ->where('tc.unidad', $unidades)
-            ->where('tc.termino', '>=', $fecha_inicio)
-            ->where('tc.termino', '<=', $fecha_termino)
-            ->where('tc.status_curso', '!=', 'CANCELADO')
-            ->where('tc.status', '=', 'REPORTADO')
-            ->where('tc.instructor_sexo', '=', $sexo)
-            ->select('tc.id_instructor', 'cr.id', 'hini',  DB::raw('ROW_NUMBER() OVER (PARTITION BY tc.id_instructor ORDER BY tc.termino DESC) AS rn'));
-
-        $results = DB::table(DB::raw('('.$subquery->toSql().') as ranked_cursos'))
-            ->mergeBindings($subquery)
+        $consulta = DB::table(DB::raw("(
+            SELECT
+                tc.id_instructor,
+                cr.perfil_profesional,
+                cr.id,
+                ROW_NUMBER() OVER (PARTITION BY tc.id_instructor ORDER BY tc.termino DESC) AS rn
+            FROM tbl_cursos AS tc
+            JOIN criterio_pago AS cr ON tc.cp = cr.id
+            WHERE tc.unidad = '$unidades'
+                AND tc.termino >= '$fecha_inicio'
+                AND tc.termino <= '$fecha_termino'
+                AND tc.status_curso != 'CANCELADO'
+                AND tc.status = 'REPORTADO'
+                AND tc.instructor_sexo = '$sexo'
+                " . ($isMorning ? "
+                    AND (tc.hini LIKE '%a.m.' OR tc.hini = '12:00 p.m.' OR tc.hini = '1:00 p.m.' OR tc.hini = '12:30 p.m.' OR tc.hini = '1:30 p.m.')
+                " : "
+                    AND ((tc.hini LIKE '%p.m.' AND tc.hini NOT IN ('12:00 p.m.', '12:30 p.m.', '1:00 p.m.', '1:30 p.m.')))
+                ") . "
+        ) ranked_cursos"))
+            ->select('perfil_profesional', 'id', DB::raw('COUNT(*) AS cantidad'))
             ->where('rn', 1)
-            ->select('id', 'hini')
+            ->groupBy('perfil_profesional', 'id')
             ->get();
 
-        if($turno == 'DIAS'){
-            $instructores = $results->filter(function ($item) {
-                if ($item->hini != '') {
-                    $hora_inicio_24h = date('H:i:s', strtotime(str_replace('.', '', $item->hini)));
-                    return $hora_inicio_24h < '14:00:00';
-                }
-                return false;
-            });
-        }else if($turno == 'TARDES'){
-            $instructores = $results->filter(function ($item) {
-                if ($item->hini != '') {
-                    $hora_inicio_24h = date('H:i:s', strtotime(str_replace('.', '', $item->hini)));
-                    return $hora_inicio_24h >= '14:00:00';
-                }
-                return false;
-            });
+
+        #PROCESAMOS LA CONSULTA PARA MANDARLA A LA VISTA
+        $prim_i = $prim = $secu = $bach = $profesional = $maestria = $doctorado = $subtotal = 0;
+        $prof_trunc = $prof_pasante = $maestria_pasante = $docto_pasante = $prof_cert_comp = 0;
+
+        foreach ($consulta as  $instruc) {
+            $subtotal += $instruc->cantidad;
+            if ($instruc->id == 1) $prim_i = $instruc->cantidad;
+            if ($instruc->id == 2) $prim = $instruc->cantidad;
+            if ($instruc->id == 3) $secu = $instruc->cantidad;
+            if ($instruc->id == 4) $bach = $instruc->cantidad;
+            if ($instruc->id == 7) $profesional = $instruc->cantidad;
+            if ($instruc->id == 9) $maestria = $instruc->cantidad;
+            if ($instruc->id == 11) $doctorado = $instruc->cantidad;
+            #otros
+            if ($instruc->id == 5) $prof_trunc = $instruc->cantidad;
+            if ($instruc->id == 6) $prof_pasante = $instruc->cantidad;
+            if ($instruc->id == 8) $maestria_pasante = $instruc->cantidad;
+            if ($instruc->id == 10) $docto_pasante = $instruc->cantidad;
+            if ($instruc->id == 12) $prof_cert_comp = $instruc->cantidad;
         }
 
-        #HACEMOS EL PROCESO DE CONTEO PARA SOLO ENVIARLO A LA VISTA COMO ARRAY
-        $prim_i = $prim = $secu = $bach_tecnico = $profesional = $maestria = $doctorado = 0;
-        foreach ($instructores as $valor) {
-            if ($valor->id == 1) $prim_i +=1;
-            if ($valor->id == 2) $prim +=1;
-            if ($valor->id == 3) $secu +=1;
-            if ($valor->id == 4) $bach_tecnico +=1;
-            if ($valor->id == 5 || $valor->id == 6 || $valor->id == 7) $profesional +=1;
-            if ($valor->id == 8 || $valor->id == 9) $maestria +=1;
-            if ($valor->id == 10 || $valor->id == 11) $doctorado +=1;
-        }
-        $array_instruc = array("primaria_inc" => $prim, "primaria" => $prim, "secundaria" => $secu,
-                            "bachiller_tecnico" => $bach_tecnico, "licenciatura" => $profesional,
-                            "maestria" => $maestria, "doctorado" => $doctorado, "subtotal" => count($instructores));
+        $array_instruc = array("primaria_inc" => $prim_i, "primaria" => $prim, "secundaria" => $secu,
+                            "bachiller" => $bach, "licenciatura" => $profesional, "maestria" => $maestria,
+                            "doctorado" => $doctorado, "prof_trunco" => $prof_trunc, "prof_pasante" => $prof_pasante,
+                            "maestria_pasante" => $maestria_pasante, 'doctorado_pasante' => $docto_pasante,
+                            'prof_cert_comp' => $prof_cert_comp,  "subtotal" => $subtotal);
 
         return $array_instruc;
 
