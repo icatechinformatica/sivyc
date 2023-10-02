@@ -526,8 +526,8 @@ $gpo=0;
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
-                    <td class='variable'>{{ $instruc_h['bachiller_tecnico'] }}</td>
-                    <td class='variable'>{{ $instruc_m['bachiller_tecnico'] }}</td>
+                    <td class='variable'>{{ $instruc_h['bachiller'] }}</td>
+                    <td class='variable'>{{ $instruc_m['bachiller'] }}</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
@@ -627,30 +627,69 @@ $gpo=0;
                 <tr>
                     <td>OTROS*</td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td>*ESPECIFIQUE:</td>
+                </tr> --}}
+                <tr>
+                    <td>PROFESIONAL TRUNCA</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['prof_trunco'] }}</td>
+                    <td class='variable'>{{ $instruc_m['prof_trunco'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td>PROFESIONAL PASANTE</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
-                    <td class='variable'>0</td>
-                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['prof_pasante'] }}</td>
+                    <td class='variable'>{{ $instruc_m['prof_pasante'] }}</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td>MAESTRÍA CONCLUIDA (PASANTE)</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['maestria_pasante'] }}</td>
+                    <td class='variable'>{{ $instruc_m['maestria_pasante'] }}</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>DOCTORADO PASANTE</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['doctorado_pasante'] }}</td>
+                    <td class='variable'>{{ $instruc_m['doctorado_pasante'] }}</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                </tr>
+                <tr>
+                    <td>PROFESIONAL CERTIFICADO</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>0</td>
+                    <td class='variable'>{{ $instruc_h['prof_cert_comp'] }}</td>
+                    <td class='variable'>{{ $instruc_m['prof_cert_comp'] }}</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
                     <td class='variable'>0</td>
