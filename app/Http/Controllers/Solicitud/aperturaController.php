@@ -260,9 +260,7 @@ class aperturaController extends Controller
                 $hfin = date("h:i a", strtotime($request->hfin));
                 $hini = str_replace(['am', 'pm'], ['a.m.', 'p.m.'], $hini);
                 $hfin = str_replace(['am', 'pm'], ['a.m.', 'p.m.'], $hfin);
-
-                $instructor = DB::table('instructores')
-                ->select(
+                $instructor = DB::table('instructores')->select(
                     'instructores.id',
                     DB::raw('CONCAT("apellidoPaterno", ' . "' '" . ' ,"apellidoMaterno",' . "' '" . ',instructores.nombre) as instructor'),
                     'curp',
@@ -274,21 +272,27 @@ class aperturaController extends Controller
                     'especialidad_instructores.memorandum_validacion as mespecialidad',
                     'especialidad_instructores.criterio_pago_id as cp',
                     'tipo_identificacion',
-                    'folio_ine'
-                )
-                    ->WHERE('estado', true)
-                    ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')->where('instructores.id', $request->instructor)
-                    //->whereJsonContains('unidades_disponible', [$grupo->unidad])
-                    ->WHERE('especialidad_instructores.especialidad_id', $grupo->id_especialidad)
-                    ->WHERE('especialidad_instructores.activo', 'true')
-                    ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-                    ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-                    ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
-                    ->ORDERBY('fecha_validacion','DESC')
-                    ->first();
-                // var_dump($instructor);exit;
+                    'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
+                    'banco','no_cuenta','interbancaria','tipo_honorario'
+                    )
+                ->WHERE('estado', true)
+                ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')->where('instructores.id', $request->instructor)
+                //->whereJsonContains('unidades_disponible', [$grupo->unidad])
+                ->WHERE('especialidad_instructores.especialidad_id', $grupo->id_especialidad)
+                ->WHERE('especialidad_instructores.activo', 'true')
+                ->WHERE('fecha_validacion','<',$grupo->inicio)
+                ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino)
+                ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
+                ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+                ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
+                ->ORDERBY('fecha_validacion','DESC')
+                ->first();                
 
                 if ($instructor) {
+                    $soportes_instructor = ["domicilio"=>$instructor->domicilio, "archivo_domicilio"=>$instructor->archivo_domicilio,
+                    "archivo_ine"=>$instructor->archivo_ine,"archivo_bancario"=>$instructor->archivo_bancario,"archivo_rfc"=>$instructor->archivo_rfc,
+                    'banco'=>$instructor->banco,'no_cuenta'=>$instructor->no_cuenta,'interbancaria'=>$instructor->interbancaria,'tipo_honorario'=>$instructor->tipo_honorario];
+
                     //VALIDANDO INSTRUCTOR
                     $existe_instructor = DB::table('tbl_cursos')->where('folio_grupo', '<>', $_SESSION['folio'])->where('curp', $instructor->curp)
                         ->where('inicio', $request->inicio)->where('termino', $request->termino)->where('hini', $hini)->where('hfin', $hfin)
@@ -396,7 +400,7 @@ class aperturaController extends Controller
                         }
                         if ($exonerado) {
                             $instru = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio'])->value('id_instructor');
-                            if ($instructor->id == $instru) {
+                            if ($instructor->id == $instru) {                              
                                 $result = DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(
                                     ['folio_grupo' => $_SESSION['folio']],
                                     [
@@ -421,7 +425,8 @@ class aperturaController extends Controller
                                         'instructor_sexo' => $instructor->sexo,
                                         'instructor_mespecialidad' => $instructor->mespecialidad,
                                         'instructor_tipo_identificacion' => $instructor->tipo_identificacion,
-                                        'instructor_folio_identificacion' => $instructor->folio_ine
+                                        'instructor_folio_identificacion' => $instructor->folio_ine,
+                                        'soportes_instructor'=>json_encode($soportes_instructor)
                                     ]
                                 );
                                 $fpago = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio'])->update([
@@ -517,7 +522,8 @@ class aperturaController extends Controller
                                     'num_revision' => $request->munidad,
                                     'comprobante_pago' => $documentUrl,
                                     'folio_pago' => $request->folio_pago,
-                                    'fecha_pago' => $request->fecha_pago
+                                    'fecha_pago' => $request->fecha_pago,
+                                    'soportes_instructor'=>json_encode($soportes_instructor)
                                 ]
                             );
                             $fpago = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio'])->update([
