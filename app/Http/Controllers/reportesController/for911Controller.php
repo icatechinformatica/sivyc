@@ -87,20 +87,32 @@ class for911Controller extends Controller
         // //->orderBy('tc.clave')
         // //->get();
 
-        $sql= DB::table('tbl_cursos as tc')
-        ->join('cursos as c','tc.id_curso','=','c.id')
-        ->leftjoin('especialidades as e','tc.espe','=','e.nombre')
-        ->select(DB::raw('count(tc.espe)'), 'e.clave','tc.espe as especialidad')
-        //->select('tc.clave')
-        ->where('tc.termino','>=',$fecha_inicio)
-        ->where('tc.termino','<=',$fecha_termino)
-        ->where('tc.unidad','=',$unidades)
-        //->where('tc.hini','>=',$a)
-        //->where('tc.hini','<=',$b)
-        //->where('tc.status_curso', '!=', 'CANCELADO')
-        ->where('tc.status', '=', 'REPORTADO')
-        ->groupBy('tc.espe','e.clave')
-        //->groupByRaw('e.clave, e.nombre')
+        // $sql= DB::table('tbl_cursos as tc')
+        // ->join('cursos as c','tc.id_curso','=','c.id')
+        // ->leftjoin('especialidades as e','tc.espe','=','e.nombre')
+        // ->select(DB::raw('count(tc.espe)'), 'e.clave','tc.espe as especialidad')
+        // //->select('tc.clave')
+        // ->where('tc.termino','>=',$fecha_inicio)
+        // ->where('tc.termino','<=',$fecha_termino)
+        // ->where('tc.unidad','=',$unidades)
+        // //->where('tc.hini','>=',$a)
+        // //->where('tc.hini','<=',$b)
+        // //->where('tc.status_curso', '!=', 'CANCELADO')
+        // ->where('tc.status', '=', 'REPORTADO')
+        // ->groupBy('tc.espe','e.clave')
+        // //->groupByRaw('e.clave, e.nombre')
+        // ->orderBy('tc.espe');
+
+        //NEW VERSION
+        $sql = DB::table('tbl_cursos as tc')
+        ->join('cursos as c', 'tc.id_curso', '=', 'c.id')
+        ->leftjoin('especialidades as e', 'tc.espe', '=', 'e.nombre')
+        ->select(DB::raw('count(tc.espe)'), 'e.clave', 'tc.espe as especialidad')
+        ->where('tc.termino', '>=', $fecha_inicio)
+        ->where('tc.termino', '<=', $fecha_termino)
+        ->where('tc.unidad', '=', $unidades)
+        ->whereIn('tc.status', ['REPORTADO', 'TURNADO_PLANEACION'])
+        ->groupBy('tc.espe', 'e.clave')
         ->orderBy('tc.espe');
 
 
@@ -247,14 +259,13 @@ class for911Controller extends Controller
             WHERE tc.unidad = '$unidades'
                 AND tc.termino >= '$fecha_inicio'
                 AND tc.termino <= '$fecha_termino'
-                AND tc.status_curso != 'CANCELADO'
-                AND tc.status = 'REPORTADO'
                 AND tc.instructor_sexo = '$sexo'
                 " . ($isMorning ? "
-                    AND (tc.hini LIKE '%a.m.' OR tc.hini = '12:00 p.m.' OR tc.hini = '1:00 p.m.' OR tc.hini = '12:30 p.m.' OR tc.hini = '1:30 p.m.')
+                    AND (tc.hini LIKE '%a.m.' OR tc.hini = '12:00 p.m.' OR tc.hini = '01:00 p.m.' OR tc.hini = '12:30 p.m.' OR tc.hini = '01:30 p.m.')
                 " : "
-                    AND ((tc.hini LIKE '%p.m.' AND tc.hini NOT IN ('12:00 p.m.', '12:30 p.m.', '1:00 p.m.', '1:30 p.m.')))
+                    AND ((tc.hini LIKE '%p.m.' AND tc.hini NOT IN ('12:00 p.m.', '12:30 p.m.', '01:00 p.m.', '01:30 p.m.')))
                 ") . "
+                AND tc.status IN ('REPORTADO', 'TURNADO_PLANEACION')
         ) ranked_cursos"))
             ->select('perfil_profesional', 'id', DB::raw('COUNT(*) AS cantidad'))
             ->where('rn', 1)
