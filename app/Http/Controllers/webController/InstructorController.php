@@ -1327,6 +1327,8 @@ class InstructorController extends Controller
         foreach($especialidades AS $key => $cadwell)
         {
             $especialidades[$key]->status = 'BAJA EN PREVALIDACION';
+            $especialidades[$key]->fecha_solicitud = null;
+            $especialidades[$key]->fecha_baja = null;
             $especialidades[$key]->activo = TRUE;
         }
         $instructor->data_especialidad = $especialidades;
@@ -2274,7 +2276,11 @@ class InstructorController extends Controller
                 }
                 else
                 {
-                    $arrmod['status'] = 'REVALIDACION EN CAPTURA';
+                    if ($cadwell['new'] == false) {
+                        $arrmod['status'] = 'REVALIDACION EN CAPTURA';
+                    } else {
+                        $arrmod['status'] = 'EN CAPTURA';
+                    }
                 }
                 if ($arrmod != '[]')
                 {
@@ -2610,7 +2616,11 @@ class InstructorController extends Controller
                 }
                 else
                 {
-                    $arrtemp[$key]['status'] = 'REVALIDACION EN CAPTURA';
+                    if($cadwell['new'] == false) {
+                        $arrtemp[$key]['status'] = 'REVALIDACION EN CAPTURA';
+                    } else {
+                        $arrtemp[$key]['status'] = 'EN CAPTURA';
+                    }
                 }
 
                 if(isset($request->itemEdit))
@@ -3751,7 +3761,7 @@ class InstructorController extends Controller
         if ($request->file('arch_id') != null)
         {
             $otraid = $request->file('arch_id'); # obtenemos el archivo
-            $urlotraid = $this->pdf_upload($otraid, $id, 'oid'); # invocamos el método
+            $urlotraid = $this->pdf_upload($otraid, $id, 'acta'); # invocamos el método
             $saveInstructor->archivo_otraid = $urlotraid; # guardamos el path
         }
         if ($request->file('arch_curriculum_personal') != null)
