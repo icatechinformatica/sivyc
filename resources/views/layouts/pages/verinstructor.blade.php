@@ -1099,26 +1099,32 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label for="inputgrado_prof">Grado Profesional</label>
-                                <input name="grado_prof" id="grado_prof" type="text" class="form-control" aria-required="true">
+                                <label for="inputgrado_prof">Nivel Educativo</label>
+                                <select class="form-control" name="grado_prof" id="grado_prof">
+                                    <option value="sin especificar">Sin Especificar</option>
+                                    <option value="PRIMARIA">Primaria</option>
+                                    <option value="SECUNDARIA">Secundaria</option>
+                                    <option value="BACHILLERATO">Bachillerato</option>
+                                    <option value="CARRERA TÉCNICA">Carrera Técnica</option>
+                                    <option value="LICENCIATURA">Licenciatura</option>
+                                    <option value="MAESTRIA">Maestría</option>
+                                    <option value="DOCTORADO">Doctorado</option>
+                                </select>
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputarea_carrera">Area de la carrera</label>
                                 <input name="area_carrera" id="area_carrera" type="text" class="form-control" aria-required="true">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="inputgrado_prof">Carrera</label>
+                                <label for="inputgrado_prof">Nombre de la Carrera</label>
                                 <input name="carrera" id="carrera" type="text" class="form-control" aria-required="true">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="inputestatus">Estatus</label>
+                                <label for="inputestatus">Documento Obtenido</label>
                                 <select class="form-control" name="estatus" id="estatus">
                                     <option value="sin especificar">Sin Especificar</option>
-                                    <option value="PRIMARIA-CONCLUIDA">Primara Concluida</option>
-                                    <option value="SECUNDARIA-CONCLUIDA">Secundaria Concluida</option>
-                                    <option value="PREPARATORIA-CONCLUIDA">Preparatoria Concluida</option>
-                                    <option value="TRUNCO">Trunco</option>
-                                    <option value="PASANTE">Pasante</option>
+                                    <option value="CONSTANCIA">Constancia</option>
+                                    <option value="CERTIFICADO">Certificado</option>
                                     <option value="TITULO">Titulo</option>
                                     <option value="CEDULA">Cedula</option>
                                 </select>
@@ -1150,7 +1156,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="inputperiodo">Periodo</label>
+                                <label for="inputperiodo">Periodo Escolar Cursado</label>
                                 <input name="periodo" id="periodo" type="text" class="form-control" aria-required="true">
                             </div>
                             <div class="form-group col-md-6">
@@ -1233,25 +1239,31 @@
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="inputgrado_prof">Grado Profesional</label>
-                                <input name="grado_prof2" id="grado_prof2" type="text" class="form-control" aria-required="true">
+                                <select class="form-control" name="grado_prof2" id="grado_prof2">
+                                    <option value="sin especificar">Sin Especificar</option>
+                                    <option value="PRIMARIA">Primaria</option>
+                                    <option value="SECUNDARIA">Secundaria</option>
+                                    <option value="BACHILLERATO">Bachillerato</option>
+                                    <option value="CARRERA TÉCNICA">Carrera Técnica</option>
+                                    <option value="LICENCIATURA">Licenciatura</option>
+                                    <option value="MAESTRIA">Maestría</option>
+                                    <option value="DOCTORADO">Doctorado</option>
+                                </select>
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputarea_carrera">Area de la Carrera</label>
                                 <input name="area_carrera2" id="area_carrera2" type="text" class="form-control" aria-required="true">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="inputcarrera">Carrera</label>
+                                <label for="inputcarrera">Nombre de la Carrera</label>
                                 <input name="carrera2" id="carrera2" type="text" class="form-control" aria-required="true">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="inputestatus">Estatus</label>
+                                <label for="inputestatus">Documento Obtenido</label>
                                 <select class="form-control" name="estatus2" id="estatus2">
                                     <option value="sin especificar">Sin Especificar</option>
-                                    <option value="PRIMARIA-CONCLUIDA">Primara Concluida</option>
-                                    <option value="SECUNDARIA-CONCLUIDA">Secundaria Concluida</option>
-                                    <option value="PREPARATORIA-CONCLUIDA">Preparatoria Concluida</option>
-                                    <option value="TRUNCO">Trunco</option>
-                                    <option value="PASANTE">Pasante</option>
+                                    <option value="CONSTANCIA">Constancia</option>
+                                    <option value="CERTIFICADO">Certificado</option>
                                     <option value="TITULO">Titulo</option>
                                     <option value="CEDULA">Cedula</option>
                                 </select>
@@ -1283,7 +1295,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="inputperiodo">Periodo</label>
+                                <label for="inputperiodo">Periodo Escolar Cursado</label>
                                 <input name="periodo2" id="periodo2" type="text" class="form-control" aria-required="true">
                             </div>
                             <div class="form-group col-md-6">
@@ -2075,9 +2087,9 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-1"></div>
-                                <div class="form-group col-md-10" style="text-align:center;width:100%">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="text-align:center"><h5><b>¿Desea confirmar la solicitud de baja?</b></h5></label>
-                                </div>
+                            <div class="form-group col-md-10" style="text-align:center;width:100%">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="text-align:center"><h5><b>¿Desea confirmar la solicitud de baja?</b></h5></label>
+                            </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-1"></div>
