@@ -156,11 +156,11 @@
             <div class="form-row" >
                 <div class="form-group col-md-4">
                     <label>CONVENIO ESPEC&Iacute;FICO:</label>
-                    <input name='cespecifico' id='cespecifico' type="text" class="form-control" aria-required="true" value="{{ $grupo->cespecifico}}"/>
+                    <input name='cespecifico' id='cespecifico' type="text" class="form-control" aria-required="true" value="{{ $grupo->cespecifico}}" readonly/>
                 </div>
                 <div class="form-group col-md-3">
                     <label>FECHA CONVENIO ESPEC&Iacute;FICO:</label>
-                    <input type="date" id="fcespe" name="fcespe" aria-required="true" class="form-control" value="{{$grupo->fcespe}}">
+                    <input type="date" id="fcespe" name="fcespe" aria-required="true" class="form-control" value="{{$grupo->fcespe}}" readonly>
                 </div>
                 <div class="form-group col-md-4">
                      <label>MEMOR&Aacute;NDUM DE EXONERACI&Oacute;N:</label>
@@ -170,13 +170,13 @@
             <div class="form-row" >
                 <div class="form-group col-md-12">
                     <label>DOMICILIO, LUGAR O ESPACIO F&Iacute;SICO:</label>
-                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}" @if ($exonerado) readonly @endif>
+                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}" readonly>
                 </div>
             </div>
             <div class="form-row" >
                 <div class="form-group col-md-2">
                     <label>TIPO DE CAPACITACI&Oacute;N:</label>
-                    {{ Form::select('tcurso', $tcurso, $grupo->tipo_curso, ['id'=>'tcurso','class' => 'form-control mr-sm-2'] ) }}
+                    {{ Form::select('tcurso', $tcurso, $grupo->tipo_curso, ['id'=>'tcurso','class' => 'form-control mr-sm-2' ,'disabled'=>$disabled] ) }}
                 </div>
                 <div class="form-group col-md-2">
                      <label>MEDIO VIRTUAL:</label>
@@ -189,7 +189,7 @@
             </div>
             <div class="form-row" >
                 <div class="form-group col-md-12">
-                    <label>OBSERVACIONES DE VINCILACI&Oacute;N:</label>
+                    <label>OBSERVACIONES DE VINCULACI&Oacute;N:</label>
                     <textarea name='obs_vincu' id='obs_vincu'  class="form-control" rows="5" readonly>{{$grupo->nota_vincu}}</textarea>
                 </div>
                 <div class="form-group col-md-12">
@@ -200,18 +200,21 @@
             <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for="">NO. RECIBO DE PAGO:</label>
-                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}">
+                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}" readonly>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="">EMISI&Oacute;N DEL RECIBO:</label>
-                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}">
+                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}" readonly>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="">SUBIR PDF DEL RECIBO:</label>
-                    <div class="custom-file">
-                    <input type="file" id="file_pago" name="file_pago" accept="application/pdf" class="custom-file-input"/>
-                    <label for="file_pago" class="custom-file-label">Seleccionar Archivo PDF</label>
-                    </div>
+                <div class="form-group col-md-4">        
+                    <br/>            
+                    @if($grupo->comprobante_pago)
+                        <a class="nav-link" href="{{$comprobante}}" target="_blank">
+                            <i  class="far fa-file-pdf  fa-3x text-danger"></i>
+                        </a>
+                    @else
+                        <i  class="far fa-file-pdf  fa-3x text-muted"  title='ARCHIVO NO DISPONIBLE.'></i>
+                    @endif
                 </div>
             </div>
             <hr/>
@@ -344,9 +347,9 @@
                 <div class="row">
                     <div class="col">
                         @if ($grupo->turnado != 'DTA' AND (!$grupo->status_solicitud OR $grupo->status_solicitud=='RETORNO') AND !$exonerado)
-                        <button id="btnAgregar" type="button" class="btn btn-success">Agregar</button>
+                        <button id="btnAgregar" type="button" class="btn btn-success disabled">Agregar</button>
                         {{--<button id="btnModificar" class="btn btn-warning">Modificar</button>--}}
-                        <button id="btnBorrar" class="btn btn-danger">Borrar</button>
+                        <button id="btnBorrar" class="btn btn-danger disabled">Borrar</button>
                         <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancelar</button>
                         @endif
                     </div>
