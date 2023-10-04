@@ -168,8 +168,9 @@ class for911Controller extends Controller
         ->where('tc.termino','>=',$fecha_inicio)
         ->where('tc.termino','<=',$fecha_termino)
         ->where('tc.unidad','=',$unidades)
-        ->where('tc.status_curso', '!=', 'CANCELADO')
-        ->where('tc.status', '=', 'REPORTADO')
+        // ->where('tc.status_curso', '!=', 'CANCELADO')
+        // ->where('tc.status', '=', 'REPORTADO')
+        ->whereIn('tc.status', ['REPORTADO', 'TURNADO_PLANEACION'])
         ->where('i.status','=','INSCRITO')
         ->groupBy('tc.espe')
         ->orderBy('tc.espe');
