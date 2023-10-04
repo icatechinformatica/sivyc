@@ -253,7 +253,7 @@
                             </div>
                         </div>
                         <div class="form-group col-md-1 mt-3 ml-3">
-                            @if($grupo->comprobante_pago)
+                            @if($comprobante)
                                 <a class="nav-link" href="{{$comprobante}}" target="_blank">
                                     <i  class="far fa-file-pdf  fa-3x text-danger"></i>
                                 </a>
