@@ -612,7 +612,7 @@ class grupoController extends Controller
     }
     public function turnar()
     {        
-        if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
+        if ($_SESSION['folio_grupo']) {
             if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->where('status','!=','AUTORIZADO')->exists()) {
                 $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                 return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
