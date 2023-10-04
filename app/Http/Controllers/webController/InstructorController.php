@@ -258,7 +258,7 @@ class InstructorController extends Controller
         $valor = $request->valor;
         $seluni = $request->seluni;
 
-        return view('layouts.pages.initprevalidarinstructor', compact('data','valor','message','id_list','unidades','seluni','nrevisiones','rol','arch_sol','especialidadeslist','critpag','especialidades','perfiles','databuzon','userunidad','buzonhistory','daesp'));
+        return view('layouts.pages.initprevalidarinstructor', compact('data','valor','message','id_list','unidades','seluni','nrevisiones','rol','arch_sol','especialidadeslist','critpag','especialidades','perfiles','databuzon','userunidad','buzonhistory','daesp','chk_mod_espec'));
     }
 
     public function crear_instructor()
@@ -511,7 +511,7 @@ class InstructorController extends Controller
                     {
                         $arresp = (array) $cadwell;
                         array_push($newc, $arresp);
-                        $especialidades[$llave]->fecha_solicitud = NULL;
+                        // $especialidades[$llave]->fecha_solicitud = NULL;
                         $especialidad = especialidad::WHERE('id', '=', $cadwell->especialidad_id)->SELECT('nombre')->FIRST();
                         switch($especialidades[$llave]->status)
                         {
@@ -704,28 +704,33 @@ class InstructorController extends Controller
                             case 'PREVALIDACION';
                                 $especialidades[$llave]->status = 'EN FIRMA';
                                 $movimiento = $movimiento . $especialidad->nombre . ',  ';
+                                $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
+                                $especialidades[$llave]->fecha_validacion = $request->fechadocs;
                             break;
                             case 'REVALIDACION EN PREVALIDACION';
                                 $especialidades[$llave]->status = 'REVALIDACION EN FIRMA';
                                 $movimiento = $movimiento . $especialidad->nombre . ' (REVALIDACION),  ';
+                                $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
+                                $especialidades[$llave]->fecha_validacion = $request->fechadocs;
                             break;
                             case 'BAJA EN PREVALIDACION';
                                 $especialidades[$llave]->status = 'BAJA EN FIRMA';
-                                $especialidades[$llave]->fecha_baja = NULL;
+                                $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
+                                $especialidades[$llave]->fecha_baja = $request->fechadocs;
                                 $especialidades[$llave]->memorandum_baja = NULL;
                                 $movimiento = $movimiento . $especialidad->nombre . ' (BAJA),  ';
                             break;
                             case 'REACTIVACION EN PREVALIDACION';
                                 $especialidades[$llave]->status = 'REACTIVACION EN FIRMA';
-                                $especialidades[$llave]->fecha_baja = NULL;
+                                $especialidades[$llave]->fecha_baja = $request->fechadocs;
                                 $especialidades[$llave]->memorandum_baja = NULL;
                                 $especialidades[$llave]->memorandum_solicitud = NULL;
-                                $especialidades[$llave]->fecha_solicitud = NULL;
+                                $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
                                 $movimiento = $movimiento . $especialidad->nombre . ',  ';
                             break;
                         }
                     }
-                    $especialidades[$llave]->fecha_validacion = NULL;
+                    // $especialidades[$llave]->fecha_validacion = NULL;
                     $especialidades[$llave]->memorandum_validacion = NULL;
                 }
                 $modInstructor->data_especialidad = $especialidades;

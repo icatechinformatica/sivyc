@@ -327,7 +327,7 @@
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#prevalidarModal"
-                                            data-id='{{$id_list}}'>
+                                            data-id='[{{$id_list}}, "{{$chk_mod_espec}}"]'>
                                                 PREVALIDAR
                                     </button>
                                 @endcan
@@ -492,7 +492,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><b>Confirmar Prevalidación</b></h5>
+                <h5 class="modal-title"><b>¿Desea confirmar la prevalidación de estos registros?</b></h5>
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -503,14 +503,27 @@
                     <div class="alert alert-danger d-none d-print-none" id="prevalidarwarning">
                         <span id="prevalidarspan"></span>
                     </div>
-                    <label style="text-align:center"><h5><small>¿Desea confirmar la prevalidación de estos registros?</small></h5></label>
                     <div class="form-row">
-                        <div class="form-group col-md-1">
+                        <div class="form-group col-md-2"></div>
+                        <div class="form-group col-md-9" id='divbasico'>
+                            <label><small>¿Desea confirmar la prevalidación de los datos?</small></label>
+                        </div>
+                        <div class="form-group col-md-9" id="divfecha">
+                            <label for="fechadocs"><small>FECHA A ASIGNAR A LOS DOCUMENTOS</small></label>
+                            <input type="date" name="fechadocs" id="fechadocs" class="form-control">
                         </div>
                     </div>
+                    {{-- <label style="text-align:center"><h5><small>¿Desea confirmar la prevalidación de estos registros?</small></h5></label> --}}
                     <div class="form-row">
-                        <div class="form-group col-md-12" style="text-align:center;width:100%">
-                            <button onclick="sendtodta()" class="btn mr-sm-4 mt-3 btn-danger" >PREVALIDAR</button>
+                        <div class="form-group col-md-1"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-2"></div>
+                        <div class="form-group col-md-2">
+                            <button type="button" class="btn" style="text-align: right; background-color: #12322B;" data-dismiss="modal">Cerrar</button>
+                        </div>
+                        <div class="form-group col-md-8" style="text-align:center;width:100%">
+                            <button onclick="sendtodta()" class="btn btn-danger" >PREVALIDAR</button>
                         </div>
                     </div>
                     <br>
@@ -785,7 +798,16 @@
             var button = $(event.relatedTarget);
             var id = button.data('id');
             // console.log(id)
-            document.getElementById('idinstructoresprev').value = id;
+            if(id['1'] == '1') {
+                $('#divbasico').prop("class", "form-row d-none d-print-none")
+                $('#divfecha').prop("class", "form-row col-md-9")
+                $('#fechadocs').prop('required', true);
+            } else {
+                $('#divbasico').prop("class", "form-row col-md-9")
+                $('#divfecha').prop("class", "form-row d-none d-print-none")
+                $('#fechadocs').prop('required', false);
+            }
+            document.getElementById('idinstructoresprev').value = id['0'];
         });
 
         $('#senddoctodtaModal').on('show.bs.modal', function(event){
