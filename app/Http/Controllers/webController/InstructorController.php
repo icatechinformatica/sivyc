@@ -258,7 +258,7 @@ class InstructorController extends Controller
         $valor = $request->valor;
         $seluni = $request->seluni;
 
-        return view('layouts.pages.initprevalidarinstructor', compact('data','valor','message','id_list','unidades','seluni','nrevisiones','rol','arch_sol','especialidadeslist','critpag','especialidades','perfiles','databuzon','userunidad','buzonhistory','daesp'));
+        return view('layouts.pages.initprevalidarinstructor', compact('data','valor','message','id_list','unidades','seluni','nrevisiones','rol','arch_sol','especialidadeslist','critpag','especialidades','perfiles','databuzon','userunidad','buzonhistory','daesp','chk_mod_espec'));
     }
 
     public function crear_instructor()
@@ -407,7 +407,7 @@ class InstructorController extends Controller
         $chk_mod_perfil = $chk_mod_esp = false;
         $movimiento = NULL;
         $newb = $newc = $arrtemp = array();
-        $stat_arr = array('EN CAPTURA','REACTIVACION EN CAPTURA','REVALIDACION EN CAPTURA','BAJA EN CAPTURA','RETORNO');
+        $stat_arr = array('EN CAPTURA','REACTIVACION EN CAPTURA','REVALIDACION EN CAPTURA','BAJA EN CAPTURA','RETORNO','REVALIDACION RETORNADA','BAJA RETORNADA');
 
             $bajachk = FALSE;
             $movimiento = 'Envio a DTA para su prevalidacion ';
@@ -511,7 +511,7 @@ class InstructorController extends Controller
                     {
                         $arresp = (array) $cadwell;
                         array_push($newc, $arresp);
-                        $especialidades[$llave]->fecha_solicitud = NULL;
+                        // $especialidades[$llave]->fecha_solicitud = NULL;
                         $especialidad = especialidad::WHERE('id', '=', $cadwell->especialidad_id)->SELECT('nombre')->FIRST();
                         switch($especialidades[$llave]->status)
                         {
@@ -704,28 +704,33 @@ class InstructorController extends Controller
                             case 'PREVALIDACION';
                                 $especialidades[$llave]->status = 'EN FIRMA';
                                 $movimiento = $movimiento . $especialidad->nombre . ',  ';
+                                $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
+                                $especialidades[$llave]->fecha_validacion = $request->fechadocs;
                             break;
                             case 'REVALIDACION EN PREVALIDACION';
                                 $especialidades[$llave]->status = 'REVALIDACION EN FIRMA';
                                 $movimiento = $movimiento . $especialidad->nombre . ' (REVALIDACION),  ';
+                                $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
+                                $especialidades[$llave]->fecha_validacion = $request->fechadocs;
                             break;
                             case 'BAJA EN PREVALIDACION';
                                 $especialidades[$llave]->status = 'BAJA EN FIRMA';
-                                $especialidades[$llave]->fecha_baja = NULL;
+                                $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
+                                $especialidades[$llave]->fecha_baja = $request->fechadocs;
                                 $especialidades[$llave]->memorandum_baja = NULL;
                                 $movimiento = $movimiento . $especialidad->nombre . ' (BAJA),  ';
                             break;
                             case 'REACTIVACION EN PREVALIDACION';
                                 $especialidades[$llave]->status = 'REACTIVACION EN FIRMA';
-                                $especialidades[$llave]->fecha_baja = NULL;
+                                $especialidades[$llave]->fecha_baja = $request->fechadocs;
                                 $especialidades[$llave]->memorandum_baja = NULL;
                                 $especialidades[$llave]->memorandum_solicitud = NULL;
-                                $especialidades[$llave]->fecha_solicitud = NULL;
+                                $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
                                 $movimiento = $movimiento . $especialidad->nombre . ',  ';
                             break;
                         }
                     }
-                    $especialidades[$llave]->fecha_validacion = NULL;
+                    // $especialidades[$llave]->fecha_validacion = NULL;
                     $especialidades[$llave]->memorandum_validacion = NULL;
                 }
                 $modInstructor->data_especialidad = $especialidades;
@@ -1327,6 +1332,8 @@ class InstructorController extends Controller
         foreach($especialidades AS $key => $cadwell)
         {
             $especialidades[$key]->status = 'BAJA EN PREVALIDACION';
+            $especialidades[$key]->fecha_solicitud = null;
+            $especialidades[$key]->fecha_baja = null;
             $especialidades[$key]->activo = TRUE;
         }
         $instructor->data_especialidad = $especialidades;
@@ -2274,7 +2281,11 @@ class InstructorController extends Controller
                 }
                 else
                 {
-                    $arrmod['status'] = 'REVALIDACION EN CAPTURA';
+                    if ($cadwell['new'] == false) {
+                        $arrmod['status'] = 'REVALIDACION EN CAPTURA';
+                    } else {
+                        $arrmod['status'] = 'EN CAPTURA';
+                    }
                 }
                 if ($arrmod != '[]')
                 {
@@ -2610,7 +2621,11 @@ class InstructorController extends Controller
                 }
                 else
                 {
-                    $arrtemp[$key]['status'] = 'REVALIDACION EN CAPTURA';
+                    if($cadwell['new'] == false) {
+                        $arrtemp[$key]['status'] = 'REVALIDACION EN CAPTURA';
+                    } else {
+                        $arrtemp[$key]['status'] = 'EN CAPTURA';
+                    }
                 }
 
                 if(isset($request->itemEdit))
@@ -3751,7 +3766,7 @@ class InstructorController extends Controller
         if ($request->file('arch_id') != null)
         {
             $otraid = $request->file('arch_id'); # obtenemos el archivo
-            $urlotraid = $this->pdf_upload($otraid, $id, 'oid'); # invocamos el método
+            $urlotraid = $this->pdf_upload($otraid, $id, 'acta'); # invocamos el método
             $saveInstructor->archivo_otraid = $urlotraid; # guardamos el path
         }
         if ($request->file('arch_curriculum_personal') != null)

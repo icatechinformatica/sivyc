@@ -20,13 +20,15 @@
             </div>
         @endif
         {{ Form::open(['route' => 'grupos.recibos.buscar', 'method' => 'post', 'id'=>'frm',  'enctype' => 'multipart/form-data']) }}
-            @csrf
-            <div class="row form-inline">                 
-                {{ Form::text('folio_grupo', $request->valor, ['id'=>'folio_grupo', 'class' => 'form-control mr-2', 'placeholder' => 'BUSQUEDA POR NO. RECIBO / FOLIO DE GRUPO / CLAVE ', 'title' => 'NO. RECIBO / FOLIO DE GRUPO / CLAVE ', 'required' => 'required', 'size' => 50]) }}
+            @csrf            
+            <div class="row form-inline">  
+                {{ Form::select('ejercicio', $anios, $request->ejercicio ,['id'=>'ejercicio','class' => 'form-control mr-sm-2','title' => 'EJERCICIO','placeholder' => 'EJERCICIO']) }}               
+                {{ Form::text('folio_grupo', $request->valor, ['id'=>'folio_grupo', 'class' => 'form-control mr-2', 'placeholder' => 'BUSQUEDA POR NO. RECIBO / FOLIO DE GRUPO / CLAVE ', 'title' => 'NO. RECIBO / FOLIO DE GRUPO / CLAVE ','size' => 50]) }}
                 {{ Form::submit('BUSCAR', ['id' => 'buscar','name' => 'BUSCAR', 'class' => 'btn mr-5']) }}
                 {{ Form::button('NUEVA ASIGNACIÓN', ['id' => 'asignar','name' => 'ASIGNAR', 'class' => 'btn']) }}
                 
-            </div>        
+            </div>    
+        {!! Form::close() !!}    
             @if($data) 
                 <table class="table table-hover table-responsive" id="tabla">
                     <thead>
@@ -60,7 +62,7 @@
                                 <td>{{ date('d/m/Y', strtotime($item->inicio)) }} - {{ date('d/m/Y', strtotime($item->termino)) }}</td>
                                 <td>{{ $item->hini }} - {{ $item->hfin }}</td>
                                 <td>{{ $item->status_recibo }}</td>
-                                <td class="text-center">
+                                <td class="text-center">                                
                                     @if($item->file_pdf)
                                         <a class="nav-link pt-0" href="{{$path_files}}{{ $item->file_pdf}}" target="_blank">
                                             <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
@@ -71,7 +73,7 @@
 
                                 </td>
                                 <td class="text-center">
-                                    <a class="nav-link pt-0" target="_self" value="{{ $item->folio_grupo }}">
+                                    <a class="nav-link pt-0" target="_self"  onclick="ver('{{ $item->folio_grupo }}')">
                                         <i  class="fa fa-search  fa-3x fa-lg" style="color: #826E19"  title='VER REGISTRO DE RECIBO DE PAGO.'></i>
                                     </a>
                                 </td>
@@ -88,7 +90,7 @@
                     </tfoot>
                 </table>
             @endif
-        {!! Form::close() !!}
+        
     </div>
     @section('script_content_js') 
         <script language="javascript">
@@ -97,14 +99,12 @@
                 $('#frm').attr('target', '_self');
                 $('#frm').submit();                 
             });   
-                         
-            $("#tabla tr td a").click(function(event){
-                    event.preventDefault();
-                    $('#folio_grupo').val($(this).attr("value"));
-                    $('#frm').attr('action', "{{route('grupos.recibos')}}");
-                    $('#frm').attr('target', '_self');
-                    $('#frm').submit();
-                });  
+            function ver(folio){
+                $('#folio_grupo').val(folio);
+                $('#frm').attr('action', "{{route('grupos.recibos')}}");
+                $('#frm').attr('target', '_self');
+                $('#frm').submit();
+            }
         </script>  
     @endsection
 @endsection
