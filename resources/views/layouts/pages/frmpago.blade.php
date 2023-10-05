@@ -86,6 +86,7 @@
                 </div>
             <input hidden id="id_pago" name="id_pago" value="{{$data->id_pago}}">
             <input hidden id="id_folio" name="id_folio" value="{{$data->id_folios}}">
+            <input hidden id="id_instructor" name="id_instructor" value="{{$data->idins}}">
             </div>
             <br>
             <div class="row">

@@ -3,18 +3,18 @@
 <!--llamar a la plantilla -->
 @section('title', 'Instructor | SIVyC Icatech')
 @section('content_script_css')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" /> 
-    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
-    <link rel="stylesheet" href="{{ asset('assets/bootstrap-5.0.1/css/bootstrap.css') }}"> 
+    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/bootstrap-5.0.1/css/bootstrap.css') }}">
     <style>
         .form-check-input{
             width:22px;
             height:22px;
-        }        
-    </style>   
+        }
+    </style>
 @endsection
 <!--seccion-->
-@section('content')     
+@section('content')
     <div class="card-header">
         <h3>Registro de Instructores</h3>
     </div>
@@ -29,7 +29,7 @@
                 <div class="pull-left">
                     {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipo_busqueda_instructor" class="form-control mr-sm-2" id="tipo_busqueda_instructor">
-                            <option value="">BUSCAR POR TIPO</option>                            
+                            <option value="">BUSCAR POR TIPO</option>
                             <option value="clave_instructor">CLAVE</option>
                             <option value="nombre_instructor">NOMBRE</option>
                             <option value="curp">CURP</option>
@@ -73,7 +73,7 @@
                     @endcan
                 </div>
             </div>
-        </div>        
+        </div>
         <table  id="table-instructor" class="table table-bordered table-responsive-md">
             <caption>Catalogo de Instructrores</caption>
             <thead>
@@ -99,15 +99,15 @@
                         <td>{{$itemData->telefono}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>
-                            @if(date('Y-m-d') >= $itemData->vigencia)    
+                            @if(date('Y-m-d') >= $itemData->vigencia)
                                 <span class="font-weight-bold text-danger">
                             @elseif(date('Y-m-d') > $itemData->por_vencer)
                                 <span class="font-weight-bold" style="color:#FF8002">
-                            @else 
+                            @else
                                 <span>
-                            @endif                                
-                                {{$itemData->fecha_validacion}} 
-                            </span>                        
+                            @endif
+                                {{$itemData->fecha_validacion}}
+                            </span>
                         </td>
                         <td class="text-center">
                             @if ($itemData->status == 'EN CAPTURA' || $itemData->status == 'REACTIVACION EN CAPTURA')
@@ -141,12 +141,12 @@
                                     <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                             @endif
                             @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')
-                                    <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>                                    
+                                    <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
 
                             @endif
-                        </td>                      
+                        </td>
                         <td class="text-center">
-                            @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')                                    
+                            @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')
                                     @if($itemData->archivo_alta == NULL)
                                         <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                                     @else
@@ -158,16 +158,16 @@
                         @can('only.admin')
                             <td class="text-center">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="curso_extra({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->curso_extra==true){{'checked'}} @endif >                                
-                                </div>                                        
-                            </td>                            
+                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="curso_extra({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->curso_extra==true){{'checked'}} @endif >
+                                </div>
+                            </td>
                         @endcan
                         @can('instructor.validar')
                             <td class="text-center">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->estado==true){{'checked'}} @endif >                                
-                                </div>                                        
-                            </td>                            
+                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->estado==true){{'checked'}} @endif >
+                                </div>
+                            </td>
                         @endcan
                     </tr>
                 @endforeach
@@ -181,7 +181,7 @@
             </tfoot>
         </table>
         <br>
-    </div>    
+    </div>
 @endsection
 @section('script_content_js')
     <script>
@@ -217,35 +217,35 @@
                 }
             }
         });
-    </script>   
+    </script>
     <script>
-        function curso_extra(id, status, obj){                    
+        function curso_extra(id, status, obj){
              $.ajax({
-                method: "POST", 
-                url: "cursoExtra", 
-                data: { 
+                method: "POST",
+                url: "cursoExtra",
+                data: {
                         id_instructor: id,
                         estado: status
                  }
             })
-            .done(function( msg ) { alert(msg); });            
+            .done(function( msg ) { alert(msg); });
         }
 
-        function cambia_estado(id, status, obj){         
+        function cambia_estado(id, status, obj){
             if (confirm("Está seguro de realizar el cambio?") == true) {
                 $.ajax({
-                    method: "POST", 
-                    url: "estado", 
-                    data: { 
+                    method: "POST",
+                    url: "estado",
+                    data: {
                         id_instructor: id,
                         estado: status
                     }
                 })
-                .done(function( msg ) { alert(msg); }); 
-            }else{                
-                if(obj.prop('checked')) obj.prop('checked', false); 
-                else obj.prop('checked', true); 
+                .done(function( msg ) { alert(msg); });
+            }else{
+                if(obj.prop('checked')) obj.prop('checked', false);
+                else obj.prop('checked', true);
             }
         }
-    </script>   
+    </script>
 @endsection
