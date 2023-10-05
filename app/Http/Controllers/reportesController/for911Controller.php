@@ -252,30 +252,52 @@ class for911Controller extends Controller
         //     ->groupBy('perfil_profesional')
         //     ->get();
 
-        $consulta = DB::table(DB::raw("(
-            SELECT
-                tc.id_instructor,
-                cr.perfil_profesional,
-                cr.id,
-                ROW_NUMBER() OVER (PARTITION BY tc.id_instructor ORDER BY tc.termino DESC) AS rn
-            FROM tbl_cursos AS tc
-            JOIN criterio_pago AS cr ON tc.cp = cr.id
-            WHERE tc.unidad = '$unidades'
-                AND tc.termino >= '$fecha_inicio'
-                AND tc.termino <= '$fecha_termino'
-                AND tc.instructor_sexo = '$sexo'
-                " . ($isMorning ? "
-                    AND (tc.hini LIKE '%a.m.' OR tc.hini = '12:00 p.m.' OR tc.hini = '01:00 p.m.' OR tc.hini = '12:30 p.m.' OR tc.hini = '01:30 p.m.')
-                " : "
-                    AND ((tc.hini LIKE '%p.m.' AND tc.hini NOT IN ('12:00 p.m.', '12:30 p.m.', '01:00 p.m.', '01:30 p.m.')))
-                ") . "
-                AND tc.status IN ('REPORTADO', 'TURNADO_PLANEACION')
-        ) ranked_cursos"))
-            ->select('perfil_profesional', 'id', DB::raw('COUNT(*) AS cantidad'))
-            ->where('rn', 1)
-            ->groupBy('perfil_profesional', 'id')
-            ->get();
+        // $consulta = DB::table(DB::raw("(
+        //     SELECT
+        //         tc.id_instructor,
+        //         cr.perfil_profesional,
+        //         cr.id,
+        //         ROW_NUMBER() OVER (PARTITION BY tc.id_instructor ORDER BY tc.termino DESC) AS rn
+        //     FROM tbl_cursos AS tc
+        //     JOIN criterio_pago AS cr ON tc.cp = cr.id
+        //     WHERE tc.unidad = '$unidades'
+        //         AND tc.termino >= '$fecha_inicio'
+        //         AND tc.termino <= '$fecha_termino'
+        //         AND tc.instructor_sexo = '$sexo'
+        //         " . ($isMorning ? "
+        //             AND (tc.hini LIKE '%a.m.' OR tc.hini = '12:00 p.m.' OR tc.hini = '01:00 p.m.' OR tc.hini = '12:30 p.m.' OR tc.hini = '01:30 p.m.')
+        //         " : "
+        //             AND ((tc.hini LIKE '%p.m.' AND tc.hini NOT IN ('12:00 p.m.', '12:30 p.m.', '01:00 p.m.', '01:30 p.m.')))
+        //         ") . "
+        //         AND tc.status IN ('REPORTADO', 'TURNADO_PLANEACION')
+        // ) ranked_cursos"))
+        //     ->select('perfil_profesional', 'id', DB::raw('COUNT(*) AS cantidad'))
+        //     ->where('rn', 1)
+        //     ->groupBy('perfil_profesional', 'id')
+        //     ->get();
 
+        $consulta = DB::select("
+            SELECT cp, COUNT(*) AS cantidad
+            FROM (
+                SELECT
+                    nombre,
+                    cp,
+                    ROW_NUMBER() OVER (PARTITION BY nombre ORDER BY termino DESC) AS rn
+                FROM tbl_cursos
+                WHERE unidad = '$unidades'
+                AND termino >= '$fecha_inicio'
+                AND termino <= '$fecha_termino'
+                AND status IN ('REPORTADO', 'TURNADO_PLANEACION')
+                AND instructor_sexo = '$sexo'
+                " . ($isMorning ? "
+                    AND (hini LIKE '%a.m.' OR hini = '12:00 p.m.' OR hini = '01:00 p.m.' OR hini = '12:30 p.m.' OR hini = '01:30 p.m.')
+                " : "
+                    AND ((hini LIKE '%p.m.' AND hini NOT IN ('12:00 p.m.', '12:30 p.m.', '01:00 p.m.', '01:30 p.m.')))
+                ") . "
+            ) AS ranked_cursos
+            WHERE rn = 1
+            GROUP BY cp
+        ");
 
         #PROCESAMOS LA CONSULTA PARA MANDARLA A LA VISTA
         $prim_i = $prim = $secu = $bach = $profesional = $maestria = $doctorado = $subtotal = 0;
@@ -283,19 +305,19 @@ class for911Controller extends Controller
 
         foreach ($consulta as  $instruc) {
             $subtotal += $instruc->cantidad;
-            if ($instruc->id == 1) $prim_i = $instruc->cantidad;
-            if ($instruc->id == 2) $prim = $instruc->cantidad;
-            if ($instruc->id == 3) $secu = $instruc->cantidad;
-            if ($instruc->id == 4) $bach = $instruc->cantidad;
-            if ($instruc->id == 7) $profesional = $instruc->cantidad;
-            if ($instruc->id == 9) $maestria = $instruc->cantidad;
-            if ($instruc->id == 11) $doctorado = $instruc->cantidad;
+            if ($instruc->cp == 1) $prim_i = $instruc->cantidad;
+            if ($instruc->cp == 2) $prim = $instruc->cantidad;
+            if ($instruc->cp == 3) $secu = $instruc->cantidad;
+            if ($instruc->cp == 4) $bach = $instruc->cantidad;
+            if ($instruc->cp == 7) $profesional = $instruc->cantidad;
+            if ($instruc->cp == 9) $maestria = $instruc->cantidad;
+            if ($instruc->cp == 11) $doctorado = $instruc->cantidad;
             #otros
-            if ($instruc->id == 5) $prof_trunc = $instruc->cantidad;
-            if ($instruc->id == 6) $prof_pasante = $instruc->cantidad;
-            if ($instruc->id == 8) $maestria_pasante = $instruc->cantidad;
-            if ($instruc->id == 10) $docto_pasante = $instruc->cantidad;
-            if ($instruc->id == 12) $prof_cert_comp = $instruc->cantidad;
+            if ($instruc->cp == 5) $prof_trunc = $instruc->cantidad;
+            if ($instruc->cp == 6) $prof_pasante = $instruc->cantidad;
+            if ($instruc->cp == 8) $maestria_pasante = $instruc->cantidad;
+            if ($instruc->cp == 10) $docto_pasante = $instruc->cantidad;
+            if ($instruc->cp == 12) $prof_cert_comp = $instruc->cantidad;
         }
 
         $array_instruc = array("primaria_inc" => $prim_i, "primaria" => $prim, "secundaria" => $secu,
