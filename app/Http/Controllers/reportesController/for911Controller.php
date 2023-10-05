@@ -280,9 +280,9 @@ class for911Controller extends Controller
             SELECT cp, COUNT(*) AS cantidad
             FROM (
                 SELECT
-                    nombre,
+                    curp,
                     cp,
-                    ROW_NUMBER() OVER (PARTITION BY nombre ORDER BY termino DESC) AS rn
+                    ROW_NUMBER() OVER (PARTITION BY curp ORDER BY termino DESC) AS rn
                 FROM tbl_cursos
                 WHERE unidad = '$unidades'
                 AND termino >= '$fecha_inicio'
