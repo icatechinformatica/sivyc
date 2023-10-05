@@ -11,6 +11,9 @@
         <link rel="stylesheet" href="{{ asset('fullCalendar/daygrid/main.css') }}">
         <link rel="stylesheet" href="{{ asset('fullCalendar/list/main.css') }}">
         <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}">
+    <style>
+        .custom-font-size { font-size: 18px; }        
+    </style>
 @endsection
 @section('content')
     <?php
@@ -83,8 +86,10 @@
                 </div>
                 @if($folio)
                     <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <h4 ><b>Grupo No. {{ $folio_grupo}}</b></h4>
+                        <div class="form-group col-md-12 form-inline">
+                            <h4 ><b>Grupo No.
+                            {{ Form::text('folio_grupo', $folio_grupo, ['id'=>'folio_grupo', 'class' => 'form-control custom-font-size  col-md-5', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required','readonly' => 'readonly']) }}
+                            </b></h4>
                         </div>
                     </div>
                 @endif
@@ -247,15 +252,16 @@
                                 <label class="custom-file-label" for="customFile">PDF COMPROBANTE DE PAGO</label>
                             </div>
                         </div>
-                        @if ($comprobante)
-                            <div class="form-group col-md-1 mt-3">
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="COMPROBANTE DE PAGO"
-                                    href="{{$comprobante}}">
-                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                        <div class="form-group col-md-1 mt-3 ml-3">
+                            @if($comprobante)
+                                <a class="nav-link" href="{{$comprobante}}" target="_blank">
+                                    <i  class="far fa-file-pdf  fa-3x text-danger"></i>
                                 </a>
-                            </div>
-                        @endif
-                        <div class="form-group col-md-2 mt-3">
+                            @else
+                                <i  class="far fa-file-pdf  fa-3x text-muted mt-1"  title='ARCHIVO NO DISPONIBLE.'></i>
+                            @endif
+                        </div>                       
+                        <div class="form-group col-md-2 mt-4">
                             <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf" target="blank">UNIR PDF´s</a>
                         </div>
                     </div>
