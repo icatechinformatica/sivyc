@@ -119,7 +119,7 @@
                                 &nbsp;CARGAR RESPUESTA A UNIDAD
                             </a>
                             @if(isset($formato_respuesta->resumen_formatot_unidad))
-                                <a class="btn btn-danger" id="subir_resumen_unidad" name="subir_resumen_unidad" data-toggle="modal" data-placement="top" data-target="#subirResumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidades_busqueda}}"]'>
+                                <a class="btn btn-danger" id="pdf_resumen" name="pdf_resumen" target="_blank" href="{{$formato_respuesta->resumen_formatot_unidad}}">
                                     <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
                                     &nbsp; VER PDF CARGADO
                                 </a>

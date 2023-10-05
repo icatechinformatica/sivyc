@@ -157,7 +157,7 @@
                                 &nbsp;CARGAR RESPUESTA A UNIDAD
                             </a>
                             @if(isset($formato_respuesta->resumen_formatot_unidad))
-                                <a class="btn btn-danger" id="subir_resumen_unidad" name="subir_resumen_unidad" data-toggle="modal" data-placement="top" data-target="#subirResumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
+                                <a class="btn btn-danger" id="pdf_resumen" name="pdf_resumen" target="_blank" href="{{$formato_respuesta->resumen_formatot_unidad}}">
                                     <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
                                     &nbsp; VER PDF CARGADO
                                 </a>
@@ -931,6 +931,24 @@
                 </div>
             </form>
         @else
+            @if (isset($mesSearch))
+                <div>
+                    <a class="btn btn-danger" id="resumen_unidad" name="resumen_unidad" data-toggle="modal" data-placement="top" data-target="#resumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
+                        <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                        &nbsp;MEMORANDUM RESPUESTA A UNIDAD
+                    </a>
+                    <a class="btn btn-danger" id="subir_resumen_unidad" name="subir_resumen_unidad" data-toggle="modal" data-placement="top" data-target="#subirResumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
+                        <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                        &nbsp;CARGAR RESPUESTA A UNIDAD
+                    </a>
+                    @if(isset($formato_respuesta->resumen_formatot_unidad))
+                        <a class="btn btn-danger" id="pdf_resumen" name="pdf_resumen" target="_blank" href="{{$formato_respuesta->resumen_formatot_unidad}}">
+                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                            &nbsp; VER PDF CARGADO
+                        </a>
+                    @endif
+                </div>
+            @endif
             <h2><b>NO  SE ENCONTRARON REGISTROS</b></h2>
         @endif
         <br>
