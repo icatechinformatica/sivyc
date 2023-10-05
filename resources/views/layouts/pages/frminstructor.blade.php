@@ -93,7 +93,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputarch_ine">Archivo Identificación</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" required>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF">
                 </div>
             </div>
             <div class="form-row">
