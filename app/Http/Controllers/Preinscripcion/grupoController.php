@@ -666,7 +666,7 @@ class grupoController extends Controller
     public function delete(Request $request)
     {
         $id = $request->id;
-        if ($id and $_SESSION['folio_grupo'] == $request->folio_grupo) {
+        if ($id and $_SESSION['folio_grupo']) {
             if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
                 $result = false;
             } else {

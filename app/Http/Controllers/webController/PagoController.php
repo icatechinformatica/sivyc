@@ -205,7 +205,7 @@ class PagoController extends Controller
 
     public function crear_pago($id)
     {
-        $data = contratos::SELECT('instructores.numero_control','tbl_cursos.nombre','tbl_cursos.curso','tbl_cursos.clave',
+        $data = contratos::SELECT('instructores.numero_control','instructores.id AS idins','tbl_cursos.nombre','tbl_cursos.curso','tbl_cursos.clave',
                                     'contratos.unidad_capacitacion','folios.id_folios','folios.importe_total','folios.iva','pagos.id AS id_pago')
                                     ->WHERE('contratos.id_contrato', '=', $id)
                                     ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
@@ -282,7 +282,7 @@ class PagoController extends Controller
     public function guardar_pago(Request $request)
     {
         $doc = $request->file('arch_pago'); # obtenemos el archivo
-        $urldoc = $this->pdf_upload($doc, $request->id_pago, 'pago_autorizado'); # invocamos el método
+        $urldoc = $this->pdf_upload($doc, $request->id_pago, $request->id_instructor, 'pago_autorizado'); # invocamos el método
 
         pago::where('id', '=', $request->id_pago)
         ->update(['no_pago' => $request->numero_pago,
