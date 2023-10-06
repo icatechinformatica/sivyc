@@ -206,7 +206,7 @@ class PagoController extends Controller
     public function crear_pago($id)
     {
         $data = contratos::SELECT('instructores.numero_control','instructores.id AS idins','tbl_cursos.nombre','tbl_cursos.curso','tbl_cursos.clave',
-                                    'contratos.unidad_capacitacion','folios.id_folios','folios.importe_total','folios.iva','pagos.id AS id_pago')
+                                    'contratos.unidad_capacitacion','folios.id_folios','folios.importe_total','folios.iva','pagos.id AS id_pago', 'pagos.fecha')
                                     ->WHERE('contratos.id_contrato', '=', $id)
                                     ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', 'folios.id_cursos')
