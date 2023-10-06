@@ -1034,10 +1034,12 @@ class InstructorController extends Controller
                     if($cadwell->status == 'BAJA EN FIRMA')
                     {
                         $especialidades[$key]->status = 'BAJA';
+                        $especialidades[$key]->activo = FALSE;
                     }
                     else
                     {
                         $especialidades[$key]->status = 'VALIDADO';
+                        $especialidades[$key]->activo = TRUE;
                     }
 
                     $mvalidacion = $cadwell->memorandum_validacion;
