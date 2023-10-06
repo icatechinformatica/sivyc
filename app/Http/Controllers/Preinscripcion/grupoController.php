@@ -533,7 +533,7 @@ class grupoController extends Controller
                                             'curp' => $instructor->curp,'rfc' => $instructor->rfc,'modinstructor' => $tipo_honorario,'instructor_escolaridad' => $instructor->escolaridad,
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
-                                            'soportes_instructor'=>json_encode($soportes_instructor)
+                                            'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp
                                         ]);
                                         if ($result_curso) $message = "Operación Exitosa!!";
                                     }
