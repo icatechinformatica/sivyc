@@ -28,6 +28,17 @@ class validacionDtaController extends Controller {
 
         $anio_actual = Carbon::now()->year; // año actual obtenido del servidor
 
+        $formato_respuesta = DB::Table('tbl_cursos')->Select('tbl_cursos.id','tbl_cursos.resumen_formatot_unidad')
+        ->Join('tbl_unidades','tbl_unidades.unidad', 'tbl_cursos.unidad')
+        ->Where('tbl_unidades.ubicacion', $unidad)
+        ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
+        ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
+        ->WhereMonth('tbl_cursos.fecha_turnado', $mesSearch)
+        ->Where('tbl_cursos.resumen_formatot_unidad', '!=', null)
+        ->First();
+        // dd($formato_respuesta);
+
+
         $cursos_validar = dataFormatoT2do($unidad, ['DTA', 'MEMO_TURNADO_RETORNO'], null, $mesSearch, 'TURNADO_DTA');
         foreach ($cursos_validar as $key => $value) {
             // array de folios
@@ -99,7 +110,7 @@ class validacionDtaController extends Controller {
         $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
         $diasParaEntrega = $this->getFechaDiff();
 
-        return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad', 'fechaEntregaFormatoT', 'mesInformar', 'unidad', 'diasParaEntrega', 'mesSearch'));
+        return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad', 'fechaEntregaFormatoT', 'mesInformar', 'unidad', 'diasParaEntrega', 'mesSearch', 'formato_respuesta'));
     }
 
     public function indexRevision(Request $request) {
@@ -1821,7 +1832,6 @@ class validacionDtaController extends Controller {
 
     public function resumen_unidad_pdf(Request $request)
     {
-        // dd($request);
         $leyenda = Instituto::first();
         $leyenda = $leyenda->distintivo;
         $numero_memo = $request->memo_reporte_unidad; // proceso
@@ -1834,11 +1844,12 @@ class validacionDtaController extends Controller {
         // Fin Fecha
         // Info cursos
         $count_cursos = array();
-        $cursos = DB::Table('tbl_cursos')->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
+        $cursos = DB::Table('tbl_cursos')
+            ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
             ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
             ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
             ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
-            ->Where('fecha_turnado', 'LIKE', '%-'.$request->mes_reporte)
+            ->Where('fecha_entrega', 'LIKE', '%'.$request->mes_reporte)
             ->Where('tbl_unidades.ubicacion', $request->unidad_reporte)
             ->OrderBy('fecha_envio', 'DESC')
             ->Get();
@@ -1896,8 +1907,8 @@ class validacionDtaController extends Controller {
 
         $unidad = DB::Table('tbl_unidades')->Where('unidad', $request->unidad_reporte)->FIRST();
         $elabora = ['nombre' => $elabora = Auth::user()->name, 'puesto' => $elabora = Auth::user()->puesto];
-        $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
-        $direccion = explode("*", $direccion);
+        $direccion = DB::table('tbl_instituto')->Select('direccion','telefono','correo')->First();
+        $direccion->direccion = explode("*", $direccion->direccion);
         $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','elabora','direccion'));
         return $pdf->Stream('Memo_unidad_para_DTA.pdf');
     }
@@ -1913,9 +1924,9 @@ class validacionDtaController extends Controller {
             ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
             ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
             ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
-            ->Where('fecha_turnado', 'LIKE', '%-'.$request->mes_reporte)
+            ->Where('fecha_entrega', 'LIKE', '%-'.$request->mes_reporte)
             ->Where('tbl_unidades.ubicacion', $request->unidad_reporte)
-            ->OrderBy('fecha_turnado', 'DESC')
+            ->OrderBy('fecha_envio', 'DESC')
             ->Get();
 
         foreach ($cursos as $data) {
@@ -1926,7 +1937,7 @@ class validacionDtaController extends Controller {
                 ]);
         }
 
-        return redirect()->route('validacion.dta.revision.cursos.indice')
+        return redirect()->route('validacion.cursos.enviados.dta')
                             ->with('success', sprintf('ARCHIVO CARGADO CORRECTAMENTE!'));
     }
 
