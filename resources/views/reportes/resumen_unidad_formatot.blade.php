@@ -41,7 +41,7 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 812px;
+                bottom: 815px;
                 left: 20px;
                 font-size: 8.5px;
                 color: white;
@@ -68,7 +68,7 @@
             C.P. 29030; Tuxtla Gutiérrez, Chiapas.<br><br>
             Teléfono (961)6121621, Email: dtecnicaacademica@gmail.com
         </b></p> --}}
-        <p class='direccion' style="bottom:18px;"><b>@foreach($direccion->direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach<br>Teléfono: {{$direccion->telefono}}<br>Email: {{$direccion->correo}}</b></p>
+        <p class='direccion'><b>@foreach($direccion->direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach<br>Teléfono: {{$direccion->telefono}}<br>Email: {{$direccion->correo}}</b></p>
     </footer>
     <div class="contenedor" style="margin-bottom: 100px;">
         {{-- crear un div para encerrar todo lo que lleva al inicio --}}

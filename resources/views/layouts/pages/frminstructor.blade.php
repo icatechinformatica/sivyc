@@ -93,7 +93,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputarch_ine">Archivo Identificación</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF">
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" required>
                 </div>
             </div>
             <div class="form-row">
@@ -222,7 +222,7 @@
                             <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
-                            <label class='onpoint' for="arch_domicilio">
+                            <label class='onpoint' for="arch_domicilio" required>
                                 <a class="btn mr-sm-4 mt-3 btn-sm">
                                     Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                 </a>
@@ -376,11 +376,9 @@
     <script>
         function local() {
             // var x = document.getElementById("municipio").value;
-            // console.log(x);
 
             var valor = document.getElementById("municipio").value;
             var datos = {valor: valor};
-            console.log('hola');
             var url = '/instructores/busqueda/localidad';
             var request = $.ajax
             ({
@@ -416,7 +414,6 @@
 
             var valor = document.getElementById("entidad").value;
             var datos = {valor: valor};
-            // console.log('hola');
             var url = '/instructores/busqueda/municipio';
             var request = $.ajax
             ({
@@ -452,7 +449,6 @@
 
             var valor = document.getElementById("municipio_nacimiento").value;
             var datos = {valor: valor};
-            // console.log('hola');
             var url = '/instructores/busqueda/localidad';
             var request = $.ajax
             ({
@@ -488,7 +484,6 @@
 
             var valor = document.getElementById("entidad_nacimiento").value;
             var datos = {valor: valor};
-            // console.log('hola');
             var url = '/instructores/busqueda/municipio';
             var request = $.ajax
             ({
@@ -567,6 +562,56 @@
             let inputImage8 = document.querySelector("#arch_curriculum_personal").files[0];
             imageName8.innerText = inputImage8.name;
         })
+
+        document.getElementById('reginstructor').addEventListener('submit', function (e) {
+            var fileInputs = [
+                'arch_domicilio',
+                'arch_curp',
+                'arch_banco',
+                'arch_foto',
+                'arch_id',
+                'arch_rfc',
+                'arch_estudio',
+                'arch_curriculum_personal'
+            ];
+
+            for (var i = 0; i < fileInputs.length; i++) {
+                var inputId = fileInputs[i];
+                var fileInput = document.getElementById(inputId);
+                if (fileInput.files.length === 0) {
+                    e.preventDefault(); // Prevent form submission
+                    switch(inputId) {
+                        case 'arch_domicilio':
+                            inputId = 'Comprobande de Domicilio';
+                        break;
+                        case 'arch_curp':
+                            inputId = 'CURP';
+                        break;
+                        case 'arch_banco':
+                            inputId = 'Comprobante Bancario';
+                        break;
+                        case 'arch_foto':
+                            inputId = 'Fotografía';
+                        break;
+                        case 'arch_id':
+                            inputId = 'Acta de Nacimiento';
+                        break;
+                        case 'arch_rfc':
+                            inputId = 'RFC';
+                        break;
+                        case 'arch_estudio':
+                            inputId = 'Comprobante de Estudios';
+                        break;
+                        case 'arch_curriculum_personal':
+                            inputId = 'Curriculum';
+                        break;
+                    }
+                    alert('El campo de ' + inputId + ' esta vacio. Favor de subir el documento.');
+                    return;
+                }
+            }
+        });
+
     </script>
 @endsection
 

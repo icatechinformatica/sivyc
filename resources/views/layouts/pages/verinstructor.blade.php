@@ -15,7 +15,7 @@
             padding:0px;
         }
     </style>
-    <form action="{{ route('saveins') }}" enctype="multipart/form-data" method="post" id="registerperf_prof">
+    <form action="{{ route('saveins') }}" enctype="multipart/form-data" method="post" id="reginstructor">
         @csrf
         <div class="card-header">
             <h1>Registro de Instructor</h1>
@@ -393,6 +393,7 @@
             <div>
                 <label><h2>Requisitos</h2></label>
             </div>
+            {{-- joijojo --}}
             <table class="table table-borderless table-responsive-md" id="table-perfprof2">
                 <tbody>
                     <tr >
@@ -401,9 +402,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_domicilio == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_domicilio_pdf"  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_domicilio}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_domicilio_pdf" href={{$datainstructor->archivo_domicilio}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -428,9 +429,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_curp == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_curp_pdf"  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_curp}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_curp_pdf" href={{$datainstructor->archivo_curp}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -455,9 +456,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_bancario == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_banco_pdf"  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_bancario}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_banco_pdf" href={{$datainstructor->archivo_bancario}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -482,9 +483,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_fotografia == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_foto_jpg" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_fotografia}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_foto_jpg" href={{$datainstructor->archivo_fotografia}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -511,9 +512,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_otraid == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_id_pdf" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_otraid}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_id_pdf" href={{$datainstructor->archivo_otraid}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -538,9 +539,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_rfc == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_rfc_pdf" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_rfc}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_rfc_pdf" href={{$datainstructor->archivo_rfc}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -565,9 +566,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_estudios == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_estudio_pdf" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_estudios}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_estudio_pdf" href={{$datainstructor->archivo_estudios}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -592,9 +593,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_curriculum_personal == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_curriculum_personal_pdf" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_curriculum_personal_pdf" href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -3223,6 +3224,65 @@
             var id = button.data('id');
             // console.log(id);
             document.getElementById('idbajaespe').value = id;
+        });
+
+        document.getElementById('reginstructor').addEventListener('submit', function (e) {
+            var fileInputs = [
+                'arch_domicilio',
+                'arch_curp',
+                'arch_banco',
+                'arch_foto',
+                'arch_id',
+                'arch_rfc',
+                'arch_estudio',
+                'arch_curriculum_personal'
+            ];
+
+            for (var i = 0; i < fileInputs.length; i++) {
+                var inputId = fileInputs[i];
+                var fileInput = document.getElementById(inputId);
+                if (fileInput.files.length === 0) {
+                    switch(inputId) {
+                        case 'arch_domicilio':
+                            href = document.getElementById('arch_domicilio_pdf').getAttribute('href');
+                            inputIdName = 'Comprobande de Domicilio';
+                        break;
+                        case 'arch_curp':
+                            href = document.getElementById('arch_curp_pdf').getAttribute('href');
+                            inputIdName = 'CURP';
+                        break;
+                        case 'arch_banco':
+                            href = document.getElementById('arch_banco_pdf').getAttribute('href');
+                            inputIdName = 'Comprobante Bancario';
+                        break;
+                        case 'arch_foto':
+                            href = document.getElementById('arch_foto_jpg').getAttribute('href');
+                            inputIdName = 'Fotografía';
+                        break;
+                        case 'arch_id':
+                            href = document.getElementById('arch_id_pdf').getAttribute('href');
+                            inputIdName = 'Acta de Nacimiento';
+                        break;
+                        case 'arch_rfc':
+                            href = document.getElementById('arch_rfc_pdf').getAttribute('href');
+                            inputIdName = 'RFC';
+                        break;
+                        case 'arch_estudio':
+                            href = document.getElementById('arch_estudio_pdf').getAttribute('href');
+                            inputIdName = 'Comprobante de Estudios';
+                        break;
+                        case 'arch_curriculum_personal':
+                            href = document.getElementById('arch_curriculum_personal_pdf').getAttribute('href');
+                            inputIdName = 'Curriculum';
+                        break;
+                    }
+                    if(href == null) {
+                        e.preventDefault(); // Prevent form submission
+                        alert('El campo de ' + inputIdName + ' esta vacio. Favor de subir el documento.');
+                        return;
+                    }
+                }
+            }
         });
     </script>
 @endsection
