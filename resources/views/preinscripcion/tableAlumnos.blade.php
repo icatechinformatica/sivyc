@@ -86,23 +86,23 @@
 
 <div class="d-flex flex-lg-row flex-column col-12 col-lg-12 justify-content-end">
     @if ($grupo)
-        <button id="btnShowCalendar" type="button" class="btn btn-info mt-1 btn-lg">AGENDAR</button>
+        <button id="btnShowCalendar" type="button" class="btn btn-info mt-1">AGENDAR</button>
         @can('agenda.vinculacion')
         {{-- @can('agenda.vinculacion' || $slug == 'admin') temporalmente se comentó hasta que homologuen --}}
             @if ($grupo->cespecifico)
-                    <button type="button" class="btn mt-1 btn-lg" id="gen_acta_acuerdo">ACTA DE ACUERDO</button>
-                    {{-- <button type="button" class="btn mt-1 btn-lg" id="gen_convenio_esp">CONVENIO</button> --}}
+                    <button type="button" class="btn mt-1" id="gen_acta_acuerdo">ACTA DE ACUERDO</button>
+                    {{-- <button type="button" class="btn mt-1" id="gen_convenio_esp">CONVENIO</button> --}}
             @endif
-            <button type="button" class="btn mt-1 btn-lg" id="gape">GENERAR SOLICITUD</button>
+            <button type="button" class="btn mt-1" id="gape">GENERAR SOLICITUD</button>
         @endcan
-        <button type="button" class="btn mt-1 btn-lg" id="generar">GENERAR LISTA</button>
+        <button type="button" class="btn mt-1" id="generar">GENERAR LISTA</button>
     @endif
 
-    <button type="button" class="btn mt-1 btn-lg" id="nuevo" >NUEVO</button> &nbsp;&nbsp;
+    <button type="button" class="btn mt-1" id="nuevo" >NUEVO</button> &nbsp;&nbsp;
 
     @if($activar AND $folio_grupo)
-        <button type="submit" class="btn mt-1 btn-lg" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;
-        <button type="button" class="btn mt-1 btn-lg bg-danger " id="turnar" >ENVIAR A LA UNIDAD >> </button>
+        <button type="submit" class="btn mt-1" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;
+        <button type="button" class="btn mt-1 bg-danger " id="turnar" >ENVIAR A LA UNIDAD >> </button>
     @endif
 </div>
 

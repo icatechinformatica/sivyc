@@ -70,8 +70,8 @@
                     <input type="text" name="numero_pago" id="numero_pago" class="form-control" aria-required="true">
                 </div>
                 <div class="form-gorup col-md-3">
-                    <label for="inputfecha_pago">Fecha de Pago</label>
-                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" aria-required="true">
+                    <label for="inputfecha_pago">Fecha de Pago</label>                    
+                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" aria-required="true" @if($data->fecha) value="{{$data->fecha}}" @endif>
                 </div>
                 <div class="form-gorup col-md-4">
                     <label for="inputfecha_pago">Documento de Solucitud de Pago Autorizada</label>
@@ -86,7 +86,6 @@
                 </div>
             <input hidden id="id_pago" name="id_pago" value="{{$data->id_pago}}">
             <input hidden id="id_folio" name="id_folio" value="{{$data->id_folios}}">
-            <input hidden id="id_instructor" name="id_instructor" value="{{$data->idins}}">
             </div>
             <br>
             <div class="row">
