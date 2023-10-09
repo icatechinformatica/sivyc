@@ -1244,20 +1244,41 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
                             break;
                             case 'REVALIDACION EN FIRMA':
-                                $movimiento = $movimiento. $especialidad->nombre . ' (REVALIDACION EN FIRMA), ';
-                                $retorno_firma = TRUE;
+                                if($request->tipo_envio == 'captura') {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (REVALIDACION EN FIRMA), ';
+                                    $especialidades[$space]->status = 'EN CAPTURA';
+                                    $modInstructor->status = 'EN CAPTURA';
+                                } else {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (REVALIDACION EN FIRMA), ';
+                                    $retorno_firma = TRUE;
+                                }
                                     unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
                             case 'BAJA EN FIRMA':
-                                $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
-                                $retorno_firma = TRUE;
+                                if($request->tipo_envio == 'captura') {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
+                                    $especialidades[$space]->status = 'EN CAPTURA';
+                                    $modInstructor->status = 'EN CAPTURA';
+                                } else {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
+                                    $retorno_firma = TRUE;
+                                }
                                 unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
                             case 'EN FIRMA':
-                                $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
-                                $retorno_firma = TRUE;
+                                if($request->tipo_envio == 'captura') {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
+                                    $especialidades[$space]->status = 'EN CAPTURA';
+                                    $modInstructor->status = 'EN CAPTURA';
+                                } else {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
+                                    $retorno_firma = TRUE;
+                                }
                                 unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
+                        }
+                        if($especialidades[$space]->hvalidacion == []) {
+                            $especialidades[$space]->hvalidacion = null;
                         }
                     }
                 }
