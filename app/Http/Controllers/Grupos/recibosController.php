@@ -242,9 +242,15 @@ class recibosController extends Controller
                             WHEN max.status is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is null)
                             ELSE max.num_recibo+1
                         END) as num_recibo"),
-                    DB::raw("(
+                    /*DB::raw("(
                         CASE
                             WHEN tc.comprobante_pago IS NOT NULL  THEN 'IMPRENTA'
+                            WHEN tr.status is null THEN 'DISPONIBLE'
+                            ELSE  tr.status
+                        END) as status_recibo"),
+                     */
+                    DB::raw("(
+                        CASE                            
                             WHEN tr.status is null THEN 'DISPONIBLE'
                             ELSE  tr.status
                         END) as status_recibo"),
