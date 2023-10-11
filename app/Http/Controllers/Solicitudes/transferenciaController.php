@@ -94,7 +94,7 @@ class transferenciaController extends Controller
                 $data = $data->whereYear('p.solicitud_fecha', $request->ejercicio);
             }      
             if($request->valor) $data = $data->where(DB::raw('CONCAT(p.num_layout,c.numero_contrato,p.no_memo,tc.nombre)'),'ilike', '%'.$request->valor.'%');
-            $data = $data->wherein('status_recepcion',['VALIDADO']);
+            $data = $data->wherein('status_recepcion',['VALIDADO','recepcion tradicional']);
 
             if($opcional=="excel"){ //UsO EXCLUSIVO PARA GENERAR EL REPORTE EN EXCEL
                 $data = $data->select('c.unidad_capacitacion','c.numero_contrato','p.no_memo','p.solicitud_fecha','tc.clave',                
@@ -115,7 +115,7 @@ class transferenciaController extends Controller
                     DB::raw("CASE 
                         WHEN  p.status_transferencia is NULL  AND f.status!='Finalizado' THEN 'PENDIENTE' 
                         WHEN  p.status_transferencia  = 'PAGADO'  THEN 'PAGADO'
-                        WHEN  f.status='Finalizado' THEN 'PAGADO'
+                        WHEN  f.status = 'Finalizado' THEN 'PAGADO'
                         ELSE p.status_transferencia END as status_layout
                     "),                     
                     DB::raw("CASE 
@@ -129,6 +129,7 @@ class transferenciaController extends Controller
                 ->paginate(15); 
                 $data->appends(['ejercicio' => $request->ejercicio,'unidad' => $request->unidad, 'status_transferencia' => $request->status_transferencia,'valor'=>$request->valor]);
             }
+            //dd($data);
             if($data){ //$_SESSION['data'] = $data;
                 return $data;
             }else $message = "NO SE ENCONTRARON DATOS QUE MOSTRAR, FAVOR DE VOLVER A INTENTAR.";
