@@ -123,7 +123,7 @@
                                 {{-- <option value="Verificando_Pago">VERIFICANDO PAGO</option> --}}
                                 <option value="Pago_Verificado">PAGO VERIFICADO</option>
                                 {{-- <option value="Pago_Rechazado">PAGO RECHAZADO</option> --}}
-                                <option value="Pagado">PAGADO</option>
+                                <option value="Finalizado">PAGADO</option>
                                 <option value="En Espera">PARA VALIDAR DIGITAL</option>
                                 <option value="VALIDADO">VALIDADO</option>
                             </select>
