@@ -25,7 +25,7 @@ class transferenciaController extends Controller
     }
 
     public function index(Request $request){        
-        $data =  $cuentas_retiro = [];
+        $data =  $cuentas_retiro = $numeros_layouts = [];
         $unidades = DB::table('tbl_unidades')->where('cct', 'LIKE', '%07EI%')->orderby('unidad')->pluck('unidad','unidad');
         $anios = MyUtility::ejercicios();
         if(!$request->ejercicio) $request->ejercicio = date('Y');
@@ -39,14 +39,14 @@ class transferenciaController extends Controller
                 $cuentas_retiro['{"'.$k.'":"'.$v.'"}'] = "$k: $v";
             }
             $data = $this->data($request);           
-        }    
-
-        
-                
+        }       
         if(session('message')) $message = session('message');
         elseif(!isset($message)) $message = null;
-            
-        return view('solicitudes.transferencia.index',compact('message','data','unidades', 'cuentas_retiro', 'request','anios'));
+        if($request->status_transferencia=="GENERADO"){
+            $numeros_layouts = DB::table('pagos')->where('status_transferencia','GENERADO')->pluck('num_layout','num_layout');
+        }
+            //dd($numeros_layouts);
+        return view('solicitudes.transferencia.index',compact('message','data','unidades', 'cuentas_retiro', 'request', 'anios', 'numeros_layouts'));
     }
 
     public function excel(Request $request){ 
@@ -179,7 +179,7 @@ class transferenciaController extends Controller
         $num_layout = $request->num_layout;
 
         $dataBBVA = DB::table('pagos as p')
-            ->select(DB::raw("CONCAT(curso,
+            ->select(DB::raw("CONCAT(
                     LPAD(regexp_replace(tc.soportes_instructor->>'no_cuenta','[^a-zA-Z0-9]', '', 'g'), 18, '0'),
                     LPAD('$cuenta_retiro', 18, '0'),'MXP',
                     LPAD(regexp_replace(p.liquido::TEXT, '[^\d.]',''), 16, '0'),                            
