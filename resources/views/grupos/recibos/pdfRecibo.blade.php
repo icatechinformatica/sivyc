@@ -30,7 +30,7 @@
         <table>
             <tr><td class="negro">INFORMACIÓN GENERAL:</td><td></td></tr>
             <tr>
-                <td colspan="2"> <span class="bold"> FOLIO DE GRUPO: </span> {{ $data->folio_grupo }}</td>
+                <td colspan="2"> <span class="bold"> CLAVE: </span> {{ $data->clave }}</td>
                 <td colspan="2"> <span class="bold"> TOTAL BENEFICIADOS: </span> {{ $data->hombre+$data->mujer}} </td>
             </tr>
         </table>
