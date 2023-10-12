@@ -234,17 +234,32 @@ class recibosController extends Controller
                             WHEN tc.tipo = 'PINS' THEN 'ORDINARIO'
                             WHEN tc.tipo = 'EPAR' THEN 'REDUCCIÓN DE CUOTA' 
                         END as tpago"),                       
-                    DB::raw("LEFT(tu.ubicacion,2) as uc"), 'tc.id','tc.clave',
-                    DB::raw("(
+                    DB::raw("LEFT(tu.ubicacion,2) as uc"), 'tc.id','tc.clave',                   
+                    /*
+                    
+                        DB::raw("(
                         CASE
                             WHEN tc.comprobante_pago IS NOT NULL THEN (regexp_match(tc.folio_pago, '[0-9]+'))[1]::INTEGER 
                             WHEN  tr.status is not null THEN tr.num_recibo 
                             WHEN max.status is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is null)
                             ELSE max.num_recibo+1
                         END) as num_recibo"),
-                    DB::raw("(
+
+                        DB::raw("(
                         CASE
                             WHEN tc.comprobante_pago IS NOT NULL  THEN 'IMPRENTA'
+                            WHEN tr.status is null THEN 'DISPONIBLE'
+                            ELSE  tr.status
+                        END) as status_recibo"),
+                     */
+                    DB::raw("(
+                        CASE                            
+                            WHEN  tr.status is not null THEN tr.num_recibo 
+                            WHEN max.status is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is null)
+                            ELSE max.num_recibo+1
+                        END) as num_recibo"),
+                    DB::raw("(
+                        CASE                            
                             WHEN tr.status is null THEN 'DISPONIBLE'
                             ELSE  tr.status
                         END) as status_recibo"),
