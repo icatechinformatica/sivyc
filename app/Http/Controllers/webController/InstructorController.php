@@ -1277,7 +1277,7 @@ class InstructorController extends Controller
                                 unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
                         }
-                        if($especialidades[$space]->hvalidacion == []) {
+                        if(isset($especialidades[$space]->hvalidacion) && $especialidades[$space]->hvalidacion == []) {
                             $especialidades[$space]->hvalidacion = null;
                         }
                     }
