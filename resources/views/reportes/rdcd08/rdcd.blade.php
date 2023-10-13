@@ -3,7 +3,7 @@ $total=$consulta[0]->total;
 $fecha=date("Y-m-d ");
 $mes= date("m");
 $periodo="0";
-switch( $mes){ 
+switch( $mes){
     case($mes <="3"):
     $periodo=3;
     break;
@@ -70,7 +70,7 @@ switch( $mes){
             <td></td>
             <td style="text-align: right;">
                 DIPLOMA  <br><br>
-                CONSTANCIA 
+                CONSTANCIA
             </td>
             <td style="text-align: right;">
                 CURSO( ) <br>
@@ -90,7 +90,7 @@ switch( $mes){
                 <tr>
                     <td>UNIDAD DE CAPACITACIÓN: {{$unidad}}</td>
                     <td align='right'>DIPLOMA</td>
-                    <td align='right'>CURSO( )</td>  
+                    <td align='right'>CURSO( )</td>
                 </tr>
                 <tr>
                     <td>CLAVE CCT: {{$cct->cct}}</td>
@@ -161,12 +161,19 @@ switch( $mes){
                 <td class="variable">@php $total= $total- ($item->expedidos + $item->cancelados); @endphp {{$total}}</td>
             </tr>
             @endforeach
-            @if (count($fcancelados)>0)
+            {{-- @if (count($fcancelados)>0)
             <tr>
-                <td colspan="6" class="variable">@foreach($fcancelados as $alo)FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},@endforeach</td>
+                <td colspan="6" class="variable">
+                    @foreach($fcancelados as $alo)FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},@endforeach
+                </td>
             </tr>
-            @endif
+            @endif --}}
         </table>
+        <div style="margin-top: 50px; border: 1px solid #000;">
+            @if (count($fcancelados)>0)
+                    @foreach($fcancelados as $alo)FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},@endforeach
+            @endif
+        </div>
     </div>
     <br><br><br><br>
     <div>
@@ -177,6 +184,6 @@ switch( $mes){
             </tr>
         </table>
     </div>
-    
+
 </body>
 </html>
