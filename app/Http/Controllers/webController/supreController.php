@@ -743,7 +743,7 @@ class supreController extends Controller
 
                 if($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Cursos->cp > 5) {
                     $Cursos->cp = $Cursos->cp - 1;
-                } else if ($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Cursos->cp > 5) {
+                } else if ($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Cursos->cp == 5) {
                     $Cursos->cp = 55; // este id es del antiguo C.P. 5
                 }
 
@@ -803,13 +803,8 @@ class supreController extends Controller
             if($Cursos->modinstructor == 'HONORARIOS')
             {
 
-                if($inicio >= $criterio_fecha) {
                     $total['iva'] = round($total[0] * 0.16, 2);
                     $total['importe_total'] = round($total[0] + $total['iva'], 2);
-                } else {
-                    $total['iva'] = round($total[0] * 0.16, 2);
-                    $total['importe_total'] = round($total[0] + $total['iva'], 2);
-                }
             }
             else
             {
