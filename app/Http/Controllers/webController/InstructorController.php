@@ -39,10 +39,18 @@ class InstructorController extends Controller
 {
     public function prueba()
     {
-        $impuestos['IVA'] = 770.11;
-        $impuestos['retencion_iva'] = round($impuestos['IVA']/3*2);
+        $Curso = new tbl_curso();
+        $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
+                    'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
+                    'tbl_cursos.folio_pago','movimiento_bancario','fecha_movimiento_bancario',
+                    'factura','fecha_factura','tbl_cursos.inicio')
+                                    ->WHERE('clave', '=', "26U-23-ESDI-EXT-0020")->FIRST();
 
-           dd($impuestos);
+        $inicio = date('Y-m-d', strtotime($Cursos->inicio));
+        if($inicio < date('Y-m-d', strtotime('16-10-2023')) && $Cursos->cp >= 5) {
+            $Cursos->cp = $Cursos->cp - 1;
+        }
+        dd($Cursos->cp);
     }
 
     private function honorarios($total)
