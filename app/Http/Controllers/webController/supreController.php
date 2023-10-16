@@ -733,7 +733,7 @@ class supreController extends Controller
             $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
                     'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
                     'tbl_cursos.folio_pago','movimiento_bancario','fecha_movimiento_bancario',
-                    'factura','fecha_factura','tbl_cursos.inicio')
+                    'factura','fecha_factura','tbl_cursos.fecha_apertura AS inicio')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
 
             if($Cursos != NULL)
@@ -741,8 +741,10 @@ class supreController extends Controller
                 // $inicio = carbon::parse($Cursos->inicio);
                 $inicio = date('Y-m-d', strtotime($Cursos->inicio));
 
-                if($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Cursos->cp >= 5) {
+                if($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Cursos->cp > 5) {
                     $Cursos->cp = $Cursos->cp - 1;
+                } else if ($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Cursos->cp > 5) {
+                    $Cursos->cp = 55; // este id es del antiguo C.P. 5
                 }
 
                 if ($Cursos->ze == 'II')
@@ -768,7 +770,7 @@ class supreController extends Controller
 
                 if($criterio != NULL)
                 {
-                    if($criterio_fecha <= $inicio) {
+                    if($inicio >= $criterio_fecha) {
                         $criterio->monto = ($criterio->monto / 1.16);
                     }
                     if($Cursos->tipo_curso == 'CERTIFICACION')
@@ -801,8 +803,7 @@ class supreController extends Controller
             if($Cursos->modinstructor == 'HONORARIOS')
             {
 
-                if($criterio_fecha <= $inicio) {
-                    $montoSinIva = $total[0] / 1.16;
+                if($inicio >= $criterio_fecha) {
                     $total['iva'] = round($total[0] * 0.16, 2);
                     $total['importe_total'] = round($total[0] + $total['iva'], 2);
                 } else {
