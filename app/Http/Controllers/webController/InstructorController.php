@@ -33,24 +33,30 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport;
+use ZipArchive;
 use PDF;
 
 class InstructorController extends Controller
 {
     public function prueba()
     {
-        $Curso = new tbl_curso();
-        $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
-                    'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
-                    'tbl_cursos.folio_pago','movimiento_bancario','fecha_movimiento_bancario',
-                    'factura','fecha_factura','tbl_cursos.inicio')
-                                    ->WHERE('clave', '=', "26U-23-ESDI-EXT-0020")->FIRST();
+        $zip = new ZipArchive();
+        $zipFileName = public_path('example.zip');
 
-        $inicio = date('Y-m-d', strtotime($Cursos->inicio));
-        if($inicio < date('Y-m-d', strtotime('16-10-2023')) && $Cursos->cp >= 5) {
-            $Cursos->cp = $Cursos->cp - 1;
+        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
+            // Add files or directories to the ZIP archive
+            $zip->addFile(public_path('file1.txt'), 'file1.txt');
+            $zip->addFile(public_path('file2.txt'), 'file2.txt');
+            $zip->addEmptyDir('new_directory');
+
+            $zip->close();
+            dd($zipFileName);
+
+            return 'ZIP archive created successfully.';
+        } else {
+            return 'Failed to create ZIP archive.';
         }
-        dd($Cursos->cp);
+
     }
 
     private function honorarios($total)
@@ -2440,7 +2446,7 @@ class InstructorController extends Controller
         {
             $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
         }
-        $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
+        $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->WHERE('activo',TRUE)->GET();
         $data = tbl_unidades::SELECT('id','unidad','cct')->WHERE('id','!=','0')->GET();
         // dd($unidadUser);
         return view('layouts.pages.frmaddespecialidad', compact('idins','perfil','pago','data','data_especialidad','memosol','unidadUser'));
@@ -2587,7 +2593,7 @@ class InstructorController extends Controller
             $data_espec = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET();
         }
         // dd($especvalid->solicito);
-        $data_pago = criterio_pago::ALL();
+        $data_pago = criterio_pago::Where('id','!=','0')->Where('activo', TRUE)->GET();
         $data_unidad = tbl_unidades::WHERE('id', '!=', 0)->orderBy('unidad', 'ASC')->GET();
         $nomesp = especialidad::ALL();
         $catcursos = curso::SELECT('id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo',

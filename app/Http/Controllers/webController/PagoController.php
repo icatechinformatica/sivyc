@@ -1160,6 +1160,7 @@ class PagoController extends Controller
 
     $zip = new ZipArchive;
     $fileName = 'documentacion_'.$id_contrato.'.rar';
+    $zipFileName = public_path('example.zip');
     $filePath = public_path($fileName);
 
     if ($zip->open($filePath, ZipArchive::CREATE) !== TRUE) {
@@ -1168,6 +1169,7 @@ class PagoController extends Controller
     }
 
         // Add files to the RAR archive
+        $zip->addFile('C:\prueba.pdf', 'solicitud_pago.pdf');
         $zip->addFile($archivos->arch_solicitud_pago, 'solicitud_pago.pdf');
         $zip->addFile($archivos->archivo_bancario, 'banco.pdf');
         $zip->addFile($archivos->instructor_mespecialidad, 'validacion_instructor.pdf');
@@ -1177,6 +1179,7 @@ class PagoController extends Controller
         $zip->addFile($archivos->arch_factura_xml, 'factura_xml.xml');
         $zip->addFile($archivos->arch_contrato, 'contrato.pdf');
         $zip->addFile($archivos->archivo_ine, 'identificacion pdf');
+        dd($zip);
         if(isset($archivos->arch_asistencia))
         {
             $zip->addFile($archivos->arch_asistencia, 'asistencias.pdf');
