@@ -29,8 +29,8 @@ class CursosController extends Controller
 
     private $slug;
     function __construct() {
-        $this->categorias = ['OFICIOS','PROFESIONALIZACIÓN','ESPECIALIZACIÓN','SALUD'];       
-        $this->perfil = [  
+        $this->categorias = ['OFICIOS','PROFESIONALIZACIÓN','ESPECIALIZACIÓN','SALUD'];
+        $this->perfil = [
             'PRIMARIA INCONCLUSA',
             'PRIMARIA TERMINADA',
             'SECUNDARIA INCONCLUSA',
@@ -58,8 +58,8 @@ class CursosController extends Controller
             ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
-            ->GET(); 
-        $this->slug = $roles[0]->role_name; 
+            ->GET();
+        $this->slug = $roles[0]->role_name;
         $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0');
         if($roles[0]->role_name != 'admin' && $roles[0]->role_name != 'auxiliar_paqueteias-todos' && $roles[0]->role_name != 'titular-innovacion'){
             $data = $data->WHERE('cursos.estado', '=', true);
@@ -87,7 +87,7 @@ class CursosController extends Controller
         $unidades = new tbl_unidades();
         $unidadesMoviles = $unidades->SELECT('ubicacion')->orderBy('ubicacion', 'asc')->GROUPBY('ubicacion')->GET();
         $criterioPago = new criterio_pago;
-        $cp = $criterioPago->all();
+        $cp = $criterioPago->Where('id','!=','0')->Where('activo', TRUE)->GET();
         $area = new Area();
         $areas = $area->all();
         $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->ORDERBY('grupo','ASC')->GET();
@@ -174,7 +174,7 @@ class CursosController extends Controller
 
                 if($request->proyecto==true) $proyecto = true;
                 else $proyecto =false;
-                
+
                 if($request->estado==1) $estado = true;
                 elseif($request->estado==2) $estado = false;
                 else $estado = null;
@@ -204,7 +204,7 @@ class CursosController extends Controller
                 $cursos->solicitud_autorizacion = $request->solicitud_autorizacion;
                 $cursos->memo_actualizacion = trim($request->memo_actualizacion);
                 $cursos->memo_validacion = trim($request->memo_validacion);
-                $cursos->cambios_especialidad = trim($request->cambios_especialidad);                
+                $cursos->cambios_especialidad = trim($request->cambios_especialidad);
                 $cursos->categoria = trim($request->categoria);
                 $cursos->tipo_curso = trim($request->tipo_curso);
                 $cursos->rango_criterio_pago_minimo = trim($request->criterio_pago_minimo);
@@ -219,7 +219,7 @@ class CursosController extends Controller
                 $cursos->proyecto = $proyecto;
                 $cursos->estado = $estado;
                 $cursos->servicio = json_encode($request->servicio);
-                $cursos->motivo = trim($request->motivo);                
+                $cursos->motivo = trim($request->motivo);
                 $cursos->iduser_created = Auth::user()->id;
 
                 $cursos->save();
@@ -241,7 +241,7 @@ class CursosController extends Controller
                     # Carga el archivo y obtener la url
                     $documento_memo_validacion = $request->file('documento_memo_validacion'); # obtenemos el archivo
                     $url_memo_validacion = $this->uploaded_file($documento_memo_validacion, $cursosId, 'documento_memo_validacion'); #invocamos el método
-                   
+
                 }
 
                 // validamos el siguiente archivo
@@ -249,14 +249,14 @@ class CursosController extends Controller
                     # Carga el archivo y obtener la url
                     $documento_memo_actualizacion = $request->file('documento_memo_actualizacion'); # obtenemos el archivo
                     $url_memo_actualizacion = $this->uploaded_file($documento_memo_actualizacion, $cursosId, 'documento_memo_actualizacion'); #invocamos el método
-                   
+
                 }
 
-                if ($request->hasFile('file_carta_descriptiva')) { 
+                if ($request->hasFile('file_carta_descriptiva')) {
                     $file_carta_descriptiva = $request->file('file_carta_descriptiva');
                     $url_carta_descriptiva = $this->uploaded_file($file_carta_descriptiva, $cursosId, 'carta_descriptiva');
                 }
-        
+
                 if($url_solicitud_autorizacion OR $url_memo_validacion OR $url_memo_actualizacion OR $url_carta_descriptiva ){
                     $cursoUpdate = curso::find($cursosId);
                     if($url_solicitud_autorizacion) $cursoUpdate->documento_solicitud_autorizacion = $url_solicitud_autorizacion;
@@ -294,7 +294,7 @@ class CursosController extends Controller
             $unidades = new tbl_unidades();
             $unidadesMoviles = $unidades->SELECT('ubicacion')->GROUPBY('ubicacion')->ORDERBY('ubicacion','ASC')->GET();
             $criterioPago = new criterio_pago;
-            $criterio_pago = $criterioPago->all();
+            $criterio_pago = $criterioPago->Where('id','!=','0')->Where('activo', TRUE)->GET();
             $servicios = ['CURSO'=>'CURSO','CERTIFACION'=>'CERTIFACION'];
             $idCurso = base64_decode($id);
             $curso = new curso();
@@ -421,7 +421,7 @@ class CursosController extends Controller
         if (isset($id)) {
             $gv = [];
             $dp = [];
-            if($request->unidad_accion_movil == '0') $uniamov = trim($request->unidad_ubicacion_especificar);                
+            if($request->unidad_accion_movil == '0') $uniamov = trim($request->unidad_ubicacion_especificar);
             else $uniamov = trim($request->unidad_accion_movil);
 
             $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->ORDERBY('grupo', 'ASC')->GET();
@@ -452,47 +452,47 @@ class CursosController extends Controller
                             }
                         }
                     }
-                }   
-           
+                }
+
 
             # ==================================
             # Aquí modificamos el curso con id
             # ==================================
             $cursos = new curso();
             $curso = $cursos->WHERE('id', '=', $id)->GET();
-            
+
             $url_solicitud_autorizacion = $url_memo_validacion = $url_memo_actualizacion = $url_carta_descriptiva = null;
             // validamos si hay archivos
-            if ($request->hasFile('documento_solicitud_autorizacion')) { 
+            if ($request->hasFile('documento_solicitud_autorizacion')) {
                 $documento_solicitud_autorizacion = $request->file('documento_solicitud_autorizacion'); # obtenemos el archivo
-                $url_solicitud_autorizacion = $this->uploaded_file($documento_solicitud_autorizacion, $id, 'documento_solicitud_autorizacion_update', $curso[0]->documento_solicitud_autorizacion); #invocamos el método                
-            }  
-
-            // validamos el siguiente archivo
-            if ($request->hasFile('documento_memo_validacion')) { 
-                $documento_memo_validacion = $request->file('documento_memo_validacion'); # obtenemos el archivo
-                $url_memo_validacion = $this->uploaded_file($documento_memo_validacion, $id, 'documento_memo_validacion_update',$curso[0]->documento_memo_validacion); #invocamos el método
-                
+                $url_solicitud_autorizacion = $this->uploaded_file($documento_solicitud_autorizacion, $id, 'documento_solicitud_autorizacion_update', $curso[0]->documento_solicitud_autorizacion); #invocamos el método
             }
 
             // validamos el siguiente archivo
-            if ($request->hasFile('documento_memo_actualizacion')) {       
+            if ($request->hasFile('documento_memo_validacion')) {
+                $documento_memo_validacion = $request->file('documento_memo_validacion'); # obtenemos el archivo
+                $url_memo_validacion = $this->uploaded_file($documento_memo_validacion, $id, 'documento_memo_validacion_update',$curso[0]->documento_memo_validacion); #invocamos el método
+
+            }
+
+            // validamos el siguiente archivo
+            if ($request->hasFile('documento_memo_actualizacion')) {
                 $documento_memo_actualizacion = $request->file('documento_memo_actualizacion'); # obtenemos el archivo
                 $url_memo_actualizacion = $this->uploaded_file($documento_memo_actualizacion, $id, 'documento_memo_actualizacion_update',$curso[0]->documento_memo_actualizacion); #invocamos el método
             }
-            
-            if ($request->hasFile('file_carta_descriptiva')) { 
+
+            if ($request->hasFile('file_carta_descriptiva')) {
                 $file_carta_descriptiva = $request->file('file_carta_descriptiva');
                 $url_carta_descriptiva = $this->uploaded_file($file_carta_descriptiva, $id, 'carta_descriptiva',$curso[0]->file_carta_descriptiva);
             }
 
             if($request->proyecto==true) $proyecto = true;
             else $proyecto =false;
-            
+
             if($request->estado==1) $estado = true;
             elseif($request->estado==2) $estado = false;
             else $estado = null;
-           
+
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
@@ -511,9 +511,9 @@ class CursosController extends Controller
                 'solicitud_autorizacion' => (isset($request->solicitud_autorizacion)) ? $request->solicitud_autorizacion : false,
                 'memo_actualizacion' => trim($request->memo_actualizacion),
                 'memo_validacion' => trim($request->memo_validacion),
-                'cambios_especialidad' => trim($request->cambios_especialidad),                
+                'cambios_especialidad' => trim($request->cambios_especialidad),
                 'categoria' => trim($request->categoria),
-                'tipo_curso' => trim($request->tipo_curso),                
+                'tipo_curso' => trim($request->tipo_curso),
                 'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
                 'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
                 'grupo_vulnerable' => $gv,
@@ -525,12 +525,12 @@ class CursosController extends Controller
                 'updated_at' =>date('Y-m-d h:m:s'),
                 'iduser_updated' => Auth::user()->id
 
-            ];            
-            if($url_solicitud_autorizacion!=NULL) $array += ['documento_solicitud_autorizacion' => $url_solicitud_autorizacion]; 
+            ];
+            if($url_solicitud_autorizacion!=NULL) $array += ['documento_solicitud_autorizacion' => $url_solicitud_autorizacion];
             if($url_memo_validacion!=NULL)$array += ['documento_memo_validacion' => $url_memo_validacion];
             if($url_memo_actualizacion!=NULL)$array += ['documento_memo_actualizacion' => $url_memo_actualizacion];
             if($url_carta_descriptiva!=NULL)$array += ['file_carta_descriptiva' => $url_carta_descriptiva];
-            
+
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
 
             //var_dump($array);exit;
@@ -565,7 +565,7 @@ class CursosController extends Controller
     }
 
     public function exportar_cursos($xls)
-    {   
+    {
         $fecha = date("dmy");
         switch($xls){
             case 'ACTIVOS':
@@ -577,7 +577,7 @@ class CursosController extends Controller
                 $nombreLayout = "CATALOGO DE ".$file_name[$xls]."_".$fecha.'.xlsx';
                 return (new xlsCursosDV($xls))->download($nombreLayout);
             break;
-        }            
+        }
     }
 
     public function alta_baja_save(Request $request)
@@ -753,26 +753,26 @@ class CursosController extends Controller
         return $stat;
     }
 
-    protected function uploaded_file($file, $id, $name, $name_old=null){       
+    protected function uploaded_file($file, $id, $name, $name_old=null){
         $ext = $file->getClientOriginalExtension(); // extension de la imagen
         $ext = strtolower($ext);
-        $url = $mgs= null;        
+        $url = $mgs= null;
         if($ext == "pdf"){
-            if ($name_old) {            
-                if (Storage::exists($name_old)) Storage::delete($name_old);                
-            } 
+            if ($name_old) {
+                if (Storage::exists($name_old)) Storage::delete($name_old);
+            }
             $fecha = date("ymdhms");
             $path_pdf = "/uploadFiles/cursos/".$id."/";
 
             $file_name = trim($name."_".$fecha."_".$id.".pdf");
             $path_file = $path_pdf.$file_name;
 
-            $file->storeAs($path_pdf, $file_name); 
-            $msg = "El archivo ha sido cargado o reemplazado correctamente.";            
+            $file->storeAs($path_pdf, $file_name);
+            $msg = "El archivo ha sido cargado o reemplazado correctamente.";
         }else $msg= "Formato de Archivo no válido, sólo PDF.";
-                
+
         $data_file = ["message"=>$msg, 'url_file'=>$path_file];
-       
+
         return $path_file;
     }
 
