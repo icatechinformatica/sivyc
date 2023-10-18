@@ -14,7 +14,7 @@
         <h1>UNIDAD DE CAPACITACIÓN {{$data->ubicacion}}</h1>    
         <table> 
             <tr>
-            <td class="negro" style="width:15%;">RECIBO No.</td><td style="width:33%;"> <span class="bold" style="font-size: 18px;"> {{$data->uc}}</span> <span class="rojo">{{$data->num_recibo}}</span></td>
+            <td class="negro" style="width:15%;">RECIBO No.</td><td style="width:33%;"> <span class="bold" style="font-size: 18px;"> {{$data->uc}}</span> <span class="rojo">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</span></td>
             <td class="negro" style="width:17%;">BUENO POR &nbsp;$</td><td style="width:35%; font-size: 18px;">{{ number_format($data->costo, 2, ".", ",")}}</td></tr>
         </table>
         <table>
@@ -30,7 +30,7 @@
         <table>
             <tr><td class="negro">INFORMACIÓN GENERAL:</td><td></td></tr>
             <tr>
-                <td colspan="2"> <span class="bold"> FOLIO DE GRUPO: </span> {{ $data->folio_grupo }}</td>
+                <td colspan="2"> <span class="bold"> CLAVE: </span> {{ $data->clave }}</td>
                 <td colspan="2"> <span class="bold"> TOTAL BENEFICIADOS: </span> {{ $data->hombre+$data->mujer}} </td>
             </tr>
         </table>

@@ -31,7 +31,7 @@
                 <div class="row form-inline"> 
                     <div class="form-group col-md-6"> <h4>DEL CURSO</h4> </div>    
                     <div class="form-group col-md-6 justify-content-end ">                        
-                        <h4 class="bg-light p-2">&nbsp; RECIBO No. &nbsp;<span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{$data->num_recibo}}</b>&nbsp;</span> &nbsp;</h4>
+                        <h4 class="bg-light p-2">&nbsp; RECIBO No. &nbsp;<span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</b>&nbsp;</span> &nbsp;</h4>
                         @if($data->status_recibo == 'DISPONIBLE') 
                             <h4 class="text-center text-white p-2" style="background-color: #33A731;">&nbsp;DISPONIBLE &nbsp;</h4>
                         @elseif($data->status_recibo == 'ENVIADO') 
@@ -87,7 +87,7 @@
                     <hr/> 
                 @endif                 
                 <div class="row w-100 form-inline justify-content-end">                    
-                    <h5 class="bg-light p-2">RECIBO No. <span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{$data->num_recibo}}</b>&nbsp;</span></h5>
+                    <h5 class="bg-light p-2">RECIBO No. <span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</b>&nbsp;</span></h5>
                     @if($data->file_pdf)
                             <a class="nav-link pt-0" href="{{$path_files}}{{ $data->file_pdf}}" target="_blank">
                                 <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>

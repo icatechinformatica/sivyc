@@ -724,50 +724,29 @@ class supreController extends Controller
 
     protected function getcursostats(Request $request)
     {
+        $criterio_fecha = date('Y-m-d', strtotime('12-10-2023'));
         if (isset($request->valor)){
             $total=[];
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $claveCurso = $request->valor;//$request->valor;
             $Curso = new tbl_curso();
             $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
-                    'tbl_cursos.modinstructor', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso',
+                    'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
                     'tbl_cursos.folio_pago','movimiento_bancario','fecha_movimiento_bancario',
-                    'factura','fecha_factura')
+                    'factura','fecha_factura','tbl_cursos.fecha_apertura AS inicio')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
 
             if($Cursos != NULL)
             {
                 // $inicio = carbon::parse($Cursos->inicio);
                 $inicio = date('Y-m-d', strtotime($Cursos->inicio));
-                // $date1 = "2022-11-01";
 
+                if($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Cursos->cp > 5) {
+                    $Cursos->cp = $Cursos->cp - 1;
+                } else if ($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Cursos->cp == 5) {
+                    $Cursos->cp = 55; // este id es del antiguo C.P. 5
+                }
 
-                // $date1 = carbon::parse($date1);
-                // // $date1 = strtotime($date1);
-                // // dd($inicio);
-
-                // if ($date1 <= $inicio)
-                // {
-                //     $ze2 = 'ze2_2022 AS monto';
-                //     $ze3 = 'ze3_2022 AS monto';
-                //     // dd(gettype($date1) . ' entro1 ' . gettype($inicio));
-                // }
-                // else
-                // {
-                //     $ze2 = 'ze2_2021 AS monto';
-                //     $ze3 = 'ze3_2021 AS monto';
-                //     // dd(gettype($date1) . ' entro2 ' . gettype($inicio));
-                // }
-
-                // if ($Cursos->ze == 'II')
-                // {
-                //     $criterio = criterio_pago::SELECT($ze2)->WHERE('id', '=' , $Cursos->cp)->FIRST();
-                // }
-                // else
-                // {
-                //     $criterio = criterio_pago::SELECT($ze3)->WHERE('id', '=' , $Cursos->cp)->FIRST();
-                //     // printf('hola');
-                // }
                 if ($Cursos->ze == 'II')
                 {
                     $queryraw = "jsonb_array_elements(ze2->'vigencias') AS vigencia";
@@ -791,6 +770,9 @@ class supreController extends Controller
 
                 if($criterio != NULL)
                 {
+                    if($inicio >= $criterio_fecha) {
+                        $criterio->monto = ($criterio->monto / 1.16);
+                    }
                     if($Cursos->tipo_curso == 'CERTIFICACION')
                     {
                         array_push($total, $criterio->monto * 10);
@@ -799,8 +781,8 @@ class supreController extends Controller
                     }
                     else
                     {
-                        array_push($total, $criterio->monto * $Cursos->dura);
-                        array_push($total, $Cursos->modinstructor);
+                            array_push($total, $criterio->monto * $Cursos->dura);
+                            array_push($total, $Cursos->modinstructor);
                     }
                 }
                 else
@@ -820,8 +802,9 @@ class supreController extends Controller
 
             if($Cursos->modinstructor == 'HONORARIOS')
             {
-                $total['iva'] = round($total[0] * 0.16, 2);
-                $total['importe_total'] = round($total[0] + $total['iva'], 2);
+
+                    $total['iva'] = round($total[0] * 0.16, 2);
+                    $total['importe_total'] = round($total[0] + $total['iva'], 2);
             }
             else
             {
@@ -835,6 +818,7 @@ class supreController extends Controller
         }
 
         // dd($Cursos->inicio);
+
         return $json;
     }
 

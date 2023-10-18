@@ -146,9 +146,26 @@
                     </div>
                     <input type="hidden" name="unidad_" id="unidad_" value="{{ $unidad }}">
                     <input type="hidden" name="mes_" id="mes_" value="{{ $mesSearch }}">
+                    @if (isset($mesSearch))
+                        <div>
+                            <a class="btn btn-danger" id="resumen_unidad" name="resumen_unidad" data-toggle="modal" data-placement="top" data-target="#resumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
+                                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                &nbsp;MEMORANDUM RESPUESTA A UNIDAD
+                            </a>
+                            <a class="btn btn-danger" id="subir_resumen_unidad" name="subir_resumen_unidad" data-toggle="modal" data-placement="top" data-target="#subirResumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
+                                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                &nbsp;CARGAR RESPUESTA A UNIDAD
+                            </a>
+                            @if(isset($formato_respuesta->resumen_formatot_unidad))
+                                <a class="btn btn-danger" id="pdf_resumen" name="pdf_resumen" target="_blank" href="{{$formato_respuesta->resumen_formatot_unidad}}">
+                                    <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                    &nbsp; VER PDF CARGADO
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </form>
-
             <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}" target="_self">
                 @csrf
                 <div class="form-row">
@@ -914,6 +931,24 @@
                 </div>
             </form>
         @else
+            @if (isset($mesSearch))
+                <div>
+                    <a class="btn btn-danger" id="resumen_unidad" name="resumen_unidad" data-toggle="modal" data-placement="top" data-target="#resumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
+                        <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                        &nbsp;MEMORANDUM RESPUESTA A UNIDAD
+                    </a>
+                    <a class="btn btn-danger" id="subir_resumen_unidad" name="subir_resumen_unidad" data-toggle="modal" data-placement="top" data-target="#subirResumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
+                        <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                        &nbsp;CARGAR RESPUESTA A UNIDAD
+                    </a>
+                    @if(isset($formato_respuesta->resumen_formatot_unidad))
+                        <a class="btn btn-danger" id="pdf_resumen" name="pdf_resumen" target="_blank" href="{{$formato_respuesta->resumen_formatot_unidad}}">
+                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                            &nbsp; VER PDF CARGADO
+                        </a>
+                    @endif
+                </div>
+            @endif
             <h2><b>NO  SE ENCONTRARON REGISTROS</b></h2>
         @endif
         <br>
@@ -954,6 +989,72 @@
         </div>
     </div>
     <!--MODAL FORMULARIO ENDS-->
+    <!-- Modal Resumen a Unidad-->
+    <div class="modal fade" id="resumenUnidadModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Resumen de Formato T para Unidad</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center">
+                    <div style="text-align:center" class="form-group">
+                        <form method="POST" action="{{ route('resumen.unidad.formatot') }}" id="resumen_formatot_pdf">
+                            @csrf
+                            <div class="form-row">
+                                <div class="form-group col-md-2"></div>
+                                <div class="form-group col-md-8">
+                                    <label for="memo_reporte_unidad" class="form">Numero de Memorandum</label>
+                                    <input type="text" class="form-control" name="memo_reporte_unidad" id="memo_reporte_unidad" required>
+                                </div>
+                                <div class="form-group col-md-2"></div>
+                            </div>
+                            <input id="mes_reporte" name="mes_reporte" hidden>
+                            <input id="unidad_reporte" name="unidad_reporte" hidden>
+                            <button style="text-align: left; font-size: 10px; mbackground-color: #12322B;" type="button" class="btn btn" data-dismiss="modal">Cancelar</button>
+                            <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Generar PDF</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END -->
+    <!-- Modal Subir Resumen a Unidad-->
+    <div class="modal fade" id="subirResumenUnidadModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center">
+                    <div style="text-align:center" class="form-group">
+                        <p>¿Esta Seguro de subir el Documento?</p>
+                        <form method="POST" action="{{ route('subir.resumen.unidad.formatot') }}" id="resumen_formatot_pdf" enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-row">
+                                <div class="form-group col-md-2"></div>
+                                <div class="form-group col-md-8">
+                                    <label for="subir_memo_reporte_unidad" class="form">Numero de Memorandum</label>
+                                    <input type="file" accept="application/pdf" class="form-control" name="subir_memo_reporte_unidad" id="subir_memo_reporte_unidad" required>
+                                </div>
+                                <div class="form-group col-md-2"></div>
+                            </div>
+                            <input id="subir_mes_reporte" name="mes_reporte" hidden>
+                            <input id="subir_unidad_reporte" name="unidad_reporte" hidden>
+                            <button style="text-align: left; font-size: 10px; mbackground-color: #12322B;" type="button" class="btn btn" data-dismiss="modal">Cancelar</button>
+                            <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Subir PDF</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END -->
 @endsection
 
 @section('script_content_js')
@@ -1096,6 +1197,22 @@
                 input.setAttribute('type', 'hidden') //set the type, like "hidden" or other
                 form.appendChild(input); //append the input to the form
                 form.submit(); //send with added input
+            });
+
+            $('#resumenUnidadModal').on('show.bs.modal', function(event){
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                // console.log(id['1'])
+                document.getElementById('mes_reporte').value = id['0'];
+                document.getElementById('unidad_reporte').value = id['1'];
+            });
+
+            $('#subirResumenUnidadModal').on('show.bs.modal', function(event){
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                // console.log(id['1'])
+                document.getElementById('subir_mes_reporte').value = id['0'];
+                document.getElementById('subir_unidad_reporte').value = id['1'];
             });
 
         });

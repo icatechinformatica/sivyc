@@ -475,11 +475,15 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-12" style="text-align:center;width:100%">
-                            <button class="btn mr-sm-4 mt-3 btn-danger" >Retornar a unidad</button>
+                        <div class="form-group col-md-6" style="text-align:center;width:100%">
+                            <button id='guardar' class="btn mr-sm-4 mt-3 btn-danger" type="submit" class="btn" value="firma" onclick="guardado(this.value)">Retornar a Firma</button>
+                        </div>
+                        <div class="form-group col-md-6" style="text-align:center;width:100%">
+                            <button id='guardar' class="btn mr-sm-4 mt-3 btn-danger" type="submit" class="btn" value="captura" onclick="guardado(this.value)">Retornar a Captura</button>
                         </div>
                     </div>
                     <br>
+                    <input id="tipo_envio" name="tipo_envio" hidden>
                     <input hidden  name="idinstructoresreturn" id="idinstructoresreturn">
                 </form>
             </div>
@@ -849,5 +853,21 @@
             // console.log(id)
             document.getElementById('idinsvalidarbaja').value = id;
         });
+
+        function guardado(buttonValue) {
+            // Código de la función aquí
+            console.log(buttonValue);
+            var confirmacion = confirm("¿Está seguro de continuar?");
+            document.getElementById('tipo_envio').value = buttonValue;
+
+            // Si el usuario hace clic en "Aceptar", continuar con el envío del formulario
+            if (confirmacion) {
+                return true;
+            }
+            // Si el usuario hace clic en "Cancelar", detener el envío del formulario
+            else {
+                return false;
+            }
+        }
     </script>
 @endsection

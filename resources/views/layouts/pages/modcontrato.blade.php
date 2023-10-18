@@ -2,6 +2,18 @@
 <!--llamar a la plantilla -->
 @section('title', 'Modificación de Contrato | Sivyc Icatech')
 <!--seccion-->
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+        -moz-appearance:textfield; /* Firefox */
+    }
+</style>
 @section('content')
     <div class="container g-pt-50">
         <form action="{{ route('contrato-savemod') }}" method="post" id="registercontrato"  enctype="multipart/form-data">
@@ -208,7 +220,7 @@
                     </div> --}}
                     <div class="form-group col-md-3">
                         <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
-                        <input type="text" name="liquido" id="liquido" class="form-control" @if(isset($datap)) value="{{$datap->liquido}}" @endif>
+                        <input type="number" step="0.01" name="liquido" id="liquido" class="form-control" @if(isset($datap)) value="{{$datap->liquido}}" @endif>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputfolio_fiscal" class="control-label">Folio Fiscal</label>
@@ -217,7 +229,7 @@
                 @else
                     <div class="form-group col-md-3">
                         <label for="inputliquido" class="control-label">Importe</label>
-                        <input type="text" name="liquido" id="liquido" class="form-control" @if(isset($datap)) value="{{$datap->liquido}}" @endif>
+                        <input type="number" step="0.01" name="liquido" id="liquido" class="form-control" @if(isset($datap)) value="{{$datap->liquido}}" @endif>
                     </div>
                 @endif
             </div>

@@ -9,4 +9,5 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/solicitudes/transferencia/generar', 'Solicitudes\transferenciaController@generar')->name('solicitudes.transferencia.generar')->middleware('can:solicitudes.transferencia');
     Route::get('/solicitudes/transferencia/deshacer', 'Solicitudes\transferenciaController@deshacer')->name('solicitudes.transferencia.deshacer')->middleware('can:solicitudes.deshacer');
     Route::post('/solicitudes/transferencia/deshacer', 'Solicitudes\transferenciaController@deshacer')->name('solicitudes.transferencia.deshacer')->middleware('can:solicitudes.deshacer');
+    Route::post('/solicitudes/transferencia/excel', 'Solicitudes\transferenciaController@excel')->name('solicitudes.transferencia.excel')->middleware('can:solicitudes.transferencia');
 });
