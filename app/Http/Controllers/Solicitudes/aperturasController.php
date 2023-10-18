@@ -533,10 +533,7 @@ class aperturasController extends Controller
             })                    
         ->groupby(DB::raw('left(clave,LENGTH(clave)-4)'))
         ->pluck('clave','clave');         
-
-        if($maxs) $no_mayor = DB::table('tbl_cursos')->where('munidad',$memo)->whereNotin('clave',$maxs)->Exists();
-        
-        if(!$no_mayor) return true;
+        if( DB::table('tbl_cursos')->where('munidad', $memo)->whereIn('clave', $maxs)->count() == count($maxs)) return true;
         else return false;
 
     }
