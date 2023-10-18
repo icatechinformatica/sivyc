@@ -70,7 +70,7 @@
                                     <td class="p-2">{{ $item->instructor }} <br/>  RFC: {{ $item->rfc }} </td>                                
                                     <td class="p-2">{{ $item->folio_fiscal }}</td>                                
                                     <td class="p-2">{{ $item->banco }}: {{ $item->cuenta }} <br/> {{ $item->clabe }}</td>
-                                    <td class=" text-right p-2">{{ $item->importe_neto }}</td>
+                                    <td class=" text-right p-2">{{ number_format($item->importe_neto, 2, '.', ',') }}</td>
                                     <td class="text-center p-2"> 
                                         @if($item->factura)
                                             <a class="nav-link" href="{{ $item->factura}}" target="_blank">
@@ -140,15 +140,19 @@
             {{ Form::open(['method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data','accept-charset'=>'UTF-8']) }}
                 @csrf                          
                 @can('transferencia.pagado') 
-                    @if($request->status_transferencia == "PENDIENTE" )
+                    @if(in_array($request->status_transferencia, ["PENDIENTE"]))
                         {{ Form::date('fecha_pago',old('fecha_pago'), ['id'=>'fecha_pago', 'class' => 'form-control mr-sm-3', 'placeholder' => 'dd/mm/aaaa', 'title' => 'FECHA DE PAGO']) }} 
                     @endif
                 @endcan
                 @can('transferencia.layout')
-                    @if(count($data)>0 AND ($request->status_transferencia == "PENDIENTE" OR $request->status_transferencia == "MARCADO" OR $request->status_transferencia == "GENERADO" ))
-                    
+                    @if(count($data)>0 AND ($request->status_transferencia == "PENDIENTE" OR $request->status_transferencia == "MARCADO" OR $request->status_transferencia == "GENERADO" ))                    
                         {{ Form::select('cuenta_retiro', $cuentas_retiro, null ,array('id'=>'cuenta_retiro','class' => 'form-control  mr-sm-3')) }}
-                        {{ Form::text('num_layout',old('num_layout'), ['id'=>'num_layout', 'class' => 'form-control mr-sm-3', 'placeholder' => '#LAYOUT', 'title' => '#LAYOUT','size' => 25]) }}        
+                        @if($request->status_transferencia == "GENERADO")
+                            {{ Form::select('num_layout', $numeros_layouts, null ,array('id'=>'num_layout','class' => 'form-control  mr-sm-3')) }}
+                        @else
+                            {{ Form::text('num_layout',old('num_layout'), ['id'=>'num_layout', 'class' => 'form-control mr-sm-3', 'placeholder' => '#LAYOUT', 'title' => '#LAYOUT','size' => 25]) }}
+                        @endif
+                        
                         @if($request->status_transferencia == "GENERADO")
                                 {{ Form::select('movimiento', ['DESHACER'=>'DESHACER GENERADOS', 'PAGADO' =>'SUBIR PAGADOS'], '', ['id'=>'movimiento','class' => 'form-control  col-md-3 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }} 
                                 {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger']) }}
