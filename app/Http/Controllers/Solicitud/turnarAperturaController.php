@@ -402,7 +402,8 @@ class turnarAperturaController extends Controller
             if(count($reg_cursos)>0){               
                 if(preg_match('/unidad\b/',$this->data['slug'])){
                     $asigna_fecha = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->whereNull('fecha_arc01')->update(['fecha_arc01'=>$request->fecha]);                   
-                }elseif( $reg_cursos[0]->fecha_arc01) $fecha_memo = $reg_cursos[0]->fecha_arc01;
+                }
+                if( $reg_cursos[0]->fecha_arc01) $fecha_memo = $reg_cursos[0]->fecha_arc01;
                 
                 
                //CONVERSION DE FECHA                
