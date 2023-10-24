@@ -91,10 +91,12 @@ class transferenciaController extends Controller
                         $data = $data->where('p.status_transferencia', $request->status_transferencia)->whereYear('p.fecha_transferencia', $request->ejercicio);
                     break;
                 }                    
-            }else{
-                $data = $data->whereYear('p.solicitud_fecha', $request->ejercicio);
-            }      
+            }
+            
+            
             if($request->valor) $data = $data->where(DB::raw('CONCAT(p.num_layout,c.numero_contrato,p.no_memo,tc.nombre,c.folio_fiscal,tc.clave)'),'ilike', '%'.$request->valor.'%');
+            else $data = $data->whereYear('p.solicitud_fecha', $request->ejercicio);
+
             $data = $data->wherein('status_recepcion',['VALIDADO','recepcion tradicional']);
 
             if($opcional=="excel"){ //UsO EXCLUSIVO PARA GENERAR EL REPORTE EN EXCEL

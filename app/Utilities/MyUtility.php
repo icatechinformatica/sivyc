@@ -1,5 +1,6 @@
 <?php
 namespace App\Utilities;
+use Illuminate\Support\Facades\Storage;
 
 class MyUtility
 {
@@ -60,5 +61,26 @@ class MyUtility
             $parteDecimal = " $decimal/100 MN ";
         } else $parteDecimal = " 00/100 MN ";
         return strtoupper(trim($parteEntera) . " $pesos" . $parteDecimal );
+    }
+
+    public static function upload_file($path, $file, $name, $file_delete){       
+        //php artisan storage:link
+        $ext = $file->getClientOriginalExtension();
+        $ext = strtolower($ext);
+        $mgs= null;
+        $up = false;
+        if($ext == "pdf"){                 
+            $up = Storage::disk('public')->put($path.$name, file_get_contents($file));
+            if($up){                
+                if(Storage::exists($file_delete)){
+                    Storage::delete($file_delete);
+                    $msg = "El archivo ha sido reemplazado correctamente!";
+                }else $msg = "El archivo ha sido cargado correctamente!";
+            }
+        }else $msg= "Formato de Archivo no válido, sólo PDF.";
+                
+        $data_file = ["message"=>$msg, 'url_file'=>$path, 'up'=>$up];
+       
+        return $data_file;
     }
 }
