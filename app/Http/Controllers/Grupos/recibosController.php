@@ -4,7 +4,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+
 use App\Utilities\MyUtility;
 use App\Models\Unidad;
 use Carbon\Carbon;
@@ -16,15 +16,15 @@ class recibosController extends Controller
     function __construct() {  
         session_start(); 
         $this->middleware('auth');
-        $this->path_pdf = "/UNIDAD/recibos_pago/";        
-        $this->path_files = env("APP_URL").'/storage/uploadFiles';        
+        $this->path = "/expedientes/";
+        $this->path_files = env("APP_URL").'/storage/';
         $this->middleware(function ($request, $next) {   
             $this->user = Auth::user();
             $this->ubicacion = Unidad::where('id',$this->user->unidad)->value('ubicacion');
            if($this->user->roles[0]->slug =="admin")
-                $this->unidades = Unidad::pluck('unidad');
+                $this->unidades = Unidad::orderby('unidad')->pluck('unidad','unidad');
             else
-                $this->unidades = Unidad::where('ubicacion',$this->ubicacion)->pluck('unidad');            
+                $this->unidades = Unidad::where('ubicacion',$this->ubicacion)->orderby('unidad')->pluck('unidad','unidad');
             return $next($request);
         });       
     }
@@ -39,26 +39,34 @@ class recibosController extends Controller
         if(session('message')) $message = session('message');
 
         if($data){            
-            if($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'DESHACER'=>'DESHACER ASIGNACION'];
-            elseif (!in_array($data->status_recibo, ['ENVIADO','DISPONIBLE','IMPRENTA'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF'];
-
-            if($data->status_recibo=="ENVIADO") $movimientos = [ 'RECHAZADAR' => 'SOLICITUD DE RETORNO', 'REEMPLAZAR'=>'SOLICITUD DE REEMPLAZO DE RECIBO', 'CANCELAR' => 'SOLICITUD DE CANCELACIÓN'];
+            if($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS', 'DESHACER'=>'DESHACER ASIGNACION'];
+            elseif(!$data->status_curso and !in_array($data->status_folio, ['DISPONIBLE','IMPRENTA'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];            
+            
+            if($data->status_folio=="ENVIADO" and $data->status_curso=='CANCELADO') $movimientos = [ 'CANCELAR' => 'CANCELAR'];
+            elseif($data->status_folio=="ENVIADO" and $data->status_curso) $movimientos = [ 'SOPORTES' => 'SOLICITUD DE CAMBIO SOPORTES'];
         }     
         $path_files = $this->path_files;
         return  view('grupos.recibos.index', compact('message','data', 'request','movimientos','path_files')); 
     } 
     
-    public function buscar(Request $request){ 
+    public function buscar(Request $request){ //dd($request->unidad);
         $data = $message = [];
         if(!$request->ejercicio)$request->ejercicio = date('Y');
-        $data = DB::table('tbl_cursos as tc')  
-            ->select('tc.curso','tc.nombre','tc.hombre','tc.mujer', 'tc.costo','tc.inicio','tc.termino','tc.hini','tc.hfin',
-                'tc.clave','tc.folio_grupo',
+        if(!$request->status and !$request->folio_grupo) $request->status = "PENDIENTES";
+
+        $data = DB::table('tbl_cursos as tc')             
+            ->select('tc.curso','tc.nombre','tc.hombre','tc.mujer', 'tc.costo','tc.inicio','tc.termino','tc.hini','tc.hfin','tc.folio_grupo',
                 DB::raw("CASE 
-                    WHEN tr.status='CANCELADO' THEN 'CANCELADO' 
-                    WHEN tr.status='ENVIADO' THEN 'ENVIADO' 
-                    ELSE 'ASIGNADO'  
-                    END as status_recibo"),
+                    WHEN tc.clave ='0' and tc.status_curso IS NULL THEN 'EN TRAMITE UNIDAD' 
+                    WHEN tc.clave ='0' and tc.status_curso IS NOT NULL THEN 'EN TRAMITE DTA' 
+                    ELSE tc.clave
+                    END as clave"),
+                DB::raw("CASE 
+                    WHEN tr.status_folio='CANCELADO' THEN 'CANCELADO' 
+                    WHEN tr.status_folio='ENVIADO' THEN 'ENVIADO'
+                    WHEN tc.comprobante_pago <> 'null' OR tr.folio_grupo <>'null' THEN 'ASIGNADO'
+                    ELSE 'PENDIENTE'                     
+                    END as status_folio"),
                 DB::raw("
                     CASE 
                         WHEN tc.folio_pago <> 'null' THEN tc.folio_pago
@@ -73,26 +81,59 @@ class recibosController extends Controller
                     END as file_pdf
 
                 "),                
-                
-                'tu.ubicacion')          
-            ->wherein('tc.unidad',$this->unidades)
-            ->whereYear('tc.inicio', $request->ejercicio)->where('tc.status_curso','AUTORIZADO')->where('tc.tipo','!=','EXO');
+                'tu.unidad');         
+            $data = $data->wherein('tc.unidad',$this->unidades);
             if($request->folio_grupo){
-                $data = $data->where(DB::raw('CONCAT(folio_recibo,tc.folio_grupo,tc.clave)'),'LIKE','%'.$request->folio_grupo.'%');
-            }
-            
+                    $data = $data->where(DB::raw('CONCAT(folio_recibo,tc.folio_grupo,tc.clave)'),'ILIKE','%'.$request->folio_grupo.'%');
+                    $request->unidad = $request->status = null;
+            }else{ 
+                $data = $data->whereYear('tc.inicio', $request->ejercicio);
+                if($request->unidad) $data = $data->where('tc.unidad', $request->unidad); 
+
+                if($request->status){
+                    switch($request->status){    
+                        case "PENDIENTES":
+                            $data = $data->where('tc.status_curso', NULL)->whereNull('tc.comprobante_pago')
+                                ->whereNotExists(function ($query) {
+                                    $query->from('tbl_recibos')->whereRaw('tc.folio_grupo = tr.folio_grupo'); 
+                                })->orderby('tc.folio_grupo','ASC');
+                        break; 
+                        case "ASIGNADOS":
+                            $data = $data->where(function ($query) {
+                                $query->whereNotNull('tc.comprobante_pago')
+                                    ->orWhereNotNull('tr.folio_grupo');
+                            })->orderby('tc.folio_grupo','DESC');                            
+                        break; 
+                        case "ENVIADOS":
+                            $data = $data->where('tr.status_folio', 'ENVIADO');
+                        break;
+                        case "POR COBRAR":
+                            $data = $data->where('tr.status_recibo', 'POR COBRAR');
+                        break;                
+                        case "PAGADOS":
+                            $data = $data->where('tr.status_recibo', 'PAGADO');
+                        break;
+                        case "CANCELADOS":
+                            $data = $data->where('tr.status_folio', 'CANCELADO');
+                        break;
+                                     
+                    }                    
+                }
+            }            
+            $data = $data->where('tc.tipo','!=','EXO');
             $data = $data->leftjoin('tbl_recibos as tr', function ($join) {                    
                 $join->on('tc.folio_grupo','=','tr.folio_grupo'); 
             })
-            ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')
-            ->orderby('tr.fecha_expedicion')
+            ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')            
             ->paginate(15); 
 
             $data->appends($request->except('page'));            
             $path_files = $this->path_files;
             $anios = MyUtility::ejercicios();
-            //dd($anios);
-        return  view('grupos.recibos.buscar', compact('message','data','request','path_files','anios')); 
+            $unidades = $this->unidades;
+           
+            
+        return  view('grupos.recibos.buscar', compact('message','data','request','path_files','anios','unidades')); 
     }
 
     public function asignar(Request $request) {         
@@ -101,15 +142,16 @@ class recibosController extends Controller
             $letras = MyUtility::letras($data->costo);
             $result = DB::table('tbl_recibos')->updateOrInsert(
                 ['num_recibo' => $data->num_recibo, 'unidad' => $data->ubicacion],
-                [ 'importe' => $data->costo, 'importe_letra' => $letras,'status' => 'ASIGNADO',
+                [ 'importe' => $data->costo, 'importe_letra' => $letras,'status_folio' => 'ASIGNADO',
                    'fecha_status' => date('Y-m-d h:m:s'), 'id_curso' => $data->id, 'folio_grupo' => $data->folio_grupo,
-                   'clave' => $data->clave, 'fecha_expedicion' => $request->fecha_expedicion, 'recibio' => $request->recibio,
+                   'fecha_expedicion' => $request->fecha_expedicion, 'recibio' => $request->recibio,
                    'recibio'=>$request->recibio,
                    'recibide'=>$request->recibide,
                    'fecha_expedicion' => $request->fecha,
                    'iduser_updated' => $this->user->id,
                    'updated_at'=> date('Y-m-d'),
-                   'folio_recibo' => $data->uc.'-'.$data->num_recibo
+                   'folio_recibo' => $data->uc.'-'.$data->num_recibo,
+                   'status_recibo' => $request->status_recibo
                 ]
             );
             if($request) $message["ALERT"] = "NÚMERO DE RECIBO ASIGNADO CORRECTAMENTE!!";
@@ -122,11 +164,11 @@ class recibosController extends Controller
     public function deshacer(Request $request) {         
         [$data , $message] = $this->data($request);
         if($data->deshacer){
-            $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->whereNotIn('status', ['ENVIADO','DISPONIBLE'])->update(                
+            $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->whereNotIn('status_folio', ['ENVIADO','DISPONIBLE'])->update(                
                 [ 
-                    'importe' => 0, 'importe_letra' =>null,'status' => null,
+                    'importe' => 0, 'importe_letra' =>null,'status_folio' => null,
                     'fecha_status' => null, 'id_curso' => null, 'folio_grupo' => null,
-                    'clave' => null, 'fecha_expedicion' => null, 'recibio' => null,                   
+                    'fecha_expedicion' => null, 'recibio' => null,                   
                     'recibio'=> null,
                     'recibide'=>null,
                     'fecha_expedicion' => null,
@@ -167,22 +209,40 @@ class recibosController extends Controller
         return redirect('grupos/recibos/index')->with(['message'=>$message, 'folio_grupo'=>$data->folio_grupo]);
     }
 
+    public function estatus(Request $request) {         
+        [$data , $message] = $this->data_validate($request);
+        if($data){
+            $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->update(                
+                [  'status_recibo'=>$request->status_recibo,
+                   'iduser_updated' => $this->user->id,
+                   'updated_at'=> date('Y-m-d')
+                ]
+            );
+            if($request) $message["ALERT"] = "LA OPERACIÓN SE EJECUTADO CORRECTAMENTE!!";
+            else $message["ERROR"] = "LA OPERACIÓN NO SE EJECUTADO CORRECTAMENTE, POR FAVOR INTENTE DE NUEVO.";
+        }
+        //dd($result);
+        return redirect('grupos/recibos/index')->with(['message'=>$message, 'folio_grupo'=>$data->folio_grupo]);
+    }
+
     public function subir(Request $request) {   
         [$data , $message] = $this->data_validate($request); //dd($request->hasFile('file_recibo')); dd($data);
-        if($data->folio_grupo AND !in_array($data->status, ['ENVIADO','DISPONIBLE'])){
-            if ($request->hasFile('file_recibo')) {               
-                $name_file = $data->id."_".date('ymdHis')."_". $this->user->id;                                
-                $file = $request->file('file_recibo');                
-                $file_result = $this->upload_file($file,$name_file,$data->file_pdf);                
+        if($data->folio_grupo AND (!in_array($data->status_folio, ['ENVIADO','DISPONIBLE']) OR !$data->status_curso)){
+            if ($request->hasFile('file_recibo')) {    
+                $anio = date('Y', strtotime($data->inicio));
+                $name_file = $data->folio_recibo."_".date('ymdHis')."_". $this->user->id.".pdf";                                
+                $path = $anio.$this->path.$data->id."/"; //2023/expendientes/id/
+                $file = $request->file('file_recibo'); 
+                $file_result = MyUtility::upload_file($path,$file,$name_file,$data->file_pdf); //dd($file_result);
                 $url_file = $file_result["url_file"];                 
                 if($file_result['up']){                       
                     if($data){                        
                         $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->update(                
-                            [  'status' => 'CARGADO',
+                            [  'status_folio' => 'CARGADO',
                             'fecha_status' => date('Y-m-d h:m:s'),
                             'iduser_updated' => $this->user->id,
                             'updated_at'=> date('Y-m-d h:m:s'),
-                            'file_pdf' => $url_file
+                            'file_pdf' => $url_file.$name_file
                             ]
                         );
                         if($request) $message["ALERT"] = "LA OPERACIÓN SE EJECUTADO CORRECTAMENTE!!";
@@ -199,8 +259,8 @@ class recibosController extends Controller
     public function enviar(Request $request) {         
         [$data , $message] = $this->data_validate($request);
         if($data){            
-            $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->where('status','CARGADO')->update(                
-                [ 'status' => 'ENVIADO','fecha_status' => date('Y-m-d h:m:s'),                    
+            $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->where('status_folio','CARGADO')->update(                
+                [ 'status_folio' => 'ENVIADO','fecha_status' => date('Y-m-d h:m:s'),                    
                    'iduser_updated' => $this->user->id, 'updated_at'=> date('Y-m-d')
                 ]
             );
@@ -213,8 +273,9 @@ class recibosController extends Controller
     private function data_validate(Request $request){        
         $data = $message = [];
         if($request->folio_grupo){
-            $data = DB::table('tbl_recibos as tc')->where('folio_grupo',$request->folio_grupo)->whereNotIn('status',['CANCELADO'])->first();     
-                if(!$data) $message["ERROR"]= "EL FOLIO INGRESADO NO CORRESPONDE A LA UNIDAD $this->ubicacion.";                
+            $data = DB::table('tbl_recibos as tr')->join('tbl_cursos as tc','tr.folio_grupo','=','tc.folio_grupo')
+                ->where('tr.folio_grupo',$request->folio_grupo)->whereNotIn('tr.status_recibo',['CANCELADO'])->first();     
+            if(!$data) $message["ERROR"]= "EL FOLIO INGRESADO NO CORRESPONDE A LA UNIDAD $this->ubicacion.";                
         }
         return [$data, $message];
     }
@@ -226,7 +287,7 @@ class recibosController extends Controller
                 ->select('tc.id','tc.folio_grupo','tc.unidad','tu.ubicacion', 'tc.clave','tc.curso','tc.nombre','tc.tipo_curso',
                     'tc.status_curso','tc.inicio', 'tc.termino', 'tc.hini', 'tc.hfin','tc.costo','tc.hombre','tc.mujer','tr.recibide',
                     'tr.fecha_expedicion','tr.recibio','tu.direccion','tu.delegado_administrativo','tr.id as id_recibo','tr.file_pdf',
-                    'tr.importe_letra', 'tr.folio_recibo',
+                    'tr.importe_letra', 'tr.folio_recibo', 'tr.status_recibo','tc.arc','tc.clave',
                     DB::raw('UPPER(tu.municipio) as municipio'),
                     DB::raw("
                         CASE 
@@ -234,24 +295,27 @@ class recibosController extends Controller
                             WHEN tc.tipo = 'PINS' THEN 'ORDINARIO'
                             WHEN tc.tipo = 'EPAR' THEN 'REDUCCIÓN DE CUOTA' 
                         END as tpago"),                       
-                    DB::raw("LEFT(tu.ubicacion,2) as uc"), 'tc.id','tc.clave',                   
-                    /*
-                    
-                        DB::raw("(
+                    DB::raw("LEFT(tu.ubicacion,2) as uc"), 'tc.id',
+                    DB::raw("CASE 
+                        WHEN tc.clave ='0' and tc.status_curso IS NULL THEN 'EN TRAMITE EN LA UNIDAD' 
+                        WHEN tc.clave ='0' and tc.status_curso IS NOT NULL THEN 'EN TRAMITE EN LA DTA'                     
+                        ELSE tc.clave
+                        END as status_clave"),                    
+                    DB::raw("(
                         CASE
                             WHEN tc.comprobante_pago IS NOT NULL THEN (regexp_match(tc.folio_pago, '[0-9]+'))[1]::INTEGER 
-                            WHEN  tr.status is not null THEN tr.num_recibo 
-                            WHEN max.status is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is null)
+                            WHEN  tr.status_folio is not null THEN tr.num_recibo 
+                            WHEN max.status_folio is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status_folio is null)
                             ELSE max.num_recibo+1
                         END) as num_recibo"),
 
                         DB::raw("(
                         CASE
                             WHEN tc.comprobante_pago IS NOT NULL  THEN 'IMPRENTA'
-                            WHEN tr.status is null THEN 'DISPONIBLE'
-                            ELSE  tr.status
-                        END) as status_recibo"),
-                     */
+                            WHEN tr.status_folio is null THEN 'DISPONIBLE'
+                            ELSE  tr.status_folio
+                        END) as status_folio"),
+                     /*
                     DB::raw("(
                         CASE                            
                             WHEN  tr.status is not null THEN tr.num_recibo 
@@ -262,10 +326,11 @@ class recibosController extends Controller
                         CASE                            
                             WHEN tr.status is null THEN 'DISPONIBLE'
                             ELSE  tr.status
-                        END) as status_recibo"),
+                        END) as status_folio"),
+                        */
                     DB::raw("(
                         CASE
-                            WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status is not null and status!='CANCELADO') THEN true                        
+                            WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status_folio is not null and status_folio!='CANCELADO' AND status_folio!='ENVIADO') THEN true                        
                             ELSE false
                         END) as deshacer")
                 )
@@ -274,15 +339,15 @@ class recibosController extends Controller
                 ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')
                 ->leftjoin('tbl_recibos as tr', function ($join) {                    
                     $join->on('tr.folio_grupo','=','tc.folio_grupo')
-                    ->whereNotIn('tr.status',['CANCELADO']); 
+                    ->whereNotIn('tr.status_folio',['CANCELADO']); 
                 })
                 ->join('tbl_recibos as max', function ($join) {
                         $join->on('max.unidad', '=', 'tu.ubicacion')                    
-                        ->where('max.num_recibo', '=', DB::raw("(SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and ( status!='CANCELADO' or status is null ))")); 
+                        ->where('max.num_recibo', '=', DB::raw("(SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and ( status_folio!='CANCELADO' or status_folio is null ))")); 
                 })
                 ->first();                     
                 $_SESSION['data'] = $data;
-                if(!$data) $message["ERROR"]= "EL FOLIO INGRESADO NO CORRESPONDE A LA UNIDAD $this->ubicacion.";           
+                if(!$data) $message["ERROR"]= "EL FOLIO NO ENCONTRATO.";           
                 else{
                     if(!$data->recibide) $data->recibide = DB::table('alumnos_registro')->where('folio_grupo',$request->folio_grupo)->value('realizo');                
                     if(!$data->fecha_expedicion) $data->fecha_expedicion = date('Y-m-d');
@@ -309,32 +374,4 @@ class recibosController extends Controller
             return $pdf->stream($file_name, ['Content-Type' => 'application/pdf']);
         }else return "ACCIÓN INVÁlIDA";exit;
     }
-    
-    protected function upload_file($file, $name, $file_delete){       
-        //php artisan storage:link
-        $ext = $file->getClientOriginalExtension();
-        $ext = strtolower($ext);
-        $path=$url = $mgs= null;
-        $up = false;
-        if($ext == "pdf"){            
-            $name = trim($name.".pdf");
-            $path = $this->path_pdf.$name;            
-            $up = Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
-            if($up){
-                $file_delete = "uploadFiles".$file_delete;
-                if(Storage::exists($file_delete)){
-                    Storage::delete($file_delete);
-                    $msg = "El archivo ha sido reemplazado correctamente!";
-                }else $msg = "El archivo ha sido cargado correctamente!";
-            }
-        }else $msg= "Formato de Archivo no válido, sólo PDF.";
-                
-        $data_file = ["message"=>$msg, 'url_file'=>$path, 'up'=>$up];
-       
-        return $data_file;
-    }
-   
-
-    
-    
 }
