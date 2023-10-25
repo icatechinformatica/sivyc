@@ -15,7 +15,7 @@
     </div>
     <div class="card card-body" style=" min-height:450px;">
         <?php
-            $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = $inco = NULL;
+            $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = $inco = $folio_pago = $fecha_pago = NULL;
             $activar = true;
             if(isset($grupo)){
                 $inco = $grupo->inicio;
@@ -35,6 +35,14 @@
                 }
             }
             if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;
+            if($recibo){
+                $comprobante = env('APP_URL')."/storage/".$recibo->file_pdf;
+                $folio_pago = $recibo->folio_recibo;
+                $fecha_pago = $recibo->fecha_expedicion;
+            }elseif(isset($grupo)) {
+                $folio_pago = $grupo->folio_pago;
+                $fecha_pago = $grupo->fecha_pago;
+            }
         ?>
     {{ Form::open(['route' => 'solicitud.apertura', 'method' => 'post', 'id'=>'frm']) }}
         @csrf
@@ -200,15 +208,15 @@
             <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for="">NO. RECIBO DE PAGO:</label>
-                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}" readonly>
+                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$folio_pago}}"  @if($recibo) disabled @else readonly @endif>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="">EMISI&Oacute;N DEL RECIBO:</label>
-                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}" readonly>
+                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$fecha_pago}}"  @if($recibo) disabled @else readonly @endif>
                 </div>
                 <div class="form-group col-md-4">        
                     <br/>            
-                    @if($grupo->comprobante_pago)
+                    @if($comprobante)
                         <a class="nav-link" href="{{$comprobante}}" target="_blank">
                             <i  class="far fa-file-pdf  fa-3x text-danger"></i>
                         </a>
@@ -225,30 +233,7 @@
                 </div>
 
             @endif
-        {!! Form::close() !!}
-
-        {{-- Formulario pdf generar soporte by Jose Luis Moreno Arcos  --}}
-        @if (isset($grupo))
-            <form action="" method="post" id="frmgen" target="_blank">
-                @csrf
-                <div class="col-12 row px-0">
-                    <input type="hidden" name="idorg" value="{{isset($grupo->id_organismo) ? $grupo->id_organismo : ''}}">
-                    <input type="hidden" name="unidad_sop" value="{{isset($grupo->unidad) ? $grupo->unidad : ''}}">
-                    <input type="hidden" name="cgeneral_sop" value="{{isset($grupo->cgeneral) ? $grupo->cgeneral : ''}}">
-                    <div class="col-3">
-                        <label for="num_oficio">*Obligatorio para generar PDF</label>
-                        <input type="text" class="form-control" style="" id="num_oficio" name="num_oficio" placeholder="NUMERO DE OFICIO" value="{{$num_oficio_sop != NULL ? $num_oficio_sop : ''}}">
-                    </div>
-                    <div class="col-3 px-0">
-                        <label for="datos_titular">*Opcional</label>
-                        <input type="text" class="form-control" style="" id="datos_titular" name="datos_titular" placeholder="TITULAR DE LA DEPENDENCIA, CARGO" value="{{$titular_sop != NULL ? $titular_sop : ''}}">
-                    </div>
-                </div>
-            </form>
-        @endif
-
-        {{-- Boton y cajas para generar pdf Made by Jose Luis Moreno Arcos--}}
-        {{-- <button type="button" class="btn" id="genpdf_soporte">GENERAR PDF</button> --}}
+        {!! Form::close() !!}       
     </div>
 @if (isset($grupo))
 <!-- modal para mostrar el calendario -->
@@ -379,21 +364,24 @@
                 //Generar pdf soporte / Made by Jose Luis Moreno Arcos
                 $("#genpdf_soporte").click(function(){
                     if ($("#num_oficio").val().trim() != "") {
-                        $('#frmgen').attr('action', "{{route('solicitud.genpdf.soporte')}}"); $('#frmgen').submit();
+                        $('#frm').attr('action', "{{route('solicitud.genpdf.soporte')}}");
+                        $('#frm').attr('target', '_blank');
+                        $('#frm').submit();
                     }else alert("El campo 'NUMERO DE OFICIO' es requerido para generar el pdf");
                 });
 
-                $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura')}}"); $('#frm').submit();});
-                $("#regresar" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.regresar')}}"); $('#frm').submit();}});
+                $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura')}}");$('#frm').attr('target', '_self'); $('#frm').submit();});
+                $("#regresar" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.regresar')}}");$('#frm').attr('target', '_self'); $('#frm').submit();}});
                 $("#guardar" ).click(function(){
                     validaCERT();
                     if(confirm("Esta seguro de ejecutar la acción?")==true){
                         $('#frm').attr('action', "{{route('solicitud.apertura.guardar')}}");
                         $('#frm').attr('enctype', "multipart/form-data");
+                        $('#frm').attr('target', '_self');
                         $('#frm').submit();
                     }
                 });
-                $("#inscribir" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.aceptar')}}"); $('#frm').submit();}});
+                $("#inscribir" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.aceptar')}}");$('#frm').attr('target', '_self'); $('#frm').submit();}});
 
                 $('#dia').keyup(function (){
                     this.value = (this.value + '').replace(/[^LUNES A VIERNES MARTES MIERCOLES JUEVES SABADO Y DOMINGO]/g, '');

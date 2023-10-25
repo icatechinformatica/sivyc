@@ -79,10 +79,12 @@
                         $activar = false;
                         $rojo = true;                         
                         $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN"; 
-                    }elseif ((!$g->comprobante_pago OR !$g->folio_pago OR !$g->fecha_pago) AND $g->tipo!='EXO') {
-                        $activar = false;
-                        $rojo = true;                         
-                        $aviso = "CARGE EL COMPROBANTE DE PAGO";
+                    }elseif($g->status_folio<>'ENVIADO'){
+                        if((!$g->comprobante_pago OR !$g->folio_pago OR !$g->fecha_pago ) AND $g->tipo!='EXO') {
+                            $activar = false;
+                            $rojo = true;                         
+                            $aviso = "CARGE EL COMPROBANTE DE PAGO";
+                        }
                     }else $rojo = false;         
                     
                     if ($g->option =='ARC01'){
