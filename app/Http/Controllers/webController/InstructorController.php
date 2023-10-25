@@ -1159,6 +1159,7 @@ class InstructorController extends Controller
         $userId = Auth::user()->id;
         $idlist = explode(",", $request->idinstructoresreturn);
         $newb = $newc = $arrtemp = array();
+        $retorno_firma = false;
         $stat_arr = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','BAJA EN PREVALIDACION','BAJA EN FIRMA','EN FIRMA','REVALIDACION EN FIRMA');
 
         foreach($idlist as $bosmer)
@@ -3613,7 +3614,9 @@ class InstructorController extends Controller
 
         $instructor->data_especialidad = $special;
         $instructor->save();
-        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $especialidades[0]->unidad_solicita)->FIRST();
+        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
+        ->WHERE('unidad', '!=', 'VILLA CORZO')
+        ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
         $direccion = '14 PONIENTE NORTE NO. 239*COLONIA MOCTEZUMA.*TUXTLA GUTIÉRREZ, CP 29030 TELEFONO: 9616121621* EMAIL: ICATECH@ICATECH.CHIAPAS.GOB.MX';
         $direccion = explode("*", $direccion);
         $date = strtotime($especialidades[0]->fecha_baja);
