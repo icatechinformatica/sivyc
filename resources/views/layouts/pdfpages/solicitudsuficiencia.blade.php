@@ -132,10 +132,10 @@
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->clave}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->ze}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->dura}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->importe_hora}}</td>
-                                @if($item->modinstructor == 'HONORARIOS')<td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->iva}}</td>@endif
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">@if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->importe_total}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_hora, 2, '.', ',') }}</td>
+                                @if($item->modinstructor == 'HONORARIOS')<td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->iva, 2, '.', ',')}}</td>@endif
+                                <td scope="col" class="text-center"><small style="font-size: 10px;">@if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS')12101 HONORARIOS @else 12101 ASIMILADOS A SALARIOS @endif</td>
+                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_total, 2, '.', ',') }}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach
