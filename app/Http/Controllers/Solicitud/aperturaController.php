@@ -68,6 +68,7 @@ class aperturaController extends Controller
     public function index(Request $request){
         $valor = $efisico = $grupo = $alumnos = $message = $medio_virtual = $depen = $exoneracion = $instructor = $plantel = $programa = $sector = $tcurso = $tcuota =
         $muni = $instructores = $convenio = $localidad = $comprobante = $exonerado = $num_oficio_sop = $titular_sop = NULL;
+        $recibo =[];
         if($request->valor)  $valor = $request->valor;
         elseif(isset($_SESSION['folio'])) $valor = $_SESSION['folio'];
         $_SESSION['alumnos'] = NULL;
@@ -174,12 +175,16 @@ class aperturaController extends Controller
                 if($grupo->clave !='0') $message = "Clave de Apertura Asignada";
                 elseif($grupo->status_curso) $message = "Estatus: ". $grupo->status_curso;
                 if($grupo->tipo) $tcuota = $this->tcuota[$grupo->tipo];
+                $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio'])->where('status_folio','ENVIADO')->first();
             }else $message = "Grupo número ".$valor .", turnado a VINCULACIÓN.";
         }
         $tinscripcion = $this->tinscripcion();
+        
+
         if(session('message')) $message = session('message');//dd($grupo);
         return view('solicitud.apertura.index', compact('comprobante','efisico','message','grupo','alumnos','plantel','depen','sector','programa',
-            'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad','exonerado', 'num_oficio_sop', 'titular_sop'));
+            'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad','exonerado', 
+            'num_oficio_sop', 'titular_sop','recibo'));
     }
 
     public function search(Request $request){

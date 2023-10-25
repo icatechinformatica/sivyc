@@ -61,6 +61,12 @@
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
+
+        if($recibo){
+            $comprobante = env('APP_URL')."/storage/".$recibo->file_pdf;
+            $folio_pago = $recibo->folio_recibo;
+            $fecha_pago = $recibo->fecha_expedicion;
+        }
     ?>
     <div class="card-header">
         Preinscripci&oacute;n / Registro de Grupo
@@ -239,31 +245,33 @@
                     <div class="form-row">
                         <div class="form-group col-md-2">
                             <label for="">NUMERO DE RECIBO DE PAGO:</label>
-                            <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="NUMERO DE RECIBO DE PAGO" value="{{$folio_pago}}">
+                            <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="NUMERO DE RECIBO DE PAGO" value="{{$folio_pago}}" @if($recibo) disabled @endif>
                         </div>
                         <div class="form-group col-md-2">
                             <label for="">FECHA DEL RECIBO:</label>
-                            <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA DEL RECIBO" value="{{$fecha_pago}}">
+                            <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA DEL RECIBO" value="{{$fecha_pago}}"  @if($recibo) disabled @endif>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="">COMPROBANTE DE PAGO:</label>
                             <div class="custom-file text-center">
-                                <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()">
+                                <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()"  @if($recibo) disabled @endif>
                                 <label class="custom-file-label" for="customFile">PDF COMPROBANTE DE PAGO</label>
                             </div>
                         </div>
                         <div class="form-group col-md-1 mt-3 ml-3">
                             @if($comprobante)
-                                <a class="nav-link" href="{{$comprobante}}" target="_blank">
+                                <a class="nav-link" href="{{$comprobante}}" target="_blank" title="RECIBO DE PAGO PDF">
                                     <i  class="far fa-file-pdf  fa-3x text-danger"></i>
                                 </a>
                             @else
                                 <i  class="far fa-file-pdf  fa-3x text-muted mt-1"  title='ARCHIVO NO DISPONIBLE.'></i>
                             @endif
-                        </div>                       
-                        <div class="form-group col-md-2 mt-4">
-                            <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf" target="blank">UNIR PDF´s</a>
-                        </div>
+                        </div>        
+                        @if(!$recibo)
+                            <div class="form-group col-md-2 mt-4">
+                                <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf" target="blank">UNIR PDF´s</a>
+                            </div>
+                        @endif
                     </div>
                 @endif
                 <br />

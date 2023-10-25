@@ -32,11 +32,11 @@
                     <div class="form-group col-md-6"> <h4>DEL CURSO</h4> </div>    
                     <div class="form-group col-md-6 justify-content-end ">                        
                         <h4 class="bg-light p-2">&nbsp; RECIBO No. &nbsp;<span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</b>&nbsp;</span> &nbsp;</h4>
-                        @if($data->status_recibo == 'DISPONIBLE') 
+                        @if($data->status_folio == 'DISPONIBLE') 
                             <h4 class="text-center text-white p-2" style="background-color: #33A731;">&nbsp;DISPONIBLE &nbsp;</h4>
-                        @elseif($data->status_recibo == 'ENVIADO') 
+                        @elseif($data->status_folio == 'ENVIADO') 
                             <h4 class="text-center text-white bg-danger p-2" >&nbsp;ENVIADO &nbsp;</h4>
-                        @elseif($data->status_recibo == 'IMPRENTA') 
+                        @elseif($data->status_folio == 'IMPRENTA') 
                             <h4 class="text-center text-white bg-danger p-2" >&nbsp;DE IMPRENTA &nbsp;</h4>
                         @else
                             <h4 class="bg-warning text-center p-2">&nbsp;ASIGNADO &nbsp;</h4>
@@ -50,22 +50,28 @@
                 </div>                
                 <div class="row bg-light" style="padding:35px; line-height: 1.5em;">
                     <div class="form-group col-md-12"><b> </b></div>
-                    <div class="form-group col-md-12">    FOLIO GRUPO: <b>{{$data->folio_grupo}}</b></div>
-                    <div class="form-group col-md-6">CLAVE: <b>{{$data->clave}}</b></div>
+                    <div class="form-group col-md-6">    FOLIO GRUPO: <b>{{$data->folio_grupo}}</b></div>
+                    <div class="form-group col-md-6">
+                        CLAVE: 
+                        @if($data->clave==0) <b class="text-danger">{{$data->status_clave}} &nbsp;</b> @else <b>{{$data->clave}} &nbsp;</b> @endif
+                        @if($data->status_curso) ESTATUS: <b class="text-danger"> {{$data->status_curso}} </b> @endif 
+
+                    </div>
                     <div class="form-group col-md-6">    
                         UNIDAD/ACCIÓN MÓVIL:            
-                        <b>@if($data->unidad == $data->ubicacion){{ $data->unidad }} @else {{ $data->ubicacion }}/{{ $data->unidad }} @endif</b>        
+                        <b>@if($data->unidad == $data->ubicacion){{ $data->unidad }} @else {{ $data->ubicacion }} / {{ $data->unidad }} @endif</b>        
                     </div>                
                     <div class="form-group col-md-6">CURSO: <b>{{ $data->curso }}</b></div>
                     <div class="form-group col-md-6">INSTRUCTOR: <b>{{ $data->nombre }}</b></div>
                     <div class="form-group col-md-6">TIPO DE PAGO: <b>{{ $data->tpago }}</b></div>
-                    <div class="form-group col-md-6">FECHAS: <b>{{ $data->inicio }} AL {{ $data->termino }}</b></div>                
-                    <div class="form-group col-md-6">TOTAL BENEFICIADOS: <b>{{ $data->hombre+$data->mujer }}</b></div>
+                    <div class="form-group col-md-6">FECHAS: <b>{{ $data->inicio }} AL {{ $data->termino }}</b></div> 
                     <div class="form-group col-md-6">HORARIO: <b>DE {{ $data->hini }} A {{ $data->hfin }} </b></div>                                
-                    <div class="form-group col-md-6">TOTAL CUOTA DE RECUPERACIÓN: <b>$ {{ number_format($data->costo, 2, '.', ',') }}</b></div>
-                    <div class="form-group col-md-6">ESTATUS: <b>{{ $data->status_curso }}</b></div>                    
+                    <div class="form-group col-md-6">TOTAL BENEFICIADOS: <b>{{ $data->hombre+$data->mujer }}</b></div>
+                    <div class="form-group col-md-6">TOTAL CUOTA DE RECUPERACIÓN: <b>$ {{ number_format($data->costo, 2, '.', ',') }}</b></div>                    
+                    @if($data->status_curso )<div class="form-group col-md-6">ESTATUS CLAVE: <b>{{ $data->status_curso }}</b></div> @endif           
+                    <div class="form-group col-md-6">ESTATUS RECIBO: <b>{{ $data->status_recibo }}</b></div>
                 </div>                
-                @if(!in_array($data->status_recibo, ['ENVIADO', 'IMPRENTA','DISPONIBLE']))
+                @if(!in_array($data->status_folio, ['IMPRENTA','DISPONIBLE']) and !$data->status_curso)
                     <h4 class="pt-2 pb-2">DEL RECIBO DE PAGO</h4>                     
                     <div class="form-row bg-light p-5">
                         <div class="form-group col-md-3 m-1 ">
@@ -78,7 +84,7 @@
                         </div>
                         <div class="form-group col-md-3 m-1 ">
                             <label>RECIBIÓ:</label>
-                            {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control', 'placeholder' => 'RECIBIÓ', 'title' => 'RECIBIÓ']) }}
+                            {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control', 'placeholder' => 'RECIBIÓ', 'title' => 'RECIBIÓ', 'disabled'=>'true']) }}
                         </div>
                         <div class="form-group col-md-2 m-1 "> <br/>
                             {{ Form::button('GUARDAR CAMBIOS', ['id'=>'modificar','class' => 'btn']) }}                                      
@@ -93,6 +99,7 @@
                                 <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
                             </a>
                     @endif
+                    
                     @if($movimientos)
                         {{ Form::select('movimiento', $movimientos, '', ['id'=>'movimiento','class' => 'form-control  col-md-3 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }}
                     @endif
@@ -100,18 +107,21 @@
                         <input id="file_recibo" type="file" name="file_recibo" class="custom-file-input" accept=".pdf" >
                         <label class="custom-file-label" for="file_recibo">&nbsp;&nbsp;</label>
                     </div>                    
-                    {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger' , 'style'=>'display:none']) }}
-                    @if($data->status_recibo == 'DISPONIBLE')                        
-                        {{ Form::text('recibide', $data->recibide, ['id'=>'recibide', 'class' => 'form-control col-md-3 m-1 ', 'placeholder' => 'RECIBÍ DE', 'size' => 150, 'title' => 'RECICÍ DE']) }}
-                        {{ Form::date('fecha', $data->fecha_expedicion, ['id'=>'fecha', 'class' => 'form-control col-md-2 m-2 ', 'placeholder' => 'DIA/MES/AÑO', 'size' => 50, 'title'=>'FECHA DE EXPEDICIÓN']) }}                        
-                        {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control col-md-3 m-1 ', 'placeholder' => 'RECIBIÓ', 'size' => 150, 'title' => 'RECIBIÓ' ]) }}
+                    {{ Form::select('status_recibo', ['PAGADO'=>'PAGADO','POR COBRAR'=>'POR COBRAR'], '', ['id'=>'status_recibo','class' => 'form-control', 'title'=>'ESTATUS','style'=>'display:none'] ) }}                    
+                    {{ Form::text('motivo', '', ['id'=>'motivo', 'class' => 'form-control col-md-4 m-1 ', 'placeholder' => 'MOTIVO', 'title' => 'MOTIVO', 'style'=>'display:none']) }}
+                    {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger', 'style'=>'display:none']) }}
+                    @if($data->status_folio == 'DISPONIBLE')                        
+                        {{ Form::text('recibide', $data->recibide, ['id'=>'recibide', 'class' => 'form-control col-md-3 m-1 ', 'placeholder' => 'RECIBÍ DE', 'title' => 'RECICÍ DE']) }}
+                        {{ Form::date('fecha', $data->fecha_expedicion, ['id'=>'fecha', 'class' => 'form-control col-md-1 m-1 ', 'placeholder' => 'DIA/MES/AÑO',  'title'=>'FECHA DE EXPEDICIÓN']) }}                        
+                        {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control col-md-3 m-1 ', 'placeholder' => 'RECIBIÓ', 'title' => 'RECIBIÓ', 'disabled'=>'true' ]) }}
+                        {{ Form::select('status_recibo', ['PAGADO'=>'PAGADO','POR COBRAR'=>'POR COBRAR'], '', ['id'=>'status_recibo','class' => 'form-control', 'title'=>'ESTATUS'] ) }}
                         {{ Form::button('ASIGNAR', ['id'=>'asignar','class' => 'btn btn-danger']) }}
                     @else
-                        @if($data->status_recibo != "ENVIADO" AND $data->status_recibo != "IMPRENTA") 
+                        @if( $data->status_folio != "IMPRENTA" and !$data->status_curso) 
                             {{ Form::button('GENERAR RECIBO', ['id'=>'pdfRecibo','class' => 'btn']) }}
                         @endif
-                        @if($data->status_recibo == "CARGADO") 
-                            {{ Form::button('ENVIAR A FINANCIEROS', ['id'=>'enviar','class' => 'btn btn-danger']) }}
+                        @if($data->status_folio == "CARGADO") 
+                            {{ Form::button('ENVIAR', ['id'=>'enviar','class' => 'btn btn-danger']) }}
                         @endif
                     @endif
                     
@@ -154,16 +164,32 @@
                  $("#movimiento" ).change(function(){
                     $("#inputFile").hide();
                     $("#aceptar").hide();
+                    $("#motivo").hide();
                     switch($("#movimiento" ).val()){
                         case "SUBIR":
                             $("#inputFile").show("slow");                                                        
                             $("#aceptar").text("SUBIR");
                             $("#aceptar").show("slow");
+                        break;
+                        case "ESTATUS":                            
+                            $("#status_recibo").show("slow");
+                            $("#aceptar").text("ACEPTAR");
+                            $("#aceptar").show("slow");
                         break;  
                         case "DESHACER":                            
                             $("#aceptar").text("ACEPTAR");
                             $("#aceptar").show("slow");
-                        break;                      
+                        break;
+                        case "SOPORTES":
+                            $("#aceptar").text("ENVIAR");
+                            $("#motivo").show("slow");
+                            $("#aceptar").show("slow");
+                        break;
+                        case "CANCELAR":
+                            $("#aceptar").text("ACEPTAR");
+                            $("#motivo").show("slow");
+                            $("#aceptar").show("slow");
+                        break;
                     }
                 });
 
@@ -173,6 +199,9 @@
                         switch($("#movimiento" ).val()){
                             case "DESHACER":
                                 $('#frm').attr('action', "{{route('grupos.recibos.deshacer')}}"); 
+                            break;
+                            case "ESTATUS":
+                                $('#frm').attr('action', "{{route('grupos.recibos.estatus')}}"); 
                             break;
                             case "SUBIR":
                                 $('#frm').attr('action', "{{route('grupos.recibos.subir')}}"); 
