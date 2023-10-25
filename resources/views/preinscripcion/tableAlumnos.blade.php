@@ -91,11 +91,11 @@
             <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_acta_acuerdo"> <i  class="far fa-file-pdf  fa-1x text-mute"></i> ACTA DE ACUERDO</button>
             {{-- <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_convenio_esp"><i  class="far fa-file-pdf  fa-1x text-mute"></i> CONVENIO</button> --}}
         @endif
-        <button type="button" class="btn mt-1 bg-warning text-dark" id="gape"><i  class="far fa-file-pdf  fa-1x text-mute"></i> SOLICITUD APERTURA</button>
-        <button type="button" class="btn mt-1 bg-warning text-dark" id="generar"><i  class="far fa-file-pdf  fa-1x text-mute"></i> LISTA ALUMNOS</button>    
+        <button type="button" class="btn mt-1 bg-warning text-dark" id="gape"><i  class="far fa-file-pdf  fa-1x text-mute"></i> SOLICITUD APERTURA</button>        
     @endcan
 
-    @if ($grupo)
+    @if($grupo)
+        <button type="button" class="btn mt-1 bg-warning text-dark" id="generar"><i  class="far fa-file-pdf  fa-1x text-mute"></i> LISTA ALUMNOS</button>    
         <button id="btnShowCalendar" type="button" class="btn btn-info mt-1">AGENDAR</button>        
     @endif    
     @if($activar AND $folio_grupo)
