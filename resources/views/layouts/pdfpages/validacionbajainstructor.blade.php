@@ -129,7 +129,7 @@
             <div align=right> <b>{{$especialidades[0]->unidad_solicita}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
             <br><br><b>{{$data_unidad->dunidad}}..</b>
-            <br>{{$data_unidad->pdunidad}} DE {{$especialidades[0]->unidad_solicita}}
+            <br>{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}
             <br>Presente.<br>
 
             <br><p class="text-justify">En relación a la solicitud de baja en el Registro del Padrón de Instructores mediante memorándum No. <b>{{$especialidades[0]->memorandum_solicitud}}</b> de fecha <b>{{$DS}} DE {{$MS}} DEL {{$YS}}</b>, me permito informarle que, a petición de la Unidad, procedió la baja del siguiente instructor por las causas que se describen a continuación:</p>
