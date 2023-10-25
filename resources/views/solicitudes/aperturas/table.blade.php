@@ -70,10 +70,19 @@
                     }
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >                       
-                        <td class='text-center'>                            
+                        <td class='text-center'>               
+                            @if($g->comprobante_pago)
                             <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
-                                <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="Comprobante de pago"></i>
+                                <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="RECIBO DE PAGO PDF"></i>
                             </a>
+                            @elseif($g->file_pdf)
+                                <a class="nav-link" href="{{ env('APP_URL').'/storage/'.$g->file_pdf }}" target="_blank">
+                                    <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="RECIBO DE PAGO PDF"></i>
+                                </a>
+                            @else 
+                                <i class="fa fa-dollar-sign  fa-2x fa-lg text-mute" title="RECIBO NO DISPONIBLE"></i>
+                            @endif
+                            
                             @if ($g->soporte_exo)
                                 <a  class="nav-link"   title="PDF EXONERACION"
                                     @if ($g->rev_exo) href="{{$path.$g->soporte_exo}}" @else href="{{$g->soporte_exo}}" @endif >
@@ -157,7 +166,7 @@
     @if($activar==true)
         <div class="form-group col-md-3">
             @if($status_curso == "EN FIRMA")
-                {{ Form::button('GENERAR VALIDACIÓN PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
+                {{ Form::button('GENERAR AUTORIZACIÓN PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
             @endif
         </div>
         <div class="form-group col-md2  my-3">           

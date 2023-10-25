@@ -48,7 +48,7 @@ class grupoController extends Controller
 
     public function index(Request $request)
     {
-        $curso = $cursos = $localidad  = $alumnos = $instructores = $instructor = [];
+        $curso = $cursos = $localidad  = $alumnos = $instructores = $instructor = $recibo =[];
         $es_vulnerable = $edicion = false;
         $unidades = $this->data['unidades'];
         $unidad = $uni = $this->data['unidad'];
@@ -110,7 +110,7 @@ class grupoController extends Controller
                     ->orderBy('instructor')
                     ->get();
                 $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'))->where('id',$alumnos[0]->id_instructor)->first();
-                $grupo = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->first();
+                $grupo = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->first();                
             } else {
                 $message = "No hay registro qwue mostrar para Grupo No." . $_SESSION['folio_grupo'];
                 $_SESSION['folio_grupo'] = NULL;
@@ -138,10 +138,11 @@ class grupoController extends Controller
 
         $id_usuario = null;
         if($this->admin['slug']) $id_usuario = $this->id_user;
-
+        $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status_folio','ENVIADO')->first();
+        
         return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'folio_pago', 'fecha_pago',
             'es_vulnerable', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','comprobante','edicion','instructores','instructor',
-            'medio_virtual','grupo', 'id_usuario'));
+            'medio_virtual','grupo', 'id_usuario','recibo'));
     }
 
 

@@ -85,24 +85,22 @@
 
 
 <div class="d-flex flex-lg-row flex-column col-12 col-lg-12 justify-content-end">
+    <button type="button" class="btn mt-1" id="nuevo" >NUEVO</button> &nbsp;&nbsp;   
+    @can('agenda.vinculacion')        
+        @if ($grupo->cespecifico)
+            <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_acta_acuerdo"> <i  class="far fa-file-pdf  fa-1x text-mute"></i> ACTA DE ACUERDO</button>
+            {{-- <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_convenio_esp"><i  class="far fa-file-pdf  fa-1x text-mute"></i> CONVENIO</button> --}}
+        @endif
+        <button type="button" class="btn mt-1 bg-warning text-dark" id="gape"><i  class="far fa-file-pdf  fa-1x text-mute"></i> SOLICITUD APERTURA</button>
+        <button type="button" class="btn mt-1 bg-warning text-dark" id="generar"><i  class="far fa-file-pdf  fa-1x text-mute"></i> LISTA ALUMNOS</button>    
+    @endcan
+
     @if ($grupo)
-        <button id="btnShowCalendar" type="button" class="btn btn-info mt-1">AGENDAR</button>
-        @can('agenda.vinculacion')
-        {{-- @can('agenda.vinculacion' || $slug == 'admin') temporalmente se comentó hasta que homologuen --}}
-            @if ($grupo->cespecifico)
-                    <button type="button" class="btn mt-1" id="gen_acta_acuerdo">ACTA DE ACUERDO</button>
-                    {{-- <button type="button" class="btn mt-1" id="gen_convenio_esp">CONVENIO</button> --}}
-            @endif
-            <button type="button" class="btn mt-1" id="gape">GENERAR SOLICITUD</button>
-        @endcan
-        <button type="button" class="btn mt-1" id="generar">GENERAR LISTA</button>
-    @endif
-
-    <button type="button" class="btn mt-1" id="nuevo" >NUEVO</button> &nbsp;&nbsp;
-
+        <button id="btnShowCalendar" type="button" class="btn btn-info mt-1">AGENDAR</button>        
+    @endif    
     @if($activar AND $folio_grupo)
         <button type="submit" class="btn mt-1" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;
-        <button type="button" class="btn mt-1 bg-danger " id="turnar" >ENVIAR A LA UNIDAD >> </button>
+        <button type="button" class="btn mt-1 bg-danger " id="turnar" >ENVIAR A ACADEMICO >></button>
     @endif
 </div>
 
