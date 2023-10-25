@@ -124,7 +124,7 @@
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
         <div>
-            <div align=right> <b>Unidad de Capacitación {{$especialidades[0]->unidad_solicita}}</b> </div>
+            <div align=right> <b>Unidad de Capacitación {{$data_unidad->unidad}}</b> </div>
             <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_baja}}</b></div>
             <div align=right> <b>{{$especialidades[0]->unidad_solicita}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
