@@ -33,7 +33,7 @@ $(function(){
                     } else {
                         if(!respuesta.hasOwnProperty('error')){
                             iva = respuesta[0] * 0.16;
-                            iva = parseFloat(iva).toFixed(2);
+                            iva = parseFloat(iva).toFixed(4);
                             if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS')
                             {
                                 total = respuesta[0]*1.16
@@ -44,7 +44,7 @@ $(function(){
                                 total = respuesta[0]
                                 document.getElementById('addmore['+x+'][iva]').value = 0.00;
                             }
-                            total = parseFloat(total).toFixed(2);
+                            total = parseFloat(total).toFixed(4);
 
                             document.getElementById('addmore['+x+'][importe]').value = total;
                             document.getElementById('norecibo').value = respuesta['recibo'];
