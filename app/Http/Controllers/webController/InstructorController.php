@@ -33,16 +33,30 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport;
+use ZipArchive;
 use PDF;
 
 class InstructorController extends Controller
 {
     public function prueba()
     {
-        $impuestos['IVA'] = 770.11;
-        $impuestos['retencion_iva'] = round($impuestos['IVA']/3*2);
+        $zip = new ZipArchive();
+        $zipFileName = public_path('example.zip');
 
-           dd($impuestos);
+        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
+            // Add files or directories to the ZIP archive
+            $zip->addFile(public_path('file1.txt'), 'file1.txt');
+            $zip->addFile(public_path('file2.txt'), 'file2.txt');
+            $zip->addEmptyDir('new_directory');
+
+            $zip->close();
+            dd($zipFileName);
+
+            return 'ZIP archive created successfully.';
+        } else {
+            return 'Failed to create ZIP archive.';
+        }
+
     }
 
     private function honorarios($total)
@@ -1145,6 +1159,7 @@ class InstructorController extends Controller
         $userId = Auth::user()->id;
         $idlist = explode(",", $request->idinstructoresreturn);
         $newb = $newc = $arrtemp = array();
+        $retorno_firma = false;
         $stat_arr = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','BAJA EN PREVALIDACION','BAJA EN FIRMA','EN FIRMA','REVALIDACION EN FIRMA');
 
         foreach($idlist as $bosmer)
@@ -1244,20 +1259,41 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
                             break;
                             case 'REVALIDACION EN FIRMA':
-                                $movimiento = $movimiento. $especialidad->nombre . ' (REVALIDACION EN FIRMA), ';
-                                $retorno_firma = TRUE;
+                                if($request->tipo_envio == 'captura') {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (REVALIDACION EN FIRMA), ';
+                                    $especialidades[$space]->status = 'EN CAPTURA';
+                                    $modInstructor->status = 'EN CAPTURA';
+                                } else {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (REVALIDACION EN FIRMA), ';
+                                    $retorno_firma = TRUE;
+                                }
                                     unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
                             case 'BAJA EN FIRMA':
-                                $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
-                                $retorno_firma = TRUE;
+                                if($request->tipo_envio == 'captura') {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
+                                    $especialidades[$space]->status = 'EN CAPTURA';
+                                    $modInstructor->status = 'EN CAPTURA';
+                                } else {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
+                                    $retorno_firma = TRUE;
+                                }
                                 unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
                             case 'EN FIRMA':
-                                $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
-                                $retorno_firma = TRUE;
+                                if($request->tipo_envio == 'captura') {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
+                                    $especialidades[$space]->status = 'EN CAPTURA';
+                                    $modInstructor->status = 'EN CAPTURA';
+                                } else {
+                                    $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
+                                    $retorno_firma = TRUE;
+                                }
                                 unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
+                        }
+                        if(isset($especialidades[$space]->hvalidacion) && $especialidades[$space]->hvalidacion == []) {
+                            $especialidades[$space]->hvalidacion = null;
                         }
                     }
                 }
@@ -2411,7 +2447,7 @@ class InstructorController extends Controller
         {
             $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
         }
-        $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
+        $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->WHERE('activo',TRUE)->GET();
         $data = tbl_unidades::SELECT('id','unidad','cct')->WHERE('id','!=','0')->GET();
         // dd($unidadUser);
         return view('layouts.pages.frmaddespecialidad', compact('idins','perfil','pago','data','data_especialidad','memosol','unidadUser'));
@@ -2558,7 +2594,7 @@ class InstructorController extends Controller
             $data_espec = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET();
         }
         // dd($especvalid->solicito);
-        $data_pago = criterio_pago::ALL();
+        $data_pago = criterio_pago::Where('id','!=','0')->Where('activo', TRUE)->GET();
         $data_unidad = tbl_unidades::WHERE('id', '!=', 0)->orderBy('unidad', 'ASC')->GET();
         $nomesp = especialidad::ALL();
         $catcursos = curso::SELECT('id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo',
@@ -3578,7 +3614,9 @@ class InstructorController extends Controller
 
         $instructor->data_especialidad = $special;
         $instructor->save();
-        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $especialidades[0]->unidad_solicita)->FIRST();
+        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
+        ->WHERE('unidad', '!=', 'VILLA CORZO')
+        ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
         $direccion = '14 PONIENTE NORTE NO. 239*COLONIA MOCTEZUMA.*TUXTLA GUTIÉRREZ, CP 29030 TELEFONO: 9616121621* EMAIL: ICATECH@ICATECH.CHIAPAS.GOB.MX';
         $direccion = explode("*", $direccion);
         $date = strtotime($especialidades[0]->fecha_baja);
