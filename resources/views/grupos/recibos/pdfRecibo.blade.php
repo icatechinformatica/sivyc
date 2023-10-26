@@ -15,7 +15,9 @@
         <table> 
             <tr>
             <td class="negro" style="width:15%;">RECIBO No.</td><td style="width:33%;"> <span class="bold" style="font-size: 18px;"> {{$data->uc}}</span> <span class="rojo">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</span></td>
-            <td class="negro" style="width:17%;">BUENO POR &nbsp;$</td><td style="width:35%; font-size: 18px;">{{ number_format($data->costo, 2, ".", ",")}}</td></tr>
+            <td class="negro" style="width:17%;">BUENO POR &nbsp;$</td><td style="width:20%; font-size: 18px;">{{ number_format($data->costo, 2, ".", ",")}}</td>
+            <td class="negro" style="width:15%;">{{$data->status_recibo}}</td>
+        </tr>
         </table>
         <table>
             <tr><td class="negro" style="width:15%;">RECIBÍ DE:</td><td> {{ $data->recibide }}</td></tr>
@@ -30,7 +32,7 @@
         <table>
             <tr><td class="negro">INFORMACIÓN GENERAL:</td><td></td></tr>
             <tr>
-                <td colspan="2"> <span class="bold"> CLAVE: </span> {{ $data->clave }}</td>
+                <td colspan="2"> <span class="bold"> FOLIO DE GRUPO: </span> {{ $data->folio_grupo}}</td>
                 <td colspan="2"> <span class="bold"> TOTAL BENEFICIADOS: </span> {{ $data->hombre+$data->mujer}} </td>
             </tr>
         </table>

@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\File;
 use App\Excel\xlsTransferencia;
 use App\Utilities\MyUtility;
 use App\Models\Permission;
@@ -90,10 +91,12 @@ class transferenciaController extends Controller
                         $data = $data->where('p.status_transferencia', $request->status_transferencia)->whereYear('p.fecha_transferencia', $request->ejercicio);
                     break;
                 }                    
-            }else{
-                $data = $data->whereYear('p.solicitud_fecha', $request->ejercicio);
-            }      
-            if($request->valor) $data = $data->where(DB::raw('CONCAT(p.num_layout,c.numero_contrato,p.no_memo,tc.nombre)'),'ilike', '%'.$request->valor.'%');
+            }
+            
+            
+            if($request->valor) $data = $data->where(DB::raw('CONCAT(p.num_layout,c.numero_contrato,p.no_memo,tc.nombre,c.folio_fiscal,tc.clave)'),'ilike', '%'.$request->valor.'%');
+            else $data = $data->whereYear('p.solicitud_fecha', $request->ejercicio);
+
             $data = $data->wherein('status_recepcion',['VALIDADO','recepcion tradicional']);
 
             if($opcional=="excel"){ //UsO EXCLUSIVO PARA GENERAR EL REPORTE EN EXCEL
@@ -177,22 +180,41 @@ class transferenciaController extends Controller
         $banco = key($cuenta);
         $cuenta_retiro = $cuenta[$banco]; 
         $num_layout = $request->num_layout;
+        /*MOTIVO
+                    RPAD(
+                        translate(
+                            CONCAT_WS(
+                                ' ',                                                     
+                                SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 1), 1, 5),
+                                SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 2), 1, 3),   
+                                'FAC',
+                                RIGHT(regexp_replace(c.folio_fiscal, '\s', '', 'g') ,5), 
+                                LEFT(regexp_replace(c.unidad_capacitacion, '\s', '', 'g'),9)
+                                
+                        ),'áéíóúÁÉÍÓÚÑ', 'aeiouAEIOUN') ,30,' '),
+         
+          
+         */
 
         $dataBBVA = DB::table('pagos as p')
-            ->select(DB::raw("CONCAT(
+            ->select(DB::raw("CONCAT('PTC',
                     LPAD(regexp_replace(tc.soportes_instructor->>'no_cuenta','[^a-zA-Z0-9]', '', 'g'), 18, '0'),
                     LPAD('$cuenta_retiro', 18, '0'),'MXP',
-                    LPAD(regexp_replace(p.liquido::TEXT, '[^\d.]',''), 16, '0'),                            
-                    translate(
-                        CONCAT_WS(
-                            ' ',                            
-                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 1), 1, 6),
-                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 2), 1, 5),
-                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 3), 1, 3)                            
-                        ),                            
-                    'áéíóúÁÉÍÓÚÑ', 'aeiouAEIOUN'),                     
-                    ' FAC', RIGHT(regexp_replace(c.folio_fiscal, '\s', '', 'g') ,5), ' ', LEFT(regexp_replace(c.unidad_capacitacion, '\s', '', 'g'),4)) as reg"
-                    )
+                    LPAD(regexp_replace(p.liquido::TEXT, '[^\d.]',''), 16, '0'),  
+                    RPAD(
+                        translate(
+                            CONCAT_WS(
+                                ' ',                                                     
+                                SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 1), 1, 3),
+                                SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 2), 1, 3),   
+                                'FAC',
+                                RIGHT(regexp_replace(c.folio_fiscal, '\s', '', 'g') ,5), 
+                                LEFT(regexp_replace(c.unidad_capacitacion, '\s', '', 'g'),3),
+                                tc.id                           
+                        ),'áéíóúÁÉÍÓÚÑ', 'aeiouAEIOUN') ,30,' '), 
+                    '0                  000000000000.00'
+                    ) as reg"
+                )
             )
             ->join('contratos as c','c.id_contrato','p.id_contrato')
             ->join('folios as f','f.id_folios','c.id_folios')
@@ -200,28 +222,29 @@ class transferenciaController extends Controller
             ->where("tc.soportes_instructor->banco",'ilike','%BBVA%')  
             ->where('p.num_layout',$num_layout)          
             ->whereIn('p.status_transferencia',['MARCADO','GENERADO']);//->pluck('reg');
+
         $dataINTER = DB::table('pagos as p')
-            ->select( DB::raw("CONCAT(
+            ->select( DB::raw("CONCAT('PSC',
                     LPAD(regexp_replace(tc.soportes_instructor->>'interbancaria','[^a-zA-Z0-9]', '', 'g'), 18, '0'),
                     LPAD('$cuenta_retiro', 18, '0'),'MXP',
                     LPAD(regexp_replace(p.liquido::TEXT, '[^\d.]',''), 16, '0'),
                     RPAD(TRIM(regexp_replace(tc.nombre,'[^a-zA-Z0-9 ]', '', 'g')),30,' '),
-                    CASE
-                        WHEN LENGTH(regexp_replace(tc.soportes_instructor->>'interbancaria','[^a-zA-Z0-9]', '', 'g'))>=18 THEN '40'
-                        ELSE '30'
-                    END,
+                    '40',
+                    LEFT(regexp_replace(tc.soportes_instructor->>'interbancaria','[^a-zA-Z0-9]', '', 'g'), '3'),
+                    RPAD(
                     translate(
                         CONCAT_WS(
                             ' ',                                                     
-                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 1), 1, 6),
-                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 2), 1, 5),
-                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 3), 1, 3)                            
-                        ),                            
-                    'áéíóúÁÉÍÓÚÑ', 'aeiouAEIOUN'),                    
-                    ' FAC', 
-                    RIGHT(regexp_replace(c.folio_fiscal, '\s', '', 'g') ,5), ' ', 
-                    LEFT(regexp_replace(c.unidad_capacitacion, '\s', '', 'g'),4),
-                    LPAD(ROW_NUMBER() OVER (ORDER BY p.id_contrato)::TEXT, 7, '0') ,'H'
+                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 1), 1, 3),
+                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 2), 1, 3),   
+                            'FAC',
+                            RIGHT(regexp_replace(c.folio_fiscal, '\s', '', 'g') ,5), 
+                            LEFT(regexp_replace(c.unidad_capacitacion, '\s', '', 'g'),3),
+                            tc.id
+                    ),                            
+                    'áéíóúÁÉÍÓÚÑ', 'aeiouAEIOUN') ,30,' '), 
+                    LPAD(ROW_NUMBER() OVER (ORDER BY p.id_contrato)::TEXT, 7, '0'), 'H',
+                    '0                  000000000000.00'
                     ) as reg"
                 )
             )
@@ -257,5 +280,21 @@ class transferenciaController extends Controller
             ->header('Content-Disposition', 'attachment; filename='.$name_file)
             ->header('Content-Type', 'text/plain');
     }
- 
+    
+    
+    public function marcar_pagados(Request $request){  /*
+        
+        $filetxtPath = storage_path('app/descarga.txt');
+        $filePath = public_path('reporte.pdf');
+        // get data from file pdf
+        // Parse PDF file and build necessary objects.
+        $parser = new \Smalot\PdfParser\Parser();
+        $pdf = $parser->parseFile($filePath);
+
+        $text = $pdf->getText();
+        // Create the .txt file
+        File::put($filetxtPath, $text);
+        
+    */
+    }
 }

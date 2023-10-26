@@ -58,13 +58,18 @@ class aperturasController extends Controller
         $path = $this->path_files;
         if($memo){
             $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                'ar.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo')
+                'ar.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf')
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                 ->leftjoin('convenios','convenios.no_convenio','=','tc.cgeneral')
-                ->leftJoin('exoneraciones as e','tc.mexoneracion','=','e.no_memorandum');
+                ->leftJoin('exoneraciones as e','tc.mexoneracion','=','e.no_memorandum')
+                ->leftJoin('tbl_recibos as tr', function ($join) {
+                    $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
+                         ->where('tr.status_folio','ENVIADO');                             
+                });
+                
                if($opt == 'ARC01') $grupos = $grupos->where('tc.munidad',$memo);
                else $grupos = $grupos->where('tc.nmunidad',$memo);
-               $grupos = $grupos->groupby('tc.id','ar.turnado', 'ar.comprobante_pago','convenios.fecha_vigencia','e.memo_soporte_dependencia','e.nrevision')->get();
+               $grupos = $grupos->groupby('tc.id','ar.turnado', 'ar.comprobante_pago','convenios.fecha_vigencia','e.memo_soporte_dependencia','e.nrevision','tr.file_pdf')->get();
 
             if(count($grupos)>0){
                 $_SESSION['grupos'] = $grupos;
@@ -533,10 +538,7 @@ class aperturasController extends Controller
             })                    
         ->groupby(DB::raw('left(clave,LENGTH(clave)-4)'))
         ->pluck('clave','clave');         
-
-        if($maxs) $no_mayor = DB::table('tbl_cursos')->where('munidad',$memo)->whereNotin('clave',$maxs)->Exists();
-        
-        if(!$no_mayor) return true;
+        if( DB::table('tbl_cursos')->where('munidad', $memo)->whereIn('clave', $maxs)->count() == count($maxs)) return true;
         else return false;
 
     }
