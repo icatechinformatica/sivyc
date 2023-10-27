@@ -214,12 +214,12 @@ else{
                                 <td><small style="font-size: 8px;">{{$item->clave}}</small></td>
                                 <td><small style="font-size: 8px;">{{$item->ze}}</small></td>
                                 <td><small style="font-size: 8px;">{{$item->dura}}</small></td>
-                                <td><small style="font-size: 8px;">{{$item->importe_hora}}</small></td>
-                                @if($item->modinstructor == 'HONORARIOS')<td><small style="font-size: 8px;">{{$item->iva}}</small></td>@endif
+                                <td><small style="font-size: 8px;">{{number_format($item->importe_hora, 4, '.', ',')}}</small></td>
+                                @if($item->modinstructor == 'HONORARIOS')<td><small style="font-size: 8px;">{{number_format($item->iva, 4, '.', ',')}}</small></td>@endif
                                 <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
                                 <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
                                 <td><small style="font-size: 8px;">@if($item->modinstructor == 'HONORARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</small></td>
-                                <td><small style="font-size: 8px;">{{$item->importe_total}}</small></td>
+                                <td><small style="font-size: 8px;">{{number_format($item->importe_total, 4, '.', ',')}}</small></td>
                                 <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
                                 <td style="text-align: center; font-size: 10px;"><small>
                                     @if($data2->financiamiento == NULL)

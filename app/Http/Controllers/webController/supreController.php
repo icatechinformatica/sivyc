@@ -179,7 +179,7 @@ class supreController extends Controller
                     {
                         $horas = (int) $hora->dura;
                     }
-                    $importe_hora = round($importe / $horas, 2);
+                    $importe_hora = floatval(number_format($importe / $horas, 4, '.', ''));
                     $folio->importe_hora = $importe_hora;
                     $folio->importe_total = $value['importe'];
                     $folio->id_supre = $id;
@@ -189,11 +189,11 @@ class supreController extends Controller
                     //Calculo del nuevo campo impuestos
                     if($claveval->modinstructor ==  'HONORARIOS')
                     {
-                        $folio->impuestos = $this->honorarios(round($importe, 2));
+                        $folio->impuestos = $this->honorarios(floatval(number_format($importe, 4, '.', '')));
                     }
                     else
                     {
-                        $folio->impuestos = $this->asimilados(round($importe, 2));
+                        $folio->impuestos = $this->asimilados(floatval(number_format($importe, 4, '.', '')));
                     }
 
                     $folio->save();
@@ -334,11 +334,11 @@ class supreController extends Controller
 
             if($hora->modinstructor ==  'HONORARIOS')
             {
-                $folio->impuestos = $this->honorarios(round($importe, 2));
+                $folio->impuestos = $this->honorarios(floatval(number_format($importe, 4, '.', '')));
             }
             else
             {
-                $folio->impuestos = $this->asimilados(round($importe, 2));
+                $folio->impuestos = $this->asimilados(floatval(number_format($importe, 4, '.', '')));
             }
 
             $folio->save();
@@ -802,9 +802,8 @@ class supreController extends Controller
 
             if($Cursos->modinstructor == 'HONORARIOS')
             {
-
-                    $total['iva'] = round($total[0] * 0.16, 2);
-                    $total['importe_total'] = round($total[0] + $total['iva'], 2);
+                    $total['iva'] = floatval(number_format($total[0] * 0.16, 4, '.', ''));
+                    $total['importe_total'] = floatval(number_format($total[0] + $total['iva'], 4, '.', ''));
             }
             else
             {
@@ -1063,7 +1062,7 @@ class supreController extends Controller
         if($idc != NULL)
         {
             contratos::where('id_contrato', '=', $idc->id_contrato)
-                  ->update(['cantidad_numero' => round($request->addmore[0]['importe']-$request->addmore[0]['iva'], 2)]);
+                  ->update(['cantidad_numero' => floatval(number_format($request->addmore[0]['importe']-$request->addmore[0]['iva'], 4, '.', ''))]);
         }
 
         return redirect()->route('contrato-inicio')
@@ -1431,7 +1430,7 @@ class supreController extends Controller
     protected function numberFormat($numero)
     {
         $part = explode(".", $numero);
-        $part[0] = number_format($part['0']);
+        $part[0] = floatval(number_format($part['0']));
         $cadwell = implode(".", $part);
         return ($cadwell);
     }
@@ -1515,8 +1514,8 @@ class supreController extends Controller
 
         foreach($data as $cadwell)
         {
-            $risr[$i] = $this->numberFormat( floatval(round($cadwell->importe_total * 0.10, 2)));
-            $riva[$i] = $this->numberFormat( floatval(round($cadwell->importe_total * 0.1066, 2)));
+            $risr[$i] = $this->numberFormat( floatval(number_format($cadwell->importe_total * 0.10, 4, '.', '')));
+            $riva[$i] = $this->numberFormat( floatval(number_format($cadwell->importe_total * 0.1066, 4, '.', '')));
 
             $iva[$i] = $this->numberFormat( floatval($cadwell->iva));
             $cantidad[$i] = $this->numberFormat( floatval($cadwell->importe_total));
@@ -1604,9 +1603,9 @@ class supreController extends Controller
                 // $point = $point.carbon::now()->year;dd($cp);
                 $data[$key]->importe_hora = $cp->$point;
             }
-            $data[$key]->importe_total = ROUND($cadwell->dura * $cp->$point, 2);
-            $data[$key]->iva = ROUND($data[$key]->importe_total * 0.16, 2);
-            $data[$key]->isr = ROUND($data[$key]->importe_total * 0.10, 2);
+            $data[$key]->importe_total = floatval(number_format($cadwell->dura * $cp->$point, 4, '.', ''));
+            $data[$key]->iva = floatval(number_format($data[$key]->importe_total * 0.16, 4, '.', ''));
+            $data[$key]->isr = floatval(number_format($data[$key]->importe_total * 0.10, 4, '.', ''));
             unset($data[$key]->inicio);
             unset($data[$key]->cp);
         }
@@ -1629,11 +1628,11 @@ class supreController extends Controller
     {
         $impuestos = array();
         $impuestos['regimen'] = 'HONORARIOS';
-        $impuestos['IVA'] = round($importe * 0.16, 2);
-        $impuestos['subtotal'] = round($importe + $impuestos['IVA'], 2);
-        $impuestos['retencion_isr'] = round($importe * 0.1, 2);
-        $impuestos['retencion_iva'] = round($impuestos['IVA']/3*2, 2);
-        $impuestos['importe_neto'] = round($impuestos['subtotal']-$impuestos['retencion_isr']-$impuestos['retencion_iva'], 2);
+        $impuestos['IVA'] = floatval(number_format($importe * 0.16, 4, '.', ''));
+        $impuestos['subtotal'] = floatval(number_format($importe + $impuestos['IVA'], 4, '.', ''));
+        $impuestos['retencion_isr'] = floatval(number_format($importe * 0.1, 4, '.', ''));
+        $impuestos['retencion_iva'] = floatval(number_format($impuestos['IVA']/3*2, 4, '.', ''));
+        $impuestos['importe_neto'] = floatval(number_format($impuestos['subtotal']-$impuestos['retencion_isr']-$impuestos['retencion_iva'], 4, '.', ''));
         return $impuestos;
     }
 
@@ -1641,16 +1640,16 @@ class supreController extends Controller
     {
         $impuestos = array();
         $impuestos['regimen'] = 'ASIMILADOS A SALARIO';
-        $impuestos['IVA'] = round($importe * 0.16, 2);
-        $impuestos['subtotal'] = round($importe + $impuestos['IVA'], 2);
+        $impuestos['IVA'] = floatval(number_format($importe * 0.16, 4, '.', ''));
+        $impuestos['subtotal'] = floatval(number_format($importe + $impuestos['IVA'], 4, '.', ''));
         $impuestos['limite_inferior'] = $this->isr_finder($impuestos['subtotal'], '1');
-        $impuestos['excedente'] = round($impuestos['subtotal'] - $impuestos['limite_inferior'], 2);
+        $impuestos['excedente'] = floatval(number_format($impuestos['subtotal'] - $impuestos['limite_inferior'], 4, '.', ''));
         $isr_info = $this->isr_finder($impuestos['excedente'], '2');
         $impuestos['tasa_impuesto'] = $isr_info->porcentaje;
-        $impuestos['impuesto_marginal'] = round($impuestos['excedente'] * ($impuestos['tasa_impuesto'] / 100), 2);
+        $impuestos['impuesto_marginal'] = floatval(number_format($impuestos['excedente'] * ($impuestos['tasa_impuesto'] / 100), 4, '.', ''));
         $impuestos['cuota_fija'] = $isr_info->cuota_fija;
-        $impuestos['isr_determinado'] = round($impuestos['impuesto_marginal'] + $impuestos['cuota_fija'], 2);
-        $impuestos['ingreso_neto'] = round($impuestos['subtotal'] - $impuestos['isr_determinado'], 2);
+        $impuestos['isr_determinado'] = floatval(number_format($impuestos['impuesto_marginal'] + $impuestos['cuota_fija'], 4, '.', ''));
+        $impuestos['ingreso_neto'] = floatval(number_format($impuestos['subtotal'] - $impuestos['isr_determinado'], 4, '.', ''));
         return $impuestos;
     }
 
@@ -1733,8 +1732,8 @@ class supreController extends Controller
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
-                    \DB::raw("ROUND(folios.importe_total * 0.10, 2)"),
-                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2)"),
+                    \DB::raw("floatval(number_format(folios.importe_total * 0.10, 2)"),
+                    \DB::raw("floatval(number_format(folios.importe_total * 0.1066, 2)"),
                     'tabla_supre.folio_validacion',
                     'tabla_supre.fecha_validacion',
                     'folios.comentario')
@@ -1768,8 +1767,8 @@ class supreController extends Controller
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
-                    \DB::raw("ROUND(folios.importe_total * 0.10, 2)"),
-                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2)"),
+                    \DB::raw("floatval(number_format(folios.importe_total * 0.10, 2)"),
+                    \DB::raw("floatval(number_format(folios.importe_total * 0.1066, 2)"),
                     'tabla_supre.folio_validacion',
                     'tabla_supre.fecha_validacion',
                     'folios.comentario')
@@ -1805,8 +1804,8 @@ class supreController extends Controller
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.4, '999,999.99') END AS importe_estatal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
-                    \DB::raw("ROUND(folios.importe_total * 0.10, 2)"),
-                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2)"),
+                    \DB::raw("floatval(number_format(folios.importe_total * 0.10, 2)"),
+                    \DB::raw("floatval(number_format(folios.importe_total * 0.1066, 2)"),
                     'tabla_supre.folio_validacion',
                     'tabla_supre.fecha_validacion',
                     'folios.comentario')

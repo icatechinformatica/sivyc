@@ -193,7 +193,7 @@ class grupoController extends Controller
 
         if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
             if ($curp) {
-                $a_reg = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('eliminado',false)->first(); 
+                $a_reg = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('eliminado',false)->first();
                 if($a_reg) $date = $a_reg->inicio;
                 else $date = $request->inicio;
                 $alumno = DB::table('alumnos_pre')
@@ -227,7 +227,7 @@ class grupoController extends Controller
                                     $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                                     return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
                                 }
-                                
+
                                 if ($a_reg) {
                                     $id_especialidad = $a_reg->id_especialidad;
                                     $id_unidad = $a_reg->id_unidad;
@@ -348,7 +348,7 @@ class grupoController extends Controller
     }
 
     public function update(Request $request)
-    { 
+    {
         //dd($request->all()); dd($request->folio_grupo);
         if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
 
@@ -525,12 +525,12 @@ class grupoController extends Controller
                                         'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago,'mpreapertura'=>$mapertura,'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre,
                                         'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual]);
                                     if ($result) {
-                                        
+
                                         $result_curso = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('id',$ID)->where('id_instructor',$request->instructor)
                                             ->update(['comprobante_pago' => $url_comprobante,
                                             'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago, 'updated_at' => date('Y-m-d H:i:s'),
                                             'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'cespecifico' => $request->cespecifico,'fcespe' => $request->fcespe,
-                                            'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,                                                                                        
+                                            'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,
                                             'curp' => $instructor->curp,'rfc' => $instructor->rfc,'modinstructor' => $tipo_honorario,'instructor_escolaridad' => $instructor->escolaridad,
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
@@ -552,7 +552,7 @@ class grupoController extends Controller
                                             'observaciones'=>$request->observaciones, 'mpreapertura'=>$mapertura, 'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre
                                         ]
                                     );
-                                    if ($result) {                                        
+                                    if ($result) {
                                         $result2 = DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(['folio_grupo' => $_SESSION['folio_grupo']],
                                             ['id' => $ID, 'cct' => $unidad->cct,'unidad' => $request->unidad,'nombre' => $instructor->instructor,'curp' => $instructor->curp,
                                             'rfc' => $instructor->rfc,'clave' => '0','mvalida' => '0','mod' => $request->modalidad,'area' => $curso->area,'espe' => $curso->espe,'curso' => $curso->nombre_curso,
@@ -615,7 +615,7 @@ class grupoController extends Controller
         return redirect()->route('preinscripcion.grupo');
     }
     public function turnar()
-    {        
+    {
         if ($_SESSION['folio_grupo']) {
             if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->where('status','!=','AUTORIZADO')->exists()) {
                 $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
@@ -729,7 +729,7 @@ class grupoController extends Controller
         }
     }
 
-    public function remplazar(Request $request){ 
+    public function remplazar(Request $request){
         $message = 'Operación fallida, vuelva a intentar..';
         if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
             if ($request->busqueda1 AND $request->curpo) {
@@ -916,7 +916,7 @@ class grupoController extends Controller
             ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($request->inicio)))
             ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($request->inicio)))
             ->havingRaw('count(*) >= 2')
-            ->groupby('i.id'); 
+            ->groupby('i.id');
 
             $id_especialidad = DB::table('cursos')->where('id',$request->id)->value('id_especialidad');
             $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
