@@ -87,7 +87,7 @@
 <div class="d-flex flex-lg-row flex-column col-12 col-lg-12 justify-content-end">
     <button type="button" class="btn mt-1" id="nuevo" >NUEVO</button> &nbsp;&nbsp;   
     @can('agenda.vinculacion')        
-        @if ($grupo->cespecifico)
+        @if(isset($grupo->cespecifico))
             <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_acta_acuerdo"> <i  class="far fa-file-pdf  fa-1x text-mute"></i> ACTA DE ACUERDO</button>
             {{-- <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_convenio_esp"><i  class="far fa-file-pdf  fa-1x text-mute"></i> CONVENIO</button> --}}
         @endif
