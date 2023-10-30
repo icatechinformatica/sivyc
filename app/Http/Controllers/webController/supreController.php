@@ -770,9 +770,9 @@ class supreController extends Controller
 
                 if($criterio != NULL)
                 {
-                    if($inicio >= $criterio_fecha) {
-                        $criterio->monto = ($criterio->monto / 1.16);
-                    }
+                    // if($inicio >= $criterio_fecha) {
+                    //     $criterio->monto = ($criterio->monto / 1.16);
+                    // }
                     if($Cursos->tipo_curso == 'CERTIFICACION')
                     {
                         array_push($total, $criterio->monto * 10);
@@ -802,8 +802,14 @@ class supreController extends Controller
 
             if($Cursos->modinstructor == 'HONORARIOS')
             {
+                if($inicio >= $criterio_fecha) {
+                    $total['iva'] = floatval(number_format($total[0] * 0.16, 2, '.', ''));
+                    $total['importe_total'] = floatval(number_format($total[0], 2, '.', ''));
+                    $total['tabuladorConIva'] = TRUE;
+                } else {
                     $total['iva'] = floatval(number_format($total[0] * 0.16, 2, '.', ''));
                     $total['importe_total'] = floatval(number_format($total[0] + $total['iva'], 2, '.', ''));
+                }
             }
             else
             {
