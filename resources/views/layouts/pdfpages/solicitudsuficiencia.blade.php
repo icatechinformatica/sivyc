@@ -109,7 +109,7 @@
                             <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
                             <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
                             <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>
-                            @if($data[0]['fecha_apertura'] <=  '2023-10-12')
+                            @if($data[0]['fecha_apertura'] <  '2023-10-12')
                                 <td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>
                                 @if($tipop == 'HONORARIOS')<td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>@endif
                                 <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
@@ -138,7 +138,7 @@
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->clave}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->ze}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->dura}}</small></td>
-                                @if($data[0]['fecha_apertura'] <=  '2023-10-12')
+                                @if($data[0]['fecha_apertura'] <  '2023-10-12')
                                     <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_hora, 2, '.', ',') }}</td>
                                     @if($item->modinstructor == 'HONORARIOS')<td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->iva, 2, '.', ',')}}</td>@endif
                                     <td scope="col" class="text-center"><small style="font-size: 10px;">@if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS')12101 HONORARIOS @else 12101 ASIMILADOS A SALARIOS @endif</td>

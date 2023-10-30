@@ -190,7 +190,7 @@ else{
                             <td scope="col"><small style="font-size: 8px;">CLAVE DEL GRUPO</small></td>
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">ZONA ECÓNOMICA</small></td>
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">HSM (horas)</small></td>
-                            @if($data[0]['fecha_apertura'] <=  '2023-10-12')
+                            @if($data[0]['fecha_apertura'] <  '2023-10-12')
                                 <td scope="col" style="width: 20px"><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
                                 @if($tipop->modinstructor == 'HONORARIOS')<td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>@endif
                                 <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
@@ -220,7 +220,7 @@ else{
                                 <td><small style="font-size: 8px;">{{$item->clave}}</small></td>
                                 <td><small style="font-size: 8px;">{{$item->ze}}</small></td>
                                 <td><small style="font-size: 8px;">{{$item->dura}}</small></td>
-                                @if($data[0]['fecha_apertura'] <=  '2023-10-12')
+                                @if($data[0]['fecha_apertura'] <  '2023-10-12')
                                     <td><small style="font-size: 8px;">{{number_format($item->importe_hora, 2, '.', ',')}}</small></td>
                                     @if($item->modinstructor == 'HONORARIOS')<td><small style="font-size: 8px;">{{number_format($item->iva, 2, '.', ',')}}</small></td>@endif
                                     <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">

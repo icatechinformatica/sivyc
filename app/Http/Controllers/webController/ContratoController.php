@@ -201,7 +201,7 @@ class ContratoController extends Controller
         }
         // dd($contrato);
         $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
-                            'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad',
+                            'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad','tbl_cursos.fecha_apertura',
                             'tbl_cursos.curso','tbl_cursos.clave_especialidad','tbl_cursos.espe','tbl_cursos.soportes_instructor','instructores.nombre AS insnom',
                             'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.id','instructores.archivo_alta','instructores.banco',
                             'instructores.no_cuenta','instructores.interbancaria','instructores.archivo_bancario')
@@ -250,8 +250,11 @@ class ContratoController extends Controller
         }
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        $pago = round($data->importe_total-$data->iva, 2);
-
+        if($data->fecha_apertura < '2023-10-12') {
+            $pago = round($data->importe_total-$data->iva, 2);
+        } else {
+            $pago = $data->importe_total;
+        }
 
         $año_referencia = '01-01-' . CARBON::now()->format('Y');
         $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
