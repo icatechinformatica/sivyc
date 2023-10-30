@@ -54,7 +54,7 @@
                     <th>Partida/Concepto</th>
                     <th>Clave Curso</th>
                     <th>Importe total</th>
-                    <th>Iva</th>
+                    <th id='thiva'>Iva</th>
                     <th>Observación</th>
                     {{-- <th>Acción</th> --}}
                 </tr>
@@ -63,7 +63,7 @@
                     <td><input type="text" name="addmore[0][numeropresupuesto]" id="addmore[0][numeropresupuesto]" placeholder="número presupuesto" class="form-control" disabled value="12101" /></td>
                     <td><input type="text" name="addmore[0][clavecurso]" id="addmore[0][clavecurso]" placeholder="clave curso" class="form-control claveCurso" /></td>
                     <td><input type="text" name="addmore[0][importe]" id="addmore[0][importe]" placeholder="importe total" class="form-control" readonly/><footer name="addmore[0][aviso]" id="addmore[0][aviso]" style="color: red"></footer></td>
-                    <td><input type="text" name="addmore[0][iva]" id="addmore[0][iva]" placeholder="IVA" class="form-control" readonly /></td>
+                    <td id="tdiva"><input type="text" name="addmore[0][iva]" id="addmore[0][iva]" placeholder="IVA" class="form-control" readonly /></td>
                     <td><input type="text" name="addmore[0][comentario]" id="addmore[0][comentario]" placeholder="Comentario" class="form-control" /></td>
                     {{-- <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td> --}}
                 </tr>
@@ -282,13 +282,18 @@ function textLabel(text) {
                         if(!respuesta.hasOwnProperty('error')){
                             // iva = respuesta[0] * 0.16;
                             // iva = parseFloat(iva).toFixed(2);
-                            if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS')
-                            {
+                            if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS') {
                                 // total = respuesta[0]*1.16
                                 document.getElementById('addmore['+x+'][iva]').value = respuesta['iva'];
-                            }
-                            else
-                            {
+                                if(respuesta['tabuladorConIva'] == true) {
+                                    document.getElementById('tdiva').style.display = 'none';
+                                    document.getElementById('thiva').style.display = 'none';
+                                } else {
+                                    document.getElementById('tdiva').style.display = 'table-cell';
+                                    document.getElementById('thiva').style.display = 'table-cell';
+                                }
+                                // style="display:none;"
+                            } else {
                                 // total = respuesta[0]
                                 document.getElementById('addmore['+x+'][iva]').value = 0.00;
                             }
