@@ -80,7 +80,7 @@ else{
             {
                 text-align: left;
                 position: absolute;
-                bottom: 5px;
+                bottom: 35px;
                 left: 65px;
                 font-size: 8.5px;
                 color: rgb(255, 255, 255);
@@ -190,10 +190,16 @@ else{
                             <td scope="col"><small style="font-size: 8px;">CLAVE DEL GRUPO</small></td>
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">ZONA ECÓNOMICA</small></td>
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">HSM (horas)</small></td>
-                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
-                            @if($tipop->modinstructor == 'HONORARIOS')<td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>@endif
-                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
-                            <td scope="col"><small style="font-size: 8px;">IMPORTE</small></td>
+                            @if($data[0]['fecha_apertura'] <  '2023-10-12')
+                                <td scope="col" style="width: 20px"><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
+                                @if($tipop->modinstructor == 'HONORARIOS')<td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>@endif
+                                <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
+                                <td scope="col"><small style="font-size: 8px;">IMPORTE</small></td>
+                            @else
+                                <td scope="col" style="width: 20px"><small style="font-size: 8px;">COSTO POR HORA</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TOTAL IMPORTE</small></td>
+                                <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
+                            @endif
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
                             <td width="160px" ><small style="font-size: 8px;">OBSERVACION</small></td>
                         </tr>
@@ -214,12 +220,20 @@ else{
                                 <td><small style="font-size: 8px;">{{$item->clave}}</small></td>
                                 <td><small style="font-size: 8px;">{{$item->ze}}</small></td>
                                 <td><small style="font-size: 8px;">{{$item->dura}}</small></td>
-                                <td><small style="font-size: 8px;">{{number_format($item->importe_hora, 2, '.', ',')}}</small></td>
-                                @if($item->modinstructor == 'HONORARIOS')<td><small style="font-size: 8px;">{{number_format($item->iva, 2, '.', ',')}}</small></td>@endif
-                                <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
-                                <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
-                                <td><small style="font-size: 8px;">@if($item->modinstructor == 'HONORARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</small></td>
-                                <td><small style="font-size: 8px;">{{number_format($item->importe_total, 2, '.', ',')}}</small></td>
+                                @if($data[0]['fecha_apertura'] <  '2023-10-12')
+                                    <td><small style="font-size: 8px;">{{number_format($item->importe_hora, 2, '.', ',')}}</small></td>
+                                    @if($item->modinstructor == 'HONORARIOS')<td><small style="font-size: 8px;">{{number_format($item->iva, 2, '.', ',')}}</small></td>@endif
+                                    <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
+                                    <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
+                                    <td><small style="font-size: 8px;">@if($item->modinstructor == 'HONORARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</small></td>
+                                    <td><small style="font-size: 8px;">{{number_format($item->importe_total, 2, '.', ',')}}</small></td>
+                                @else
+                                    <td><small style="font-size: 8px;">{{number_format($criterio->monto, 2, '.', ',')}}</small></td>
+                                    <td><small style="font-size: 8px;">{{number_format($item->importe_total, 2, '.', ',')}}</small></td>
+                                    <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
+                                    <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
+                                    <td><small style="font-size: 8px;">@if($item->modinstructor == 'HONORARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</small></td>
+                                @endif
                                 <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
                                 <td style="text-align: center; font-size: 10px;"><small>
                                     @if($data2->financiamiento == NULL)
