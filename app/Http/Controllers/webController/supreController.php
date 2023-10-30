@@ -179,7 +179,7 @@ class supreController extends Controller
                     {
                         $horas = (int) $hora->dura;
                     }
-                    $importe_hora = floatval(number_format($importe / $horas, 4, '.', ''));
+                    $importe_hora = floatval(number_format($importe / $horas, 2, '.', ''));
                     $folio->importe_hora = $importe_hora;
                     $folio->importe_total = $value['importe'];
                     $folio->id_supre = $id;
@@ -189,11 +189,11 @@ class supreController extends Controller
                     //Calculo del nuevo campo impuestos
                     if($claveval->modinstructor ==  'HONORARIOS')
                     {
-                        $folio->impuestos = $this->honorarios(floatval(number_format($importe, 4, '.', '')));
+                        $folio->impuestos = $this->honorarios(floatval(number_format($importe, 2, '.', '')));
                     }
                     else
                     {
-                        $folio->impuestos = $this->asimilados(floatval(number_format($importe, 4, '.', '')));
+                        $folio->impuestos = $this->asimilados(floatval(number_format($importe, 2, '.', '')));
                     }
 
                     $folio->save();
@@ -334,11 +334,11 @@ class supreController extends Controller
 
             if($hora->modinstructor ==  'HONORARIOS')
             {
-                $folio->impuestos = $this->honorarios(floatval(number_format($importe, 4, '.', '')));
+                $folio->impuestos = $this->honorarios(floatval(number_format($importe, 2, '.', '')));
             }
             else
             {
-                $folio->impuestos = $this->asimilados(floatval(number_format($importe, 4, '.', '')));
+                $folio->impuestos = $this->asimilados(floatval(number_format($importe, 2, '.', '')));
             }
 
             $folio->save();
@@ -802,8 +802,8 @@ class supreController extends Controller
 
             if($Cursos->modinstructor == 'HONORARIOS')
             {
-                    $total['iva'] = floatval(number_format($total[0] * 0.16, 4, '.', ''));
-                    $total['importe_total'] = floatval(number_format($total[0] + $total['iva'], 4, '.', ''));
+                    $total['iva'] = floatval(number_format($total[0] * 0.16, 2, '.', ''));
+                    $total['importe_total'] = floatval(number_format($total[0] + $total['iva'], 2, '.', ''));
             }
             else
             {
@@ -1062,7 +1062,7 @@ class supreController extends Controller
         if($idc != NULL)
         {
             contratos::where('id_contrato', '=', $idc->id_contrato)
-                  ->update(['cantidad_numero' => floatval(number_format($request->addmore[0]['importe']-$request->addmore[0]['iva'], 4, '.', ''))]);
+                  ->update(['cantidad_numero' => floatval(number_format($request->addmore[0]['importe']-$request->addmore[0]['iva'], 2, '.', ''))]);
         }
 
         return redirect()->route('contrato-inicio')
@@ -1116,7 +1116,8 @@ class supreController extends Controller
         $data_supre = $supre::WHERE('id', '=', $id)->FIRST();
         $uj= supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso','tbl_cursos.modinstructor')
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso',
+                        'tbl_cursos.modinstructor','tbl_cursos.fecha_apertura')
                     ->WHERE('id_supre', '=', $id )
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
@@ -1204,7 +1205,8 @@ class supreController extends Controller
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso','tbl_cursos.modinstructor')
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso',
+                        'tbl_cursos.modinstructor','tbl_cursos.fecha_apertura', 'tbl_cursos.cp')
                     ->WHERE('id_supre', '=', $id )
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
@@ -1212,8 +1214,36 @@ class supreController extends Controller
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
 
+        $inicio = date('Y-m-d', strtotime($data[0]->fecha_apertura));
+        $Curso = $data[0];
+        if($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp > 5) {
+            $Curso->cp = $Curso->cp - 1;
+        } else if ($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp == 5) {
+            $Curso->cp = 55; // este id es del antiguo C.P. 5
+        }
+
+        if ($Curso->ze == 'II')
+        {
+            $queryraw = "jsonb_array_elements(ze2->'vigencias') AS vigencia";
+        }
+        else
+        {
+            $queryraw = "jsonb_array_elements(ze3->'vigencias') AS vigencia";
+        }
+
+        $criterio = DB::table('criterio_pago')->select('fecha', 'monto')
+            ->fromSub(function ($query) use ($Curso, $inicio, $queryraw) {
+                $query->selectRaw("(vigencia->>'fecha')::date AS fecha, (vigencia->>'monto')::numeric AS monto")
+                    ->from('criterio_pago')
+                    ->crossJoin(DB::raw($queryraw))
+                    ->where('id', $Curso->cp)
+                    ->whereRaw("(vigencia->>'fecha')::date <= ?", [$inicio]);
+            }, 'sub')
+            ->orderBy('fecha', 'DESC')
+            ->limit(1)
+            ->first();
+
         $tipop = $data[0]['modinstructor'];
-        // dd($tipop);
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
         $direccion = tbl_unidades::WHERE('unidad',$data2->unidad_capacitacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
@@ -1235,7 +1265,7 @@ class supreController extends Controller
         $Mv = $this->monthToString(date('m',$datev));
         $Yv = date("Y",$datev);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','distintivo','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','distintivo','direccion','criterio'));
         $pdf->setPaper('A4', 'Landscape');
 
         return $pdf->stream('download.pdf');
@@ -1254,8 +1284,10 @@ class supreController extends Controller
         $recursos = array();
         $i = 0;
         $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
-                        'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad','tbl_cursos.modinstructor',
-                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso','tbl_cursos.modinstructor')
+                        'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                        'tbl_cursos.unidad','tbl_cursos.modinstructor','tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze',
+                        'tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso','tbl_cursos.modinstructor',
+                        'tbl_cursos.cp','tbl_cursos.fecha_apertura')
                     ->WHERE('id_supre', '=', $id )
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
@@ -1263,6 +1295,36 @@ class supreController extends Controller
                     ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
+
+        $inicio = date('Y-m-d', strtotime($data[0]->fecha_apertura));
+        $Curso = $data[0];
+        if($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp > 5) {
+            $Curso->cp = $Curso->cp - 1;
+        } else if ($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp == 5) {
+            $Curso->cp = 55; // este id es del antiguo C.P. 5
+        }
+
+        if ($Curso->ze == 'II')
+        {
+            $queryraw = "jsonb_array_elements(ze2->'vigencias') AS vigencia";
+        }
+        else
+        {
+            $queryraw = "jsonb_array_elements(ze3->'vigencias') AS vigencia";
+        }
+
+        $criterio = DB::table('criterio_pago')->select('fecha', 'monto')
+            ->fromSub(function ($query) use ($Curso, $inicio, $queryraw) {
+                $query->selectRaw("(vigencia->>'fecha')::date AS fecha, (vigencia->>'monto')::numeric AS monto")
+                    ->from('criterio_pago')
+                    ->crossJoin(DB::raw($queryraw))
+                    ->where('id', $Curso->cp)
+                    ->whereRaw("(vigencia->>'fecha')::date <= ?", [$inicio]);
+            }, 'sub')
+            ->orderBy('fecha', 'DESC')
+            ->limit(1)
+            ->first();
+
         $data2 = supre::WHERE('id', '=', $id)->FIRST(); //dd($data[0]->tipo_curso);
         $direccion = tbl_unidades::WHERE('unidad',$data2->unidad_capacitacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
@@ -1313,7 +1375,7 @@ class supreController extends Controller
         //$getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
         // $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
         $getccp4 = DB::TABLE('tbl_unidades')->SELECT('delegado_administrativo','pdelegado_administrativo')->WHERE('unidad',$data2->unidad_capacitacion)->FIRST();
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp4','recursos','distintivo','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp4','recursos','distintivo','direccion','criterio'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
 
@@ -1514,8 +1576,8 @@ class supreController extends Controller
 
         foreach($data as $cadwell)
         {
-            $risr[$i] = $this->numberFormat( floatval(number_format($cadwell->importe_total * 0.10, 4, '.', '')));
-            $riva[$i] = $this->numberFormat( floatval(number_format($cadwell->importe_total * 0.1066, 4, '.', '')));
+            $risr[$i] = $this->numberFormat( floatval(number_format($cadwell->importe_total * 0.10, 2, '.', '')));
+            $riva[$i] = $this->numberFormat( floatval(number_format($cadwell->importe_total * 0.1066, 2, '.', '')));
 
             $iva[$i] = $this->numberFormat( floatval($cadwell->iva));
             $cantidad[$i] = $this->numberFormat( floatval($cadwell->importe_total));
@@ -1603,9 +1665,9 @@ class supreController extends Controller
                 // $point = $point.carbon::now()->year;dd($cp);
                 $data[$key]->importe_hora = $cp->$point;
             }
-            $data[$key]->importe_total = floatval(number_format($cadwell->dura * $cp->$point, 4, '.', ''));
-            $data[$key]->iva = floatval(number_format($data[$key]->importe_total * 0.16, 4, '.', ''));
-            $data[$key]->isr = floatval(number_format($data[$key]->importe_total * 0.10, 4, '.', ''));
+            $data[$key]->importe_total = floatval(number_format($cadwell->dura * $cp->$point, 2, '.', ''));
+            $data[$key]->iva = floatval(number_format($data[$key]->importe_total * 0.16, 2, '.', ''));
+            $data[$key]->isr = floatval(number_format($data[$key]->importe_total * 0.10, 2, '.', ''));
             unset($data[$key]->inicio);
             unset($data[$key]->cp);
         }
@@ -1628,11 +1690,11 @@ class supreController extends Controller
     {
         $impuestos = array();
         $impuestos['regimen'] = 'HONORARIOS';
-        $impuestos['IVA'] = floatval(number_format($importe * 0.16, 4, '.', ''));
-        $impuestos['subtotal'] = floatval(number_format($importe + $impuestos['IVA'], 4, '.', ''));
-        $impuestos['retencion_isr'] = floatval(number_format($importe * 0.1, 4, '.', ''));
-        $impuestos['retencion_iva'] = floatval(number_format($impuestos['IVA']/3*2, 4, '.', ''));
-        $impuestos['importe_neto'] = floatval(number_format($impuestos['subtotal']-$impuestos['retencion_isr']-$impuestos['retencion_iva'], 4, '.', ''));
+        $impuestos['IVA'] = floatval(number_format($importe * 0.16, 2, '.', ''));
+        $impuestos['subtotal'] = floatval(number_format($importe + $impuestos['IVA'], 2, '.', ''));
+        $impuestos['retencion_isr'] = floatval(number_format($importe * 0.1, 2, '.', ''));
+        $impuestos['retencion_iva'] = floatval(number_format($impuestos['IVA']/3*2, 2, '.', ''));
+        $impuestos['importe_neto'] = floatval(number_format($impuestos['subtotal']-$impuestos['retencion_isr']-$impuestos['retencion_iva'], 2, '.', ''));
         return $impuestos;
     }
 
@@ -1640,16 +1702,16 @@ class supreController extends Controller
     {
         $impuestos = array();
         $impuestos['regimen'] = 'ASIMILADOS A SALARIO';
-        $impuestos['IVA'] = floatval(number_format($importe * 0.16, 4, '.', ''));
-        $impuestos['subtotal'] = floatval(number_format($importe + $impuestos['IVA'], 4, '.', ''));
+        $impuestos['IVA'] = floatval(number_format($importe * 0.16, 2, '.', ''));
+        $impuestos['subtotal'] = floatval(number_format($importe + $impuestos['IVA'], 2, '.', ''));
         $impuestos['limite_inferior'] = $this->isr_finder($impuestos['subtotal'], '1');
-        $impuestos['excedente'] = floatval(number_format($impuestos['subtotal'] - $impuestos['limite_inferior'], 4, '.', ''));
+        $impuestos['excedente'] = floatval(number_format($impuestos['subtotal'] - $impuestos['limite_inferior'], 2, '.', ''));
         $isr_info = $this->isr_finder($impuestos['excedente'], '2');
         $impuestos['tasa_impuesto'] = $isr_info->porcentaje;
-        $impuestos['impuesto_marginal'] = floatval(number_format($impuestos['excedente'] * ($impuestos['tasa_impuesto'] / 100), 4, '.', ''));
+        $impuestos['impuesto_marginal'] = floatval(number_format($impuestos['excedente'] * ($impuestos['tasa_impuesto'] / 100), 2, '.', ''));
         $impuestos['cuota_fija'] = $isr_info->cuota_fija;
-        $impuestos['isr_determinado'] = floatval(number_format($impuestos['impuesto_marginal'] + $impuestos['cuota_fija'], 4, '.', ''));
-        $impuestos['ingreso_neto'] = floatval(number_format($impuestos['subtotal'] - $impuestos['isr_determinado'], 4, '.', ''));
+        $impuestos['isr_determinado'] = floatval(number_format($impuestos['impuesto_marginal'] + $impuestos['cuota_fija'], 2, '.', ''));
+        $impuestos['ingreso_neto'] = floatval(number_format($impuestos['subtotal'] - $impuestos['isr_determinado'], 2, '.', ''));
         return $impuestos;
     }
 
