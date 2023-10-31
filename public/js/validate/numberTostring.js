@@ -1,4 +1,5 @@
 $(function() {
+    console.log('aaa')
     inputNumero = $("#inputNumero"),
     botonConvertir = $("#botonConvertir"),
     salida = $("#cantidad_letras");
