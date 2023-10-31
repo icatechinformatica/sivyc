@@ -33,10 +33,20 @@ $(function(){
                     } else {
                         if(!respuesta.hasOwnProperty('error')){
                             iva = respuesta[0] * 0.16;
-                            iva = parseFloat(iva).toFixed(4);
+                            iva = parseFloat(iva).toFixed(2);
                             if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS')
                             {
-                                total = respuesta[0]*1.16
+                                console.log(respuesta)
+                                if(respuesta['tabuladorConIva'] == true) {
+                                    total = respuesta[0];
+                                    document.getElementById('tdiva').style.display = 'none';
+                                    document.getElementById('thiva').style.display = 'none';
+                                } else {
+                                    total = respuesta[0]*1.16
+                                    document.getElementById('tdiva').style.display = 'table-cell';
+                                    document.getElementById('thiva').style.display = 'table-cell';
+                                }
+
                                 document.getElementById('addmore['+x+'][iva]').value = iva;
                             }
                             else
@@ -44,7 +54,7 @@ $(function(){
                                 total = respuesta[0]
                                 document.getElementById('addmore['+x+'][iva]').value = 0.00;
                             }
-                            total = parseFloat(total).toFixed(4);
+                            total = parseFloat(total).toFixed(2);
 
                             document.getElementById('addmore['+x+'][importe]').value = total;
                             document.getElementById('norecibo').value = respuesta['recibo'];
