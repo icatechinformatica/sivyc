@@ -366,6 +366,11 @@ class supreController extends Controller
         $id = base64_decode($id);
         $supre = new supre();
         $data =  $supre::WHERE('id', '=', $id)->FIRST();
+        $fecha_apertura = DB::Table('tabla_supre')
+            ->Join('folios','folios.id_supre','tabla_supre.id')
+            ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->Where('tabla_supre.id',$data->id)
+            ->Value('fecha_apertura');
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
         $criterio_pago = DB::TABLE('criterio_pago')
@@ -381,7 +386,7 @@ class supreController extends Controller
         //                 ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
         // dd($notification);
 
-        return view('layouts.pages.valsupre',compact('data','getremitente','directorio','criterio_pago','delegado'));
+        return view('layouts.pages.valsupre',compact('data','getremitente','directorio','criterio_pago','delegado','fecha_apertura'));
     }
 
     public function supre_rechazo(Request $request){
