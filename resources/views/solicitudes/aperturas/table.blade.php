@@ -5,15 +5,17 @@
         <thead>
             <tr>                
                 <th scope="col" class="text-center" >OPCIONES</th>                
-                <th scope="col" class="text-center">ID</th> 
+                <th scope="col" class="text-center">GRUPO</th> 
                 @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
                     <th scope="col" class="text-center">OBSERVACIONES PRELIMINAR</th>
                 @elseif ($extemporaneo)
                     <th scope="col" class="text-center" colspan="2">MOTIVO EXTEMPORANEO</th>
                 @endif
+                @if($motivo_soporte)
+                    <th scope="col" class="text-center">MOTIVO REEMPLAZO</th>
+                @endif
                 <th scope="col" class="text-center">FECHA ARC01</th>
-                <th scope="col" class="text-center" >CLAVE</th>
-                <th scope="col" class="text-center">GRUPO</th>
+                <th scope="col" class="text-center" >CLAVE</th>                
                 <!--<th scope="col" class="text-center" >MOTIVO</th> -->        
                 <th scope="col" class="text-center">SERVICIO</th>
                 <th scope="col" class="text-center">UNIDAD</th>
@@ -89,8 +91,8 @@
                                     <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
                                 </a>                                
                             @endif
-                        </td>
-                        <td class="text-center"> {{ $g->id }}</td>
+                        </td>      
+                        <td class="text-center">{{$g->folio_grupo}}</td>                  
                         @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
                             <td> 
                                 <div style="width: 400px;">{{ Form::textarea('prespuesta['.$g->id.']', $g->obspreliminar, ['id' => 'prespuesta['.$g->id.']' ,'class' => 'form-control', 'placeholder' => 'OBSERVACIONES','rows' =>'3']) }}</div>
@@ -98,6 +100,9 @@
                         @elseif($extemporaneo)
                             <td class="text-center">{{$mextemporaneo }}</td>
                             <td class="text-center">{{$rextemporaneo}}</td>
+                        @endif                        
+                        @if($motivo_soporte)
+                            <td class="text-center text-danger">{{$g->motivo}}</td>
                         @endif
                         <td class="text-center"> {{$g->fecha_arc01}}</td>
                         <td class="text-center">
@@ -107,7 +112,7 @@
                                 <div style="width:128px;">{{ $g->clave}}</div> 
                             @endif
                        </td> 
-                       <td class="text-center">{{$g->folio_grupo}}</td>
+                       
                        <!--
                         <td class="text-center"><div style="width:400px;">
                             <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
@@ -117,7 +122,7 @@
                         <td> <div style="width:100px;">{{ $g->unidad }} </div></td>
                         <td> <div style="width:148px;">{{ $g->espe }} </div></td>
                         <td><div style="width:220px;"> {{ $g->curso }}</div></td>
-                        <td><div style="width:120px;">{{ $g->nombre }}. {{ $g->instructor_mespecialidad}}</div></td>
+                        <td><div style="width:150px;">{{ $g->nombre }}. {{ $g->instructor_mespecialidad}}</div></td>
                         <td class="text-center"> {{ $g->mod }} </td>
                         <td class="text-center"> @if ($g->tipo=='EXO') {{"EXONERACION"}} @elseif($g->tipo=='EPAR') {{"REDUCCION DE CUOTA"}}  @else {{"PAGO ORDINARIO"}}   @endif </td>
                         <td class="text-center"> {{ $g->dura }} </td>
@@ -142,9 +147,9 @@
                         <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif</td>
                         <td class="text-center"> {{ $g->status}}</td>
                         <td class="text-center">{{$g->plantel }}</td>
-                        <td> <div style="width:120px;"> {{ $g->efisico }} </div></td>
+                        <td> <div style="width:300px;"> {{ $g->efisico }} </div></td>
                         <td class="text-left">
-                            <div style="width:700px;">
+                            <div style="width:500px;">
                                 @if($g->option =='ARC01')  {{ $g->nota }}
                                 @elseif($g->option =='ARC02') {{ $g->observaciones }} @endif
                             </div>    
@@ -152,7 +157,7 @@
                         <td class="text-center"> {{ $g->mvalida}}</td>
                         <td class="text-center">{{$g->fecha_arc02}}</td>
                         <td class="text-center">{{$g->cgeneral}} {{$g->fecha_vigencia}}</td>
-                        <td class="text-center">{{$g->cespecifico }} {{$g->fcespe}}</td>
+                        <td class="text-center"><div style="width:120px;">{{$g->cespecifico }} {{$g->fcespe}}</div></td>
                     </tr>
                  @endforeach                       
             </tbody>                   
@@ -164,24 +169,31 @@
 </div>
 <div class="row justify-content-end">
     @if($activar==true)
-        <div class="form-group col-md-3">
-            @if($status_curso == "EN FIRMA")
-                {{ Form::button('GENERAR AUTORIZACIÓN PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
-            @endif
-        </div>
-        <div class="form-group col-md2  my-3">           
-            <label>MOVIMIENTO:</label>
-        </div>
-        <div class="form-group col-md-3 my-2">
-            {{ Form::select('movimiento', $movimientos, $opt, ['id'=>'movimiento','class' => 'form-control' ] ) }}
-        </div>
-        <div class="form-group col-md-2 my-2" id='mrespuesta'>
+        @if($status_curso == "EN FIRMA")
+            <div class="form-group col-md-3">
+                
+                    {{ Form::button('GENERAR AUTORIZACIÓN PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
+                
+            </div>
+        @endif
+        @if($movimientos)
+            <div class="form-group col-md2  my-3">           
+                <label>MOVIMIENTO:</label>
+            </div>
+            <div class="form-group col-md-4 my-2">
+                {{ Form::select('movimiento', $movimientos, $opt, ['id'=>'movimiento','class' => 'form-control' ] ) }}
+            </div>
+        @endif
+        <div class="form-group col-md-4 my-2" id='observaciones' style="display:none">
+            {{ Form::text('observaciones', null, [ 'class' => 'form-control', 'placeholder' => 'OBSERVACIONES',  'required' => 'required', 'size' => 45]) }}
+        </div> 
+        <div class="form-group col-md-2 my-2" id='mrespuesta' style="display:none">
             {{ Form::text('mrespuesta', null, [ 'class' => 'form-control', 'placeholder' => 'NÚMERO DEMEMORÁNDUM',  'required' => 'required', 'size' => 35]) }}
         </div> 
-        <div class="form-group col-md-2" id="fecha">
+        <div class="form-group col-md-2" id="fecha" style="display:none">
             {{ form::date('fecha', date('Y-m-d'), ['class'=>'form-control mx-3']) }}    
         </div>
-        <div class="custom-file form-group col-md-3 text-center my-2" id="file">
+        <div class="custom-file form-group col-md-3 text-center my-2" id="file" style="display:none">
             <input type="file" id="file_autorizacion" name="file_autorizacion" accept="application/pdf" class="custom-file-input" required />
             <label for="file_autorizacion" class="custom-file-label">AUTORIZACIÓN FIRMADA PDF</label>
         </div>

@@ -25,7 +25,7 @@
             @csrf
             <div class="row form-inline">                                 
                 {{ Form::text('folio_grupo', $request->folio_grupo, ['id'=>'folio_grupo', 'class' => 'form-control mr-2', 'placeholder' => 'FOLIO DE GRUPO', 'aria-label' => 'FOLIO DE GRUPO', 'required' => 'required', 'size' => 30]) }}
-                {{ Form::button('BUSCAR', ['id' => 'buscar','name' => 'BUSCAR', 'class' => 'btn']) }}                
+                {{ Form::button('BUSCAR', ['id' => 'buscar','name' => 'BUSCAR', 'class' => 'btn', 'value'=>route('grupos.recibos')]) }}                
             </div>        
             @if($data)  
                 <div class="row form-inline"> 
@@ -39,7 +39,7 @@
                         @elseif($data->status_folio == 'IMPRENTA') 
                             <h4 class="text-center text-white bg-danger p-2" >&nbsp;DE IMPRENTA &nbsp;</h4>
                         @else
-                            <h4 class="bg-warning text-center p-2">&nbsp;ASIGNADO &nbsp;</h4>
+                            <h4 class="bg-warning text-center p-2">&nbsp;{{$data->status_folio}} &nbsp;</h4>
                         @endif
                         @if($data->file_pdf)
                             <a class="nav-link pt-0" href="{{$path_files}}{{ $data->file_pdf}}" target="_blank">
@@ -87,7 +87,7 @@
                             {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control', 'placeholder' => 'RECIBIÓ', 'title' => 'RECIBIÓ', 'disabled'=>'true']) }}
                         </div>
                         <div class="form-group col-md-2 m-1 "> <br/>
-                            {{ Form::button('GUARDAR CAMBIOS', ['id'=>'modificar','class' => 'btn']) }}                                      
+                            {{ Form::button('GUARDAR CAMBIOS', ['id'=>'modificar','class' => 'btn', 'value'=> route('grupos.recibos.modificar')]) }}                                      
                         </div>
                     </div> 
                     <hr/> 
@@ -109,19 +109,19 @@
                     </div>                    
                     {{ Form::select('status_recibo', ['PAGADO'=>'PAGADO','POR COBRAR'=>'POR COBRAR'], '', ['id'=>'status_recibo','class' => 'form-control', 'title'=>'ESTATUS','style'=>'display:none'] ) }}                    
                     {{ Form::text('motivo', '', ['id'=>'motivo', 'class' => 'form-control col-md-4 m-1 ', 'placeholder' => 'MOTIVO', 'title' => 'MOTIVO', 'style'=>'display:none']) }}
-                    {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger', 'style'=>'display:none']) }}
+                    {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger', 'style'=>'display:none', 'value'=>route('grupos.recibos.aceptar')]) }}
                     @if($data->status_folio == 'DISPONIBLE')                        
                         {{ Form::text('recibide', $data->recibide, ['id'=>'recibide', 'class' => 'form-control col-md-3 m-1 ', 'placeholder' => 'RECIBÍ DE', 'title' => 'RECICÍ DE']) }}
                         {{ Form::date('fecha', $data->fecha_expedicion, ['id'=>'fecha', 'class' => 'form-control col-md-1 m-1 ', 'placeholder' => 'DIA/MES/AÑO',  'title'=>'FECHA DE EXPEDICIÓN']) }}                        
                         {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control col-md-3 m-1 ', 'placeholder' => 'RECIBIÓ', 'title' => 'RECIBIÓ', 'disabled'=>'true' ]) }}
                         {{ Form::select('status_recibo', ['PAGADO'=>'PAGADO','POR COBRAR'=>'POR COBRAR'], '', ['id'=>'status_recibo','class' => 'form-control', 'title'=>'ESTATUS'] ) }}
-                        {{ Form::button('ASIGNAR', ['id'=>'asignar','class' => 'btn btn-danger']) }}
-                    @else
-                        @if( $data->status_folio != "IMPRENTA" and !$data->status_curso) 
-                            {{ Form::button('GENERAR RECIBO', ['id'=>'pdfRecibo','class' => 'btn']) }}
+                        {{ Form::button('ASIGNAR', ['id'=>'asignar','class' => 'btn btn-danger', 'value'=> route('grupos.recibos.asignar')]) }}
+                    @else                        
+                        @if( ($data->status_folio != "IMPRENTA" and !$data->status_curso) OR $data->status_folio=='ACEPTADO') 
+                            {{ Form::button('GENERAR RECIBO', ['id'=>'pdfRecibo','class' => 'btn', 'value' => route('grupos.recibos.pdf')]) }}
                         @endif
                         @if($data->status_folio == "CARGADO") 
-                            {{ Form::button('ENVIAR', ['id'=>'enviar','class' => 'btn btn-danger']) }}
+                            {{ Form::button('ENVIAR', ['id'=>'enviar','class' => 'btn btn-danger', 'value'=> route('grupos.recibos.enviar')]) }}
                         @endif
                     @endif
                     
@@ -131,97 +131,6 @@
         {!! Form::close() !!}
     </div>
     @section('script_content_js') 
-        <script language="javascript">
-             $(document).ready(function(){    
-                
-                $("#buscar").click(function(){ 
-                    $('#frm').attr('action', "{{route('grupos.recibos')}}");
-                    $('#frm').attr('target', '_self');
-                    $('#frm').submit(); 
-                });
-
-                $("#asignar" ).click(function(){ 
-                    if(confirm("Esta seguro de signar el número de recibo?")==true){ 
-                        $('#frm').attr('action', "{{route('grupos.recibos.asignar')}}"); 
-                        $('#frm').attr('target', '_self');
-                        $('#frm').submit(); 
-                    }
-                }); 
-
-                $("#modificar" ).click(function(){ 
-                    if(confirm("Esta seguro de modificar?")==true){ 
-                        $('#frm').attr('action', "{{route('grupos.recibos.modificar')}}");
-                        $('#frm').attr('target', '_self');
-                        $('#frm').submit(); 
-                    }
-                }); 
-
-                $("#pdfRecibo").click(function(){                     
-                    let url = "{{ route('grupos.recibos.pdf') }}";                    
-                    window.open(url, "_blank");
-                 });
-
-                 $("#movimiento" ).change(function(){
-                    $("#inputFile").hide();
-                    $("#aceptar").hide();
-                    $("#motivo").hide();
-                    switch($("#movimiento" ).val()){
-                        case "SUBIR":
-                            $("#inputFile").show("slow");                                                        
-                            $("#aceptar").text("SUBIR");
-                            $("#aceptar").show("slow");
-                        break;
-                        case "ESTATUS":                            
-                            $("#status_recibo").show("slow");
-                            $("#aceptar").text("ACEPTAR");
-                            $("#aceptar").show("slow");
-                        break;  
-                        case "DESHACER":                            
-                            $("#aceptar").text("ACEPTAR");
-                            $("#aceptar").show("slow");
-                        break;
-                        case "SOPORTES":
-                            $("#aceptar").text("ENVIAR");
-                            $("#motivo").show("slow");
-                            $("#aceptar").show("slow");
-                        break;
-                        case "CANCELAR":
-                            $("#aceptar").text("ACEPTAR");
-                            $("#motivo").show("slow");
-                            $("#aceptar").show("slow");
-                        break;
-                    }
-                });
-
-                $("#aceptar" ).click(function(){ 
-                    //alert($("#movimiento").val());
-                    if(confirm("Esta seguro de ejecutar la acción?")==true){ 
-                        switch($("#movimiento" ).val()){
-                            case "DESHACER":
-                                $('#frm').attr('action', "{{route('grupos.recibos.deshacer')}}"); 
-                            break;
-                            case "ESTATUS":
-                                $('#frm').attr('action', "{{route('grupos.recibos.estatus')}}"); 
-                            break;
-                            case "SUBIR":
-                                $('#frm').attr('action', "{{route('grupos.recibos.subir')}}"); 
-                            break;
-                        }
-                        $('#frm').attr('target', '_self');
-                        $('#frm').submit(); 
-                    }
-                });
-
-                $("#enviar" ).click(function(){ 
-                    if(confirm("Esta seguro de enviar el recibo de pago?")==true){ 
-                        $('#frm').attr('action', "{{route('grupos.recibos.enviar')}}"); 
-                        $('#frm').attr('target', '_self');
-                        $('#frm').submit(); 
-                    }
-                }); 
-
-            });     
-              
-        </script>  
+        <script src="{{ asset('js/grupos/recibos.js') }}"></script>               
     @endsection
 @endsection
