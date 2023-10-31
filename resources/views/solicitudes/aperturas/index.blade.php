@@ -38,8 +38,7 @@
                 $nmunidad = $grupos[0]->nmunidad; 
                 $status_curso = $grupos[0]->status_curso; 
                 $pdf_curso = $grupos[0]->pdf_curso;            
-            @endphp
-                          
+            @endphp                          
                 <div class="form-group col-md-2 mr-sm-1">
                     <div class="dropdown show">
                         <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -82,50 +81,27 @@
 </div>
 @section('script_content_js')
 <script language="javascript">
-    $(document).ready(function() {       
+    $(document).ready(function() {        
         //MOSTRAR BOTONES CONFORME AL MOVIMIENTO
         $("#mrespuesta").hide();
         $("#fecha").hide();
         $("#file").hide();
-
+        $("#observaciones").hide();        
         $("#movimiento").change(function() { 
-            switch ($("#movimiento").val()) {
-                case "RETORNADO":
-                    $("#mrespuesta").hide();
-                    $("#fecha").hide();
-                    $("#file").hide();
-                    $("#espacio").show();
-                    break;
+            switch ($("#movimiento").val()) {                
                 case "EN FIRMA":
                     $("#mrespuesta").show();
-                    $("#fecha").show();
-                    $("#file").hide();
-                    $("#espacio").hide();
+                    $("#fecha").show();                    
                     break;
                 case "AUTORIZADO": 
-                    $("#mrespuesta").hide();
-                    $("#fecha").hide();
-                    $("#file").show();
-                    $("#espacio").hide();
+                    $("#file").show();                    
                     break;
                 case "CANCELADO":
-                    $("#mrespuesta").hide();
-                    $("#fecha").hide();
-                    $("#file").show();
-                    $("#espacio").hide();
-                    break;
-                case "DESHACER":
-                    $("#mrespuesta").hide();
-                    $("#fecha").hide();
-                    $("#file").hide();
-                    $("#espacio").show();
-                    break;
-                case "CAMBIAR":
-                    $("#mrespuesta").show();
-                    $("#fecha").show();
-                    $("#file").hide();
-                    $("#espacio").hide();
-                    break;
+                    $("#file").show();                    
+                    break;                
+                case "DENEGADO"://DENEGADO cambio de soporte de pago
+                    $("#observaciones").show();
+                break;
             }
         });
 
@@ -169,7 +145,15 @@
                     case "CANCELADO":
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.autorizar')}}");
                         $('#frm').attr('target', '_self').submit();
-                        break;
+                    break;
+                    case "ACEPTADO":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.soporte_pago')}}");
+                        $('#frm').attr('target', '_self').submit();
+                    break;
+                    case "DENEGADO":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.soporte_pago')}}");
+                        $('#frm').attr('target', '_self').submit();
+                    break;
                     default:
                         alert("POR FAVOR SELECCIONE UN MOVIMIENTO.")
                         break;
