@@ -55,9 +55,9 @@
                     <th>Numero Presupuesto</th>
                     <th>Clave Curso</th>
                     <th>Importe total</th>
-                    <th>Iva</th>
+                    <th id='thiva'>Iva</th>
                     <th>Observación</th>
-                    <th>Acción</th>
+                    {{-- <th>Acción</th> --}}
                 </tr>
                 @foreach ( $getfolios as $key=>$data )
                 <tr>
@@ -65,14 +65,14 @@
                     <td><input type="text" id="addmore[{{$key}}][numeropresupuesto]" name="addmore[{{$key}}][numeropresupuesto]" value="12101" placeholder="numero presupuesto" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][clavecurso]" name="addmore[{{$key}}][clavecurso]" value="{{ $data->clave}}" placeholder="clave curso" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][importe]" name="addmore[{{$key}}][importe]" value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" readonly /><footer name="addmore[0][aviso]" id="addmore[0][aviso]" style="color: red"></footer></td>
-                    <td><input type="text" id="addmore[{{$key}}][iva]" name="addmore[{{$key}}][iva]" value="{{ $data->iva }}" placeholder="Iva" class="form-control" readonly /></td>
+                    <td id="tdiva"><input type="text" id="addmore[{{$key}}][iva]" name="addmore[{{$key}}][iva]" value="{{ $data->iva }}" placeholder="Iva" class="form-control" readonly /></td>
                     <td><input type="text" id="addmore[{{$key}}][comentario]" name="addmore[{{$key}}][comentario]" value="{{ $data->comentario }}" placeholder="comentario" class="form-control" /></td>
                     <input hidden id="addmore[{{$key}}][id_cursos]" name="addmore[{{$key}}][id_cursos]" value="{{$data->id_cursos}}">
-                    @if ($key == 0)
+                    {{-- @if ($key == 0)
                     <td><button type="button" name="addmodsupre" id="addmodsupre" class="btn btn-success">Agregar</button></td>
                     @else
                     <td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td>
-                    @endif
+                    @endif --}}
                 </tr>
 
                 @endforeach

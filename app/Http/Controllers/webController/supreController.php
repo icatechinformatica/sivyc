@@ -89,6 +89,7 @@ class supreController extends Controller
     }
 
     public function frm_formulario() {
+        $prueba = '2023-10-17';
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         $unidad = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
 
