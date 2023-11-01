@@ -380,10 +380,10 @@ class aperturasController extends Controller
                     if($ids){
                         if($request->movimiento=='ACEPTADO'){
                             $result = DB::table('tbl_recibos')->whereIn('id',$ids)
-                                ->update(['status_folio'=>'ACEPTADO','fecha_status'=>date('Y-m-d'),'iduser_updated'=>$this->id_user]);
+                                ->update(['status_folio'=>'ACEPTADO','fecha_status'=>date('Y-m-d H:i:s'),'iduser_updated'=>$this->id_user]);
                         }elseif($request->movimiento=='DENEGADO'){
                             $result = DB::table('tbl_recibos')->whereIn('id',$ids)
-                                ->update(['status_folio'=>'DENEGADO','observaciones'=>$request->observaciones,'fecha_status'=>date('Y-m-d'),'iduser_updated'=>$this->id_user]);
+                                ->update(['status_folio'=>'DENEGADO','observaciones'=>$request->observaciones,'fecha_status'=>date('Y-m-d H:i:s'),'updated_at'=> date('Y-m-d H:m:s'),'iduser_updated'=>$this->id_user]);
                         }
                         if($result)$message = "OPERACIÓN EXITOSA!!";
                         else $message = "NO SE PERMITEN DESHACER LAS CLAVES, NO SON LAS ULTIMAS!!";

@@ -109,8 +109,16 @@
                     </div>                    
                     {{ Form::select('status_recibo', ['PAGADO'=>'PAGADO','POR COBRAR'=>'POR COBRAR'], '', ['id'=>'status_recibo','class' => 'form-control', 'title'=>'ESTATUS','style'=>'display:none'] ) }}                    
                     {{ Form::text('motivo', '', ['id'=>'motivo', 'class' => 'form-control col-md-4 m-1 ', 'placeholder' => 'MOTIVO', 'title' => 'MOTIVO', 'style'=>'display:none']) }}
-                    {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger', 'style'=>'display:none', 'value'=>route('grupos.recibos.aceptar')]) }}
-                    @if($data->status_folio == 'DISPONIBLE')                        
+                    @if($data->status_folio == 'DENEGADO')                        
+                        Observaciones:
+                        {{ Form::text('movimiento', 'DENEGADO', ['id'=>'movimiento', 'class' => 'form-control col-md-4 m-1 ','style'=>'display:none']) }}
+                        {{ Form::textarea('observaciones', $data->observaciones, ['id'=>'observaciones', 'class' => 'form-control col-md-6 m-1', 'disabled'=>'true', 'row'=>2, 'style' => 'height: 4em;']) }}
+                        {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger', 'value'=>route('grupos.recibos.aceptar')]) }}
+                    @else
+                        {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger', 'style'=>'display:none', 'value'=>route('grupos.recibos.aceptar')]) }}
+                    @endif
+                    
+                    @if($data->status_folio == 'DISPONIBLE')                
                         {{ Form::text('recibide', $data->recibide, ['id'=>'recibide', 'class' => 'form-control col-md-3 m-1 ', 'placeholder' => 'RECIBÍ DE', 'title' => 'RECICÍ DE']) }}
                         {{ Form::date('fecha', $data->fecha_expedicion, ['id'=>'fecha', 'class' => 'form-control col-md-1 m-1 ', 'placeholder' => 'DIA/MES/AÑO',  'title'=>'FECHA DE EXPEDICIÓN']) }}                        
                         {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control col-md-3 m-1 ', 'placeholder' => 'RECIBIÓ', 'title' => 'RECIBIÓ', 'disabled'=>'true' ]) }}
