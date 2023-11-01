@@ -156,7 +156,7 @@
 </div>
 
 <div class="form-row col-md-12 mt-4">
-    @if ($activar)
+    @if($activar OR Auth::user()->roles[0]->slug=='admin')
         @if ((($opt=='ARC01')&&($grupos[0]->status_solicitud!='VALIDADO')) OR ($opt=='ARC02' && ($grupos[0]->status_solicitud_arc02 !='VALIDADO')) )
             <div class=" form-group col-md-2"></div>
             <div class="form-group col-md-4"></div>
@@ -172,6 +172,11 @@
                 @endif
             </div>
         @else
+            @if($activar OR Auth::user()->roles[0]->slug=='admin')
+                <div class="form-group col-md-12 p-2 pl-3 bg-light">
+                    <h5> USUARIO ADMINISTRADOR </h5> 
+                </div>
+            @endif
             <div class="form-group col-md-3 mt-3">
                 <label for="">MEMORÁNDUM ARC:</label>
                 {{ Form::text('nmemo', $memo, ['id'=>'nmemo', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM ARC', 'aria-label' => 'MEMORÁNDUM ARC', 'required' => 'required', 'size' => 25]) }}
