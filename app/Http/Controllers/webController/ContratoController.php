@@ -538,8 +538,8 @@ class ContratoController extends Controller
         $perfil = new InstructorPerfil();
 
         $datacon = contratos::WHERE('id_contrato', '=', $id)->FIRST();
-        $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.id_instructor','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                               'instructores.apellidoMaterno','instructores.archivo_alta','instructores.id','tbl_cursos.instructor_mespecialidad', 'tbl_cursos.curso')
+        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.id_instructor','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                               'instructores.apellidoMaterno','instructores.archivo_alta','instructores.id','tbl_cursos.instructor_mespecialidad', 'tbl_cursos.curso','tbl_cursos.fecha_apertura')
                         ->WHERE('id_folios', '=', $datacon->id_folios)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -618,7 +618,13 @@ class ContratoController extends Controller
         $ccp2 = directorio::WHERE('id', '=', $directorio->solpa_ccp2)->FIRST();
         $ccp3 = directorio::WHERE('id', '=', $directorio->solpa_ccp3)->FIRST();
 
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3'));
+        if($data->fecha_apertura < '2023-10-12') {
+            $pago = round($data->importe_total-$data->iva, 2);
+        } else {
+            $pago = $data->importe_total;
+        }
+
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago'));
     }
 
     public function save_mod(Request $request){

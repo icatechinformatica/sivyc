@@ -89,6 +89,7 @@ class supreController extends Controller
     }
 
     public function frm_formulario() {
+        $prueba = '2023-10-17';
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         $unidad = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
 
@@ -366,6 +367,11 @@ class supreController extends Controller
         $id = base64_decode($id);
         $supre = new supre();
         $data =  $supre::WHERE('id', '=', $id)->FIRST();
+        $fecha_apertura = DB::Table('tabla_supre')
+            ->Join('folios','folios.id_supre','tabla_supre.id')
+            ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->Where('tabla_supre.id',$data->id)
+            ->Value('fecha_apertura');
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
         $criterio_pago = DB::TABLE('criterio_pago')
@@ -381,7 +387,7 @@ class supreController extends Controller
         //                 ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
         // dd($notification);
 
-        return view('layouts.pages.valsupre',compact('data','getremitente','directorio','criterio_pago','delegado'));
+        return view('layouts.pages.valsupre',compact('data','getremitente','directorio','criterio_pago','delegado','fecha_apertura'));
     }
 
     public function supre_rechazo(Request $request){
@@ -770,9 +776,9 @@ class supreController extends Controller
 
                 if($criterio != NULL)
                 {
-                    if($inicio >= $criterio_fecha) {
-                        $criterio->monto = ($criterio->monto / 1.16);
-                    }
+                    // if($inicio >= $criterio_fecha) {
+                    //     $criterio->monto = ($criterio->monto / 1.16);
+                    // }
                     if($Cursos->tipo_curso == 'CERTIFICACION')
                     {
                         array_push($total, $criterio->monto * 10);
@@ -802,8 +808,14 @@ class supreController extends Controller
 
             if($Cursos->modinstructor == 'HONORARIOS')
             {
+                if($inicio >= $criterio_fecha) {
+                    $total['iva'] = floatval(number_format($total[0] * 0.16, 2, '.', ''));
+                    $total['importe_total'] = floatval(number_format($total[0], 2, '.', ''));
+                    $total['tabuladorConIva'] = TRUE;
+                } else {
                     $total['iva'] = floatval(number_format($total[0] * 0.16, 2, '.', ''));
                     $total['importe_total'] = floatval(number_format($total[0] + $total['iva'], 2, '.', ''));
+                }
             }
             else
             {

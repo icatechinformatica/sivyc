@@ -10,7 +10,11 @@
                 </div>
                 <br>
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-2">
+                        <label for="dropfecha_apertura">Fecha de Apertura ARC-01</label>
+                    <input name="fecha_apertura" id="fecha_apertura" type="date" disabled value="{{$fecha_apertura}}" class="form-control">
+                    </div>
+                    <div class="form-group col-md-3">
                         <label for="dropno_memo">Numero de Memorandum</label>
                     <input name="no_memo" id="no_memo" type="text" disabled value="{{$data->no_memo}}" class="form-control">
                     </div>
@@ -18,7 +22,7 @@
                         <label for="dropfecha_memo">Fecha de Memorandum</label>
                     <input name="fecha_memo" id="fecha_memo" type="date" disabled value="{{$data->fecha}}" class="form-control">
                     </div>
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-4">
                         <label for="dropcrit_pago">Criterio de Pago</label>
                         <input name="crit_pago" id="crit_pago" type="text" disabled value="{{$criterio_pago->cp}} - {{$criterio_pago->perfil_profesional}}" class="form-control">
                     </div>
