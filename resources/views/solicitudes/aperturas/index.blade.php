@@ -90,7 +90,8 @@
         $("#movimiento").change(function() { 
             switch ($("#movimiento").val()) {  
                 case "CAMBIAR":
-                    $("#mrespuesta").show();                                     
+                    $("#mrespuesta").show();  
+                    $("#fecha").show();                                   
                 break;              
                 case "EN FIRMA":
                     $("#mrespuesta").show();
