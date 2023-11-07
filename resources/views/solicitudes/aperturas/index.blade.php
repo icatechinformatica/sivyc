@@ -88,17 +88,21 @@
         $("#file").hide();
         $("#observaciones").hide();        
         $("#movimiento").change(function() { 
-            switch ($("#movimiento").val()) {                
+            switch ($("#movimiento").val()) {  
+                case "CAMBIAR":
+                    $("#mrespuesta").show();  
+                    $("#fecha").show();                                   
+                break;              
                 case "EN FIRMA":
                     $("#mrespuesta").show();
                     $("#fecha").show();                    
-                    break;
+                break;
                 case "AUTORIZADO": 
                     $("#file").show();                    
-                    break;
+                break;
                 case "CANCELADO":
                     $("#file").show();                    
-                    break;                
+                break;                
                 case "DENEGADO"://DENEGADO cambio de soporte de pago
                     $("#observaciones").show();
                 break;

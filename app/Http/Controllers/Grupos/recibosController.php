@@ -66,6 +66,7 @@ class recibosController extends Controller
                     WHEN tr.status_folio='ENVIADO' THEN 'ENVIADO'
                     WHEN tr.status_folio='SOPORTE' THEN 'CAMBIO DE SOPORTE'
                     WHEN tr.status_folio='ACEPTADO' THEN 'CAMBIO ACEPTADO'
+                    WHEN tr.status_folio='DENEGADO' THEN 'CAMBIO DENEGADO'
                     WHEN tc.comprobante_pago <> 'null' OR tr.folio_grupo <>'null' THEN 'ASIGNADO'
                     ELSE 'PENDIENTE'                     
                     END as status_folio"),
@@ -150,7 +151,8 @@ class recibosController extends Controller
                    'recibide'=>$request->recibide,
                    'fecha_expedicion' => $request->fecha,
                    'iduser_updated' => $this->user->id,
-                   'updated_at'=> date('Y-m-d'),
+                   'created_at'=> date('Y-m-d H:m:s'),
+                   'updated_at'=> date('Y-m-d H:m:s'),
                    'folio_recibo' => $data->uc.'-'.$data->num_recibo,
                    'status_recibo' => $request->status_recibo
                 ]
@@ -172,7 +174,7 @@ class recibosController extends Controller
                    'recibide'=>$request->recibide,
                    'fecha_expedicion' => $request->fecha,
                    'iduser_updated' => $this->user->id,
-                   'updated_at'=> date('Y-m-d')
+                   'updated_at'=> date('Y-m-d H:m:s')
                 ]
             );
             if($request) $message["ALERT"] = "LA OPERACIÓN SE EJECUTADO CORRECTAMENTE!!";
@@ -190,8 +192,8 @@ class recibosController extends Controller
         [$data , $message] = $this->data_validate($request);
         if($data){            
             $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->where('status_folio','CARGADO')->update(                
-                [ 'status_folio' => 'ENVIADO','fecha_status' => date('Y-m-d h:m:s'),                    
-                   'iduser_updated' => $this->user->id, 'updated_at'=> date('Y-m-d')
+                [ 'status_folio' => 'ENVIADO','fecha_status' => date('Y-m-d H:m:s'),                    
+                   'iduser_updated' => $this->user->id, 'updated_at'=> date('Y-m-d H:m:s')
                 ]
             );
             if($request) $message["ALERT"] = "EL RECIBO DE PAGO HA SIDO ENVIADO CORRECTAMENTE!!";
@@ -218,7 +220,7 @@ class recibosController extends Controller
                 ->select('tc.id','tc.folio_grupo','tc.unidad','tu.ubicacion', 'tc.clave','tc.curso','tc.nombre','tc.tipo_curso',
                     'tc.status_curso','tc.inicio', 'tc.termino', 'tc.hini', 'tc.hfin','tc.costo','tc.hombre','tc.mujer','tr.recibide',
                     'tr.fecha_expedicion','tr.recibio','tu.direccion','tu.delegado_administrativo','tr.id as id_recibo','tr.file_pdf',
-                    'tr.importe_letra', 'tr.folio_recibo', 'tr.status_recibo','tc.arc','tc.clave',
+                    'tr.importe_letra', 'tr.folio_recibo', 'tr.status_recibo','tc.arc','tc.clave','tr.observaciones',
                     DB::raw('UPPER(tu.municipio) as municipio'),
                     DB::raw("
                         CASE 
@@ -293,8 +295,8 @@ class recibosController extends Controller
         }else return "ACCIÓN INVÁlIDA";exit;
     }
 
-    public function aceptar(Request $request){
-        [$data , $message] = $this->data_validate($request);
+    public function aceptar(Request $request){ 
+        [$data , $message] = $this->data_validate($request); 
         if($data){
             $message["ERROR"] = "LA OPERACIÓN NO SE HA EJECUTADO CORRECTAMENTE, POR FAVOR INTENTE DE NUEVO.";
             switch($request->movimiento){
@@ -302,7 +304,7 @@ class recibosController extends Controller
                     $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->update(                
                         [  'status_recibo'=>$request->status_recibo,
                            'iduser_updated' => $this->user->id,
-                           'updated_at'=> date('Y-m-d')
+                           'updated_at'=> date('Y-m-d H:i:s')
                         ]
                     );
                     if($request) $message["ALERT"] = "LA OPERACIÓN SE EJECUTADO CORRECTAMENTE!!";                    
@@ -319,7 +321,7 @@ class recibosController extends Controller
                             'file_pdf' => null,
                             'folio_recibo' => null,
                             'iduser_updated' => $this->user->id,
-                            'updated_at'=> date('Y-m-d')               
+                            'updated_at'=> date('Y-m-d H:i:s')               
                         ]
                     );
                     if($result){                        
@@ -341,9 +343,9 @@ class recibosController extends Controller
                             if($data){                        
                                 $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->update(                
                                     [  'status_folio' => 'CARGADO',
-                                    'fecha_status' => date('Y-m-d h:m:s'),
+                                    'fecha_status' => date('Y-m-d H:m:s'),
                                     'iduser_updated' => $this->user->id,
-                                    'updated_at'=> date('Y-m-d h:m:s'),
+                                    'updated_at'=> date('Y-m-d H:m:s'),
                                     'file_pdf' => $url_file.$name_file
                                     ]
                                 );
@@ -355,9 +357,20 @@ class recibosController extends Controller
                 case "SOPORTE": //SOLICITAR CAMBIO DE SOPORTE
                     $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->update(                
                         [  'status_folio'=> 'SOPORTE',
-                            'motivo' => $request->motivo,
+                           'fecha_status'=> date('Y-m-d H:i:s'),
+                           'motivo' => $request->motivo,
                            'iduser_updated' => $this->user->id,
-                           'updated_at'=> date('Y-m-d')
+                           'updated_at'=> date('Y-m-d H:m:s')                           
+                        ]
+                    );
+                    if($request) $message["ALERT"] = "SOLICITUD ENVIADA CORRECTAMENTE!!";                      
+                break;
+                case "DENEGADO": //SOLICITAR CAMBIO DE SOPORTE
+                    $result = DB::table('tbl_recibos')->where('folio_grupo',$data->folio_grupo)->update(                
+                        [   'status_folio'=> 'ENVIADO',                            
+                            'fecha_status'=> date('Y-m-d H:i:s'),
+                            'iduser_updated' => $this->user->id,
+                            'updated_at'=> date('Y-m-d H:m:s')                             
                         ]
                     );
                     if($request) $message["ALERT"] = "SOLICITUD ENVIADA CORRECTAMENTE!!";                      
