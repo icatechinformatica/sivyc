@@ -41,7 +41,7 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 25px; /*815*/
+                bottom: 825px; /*815*/
                 left: 20px;
                 font-size: 8.5px;
                 color: white;
