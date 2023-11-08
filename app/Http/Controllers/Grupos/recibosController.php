@@ -79,7 +79,7 @@ class recibosController extends Controller
                 "),
                 DB::raw(" 
                     CASE
-                        WHEN tc.comprobante_pago <> 'null' THEN tc.comprobante_pago
+                        WHEN tc.comprobante_pago <> 'null' THEN concat('uploadFiles',tc.comprobante_pago)
                         WHEN tr.file_pdf <> 'null' THEN tr.file_pdf
                     END as file_pdf
 
@@ -219,8 +219,13 @@ class recibosController extends Controller
             $data = DB::table('tbl_cursos as tc')  
                 ->select('tc.id','tc.folio_grupo','tc.unidad','tu.ubicacion', 'tc.clave','tc.curso','tc.nombre','tc.tipo_curso',
                     'tc.status_curso','tc.inicio', 'tc.termino', 'tc.hini', 'tc.hfin','tc.costo','tc.hombre','tc.mujer','tr.recibide',
-                    'tr.fecha_expedicion','tr.recibio','tu.direccion','tu.delegado_administrativo','tr.id as id_recibo','tr.file_pdf',
+                    'tr.fecha_expedicion','tr.recibio','tu.direccion','tu.delegado_administrativo','tr.id as id_recibo',
                     'tr.importe_letra', 'tr.folio_recibo', 'tr.status_recibo','tc.arc','tc.clave','tr.observaciones',
+                    DB::raw(" 
+                        CASE
+                            WHEN tc.comprobante_pago <> 'null' THEN concat('uploadFiles',tc.comprobante_pago)
+                            WHEN tr.file_pdf <> 'null' THEN tr.file_pdf
+                        END as file_pdf"),
                     DB::raw('UPPER(tu.municipio) as municipio'),
                     DB::raw("
                         CASE 
