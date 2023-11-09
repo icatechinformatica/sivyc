@@ -485,6 +485,10 @@ class supreController extends Controller
             ->JOIN('folios','folios.id_cursos','tbl_cursos.id')
             ->WHERE('folios.id_supre', $data->id)
             ->FIRST();
+
+        if($criterio_pago == null) {
+            $criterio_pago = DB::TABLE('criterio_pago')->SELECT('id AS cp','perfil_profesional')->WHERE('id','11')->FIRST();
+        }
         $delegado = DB::TABLE('tbl_unidades')->SELECT('delegado_administrativo','pdelegado_administrativo')->WHERE('unidad',$data->unidad_capacitacion)->FIRST();
 
         return view('layouts.pages.valsupremod', compact('data', 'directorio','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','criterio_pago','delegado'));
