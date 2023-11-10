@@ -101,7 +101,7 @@
                             @endif
                             <span>&nbsp;&nbsp;
                                 MEMORÁNDUM DE VALIDACIÓN: 
-                                @if($ValidaInstructorPDF)
+                                @if($ValidaInstructorPDF and isset($grupo->instructor_mespecialidad ))
                                     <a class="p-0 m-0 text-danger" href="{{$ValidaInstructorPDF}}" target="_blank">
                                         <i  class="far fa-file-pdf  fa-1x text-danger"  title='PDF VALIDACIÓN DEL INSTRUCTOR.'></i>
                                         &nbsp;&nbsp; {{ $grupo->instructor_mespecialidad }}
