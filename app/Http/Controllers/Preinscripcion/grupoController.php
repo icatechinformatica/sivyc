@@ -110,10 +110,10 @@ class grupoController extends Controller
                     ->orderBy('instructor')
                     ->get();
                 $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$alumnos[0]->id_instructor)->first();
-                $grupo = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->first();   
-                $instructor_mespecialidad = $grupo->instructor_mespecialidad;
+                $grupo = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->first();                   
                 //dd($instructor_mespecialidad);
                 if($grupo){
+                    $instructor_mespecialidad = $grupo->instructor_mespecialidad;
                     $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
                         ->where('id_instructor', $grupo->id_instructor)
                         ->whereExists(function ($query) use ($instructor_mespecialidad){
