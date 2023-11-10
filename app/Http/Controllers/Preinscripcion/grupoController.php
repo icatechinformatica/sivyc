@@ -52,7 +52,7 @@ class grupoController extends Controller
         $es_vulnerable = $edicion = false;
         $unidades = $this->data['unidades'];
         $unidad = $uni = $this->data['unidad'];
-        $message = $comprobante = $folio_pago = $fecha_pago = $grupo = NULL;
+        $message = $comprobante = $folio_pago = $fecha_pago = $grupo = $ValidaInstructorPDF = NULL;
         if (isset($_SESSION['folio_grupo'])) {  //echo $_SESSION['folio_grupo'];exit;
             $anio_hoy = date('y');  //dd($_SESSION);
             $alumnos = DB::table('alumnos_registro as ar')
@@ -109,8 +109,20 @@ class grupoController extends Controller
                     ->groupBy('t.id_instructor','instructores.id')
                     ->orderBy('instructor')
                     ->get();
-                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'))->where('id',$alumnos[0]->id_instructor)->first();
-                $grupo = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->first();                
+                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$alumnos[0]->id_instructor)->first();
+                $grupo = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->first();   
+                $instructor_mespecialidad = $grupo->instructor_mespecialidad;
+                //dd($instructor_mespecialidad);
+                if($grupo){
+                    $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
+                        ->where('id_instructor', $grupo->id_instructor)
+                        ->whereExists(function ($query) use ($instructor_mespecialidad){
+                            $query->select(\DB::raw("elem->>'arch_val'"))
+                                ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
+                                ->where(\DB::raw("elem->>'memo_val'"), '=', $instructor_mespecialidad);
+                        })
+                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad') as pdfvalida"));                     
+                } 
             } else {
                 $message = "No hay registro qwue mostrar para Grupo No." . $_SESSION['folio_grupo'];
                 $_SESSION['folio_grupo'] = NULL;
@@ -142,7 +154,7 @@ class grupoController extends Controller
         
         return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'folio_pago', 'fecha_pago',
             'es_vulnerable', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','comprobante','edicion','instructores','instructor',
-            'medio_virtual','grupo', 'id_usuario','recibo'));
+            'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF'));
     }
 
 
