@@ -283,7 +283,8 @@ class cursosController extends Controller
                         DB::raw("'".$curso->unidad."' as unidad"),
                         DB::raw("'CHIAPAS' as estado"),
                         DB::raw("'C. ".$curso->dunidad."' as dunidad"),
-                        DB::raw("REPLACE('".$curso->depen."','.','') as depen")
+                        DB::raw("REPLACE('".$curso->depen."','.','') as depen"),
+                        DB::raw("'ICV-00-07-27-K41-0013'  as stps")
                         )
                     ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')
                     ->where('i.calificacion','<>','NP')
@@ -295,7 +296,7 @@ class cursosController extends Controller
                 //var_dump($data); exit;
                 if(count($data)==0){ return "NO TIENEN FOLIOS ASIGNADOS";exit;}
 
-                $head = ['FOLIO','ALUMNO','CURP','CURSO','FECHA','DIA','MES','AÑO','HORAS','CLAVE UNIDAD','UNIDAD DE CAPACITACION','CIUDAD','ESTADO','DIRECTOR','DEPENDENCIA'];
+                $head = ['FOLIO','ALUMNO','CURP','CURSO','FECHA','DIA','MES','AÑO','HORAS','CLAVE UNIDAD','UNIDAD DE CAPACITACION','CIUDAD','ESTADO','DIRECTOR','DEPENDENCIA','STPS'];
                 $nombreLayout = $clave.".xlsx";
 
                 if(count($data)>0){
