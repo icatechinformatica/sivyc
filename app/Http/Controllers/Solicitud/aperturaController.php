@@ -67,7 +67,7 @@ class aperturaController extends Controller
 
     public function index(Request $request){
         $valor = $efisico = $grupo = $alumnos = $message = $medio_virtual = $depen = $exoneracion = $instructor = $plantel = $programa = $sector = $tcurso = $tcuota =
-        $muni = $instructores = $convenio = $localidad = $comprobante = $exonerado = $num_oficio_sop = $titular_sop = NULL;
+        $muni = $instructores = $convenio = $localidad = $comprobante = $exonerado = $num_oficio_sop = $titular_sop = $ValidaInstructorPDF = NULL;
         $recibo =[];
         if($request->valor)  $valor = $request->valor;
         elseif(isset($_SESSION['folio'])) $valor = $_SESSION['folio'];
@@ -176,6 +176,16 @@ class aperturaController extends Controller
                 elseif($grupo->status_curso) $message = "Estatus: ". $grupo->status_curso;
                 if($grupo->tipo) $tcuota = $this->tcuota[$grupo->tipo];
                 $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio'])->where('status_folio','ENVIADO')->first();
+                $grupo_mespecialidad = $grupo->instructor_mespecialidad;
+                $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
+                    ->where('id_instructor', $grupo->id_instructor)
+                    ->whereExists(function ($query) use ($grupo_mespecialidad){
+                    $query->select(\DB::raw("elem->>'arch_val'"))
+                        ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
+                        ->where(\DB::raw("elem->>'memo_val'"), '=', $grupo_mespecialidad);
+                })
+                ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$grupo_mespecialidad') as pdfvalida"));
+                
             }else $message = "Grupo número ".$valor .", turnado a VINCULACIÓN.";
         }
         $tinscripcion = $this->tinscripcion();
@@ -184,7 +194,7 @@ class aperturaController extends Controller
         if(session('message')) $message = session('message');//dd($grupo);
         return view('solicitud.apertura.index', compact('comprobante','efisico','message','grupo','alumnos','plantel','depen','sector','programa',
             'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad','exonerado', 
-            'num_oficio_sop', 'titular_sop','recibo'));
+            'num_oficio_sop', 'titular_sop','recibo','ValidaInstructorPDF'));
     }
 
     public function search(Request $request){

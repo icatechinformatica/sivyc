@@ -95,6 +95,7 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th scope="col" >#</th>
                             <th scope="col" >MATR&Iacute;CULA</th>
                             <th scope="col">ALUMNOS</th>
                             <th scope="col" class="text-center" width="10%">CALIFICACI&Oacute;N</th>
@@ -106,7 +107,7 @@
                     </thead>
                     @if(isset($alumnos))   
                     <tbody>
-                        <?php $boton_asignar = false; //con una asignaicion se activa ?>
+                        <?php $boton_asignar = false; $n=1;//con una asignaicion se activa ?>
                         @foreach($alumnos as $a)
                             <?php 
                             $asignar = false;
@@ -115,6 +116,7 @@
                             }    
                             ?>
                             <tr>
+                                <td> {{ $n++ }}</td>
                                 <td> {{ $a->matricula }}</td>
                                 <td> {{ $a->alumno }} </td>
                                 <td class="text-center"> {{ $a->calificacion }} </td>
