@@ -5,30 +5,33 @@
     @section('title', 'AUTORIZACIÓN ARC-01 | SIVyC Icatech')
 @endif
 @section('css')
-    <style>          
+    <style>
          @page { margin-bottom: 115px;}
-        .tablas{border-collapse: collapse; width: 100%; }        
+        .tablas{border-collapse: collapse; width: 100%; }
         .tablas tr th {padding:0px;margin:0px; page-break-inside: avoid; }
         .tablas th, .tablas td{page-break-inside: avoid;font-size: 7px; border: gray 1px solid; text-align: center;font-weight:bold;}
-        
-        .tablaf { page-break-inside: avoid; border-collapse: collapse; width: 100%; white-space: nowrap; height: auto; margin-top:15px;}     
+
+        .tablaf { page-break-inside: avoid; border-collapse: collapse; width: 100%; white-space: nowrap; height: auto; margin-top:15px;}
         .tablaf tr td { font-size: 7px; text-align: center; padding: 0px 0px;}
         .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px 2px 2px 0; border-collapse: collapse; }
         .tablad tr td{padding: 1px 5px 0 5px; font-size: 7px;}
-        
+
 
         #titulo { position: fixed; top: 35px; width:100%; }
-        #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}  
-    
-    </style>    
+        #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
+
+        body { margin-top: 120px; font-family: sans-serif; font-size: 9px; width:100%; padding:0px; margin-bottom: 5px;}
+        .direccion {position: absolute;  top: 1.3cm; width:400px; margin-left:10px; height:auto; font-family: sans-serif; font-size: 8px; color:#FFF; }
+
+    </style>
 @endsection
-@section('header') 
+@section('header')
     @php
-        if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0")) 
+        if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0"))
             $nombre_unidad = "UNIDAD DE CAPACITACIÓN ";
         else
-            $nombre_unidad = "ACCIÓN MÓVIL ";   
-        
+            $nombre_unidad = "ACCIÓN MÓVIL ";
+
         $valido= $reg_cursos[0]->valido;
         $munidad = $reg_cursos[0]->munidad;
         $nmunidad = $reg_cursos[0]->nmunidad;
@@ -48,7 +51,7 @@
                 $det = "Por este medio envió a Usted el formato de autorización de reprogramación, modificación o cancelación de aperturas de servicios, en atención a la solicitud con número de memorándum $nmunidad.";
             break;
         }
-        //CONVERSION DE FECHA                
+        //CONVERSION DE FECHA
         $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
         $mes = $meses[date('m',strtotime($fecha))];
         $fecha = date('d',strtotime($fecha)).' de '.$mes.' del '.date('Y',strtotime($fecha));
@@ -57,24 +60,24 @@
         <h3>AUTORIZACIÓN DE {{$opt}}</h3>
         <br/>
         <table width="100%">
-            <tr>        
+            <tr>
                 <td style='text-align:right;font-size:10px;'>
-                    DIRECCIÓN TÉCNICA ACADÉMICA<br/>                    
+                    DIRECCIÓN TÉCNICA ACADÉMICA<br/>
                     Memorándum No. {{ $memo}} <br/>
                     Tuxtla Gutiérrez, Chiapas; {{$fecha}}.<br/>
-                </td>                    
-            </tr>   
+                </td>
+            </tr>
         </table>
-    </div>    
+    </div>
 @endsection
 @section('body')
-    <div id="para"> 
+    <div id="para">
         PARA: {{ $reg_unidad->dunidad }}.- {{$reg_unidad->pdunidad}}<br/>
         DE: {{ $reg_unidad->dacademico }}.- {{$reg_unidad->pdacademico}}<br/>
-        ASUNTO: {{ $asunto }}<br/><br/>        
-    </div>  
-    
-    <p style='text-align:justify; font-size: 10px;'>{{ $det }}</p>    
+        ASUNTO: {{ $asunto }}<br/><br/>
+    </div>
+
+    <p style='text-align:justify; font-size: 10px;'>{{ $det }}</p>
      <table class="tablas">
          <thead>
              <tr>
@@ -110,7 +113,7 @@
          <tbody>
              @foreach($reg_cursos as $a)
              @php
-                if(strpos($reg_unidad->unidad.$a->cct, "07EIC0")) 
+                if(strpos($reg_unidad->unidad.$a->cct, "07EIC0"))
                     $nom_unidad = "UNIDAD DE CAPACITACIÓN ";
                 else
                     $nom_unidad = "ACCIÓN MÓVIL ";
@@ -139,7 +142,7 @@
                  <th>@if($a->tipo=="EXO"){{ "X" }}@endif</th>
                  <th>@if($a->tipo=="EPAR"){{ "X" }}@endif</th>
                  <th>@if($opt == "ARC-01"){{ $a->nota }} @else {{ $a->observaciones}}@endif</th>
-             </tr>             
+             </tr>
              @endforeach
          </tbody>
      </table>
@@ -148,14 +151,14 @@
         <table class="tablad">
             <tr>
                 <td colspan="4"><br/><b>1. PRIMARIA INCONCLUSA &nbsp;2. PRIMARIA &nbsp;3. SECUNDARIA &nbsp;4. BACHILLERATO / PREPARATORIA O CARRERA TECNICA &nbsp;5. PROFESIONAL PASANTE </b></td>
-            </tr> 
+            </tr>
             <tr>
                      <td colspan="4"><b>6. PROFESIONAL(TITULO Y/O CEDULA) &nbsp;7. MAESTRIA (PASANTE) &nbsp;8. MAESTRIA (TITULO Y/O CEDULA) 9. DOCTORADO (PASANTE) 10. DOCTORADO(TITULO Y/O CEDULA)</b></td>
             </tr>
             <tr>
                      <td colspan="4"><b>11. PROFESIONAL CERTIFICADO DE COMPETENCIA LABORAL EN CAPACITACIÓN ESPECIALIZADA Y TEMAS ESPECÍFICOS </b><br/>&nbsp;</td>
-            </tr> 
-        </table>    
+            </tr>
+        </table>
     </div>
      <table style='with:100%; border-spacing: 0px;' class="tablaf" >
          <tr>
@@ -192,7 +195,7 @@
     if ( isset($pdf) ) {
             $pdf->page_script('
                 $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-                $pdf->text(40, 538, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);               
+                $pdf->text(40, 538, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
             ');
         }
 </script>
