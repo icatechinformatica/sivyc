@@ -79,7 +79,7 @@
                         @if($grupo->status)<span>ESTATUS FORMATOT:&nbsp;&nbsp;<strong>{{$grupo->status}}</strong></span>@endif
                 </div>
             @endif
-            <div class="row bg-light form-inline" style="padding:15px 10px 15px 0px; text-indent:3em; line-height: 3em;">
+            <div class="row bg-light form-inline" style="padding:15px 10px 15px 0px; text-indent:2em; line-height: 3em;">
                 <span>UNIDAD/ACCI&Oacute;N M&Oacute;VIL:&nbsp;&nbsp;<strong>{{ $grupo->unidad }}</strong></span>
                 <span>CURSO:&nbsp;&nbsp;<strong>@if($grupo->clave){{ $grupo->id }}@endif {{ $grupo->curso }}</strong></span>
                 <span>ESPECIALIDAD: &nbsp;&nbsp;<strong>{{ $grupo->clave_especialidad }} &nbsp{{ $grupo->espe }}</strong></span>
@@ -114,8 +114,11 @@
 
             <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 3em;">
                 @if($munidad)
-                    <span>COUTA TOTAL: &nbsp;&nbsp;<strong>{{ $grupo->costo }}</strong></span>
+                    <span>CUOTA TOTAL: &nbsp;&nbsp;<strong>{{ $grupo->costo }}</strong></span>
                     <span>TIPO CUOTA: &nbsp;&nbsp;<strong>{{ $tcuota }}</strong></span>
+                @endif
+                @if(isset($instructor->tipo_honorario))
+                    <span>RÉGIMEN DEL INSTRUCTOR :&nbsp;&nbsp;<strong>{{$instructor->tipo_honorario}}</strong></span>
                 @endif
                 <span>MEMORANDUM DE VALIDACION DEL INSTRUCTOR:&nbsp;&nbsp;<strong>{{ $grupo->instructor_mespecialidad }}</strong></span>
             </div>
@@ -214,8 +217,8 @@
                     <label for="">EMISI&Oacute;N DEL RECIBO:</label>
                     <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$fecha_pago}}"  @if($recibo) disabled @else readonly @endif>
                 </div>
-                <div class="form-group col-md-4">        
-                    <br/>            
+                <div class="form-group col-md-4">
+                    <br/>
                     @if($comprobante)
                         <a class="nav-link" href="{{$comprobante}}" target="_blank">
                             <i  class="far fa-file-pdf  fa-3x text-danger"></i>
@@ -233,7 +236,7 @@
                 </div>
 
             @endif
-        {!! Form::close() !!}       
+        {!! Form::close() !!}
     </div>
 @if (isset($grupo))
 <!-- modal para mostrar el calendario -->

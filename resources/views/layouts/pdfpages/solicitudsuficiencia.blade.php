@@ -76,7 +76,7 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 0px;
+                bottom: 15px;
                 left: 65px;
                 font-size: 8.5px;
                 color: rgb(255, 255, 255);
@@ -109,10 +109,16 @@
                             <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
                             <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
                             <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>
-                            @if($tipop == 'HONORARIOS')<td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>@endif
-                            <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
-                            <td scope="col"><small style="font-size: 10px;">IMPORTE</small></td>
+                            @if($data[0]['fecha_apertura'] <  '2023-10-12')
+                                <td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>
+                                @if($tipop == 'HONORARIOS')<td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>@endif
+                                <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
+                                <td scope="col"><small style="font-size: 10px;">IMPORTE</small></td>
+                            @else
+                                <td scope="col" ><small style="font-size: 10px;">COSTO POR HORA</small></td>
+                                <td scope="col"><small style="font-size: 10px;">TOTAL IMPORTE</small></td>
+                                <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
+                            @endif
                             <td scope="col" ><small style="font-size: 10px;">OBSERVACION<small></td>
                         </tr>
                     </thead>
@@ -132,10 +138,16 @@
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->clave}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->ze}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->dura}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_hora, 4, '.', ',') }}</td>
-                                @if($item->modinstructor == 'HONORARIOS')<td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->iva, 4, '.', ',')}}</td>@endif
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">@if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS')12101 HONORARIOS @else 12101 ASIMILADOS A SALARIOS @endif</td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_total, 4, '.', ',') }}</td>
+                                @if($data[0]['fecha_apertura'] <  '2023-10-12')
+                                    <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_hora, 2, '.', ',') }}</td>
+                                    @if($item->modinstructor == 'HONORARIOS')<td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->iva, 2, '.', ',')}}</td>@endif
+                                    <td scope="col" class="text-center"><small style="font-size: 10px;">@if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS')12101 HONORARIOS @else 12101 ASIMILADOS A SALARIOS @endif</td>
+                                    <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_total, 2, '.', ',') }}</td>
+                                @else
+                                    <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($criterio->monto, 2, '.', ',') }}</td>
+                                    <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_total, 2, '.', ',') }}</td>
+                                    <td scope="col" class="text-center"><small style="font-size: 10px;">@if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS')12101 HONORARIOS @else 12101 ASIMILADOS A SALARIOS @endif</td>
+                                @endif
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach

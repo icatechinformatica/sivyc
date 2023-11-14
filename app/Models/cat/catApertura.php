@@ -115,7 +115,7 @@ trait catApertura
 
     protected function instructor($id){
         $instructor = DB::table('instructores')
-            ->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'))
+            ->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')
             ->where('id',$id)
             ->first();
 

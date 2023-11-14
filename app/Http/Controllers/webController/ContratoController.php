@@ -201,7 +201,7 @@ class ContratoController extends Controller
         }
         // dd($contrato);
         $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
-                            'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad',
+                            'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad','tbl_cursos.fecha_apertura',
                             'tbl_cursos.curso','tbl_cursos.clave_especialidad','tbl_cursos.espe','tbl_cursos.soportes_instructor','instructores.nombre AS insnom',
                             'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.id','instructores.archivo_alta','instructores.banco',
                             'instructores.no_cuenta','instructores.interbancaria','instructores.archivo_bancario')
@@ -250,8 +250,11 @@ class ContratoController extends Controller
         }
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        $pago = round($data->importe_total-$data->iva, 2);
-
+        if($data->fecha_apertura < '2023-10-12') {
+            $pago = round($data->importe_total-$data->iva, 2);
+        } else {
+            $pago = $data->importe_total;
+        }
 
         $año_referencia = '01-01-' . CARBON::now()->format('Y');
         $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
@@ -535,8 +538,8 @@ class ContratoController extends Controller
         $perfil = new InstructorPerfil();
 
         $datacon = contratos::WHERE('id_contrato', '=', $id)->FIRST();
-        $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.id_instructor','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                               'instructores.apellidoMaterno','instructores.archivo_alta','instructores.id','tbl_cursos.instructor_mespecialidad', 'tbl_cursos.curso')
+        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.id_instructor','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                               'instructores.apellidoMaterno','instructores.archivo_alta','instructores.id','tbl_cursos.instructor_mespecialidad', 'tbl_cursos.curso','tbl_cursos.fecha_apertura')
                         ->WHERE('id_folios', '=', $datacon->id_folios)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -615,7 +618,13 @@ class ContratoController extends Controller
         $ccp2 = directorio::WHERE('id', '=', $directorio->solpa_ccp2)->FIRST();
         $ccp3 = directorio::WHERE('id', '=', $directorio->solpa_ccp3)->FIRST();
 
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3'));
+        if($data->fecha_apertura < '2023-10-12') {
+            $pago = round($data->importe_total-$data->iva, 2);
+        } else {
+            $pago = $data->importe_total;
+        }
+
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago'));
     }
 
     public function save_mod(Request $request){
@@ -1305,7 +1314,7 @@ class ContratoController extends Controller
         $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
-        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
+        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura',
                                   'tbl_cursos.tipo_curso','tbl_cursos.espe', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion','instructores.rfc','tbl_cursos.modinstructor',
                                   'instructores.curp','instructores.domicilio')

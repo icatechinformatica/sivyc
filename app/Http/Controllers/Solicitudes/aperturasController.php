@@ -44,7 +44,7 @@ class aperturasController extends Controller
     }
 
     public function index(Request $request){
-        $opt = $memo = $message = $file = $status_solicitud = $extemporaneo = NULL;        
+        $opt = $memo = $message = $file = $status_solicitud = $extemporaneo = $motivo_soporte = NULL;        
 
         if($request->memo)  $memo = $request->memo;
         elseif(isset($_SESSION['memo'])) $memo = $_SESSION['memo'];
@@ -58,18 +58,19 @@ class aperturasController extends Controller
         $path = $this->path_files;
         if($memo){
             $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                'ar.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf')
+                'ar.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo')
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                 ->leftjoin('convenios','convenios.no_convenio','=','tc.cgeneral')
                 ->leftJoin('exoneraciones as e','tc.mexoneracion','=','e.no_memorandum')
                 ->leftJoin('tbl_recibos as tr', function ($join) {
                     $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
-                         ->where('tr.status_folio','ENVIADO');                             
+                         ->wherein('tr.status_folio',['ENVIADO','SOPORTE']);                             
                 });
                 
                if($opt == 'ARC01') $grupos = $grupos->where('tc.munidad',$memo);
                else $grupos = $grupos->where('tc.nmunidad',$memo);
-               $grupos = $grupos->groupby('tc.id','ar.turnado', 'ar.comprobante_pago','convenios.fecha_vigencia','e.memo_soporte_dependencia','e.nrevision','tr.file_pdf')->get();
+               $grupos = $grupos->groupby('tc.id','ar.turnado', 'ar.comprobante_pago','convenios.fecha_vigencia',
+               'e.memo_soporte_dependencia','e.nrevision','tr.file_pdf','tr.status_folio','tr.motivo')->get();
 
             if(count($grupos)>0){
                 $_SESSION['grupos'] = $grupos;
@@ -89,6 +90,7 @@ class aperturasController extends Controller
                     if (isset($value->mextemporaneo) OR isset($value->mextemporaneo_arc02) ) {
                         $extemporaneo = true;
                     }
+                    if ($value->status_folio=='SOPORTE') $motivo_soporte = true;
                 }
                 //var_dump($estatus);exit;
 
@@ -125,10 +127,14 @@ class aperturasController extends Controller
             }else $message = "No se encuentran registros que mostrar.";
 
         }
-
+        if($motivo_soporte){
+            if(!$movimientos) $movimientos []='- SELECCIONAR -';
+             $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
+             $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
+        }
         if(session('message')) $message = session('message');
         //var_dump($grupos);exit;
-        return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo'));
+        return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
     }
 
     public function search(Request $request){
@@ -360,6 +366,35 @@ class aperturasController extends Controller
         }
         return redirect('solicitudes/aperturas')->with('message',$message);
    }
+
+   public function soporte_pago(Request $request){ //autorizacion o denegar cambio de soporte de pago
+        $message = 'Operación fallida, vuelva a intentar..';
+        if($_SESSION['memo'] AND $_SESSION['opt']){
+            switch($_SESSION['opt']){
+                case "ARC01":                    
+                    $memo = $_SESSION['memo'];                                        
+                    $ids = DB::table('tbl_cursos as tc')->where('tc.munidad',$_SESSION['memo'])
+                        ->leftjoin('tbl_recibos as tr', function ($join) {                    
+                        $join->on('tc.folio_grupo','=','tr.folio_grupo')->where('tr.status_folio','SOPORTE'); 
+                        })->pluck('tr.id','tr.id');
+                    if($ids){
+                        if($request->movimiento=='ACEPTADO'){
+                            $result = DB::table('tbl_recibos')->whereIn('id',$ids)
+                                ->update(['status_folio'=>'ACEPTADO','fecha_status'=>date('Y-m-d H:i:s'),'iduser_updated'=>$this->id_user]);
+                        }elseif($request->movimiento=='DENEGADO'){
+                            $result = DB::table('tbl_recibos')->whereIn('id',$ids)
+                                ->update(['status_folio'=>'DENEGADO','observaciones'=>$request->observaciones,'fecha_status'=>date('Y-m-d H:i:s'),'updated_at'=> date('Y-m-d H:m:s'),'iduser_updated'=>$this->id_user]);
+                        }
+                        if($result)$message = "OPERACIÓN EXITOSA!!";
+                        else $message = "NO SE PERMITEN DESHACER LAS CLAVES, NO SON LAS ULTIMAS!!";
+                    }                    
+                break;
+                case "ARC02":
+                break;
+            }
+        }
+        return redirect('solicitudes/aperturas')->with('message',$message);
+    }
 
     protected function upload_file($file,$name){
         $ext = $file->getClientOriginalExtension(); // extension de la imagen

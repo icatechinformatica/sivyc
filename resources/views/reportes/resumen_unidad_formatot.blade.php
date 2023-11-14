@@ -41,7 +41,7 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 815px;
+                bottom: 825px; /*815*/
                 left: 20px;
                 font-size: 8.5px;
                 color: white;
@@ -63,12 +63,13 @@
     </header>
     <footer>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+
         {{-- <p class='direccion' style="bottom:25px;"><b>
             Av. Circunvalación Pichucalco núm. 212-B. Colonia Moctezuma.<br>
             C.P. 29030; Tuxtla Gutiérrez, Chiapas.<br><br>
             Teléfono (961)6121621, Email: dtecnicaacademica@gmail.com
         </b></p> --}}
-        <p class='direccion'><b>@foreach($direccion->direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach<br>Teléfono: {{$direccion->telefono}}<br>Email: {{$direccion->correo}}</b></p>
+        <p class='direccion'><b>Av. Circunvalación Pichucalco N 212-B Colonia Moctezuma<br>Tuxtla Gutiérrez, Chiapas, C.P.29030; Telefono (961)6121621<br>Ext.601;Email: dtecnicaacademica@gmail.com</b></p>
     </footer>
     <div class="contenedor" style="margin-bottom: 100px;">
         {{-- crear un div para encerrar todo lo que lleva al inicio --}}

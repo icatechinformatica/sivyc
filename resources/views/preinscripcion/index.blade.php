@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="{{ asset('fullCalendar/list/main.css') }}">
         <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}">
     <style>
-        .custom-font-size { font-size: 18px; }        
+        .custom-font-size { font-size: 18px; }
     </style>
 @endsection
 @section('content')
@@ -80,18 +80,10 @@
             </div>
         @endif
         <div class="row">
-            <div>
-                <br />
-            </div>
             <form method="post" id="frm" enctype="multipart/form-data" style="width: 100%;" >
                 @csrf
-
-                <div>
-                    <label><h4>DATOS DEL CURSO </h4></label>
-                    <hr />
-                </div>
                 @if($folio)
-                    <div class="form-row">
+                    <div class="form-row p-0 mt-2">
                         <div class="form-group col-md-12 form-inline">
                             <h4 ><b>Grupo No.
                             {{ Form::text('folio_grupo', $folio_grupo, ['id'=>'folio_grupo', 'class' => 'form-control custom-font-size  col-md-5', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required','readonly' => 'readonly']) }}
@@ -99,21 +91,43 @@
                         </div>
                     </div>
                 @endif
-                @if (isset($grupo))
-                    <div class="row bg-light form-inline" style="padding:15px 0 15px 0; text-indent:1.8em; line-height: 2.1em;">
-                        @if($grupo->clave)<span>CLAVE:&nbsp;&nbsp;<strong>{{$grupo->clave}}</strong></span>@endif
-                        <span>MEMORANDUM DE VALIDACION DEL INSTRUCTOR:&nbsp;&nbsp;<strong>{{ $grupo->instructor_mespecialidad }}</strong></span>
-                        @if ($grupo->mexoneracion AND ($grupo->mexoneracion <> '0'))
-                            <span>MEMORÁNDUM DE EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong>{{$grupo->mexoneracion}}</strong></span>
-                        @endif
-                        @if($grupo->tdias)<span>TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></span>@endif
-                        @if($grupo->dia)<span>DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></span>@endif
-
-                        @if ($grupo->cgeneral!='0')
-                            <span>CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->cgeneral}}</strong></span>
-                            <span>FECHA CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->fcgen}}</strong></span>
-                        @endif
-                    </div>
+                <br/>
+                @if(isset($grupo))
+                    @if(isset($instructor))
+                        <h5>DEL INSTRUCTOR</h5>
+                        <div class="row bg-light form-inline" style="padding:15px 0 15px 0; text-indent:1.8em; line-height: 2.1em;">
+                            @if(isset($instructor->tipo_honorario))
+                                <span>RÉGIMEN :&nbsp;&nbsp;<strong>{{$instructor->tipo_honorario}}</strong></span>
+                            @endif
+                            <span>&nbsp;&nbsp;
+                                MEMORÁNDUM DE VALIDACIÓN:
+                                @if($ValidaInstructorPDF and isset($grupo->instructor_mespecialidad ))
+                                    <a class="p-0 m-0 text-danger" href="{{$ValidaInstructorPDF}}" target="_blank">
+                                        <i  class="far fa-file-pdf  fa-1x text-danger"  title='PDF VALIDACIÓN DEL INSTRUCTOR.'></i>
+                                        &nbsp;&nbsp; {{ $grupo->instructor_mespecialidad }}
+                                    </a>
+                                @else
+                                    <i  class="far fa-file-pdf  fa-1x text-mute"  title='VALIDACIÓN DEL INSTRUCTOR.'></i>
+                                    <strong>&nbsp;&nbsp; {{ $grupo->instructor_mespecialidad }}</strong>
+                                @endif
+                            </span>
+                        </div>
+                    @endif
+                    @if($grupo->tdias)
+                        <h5>DEL CURSO</h5>
+                        <div class="row bg-light form-inline" style="padding:15px 0 15px 0; text-indent:1.8em; line-height: 2.1em;">
+                            @if($grupo->clave)<span>CLAVE:&nbsp;&nbsp;<strong>{{$grupo->clave}}</strong></span>@endif
+                            @if ($grupo->mexoneracion AND ($grupo->mexoneracion <> '0'))
+                                <span>MEMORÁNDUM DE EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong>{{$grupo->mexoneracion}}</strong></span>
+                            @endif
+                            @if($grupo->tdias)<span>TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></span>@endif
+                            @if($grupo->dia)<span>DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></span>@endif
+                            @if ($grupo->cgeneral!='0')
+                                <span>CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->cgeneral}}</strong></span>
+                                <span>FECHA CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->fcgen}}</strong></span>
+                            @endif
+                        </div>
+                    @endif
                 @endif
                 <div class="form-row">
                     <div class="form-group col-md-2">
@@ -266,7 +280,7 @@
                             @else
                                 <i  class="far fa-file-pdf  fa-3x text-muted mt-1"  title='ARCHIVO NO DISPONIBLE.'></i>
                             @endif
-                        </div>        
+                        </div>
                         @if(!$recibo)
                             <div class="form-group col-md-2 mt-4">
                                 <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf" target="blank">UNIR PDF´s</a>
@@ -278,7 +292,7 @@
                 @can('agenda.vinculacion')
                     @if ($folio_grupo)
                         <div>
-                            <label><h4>DE LA APERTURA </h4></label>
+                            <h4>DE LA APERTURA </h4>
                             <hr />
                         </div>
                         <div class="form-row">
