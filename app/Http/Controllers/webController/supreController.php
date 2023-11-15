@@ -1766,11 +1766,21 @@ class supreController extends Controller
                     'tbl_cursos.dura',
                     'tbl_cursos.muni',
                     'tbl_localidades.localidad',
-                    \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99') AS importe_hora"),
-                    \DB::raw("TO_CHAR(folios.iva, '999,999.99') AS importe_iva_16"),
+                    // \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99') AS importe_hora"),
+                    \DB::raw("CAST(folios.importe_hora AS DECIMAL(10, 2)) AS importe_hora"),
+
+                    // \DB::raw("TO_CHAR(folios.iva, '999,999.99') AS importe_iva_16"),
+                    \DB::raw("CAST(folios.iva AS DECIMAL(10, 2)) AS importe_iva_16"),
+
                     \DB::raw("'12101 Honorarios' AS partida_concepto"),
-                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.6, '999,999.99') END AS importe_federal"),
-                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.4, '999,999.99') END AS importe_estatal"),
+
+                    // \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.6, '999,999.99') END AS importe_federal"),
+                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN CAST(folios.importe_total AS DECIMAL(10, 2)) WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN CAST(folios.importe_total * 0.6 AS DECIMAL(10, 2)) END AS importe_federal"),
+
+                    // \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.4, '999,999.99') END AS importe_estatal"),
+                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN CAST(folios.importe_total AS DECIMAL(10, 2)) WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN CAST(folios.importe_total * 0.4 AS DECIMAL(10, 2)) END AS importe_estatal"),
+
+
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
                     \DB::raw("ROUND(folios.importe_total * 0.10, 2) AS retencion_isr"),
@@ -1806,15 +1816,23 @@ class supreController extends Controller
                     'tbl_cursos.dura',
                     'tbl_cursos.muni',
                     'tbl_localidades.localidad',
-                    \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
-                    \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
+                    // \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
+                    // \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
+                    \DB::raw("CAST(folios.importe_hora AS DECIMAL(10, 2)) AS importe_hora"),
+                    \DB::raw("CAST(folios.iva AS DECIMAL(10, 2)) AS importe_iva_16"),
+
                     \DB::raw("'12101 Honorarios'"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento = NULL THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
+
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
-                    \DB::raw("floatval(number_format(folios.importe_total * 0.10, 2)"),
-                    \DB::raw("floatval(number_format(folios.importe_total * 0.1066, 2)"),
+                    // \DB::raw("floatval(number_format(folios.importe_total * 0.10, 2)"),
+                    // \DB::raw("floatval(number_format(folios.importe_total * 0.1066, 2)"),
+
+                    \DB::raw("ROUND(folios.importe_total * 0.10, 2) AS retencion_isr"),
+                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2) AS retencion_iva"),
+
                     'tabla_supre.folio_validacion',
                     'tabla_supre.fecha_validacion',
                     'folios.comentario')
@@ -1841,15 +1859,23 @@ class supreController extends Controller
                     'tbl_cursos.dura',
                     'tbl_cursos.muni',
                     'tbl_localidades.localidad',
-                    \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
-                    \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
+                    // \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
+                    // \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
+                    \DB::raw("CAST(folios.importe_hora AS DECIMAL(10, 2)) AS importe_hora"),
+                    \DB::raw("CAST(folios.iva AS DECIMAL(10, 2)) AS importe_iva_16"),
+
                     \DB::raw("'12101 Honorarios'"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento = NULL THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
+
+
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
-                    \DB::raw("floatval(number_format(folios.importe_total * 0.10, 2)"),
-                    \DB::raw("floatval(number_format(folios.importe_total * 0.1066, 2)"),
+                    // \DB::raw("floatval(number_format(folios.importe_total * 0.10, 2)"),
+                    // \DB::raw("floatval(number_format(folios.importe_total * 0.1066, 2)"),
+                    \DB::raw("ROUND(folios.importe_total * 0.10, 2) AS retencion_isr"),
+                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2) AS retencion_iva"),
+
                     'tabla_supre.folio_validacion',
                     'tabla_supre.fecha_validacion',
                     'folios.comentario')
@@ -1876,17 +1902,25 @@ class supreController extends Controller
                     'tbl_cursos.dura',
                     'tbl_cursos.muni',
                     'tbl_localidades.localidad',
-                    \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
-                    \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
+                    // \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
+                    // \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
+                    \DB::raw("CAST(folios.importe_hora AS DECIMAL(10, 2)) AS importe_hora"),
+                    \DB::raw("CAST(folios.iva AS DECIMAL(10, 2)) AS importe_iva_16"),
+
                     \DB::raw("'12101 Honorarios'"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento = NULL THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.6, '999,999.99') END AS importe_federal"),
                     \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.4, '999,999.99') END AS importe_estatal"),
+
+
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
-                    \DB::raw("floatval(number_format(folios.importe_total * 0.10, 2)"),
-                    \DB::raw("floatval(number_format(folios.importe_total * 0.1066, 2)"),
+                    // \DB::raw("floatval(number_format(folios.importe_total * 0.10, 2)"),
+                    // \DB::raw("floatval(number_format(folios.importe_total * 0.1066, 2)"),
+                    \DB::raw("ROUND(folios.importe_total * 0.10, 2) AS retencion_isr"),
+                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2) AS retencion_iva"),
+
                     'tabla_supre.folio_validacion',
                     'tabla_supre.fecha_validacion',
                     'folios.comentario')
