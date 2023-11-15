@@ -246,7 +246,7 @@ class cursosController extends Controller
         $clave = $request->get('clave');
 
         if($clave){
-            $curso = DB::table('tbl_cursos as tc')->select('tc.id','tc.curso','tc.dura','tc.cct','tc.unidad','tc.depen',
+            $curso = DB::table('tbl_cursos as tc')->select('tc.id','tc.curso','tc.dura','tc.cct','tc.unidad','tc.depen', 'tc.mod',
             DB::raw("trim(substring(u.dunidad , position('.' in u.dunidad)+1,char_length(u.dunidad))) as dunidad"),'tc.id_curso',
             DB::raw('EXTRACT(DAY FROM termino)  as dia_termino'),
             DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),
@@ -284,8 +284,10 @@ class cursosController extends Controller
                         DB::raw("'CHIAPAS' as estado"),
                         DB::raw("'C. ".$curso->dunidad."' as dunidad"),
                         DB::raw("REPLACE('".$curso->depen."','.','') as depen"),
-                        DB::raw("'ICV-00-07-27-K41-0013'  as stps")
                         )
+                        ->when($curso->mod == 'CAE', function ($query) {
+                            return $query->addSelect(DB::raw("'ICV-00-07-27-K41-0013' as stps"));
+                        })
                     ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')
                     ->where('i.calificacion','<>','NP')
 
@@ -296,7 +298,8 @@ class cursosController extends Controller
                 //var_dump($data); exit;
                 if(count($data)==0){ return "NO TIENEN FOLIOS ASIGNADOS";exit;}
 
-                $head = ['FOLIO','ALUMNO','CURP','CURSO','FECHA','DIA','MES','AÑO','HORAS','CLAVE UNIDAD','UNIDAD DE CAPACITACION','CIUDAD','ESTADO','DIRECTOR','DEPENDENCIA','STPS'];
+                $head = ['FOLIO','ALUMNO','CURP','CURSO','FECHA','DIA','MES','AÑO','HORAS','CLAVE UNIDAD','UNIDAD DE CAPACITACION','CIUDAD','ESTADO','DIRECTOR','DEPENDENCIA'];
+                if ($curso->mod == 'CAE') {$head[] = 'STPS';} //Agregamos una columna mas al excel
                 $nombreLayout = $clave.".xlsx";
 
                 if(count($data)>0){

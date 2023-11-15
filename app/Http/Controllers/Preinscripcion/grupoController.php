@@ -1309,6 +1309,7 @@ class grupoController extends Controller
         $message = null; //consultar instructores con id y que devuelva campo extra sea igual a true ya que lo devuelva un if si curso extra es igual a false entra a la validacion y si es true entonces cambie valido a true
 
         $curso_extra = DB::TABLE('instructores')->WHERE('id',$id_instructor)->value('curso_extra');
+        $curso_extra = true;
 
         if($curso_extra == false)
         {
