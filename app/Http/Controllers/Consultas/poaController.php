@@ -69,88 +69,47 @@ class poaController extends Controller
                     ->select('d.id_curso',DB::raw("sum(CASE WHEN d.status= 'INSCRITO' and d.calificacion='NP' THEN 1 ELSE 0 END)  as desercion"))
                     ->groupby('d.id_curso');
 
-                    $query_costos = "SUM(
-                        CASE                        
-                        WHEN tc.ze ='II' THEN   
-                            CASE
-                            WHEN fecha_apertura<'2023-10-12' and tc.cp>=5 THEN                                
-                                (SELECT 
-                                    CASE WHEN impuestos = 'true' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
-                                    ELSE monto::numeric * tc.dura
-                                    END
-                                FROM ( SELECT id,
-                                    (jsonb_array_elements(ze2->'vigencias')->>'fecha')::date AS fecha_vigencia,
-                                    (jsonb_array_elements(ze2->'vigencias')->>'monto')::numeric AS monto,
-                                    (jsonb_array_elements(ze2->'vigencias')->>'incluye_impuestos') AS impuestos
-                                    FROM criterio_pago WHERE id = tc.cp-1 and tc.fecha_apertura<'2023-10-12' 
-                                ) subquery  WHERE fecha_vigencia >= tc.fecha_apertura ORDER BY fecha_vigencia LIMIT 1)
+                    $inicio_nuevoTab = date('Y-m-d',strtotime('2023-10-12')); //renumeración de id de criterios
 
-                            WHEN fecha_apertura<'2023-10-12' and tc.cp=5 THEN 
-                                (SELECT 
-                                    CASE WHEN impuestos = 'true' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
-                                    ELSE monto::numeric * tc.dura
-                                    END
-                                FROM ( SELECT id,
-                                    (jsonb_array_elements(ze2->'vigencias')->>'fecha')::date AS fecha_vigencia,
-                                    (jsonb_array_elements(ze2->'vigencias')->>'monto')::numeric AS monto,
-                                    (jsonb_array_elements(ze2->'vigencias')->>'incluye_impuestos') AS impuestos
-                                    FROM criterio_pago WHERE id = 55 and tc.fecha_apertura<'2023-10-12' 
-                                ) subquery  WHERE fecha_vigencia >= tc.fecha_apertura ORDER BY fecha_vigencia LIMIT 1)
-                            ELSE 
-                                (SELECT 
-                                    CASE WHEN impuestos = 'true' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
-                                    ELSE monto::numeric * tc.dura
-                                    END
-                                FROM ( SELECT id,
-                                    (jsonb_array_elements(ze2->'vigencias')->>'fecha')::date AS fecha_vigencia,
-                                    (jsonb_array_elements(ze2->'vigencias')->>'monto')::numeric AS monto,
-                                    (jsonb_array_elements(ze2->'vigencias')->>'incluye_impuestos') AS impuestos
-                                    FROM criterio_pago WHERE id = tc.cp and tc.fecha_apertura >= '2023-10-12' 
-                                ) subquery  WHERE fecha_vigencia >= tc.fecha_apertura ORDER BY fecha_vigencia LIMIT 1)
-                            END
-                        
-
-                            WHEN tc.ze ='III' THEN   
-                            CASE
-                            WHEN fecha_apertura<'2023-10-12' and tc.cp>=5 THEN                                
-                                (SELECT 
-                                    CASE WHEN impuestos = 'true' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
-                                    ELSE monto::numeric * tc.dura
-                                    END
-                                FROM ( SELECT id,
-                                    (jsonb_array_elements(ze3->'vigencias')->>'fecha')::date AS fecha_vigencia,
-                                    (jsonb_array_elements(ze3->'vigencias')->>'monto')::numeric AS monto,
-                                    (jsonb_array_elements(ze3->'vigencias')->>'incluye_impuestos') AS impuestos
-                                    FROM criterio_pago WHERE id = tc.cp-1 and tc.fecha_apertura<'2023-10-12' 
-                                ) subquery  WHERE fecha_vigencia >= tc.fecha_apertura ORDER BY fecha_vigencia LIMIT 1)
-
-                            WHEN fecha_apertura<'2023-10-12' and tc.cp=5 THEN 
-                                (SELECT 
-                                    CASE WHEN impuestos = 'true' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
-                                    ELSE monto::numeric * tc.dura
-                                    END
-                                FROM ( SELECT id,
-                                    (jsonb_array_elements(ze3->'vigencias')->>'fecha')::date AS fecha_vigencia,
-                                    (jsonb_array_elements(ze3->'vigencias')->>'monto')::numeric AS monto,
-                                    (jsonb_array_elements(ze3->'vigencias')->>'incluye_impuestos') AS impuestos
-                                    FROM criterio_pago WHERE id = 55 and tc.fecha_apertura<'2023-10-12' 
-                                ) subquery  WHERE fecha_vigencia >= tc.fecha_apertura ORDER BY fecha_vigencia LIMIT 1)
-                            ELSE 
-                                (SELECT 
-                                    CASE WHEN impuestos = 'true' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
-                                    ELSE monto::numeric * tc.dura
-                                    END
-                                FROM ( SELECT id,
-                                    (jsonb_array_elements(ze3->'vigencias')->>'fecha')::date AS fecha_vigencia,
-                                    (jsonb_array_elements(ze3->'vigencias')->>'monto')::numeric AS monto,
-                                    (jsonb_array_elements(ze3->'vigencias')->>'incluye_impuestos') AS impuestos
-                                    FROM criterio_pago WHERE id = tc.cp and tc.fecha_apertura >= '2023-10-12' 
-                                ) subquery  WHERE fecha_vigencia >= tc.fecha_apertura ORDER BY fecha_vigencia LIMIT 1)
-                            END
+                                        
+                    $query_costos = "SUM(CASE 
+                        WHEN tc.ze ='II' THEN  
+                        (SELECT 
+                                CASE WHEN impuestos = 'false' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
+                                ELSE monto::numeric * tc.dura
+                                END								 	
+                            FROM ( SELECT id,
+                                (jsonb_array_elements(ze2->'vigencias')->>'fecha')::date AS fecha_vigencia,
+                                (jsonb_array_elements(ze2->'vigencias')->>'monto')::numeric AS monto,
+                                (jsonb_array_elements(ze2->'vigencias')->>'incluye_impuestos') AS impuestos
+                                FROM criterio_pago 
+                            WHERE  id =
+                                CASE 
+                                    WHEN  fecha_apertura<'2023-10-12' and tc.cp>=5  THEN tc.cp-1 
+                                    WHEN fecha_apertura<'2023-10-12' and tc.cp=5 THEN 55
+                                    ELSE tc.cp
+                                END			   
+                            ) subquery  WHERE  tc.fecha_apertura >= fecha_vigencia ORDER BY fecha_vigencia DESC LIMIT 1)
+                        WHEN tc.ze ='III' THEN  
+                        (SELECT 
+                                CASE WHEN impuestos = 'false' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
+                                ELSE monto::numeric * tc.dura
+                                END								 	
+                            FROM ( SELECT id,
+                                (jsonb_array_elements(ze3->'vigencias')->>'fecha')::date AS fecha_vigencia,
+                                (jsonb_array_elements(ze3->'vigencias')->>'monto')::numeric AS monto,
+                                (jsonb_array_elements(ze3->'vigencias')->>'incluye_impuestos') AS impuestos
+                                FROM criterio_pago
+                            WHERE id = 
+                                CASE 
+                                    WHEN  fecha_apertura<'2023-10-12' and tc.cp>=5  THEN tc.cp-1 
+                                    WHEN fecha_apertura<'2023-10-12' and tc.cp=5 THEN 55
+                                    ELSE tc.cp
+                                END			   
+                            ) subquery  WHERE  tc.fecha_apertura >= fecha_vigencia ORDER BY fecha_vigencia DESC LIMIT 1)
                         END) as costo_aperturado";
 
-            /*TOTAL POR UNIDAD*/
-                    $vigencia_CP = date('Y-m-d',strtotime('2022-11-01'));
+            /*TOTAL POR UNIDAD*/                    
 
                     $data_total = DB::table('tbl_unidades as u')
                     ->select('poa.id_unidad','u.ubicacion as unidad',DB::raw('poa.total_cursos as cursos_programados'),
@@ -199,6 +158,7 @@ class poaController extends Controller
                         });
 
                     })
+                    //->where('u.unidad','=','JIQUIPILAS')
                     ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
                     ->groupby('poa.id_unidad','u.ubicacion','poa.id');
 
@@ -257,6 +217,7 @@ class poaController extends Controller
                         $join->on('p.id_curso','=','tc.id');
                     });
                  })
+                //->where('u.unidad','=','JIQUIPILAS')
                   ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
                   ->WhereNotNull('poa.ze')->WhereNotNull('u.ze')
                  ->groupby('u.ubicacion','poa.id_unidad','u.ze','poa.ze');
@@ -308,6 +269,7 @@ class poaController extends Controller
                         $join->on('p.id_curso','=','tc.id');
                     });
                   })
+                  //->where('u.unidad','=','JIQUIPILAS')
                  ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
                  ->groupby('tc.unidad','u.unidad','poa.total_cursos','poa.total_horas','tc.cct','poa.id',
                  'poa.tbl_unidades_plantel')
