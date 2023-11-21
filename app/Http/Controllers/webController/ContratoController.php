@@ -377,9 +377,9 @@ class ContratoController extends Controller
         $contrato->save();
 
         // Metodo de XML para contrato
-        $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
-        $contratoController = new EContratoController();
-        $result = $contratoController->xml($id_contrato->id_contrato);
+        // $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
+        // $contratoController = new EContratoController();
+        // $result = $contratoController->xml($id_contrato->id_contrato);
 
 
         // Eliminar el guardado de directorio y reemplazar por la tabla de funcionarios
@@ -677,13 +677,13 @@ class ContratoController extends Controller
         $contrato->save();
 
         // Metodo de XML para contrato AGREGAR BORRADO DE DOCUMENTO CON CADENA UNICA SOLO SI TODAVIA NO ESTA SELLADO
-        $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
-        $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
-            ->Where('tipo_archivo','Contrato')
-            ->Where('status','!=','VALIDADO')
-            ->Delete();
-        $contratoController = new EContratoController();
-        $result = $contratoController->xml($request->id_contrato);
+        // $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
+        // $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
+        //     ->Where('tipo_archivo','Contrato')
+        //     ->Where('status','!=','VALIDADO')
+        //     ->Delete();
+        // $contratoController = new EContratoController();
+        // $result = $contratoController->xml($request->id_contrato);
 
         $folio = folio::find($request->id_folio);
         $folio->status = 'Capturando';
