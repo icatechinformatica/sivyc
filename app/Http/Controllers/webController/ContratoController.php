@@ -1181,6 +1181,7 @@ class ContratoController extends Controller
 
     public function contrato_pdf($id)
     {
+        $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = null;
         $contrato = new contratos();
 
         $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
@@ -1223,7 +1224,7 @@ class ContratoController extends Controller
             ->Where('status','VALIDADO')
             ->Where('tipo_archivo','Contrato')
             ->first();
-        if(!is_null($documento->uuid_sellado)){
+        if(isset($documento->uuid_sellado)){
             $objeto = json_decode($documento->obj_documento,true);
             $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
             $no_oficio = $no_oficio->{'@attributes'}->no_oficio;
