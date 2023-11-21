@@ -537,13 +537,13 @@ class ContratoController extends Controller
         //$users = User::where('id', 1)->get();
         // dd($users);
         //event((new NotificationEvent($users, $letter)));
-        if($result == TRUE) {
+        // if($result == TRUE) {
             return redirect()->route('contrato-inicio')
                             ->with('success','Contrato y/o Solicitud de Pago Agregado');
-        } else {
+        // } else {
             return redirect()->route('contrato-inicio')
                             ->with('warning','Contrato y/o Solicitud de Pago Agregado. Ocurrio un error al obtener la cadena original, por favor intente de nuevo');
-        }
+        // }
 
         // return view('layouts.pages.contratocheck', compact('idc'));
     }
