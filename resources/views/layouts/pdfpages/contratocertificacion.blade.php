@@ -52,16 +52,29 @@
         td {
             padding:0px;
         }
-        .page-number:before {
-            content: "Pagina " counter(page);
+        .page-number:after {
+            float: right;
+            font-size: 10px;
+            /* display: inline-block; */
+            content: "Pagina " counter(page) " de 5";
+        }
+        .link {
+            position: fixed;
+            left: 0px;
+            top: 8px;
+            font-size: 7px;
+            text-align: left;
         }
     </style>
 </head>
     <body>
         <footer>
-            <div class="page-number"></div>
+            {{-- <div style="display: inline-block; width: 50%;"></div> --}}
+            <div class="page-number">
+                {{-- <small class="link">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} <br> Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas </small> --}}
+            </div>
         </footer>
-        <div class= "container g-pt-30" style="font-size: 12px;">
+        <div class= "container g-pt-30" style="font-size: 12px; margin-bottom: 25px;" >
             <div id="content">
                 <div align=right> <b>Contrato No.{{$data_contrato->numero_contrato}}.</b> </div>
                 <br><div align="justify"><b>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE CERTIFICACION EXTRAORDINARIA, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, EN SU CARÁCTER DE {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} Y POR LA OTRA LA O EL C. {{$nomins}}, EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “ICATECH” Y “PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>
@@ -91,7 +104,7 @@
                 <div align="center"><strong> CLÁUSULAS </strong></div>
                 <br><div align="justify">
                     <dd><b>PRIMERA.- OBJETO DEL CONTRATO</b>. El presente instrumento tiene por objeto establecer al <b>“PRESTADOR DE SERVICIOS”</b> los términos y condiciones que se obliga con <b>“ICATECH”</b>, a brindar sus servicios profesionales bajo el régimen de <b>HONORARIOS,</b> para otorgar la certificación extraordinaria del curso establecido en el ARC01 y/o ARC02.</dd>
-                    <br><dd><b>SEGUNDA.- MONTO DE LOS HONORARIOS</b>. El monto total de los servicios que <b>“ICATECH”</b>, pagará al <b>“PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b>${{$cantidad}} ({{$data_contrato->cantidad_letras1}} {{$monto['1']}}/100 M.N.)</b>, @if($data->fecha_apertura <  '2023-10-12') mas el 16% (dieciséis por ciento) del @else importe que incluye el @endif Impuesto al Valor Agregado, menos las retenciones que de conformidad con la Ley del Impuesto Sobre la Renta, y demás disposiciones fiscales que procedan para el caso que nos ocupa.</dd>
+                    <br><dd><b>SEGUNDA.- MONTO DE LOS HONORARIOS</b>. El monto total de los servicios que <b>“ICATECH”</b>, pagará al <b>“PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b>${{$cantidad}} ({{$data_contrato->cantidad_letras1}} {{$monto['1']}}/100 M.N.)</b>, más el 16% (dieciséis por ciento) del Impuesto al Valor Agregado, menos las retenciones que de conformidad con la Ley del Impuesto Sobre la Renta, y demás disposiciones fiscales que procedan para el caso que nos ocupa.</dd>
                     <br><dd>El monto resultante señalado en el <b>párrafo primero</b> de esta cláusula se otorgará al <b>“PRESTADOR DE SERVICIOS”</b> conforme a la disponibilidad financiera de <b>“ICATECH”</b>; que se realizará en una sola exhibición, por medio de transferencia electrónica interbancaria a la cuenta que señala, contra la entrega del Recibo de Honorarios y/o Factura correspondiente, mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que el <b>“PRESTADOR DE SERVICIOS”</b> no podrá exigir retribución alguna por ningún otro concepto.</dd>
                     <br><dd><b>TERCERA.- DE LA OBLIGACIÓN DEL “PRESTADOR DE SERVICIOS”</b>. Se obliga a desempeñar las obligaciones que contrae en este acto y con todo el sentido ético y profesional que requiere <b>“ICATECH”</b>, de acuerdo con las políticas y reglamentos del mismo para:</dd>
                     <Ol type = "I">

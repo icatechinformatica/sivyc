@@ -15,12 +15,12 @@
         <!-- CSS Global Compulsory -->
         <link rel="stylesheet" href="{{asset('vendor/bootstrap/bootstrap.min.css') }}">
         <link rel="stylesheet" href="https://mail.cdn.wpchile.com/assets/vendor/icon-hs/style.css">
-        
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> 
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
         {{--EN DEPURACION
-        <link rel="stylesheet" href="{{asset('vendor/bootstrap/offcanvas.css') }}">        
+        <link rel="stylesheet" href="{{asset('vendor/bootstrap/offcanvas.css') }}">
         <link rel="stylesheet" href="{{asset('vendor/icon-line-pro/style.css') }}">
-        <link rel="stylesheet" href="{{asset('vendor/icon-line/css/simple-line-icons.css') }} ">        
+        <link rel="stylesheet" href="{{asset('vendor/icon-line/css/simple-line-icons.css') }} ">
         <link rel="stylesheet" href="{{asset('vendor/dzsparallaxer/dzsparallaxer.css') }}">
         <link rel="stylesheet" href="{{asset('vendor/dzsparallaxer/dzsscroller/scroller.css') }}">
         <link rel="stylesheet" href="{{asset('vendor/dzsparallaxer/advancedscroller/plugin.css') }}">
@@ -80,12 +80,12 @@
         <script type="text/javascript" charset="utf8" src="{{ asset('js/components/jquery.dataTables.js') }}"></script>
 
         <script type="text/javascript" src="{{ asset('js/components/jquery-ui.min.js') }}"></script>
-        
+
         <script src="{{ asset('js/validate/conversor.js') }}"></script>
         <script src="{{ asset('js/validate/numberTostring.js') }}"></script>
-        <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>        
-        
-        
+        <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
+
+
         @yield('script_content_js')
     </body>
 
