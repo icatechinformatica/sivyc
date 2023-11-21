@@ -177,11 +177,14 @@ class FirmaController extends Controller {
         }
 
         $getToken = Tokens_icti::all()->last();
+
         if (!isset($token)) {// no hay registros
             $token = $this->generarToken($request);
+        } else
+        {
+            $token = $getToken->token;
         }
         // dd($docsFirmados);
-        $token = $getToken->token;
         return view('layouts.firmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol'));
     }
 
