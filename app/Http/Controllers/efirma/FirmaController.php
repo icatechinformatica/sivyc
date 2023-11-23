@@ -92,8 +92,8 @@ class FirmaController extends Controller {
                 $subquery->select('numero_o_clave')
                     ->from('documentos_firmar')
                     ->whereIn('tipo_archivo', ['Lista de asistencia', 'Lista de calificaciones'])
-                    ->Where('status', '!=', 'CANCELADO')
-                    ->Where('status', '!=', 'VALIDADO')
+                    ->WhereIn('status', ['CANCELADO','VALIDADO'])
+                    // ->Where('status', '=', 'VALIDADO')
                     ->groupBy('numero_o_clave')
                     ->havingRaw('COUNT(DISTINCT tipo_archivo) > 1');
             })
@@ -185,7 +185,7 @@ class FirmaController extends Controller {
             $token = $getToken->token;
         }
         // dd($docsFirmados);
-        return view('layouts.firmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol'));
+        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol'));
     }
 
     public function update(Request $request) {
@@ -271,7 +271,6 @@ class FirmaController extends Controller {
             $token = $this->generarToken($request);
             $response = $this->sellarFile($xmlBase64, $token);
         }
-
         if ($response->json()['status'] == 1) { //exitoso
             $decode = base64_decode($response->json()['xml']);
             DocumentosFirmar::where('id', $request->txtIdFirmado)
@@ -284,7 +283,7 @@ class FirmaController extends Controller {
                 ]);
             return redirect()->route('firma.inicio')->with('warning', 'Documento validado exitosamente!');
         } else {
-            return redirect()->route('firma.inicio')->with('danger', 'Ocurrio un error al sellar el documento, por favor intente de nuevo');
+            return redirect()->route('firma.inicio')->with('danger', $response->json()['descripcionError']);
         }
     }
 

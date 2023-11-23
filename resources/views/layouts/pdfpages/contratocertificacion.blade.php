@@ -52,29 +52,16 @@
         td {
             padding:0px;
         }
-        .page-number:after {
-            float: right;
-            font-size: 10px;
-            /* display: inline-block; */
-            content: "Pagina " counter(page) " de 5";
-        }
-        .link {
-            position: fixed;
-            left: 0px;
-            top: 8px;
-            font-size: 7px;
-            text-align: left;
+        .page-number:before {
+            content: "Pagina " counter(page);
         }
     </style>
 </head>
     <body>
         <footer>
-            {{-- <div style="display: inline-block; width: 50%;"></div> --}}
-            <div class="page-number">
-                {{-- <small class="link">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} <br> Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas </small> --}}
-            </div>
+            <div class="page-number"></div>
         </footer>
-        <div class= "container g-pt-30" style="font-size: 12px; margin-bottom: 25px;" >
+        <div class= "container g-pt-30" style="font-size: 12px;">
             <div id="content">
                 <div align=right> <b>Contrato No.{{$data_contrato->numero_contrato}}.</b> </div>
                 <br><div align="justify"><b>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE CERTIFICACION EXTRAORDINARIA, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, EN SU CARÁCTER DE {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} Y POR LA OTRA LA O EL C. {{$nomins}}, EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “ICATECH” Y “PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>

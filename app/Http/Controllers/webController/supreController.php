@@ -1625,6 +1625,7 @@ class supreController extends Controller
     public function planeacion_costeo_excel(Request $request)
     {
         // dd($request);
+        
         $data = DB::TABLE('tbl_cursos')
         ->SELECT(
         'tbl_cursos.unidad',
@@ -1749,6 +1750,7 @@ class supreController extends Controller
     protected function generate_report_supre_xls($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
         set_time_limit(0);
+        ini_set('memory_limit', '256M');
 
         if ($filtrotipo == "general")
         {
