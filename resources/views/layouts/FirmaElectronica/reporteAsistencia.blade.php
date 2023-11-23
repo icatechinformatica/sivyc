@@ -232,12 +232,8 @@
                 <tfoot>
                 </tfoot>
             </table>
-            @if ($key < count($meses) - 1)
-                <p style="page-break-before: always;"></p>
-            @endif
-        @endforeach
-        <br><br><br>
-        @if(!is_null($objeto))
+            <br><br><br>
+            @if(!is_null($objeto))
             <div style="display: inline-block; width: 85%;">
                 <table style="width: 100%; font-size: 5px;">
                     @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
@@ -269,9 +265,14 @@
                 </table>
             </div>
             <div style="display: inline-block; width: 15%;">
-                <img style="position: fixed; width: 100%; top: 58%; left: 82%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                <img style="position: fixed; width: 18%; top: 30%; left: 75%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
             </div>
-        @endif
+            {{$key}}
+            @endif
+            @if ($key < count($meses) - 1)
+                <p style="page-break-before: always;"></p>
+            @endif
+        @endforeach
     @else
         {{ 'El Curso no tiene registrado la fecha de inicio y de termino' }}
     @endif
