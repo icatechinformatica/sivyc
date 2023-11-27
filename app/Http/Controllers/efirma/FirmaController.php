@@ -415,6 +415,18 @@ class FirmaController extends Controller {
         }
     }
 
+    protected function getdocumentos(Request $request)
+    {
+        $respuesta = DB::Table('contratos')->Select('documentos_firmar.tipo_archivo','contratos.id_contrato','tbl_cursos.id AS id_curso')
+            ->Join('folios','folios.id_folios','contratos.id_folios')
+            ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->Join('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')
+            ->Where('contratos.id_contrato',$request->valor)
+            ->Get();
+        $json=json_encode($respuesta);
+        return $json;
+    }
+
     public function generarToken(Request $request) {
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'

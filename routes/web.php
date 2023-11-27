@@ -899,6 +899,7 @@ Route::post('/firma/sellar', 'efirma\FirmaController@sellar')->name('firma.sella
 Route::post('/firma/generar', 'efirma\FirmaController@generarPDF')->name('firma.generarPdf');
 Route::post('/firma/cancelar', 'efirma\FirmaController@cancelarDocumento')->name('firma.cancelar');
 Route::post('/firma/token', 'efirma\FirmaController@generarToken')->name('firma.token');
+Route::post('/efirma/busqueda', 'efirma\FirmaController@getdocumentos')->name('supre.busqueda.curso');
 Route::post('/asistencia/rechazo', 'efirma\AsistenciaController@rechazo')->name('asistencia-rechazo');
 Route::post('/asistencia/validar', 'efirma\AsistenciaController@generar_xml')->name('asistencia-xml');
 Route::get('/lista/asistencia/{id}', 'efirma\AsistenciaController@asistencia_pdf')->name('asistencia-pdf');

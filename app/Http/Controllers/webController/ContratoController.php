@@ -379,8 +379,8 @@ class ContratoController extends Controller
         $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
 
         // Metodo de XML para contrato
-        // $contratoController = new EContratoController();
-        // $result = $contratoController->xml($id_contrato->id_contrato);
+        $contratoController = new EContratoController();
+        $result = $contratoController->xml($id_contrato->id_contrato);
 
 
         // Eliminar el guardado de directorio y reemplazar por la tabla de funcionarios
@@ -537,13 +537,13 @@ class ContratoController extends Controller
         //$users = User::where('id', 1)->get();
         // dd($users);
         //event((new NotificationEvent($users, $letter)));
-        // if($result == TRUE) {
+        if($result == TRUE) {
             return redirect()->route('contrato-inicio')
                             ->with('success','Contrato y/o Solicitud de Pago Agregado');
-        // } else {
+        } else {
             return redirect()->route('contrato-inicio')
                             ->with('warning','Contrato y/o Solicitud de Pago Agregado. Ocurrio un error al obtener la cadena original, por favor intente de nuevo');
-        // }
+        }
 
         // return view('layouts.pages.contratocheck', compact('idc'));
     }
@@ -678,13 +678,13 @@ class ContratoController extends Controller
         $contrato->save();
 
         // Metodo de XML para contrato AGREGAR BORRADO DE DOCUMENTO CON CADENA UNICA SOLO SI TODAVIA NO ESTA SELLADO
-        // $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
-        // $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
-        //     ->Where('tipo_archivo','Contrato')
-        //     ->Where('status','!=','VALIDADO')
-        //     ->Delete();
-        // $contratoController = new EContratoController();
-        // $result = $contratoController->xml($request->id_contrato);
+        $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
+        $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
+            ->Where('tipo_archivo','Contrato')
+            ->Where('status', 'CANCELADO') //poner que evite el status de anulado
+            ->Delete();
+        $contratoController = new EContratoController();
+        $result = $contratoController->xml($request->id_contrato);
 
         $folio = folio::find($request->id_folio);
         $folio->status = 'Capturando';

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    @if(!is_null($uuid))
     <style>
         body{
             font-family: sans-serif;
@@ -52,10 +53,77 @@
         td {
             padding:0px;
         }
-        .page-number:before {
-            content: "Pagina " counter(page);
+        .page-number:after {
+            float: right;
+            font-size: 10px;
+            /* display: inline-block; */
+            content: "Pagina " counter(page) " de 5";
+        }
+        .link {
+            position: fixed;
+            left: 0px;
+            top: 8px;
+            font-size: 7px;
+            text-align: left;
         }
     </style>
+    @else
+        <style>
+            body{
+                font-family: sans-serif;
+            }
+            @page {
+                margin: 30px 60px, 60px, 60px;
+            }
+            header { position: fixed;
+                left: 0px;
+                top: -155px;
+                right: 0px;
+                height: 50px;
+                background-color: #ddd;
+                text-align: center;
+            }
+            header h1{
+                margin: 1px 0;
+            }
+            header h2{
+                margin: 0 0 1px 0;
+            }
+            footer {
+                position: fixed;
+                left: 0px;
+                bottom: 0px;
+                right: 0px;
+                height: 10px;
+                text-align: center;
+            }
+            footer .page:after {
+                content: counter(page);
+            }
+            footer table {
+                width: 100%;
+            }
+            footer p {
+                text-align: right;
+            }
+            footer .izq {
+                text-align: left;
+            }
+            table, td {
+                    border:0px solid black;
+                    }
+            table {
+                border-collapse:collapse;
+                width:100%;
+            }
+            td {
+                padding:0px;
+            }
+            .page-number:before {
+                content: "Pagina " counter(page);
+            }
+        </style>
+    @endif
 </head>
     <body>
         <footer>

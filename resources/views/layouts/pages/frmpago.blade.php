@@ -70,7 +70,7 @@
                     <input type="text" name="numero_pago" id="numero_pago" class="form-control" aria-required="true">
                 </div>
                 <div class="form-gorup col-md-3">
-                    <label for="inputfecha_pago">Fecha de Pago</label>                    
+                    <label for="inputfecha_pago">Fecha de Pago</label>
                     <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" aria-required="true" @if($data->fecha) value="{{$data->fecha}}" @endif>
                 </div>
                 <div class="form-gorup col-md-4">
