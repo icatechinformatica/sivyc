@@ -536,9 +536,9 @@ class PagoController extends Controller
 
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
 
-        //return view('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
+        return view('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
         $pdf = PDF::loadView('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
-        return $pdf->download('medium.pdf');
+        return $pdf->stream('medium.pdf');
     }
 
     public function agendar_entrega_pago(Request $request)

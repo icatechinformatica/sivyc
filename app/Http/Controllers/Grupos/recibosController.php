@@ -40,7 +40,7 @@ class recibosController extends Controller
 
         if($data){            
             if($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS', 'DESHACER'=>'DESHACER ASIGNACION'];
-            elseif((!$data->status_curso and !in_array($data->status_folio, ['DISPONIBLE','IMPRENTA'])) OR in_array($data->status_folio,['ACEPTADO', 'CARGADO'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];            
+            elseif((!$data->status_curso and !in_array($data->status_folio, ['DISPONIBLE','IMPRENTA'])) OR in_array($data->status_folio,['ACEPTADO', 'CARGADO','ASIGNADO'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];            
             
             if($data->status_folio=="ENVIADO" and $data->status_curso=='CANCELADO') $movimientos = [ 'CANCELAR' => 'CANCELAR'];
             elseif($data->status_folio=="ENVIADO" and $data->status_curso) $movimientos = [ 'SOPORTE' => 'SOLICITUD DE CAMBIO SOPORTES'];
@@ -226,7 +226,7 @@ class recibosController extends Controller
                             WHEN tc.comprobante_pago <> 'null' THEN concat('uploadFiles',tc.comprobante_pago)
                             WHEN tr.file_pdf <> 'null' THEN tr.file_pdf
                         END as file_pdf"),
-                    DB::raw('UPPER(tu.municipio) as municipio'),
+                    DB::raw('UPPER(tc.unidad) as municipio'),
                     DB::raw("
                         CASE 
                             WHEN tc.tipo = 'EXO' THEN 'EXONERACIÓN'
