@@ -1652,7 +1652,7 @@ class supreController extends Controller
     public function planeacion_costeo_excel(Request $request)
     {
         // dd($request);
-        
+
         $data = DB::TABLE('tbl_cursos')
         ->SELECT(
         'tbl_cursos.unidad',
