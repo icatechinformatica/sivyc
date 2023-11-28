@@ -115,7 +115,7 @@
                 <div class="form-group col-md-3">
                     <label for="fecha_movimiento_bancario_0">Fecha de Expedición</label>
                     <input type="date" class="form-control" id="fecha_expedicion" name="fecha_expedicion" readonly>
-                </div> 
+                </div>
                 {{-- <div class="form-group col-md-3">
                     <label for="movimiento_bancario_0">Movimiento Bancario</label>
                     <input type="text" class="form-control" id="movimiento_bancario_0" name="movimiento_bancario_[0]">

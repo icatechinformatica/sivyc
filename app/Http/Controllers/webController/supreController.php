@@ -199,15 +199,15 @@ class supreController extends Controller
 
                     $folio->save();
 
-                    $mvtobanc = tbl_curso::find($hora->id); //
-                    foreach($request->movimiento_bancario_ as $movkey => $ari)
-                    {
-                        $arrmov['movimiento_bancario'] = $ari;
-                        $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
-                        array_push($generalarr, $arrmov);
-                    }
-                    $mvtobanc->mov_bancario = $generalarr;
-                    $mvtobanc->save();
+                    // $mvtobanc = tbl_curso::find($hora->id); //
+                    // foreach($request->movimiento_bancario_ as $movkey => $ari)
+                    // {
+                    //     $arrmov['movimiento_bancario'] = $ari;
+                    //     $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
+                    //     array_push($generalarr, $arrmov);
+                    // }
+                    // $mvtobanc->mov_bancario = $generalarr;
+                    // $mvtobanc->save();
                 }
                 else
                 {
@@ -260,7 +260,7 @@ class supreController extends Controller
 
         $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.comentario',
                                 'folios.importe_total','folios.iva','tbl_cursos.clave',
-                                'tbl_cursos.mov_bancario', 'tbl_cursos.folio_pago')
+                                'tbl_cursos.mov_bancario', 'tbl_cursos.folio_pago','tbl_cursos.id')
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                             ->GET();
@@ -280,12 +280,12 @@ class supreController extends Controller
 
         $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
             ->Where('id_concepto',1)
-            ->Where('id_curso',$Cursos->id)
+            ->Where('id_curso',$getfolios[0]->id)
             ->First();
 
         if($recibo == null) {
             $recibo = DB::Table('tbl_cursos')->Select('fecha_pago AS fecha_expedicion','folio_pago AS folio_recibo')
-                ->Where('id',$Cursos->id)
+                ->Where('id',$getfolios[0]->id)
                 ->First();
         }
         return view('layouts.pages.modsupre',compact('getsupre','getfolios','getremitente','getvalida','getelabora','directorio', 'unidadsel','unidadlist','recibo'));
@@ -355,15 +355,15 @@ class supreController extends Controller
 
             $folio->save();
 
-            $mvtobanc = tbl_curso::find($hora->id);
-            foreach($request->movimiento_bancario_ as $movkey => $ari)
-            {
-                $arrmov['movimiento_bancario'] = $ari;
-                $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
-                array_push($generalarr, $arrmov);
-            }
-            $mvtobanc->mov_bancario = $generalarr;
-            $mvtobanc->save();
+            // $mvtobanc = tbl_curso::find($hora->id);
+            // foreach($request->movimiento_bancario_ as $movkey => $ari)
+            // {
+            //     $arrmov['movimiento_bancario'] = $ari;
+            //     $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
+            //     array_push($generalarr, $arrmov);
+            // }
+            // $mvtobanc->mov_bancario = $generalarr;
+            // $mvtobanc->save();
 }
         // return redirect()->route('supre-inicio')
         // ->with('success','Solicitud de Suficiencia Presupuestal agregado');
