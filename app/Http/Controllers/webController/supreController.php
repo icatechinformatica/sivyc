@@ -277,7 +277,18 @@ class supreController extends Controller
             $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
         }
         $getfolios[0]->mov_bancario = json_decode($getfolios[0]->mov_bancario);
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios','getremitente','getvalida','getelabora','directorio', 'unidadsel','unidadlist'));
+
+        $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
+            ->Where('id_concepto',1)
+            ->Where('id_curso',$Cursos->id)
+            ->First();
+
+        if($recibo == null) {
+            $recibo = DB::Table('tbl_cursos')->Select('fecha_pago AS fecha_expedicion','folio_pago AS folio_recibo')
+                ->Where('id',$Cursos->id)
+                ->First();
+        }
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios','getremitente','getvalida','getelabora','directorio', 'unidadsel','unidadlist','recibo'));
     }
 
     public function solicitud_mod_guardar(Request $request)
@@ -746,7 +757,7 @@ class supreController extends Controller
             $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
                     'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
                     'tbl_cursos.folio_pago','movimiento_bancario','fecha_movimiento_bancario',
-                    'factura','fecha_factura','tbl_cursos.fecha_apertura AS inicio')
+                    'factura','fecha_factura','tbl_cursos.fecha_apertura AS inicio','tbl_cursos.id')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
 
             if($Cursos != NULL)
@@ -829,6 +840,22 @@ class supreController extends Controller
                 $total['iva'] = 0.00;
                 $total['importe_total'] = $total[0];
             }
+
+            // obtener recibo
+            $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
+                ->Where('id_concepto',1)
+                ->Where('id_curso',$Cursos->id)
+                ->First();
+
+            if($recibo == null) {
+                $recibo = DB::Table('tbl_cursos')->Select('fecha_pago AS fecha_expedicion','folio_pago AS folio_recibo')
+                    ->Where('id',$Cursos->id)
+                    ->First();
+            }
+
+            $total['fecha_expedicion'] = $recibo->fecha_expedicion;
+            $total['folio_recibo'] = $recibo->folio_recibo;
+
 
             $json=json_encode($total); //dura 10 cp 6
         }else{
@@ -1625,6 +1652,7 @@ class supreController extends Controller
     public function planeacion_costeo_excel(Request $request)
     {
         // dd($request);
+
         $data = DB::TABLE('tbl_cursos')
         ->SELECT(
         'tbl_cursos.unidad',
@@ -1749,6 +1777,7 @@ class supreController extends Controller
     protected function generate_report_supre_xls($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
         set_time_limit(0);
+        ini_set('memory_limit', '256M');
 
         if ($filtrotipo == "general")
         {
