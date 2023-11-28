@@ -5,6 +5,7 @@
     <script type="text/javascript">
         function determinador(checkbox)
         {
+            console.log(checkbox)
                 document.getElementById(checkbox).checked = true;
         }
     </script>
@@ -61,6 +62,25 @@
                 </thead>
                 <tbody>
                     <tr>
+                        @php $row = 4; @endphp
+                        @foreach ($unidades as $key => $unidad)
+                            @if ($key == $row)
+                                @php $row = $row + 4; @endphp
+                                </tr><tr>
+                            @endif
+                            <td style="vertical-align:bottom;"><strong>{{$unidad}}</strong></td>
+                            <td class="custom-checkbox checkbox-xl" id='choice-td'>
+                                <input type="checkbox" class="custom-control-input" id='chk_{{$unidad}}' name='chk_{{$unidad}}'>
+                                <label class="custom-control-label" for="chk_{{$unidad}}"></label>
+                            </td>
+                            @foreach ($available as $data)
+                                @if ($data == $unidad)
+                                    @php $chk = 'chk_'.$unidad; @endphp
+                                    <script type="text/javascript">var chk = @json($chk); determinador(chk);</script>
+                                @endif
+                            @endforeach
+                        @endforeach
+                    {{-- <tr>
                         <td style="vertical-align:bottom;"><strong>Tuxtla Gutiérrez</strong></td>
                         <td class="custom-checkbox checkbox-xl" id='choice-td'>
                             <input type="checkbox" class="custom-control-input" id="chk_tuxtla" name='chk_tuxtla'>
@@ -475,7 +495,7 @@
                                 <script type="text/javascript">determinador("chk_palenque");</script>
                             @endif
                         @endforeach
-                    </tr>
+                    </tr> --}}
                 </tbody>
             </table>
             <br>
