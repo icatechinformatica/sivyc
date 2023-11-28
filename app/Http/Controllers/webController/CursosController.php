@@ -544,24 +544,22 @@ class CursosController extends Controller
     public function alta_baja($id)
     {
         $av = curso::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
-        if($av == NULL)
+        // dd($av);
+        if($av->unidades_disponible == NULL || $av->unidades_disponible == '[]')
         {
             $reform = curso::find($id);
-            $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
-            'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
-            'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
-            'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
-            'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
-            'PALENQUE'];
+
+            $unidades = DB::Table('tbl_unidades')->OrderBy('unidad','ASC')->Get()->Pluck('unidad')->ToArray();
 
             $reform->unidades_disponible = $unidades;
             $reform->save();
 
             $av = curso::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
         }
-
+        $unidades = DB::Table('tbl_unidades')->OrderBy('unidad','ASC')->Get()->Pluck('unidad')->ToArray();
         $available = $av->unidades_disponible;
-        return view('layouts.pages.vstaltabajacur', compact('id','available'));
+
+        return view('layouts.pages.vstaltabajacur', compact('id','available','unidades'));
     }
 
     public function exportar_cursos($xls)
@@ -582,156 +580,166 @@ class CursosController extends Controller
 
     public function alta_baja_save(Request $request)
     {
+
+        $unidades_lista = DB::Table('tbl_unidades')->OrderBy('unidad','ASC')->Get()->Pluck('unidad')->ToArray();
         $unidades = [];
-        if($this->checkComparator($request->chk_tuxtla) == TRUE)
-        {
-            array_push($unidades, 'TUXTLA');
-        }
-        if($this->checkComparator($request->chk_tapachula) == TRUE)
-        {
-            array_push($unidades, 'TAPACHULA');
-        }
-        if($this->checkComparator($request->chk_comitan) == TRUE)
-        {
-            array_push($unidades, 'COMITAN');
-        }
-        if($this->checkComparator($request->chk_reforma) == TRUE)
-        {
-            array_push($unidades, 'REFORMA');
-        }
-        if($this->checkComparator($request->chk_tonala) == TRUE)
-        {
-            array_push($unidades, 'TONALA');
-        }
-        if($this->checkComparator($request->chk_villaflores) == TRUE)
-        {
-            array_push($unidades, 'VILLAFLORES');
-        }
-        if($this->checkComparator($request->chk_jiquipilas) == TRUE)
-        {
-            array_push($unidades, 'JIQUIPILAS');
-        }
-        if($this->checkComparator($request->chk_catazaja) == TRUE)
-        {
-            array_push($unidades, 'CATAZAJA');
-        }
-        if($this->checkComparator($request->chk_yajalon) == TRUE)
-        {
-            array_push($unidades, 'YAJALON');
-        }
-        if($this->checkComparator($request->chk_san_cristobal) == TRUE)
-        {
-            array_push($unidades, 'SAN CRISTOBAL');
-        }
-        if($this->checkComparator($request->chk_chiapa_de_corzo) == TRUE)
-        {
-            array_push($unidades, 'CHIAPA DE CORZO');
-        }
-        if($this->checkComparator($request->chk_motozintla) == TRUE)
-        {
-            array_push($unidades, 'MOTOZINTLA');
-        }
-        if($this->checkComparator($request->chk_berriozabal) == TRUE)
-        {
-            array_push($unidades, 'BERRIOZABAL');
-        }
-        if($this->checkComparator($request->chk_pijijiapan) == TRUE)
-        {
-            array_push($unidades, 'PIJIJIAPAN');
-        }
-        if($this->checkComparator($request->chk_jitotol) == TRUE)
-        {
-            array_push($unidades, 'JITOTOL');
-        }
-        if($this->checkComparator($request->chk_la_concordia) == TRUE)
-        {
-            array_push($unidades, 'LA CONCORDIA');
-        }
-        if($this->checkComparator($request->chk_venustiano_carranza) == TRUE)
-        {
-            array_push($unidades, 'VENUSTIANO CARRANZA');
-        }
-        if($this->checkComparator($request->chk_tila) == TRUE)
-        {
-            array_push($unidades, 'TILA');
-        }
-        if($this->checkComparator($request->chk_teopisca) == TRUE)
-        {
-            array_push($unidades, 'TEOPISCA');
-        }
-        if($this->checkComparator($request->chk_ocosingo) == TRUE)
-        {
-            array_push($unidades, 'OCOSINGO');
-        }
-        if($this->checkComparator($request->chk_cintalapa) == TRUE)
-        {
-            array_push($unidades, 'CINTALAPA');
-        }
-        if($this->checkComparator($request->chk_copainala) == TRUE)
-        {
-            array_push($unidades, 'COPAINALA');
-        }
-        if($this->checkComparator($request->chk_soyalo) == TRUE)
-        {
-            array_push($unidades, 'SOYALO');
-        }
-        if($this->checkComparator($request->chk_angel_albino_corzo) == TRUE)
-        {
-            array_push($unidades, 'ANGEL ALBINO CORZO');
-        }
-        if($this->checkComparator($request->chk_arriaga) == TRUE)
-        {
-            array_push($unidades, 'ARRIAGA');
-        }
-        if($this->checkComparator($request->chk_pichucalco) == TRUE)
-        {
-            array_push($unidades, 'PICHUCALCO');
-        }
-        if($this->checkComparator($request->chk_juarez) == TRUE)
-        {
-            array_push($unidades, 'JUAREZ');
-        }
-        if($this->checkComparator($request->chk_simojovel) == TRUE)
-        {
-            array_push($unidades, 'SIMOJOVEL');
-        }
-        if($this->checkComparator($request->chk_mapastepec) == TRUE)
-        {
-            array_push($unidades, 'MAPASTEPEC');
-        }
-        if($this->checkComparator($request->chk_villa_corzo) == TRUE)
-        {
-            array_push($unidades, 'VILLA CORZO');
-        }
-        if($this->checkComparator($request->chk_cacahoatan) == TRUE)
-        {
-            array_push($unidades, 'CACAHOATAN');
-        }
-        if($this->checkComparator($request->chk_once_de_abril) == TRUE)
-        {
-            array_push($unidades, 'ONCE DE ABRIL');
-        }
-        if($this->checkComparator($request->chk_tuxtla_chico) == TRUE)
-        {
-            array_push($unidades, 'TUXTLA CHICO');
-        }
-        if($this->checkComparator($request->chk_oxchuc) == TRUE)
-        {
-            array_push($unidades, 'OXCHUC');
-        }
-        if($this->checkComparator($request->chk_chamula) == TRUE)
-        {
-            array_push($unidades, 'CHAMULA');
-        }
-        if($this->checkComparator($request->chk_ostuacan) == TRUE)
-        {
-            array_push($unidades, 'OSTUACAN');
-        }
-        if($this->checkComparator($request->chk_palenque) == TRUE)
-        {
-            array_push($unidades, 'PALENQUE');
+
+        foreach($unidades_lista as $unidad) {
+            if($this->checkComparator($request->{'chk_'.str_replace(' ', '_', $unidad)}) == TRUE)
+            {
+                array_push($unidades, $unidad);
+            }
         }
 
+        // if($this->checkComparator($request->chk_tuxtla) == TRUE)
+        // {
+        //     array_push($unidades, 'TUXTLA');
+        // }
+        // if($this->checkComparator($request->chk_tapachula) == TRUE)
+        // {
+        //     array_push($unidades, 'TAPACHULA');
+        // }
+        // if($this->checkComparator($request->chk_comitan) == TRUE)
+        // {
+        //     array_push($unidades, 'COMITAN');
+        // }
+        // if($this->checkComparator($request->chk_reforma) == TRUE)
+        // {
+        //     array_push($unidades, 'REFORMA');
+        // }
+        // if($this->checkComparator($request->chk_tonala) == TRUE)
+        // {
+        //     array_push($unidades, 'TONALA');
+        // }
+        // if($this->checkComparator($request->chk_villaflores) == TRUE)
+        // {
+        //     array_push($unidades, 'VILLAFLORES');
+        // }
+        // if($this->checkComparator($request->chk_jiquipilas) == TRUE)
+        // {
+        //     array_push($unidades, 'JIQUIPILAS');
+        // }
+        // if($this->checkComparator($request->chk_catazaja) == TRUE)
+        // {
+        //     array_push($unidades, 'CATAZAJA');
+        // }
+        // if($this->checkComparator($request->chk_yajalon) == TRUE)
+        // {
+        //     array_push($unidades, 'YAJALON');
+        // }
+        // if($this->checkComparator($request->chk_san_cristobal) == TRUE)
+        // {
+        //     array_push($unidades, 'SAN CRISTOBAL');
+        // }
+        // if($this->checkComparator($request->chk_chiapa_de_corzo) == TRUE)
+        // {
+        //     array_push($unidades, 'CHIAPA DE CORZO');
+        // }
+        // if($this->checkComparator($request->chk_motozintla) == TRUE)
+        // {
+        //     array_push($unidades, 'MOTOZINTLA');
+        // }
+        // if($this->checkComparator($request->chk_berriozabal) == TRUE)
+        // {
+        //     array_push($unidades, 'BERRIOZABAL');
+        // }
+        // if($this->checkComparator($request->chk_pijijiapan) == TRUE)
+        // {
+        //     array_push($unidades, 'PIJIJIAPAN');
+        // }
+        // if($this->checkComparator($request->chk_jitotol) == TRUE)
+        // {
+        //     array_push($unidades, 'JITOTOL');
+        // }
+        // if($this->checkComparator($request->chk_la_concordia) == TRUE)
+        // {
+        //     array_push($unidades, 'LA CONCORDIA');
+        // }
+        // if($this->checkComparator($request->chk_venustiano_carranza) == TRUE)
+        // {
+        //     array_push($unidades, 'VENUSTIANO CARRANZA');
+        // }
+        // if($this->checkComparator($request->chk_tila) == TRUE)
+        // {
+        //     array_push($unidades, 'TILA');
+        // }
+        // if($this->checkComparator($request->chk_teopisca) == TRUE)
+        // {
+        //     array_push($unidades, 'TEOPISCA');
+        // }
+        // if($this->checkComparator($request->chk_ocosingo) == TRUE)
+        // {
+        //     array_push($unidades, 'OCOSINGO');
+        // }
+        // if($this->checkComparator($request->chk_cintalapa) == TRUE)
+        // {
+        //     array_push($unidades, 'CINTALAPA');
+        // }
+        // if($this->checkComparator($request->chk_copainala) == TRUE)
+        // {
+        //     array_push($unidades, 'COPAINALA');
+        // }
+        // if($this->checkComparator($request->chk_soyalo) == TRUE)
+        // {
+        //     array_push($unidades, 'SOYALO');
+        // }
+        // if($this->checkComparator($request->chk_angel_albino_corzo) == TRUE)
+        // {
+        //     array_push($unidades, 'ANGEL ALBINO CORZO');
+        // }
+        // if($this->checkComparator($request->chk_arriaga) == TRUE)
+        // {
+        //     array_push($unidades, 'ARRIAGA');
+        // }
+        // if($this->checkComparator($request->chk_pichucalco) == TRUE)
+        // {
+        //     array_push($unidades, 'PICHUCALCO');
+        // }
+        // if($this->checkComparator($request->chk_juarez) == TRUE)
+        // {
+        //     array_push($unidades, 'JUAREZ');
+        // }
+        // if($this->checkComparator($request->chk_simojovel) == TRUE)
+        // {
+        //     array_push($unidades, 'SIMOJOVEL');
+        // }
+        // if($this->checkComparator($request->chk_mapastepec) == TRUE)
+        // {
+        //     array_push($unidades, 'MAPASTEPEC');
+        // }
+        // if($this->checkComparator($request->chk_villa_corzo) == TRUE)
+        // {
+        //     array_push($unidades, 'VILLA CORZO');
+        // }
+        // if($this->checkComparator($request->chk_cacahoatan) == TRUE)
+        // {
+        //     array_push($unidades, 'CACAHOATAN');
+        // }
+        // if($this->checkComparator($request->chk_once_de_abril) == TRUE)
+        // {
+        //     array_push($unidades, 'ONCE DE ABRIL');
+        // }
+        // if($this->checkComparator($request->chk_tuxtla_chico) == TRUE)
+        // {
+        //     array_push($unidades, 'TUXTLA CHICO');
+        // }
+        // if($this->checkComparator($request->chk_oxchuc) == TRUE)
+        // {
+        //     array_push($unidades, 'OXCHUC');
+        // }
+        // if($this->checkComparator($request->chk_chamula) == TRUE)
+        // {
+        //     array_push($unidades, 'CHAMULA');
+        // }
+        // if($this->checkComparator($request->chk_ostuacan) == TRUE)
+        // {
+        //     array_push($unidades, 'OSTUACAN');
+        // }
+        // if($this->checkComparator($request->chk_palenque) == TRUE)
+        // {
+        //     array_push($unidades, 'PALENQUE');
+        // }
+        // dd($unidades);
         $reform = curso::find($request->id_available);
         $reform->unidades_disponible = $unidades;
         $reform->save();
