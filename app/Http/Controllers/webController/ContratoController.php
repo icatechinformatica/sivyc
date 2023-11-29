@@ -378,7 +378,7 @@ class ContratoController extends Controller
 
         $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
 
-        // Metodo de XML para contrato
+        // // Metodo de XML para contrato
         // $contratoController = new EContratoController();
         // $result = $contratoController->xml($id_contrato->id_contrato);
 
