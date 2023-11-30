@@ -34,6 +34,18 @@ class MetavanceController extends Controller
      */
     public function index(Request $request, $idorg = null)
     {
+        #Año de ejercicio
+        $sel_eje = $request->sel_ejercicio;
+        $ejercicio = [];
+        for ($i=2023; $i <= intval(date('Y')); $i++) {array_push($ejercicio, $i);}
+        if($sel_eje == null && isset($_SESSION['eje_pat_registros']) == ''){
+            $_SESSION['eje_pat_registros'] = date('Y');
+        }elseif($sel_eje != null){
+            $_SESSION['eje_pat_registros'] = $sel_eje;
+        }
+        $anio_eje = $_SESSION['eje_pat_registros'];
+
+
         $json_org = Auth::user()->id_organismos_json;
         $array_org = json_decode($json_org, true);
         $id_orgconst = $idorg;
@@ -64,7 +76,7 @@ class MetavanceController extends Controller
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $organismo)
             ->where('activo', '=', 'true')
-            ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
+            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
 
@@ -77,12 +89,13 @@ class MetavanceController extends Controller
             'm.febrero', 'm.marzo', 'm.abril', 'm.mayo', 'm.junio', 'm.julio', 'm.agosto', 'm.septiembre', 'm.octubre', 'm.noviembre', 'm.diciembre', 'observaciones', 'um.unidadm', 'um.numero', 'um.tipo_unidadm')
             ->Join('unidades_medida as um', 'f.id_unidadm', 'um.id')
             ->Join('metas_avances_pat as m', 'f.id', 'm.id_proced')
+            ->where('m.ejercicio', '=', $anio_eje)
             ->whereIn('f.id', function($query)use($val, $obtAnio)  {
             $query->select('id')
                   ->from('funciones_proced')
                   ->where('id_parent', '=', $val)
-                  ->where('activo', '=', 'true')
-                  ->where(DB::raw("date_part('year' , created_at )"), '=', $obtAnio);
+                  ->where('activo', '=', 'true');
+                //   ->where(DB::raw("date_part('year' , created_at )"),  $obtAnio);
             })
             ->orderBy('f.id')
             ->get();
@@ -95,14 +108,16 @@ class MetavanceController extends Controller
         $datos_status_avance = $dosarray[1];
         $fecha_meta_avance = $dosarray[2]; //para ir verificando el status
 
-        return view('vistas_pat.metas_avances', compact('datos', 'datos_status_meta', 'fecha_meta_avance', 'datos_status_avance', 'area_org', 'org', 'fechaNow', 'mesGlob', 'array_organismos', 'organismo'));
+        return view('vistas_pat.metas_avances', compact('datos', 'datos_status_meta', 'fecha_meta_avance', 'datos_status_avance',
+        'area_org', 'org', 'fechaNow', 'mesGlob', 'array_organismos', 'organismo', 'ejercicio', 'anio_eje'));
     }
 
     public function validacionMeta($organismo)
     {
         //CONSULTA PARA FECHAS Y STATUS
         $fecha_meta_avance = FechasPat::select('fecha_meta', 'fechas_avance', 'status_meta', 'status_avance')
-            ->where('id_org', '=', $organismo)->first();
+            ->where('id_org', '=', $organismo)
+            ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
 
         //CONVERTIR FECHAS EN TIPO NUMERO PARA PODER COMPARARLOS
         $fecha_actual = date('d-m-Y');
@@ -247,6 +262,7 @@ class MetavanceController extends Controller
      */
     public function valid_planeacion($id_getuser)
     {
+        $anio_eje = $_SESSION['eje_pat_buzon'];  // La sesion del año se crea cuando se ingresa al buzon de validacion
         $id_organismo = $id_getuser;
         $dif_perfil = true;
 
@@ -269,7 +285,7 @@ class MetavanceController extends Controller
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $id_organismo)
             ->where('activo', '=', 'true')
-            ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
+            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
         //CONSULTA DE PROCEDIMIENTOS POR FUNCION
@@ -281,12 +297,13 @@ class MetavanceController extends Controller
             'm.febrero', 'm.marzo', 'm.abril', 'm.mayo', 'm.junio', 'm.julio', 'm.agosto', 'm.septiembre', 'm.octubre', 'm.noviembre', 'm.diciembre', 'observaciones', 'um.unidadm', 'um.numero', 'um.tipo_unidadm')
             ->Join('unidades_medida as um', 'f.id_unidadm', 'um.id')
             ->Join('metas_avances_pat as m', 'f.id', 'm.id_proced')
+            ->where('m.ejercicio', '=', $anio_eje)
             ->whereIn('f.id', function($query)use($val, $obtAnio)  {
             $query->select('id')
                   ->from('funciones_proced')
                   ->where('id_parent', '=', $val)
                   ->where('activo', '=', 'true')
-                  ->where(DB::raw("date_part('year' , created_at )"), '=', $obtAnio);
+                  ->where(DB::raw("date_part('year' , created_at )"), '=', '2023');
             })
             ->orderBy('f.id')
             ->get();
@@ -295,7 +312,7 @@ class MetavanceController extends Controller
 
         //CONSULTA PARA FECHAS Y STATUS
         $fecha_meta_avance = FechasPat::select('fecha_meta', 'fechas_avance', 'status_meta', 'status_avance')
-            ->where('id_org', '=', $id_organismo)->first();
+            ->where('id_org', '=', $id_organismo)->where('periodo', '=', $anio_eje)->first();
 
         //condicion si la meta esta activo y si esta en proceso de validacion
         $fechas_texto_enviar = $this->fecha_calendar_meta($fecha_meta_avance->fecha_meta['fechaemi'], $fecha_meta_avance->fecha_meta['fechalimit']);
@@ -387,7 +404,9 @@ class MetavanceController extends Controller
 
 
         //Obtener el id de la tabla de fechas que contienen los status
-        $id_fech_pat = FechasPat::select('id')->where('id_org', '=', $id_org)->first();
+        $id_fech_pat = FechasPat::select('id')->where('id_org', '=', $id_org)
+        ->where('periodo', '=', $_SESSION['eje_pat_buzon'])->first();
+
         $id_reg_fecha = $id_fech_pat->id;
 
         $save_status_obser_met = function($cap, $pro, $ret, $val, $sta, $retvalid) use($id_plane_user, $id_reg_fecha) {
@@ -504,11 +523,6 @@ class MetavanceController extends Controller
         return response()->json([
             'status' => 200,
             'mensaje' => 'se realizo exitosamente'
-            // 'datos' => $request->datos,
-            // 'status_meta' => $request->status_meta,
-            // 'status_avance' => $request->status_avance,
-            // 'id' => $request->id_orga,
-            // 'mes' => $mes
         ]);
     }
 
@@ -560,7 +574,8 @@ class MetavanceController extends Controller
             $metavances->save();
         }
         /**Busqueda de id para agregar fechas al registro */
-        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])->first();
+        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])
+        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
         $statusmeta = FechasPat::find($id_reg_fecha->id);
         $statusf = $statusmeta->fecha_meta;
         $statusf['fecmetasave'] = date("Y-m-d H:i");
@@ -601,7 +616,8 @@ class MetavanceController extends Controller
         $datos = $request->datos;
         $mesUpdate = $datos[0][0];
 
-        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])->first();
+        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])
+        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
         $statusavance = FechasPat::find($id_reg_fecha->id);
 
         for ($i=0; $i < count($datos); $i++) {
@@ -682,13 +698,13 @@ class MetavanceController extends Controller
 
 
         //AREA DEL USUARIO / (AREA DPTO)
-        $area_org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as area_org', 'id_parent', 'fun.nombre as func', 'fun.cargo')
+        $area_org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as area_org', 'id_parent', 'fun.nombre as func', 'fun.cargo', 'fun.titulo')
         ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
         ->where('o.id', $organismo)->first();
 
 
         // ORGANISMO DEL USUARIO / (DIRECCION)
-        $org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as org', 'fun.nombre as fun', 'fun.cargo')
+        $org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as org', 'fun.nombre as fun', 'fun.cargo', 'fun.titulo')
         ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
         ->where('o.id', $area_org->id_parent)->first();
 
@@ -703,7 +719,7 @@ class MetavanceController extends Controller
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $organismo)
             ->where('activo', '=', 'true')
-            ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
+            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
 
@@ -717,12 +733,13 @@ class MetavanceController extends Controller
             'metas_avances_pat.septiembre', 'metas_avances_pat.octubre', 'metas_avances_pat.noviembre', 'metas_avances_pat.diciembre', 'observaciones', 'observmeta', 'um.numero', 'um.unidadm', 'um.tipo_unidadm')
             ->Join('funciones_proced as f', 'f.id', 'metas_avances_pat.id_proced')
             ->Join('unidades_medida as um', 'f.id_unidadm', 'um.id')
+            ->where('metas_avances_pat.ejercicio', '=', $_SESSION['eje_pat_registros'])
             ->whereIn('f.id', function($query)use($val, $obtAnio)  {
             $query->select('id')
                   ->from('funciones_proced')
                   ->where('id_parent', '=', $val)
                   ->where('activo', '=', 'true') //validar si esta activo
-                  ->where(DB::raw("date_part('year' , created_at )"), '=', $obtAnio);
+                  ->where(DB::raw("date_part('year' , created_at )"), '=', '2023');
             })
             ->orderBy('f.id')
             ->get();
@@ -732,7 +749,8 @@ class MetavanceController extends Controller
 
         //Consulta de fechas
         $fechasPat = function ($organismo){
-            $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)->first();
+            $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)
+            ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
             return $tblFechas;
         };
 
@@ -1166,7 +1184,8 @@ class MetavanceController extends Controller
      */
     public function uploadpdfmeta(Request $request)
     {
-        $id = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])->first();
+        $id = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])
+        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
         $mensaje = "";
 
         if($request->hasFile('archivoPDF') and $id->id != null){
@@ -1200,7 +1219,8 @@ class MetavanceController extends Controller
      */
     public function uploadpdfavance(Request $request)
     {
-        $id = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])->first();
+        $id = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])
+        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
         $mensaje = "";
 
         if($request->hasFile('archivoPDF') and $id->id != null){
@@ -1259,7 +1279,7 @@ class MetavanceController extends Controller
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $organismo)
             ->where('activo', '=', 'true')
-            ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
+            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
 
@@ -1276,12 +1296,13 @@ class MetavanceController extends Controller
             'metas_avances_pat.iduser_updated', 'um.numero', 'um.unidadm', 'um.tipo_unidadm')
             ->Join('funciones_proced as f', 'f.id', 'metas_avances_pat.id_proced')
             ->Join('unidades_medida as um', 'f.id_unidadm', 'um.id')
+            ->where('ejercicio', '=', $_SESSION['eje_pat_registros'])
             ->whereIn('f.id', function($query)use($val)  {
             $query->select('id')
                     ->from('funciones_proced')
                     ->where('id_parent', '=', $val)
                     ->where('activo', '=', 'true') //validar si esta activo
-                    ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'));
+                    ->where(DB::raw("date_part('year' , created_at )"), '=', '2023');
             })
             ->orderBy('f.id')
             ->get();
@@ -1290,7 +1311,8 @@ class MetavanceController extends Controller
         }
 
         #CONSULTA DE FECHAS
-        $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)->first();
+        $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)
+        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
 
         if ($meta_avance == 'meta') {
             #DATOS META

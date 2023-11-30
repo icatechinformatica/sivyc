@@ -272,7 +272,7 @@
                     </td>
                     <td style="line-height: 1;">
                         <p style="margin-bottom: 35px;">Vo. Bo.</p>
-                        <p>___<u>{{isset($area_org) ? $area_org->func : ''}}</u>___</p>
+                        <p>___<u>{{isset($area_org) ? $area_org->titulo.' '.$area_org->func : ''}}</u>___</p>
                         <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
                     </td>
                 </tr>
@@ -282,7 +282,7 @@
                 <tr>
                     <td style="line-height: 1;">
                         <p style="margin-bottom: 35px;">ELABORÓ</p>
-                        <p>___<u>{{isset($area_org) ? $area_org->func : ''}}</u>___</p>
+                        <p>___<u>{{isset($area_org) ? $area_org->titulo.' '.$area_org->func : ''}}</u>___</p>
                         <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
                     </td>
                     <td>
@@ -293,7 +293,7 @@
                     </td>
                     <td style="line-height: 1;">
                         <p style="margin-bottom: 35px;">Vo. Bo.</p>
-                        <p>___<u>{{isset($org) ? $org->fun : ''}}</u>___</p>
+                        <p>___<u>{{isset($org) ? $org->titulo.' '.$org->fun : ''}}</u>___</p>
                         <p><b>{{isset($org) ? $org->cargo : ''}}</b></p>
                     </td>
                 </tr>

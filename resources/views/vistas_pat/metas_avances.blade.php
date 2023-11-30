@@ -240,24 +240,26 @@
                             <div class="pull-left">
                                 <h5><b>Area/Depto :</b> {{isset($area_org->nombre) ? $area_org->nombre : ''}}</h5>
                             </div>
-
-                            {{-- Muestra la fecha dando click --}}
-                            {{-- <a tabindex="0" class="btn-circle btn-circle-sm" role="button"
-                                data-toggle="popover" data-trigger="focus" title="Fechas de llenado"
-                                data-content="
-                                    @if($datos_status_meta[0] == 'activo')
-                                        ({{$datos_status_meta[3][0]}}) al ({{$datos_status_meta[3][1]}})
-                                    @endif
-                                    @if($datos_status_avance[0] == 'activo')
-                                        ({{$datos_status_avance[3][0]}}) al ({{$datos_status_avance[3][1]}})
-                                    @endif
-                                ">
-                            <i class="fa fa-calendar fa-2x mt-1 fa-heart" aria-hidden="true" style="color: #5f0f30;"></i>
-                            </a> --}}
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="d-flex flex-column align-items-end">
+                            @if (!isset($dif_perfil))
+                                @if (count($ejercicio) > 1)
+                                    <div class="pull-right">
+                                        <div class="row">
+                                            <h5><b>Ejercicio: </b></h5>
+                                            <form action="" id="form_eje" class="ml-2 mr-3">
+                                                <select name="sel_ejercicio" id="" class="form-control-sm" onchange="cambioEjercicio()">
+                                                    @foreach ($ejercicio as $anioeje)
+                                                        <option {{$anioeje == $anio_eje ? 'selected' : '' }} value="{{$anioeje}}">{{$anioeje}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
                             <div class="pull-right">
                                 <h5><b>Fecha actual :</b> {{isset($fechaNow) ? strtoupper($fechaNow) : ''}}</h5>
                             </div>
@@ -1274,13 +1276,14 @@
                 url = url.replace(':idorg', id_org);
                 window.open(url, "_self");
             }
-            // function cambiar_organismo_plane() {
-            //     loader('show');
-            //     let id_org = document.getElementById("org_new_plane").value;
-            //     let url = "{{ route('pat.metavance.envioplane', [':id']) }}";
-            //     url = url.replace(':id', id_org);
-            //     window.open(url, "_self");
-            // }
+
+            // Cambio de ejercicio
+            function cambioEjercicio() {
+                let url = "{{ route('pat.metavance.mostrar') }}";
+                $('#form_eje').attr('action', url);
+                $("#form_eje").attr("target", '_self');
+                $('#form_eje').submit();
+            }
 
         </script>
         @endsection

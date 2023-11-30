@@ -61,12 +61,12 @@ class FuncionesController extends Controller
         $org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
         ->where('o.id', $area_org->id_parent)->first();
 
-
+        //Consulta de funciones cuando id_parent = 0
         $data = Funciones::Busqueda($request->get('busqueda_funcion'))
             ->select('funciones_proced.*')
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $organismo)
-            ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
+            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderByDesc('funciones_proced.id')
             ->paginate(20, ['funciones_proced.*']);
 
@@ -84,21 +84,13 @@ class FuncionesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crea nuevas funciones para el PAT
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //Obtener el id del user
-        // try {
-        //     $id_organismo = Auth::user()->id_organismo;
-        //     $id_user = Auth::user()->id;
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     return redirect('/login');
-        // }
         $id_organismo = $request->input('id_org');
         $id_user = Auth::user()->id;
 
@@ -124,14 +116,6 @@ class FuncionesController extends Controller
      */
     public function show($id, $idorg)
     {
-        //Obtenemos los id org, area del usuario quien ingresa
-        // try {
-        //     $organismo = Auth::user()->id_organismo;
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     return redirect('/login');
-        // }
-
         $organismo =  $idorg;
 
         $list_org = Organismos::select('id', 'nombre')
@@ -154,7 +138,7 @@ class FuncionesController extends Controller
         ->select('funciones_proced.*')
         ->where('id_parent', '=', 0)
         ->where('id_org', '=', $organismo)
-        ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
+        ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
         ->orderByDesc('funciones_proced.id')
         ->paginate(15, ['funciones_proced.*']);
 
