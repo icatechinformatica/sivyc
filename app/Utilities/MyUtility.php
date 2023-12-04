@@ -34,11 +34,11 @@ class MyUtility
             $centena =  floor(($entero % 1000) / 100); //dd($centena);            
             $decena = floor(($entero % 100) / 10); //dd($decena);
             $unidad = $entero % 10;
-
+            //dd($millar);
             if ($millones > 0) $parteEntera .= $this->letras($millones) . " millón ";
             if ($millar > 0) {
-                if ($millar == 1) $parteEntera .= "mil ";
-                elseif ($unidad >= 2 && $unidad <= 9) $parteEntera .= $unidades[$millar] . " mil ";  
+                if ($millar == 1) $parteEntera .= "mil "; 
+                elseif ($millar >= 2 && $millar <= 9) $parteEntera .= $unidades[$millar] . " mil ";  
                 else $parteEntera .= $especiales[$millar -10] . " mil ";            
             }
             if ($centena > 0) $parteEntera .= $centenas[$centena] . " ";
