@@ -18,7 +18,7 @@ class MyUtility
     public static function letras($cantidad){
         $unidades = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
         $decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];
-        $especiales = ["diez", "once", "doce", "trece", "catorce", "quince"];
+        $especiales = ["diez", "once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete","dieciocho", "diecinueve"];
         $centenas = ["", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"];
     
         $entero = floor($cantidad);
@@ -38,7 +38,8 @@ class MyUtility
             if ($millones > 0) $parteEntera .= $this->letras($millones) . " millón ";
             if ($millar > 0) {
                 if ($millar == 1) $parteEntera .= "mil ";
-                else $parteEntera .= $unidades[$millar] . " mil ";            
+                elseif ($unidad >= 2 && $unidad <= 9) $parteEntera .= $unidades[$millar] . " mil ";  
+                else $parteEntera .= $especiales[$millar -10] . " mil ";            
             }
             if ($centena > 0) $parteEntera .= $centenas[$centena] . " ";
             if ($decena > 0) $parteEntera .= $decenas[$decena] . " ";
