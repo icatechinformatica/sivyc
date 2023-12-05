@@ -445,6 +445,8 @@ class PlaneacionController extends Controller {
     protected function xlsExportReporteT(Request $request) {
         // $anio_actual = Carbon::now()->year;
 
+        set_time_limit(0);
+        ini_set('memory_limit', '256M');
         $uniSearch = session('uniSearch');
         $mesSearch = session('mesBuscar');
 
