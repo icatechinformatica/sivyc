@@ -1887,7 +1887,7 @@ class validacionDtaController extends Controller {
 
             if(!is_null($cursos_validar)){
                 if(isset($historial_fin)){
-                    $historial_meses = $historial_meses . $historial_fin;
+                    $rango = $historial_meses . $historial_fin;
                 }
                 break;
                 // $historial_meses[$moist] = ['mes' => $this->monthToString($moist),
@@ -1895,14 +1895,19 @@ class validacionDtaController extends Controller {
             } else {
                 if(is_null($historial_meses)){
                     $historial_meses = $this->monthToString($moist);
+
                 } else {
                     $historial_fin = '-' . $this->monthToString($moist);
+                    $rango = $historial_meses . $historial_fin;
+
                 }
                 // $historial_meses[$moist] = ['mes' => $this->monthToString($moist),
                 //                             'pendiente' => false];
             }
+
             $moist++;
         }
+        $historial_meses = $rango;
         // Fin info meses anteriores
 
         $unidad = DB::Table('tbl_unidades')->Where('unidad', $request->unidad_reporte)->FIRST();
