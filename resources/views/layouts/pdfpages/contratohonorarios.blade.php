@@ -258,8 +258,6 @@
                         </tr>
                     </table>
                 </div>
-                <p style="page-break-before: always;"></p>
-                <pre style="font-family: monospace;">{{ $xml }}</pre>
                 @else
                     <table>
                         <tr>
