@@ -1040,7 +1040,7 @@
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="contratof_pdfc" name="contratof_pdfc" hidden>
-                                        <label style='display:none;' for="contratof_pdfc" id="contratof_pdfc_label">
+                                        <label for="contratof_pdfc" id="contratof_pdfc_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>

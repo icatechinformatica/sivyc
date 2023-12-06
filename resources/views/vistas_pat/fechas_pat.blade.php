@@ -50,7 +50,7 @@
     </div>
 
     {{-- card para el contenido --}}
-    <div class="card card-body" style=" min-height:450px;">
+    <div class="card card-body" style="min-height:450px;">
         <div id="alertasHead"></div>
         <div class="container-fluid px-5 pt-3">
             @if ($message = Session::get('success'))
@@ -63,6 +63,18 @@
             @endif
 
             <div class="row">
+                @if (count($ejercicio) > 1)
+                    <div class="col-3 mb-2">
+                        <form action="" id="form_eje">
+                            <select name="sel_ejercicio" id="" class="form-control-sm" onchange="cambioEjercicio()">
+                                @foreach ($ejercicio as $anioeje)
+                                    <option {{$anioeje == $anio ? 'selected' : '' }} value="{{$anioeje}}">{{$anioeje}}</option>
+                                @endforeach
+                            </select>
+                        </form>
+                    </div>
+                @endif
+
                 <div class="col-lg-12 margin-tb">
                     {{-- @can('convenios.create') --}}
                         <div class="pull-right">
@@ -74,11 +86,11 @@
                     {{-- @endcan --}}
 
                     <form class="form-inline" action="" method="get" id="formBusqueda">
-                        <select class="form-control mr-sm-2" name="" id="selectTabla" onchange="cambiarTabla()">
+                        <select class="form-control-sm mr-sm-2" name="" id="selectTabla" onchange="cambiarTabla()">
                             <option value="meta">FECHAS META</option>
                             <option value="avance" {{$mes_avance_get != null ? 'selected' : ''}}>FECHAS AVANCE</option>
                         </select>
-                        <select name="meses_index" id="meses_index" class="form-control {{$mes_avance_get != null ? '' : 'd-none'}}" onchange="buscarMesAvance()">
+                        <select name="meses_index" id="meses_index" class="form-control-sm {{$mes_avance_get != null ? '' : 'd-none'}}" onchange="buscarMesAvance()">
                             <option value="">SELECCIONAR MES</option>
                             <option value="enero">ENERO</option>
                             <option value="febrero">FEBRERO</option>
@@ -129,84 +141,47 @@
                         {!! Form::close() !!}
                 </div>
             </div>
-                {{-- Tabla de avances --}}
-                <table class="table table-bordered table-striped" id="tabla_meta">
-                    <p class="h4 text-center font-weight-bold mt-5 mb-3">REGISTROS DE FECHAS {{$mes_avance_get != null ? 'AVANCE ('.strtoupper($mes_avance_get).')' : '(META)'}}</p>
-                    <thead>
+            {{-- Tabla de avances --}}
+            <table class="table table-bordered table-striped" id="tabla_meta">
+                <p class="h4 text-center font-weight-bold mt-5 mb-3">REGISTROS DE FECHAS {{$mes_avance_get != null ? 'AVANCE ('.strtoupper($mes_avance_get).')' : '(META)'}}</p>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col" class="col-5 v-center">ORGANISMO/AREA</th>
+                        <th scope="col" class="col-5 v-center">FECHA DE EMISIÓN</th>
+                        <th scope="col" class="col-5 v-center">FECHA LIMITE</th>
+                        <th scope="col" class="col-5 v-center">STATUS</th>
+                        <th scope="col" class="text-center">MODIFICAR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for ($i = 0; $i < count($data); $i++)
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col" class="col-5 v-center">ORGANISMO/AREA</th>
-                            <th scope="col" class="col-5 v-center">FECHA DE EMISIÓN</th>
-                            <th scope="col" class="col-5 v-center">FECHA LIMITE</th>
-                            <th scope="col" class="col-5 v-center">STATUS</th>
-                            <th scope="col" class="text-center">MODIFICAR</th>
+                            <td scope="row" class="font-weight-bold">{{($i+1)}}</td>
+                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]['nombre']}}</td>
+                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">
+                                {{$mes_avance_get == null ? $data[$i]['fecha_meta']['fechaemi'] : ''}}
+                                {{$mes_avance_get != null ? $data[$i]['fechas_avance'][$mes_avance_get]['fechaemision'] : ''}}
+                            </td>
+                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">
+                                {{$mes_avance_get == null ? $data[$i]['fecha_meta']['fechalimit'] : ''}}
+                                {{$mes_avance_get != null ? $data[$i]['fechas_avance'][$mes_avance_get]['fechafin'] : ''}}
+                            </td>
+                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">
+                                {{$mes_avance_get == null && $data[$i]['status_meta']['validado'] == '1' ? 'Validado' : ''}}
+                                {{$mes_avance_get != null && $data[$i]['fechas_avance'][$mes_avance_get]['statusmes'] == 'autorizado' ? 'Autorizado' : ''}}
+                            </td>
+                            <td class="d-block text-center">
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                        data-placement="top" title="EDITAR" id=""
+                                        href="#" onclick="ModalUpdate({{$data[$i]['id']}}, '{{$mes_avance_get != null ? 'avance' : 'meta'}}' , '{{$mes_avance_get}}')">
+                                        <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @for ($i = 0; $i < count($data); $i++)
-                            <tr>
-                                <td scope="row" class="font-weight-bold">{{($i+1)}}</td>
-                                <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]['nombre']}}</td>
-                                <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">
-                                    {{$mes_avance_get == null ? $data[$i]['fecha_meta']['fechaemi'] : ''}}
-                                    {{$mes_avance_get != null ? $data[$i]['fechas_avance'][$mes_avance_get]['fechaemision'] : ''}}
-                                </td>
-                                <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">
-                                    {{$mes_avance_get == null ? $data[$i]['fecha_meta']['fechalimit'] : ''}}
-                                    {{$mes_avance_get != null ? $data[$i]['fechas_avance'][$mes_avance_get]['fechafin'] : ''}}
-                                </td>
-                                <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">
-                                    {{$mes_avance_get == null && $data[$i]['status_meta']['validado'] == '1' ? 'Validado' : ''}}
-                                    {{$mes_avance_get != null && $data[$i]['fechas_avance'][$mes_avance_get]['statusmes'] == 'autorizado' ? 'Autorizado' : ''}}
-                                </td>
-                                <td class="d-block text-center">
-                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                            data-placement="top" title="EDITAR" id=""
-                                            href="#" onclick="ModalUpdate({{$data[$i]['id']}}, '{{$mes_avance_get != null ? 'avance' : 'meta'}}' , '{{$mes_avance_get}}')">
-                                            <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endfor
-                    </tbody>
-                </table>
-
-                {{-- Tabla de Avances --}}
-                {{-- <table class="table table-bordered table-striped d-none" id="tabla_avance">
-                    <p class="h4 text-center font-weight-bold mt-5 mb-3" id="tituloTabla">REGISTROS DE FECHAS (META)</p>
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col" class="col-5 v-center">ORGANISMO/AREA</th>
-                            <th scope="col" class="col-5 v-center">FECHA DE EMISIÓN    ({{strtoupper($mesLetra)}})</th>
-                            <th scope="col" class="col-5 v-center">FECHA LIMITE   ({{strtoupper($mesLetra)}})</th>
-                            <th scope="col" class="text-center">MODIFICAR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for ($i = 0; $i < count($data); $i++)
-                            <tr>
-                                <td scope="row">{{($i+1)}}</td>
-                                <td>{{$data[$i]['nombre']}}</td>
-                                <td>{{
-                                    isset($data[$i]['fechas_avance'][$mesLetra]['fechaemision']) ? $data[$i]['fechas_avance'][$mesLetra]['fechaemision'] : ''
-                                    }}
-                                </td>
-                                <td>{{
-                                    isset($data[$i]['fechas_avance'][$mesLetra]['fechafin']) ? $data[$i]['fechas_avance'][$mesLetra]['fechafin'] : ''
-                                    }}
-                                </td>
-                                <td class="d-block text-center">
-                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                            data-placement="top" title="EDITAR" id=""
-                                            href="#" onclick="ModalUpdate({{$data[$i]['id']}}, 'avance', '{{$mesLetra}}' )">
-                                            <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endfor
-                    </tbody>
-                </table> --}}
+                    @endfor
+                </tbody>
+            </table>
         </div>
         {{-- Paginación --}}
         <div class="row py-4">
@@ -409,6 +384,14 @@
                 }else{
                     alert("SELECCIONE UN MES")
                 }
+            }
+
+            // Cambiar de ejercicio
+            function cambioEjercicio() {
+                let url = "{{ route('pat.fechaspat.mostrar') }}";
+                $('#form_eje').attr('action', url);
+                $("#form_eje").attr("target", '_self');
+                $('#form_eje').submit();
             }
 
         </script>

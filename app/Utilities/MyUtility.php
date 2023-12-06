@@ -18,7 +18,7 @@ class MyUtility
     public static function letras($cantidad){
         $unidades = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
         $decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];
-        $especiales = ["diez", "once", "doce", "trece", "catorce", "quince"];
+        $especiales = ["diez", "once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete","dieciocho", "diecinueve"];
         $centenas = ["", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"];
     
         $entero = floor($cantidad);
@@ -34,11 +34,12 @@ class MyUtility
             $centena =  floor(($entero % 1000) / 100); //dd($centena);            
             $decena = floor(($entero % 100) / 10); //dd($decena);
             $unidad = $entero % 10;
-
+            //dd($millar);
             if ($millones > 0) $parteEntera .= $this->letras($millones) . " millón ";
             if ($millar > 0) {
-                if ($millar == 1) $parteEntera .= "mil ";
-                else $parteEntera .= $unidades[$millar] . " mil ";            
+                if ($millar == 1) $parteEntera .= "mil "; 
+                elseif ($millar >= 2 && $millar <= 9) $parteEntera .= $unidades[$millar] . " mil ";  
+                else $parteEntera .= $especiales[$millar -10] . " mil ";            
             }
             if ($centena > 0) $parteEntera .= $centenas[$centena] . " ";
             if ($decena > 0) $parteEntera .= $decenas[$decena] . " ";

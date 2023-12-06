@@ -116,8 +116,24 @@
                 </div>
             @endif
 
+            {{-- select del ejercicio --}}
+            @if (count($ejercicio) > 1)
+                <div class="d-flex col-8 pl-2 mb-2">
+                    <div class="col-3 d-flex flex-row px-0">
+                        <form action="" id="form_eje">
+                            <select name="sel_ejercicio" id="" class="form-control mx-2" onchange="cambioEjercicio()">
+                                @foreach ($ejercicio as $anioeje)
+                                    <option {{$anioeje == $anio ? 'selected' : '' }} value="{{$anioeje}}">{{$anioeje}}</option>
+                                @endforeach
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            @endif
+
             {{-- Generar pdf general avance por mes --}}
-            <div class="float-right border border-primary p-3 pdfGeneral">
+            {{-- Comentamos este apartado para luego descargar el zip con los pdfs --}}
+            {{-- <div class="float-right border border-primary p-3 pdfGeneral">
                 <span class="text-center d-block mb-2"><b>Descargar pdf general de avances</b></span>
                 <div class="d-flex flex-row">
                     <select name="" id="selOpcion" class="form-control-sm mr-2">
@@ -133,7 +149,7 @@
                     </select>
                     <a class="ml-2" id="btnGenPdf"><i class="fa fa-cloud-download fa-2x" aria-hidden="true"></i></a>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Tabla y opcion de selección --}}
             <div class="container">
@@ -149,6 +165,17 @@
                 <div class="tab-content">
                     {{-- APARTADO DE METAS --}}
                     <div id="home" class="tab-pane fade {{$mes == null ? 'show active' : ''}}  mt-4">
+                        <form action="" id="form_meta">
+                            <div class="px-0 col-3">
+                                <select name="sel_meta" id="sel_meta" class="form-control ml-3"  onchange="metas_status()">
+                                    <option {{$sel_meta == 'GENERAL' ? 'selected' : ''}} value="GENERAL">GENERAL</option>
+                                    <option {{$sel_meta == 'PENDIENTES' ? 'selected' : ''}} value="PENDIENTES">PENDIENTES</option>
+                                    <option {{$sel_meta == 'RETORNADOS' ? 'selected' : ''}} value="RETORNADOS">RETORNADOS</option>
+                                    <option {{$sel_meta == 'VALIDADOS' ? 'selected' : ''}} value="VALIDADOS">VALIDADOS</option>
+                                </select>
+                            </div>
+                        </form>
+
                         <h4 class="text-center font-weight-bold"><u>METAS</u></h4>
                         <table class="table table-responsive-md" id='tableperfiles'>
                             <thead>
@@ -210,32 +237,6 @@
                                             @else
 
                                             @endif
-
-                                            {{-- @if ($data[$i]->status_meta['proceso'] == '1' || $data[$i]->status_meta['captura'] == '1'
-                                                || $data[$i]->status_meta['retornado'] == '1')
-                                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                                    data-placement="top" title="Ir a validación" id="btnMostrarFrmEdit"
-                                                    href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}">
-                                                    <i class="fa fa-search fa-2x mt-2" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
-                                                </a>
-                                            @endif
-                                            @if ($data[$i]->status_meta['validado'] == '1')
-
-                                                @if ($data[$i]->fecha_meta['urldoc_firm'] != '')
-                                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                                        data-placement="top" title="Ver pdf firmado" id=""
-                                                        href="{{$data[$i]->fecha_meta['urldoc_firm']}}" target="_blank">
-                                                        <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                                    </a>
-                                                @else
-                                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                                        data-placement="top" title="Ir a validación" id=""
-                                                        href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}">
-                                                        <i class="fa fa-search fa-2x mt-2" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
-                                                    </a>
-                                                @endif
-
-                                            @endif --}}
                                         </td>
                                     </tr>
                                 @endfor
@@ -248,12 +249,20 @@
                         @php if($mes == null) $mes = 'seleccionar'; @endphp
                         <div class="col-3 px-0">
                             <form action="" id="formConsul">
-                                <select name="sel_mes" id="sel_mes" class="form-control" onchange="cambiarMes()">
-                                    <option value="seleccionar">Seleccionar Mes</option>
-                                    @for ($i = 0; $i < count($mesGlob); $i++)
-                                        <option {{$mesGlob[$i] == $mes ? 'selected' : ''}} value="{{$mesGlob[$i]}}">{{$mesGlob[$i]}}</option>
-                                    @endfor
-                                </select>
+                                <div class="d-flex flex-row">
+                                    <select name="sel_mes" id="sel_mes" class="form-control" onchange="cambiarMes()">
+                                        <option value="seleccionar">Seleccionar Mes</option>
+                                        @for ($i = 0; $i < count($mesGlob); $i++)
+                                            <option {{$mesGlob[$i] == $mes ? 'selected' : ''}} value="{{$mesGlob[$i]}}">{{$mesGlob[$i]}}</option>
+                                        @endfor
+                                    </select>
+                                    <select name="sel_status" id="sel_status" class="form-control ml-3"  onchange="cambiarMes()">
+                                        <option {{$sel_status == 'GENERAL' ? 'selected' : ''}} value="GENERAL">GENERAL</option>
+                                        <option {{$sel_status == 'PENDIENTE' ? 'selected' : ''}} value="PENDIENTE">PENDIENTES</option>
+                                        <option {{$sel_status == 'RETORNADO' ? 'selected' : ''}} value="RETORNADO">RETORNADOS</option>
+                                        <option {{$sel_status == 'AUTORIZADO' ? 'selected' : ''}} value="AUTORIZADO">AUTORIZADOS</option>
+                                    </select>
+                                </div>
                             </form>
                         </div>
 
@@ -407,9 +416,6 @@
         function cambiarMes() {
             let selMes = document.getElementById('sel_mes').value;
             if (selMes != '') {
-                // alert(selMes);
-                    // let url = "{{ route('pat.buzon.index', [':mes']) }}";
-                    //url = url.replace(':mes', selMes);
                     loader('show');
                     let url = "{{ route('pat.buzon.index') }}";
 
@@ -419,6 +425,23 @@
                 }else{
                     alert("SELECCIONE UN MES")
                 }
+        }
+
+        function metas_status() {
+            loader('show');
+            let url = "{{ route('pat.buzon.index') }}";
+            $('#form_meta').attr('action', url);
+            $("#form_meta").attr("target", '_self');
+            $('#form_meta').submit();
+        }
+
+        // Cambiar de ejercicio
+        function cambioEjercicio() {
+            loader('show');
+            let url = "{{ route('pat.buzon.index') }}";
+            $('#form_eje').attr('action', url);
+            $("#form_eje").attr("target", '_self');
+            $('#form_eje').submit();
         }
 
         $("#gotometa").click(function() {

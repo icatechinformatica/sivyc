@@ -50,8 +50,10 @@ class ProcedController extends Controller
         //procedimientos
         $data2 = Procedimientos::select('funciones_proced.id', 'fun_proc', 'activo', 'u.unidadm')
         ->join('unidades_medida as u', 'u.id', 'id_unidadm')
+        ->join('metas_avances_pat as met', 'met.id_proced', 'funciones_proced.id')
+        ->where('met.ejercicio', '=', date('Y'))
         ->where('id_parent', '=', $id)
-        ->where(DB::raw("date_part('year' , funciones_proced.created_at )"), '=', date('Y'))
+        // ->where(DB::raw("date_part('year' , funciones_proced.created_at )"), '=', '2023')
         ->orderByDesc('funciones_proced.id')->get();
 
 
@@ -80,13 +82,6 @@ class ProcedController extends Controller
     public function store(Request $request, $id)
     {
 
-        // try {
-        //     $id_organismo = Auth::user()->id_organismo;
-
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     return redirect('/login');
-        // }
         $organismo = $request->input('idorg');
         $id_user = Auth::user()->id;
 
@@ -181,8 +176,10 @@ class ProcedController extends Controller
         //procedimientos
         $data2 = Procedimientos::select('funciones_proced.id', 'fun_proc', 'activo', 'u.unidadm')
         ->join('unidades_medida as u', 'u.id', 'id_unidadm')
+        ->join('metas_avances_pat as met', 'met.id_proced', 'funciones_proced.id')
+        ->where('met.ejercicio', '=', date('Y'))
         ->where('id_parent', '=', $id)
-        ->where(DB::raw("date_part('year' , funciones_proced.created_at )"), '=', date('Y'))
+        // ->where(DB::raw("date_part('year' , funciones_proced.created_at )"), '=', date('Y'))
         ->orderByDesc('funciones_proced.id')->get();
 
         //buscar el procedimiento a editar
