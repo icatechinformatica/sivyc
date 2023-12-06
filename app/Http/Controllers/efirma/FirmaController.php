@@ -92,7 +92,7 @@ class FirmaController extends Controller {
                 $subquery->select('numero_o_clave')
                     ->from('documentos_firmar')
                     ->whereIn('tipo_archivo', ['Lista de asistencia', 'Lista de calificaciones'])
-                    ->WhereIn('status', ['CANCELADO','VALIDADO'])
+                    ->WhereIn('status', ['CANCELADO','VALIDADO','EnFirma'])
                     // ->Where('status', '=', 'VALIDADO')
                     ->groupBy('numero_o_clave')
                     ->havingRaw('COUNT(DISTINCT tipo_archivo) > 1');

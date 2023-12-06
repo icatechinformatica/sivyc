@@ -81,7 +81,7 @@
                             @can('metasavances.index')
                                 <a class="dropdown-item" href="{{route('pat.metavance.mostrar')}}">Registro de Metas y Avances PAT</a>
                             @endcan
-                            @can('efirma.indexs') {{-- Agregar efirma.index a usuarios delegados y academicos --}}
+                            @can('efirma.index') {{-- Agregar efirma.index a usuarios delegados y academicos --}}
                                 <a class="dropdown-item" href="{{route('firma.inicio')}}">Firma Electronica</a>
                             @endcan
                         </div>
