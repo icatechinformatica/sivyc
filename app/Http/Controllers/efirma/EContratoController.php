@@ -44,6 +44,21 @@ class EContratoController extends Controller
                             ->OrWhere('org.id_parent', Auth::user()->id_organismo)
                             ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
                             ->Get();
+        // Info de director firmante
+        foreach($dataFirmantes as $dataFirmante) {
+            if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA')) {
+                $temp = ['_attributes' =>
+                    [
+                        'curp_firmante' => $dataFirmante->curp,
+                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'email_firmante' => $dataFirmante->correo,
+                        'tipo_firmante' => 'FM'
+                    ]
+                ];
+                array_push($arrayFirmantes, $temp);
+            }
+        }
+
         //Info de instructor firmante
         $temp = ['_attributes' =>
             [
@@ -54,18 +69,52 @@ class EContratoController extends Controller
             ]
         ];
         array_push($arrayFirmantes, $temp);
-        //Llenado de funcionarios firmantes
+
+        //Llenado de academico firmante
         foreach($dataFirmantes as $dataFirmante) {
-            $temp = ['_attributes' =>
-                [
-                    'curp_firmante' => $dataFirmante->curp,
-                    'nombre_firmante' => $dataFirmante->funcionario,
-                    'email_firmante' => $dataFirmante->correo,
-                    'tipo_firmante' => 'FM'
-                ]
-            ];
-            array_push($arrayFirmantes, $temp);
+            if (str_contains($dataFirmante->cargo, 'ACADEMICO')) {
+                $temp = ['_attributes' =>
+                    [
+                        'curp_firmante' => $dataFirmante->curp,
+                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'email_firmante' => $dataFirmante->correo,
+                        'tipo_firmante' => 'FM'
+                    ]
+                ];
+                array_push($arrayFirmantes, $temp);
+            }
         }
+
+        //Llenado de vinculacion firmante
+        foreach($dataFirmantes as $dataFirmante) {
+            if (str_contains($dataFirmante->cargo, 'VINCULACION')) {
+                $temp = ['_attributes' =>
+                    [
+                        'curp_firmante' => $dataFirmante->curp,
+                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'email_firmante' => $dataFirmante->correo,
+                        'tipo_firmante' => 'FM'
+                    ]
+                ];
+                array_push($arrayFirmantes, $temp);
+            }
+        }
+
+        //Llenado de delegacion firmante
+        foreach($dataFirmantes as $dataFirmante) {
+            if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA')) {
+                $temp = ['_attributes' =>
+                    [
+                        'curp_firmante' => $dataFirmante->curp,
+                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'email_firmante' => $dataFirmante->correo,
+                        'tipo_firmante' => 'FM'
+                    ]
+                ];
+                array_push($arrayFirmantes, $temp);
+            }
+        }
+
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
             'emisor' => [
