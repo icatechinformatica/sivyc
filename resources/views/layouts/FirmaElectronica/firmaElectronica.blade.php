@@ -74,6 +74,7 @@
                                 <a class="nav-item nav-link" id="nav-firmados-tab" data-toggle="tab" href="#nav-firmados" role="tab" aria-controls="nav-firmados" aria-selected="false">Firmados</a>
                                 <a class="nav-item nav-link" id="nav-validados-tab" data-toggle="tab" href="#nav-validados" role="tab" aria-controls="nav-validados" aria-selected="false">Sellados</a>
                                 <a style="color: #FF5733" class="nav-item nav-link" id="nav-cancelados-tab" data-toggle="tab" href="#nav-cancelados" role="tab" aria-controls="nav-cancelados" aria-selected="false">Cancelados</a>
+                                <p  class="nav-item nav-link" style="margin-left: 50%;">CURP: {{$curpUser->curp}}</p>
                             </div>
                         </nav>
 
