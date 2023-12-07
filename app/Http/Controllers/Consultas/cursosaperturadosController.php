@@ -71,7 +71,7 @@ class cursosaperturadosController extends Controller
         //var_dump($data);exit;
         return view('consultas.cursosaperturados', compact('message','unidades','data','unidad', 'fecha1', 'fecha2','opcion', 'valor'));
     }
-    
+
     public function xls(Request $request){
         $unidad = $request->unidad;
         $fecha1 = $request->fecha1;
@@ -80,11 +80,24 @@ class cursosaperturadosController extends Controller
         $valor = $request->valor;
         if($unidad OR $fecha1 OR $fecha2 OR $valor){
             //$mes = [1=>"ENERO",2=>"FEBRERO",3=>"MARZO",4=>"ABRIL",5=>"MAYO",6=>"JUNIO",7=>"JULIO",8=>"AGOSTO",9=>"SEPTIEMBRE", 10=>"OCTUBRE", 11=>"NOVIEMBRE",12=>"DICIEMBRE"];
-
-            $data = DB::table('tbl_cursos as c')->where('clave','!=','0')->select('unidad','espe','clave','curso','mod','dura',
-            'inicio', 'termino', DB::raw("To_char(termino, 'TMMONTH')"), DB::raw("CONCAT(hini,' A ',hfin) as horario"),'dia','horas',DB::raw("hombre+mujer as cupo"),'nombre',
-            'cp','mujer','hombre','costo','tipo_curso','tipo','nota','muni','depen','munidad','mvalida','nmunidad','nmacademico','efisico','modinstructor','status','tcapacitacion','status_curso','medio_virtual');
-
+            #CONSULTAS
+            if($opcion == "EXONERADOS"){
+                 $data = DB::table('tbl_cursos as c')
+                 ->join('exoneraciones as exo', 'exo.folio_grupo', '=', 'c.folio_grupo')
+                 ->where('clave','!=','0')->select('unidad','espe','clave','curso','mod','dura',
+                'inicio', 'termino', DB::raw("To_char(termino, 'TMMONTH')"), DB::raw("CONCAT(hini,' A ',hfin) as horario"),'dia','horas',DB::raw("hombre+mujer as cupo"),'nombre',
+                'cp','mujer','hombre','costo','tipo_curso','tipo','nota','muni','depen','munidad','mvalida','nmunidad','nmacademico','efisico','modinstructor','c.status','tcapacitacion','status_curso','medio_virtual',
+                'exo.no_memorandum', 'exo.fecha_memorandum', DB::raw("
+                CASE
+                   WHEN exo.tipo_exoneracion = 'EXO' THEN 'EXONERACIÓN'
+                   WHEN exo.tipo_exoneracion = 'EPAR' THEN 'REDUCCIÓN'
+                END as tpago"), 'exo.observaciones','exo.no_convenio','exo.noficio', 'exo.foficio');
+            }else{
+                $data = DB::table('tbl_cursos as c')->where('clave','!=','0')->select('unidad','espe','clave','curso','mod','dura',
+                'inicio', 'termino', DB::raw("To_char(termino, 'TMMONTH')"), DB::raw("CONCAT(hini,' A ',hfin) as horario"),'dia','horas',DB::raw("hombre+mujer as cupo"),'nombre',
+                'cp','mujer','hombre','costo','tipo_curso','tipo','nota','muni','depen','munidad','mvalida','nmunidad','nmacademico','efisico','modinstructor','status','tcapacitacion','status_curso','medio_virtual');
+            }
+            ##FILTRADO
             if($valor){
                 $data = $data->where('c.clave','like','%' . $valor.'%')
                 ->orWhere('c.munidad', 'like','%'. $valor.'%');
@@ -93,6 +106,14 @@ class cursosaperturadosController extends Controller
                 if($request->fecha1) $data = $data->where('c.termino','>=',$request->fecha1);
                 if($request->fecha2) $data = $data->where('c.termino','<=',$request->fecha2);
                 $data =  $data->orderby('c.unidad')->orderby('c.termino','DESC');
+            }else if($opcion == 'EXONERADOS'){
+                #Condicion
+                if($request->fecha1) $data = $data->where('c.termino','>=',$request->fecha1);
+                if($request->fecha2) $data = $data->where('c.termino','<=',$request->fecha2);
+                $data = $data->where('exo.status','=', 'AUTORIZADO');
+                $data =  $data->orderby('c.unidad')->orderby('c.termino','DESC');
+
+
             }else{
                 if($request->fecha1) $data = $data->where('c.inicio','>=',$request->fecha1);
                 if($request->fecha2) $data = $data->where('c.inicio','<=',$request->fecha2);
@@ -105,10 +126,20 @@ class cursosaperturadosController extends Controller
 
             if(count($data)==0){ return "NO REGISTROS QUE MOSTRAR";exit;}
 
-            $head = ['UNIDAD','ESPECIALIDAD','CLAVE','CURSO','MOD','DURA','INICIO','TERMINO','MES_TERMINO','HORARIO','DIAS',
-            'HORAS','CUPO','INSTRUCTOR','CP','FEM','MASC','CUOTA','ESQUEMA','TIPO PAGO','OBSERVACIONES','MUNICIPIO',
-            'DEPENDENCIA BENEFICIADA','MEMO DE SOLICITUD','MEMO DE AUTORIZACION','MEMO DE SOLICITUD DE REPROGRAMACION',
-            'MEMO DE AUTORIZACION DE REPROGRAMACION','ESPACIO','PAGO INSTRUCTOR','ESTATUS_FORMATOT','CAPACITACION','ESTATUS_APERTURA','PLATAFORMA'];
+            #CONDICION DEL ENCABEZADO DEL EXCEL
+            if($opcion == 'EXONERADOS'){
+                $head = ['UNIDAD','ESPECIALIDAD','CLAVE','CURSO','MOD','DURA','INICIO','TERMINO','MES_TERMINO','HORARIO','DIAS',
+                'HORAS','CUPO','INSTRUCTOR','CP','FEM','MASC','CUOTA','ESQUEMA','TIPO PAGO','OBSERVACIONES','MUNICIPIO',
+                'DEPENDENCIA BENEFICIADA','MEMO DE SOLICITUD','MEMO DE AUTORIZACION','MEMO DE SOLICITUD DE REPROGRAMACION',
+                'MEMO DE AUTORIZACION DE REPROGRAMACION','ESPACIO','PAGO INSTRUCTOR','ESTATUS_FORMATOT','CAPACITACION','ESTATUS_APERTURA','PLATAFORMA',
+                'NO MEMO', 'FECHA MEMO', 'REDU/EXO', 'OBSERVACIONES', 'NO CONVENIO', 'NO OFICIO', 'FECHA OFICIO'];
+            }else{
+                $head = ['UNIDAD','ESPECIALIDAD','CLAVE','CURSO','MOD','DURA','INICIO','TERMINO','MES_TERMINO','HORARIO','DIAS',
+                'HORAS','CUPO','INSTRUCTOR','CP','FEM','MASC','CUOTA','ESQUEMA','TIPO PAGO','OBSERVACIONES','MUNICIPIO',
+                'DEPENDENCIA BENEFICIADA','MEMO DE SOLICITUD','MEMO DE AUTORIZACION','MEMO DE SOLICITUD DE REPROGRAMACION',
+                'MEMO DE AUTORIZACION DE REPROGRAMACION','ESPACIO','PAGO INSTRUCTOR','ESTATUS_FORMATOT','CAPACITACION','ESTATUS_APERTURA','PLATAFORMA'];
+            }
+
 
             $title = "CURSOS_".$opcion."_".$unidad;
             if($unidad)  $name = "CURSOS_".$opcion."_".$unidad."_".date('Ymd').".xlsx";
