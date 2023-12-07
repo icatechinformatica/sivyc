@@ -41,6 +41,7 @@ class FirmaController extends Controller {
             ->Join('tbl_organismos','tbl_organismos.id', 'users.id_organismo')
             ->Join('tbl_funcionarios','tbl_funcionarios.id_org','tbl_organismos.id')
             ->Where('users.id', Auth::user()->id)
+            ->Where('tbl_funcionarios.correo', Auth::user()->email)
             ->First();
         // if($rol->role_id == 30 || $rol->role_id == 31) {
             // $docsVistoBueno2 = tbl_curso::select('tbl_cursos.id', 'tbl_cursos.nombre', 'tbl_cursos.asis_finalizado', 'tbl_cursos.calif_finalizado')
