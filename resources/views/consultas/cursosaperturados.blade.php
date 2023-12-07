@@ -24,7 +24,7 @@
             <div class="row form-inline">
                     {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => 'CLAVE APERTURA / MEMORÁNDUM ARC-01', 'size' => 38]) }}
                     {{ Form::select('unidad', $unidades, $unidad ,['id'=>'unidad','class' => 'form-control  mr-sm-4 mt-3','title' => 'UNIDAD','placeholder' => '-SELECCIONAR-']) }}
-                    {{ Form::select('opcion', ['INICIADOS'=>'CURSOS INICIADOS','TERMINADOS'=>'CURSOS TERMINADOS'], $opcion, ['id'=>'opcion', 'class' => 'form-control mr-sm-4 mt-3'] ) }}
+                    {{ Form::select('opcion', ['INICIADOS'=>'CURSOS INICIADOS','TERMINADOS'=>'CURSOS TERMINADOS','EXONERADOS'=>'CURSOS EXONERADOS'], $opcion, ['id'=>'opcion', 'class' => 'form-control mr-sm-4 mt-3'] ) }}
                     {{ Form::date('fecha1', $fecha1 , ['id'=>'fecha1', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA INICIAL', 'required' => 'required']) }}
                     {{ Form::date('fecha2', $fecha2, ['id'=>'fecha2', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA FINAL', 'title' => 'FECHA FINAL', 'required' => 'required']) }}
                     {{ Form::button('FILTRAR', ['id' => 'botonFILTRAR', 'name'=> 'boton', 'value' => 'FILTRAR', 'class' => 'btn mr-sm-4 mt-3']) }}
