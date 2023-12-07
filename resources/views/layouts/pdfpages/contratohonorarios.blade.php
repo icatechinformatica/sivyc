@@ -211,8 +211,9 @@
                 </div>
                 @if(!is_null($uuid))
                 <div>
-                    <table style="font:8px;">
+                    <table style="font:9px;">
                         @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
+                            @php $esInstructor = TRUE; @endphp
                             @if($key == 2)
                             <tr><td height="10px;"></td></tr>
                             @endif
@@ -228,13 +229,14 @@
                                 <td><b>Puesto:</b></td>
                                 @foreach($dataFirmantes as $search_puesto)
                                     @if($search_puesto->curp == $moist['_attributes']['curp_firmante'])
+                                        @php $esInstructor = FALSE; @endphp
                                         <td height="25px;">{{$search_puesto->cargo}}</td>
-                                        @break
-                                    @else
-                                        <td height="25px;">Instructor</td>
                                         @break
                                     @endif
                                 @endforeach
+                                @if($esInstructor == TRUE)
+                                    <td height="25px;">Instructor</td>
+                                @endif
                             </tr>
                             <tr>
                                 <td><b>Fecha de Firma:</b></td>

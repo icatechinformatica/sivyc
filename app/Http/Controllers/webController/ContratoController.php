@@ -1244,17 +1244,6 @@ class ContratoController extends Controller
             $folio = $documento->nombre_archivo;
             $tipo_archivo = $documento->tipo_archivo;
 
-            $xml = $documento->documento;
-            $xml = new SimpleXMLElement($xml);dd($xml);
-            // Formatear el XML
-            $dom = new \DOMDocument('1.0');
-            $dom->preserveWhiteSpace = false;
-            $dom->formatOutput = true;
-            $dom->loadXML($xml->asXML());
-
-            // Obtener el XML formateado como string
-            $formattedXmlString = $dom->saveXML();
-
             $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
 
             $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
