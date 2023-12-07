@@ -612,7 +612,7 @@
         }
 
         function firmarDocumento(token) {
-            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '39', token);
+            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '87', token);
             // RAQN770121HDFMZV08
             console.log(curp)
             return vresponseSignature;
