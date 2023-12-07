@@ -127,7 +127,12 @@
 </head>
     <body>
         <footer>
-            <div class="page-number"></div>
+            @if(!is_null($uuid))
+                {{-- <div style="display: inline-block; width: 50%;"></div> --}}
+                <div class="page-number"><small class="link">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} <br> Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas </small></div>
+            @else
+                <div class="page-number"></div>
+            @endif
         </footer>
         <div class= "container g-pt-30" style="font-size: 12px;">
             <div id="content">
@@ -227,7 +232,8 @@
                             </tr>
                             <tr>
                                 <td><b>Puesto:</b></td>
-                                @foreach($dataFirmantes as $search_puesto)
+                                <td height="25px;">{{$puestos[$key]}}</td>
+                                {{-- @foreach($dataFirmantes as $search_puesto)
                                     @if($search_puesto->curp == $moist['_attributes']['curp_firmante'])
                                         @php $esInstructor = FALSE; @endphp
                                         <td height="25px;">{{$search_puesto->cargo}}</td>
@@ -236,7 +242,7 @@
                                 @endforeach
                                 @if($esInstructor == TRUE)
                                     <td height="25px;">Instructor</td>
-                                @endif
+                                @endif --}}
                             </tr>
                             <tr>
                                 <td><b>Fecha de Firma:</b></td>
