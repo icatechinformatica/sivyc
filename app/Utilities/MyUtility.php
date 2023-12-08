@@ -14,7 +14,9 @@ class MyUtility
             }
         return $anios;
     }
-
+    public static function numerico($importe){
+        return preg_replace('/[^0-9.]/', '', $importe);
+    }
     public static function letras($cantidad){
         $unidades = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
         $decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];
