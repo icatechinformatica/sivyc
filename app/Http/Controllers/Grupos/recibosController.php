@@ -376,7 +376,7 @@ class recibosController extends Controller
                         'tc.status_curso','tc.inicio', 'tc.termino', 'tc.hini', 'tc.hfin','tc.costo','tc.hombre','tc.mujer','tr.recibide',
                         'tr.fecha_expedicion','tr.recibio','tu.direccion','tu.delegado_administrativo','tr.id as id_recibo',
                         'tr.importe_letra', 'tr.folio_recibo', 'tr.status_recibo','tc.arc','tc.clave','tr.observaciones','tr.importe',
-                        DB::raw('1 as id_concepto'),'cc.concepto','tr.importe as precio_unitario', 'tr.depositos',
+                        DB::raw('1 as id_concepto'),'cc.concepto','tr.importe as precio_unitario', 'tr.depositos', 'tc.munidad',
                         DB::raw(" 
                             CASE
                                 WHEN tc.comprobante_pago <> 'null' THEN concat('uploadFiles',tc.comprobante_pago)

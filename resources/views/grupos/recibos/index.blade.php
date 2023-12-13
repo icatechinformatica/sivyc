@@ -74,14 +74,14 @@
                             @if($data->clave==0) <b class="text-danger">{{$data->status_clave}} &nbsp;</b> @else <b>{{$data->clave}} &nbsp;</b> @endif
                             @if($data->status_curso) ESTATUS: <b class="text-danger"> {{$data->status_curso}} </b> @endif 
                         </div>
-                        <div class="form-group col-md-6">INSTRUCTOR: <b>{{ $data->nombre }}</b></div>                        
+                        <div class="form-group col-md-6">INSTRUCTOR: <b>{{ $data->nombre }}</b></div>
+                        <div class="form-group col-md-6">ARC-01: <b>{{ $data->munidad }}</b></div>
                         <div class="form-group col-md-6">TOTAL BENEFICIADOS: <b>{{ $data->hombre+$data->mujer }}</b></div>
                         <div class="form-group col-md-6">FECHAS: <b>{{ $data->inicio }} AL {{ $data->termino }}</b></div> 
                         <div class="form-group col-md-6">TOTAL CUOTA DE RECUPERACIÓN: <b>$ {{ number_format($data->costo, 2, '.', ',') }}</b></div>                    
                         <div class="form-group col-md-6">HORARIO: <b>DE {{ $data->hini }} A {{ $data->hfin }} </b></div>
                         @if($data->status_recibo )<div class="form-group col-md-6">ESTATUS RECIBO: <b>{{ $data->status_recibo }}</b></div>@endif
-                        <div class="form-group col-md-6">TIPO DE PAGO: <b>{{ $data->tpago }}</b></div>
-                        @if($data->status_curso )<div class="form-group col-md-6">ESTATUS CLAVE: <b>{{ $data->status_curso }}</b></div> @endif                        
+                        <div class="form-group col-md-6">TIPO DE PAGO: <b>{{ $data->tpago }}</b></div>                        
                     </div> 
                 @elseif($data->status_folio == 'ENVIADO')                             
                     <div class="row bg-light" style="padding:35px; line-height: 1.5em;">   
