@@ -70,7 +70,8 @@ class recibosController extends Controller
                         DB::raw('COALESCE(tr.id_concepto,1) as id_concepto'),'tr.id as id_recibo',
                         DB::raw("CASE 
                             WHEN tc.clave ='0' and tc.status_curso IS NULL THEN 'EN TRAMITE UNIDAD' 
-                            WHEN tc.clave ='0' and tc.status_curso IS NOT NULL THEN 'EN TRAMITE DTA' 
+                            WHEN tc.clave ='0' and tc.status_curso IS NOT NULL  and tc.status_curso !='CANCELADO' THEN 'EN TRAMITE DTA' 
+                            WHEN tc.clave ='0' and tc.status_curso ='CANCELADO' THEN 'CANCELADO' 
                             ELSE tc.clave
                             END as clave"),
                         DB::raw("CASE                             
@@ -287,7 +288,7 @@ class recibosController extends Controller
                     [$data , $message] = $this->data($request); //dd($data);                        
                     $message = $this->data_validate($data);
                     $request->importe = MyUtility::numerico($request->importe);
-                    $letras = MyUtility::letras($request->importe);
+                    $letras = MyUtility::letras($request->importe);// dd($request->importe);
 
                     $result = DB::table('tbl_recibos')->where('id',$data->id_recibo)->where('status_folio','<>','ENVIADO')->update(                
                         [  'id_curso' => $data->id_curso ?? null,
@@ -390,8 +391,8 @@ class recibosController extends Controller
                             END as tpago"),                       
                         DB::raw("LEFT(tu.ubicacion,2) as uc"), 'tc.id',
                         DB::raw("CASE 
-                            WHEN tc.clave ='0' and tc.status_curso IS NULL THEN 'EN TRAMITE EN LA UNIDAD' 
-                            WHEN tc.clave ='0' and tc.status_curso IS NOT NULL THEN 'EN TRAMITE EN LA DTA'                     
+                            WHEN tc.clave ='0' and (tc.status_curso IS NULL OR tc.status_curso ='CANCELADO')THEN 'EN TRAMITE EN LA UNIDAD'                             
+                            WHEN tc.clave ='0' and tc.status_curso IS NOT NULL  and tc.status_curso !='CANCELADO' THEN 'EN TRAMITE DTA'                             
                             ELSE tc.clave
                             END as status_clave"),                    
                         DB::raw("(
