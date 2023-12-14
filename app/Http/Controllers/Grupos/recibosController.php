@@ -275,8 +275,12 @@ class recibosController extends Controller
             //TIPOS DE CONCEPTOS
             switch($request->id_concepto){
                 case 1: /// PAGO DE CURSO
+                    $importe = MyUtility::numerico($request->precio_unitario);
+                    $letras = MyUtility::letras($request->precio_unitario);// dd($letras);
                     $result = DB::table('tbl_recibos')->where('id',$data->id)->update(                
-                        [  'recibio'=>$request->recibio,
+                        [  'importe' => $importe, 
+                            'importe_letra' => $letras,
+                            'recibio'=>$request->recibio,
                             'recibide'=>$request->recibide,
                             'fecha_expedicion' => $request->fecha,
                             'iduser_updated' => $this->user->id,
@@ -376,7 +380,7 @@ class recibosController extends Controller
                         'tc.status_curso','tc.inicio', 'tc.termino', 'tc.hini', 'tc.hfin','tc.costo','tc.hombre','tc.mujer','tr.recibide',
                         'tr.fecha_expedicion','tr.recibio','tu.direccion','tu.delegado_administrativo','tr.id as id_recibo',
                         'tr.importe_letra', 'tr.folio_recibo', 'tr.status_recibo','tc.arc','tc.clave','tr.observaciones','tr.importe',
-                        DB::raw('1 as id_concepto'),'cc.concepto','tr.importe as precio_unitario', 'tr.depositos', 'tc.munidad',
+                        DB::raw('1 as id_concepto'),'cc.concepto','tc.costo as precio_unitario', 'tr.depositos', 'tc.munidad',
                         DB::raw(" 
                             CASE
                                 WHEN tc.comprobante_pago <> 'null' THEN concat('uploadFiles',tc.comprobante_pago)
