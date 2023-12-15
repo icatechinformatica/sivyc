@@ -435,6 +435,17 @@ class supreController extends Controller
         $supre->folio_validacion = $request->folio_validacion;
         $supre->fecha_validacion = $request->fecha_val;
         $supre->financiamiento = $request->financiamiento;
+        switch($request->financiamiento) {
+            case 'FEDERAL':
+                $porcentajeFinanciamiento = ['estatal' => '0', 'federal' => '100'];
+            break;
+            case 'FEDERAL':
+                $porcentajeFinanciamiento = ['estatal' => '100', 'federal' => '0'];
+            break;
+            case 'FEDERAL Y ESTATAL':
+                $porcentajeFinanciamiento = ['estatal' => '40', 'federal' => '60'];
+            break;
+        }
         $supre->permiso_editar = FALSE;
         $supre->fecha_status = carbon::now();
         $supre->save();
@@ -1804,10 +1815,24 @@ class supreController extends Controller
                     \DB::raw("'12101 Honorarios' AS partida_concepto"),
 
                     // \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.6, '999,999.99') END AS importe_federal"),
-                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN CAST(folios.importe_total AS DECIMAL(10, 2)) WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN CAST(folios.importe_total * 0.6 AS DECIMAL(10, 2)) END AS importe_federal"),
+                    \DB::raw("
+                        CASE
+                            WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN
+                                CAST(folios.importe_total AS DECIMAL(10, 2))
+                            WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN
+                                CAST(folios.importe_total * (CAST(tabla_supre.porcentaje_financiamiento->>'federal' AS DECIMAL) / 100) AS DECIMAL(10, 2))
+                        END AS importe_federal
+                    "),
 
                     // \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.4, '999,999.99') END AS importe_estatal"),
-                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN CAST(folios.importe_total AS DECIMAL(10, 2)) WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN CAST(folios.importe_total * 0.4 AS DECIMAL(10, 2)) END AS importe_estatal"),
+                    \DB::raw("
+                    CASE
+                        WHEN tabla_supre.financiamiento = 'ESTATAL' OR tabla_supre.financiamiento IS NULL THEN
+                            CAST(folios.importe_total AS DECIMAL(10, 2))
+                        WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN
+                            CAST(folios.importe_total * (CAST(tabla_supre.porcentaje_financiamiento->>'estatal' AS DECIMAL) / 100) AS DECIMAL(10, 2))
+                    END AS importe_estatal
+                    "),
 
 
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),

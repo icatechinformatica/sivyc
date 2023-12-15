@@ -239,8 +239,8 @@ else{
                                     @if($data2->financiamiento == NULL)
                                         {{$recursos[$key]}}
                                     @elseif($data2->financiamiento == 'FEDERAL Y ESTATAL')
-                                        Federal 60%<br>
-                                        Estatal 40%
+                                        Federal {{$data2->porcentaje_financiamiento['federal']}}%<br>
+                                        Estatal {{$data2->porcentaje_financiamiento['estatal']}}%
                                     @else
                                         {{$data2->financiamiento}}
                                     @endif
