@@ -53,7 +53,7 @@ class calificacionesController extends Controller
            if($curso){
                 if(Auth::user()->unidad==1) $fecha_penultimo = date("Y-m-d",strtotime($curso->termino."- 3 days"));
                 else $fecha_penultimo = date("Y-m-d",strtotime($curso->termino."- 1 days"));
-                $fecha_valida =  strtotime($fecha_hoy)-strtotime($fecha_penultimo);
+                $fecha_valida =  1;//strtotime($fecha_hoy)-strtotime($fecha_penultimo);
                 
                 if($curso->turnado == "UNIDAD" AND $curso->status!="REPORTADO" AND $curso->status!="CANCELADO"){                     
                      $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','f.folio')

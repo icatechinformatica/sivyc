@@ -10,7 +10,7 @@
         .rojo {  font-size: 18px; color:red; font-weight:bold; width:auto; }        
     </style>    
 @endsection
-@section('body')    
+@section('content')    
         <h1>UNIDAD DE CAPACITACIÓN {{$data->ubicacion}}</h1>    
         <table> 
             <tr>
@@ -27,13 +27,27 @@
         </table>
         <table>
             <tr><td class="negro" style="width:33%;">POR CONCEPTO DE PAGO DE:</td><td></td></tr>
-            <tr ><td colspan="2"> {{ $data->tipo_curso }}.- {{ $data->curso }}  </td></tr>
+            <tr ><td colspan="2" style="height:40px; padding: 0 10px;">               
+                    {{$data->concepto}}                
+            </td></tr>
         </table>
         <table>
-            <tr><td class="negro">INFORMACIÓN GENERAL:</td><td></td></tr>
+            <tr><td class="negro" style="width:33%;">INFORMACIÓN GENERAL:</td><td></td></tr>
             <tr>
-                <td colspan="2"> <span class="bold"> FOLIO DE GRUPO: </span> {{ $data->folio_grupo}}</td>
-                <td colspan="2"> <span class="bold"> TOTAL BENEFICIADOS: </span> {{ $data->hombre+$data->mujer}} </td>
+                <td colspan="2" style="height:90px; padding: 0 10px 0 10px; line-height:18px;">
+                    @if($data->id_concepto>1)
+                        @if($data->alumno)  <b> ALUMNO: </b> {{ $data->alumno }} &nbsp; @endif
+                    @endif
+                    @if($data->folio_grupo and $data->id_concepto==1)  <b> FOLIO DE GRUPO: </b> {{ $data->folio_grupo }} &nbsp; @endif
+                    @if(in_array($data->id_concepto,[2,4])) <b>CLAVE:</b> {{ $data->clave }} @endif
+                    @if(in_array($data->id_concepto,[1,2,4])) <br/><b>{{ $data->tipo_curso }}:</b> {{ $data->curso }}.<br/> @endif
+                    
+                    @if($data->id_concepto==1) <b> TOTAL BENEFICIADOS: </b> {{ $data->hombre+$data->mujer}} @endif
+                    @if($data->id_concepto>1) 
+                        <b>DESCRIPCIÓN:</b> {{ $data->descripcion}}
+                        @if(isset($data->constancias)) {{ $data->cantidad==1 ?  "CORRESPONDIENTE AL FOLIO NÚMERO: " : "CORRESPONDIENTE A LOS FOLIOS:" }} {{$data->constancias}}. @endif
+                    @endif
+                </td>
             </tr>
         </table>
         <table>            
@@ -43,9 +57,9 @@
                 <td class="negro" style="text-align:center;">NOMBRE Y FIRMA DE RECIBIDO:</td>
             </tr>
             <tr>
-                <td style=" border: 1px solid; text-align:center;"><br/> {{ $data->municipio }} <br/> &nbsp;</td>
+                <td style=" border: 1px solid; text-align:center;">{{ $data->municipio }}</td>
                 <td style=" border: 1px solid; text-align:center;">{{ $fecha }}</td>
-                <td style=" border: 1px solid; text-align:center; height:75px;"><br/>{{ $data->recibio }}</td>
+                <td style=" border: 1px solid; text-align:center; height:55px;">{{ $data->recibio }}</td>
             </tr>
             
         </table>

@@ -115,6 +115,9 @@ class poaController extends Controller
                     ->select('poa.id_unidad','u.ubicacion as unidad',DB::raw('poa.total_cursos as cursos_programados'),
                     DB::raw("count(*)  as cursos_autorizados"),
                     DB::raw('count(f.*) as suficiencia_autorizada'),
+                    DB::raw("count(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN 1 ELSE NULL END) AS recep_financ"),
+                    DB::raw("count(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE NULL END) AS valid_financ"), 
+
                     DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
                     DB::raw('MAX(poa.total_horas) as horas_programadas'),
                     DB::raw("sum(tc.dura)  as horas_impartidas"),
@@ -173,6 +176,9 @@ class poaController extends Controller
                  order by p.id_unidad) AS total_curso"),
                 DB::raw("count(tc.*)  as cursos_autorizados"),
                 DB::raw('count(f.*) as suficiencia_autorizada'),
+                DB::raw("COUNT(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN tc.id ELSE 0 END) AS recep_financ"),                
+                DB::raw("count(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE NULL END) AS valid_financ"), 
+
                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
                 /*HORAS */
                 DB::raw("(SELECT SUM(total_horas) FROM poa  as tmp WHERE tmp.ze=poa.ze and tmp.id_unidad = poa.id_unidad and tmp.ejercicio = '$ejercicio')"),
@@ -226,8 +232,10 @@ class poaController extends Controller
 
                  $data_unidad = DB::table('tbl_unidades as u')
                  ->select(DB::raw('poa.id_unidad'),'u.unidad','poa.total_cursos as cursos_programados',
-                  DB::raw("count(tc.*)  as cursos_autorizados"),
+                  DB::raw("count(tc.*)  as cursos_autorizados"),                  
                   DB::raw('count(f.*) as suficiencia_autorizada'),
+                  DB::raw("COUNT(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN 1 ELSE NULL END) AS recep_financ"),
+                  DB::raw("count(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE NULL END) AS valid_financ"), 
                   DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
                   'poa.total_horas as horas_programadas',
                   DB::raw("sum(tc.dura)  as horas_impartidas"),
@@ -290,6 +298,7 @@ class poaController extends Controller
                 switch($request->opciones){
                     case "CURSOS":
                         $head = ['UNIDAD/ACCION_MOVIL/ZONA','CURSOS_PROGRAMADOS','CURSOS_AUTORIZADOD','DIFERENCIA','SUFICIENCIA_AUTORIZADA',
+                        'RECEPCION_FINANCIEROS','VALIDADO FINANCIEROS',
                         'HORAS_PROGRAMADAS','HORAS_AUTORIZADAS','DIFERENCIA',
                         'COSTO_APERTURADOS','COSTO_SUFICIENCIA_AUTORIZADA','DIFERENCIA','PAGADO',
                         'CURSOS_REPORTADOS_FT','INSCRITOS','EGRESADOS',
