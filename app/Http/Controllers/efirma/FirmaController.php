@@ -37,6 +37,10 @@ class FirmaController extends Controller {
         $email = Auth::user()->email;
         $rol = DB::Table('role_user')->Select('role_id')->Where('user_id', Auth::user()->id)->First();
         $unidad_user = DB::Table('tbl_unidades')->Where('id',Auth::user()->unidad)->Value('ubicacion');
+        $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
+            ->Join('tbl_funcionarios','tbl_funcionarios.correo','users.email')
+            ->Where('users.id', Auth::user()->id)
+            ->First();
         // if($rol->role_id == 30 || $rol->role_id == 31) {
             // $docsVistoBueno2 = tbl_curso::select('tbl_cursos.id', 'tbl_cursos.nombre', 'tbl_cursos.asis_finalizado', 'tbl_cursos.calif_finalizado')
             //     ->leftJoin('documentos_firmar', 'documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
@@ -92,7 +96,7 @@ class FirmaController extends Controller {
                 $subquery->select('numero_o_clave')
                     ->from('documentos_firmar')
                     ->whereIn('tipo_archivo', ['Lista de asistencia', 'Lista de calificaciones'])
-                    ->WhereIn('status', ['CANCELADO','VALIDADO'])
+                    ->WhereIn('status', ['CANCELADO','VALIDADO','EnFirma'])
                     // ->Where('status', '=', 'VALIDADO')
                     ->groupBy('numero_o_clave')
                     ->havingRaw('COUNT(DISTINCT tipo_archivo) > 1');
@@ -185,7 +189,7 @@ class FirmaController extends Controller {
             $token = $getToken->token;
         }
         // dd($docsFirmados);
-        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol'));
+        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol','curpUser'));
     }
 
     public function update(Request $request) {
@@ -431,8 +435,8 @@ class FirmaController extends Controller {
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'FirmaElectronica',
-            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+            'nombre' => 'SISTEM_IVINCAP',
+            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         ]);
 
         $token = $resToken->json();
@@ -447,7 +451,7 @@ class FirmaController extends Controller {
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token
-        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
             'xml_Firmado' => $xml
         ]);
         return $response1;

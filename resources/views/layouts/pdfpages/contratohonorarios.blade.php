@@ -127,7 +127,12 @@
 </head>
     <body>
         <footer>
-            <div class="page-number"></div>
+            @if(!is_null($uuid))
+                {{-- <div style="display: inline-block; width: 50%;"></div> --}}
+                <div class="page-number"><small class="link">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} <br> Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas </small></div>
+            @else
+                <div class="page-number"></div>
+            @endif
         </footer>
         <div class= "container g-pt-30" style="font-size: 12px;">
             <div id="content">
@@ -211,8 +216,9 @@
                 </div>
                 @if(!is_null($uuid))
                 <div>
-                    <table style="font:8px;">
+                    <table style="font:9px;">
                         @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
+                            @php $esInstructor = TRUE; @endphp
                             @if($key == 2)
                             <tr><td height="10px;"></td></tr>
                             @endif
@@ -226,15 +232,17 @@
                             </tr>
                             <tr>
                                 <td><b>Puesto:</b></td>
-                                @foreach($dataFirmantes as $search_puesto)
+                                <td height="25px;">{{$puestos[$key]}}</td>
+                                {{-- @foreach($dataFirmantes as $search_puesto)
                                     @if($search_puesto->curp == $moist['_attributes']['curp_firmante'])
+                                        @php $esInstructor = FALSE; @endphp
                                         <td height="25px;">{{$search_puesto->cargo}}</td>
-                                        @break
-                                    @else
-                                        <td height="25px;">Instructor</td>
                                         @break
                                     @endif
                                 @endforeach
+                                @if($esInstructor == TRUE)
+                                    <td height="25px;">Instructor</td>
+                                @endif --}}
                             </tr>
                             <tr>
                                 <td><b>Fecha de Firma:</b></td>
@@ -253,7 +261,7 @@
                             <td style="vertical-align: top;" width="25px;"><br><b>Folio:</b></td>
                             <td style="vertical-align: top; text-align: justify;">
                                 <br>{{$uuid}}<br><br><br>
-                                Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}.
+                                Las firmas electronicas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}.
                             </td>
                         </tr>
                     </table>

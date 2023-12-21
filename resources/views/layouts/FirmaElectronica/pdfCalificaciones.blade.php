@@ -8,13 +8,13 @@
         }
 
         @page {
-            margin: 100px 25px 0px 25px;
+            margin: 200px 25px 0px 25px;
         }
 
         header {
             position: fixed;
             left: 0px;
-            top: -170px;
+            top: -185px;
             right: 0px;
             text-align: center;
         }
@@ -161,7 +161,7 @@
             </thead>
             <tbody>
                 @foreach ($alumnos as $a)
-                    <tr>
+                    <tr width="10 px;">
                         <td>{{ $consec++ }}</td>
                         <td>{{ $a->matricula }}</td>
                         <td>{{ $a->alumno }}</td>
@@ -186,8 +186,6 @@
                     </tr>
                 @endforeach
             </tbody>
-            <tfoot>
-            </tfoot>
         </table>
         <br><br><br>
         @if(!is_null($objeto))
@@ -222,7 +220,7 @@
                 </table>
             </div>
             <div style="display: inline-block; width: 15%;">
-                <img style="position: fixed; width: 100%; top: 58%; left: 82%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                <img style="position: fixed; width: 18%; top: 16%; left: 77%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
             </div>
         @endif
     </main>

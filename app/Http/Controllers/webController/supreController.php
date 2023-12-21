@@ -199,15 +199,15 @@ class supreController extends Controller
 
                     $folio->save();
 
-                    $mvtobanc = tbl_curso::find($hora->id); //
-                    foreach($request->movimiento_bancario_ as $movkey => $ari)
-                    {
-                        $arrmov['movimiento_bancario'] = $ari;
-                        $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
-                        array_push($generalarr, $arrmov);
-                    }
-                    $mvtobanc->mov_bancario = $generalarr;
-                    $mvtobanc->save();
+                    // $mvtobanc = tbl_curso::find($hora->id); //
+                    // foreach($request->movimiento_bancario_ as $movkey => $ari)
+                    // {
+                    //     $arrmov['movimiento_bancario'] = $ari;
+                    //     $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
+                    //     array_push($generalarr, $arrmov);
+                    // }
+                    // $mvtobanc->mov_bancario = $generalarr;
+                    // $mvtobanc->save();
                 }
                 else
                 {
@@ -260,7 +260,7 @@ class supreController extends Controller
 
         $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.comentario',
                                 'folios.importe_total','folios.iva','tbl_cursos.clave',
-                                'tbl_cursos.mov_bancario', 'tbl_cursos.folio_pago')
+                                'tbl_cursos.mov_bancario', 'tbl_cursos.folio_pago','tbl_cursos.id')
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                             ->GET();
@@ -280,12 +280,12 @@ class supreController extends Controller
 
         $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
             ->Where('id_concepto',1)
-            ->Where('id_curso',$Cursos->id)
+            ->Where('id_curso',$getfolios[0]->id)
             ->First();
 
         if($recibo == null) {
             $recibo = DB::Table('tbl_cursos')->Select('fecha_pago AS fecha_expedicion','folio_pago AS folio_recibo')
-                ->Where('id',$Cursos->id)
+                ->Where('id',$getfolios[0]->id)
                 ->First();
         }
         return view('layouts.pages.modsupre',compact('getsupre','getfolios','getremitente','getvalida','getelabora','directorio', 'unidadsel','unidadlist','recibo'));
@@ -355,15 +355,15 @@ class supreController extends Controller
 
             $folio->save();
 
-            $mvtobanc = tbl_curso::find($hora->id);
-            foreach($request->movimiento_bancario_ as $movkey => $ari)
-            {
-                $arrmov['movimiento_bancario'] = $ari;
-                $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
-                array_push($generalarr, $arrmov);
-            }
-            $mvtobanc->mov_bancario = $generalarr;
-            $mvtobanc->save();
+            // $mvtobanc = tbl_curso::find($hora->id);
+            // foreach($request->movimiento_bancario_ as $movkey => $ari)
+            // {
+            //     $arrmov['movimiento_bancario'] = $ari;
+            //     $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
+            //     array_push($generalarr, $arrmov);
+            // }
+            // $mvtobanc->mov_bancario = $generalarr;
+            // $mvtobanc->save();
 }
         // return redirect()->route('supre-inicio')
         // ->with('success','Solicitud de Suficiencia Presupuestal agregado');
@@ -435,6 +435,17 @@ class supreController extends Controller
         $supre->folio_validacion = $request->folio_validacion;
         $supre->fecha_validacion = $request->fecha_val;
         $supre->financiamiento = $request->financiamiento;
+        switch($request->financiamiento) {
+            case 'FEDERAL':
+                $porcentajeFinanciamiento = ['estatal' => '0', 'federal' => '100'];
+            break;
+            case 'FEDERAL':
+                $porcentajeFinanciamiento = ['estatal' => '100', 'federal' => '0'];
+            break;
+            case 'FEDERAL Y ESTATAL':
+                $porcentajeFinanciamiento = ['estatal' => '40', 'federal' => '60'];
+            break;
+        }
         $supre->permiso_editar = FALSE;
         $supre->fecha_status = carbon::now();
         $supre->save();
@@ -1804,10 +1815,24 @@ class supreController extends Controller
                     \DB::raw("'12101 Honorarios' AS partida_concepto"),
 
                     // \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.6, '999,999.99') END AS importe_federal"),
-                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN CAST(folios.importe_total AS DECIMAL(10, 2)) WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN CAST(folios.importe_total * 0.6 AS DECIMAL(10, 2)) END AS importe_federal"),
+                    \DB::raw("
+                        CASE
+                            WHEN tabla_supre.financiamiento = 'FEDERAL' OR tabla_supre.financiamiento IS NULL THEN
+                                CAST(folios.importe_total AS DECIMAL(10, 2))
+                            WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN
+                                CAST(folios.importe_total * (CAST(tabla_supre.porcentaje_financiamiento->>'federal' AS DECIMAL) / 100) AS DECIMAL(10, 2))
+                        END AS importe_federal
+                    "),
 
                     // \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN TO_CHAR(folios.importe_total, '999,999.99') WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN TO_CHAR(folios.importe_total * 0.4, '999,999.99') END AS importe_estatal"),
-                    \DB::raw("CASE WHEN tabla_supre.financiamiento = 'ESTATAL' THEN CAST(folios.importe_total AS DECIMAL(10, 2)) WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN CAST(folios.importe_total * 0.4 AS DECIMAL(10, 2)) END AS importe_estatal"),
+                    \DB::raw("
+                    CASE
+                        WHEN tabla_supre.financiamiento = 'ESTATAL' OR tabla_supre.financiamiento IS NULL THEN
+                            CAST(folios.importe_total AS DECIMAL(10, 2))
+                        WHEN tabla_supre.financiamiento = 'FEDERAL Y ESTATAL' THEN
+                            CAST(folios.importe_total * (CAST(tabla_supre.porcentaje_financiamiento->>'estatal' AS DECIMAL) / 100) AS DECIMAL(10, 2))
+                    END AS importe_estatal
+                    "),
 
 
                     // \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),

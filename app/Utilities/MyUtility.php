@@ -14,14 +14,16 @@ class MyUtility
             }
         return $anios;
     }
-
-    public static function letras($cantidad){
+    public static function numerico($importe){
+        return preg_replace('/[^0-9.]/', '', $importe);
+    }
+    public static function letras($cantidad, $ver_decimal=true){
         $unidades = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
-        $decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];
-        $especiales = ["diez", "once", "doce", "trece", "catorce", "quince"];
+        $decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];        
         $centenas = ["", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"];
+        $especiales = ["diez", "once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete","dieciocho", "diecinueve"];
     
-        $entero = floor($cantidad);
+        $entero = floor($cantidad);//dd($entero);
         $decimal = round(($cantidad - $entero) * 100);    
         $pesos = ($entero == 1) ? "peso" : "pesos";
         $centavos = ($decimal == 1) ? "centavo" : "centavos";    
@@ -33,22 +35,45 @@ class MyUtility
             $millar = floor(($entero % 1000000) / 1000); //dd($millar);
             $centena =  floor(($entero % 1000) / 100); //dd($centena);            
             $decena = floor(($entero % 100) / 10); //dd($decena);
-            $unidad = $entero % 10;
-
-            if ($millones > 0) $parteEntera .= $this->letras($millones) . " millón ";
-            if ($millar > 0) {
-                if ($millar == 1) $parteEntera .= "mil ";
-                else $parteEntera .= $unidades[$millar] . " mil ";            
+            $unidad = $entero % 10; //dd($unidad);
+            //dd($millar);
+            if ($millones > 0){
+                $parteEntera .= MyUtility::letras($millones, false);
+                if($millones>1) $parteEntera .= " millones ";
+                else $parteEntera .= " millon ";
             }
-            if ($centena > 0) $parteEntera .= $centenas[$centena] . " ";
-            if ($decena > 0) $parteEntera .= $decenas[$decena] . " ";
+
+            if ($millar > 0) {
+                if ($millar == 1) $parteEntera .= " un"; 
+                elseif ($millar >= 2 && $millar <= 9) $parteEntera .= $unidades[$millar];  
+                elseif ($millar >= 10 && $millar <= 19) $parteEntera .= $especiales[$millar-10];
+                else $parteEntera .= MyUtility::letras($millar, false);
+                   
+                $parteEntera .= " mil ";
+            }
+
+            if ($centena > 0){                
+                if ($millar<1 and $centena==1) $parteEntera .= "cien ";
+                else $parteEntera .= $centenas[$centena] . " ";
+            }
+            if ($decena > 0){                
+                $parteEntera .= $decenas[$decena] . " ";
+            }
             if ($unidad > 0) {
-                if ($unidad == 1) $parteEntera .= "un ";                
-                if ($unidad >= 2 && $unidad <= 9) $parteEntera .= $unidades[$unidad] . " ";                
+                $d = floor($decena / 1); 
+                $u = $unidad % 10; //dd($d);
+                if ($unidad == 1){
+                    if($d>0) $parteEntera .= " y un ";
+                    else $parteEntera .= " un ";
+                }
+                if ($unidad >= 2 && $unidad <= 9){
+                    if ($d > 0) $parteEntera .= " y ".$unidades[$u] ;
+                    else $parteEntera .= $unidades[$u];
+                }                           
             }    
             $parteEntera .= " ";
         } else $parteEntera = "No soportado";
-        
+      //  dd($parteEntera);
         if ($decimal > 0) {
             if ($decimal >= 10 && $decimal <= 15) {
                 $parteDecimal .= $especiales[$decimal - 10];
@@ -59,8 +84,12 @@ class MyUtility
                 if ($u > 0) $parteDecimal .= $unidades[$u];                
             }    
             $parteDecimal = " $decimal/100 MN ";
-        } else $parteDecimal = " 00/100 MN ";
-        return strtoupper(trim($parteEntera) . " $pesos" . $parteDecimal );
+        }else $parteDecimal = " 00/100 MN ";
+        
+        if(!$ver_decimal) $parteDecimal="";
+        else $parteDecimal = " $pesos" . $parteDecimal;
+
+        return strtoupper(trim($parteEntera) . $parteDecimal );
     }
 
     public static function upload_file($path, $file, $name, $file_delete){       

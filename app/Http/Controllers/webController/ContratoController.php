@@ -378,10 +378,14 @@ class ContratoController extends Controller
 
         $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
 
-        // Metodo de XML para contrato
-        // $contratoController = new EContratoController();
-        // $result = $contratoController->xml($id_contrato->id_contrato);
+        $idInstructor = DB::Table('tbl_cursos')->Select('id_instructor')->Where('id',$id_curso)->First();
+        $instructoresPermitidos = [574, 1605, 1157, 1594, 1562, 1335];
 
+        if (in_array($idInstructor->id_instructor, $instructoresPermitidos)) {
+            // // Metodo de XML para contrato
+            $contratoController = new EContratoController();
+            $result = $contratoController->xml($id_contrato->id_contrato);
+        }
 
         // Eliminar el guardado de directorio y reemplazar por la tabla de funcionarios
         $directorio = new contrato_directorio();
@@ -671,20 +675,25 @@ class ContratoController extends Controller
         if($request->factura_xml != NULL)
         {
             $file_xml = $request->file('factura_xml'); # obtenemos el archivo
-            $urldocs = $this->xml_upload($file_xml, $request->id_contrato,'factura_xml');
+            $urldocs = $this->xml_upload($file_xml, $request->id_contrato,'fact ura_xml');
             $contrato->arch_factura_xml = $urldocs;
         }
 
         $contrato->save();
 
-        // Metodo de XML para contrato AGREGAR BORRADO DE DOCUMENTO CON CADENA UNICA SOLO SI TODAVIA NO ESTA SELLADO
-        $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
-        // $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
-        //     ->Where('tipo_archivo','Contrato')
-        //     ->Where('status', 'CANCELADO') //poner que evite el status de anulado
-        //     ->Delete();
-        // $contratoController = new EContratoController();
-        // $result = $contratoController->xml($request->id_contrato);
+        $idInstructor = DB::Table('tbl_cursos')->Select('id_instructor')->Where('id',$id_curso)->First();
+        $instructoresPermitidos = [574, 1605, 1157, 1594, 1562, 1335];
+
+        if (in_array($idInstructor->id_instructor, $instructoresPermitidos)) {
+            // Metodo de XML para contrato AGREGAR BORRADO DE DOCUMENTO CON CADENA UNICA SOLO SI TODAVIA NO ESTA SELLADO
+            $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
+            $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
+                ->Where('tipo_archivo','Contrato')
+                ->Where('status', 'CANCELADO') //poner que evite el status de anulado
+                ->Delete();
+            $contratoController = new EContratoController();
+            $result = $contratoController->xml($request->id_contrato);
+        }
 
         $folio = folio::find($request->id_folio);
         $folio->status = 'Capturando';
@@ -1184,6 +1193,7 @@ class ContratoController extends Controller
     {
         $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = null;
         $contrato = new contratos();
+        $puestos = array();
 
         $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
 
@@ -1234,6 +1244,7 @@ class ContratoController extends Controller
             $fecha_sello = $documento->fecha_sellado;
             $folio = $documento->nombre_archivo;
             $tipo_archivo = $documento->tipo_archivo;
+
             $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
 
             $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
@@ -1243,27 +1254,36 @@ class ContratoController extends Controller
                             ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
                             ->Get();
             //Generacion de QR
-            $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+            $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
             ob_start();
             QRcode::png($verificacion);
             $qrCodeData = ob_get_contents();
             ob_end_clean();
             $qrCodeBase64 = base64_encode($qrCodeData);
             // Fin de Generacion
+            foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
+                $puesto = DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+                if(!is_null($puesto)) {
+                    array_push($puestos,$puesto->cargo);
+                    // <td height="25px;">{{$search_puesto->cargo}}</td>
+                } else {
+                    array_push($puestos,'INSTRUCTOR');
+                }
+            }
 
         }
 
         if($data->tipo_curso == 'CURSO')
         {
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos'));
             }
         }
         else
         {
-            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello'));
+            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos'));
         }
 
         $pdf->setPaper('LETTER', 'Portrait');

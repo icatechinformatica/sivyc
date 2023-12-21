@@ -75,5 +75,9 @@ $(document).ready(function(){
         }
     }); 
 
+    $("#cantidad").on("blur", function() {
+        $("#importe").val($("#cantidad").val()*$("#precio_unitario").val());
+    });
+
 });     
  
