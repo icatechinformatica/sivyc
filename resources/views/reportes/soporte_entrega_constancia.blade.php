@@ -74,14 +74,14 @@
         <br><br><br>
         <div class="bloque_dos" align="left">
             <p class="delet_space_p color_text">C.
-                @if (count($partes_titu) == 2)
+                @if (count($partes_titu) > 0)
                     {{$partes_titu[0]}}
                 @else
                     {{strtoupper($nombre_titular)}}
                 @endif
             </p>
             <p class="delet_space_p color_text">
-                @if (count($partes_titu) == 2)
+                @if (count($partes_titu) > 1)
                     {{$partes_titu[1]}}
                 @else
                     {{$cargo_fun}}

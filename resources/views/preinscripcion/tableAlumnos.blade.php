@@ -85,19 +85,19 @@
 
 
 <div class="d-flex flex-lg-row flex-column col-12 col-lg-12 justify-content-end">
-    <button type="button" class="btn mt-1" id="nuevo" >NUEVO</button> &nbsp;&nbsp;   
-    @can('agenda.vinculacion')        
+    <button type="button" class="btn mt-1" id="nuevo" >NUEVO</button> &nbsp;&nbsp;
+    @can('agenda.vinculacion')
         @if(isset($grupo->cespecifico))
             <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_acta_acuerdo"> <i  class="far fa-file-pdf  fa-1x text-mute"></i> ACTA DE ACUERDO</button>
-            {{-- <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_convenio_esp"><i  class="far fa-file-pdf  fa-1x text-mute"></i> CONVENIO</button> --}}
+            <button type="button" class="btn mt-1 bg-warning text-dark d-none" id="gen_convenio_esp"><i  class="far fa-file-pdf  fa-1x text-mute"></i> CONVENIO</button>
         @endif
-        <button type="button" class="btn mt-1 bg-warning text-dark" id="gape"><i  class="far fa-file-pdf  fa-1x text-mute"></i> SOLICITUD APERTURA</button>        
+        <button type="button" class="btn mt-1 bg-warning text-dark" id="gape"><i  class="far fa-file-pdf  fa-1x text-mute"></i> SOLICITUD APERTURA</button>
     @endcan
 
     @if($grupo)
-        <button type="button" class="btn mt-1 bg-warning text-dark" id="generar"><i  class="far fa-file-pdf  fa-1x text-mute"></i> LISTA ALUMNOS</button>    
-        <button id="btnShowCalendar" type="button" class="btn btn-info mt-1">AGENDAR</button>        
-    @endif    
+        <button type="button" class="btn mt-1 bg-warning text-dark" id="generar"><i  class="far fa-file-pdf  fa-1x text-mute"></i> LISTA ALUMNOS</button>
+        <button id="btnShowCalendar" type="button" class="btn btn-info mt-1">AGENDAR</button>
+    @endif
     @if($activar AND $folio_grupo)
         <button type="submit" class="btn mt-1" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;
         <button type="button" class="btn mt-1 bg-danger " id="turnar" >ENVIAR A ACADEMICO >></button>
@@ -106,46 +106,41 @@
 
 
 {{-- Agregamos el apartado de subir PDF Jose Luis Moreno Arcos--}}
-{{-- temporalmente de comentó hasta que se homologue se revisa --}}
-{{-- <br>
-<div class="col-12 col-lg-4 mt-3 mt-lg-0 mb-lg-1 ml-lg-4 text-center text-lg-left">
-    <b class="">SUBIR DOCUMENTOS FIRMADOS</b>
-</div>
-<div class="col-12 d-flex flex-lg-column">
-    <div class="col-12">
-        <div class="col-12 col-lg-4 d-flex flex-row mb-1 px-0">
-            <form method="POST" class="" enctype="multipart/form-data" action="" id="doc_acta">
-                <div class="">
-                    <input type="file" id="pdfInputActa" accept=".pdf" style="display: none;" onchange="cargarNomFileActa()">
-                    <input class="form-control py-2 mt-1" type="text" id="nomPdfActa" onclick="document.getElementById('pdfInputActa').click()" placeholder="PDF Acta de acuerdo">
-                </div>
-                <div class="">
-                    <a class="btn px-1 py-1 mr-0" id="btnEnvPdfActa" onclick="upPdfActaFirm()"><i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i></a>
-                    <input type="hidden" name="" id="url_acta_hiden" value="{{$url_pdf_acta != '' || $url_pdf_acta != null ? $url_pdf_acta : ''}}">
-                    @if ($url_pdf_acta)
-                        <a class="btn px-1 py-1" href="{{$url_pdf_acta != '' ? $url_pdf_acta : '#'}}" target="_blank"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
-                    @endif
-                </div>
-            </form>
+<br>
+@can('agenda.vinculacion')
+    <div class="col-12 col-lg-4 mt-3 mt-lg-0 mb-lg-1 ml-lg-4 text-center text-lg-left">
+        <b class="">SUBIR DOCUMENTOS FIRMADOS</b>
+    </div>
+    <div class="d-flex col-12 flex-row">
+        <div class="d-flex align-items-center">
+            <select name="subirPDF" id="subirPDF" class="form-control" onchange="selUploadPDF()">
+                <option value="0">Archivo a subir</option>
+                <option value="1?{{$linkPDF['acta']}}">Acta de Acuerdo</option>
+                <option value="2?{{$linkPDF['convenio']}}">Convenio Especifico</option>
+                <option value="3?{{$linkPDF['soli_ape']}}">Solicitud de Apertura</option>
+                <option value="4?{{$linkPDF['sid']}}">SID-01 Solicitud de Inscripcion</option>
+            </select>
         </div>
-        <div class="col-12 col-lg-4 d-flex flex-row mb-0">
-            <form method="POST" class="d-flex row" enctype="multipart/form-data" action="" id="doc_convenio">
-                <div class="">
-                    <input type="file" id="pdfInputConvenio" accept=".pdf" style="display: none;" onchange="cargarNomFileConvenio()">
-                    <input class="form-control py-2 mt-1" type="text" id="nomPdfConvenio" onclick="document.getElementById('pdfInputConvenio').click()" placeholder="PDF Convenio Especifico">
+        <div class="d-flex flex-row">
+            <form method="POST" enctype="multipart/form-data" action="" id="form_doc12">
+                <div class="d-flex justify-content-center" id="formUpPdf">
+                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc" style="display: none;" onchange="checkIcon('iconCheck', 'pdfInputDoc')">
+                    <button class="ml-2 btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc').click();">Archivo
+                    <div id="iconCheck" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+
+                    <button class="ml-1 bg-transparent border-0 mt-1" onclick="UploadPDF(event)">
+                    <i class="fa fa-cloud-upload fa-2x text-primary" aria-hidden="true"></i></button>
                 </div>
-                <div class="">
-                    <a class="btn px-1 py-1 mr-0" id="btnEnvPdfConv" onclick="upPdfConvFirm()"><i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i></a>
-                    <input type="hidden" name="" id="url_conv_hiden" value="{{$url_pdf_conv != '' || $url_pdf_conv != null ? $url_pdf_conv : ''}}">
-                    @if ($url_pdf_conv)
-                        <a class="btn px-1 py-1" href="{{$url_pdf_conv != '' ? $url_pdf_conv : '#'}}" target="_blank"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
-                    @endif
-                </div>
+                <a class="ml-1 pt-1 btn-circle btn-circle-sm d-none" data-toggle="tooltip"
+                    data-placement="top" title="Ver pdf" id="verPdfLink"
+                    href="" target="_blank">
+                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                </a>
             </form>
         </div>
     </div>
-</div> --}}
-{{-- Termina el elemento de subir archivo --}}
+@endcan
+{{-- Termina subir archivo --}}
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

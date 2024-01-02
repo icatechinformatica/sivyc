@@ -87,7 +87,7 @@
                         </div>
                     </li>
                     @endcanany
-                    @canany(['grupos.calificaciones', 'grupos.recibos'])
+                    @canany(['grupos.calificaciones', 'grupos.recibos', 'expunico.buzon.index', 'expedientes.unicos.index'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Grupos
@@ -110,6 +110,13 @@
                             @endcan
                             @can('grupos.recibos')
                                 <a class="dropdown-item" href="{{route('grupos.recibos.buscar')}}">Buscar Recibo de Pago</a>
+                            @endcan
+                            {{-- Expedientes Unicos --}}
+                            @can('expedientes.unicos.index')
+                                <a class="dropdown-item" href="{{route('expunico.principal.mostrar.get')}}">Registro de Expedientes Unicos</a>
+                            @endcan
+                            @can('expunico.buzon.index')
+                                <a class="dropdown-item" href="{{route('buzon.expunico.index')}}">Buzon de Expediente Unicos</a>
                             @endcan
                         </div>
                     </li>

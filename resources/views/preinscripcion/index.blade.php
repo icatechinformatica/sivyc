@@ -444,7 +444,8 @@
                 // BOTONES DE PDF
                 //Temporalmente se comentó hasta que se homologue se libera
                 $("#gen_acta_acuerdo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.acuerdo_pdf')}}",'target':'_blank'}); $('#frm').submit(); });
-                // $("#gen_convenio_esp").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.convenio_pdf')}}",'target':'_blank'}); $('#frm').submit(); });
+                $("#gen_convenio_esp").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.convenio_pdf')}}",'target':'_blank'}); $('#frm').submit(); });
+
                 $("#agregar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.save')}}",'target':'_self'}); $('#frm').submit(); });
                 $("#nuevo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.nuevo')}}",'target':'_self'}); $('#frm').submit(); });
                 $("#update").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'}); $('#frm').submit(); });
@@ -672,139 +673,114 @@
                 return date;
             }
 
-            //Mostrar campos de firmas de acuerdo al check
-            //temporalemnte se comentó hasta que se homologue se descomenta
-            // $("#cerss_ok").click(function() {
-            //     let isChecked = $(this).is(":checked");
-            //     if (isChecked) {
-            //         $("#firma2_n").removeClass("d-none");
-            //         $("#firma3_n").removeClass("d-none");
-            //         $("#firma1_n").addClass("d-none");
-            //     } else {
-            //         $("#firma2_n").addClass("d-none");
-            //         $("#firma3_n").addClass("d-none");
-            //         $("#firma1_n").removeClass("d-none");
-            //     }
-            // });
+            //By Jose Luis Moreno Arcos
+            //Funcion de mostrar si el archivo esta cargado
+            function checkIcon(idIcon, inputPdfId) {
+                let iconIndic = document.getElementById(idIcon);
+                let pdfInput = document.getElementById(inputPdfId);
+                if (pdfInput.files.length > 0) {
+                    iconIndic.style.display = 'inline-block';
+                } else {
+                    iconIndic.style.display = 'none';
+                }
+            }
 
-            //Jose Luis Moreno Arcos / funciones para subir y cargar pdf
-            //Temporalmente se comentó hasta que homologuen se descomenta
+            //Ocultar y mostrar los iconos de ver pdf para cada documento
+            function selUploadPDF() {
+                let valSelect = document.getElementById('subirPDF').value;
+                var showPDF = document.getElementById("verPdfLink");
+                var partes = valSelect.split('?');
+                switch (partes[0]) {
+                    case '0':
+                        $("#verPdfLink").addClass('d-none');
+                        break;
+                    case '1':
+                        if (partes[1] != '') {
+                            showPDF.href = partes[1];
+                            $("#verPdfLink").removeClass('d-none');
+                        }else{
+                            $("#verPdfLink").addClass('d-none');
+                        }
+                        break;
+                    case '2':
+                        if (partes[1] != '') {
+                            showPDF.href = partes[1];
+                            $("#verPdfLink").removeClass('d-none');
+                        }else{
+                            $("#verPdfLink").addClass('d-none');
+                        }
+                        break;
+                    case '3':
+                        if (partes[1] != '') {
+                            showPDF.href = partes[1];
+                            $("#verPdfLink").removeClass('d-none');
+                        }else{
+                            $("#verPdfLink").addClass('d-none');
+                        }
+                        break;
+                    case '4':
+                        if (partes[1] != '') {
+                            showPDF.href = partes[1];
+                            $("#verPdfLink").removeClass('d-none');
+                        }else{
+                            $("#verPdfLink").addClass('d-none');
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
 
-            // function cargarNomFileActa() {
-            //     let inputFile = document.getElementById('pdfInputActa');
-            //     let nomArchivo = inputFile.files[0].name;
-            //     let labelNomArchivo = document.getElementById('nomPdfActa');
-            //     labelNomArchivo.value = nomArchivo;
-            // }
+            //Enviar los archivos al backend
+            function UploadPDF(event) {
+                event.preventDefault();
+                 //Obtenermos el valor del input archivo
+                let valSelect = document.getElementById('subirPDF').value;
+                let inputFile = document.getElementById('pdfInputDoc');
+                let partes = valSelect.split('?');
 
-            // function cargarNomFileConvenio() {
-            //     let inputFile = document.getElementById('pdfInputConvenio');
-            //     let nomArchivo = inputFile.files[0].name;
-            //     let labelNomArchivo = document.getElementById('nomPdfConvenio');
-            //     labelNomArchivo.value = nomArchivo;
-            // }
+                if (partes[0] == '0'){ alert('SELECCIONA UNA OPCIÓN'); return;}
+                if (partes[1] !== '') {
+                    alert("EL ARCHIVO YA SE ENCUENTRA CARGADO");
+                    return;
+                    // if (confirm("YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE ¿DESEAS REEMPLAZAR EL ARCHIVO CON UNO NUEVO?")) {
+                    // } else return;
+                }
 
-            // //Upload pdf Acta
-            // function upPdfActaFirm() {
-            //     let valorHiden = document.getElementById('url_acta_hiden').value;
-            //     let nomDoc = '';
-            //     if (valorHiden !='') {
-            //         let partesDoc = valorHiden.split("actafirmado");
-            //         nomDoc = 'actafirmado'+partesDoc[1];
-            //     }
+                if (inputFile.files.length === 0) { //Realizamos la validacion si esta el archivo
+                    alert("POR FAVOR, SELECCIONA UN ARCHIVO PDF.");
+                    return;
+                }
 
-            //     let accion_doc = "";
-            //     if (nomDoc !== "") {
-            //         if (confirm("YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE ¿DESEAS REEMPLAZAR EL DOCUMENTO CON UNO NUEVO?")) {
-            //         // La opción "Aceptar" fue seleccionada
-            //             accion_doc = "reemplazar";
-            //         } else {
-            //         // La opción "Cancelar" fue seleccionada o se cerró el cuadro de diálogo
-            //         return;
-            //         }
-            //     }else accion_doc = "libre";
+                let archivo = inputFile.files[0];
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('archivoPDF', archivo);
+                formData.append('opcion', partes[0]);
+                formData.append('urlImg', partes[1]);
 
-            //     let inputFile = document.getElementById('pdfInputActa');;
-            //     if (inputFile.files.length === 0) {
-            //         alert("POR FAVOR, SELECCIONA UN ARCHIVO PDF.");
-            //         return;
-            //     }
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('preinscripcion.grupo.uploadpdf') }}",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log(response);
+                        alert(response.mensaje);
+                        if (response.status == 200 || response.status == 500) {
+                            location.reload();
+                        }
+                        // setTimeout(function() { location.reload(); }, 3000);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr.responseText);
+                        alert("Error al enviar el archivo.");
+                    }
+                });
+            }
 
-            //     let archivo = inputFile.files[0];
-            //     let formData = new FormData();
-            //     formData.append('_token', '{{ csrf_token() }}');
-            //     formData.append('archivoPDF', archivo);
-            //     formData.append('acciondoc', accion_doc);
-            //     formData.append('nomDoc', nomDoc);
-
-            //     $.ajax({
-            //         type: "POST",
-            //         url: "{{ route('preinscripcion.grupo.firmactapdf') }}",
-            //         data: formData,
-            //         cache: false,
-            //         contentType: false,
-            //         processData: false,
-            //         success: function(response) {
-            //             console.log(response);
-            //             location.reload();
-            //             // setTimeout(function() { location.reload(); }, 3000);
-            //         },
-            //         error: function(xhr, status, error) {
-            //             console.log(xhr.responseText);
-            //             alert("Error al enviar el archivo.");
-            //         }
-            //     });
-
-            // }
-            // //Upload pdf  Convenio
-            // function upPdfConvFirm() {
-            //     let valorHiden = document.getElementById('url_conv_hiden').value;
-            //     let nomDoc = '';
-            //     if (valorHiden !='') {
-            //         let partesDoc = valorHiden.split("conveniofirmado");
-            //         nomDoc = 'conveniofirmado'+partesDoc[1];
-            //     }
-
-            //     let accion_doc = "";
-            //     if (nomDoc !== "") {
-            //         if (confirm("YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE ¿DESEAS REEMPLAZAR EL DOCUMENTO CON UNO NUEVO?")) {
-            //         // La opción "Aceptar" fue seleccionada
-            //             accion_doc = "reemplazar";
-            //         } else {return;}
-            //     }else accion_doc = "libre";
-
-            //     let inputFile = document.getElementById('pdfInputConvenio');;
-            //     if (inputFile.files.length === 0) {
-            //         alert("POR FAVOR, SELECCIONA UN ARCHIVO PDF.");
-            //         return;
-            //     }
-
-            //     let archivo = inputFile.files[0];
-            //     let formData = new FormData();
-            //     formData.append('_token', '{{ csrf_token() }}');
-            //     formData.append('archivoPDF', archivo);
-            //     formData.append('acciondoc', accion_doc);
-            //     formData.append('nomDoc', nomDoc);
-
-            //     $.ajax({
-            //         type: "POST",
-            //         url: "{{ route('preinscripcion.grupo.firmconvpdf') }}",
-            //         data: formData,
-            //         cache: false,
-            //         contentType: false,
-            //         processData: false,
-            //         success: function(response) {
-            //             alert(response.mensaje);
-            //             location.reload();
-            //             // setTimeout(function() { location.reload(); }, 3000);
-            //         },
-            //         error: function(xhr, status, error) {
-            //             console.log(xhr.responseText);
-            //             alert("Error al enviar el archivo.");
-            //         }
-            //     });
-
-            // }
         </script>
     @endsection
 @endsection
