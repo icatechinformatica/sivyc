@@ -684,14 +684,93 @@
                     console.log('no se selecciono instructor');
                 }
             }
-            //Fun gen pdf soporte Made by Jose Luis Moreno Arcos
-            // function genpdf_soportef(id_org) {
-            //     let num_oficio = document.getElementById('num_oficio').value;
-            //     let datos_titular = document.getElementById('datos_titular').value;
-            //     let url = "{{ route('solicitud.genpdf.soporte', [':idorg']) }}";
-            //     url = url.replace(':idorg', id_org);
-            //     window.open(url, "_blank");
-            // }
+
+            //pdf soporte Made by Jose Luis Moreno Arcos
+            //Funcion de mostrar si el archivo esta cargado
+            function checkIcon(idIcon, inputPdfId) {
+                let iconIndic = document.getElementById(idIcon);
+                let pdfInput = document.getElementById(inputPdfId);
+                if (pdfInput.files.length > 0) {
+                    iconIndic.style.display = 'inline-block';
+                } else {
+                    iconIndic.style.display = 'none';
+                }
+            }
+
+            //Ocultar y mostrar los iconos de ver pdf para cada documento
+            function selUploadPDF() {
+                let valSelect = document.getElementById('subirPDF25').value;
+                var showPDF = document.getElementById("verPdfLink25");
+                var partes = valSelect.split('?');
+                switch (partes[0]) {
+                    case '0':
+                        $("#verPdfLink25").addClass('d-none');
+                        break;
+                    case '1':
+                        if (partes[1] != '') {
+                            showPDF.href = partes[1];
+                            $("#verPdfLink25").removeClass('d-none');
+                            // Ocultamos la parte de subir pdf
+                            $("#formUpPdf25").addClass('d-none');
+                        }else{
+                            $("#verPdfLink25").addClass('d-none');
+                            // Mostramos la parte de subir pdf
+                            $("#formUpPdf25").removeClass('d-none');
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //Enviar los archivos al backend
+            function UploadPDF(event) {
+                event.preventDefault();
+                 //Obtenermos el valor del input archivo
+                let valSelect = document.getElementById('subirPDF25').value;
+                let inputFile = document.getElementById('pdfInputDoc25');
+                let partes = valSelect.split('?');
+
+                if (partes[0] == '0'){ alert('SELECCIONA UNA OPCIÓN'); return;}
+                if (partes[1] !== '') {
+                    alert('YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE');
+                    return;
+                }
+
+                if (inputFile.files.length === 0) { //Realizamos la validacion si esta el archivo
+                    alert("POR FAVOR, SELECCIONA UN ARCHIVO PDF.");
+                    return;
+                }
+
+                let archivo = inputFile.files[0];
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('archivoPDF', archivo);
+                formData.append('opcion', partes[0]);
+                formData.append('urlImg', partes[1]);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('solicitud.soporte.upload') }}",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log(response);
+                        alert(response.mensaje);
+                        if (response.status == 200 || response.status == 500) {
+                            location.reload();
+                        }
+                        // setTimeout(function() { location.reload(); }, 3000);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr.responseText);
+                        alert("Error al enviar el archivo.");
+                    }
+                });
+            }
+
         </script>
     @endsection
 @endsection
