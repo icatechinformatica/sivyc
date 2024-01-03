@@ -342,7 +342,7 @@
                             @if ($search_docs['urldoc2'] != '')
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc2'] ?? ''}}" target="_blank">
+                                    href="{{$path_files.$search_docs['urldoc2'] ?? ''}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @endif
@@ -549,7 +549,7 @@
                             @if ($search_docs['urldoc7'] != '')
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc7'] ?? ''}}" target="_blank">
+                                    href="{{$path_files.$search_docs['urldoc7'] ?? ''}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @endif
@@ -615,7 +615,7 @@
                             @if ($search_docs['urldoc8'] != '')
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc8'] ?? ''}}" target="_blank">
+                                    href="{{$path_files.$search_docs['urldoc8'] ?? ''}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @endif
