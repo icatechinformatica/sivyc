@@ -58,6 +58,8 @@ class Alumnopre extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
+    protected $casts = ['requisitos' => 'json'];
+
     public function alumnos()
     {
         return $this->hasMany(Alumno::class, 'id_pre');

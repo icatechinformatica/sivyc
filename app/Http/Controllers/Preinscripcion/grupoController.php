@@ -263,16 +263,15 @@ class grupoController extends Controller
                                 #Consultar doc url Curp json by Jose Luis Moreno Arcos
                                 if($curp){
                                     try {
-                                        $resul_alumnos = Alumnopre::select('requisitos->documento as url_doc')->where('curp', '=', $curp)->first();
-                                        if(isset($resul_alumnos->url_doc)){
-                                            $objeto_curp = array('url' => $resul_alumnos->url_doc);
-                                        }else{
-                                            $objeto_curp = array('url' => '');
+                                        $resul_alumnos = Alumnopre::where('curp', '=', $curp)->first();
+                                        if ($resul_alumnos && isset($resul_alumnos->requisitos['documento'])) {
+                                            $objeto_curp = ['url' => $resul_alumnos->requisitos['documento']];
+                                        } else {
+                                            $objeto_curp = ['url' => ''];
                                         }
                                     } catch (\Throwable $th) {
-                                        //throw $th;
+                                        // Manejar la excepción según sea necesario
                                     }
-
                                 }
 
                                 if ($a_reg) {
