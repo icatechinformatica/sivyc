@@ -190,25 +190,41 @@ if($data->tipo_curso=='CERTIFICACION'){
                     </tbody>
                 </table>
                 <br><p class="text-left"><p>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;"> {{$tipo}}</font>, obra en poder de la Unidad de Capacitación.</p></p>
-                <br><br><table class="table1">
-                    <tr>
-                        <td colspan="2"><p align="center">Atentamente</p></td>
-                        <td colspan="2"><p align="center">Autoriza</p></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
-                        <td colspan="2"><div align="center">Mtro. Walter Domínguez Camacho</td></div>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><div align="center">{{$director->puesto}} {{$data->unidad_capacitacion}}</td></div>
-                        <td colspan="2"><div align="center">Director Administrativo</td></div>
-                    </tr>
+                <br><br>
+                <table class="table1">
+                    @if($Y != '2024')
+                        <tr>
+                            <td colspan="2"><p align="center">Atentamente</p></td>
+                            <td colspan="2"><p align="center">Autoriza</p></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
+                            <td colspan="2"><div align="center">Mtro. Walter Domínguez Camacho</td></div>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div align="center">{{$director->puesto}} {{$data->unidad_capacitacion}}</td></div>
+                            <td colspan="2"><div align="center">Director Administrativo</td></div>
+                        </tr>
+                    @else
+                        <tr>
+                            <td><p align="center">Atentamente</p></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
+                        </tr>
+                        <tr>
+                            <td><div align="center">{{$director->puesto}} {{$data->unidad_capacitacion}}</td></div>
+                        </tr>
+                    @endif
                 </table>
                 <p><FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimiento.<br/>
                 <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-Mismo fin.</FONT><br/>

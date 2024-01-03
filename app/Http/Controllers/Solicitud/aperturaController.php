@@ -21,6 +21,8 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
 use PDF;
+use App\Models\ModelExpe\ExpeUnico;
+use App\Models\Alumnopre;
 
 class aperturaController extends Controller
 {
@@ -69,6 +71,7 @@ class aperturaController extends Controller
         $valor = $efisico = $grupo = $alumnos = $message = $medio_virtual = $depen = $exoneracion = $instructor = $plantel = $programa = $sector = $tcurso = $tcuota =
         $muni = $instructores = $convenio = $localidad = $comprobante = $exonerado = $num_oficio_sop = $titular_sop = $ValidaInstructorPDF = NULL;
         $recibo =[];
+        $url_soporte = '';
         if($request->valor)  $valor = $request->valor;
         elseif(isset($_SESSION['folio'])) $valor = $_SESSION['folio'];
         $_SESSION['alumnos'] = NULL;
@@ -79,6 +82,11 @@ class aperturaController extends Controller
                 $sop_constancias = json_decode($sop_expediente->sop_constancias);
                 $num_oficio_sop = $sop_constancias->num_oficio;
                 $titular_sop = ($sop_constancias->titular_depen != "" && $sop_constancias->cargo_titular != "") ? $sop_constancias->titular_depen.', '.$sop_constancias->cargo_titular : '';
+
+                $bddoc_soporte = ExpeUnico::select('academico->doc_25->url_documento as url_documento')
+                ->where('sop_constancias->num_oficio', $num_oficio_sop)->where('academico->doc_25->url_documento', '<>', '')->first();
+
+                $url_soporte = ($bddoc_soporte !== null) ? $this->path_files.$bddoc_soporte->url_documento : '';
             }
 
             $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
@@ -185,16 +193,16 @@ class aperturaController extends Controller
                         ->where(\DB::raw("elem->>'memo_val'"), '=', $grupo_mespecialidad);
                 })
                 ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$grupo_mespecialidad') as pdfvalida"));
-                
+
             }else $message = "Grupo número ".$valor .", turnado a VINCULACIÓN.";
         }
         $tinscripcion = $this->tinscripcion();
-        
+
 
         if(session('message')) $message = session('message');//dd($grupo);
         return view('solicitud.apertura.index', compact('comprobante','efisico','message','grupo','alumnos','plantel','depen','sector','programa',
-            'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad','exonerado', 
-            'num_oficio_sop', 'titular_sop','recibo','ValidaInstructorPDF'));
+            'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad','exonerado',
+            'num_oficio_sop', 'titular_sop','recibo','ValidaInstructorPDF', 'url_soporte'));
     }
 
     public function search(Request $request){
@@ -232,7 +240,7 @@ class aperturaController extends Controller
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio'] == $request->valor){
             $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => null,'fmpreapertura'=>null]);
-            DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['fecha_arc01'=>null]);         
+            DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['fecha_arc01'=>null]);
             if($result){
                 $message = "El grupo fué turnado correctamente a VINCULACIÓN";
                 unset($_SESSION['folio']);
@@ -245,28 +253,29 @@ class aperturaController extends Controller
 
     public function store(Request $request, \Illuminate\Validation\Factory $validate)
     {
-        $message = 'Operación fallida, vuelva a intentar..';    
+        $message = 'Operación fallida, vuelva a intentar..';
         if ($_SESSION['folio'] == $request->valor) {
 
             $result =  DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(
                 ['folio_grupo' => $_SESSION['folio']],
-                [           
-                    'munidad' => $request->munidad,        
+                [
+                    'munidad' => $request->munidad,
                     'plantel' => $request->plantel,
                     'programa' => $request->programa,
-                    'nota' => $request->observaciones,                    
-                    'realizo' => strtoupper($this->realizo),                    
+                    'nota' => $request->observaciones,
+                    'realizo' => strtoupper($this->realizo),
                     'updated_at' => date('Y-m-d H:m:s'),
-                    'num_revision' => $request->munidad              
+                    'num_revision' => $request->munidad
                 ]
             );
-            if ($result) $message = 'Operación Exitosa!!';          
+            if ($result) $message = 'Operación Exitosa!!';
         }
         return redirect('solicitud/apertura')->with('message', $message);
     }
 
    public function aperturar(Request $request){///PROCESO DE INSCRIPCION
         $result =  NULL;
+        $objeto_curp = array('url' => ''); //Para json doc_soporte
         $message = "No hay datos para Aperturar.";
         if($_SESSION['alumnos'] AND $_SESSION['folio'] == $request->valor){
             $grupo = DB::table('tbl_cursos as c')->where('status_curso','AUTORIZADO')->where('status','NO REPORTADO')->where('c.folio_grupo',$_SESSION['folio'])->first();
@@ -282,6 +291,16 @@ class aperturaController extends Controller
                     $matricula = $a->matricula;
                     if(!$matricula AND $a->curp AND $grupo->cct){
                         $matricula = $this->genera_matricula($a->curp, $grupo->cct);
+                    }
+
+                    #Consultar url Curp by Jose Luis Moreno Arcos
+                    if($a->curp){
+                        $resul_alumnos = Alumnopre::select('requisitos->documento as url_doc')->where('curp', '=', $a->curp)->first();
+                        if(isset($resul_alumnos->url_doc)){
+                            $objeto_curp = array('url' => $resul_alumnos->url_doc);
+                        }else{
+                            $objeto_curp = array('url' => '');
+                        }
                     }
 
                     if($matricula){
@@ -327,7 +346,8 @@ class aperturaController extends Controller
                         'lgbt' => $a->lgbt,
                         'curp'=> $a->curp,
                         'empleado'=>$a->empleado,
-                        'id_gvulnerable'=>$a->id_gvulnerable
+                        'id_gvulnerable'=>$a->id_gvulnerable,
+                        'doc_soporte' => $objeto_curp
                         ]);
                     }
                 }
@@ -809,7 +829,7 @@ class aperturaController extends Controller
 
         #Insertamos o actualizamos registros en la tabla de expedientes unicos
         $parte1 = (count($partes_titu)>0) ? $partes_titu[0] : "";
-        $parte2 = (count($partes_titu)>0) ? $partes_titu[1] : "";
+        $parte2 = (count($partes_titu)>1) ? $partes_titu[1] : "";
 
         $soporte_const = [
             "num_oficio" => $numficio,
@@ -886,4 +906,355 @@ class aperturaController extends Controller
         'partes_titu', 'municipio', 'fecha_comp', 'tabla_contenido', 'rango_mes', 'total_cursos', 'total_folios', 'dta_certificacion'));
         return $pdf->stream('Soporte de Entrega');
     }
+
+
+     /** Funcion para subir pdf al servidor by Jose Luis
+     * @param string $pdf, $id $nom $anio $folder_destino
+     */
+    protected function pdf_upload($pdf, $id, $nom, $anio, $fold_destin)
+    {
+        # nuevo nombre del archivo
+        $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
+        $directorio = '/' . $anio . '/'.$fold_destin.'/'.$pdfFile;
+        $pdf->storeAs('/uploadFiles/'.$anio.'/'.$fold_destin, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles'. $directorio); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return [$pdfUrl, $directorio];
+    }
+
+    #Se encarga de subir los pdfs
+    public function upload_pdfsoporte(Request $request) {
+        $folio_grupo =  $_SESSION['folio'];
+        $cursoInfo = DB::table('tbl_cursos')
+        ->selectRaw('id as idcurso, EXTRACT(YEAR FROM inicio) as anio')->where('folio_grupo', $folio_grupo)->first();
+
+        #Obtenemos el numero de oficio
+        $sop_expediente = ExpeUnico::select('sop_constancias')->where('folio_grupo', '=', $folio_grupo)->first();
+        $num_oficio_sop = $sop_expediente->sop_constancias['num_oficio'];
+
+        $anio = $cursoInfo->anio;
+        $idcurso = $cursoInfo->idcurso;
+
+        $archivo = $request->hasFile('archivoPDF');
+        $opcion = $request->opcion;
+        $partImg = basename($request->urlImg);
+
+        #Validamos si no esta el registro en expedientes unicos.
+        $validJson = $this->validar_exp_json($folio_grupo, $idcurso);
+        if($validJson != 'ok'){
+            return response()->json(['status' => "500",'mensaje' => "¡INTENTE DE NUEVO POR FAVOR!"]);
+        }
+
+        #Condicion para asignar nombre a los docs
+        if ($archivo) {
+            if($partImg != ''){
+                #Reemplazar
+                $filePath = 'uploadFiles/'.$anio.'/soporteconst/'.$partImg;
+                if (Storage::exists($filePath)) {
+                    Storage::delete($filePath);
+                } else { return response()->json(['mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
+            }
+            #Guardamos en la bd
+            try {
+                $vincu = ExpeUnico::find($idcurso);
+                $doc = $request->file('archivoPDF'); # obtenemos el archivo
+                $urldoc = $this->pdf_upload($doc, $idcurso, 'soporte_constancia', $anio, 'soporteconst'); # invocamos el método
+                $url = $vincu->academico;
+                $url['doc_25']['url_documento'] = $urldoc[1];
+                $url['doc_25']['existe_evidencia'] = 'si';
+                $url['doc_25']['fecha_subida'] = date('Y-m-d');
+                $vincu->academico = $url; # guardamos el path
+                $vincu->save();
+
+                #Agregar url a los grupos con el mismo numero de oficio JSONB
+                ExpeUnico::whereJsonContains('sop_constancias->num_oficio', $num_oficio_sop)
+                ->update(['academico->doc_25->url_documento' => $urldoc[1]]);
+
+
+            } catch (\Throwable $th) {
+                return response()->json(['mensaje' => "¡ERROR AL INTENTAR GUARDAR EL ARCHIVO!"]);
+            }
+
+        }else{
+            return response()->json([
+                'status' => 500,
+                'mensaje' => 'EL ARCHIVO A SUBIR NO ES COMPATIBLE'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'mensaje' => 'EL ARCHIVO SE HA SUBIDO DE MANERA EXITOSA'
+        ]);
+    }
+
+    #Validar si el registro en expedientes ya existe
+    public function validar_exp_json($folio_grupo, $idcurso){
+        $existsExpediente = DB::table('tbl_cursos_expedientes')->where('folio_grupo', $folio_grupo)->exists();
+        if (!$existsExpediente){
+            #FALSE crear todo desde cero
+            $json_vacios = $this->llenar_json_exp(); #llamamos los arrays para mandarlos como json
+            try {
+                $reg_expedientes = new ExpeUnico;
+                $reg_expedientes['id'] = $idcurso;
+                $reg_expedientes['id_curso'] = $idcurso;
+                $reg_expedientes['folio_grupo'] = $folio_grupo;
+                $reg_expedientes['vinculacion'] = $json_vacios[0];
+                $reg_expedientes['academico'] = $json_vacios[1];
+                $reg_expedientes['administrativo'] = $json_vacios[2];
+                $reg_expedientes['created_at'] = date('Y-m-d');
+                $reg_expedientes['updated_at'] = date('Y-m-d');
+                $reg_expedientes['iduser_created'] = Auth::user()->id;
+                $reg_expedientes->save();
+            } catch (\Throwable $th) {
+                //throw $th;
+                return 'error';
+            }
+
+        }else{
+            #TRUE buscar si los json estan llenos si no deberiamos agregar
+            $foundJson = ExpeUnico::where('folio_grupo', $folio_grupo)->whereNotNull('vinculacion')
+            ->whereNotNull('academico')->whereNotNull('administrativo')->first();
+
+            if ($foundJson == null) {
+                #Actualizamos los campos JSON por que null significa que no estan llenos
+                #Mandamos a llamar los arrays asociativos para los JSON
+                $json_vacios = $this->llenar_json_exp(); #llamamos los arrays para mandarlos como json
+                DB::table('tbl_cursos_expedientes')->where('folio_grupo', $folio_grupo)
+                ->update(['id_curso' => $idcurso, 'folio_grupo' => $folio_grupo,
+                'vinculacion' => $json_vacios[0], 'academico' => $json_vacios[1], 'administrativo' => $json_vacios[2],
+                'created_at' => date('Y-m-d'), 'updated_at' => date('Y-m-d'), 'iduser_updated' => Auth::user()->id]);
+            }else{
+                #No hacer nada todo esta correcto.
+                return 'ok';
+            }
+
+        }
+    }
+
+    #Llenar array para anexar al json de expedientes
+    public function llenar_json_exp(){
+        $vinculacion = [
+            "doc_1" => [
+                "nom_doc" => "Convenio Específico / Acta de acuerdo.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => "",
+                "iduser" => "",
+                "convenio_firma" => "",
+                "convenio_cerss_one" => "",
+                "convenio_cerss_two" => "",
+                "url_pdf_acta" => "",
+                "url_pdf_convenio" => ""
+            ],
+            "doc_2" => [
+                "nom_doc" => "Copia de autorización de Exoneración o Reducción de cuota de recuperación.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_3" => [
+                "nom_doc" => "Original  de la  Solicitud de Apertura del curso o certificacion al Depto. Académico.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_4" => [
+                "nom_doc" => "SID-01 solicitud de inscripción del interesado.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_5" => [
+                "nom_doc" => "CURP actualizada o Copia de Acta de Nacimiento.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_6" => [
+                "nom_doc" => "Copia de comprobante de último grado de estudios (en caso de contar con el).",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_7" => [
+                "nom_doc" => "Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "status_dpto" => "CAPTURA",
+            "status_save" => false,
+            "fecha_guardado" => "",
+            "fecha_envio_dta" => "",
+            "fecha_validado" => "",
+            "fecha_retornado" => "",
+            "id_user_save" => null,
+            "id_user_valid" => null,
+            "id_user_return" => null,
+            "descrip_return" => ""
+        ];
+        $academico = [
+            "doc_8" => [
+                "nom_doc" => "Original de memorándum ARC-01, solicitud de Apertura de cursos de Capacitación y/o certificación a la Dirección Técnica Académica.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_9" => [
+                "nom_doc" => "Copia de memorándum de autorización de ARC-01, emitido por la Dirección Técnica Académica.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_10" => [
+                "nom_doc" => "Original de memorándum ARC-02, solicitud de modificación, reprogramación y/o cancelación de curso a la Dirección Técnica Académica.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_11" => [
+                "nom_doc" => "Copia de Memorándum de autorización de ARC-02 emitido por la Dirección Técnica Académica.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_12" => [
+                "nom_doc" => "Copia de RIACD-02 Inscripción.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_13" => [
+                "nom_doc" => "Copia de RIACD-02 Acreditación.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_14" => [
+                "nom_doc" => "Copia de RIACD-02 Certificación.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_15" => [
+                "nom_doc" => "Copia de LAD-04 (Lista de Asistencia).",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_16" => [
+                "nom_doc" => "Copia de RESD-05 (Registro de Evaluación por Subobjetivos).",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_17" => [
+                "nom_doc" => "Originales o Copia de las Evaluaciones y/o Reactivos de aprendizaje del alumno y/o resumen de actividades. en caso de ICATECH virtual.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_18" => [
+                "nom_doc" => "Original o Copia de las Evaluaciones al Docente y Evaluación del Curso y/o resumen de actividades en caso de ICATECH virtual.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_19" => [
+                "nom_doc" => "Reporte fotográfico, como mínimo 2 dos fotografías.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_25" => [
+                "nom_doc" => "Oficio de entrega de constancias",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "status_dpto" => "CAPTURA",
+            "status_save" => false,
+            "fecha_guardado" => "",
+            "fecha_envio_dta" => "",
+            "fecha_validado" => "",
+            "fecha_retornado" => "",
+            "id_user_save" => null,
+            "id_user_valid" => null,
+            "id_user_return" => null,
+            "descrip_return" => ""
+        ];
+        $administrativa = [
+            "doc_20" => [
+                "nom_doc" => "Memorandum de solicitud de suficiencia presupuestal.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_21" => [
+                "nom_doc" => "Copia memorandum de autorización de Suficiencia Presupuestal.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_22" => [
+                "nom_doc" => "Original de Contrato de prestación de servicios profesionales del Instructor externo, con firma autógrafa o Firma Electrónica.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_23" => [
+                "nom_doc" => "Copia de solicitud de pago al Instructor.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_24" => [
+                "nom_doc" => "Comprobante Fiscal Digital por Internet o comprobante de transferencia bancaria de pagp al instructor externo.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "status_dpto" => "CAPTURA",
+            "status_save" => false,
+            "fecha_guardado" => "",
+            "fecha_envio_dta" => "",
+            "fecha_validado" => "",
+            "fecha_retornado" => "",
+            "id_user_save" => null,
+            "id_user_valid" => null,
+            "id_user_return" => null,
+            "descrip_return" => ""
+        ];
+
+        $json_vacios = [$vinculacion, $academico, $administrativa];
+        return $json_vacios;
+    }
+
+
+
 }

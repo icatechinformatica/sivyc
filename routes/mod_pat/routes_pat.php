@@ -92,9 +92,33 @@ Route::post('/preinscripcion/grupo/pdfacta', 'Preinscripcion\grupoController@pdf
 Route::post('/preinscripcion/grupo/pdfconvenio', 'Preinscripcion\grupoController@pdf_convenio')->name('preinscripcion.grupo.convenio_pdf');
 
 /**Agregamos ruta para subir pdfs acta y convenio firmados */
-//Subir al serv pdf de avances por mes
-Route::post('/preinscripcion/grupo/uploadacta/firmacta', 'Preinscripcion\grupoController@pdf_acta_firm')->name('preinscripcion.grupo.firmactapdf');
-Route::post('/preinscripcion/grupo/uploadconv/firconv', 'Preinscripcion\grupoController@pdf_conv_firm')->name('preinscripcion.grupo.firmconvpdf');
+
+Route::post('/preinscripcion/grupo/upload/pdfs', 'Preinscripcion\grupoController@upload_pdfs')->name('preinscripcion.grupo.uploadpdf');
+// Antigua ruta que ya no es funcional
+// Route::post('/preinscripcion/grupo/uploadconv/firconv', 'Preinscripcion\grupoController@pdf_conv_firm')->name('preinscripcion.grupo.firmconvpdf');
 
 /**SOLICITUD -> CLAVE DE APERTURA ARC01 GEN PDF SOPORTE CONSTANCIAS*/
 Route::post('/solicitud/apertura/pdfsoporte/', 'Solicitud\aperturaController@genpdf_soporte')->name('solicitud.genpdf.soporte');
+//Subir pdf de soporte de entrega de constancias
+Route::post('/solicitud/apertura/uploadpdf/', 'Solicitud\aperturaController@upload_pdfsoporte')->name('solicitud.soporte.upload');
+
+
+/** NUEVAS RUTAS PARA EL MODULO DE EXPEDIENTES UNICOS */
+Route::middleware(['auth'])->group(function(){
+    Route::get('/vista/expedientes/unicos/{folio?}', 'ExpeController\ExpedienteController@index')->name('expunico.principal.mostrar.get')->middleware('can:expedientes.unicos.index');
+    Route::post('/vista/expedientes/unicos', 'ExpeController\ExpedienteController@index')->name('expunico.principal.mostrar.post')->middleware('can:expedientes.unicos.index');
+    //Envio de valores del form por ajax
+    Route::post('/vista/expedientes/guardar', 'ExpeController\ExpedienteController@guardar')->name('expunico.principal.guardar')->middleware('can:expedientes.unicos.index');
+    //Subida de pdf vinculacion al servidor
+    Route::post('/vista/expedientes/uploadpdf', 'ExpeController\ExpedienteController@uploadpdfs')->name('expunico.save.pdfs')->middleware('can:expedientes.unicos.index');
+    //Eliminar PDF
+    Route::post('/vista/expedientes/deletepdf', 'ExpeController\ExpedienteController@deletpdfs')->name('expunico.delete.pdf')->middleware('can:expedientes.unicos.index');
+    //Enviar DTA
+    Route::post('/vista/expedientes/enviar', 'ExpeController\ExpedienteController@validar_form')->name('expunico.envio.valid')->middleware('can:expedientes.unicos.index');
+    //Validar O Retornar DTA
+    Route::post('/vista/expedientes/validar', 'ExpeController\ExpedienteController@validar_dta')->name('expunico.valid.dta')->middleware('can:expedientes.unicos.index');
+    /**Rutas de buzon para visualizar los expedientes pendientes, enviados, validados */
+    Route::get('/vista/buzon/expedientes/', 'ExpeController\BuzonexpController@index')->name('buzon.expunico.index')->middleware('can:expunico.buzon.index');
+});
+/**Generar pdf expedientes unicos */
+Route::get('vista/expedientes/genpdf/{folio}', 'ExpeController\ExpedienteController@pdf_expediente')->name('expunico.gen.pdfexpe');

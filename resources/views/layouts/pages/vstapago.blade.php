@@ -229,7 +229,7 @@
                                     @endif
                                 @break
                                 @case('Finalizado')
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->arch_pago}}"]'>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->arch_pago}}","jeje"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Resumen de Pago" href="{{route('mostrar-pago', ['id' => $itemData->id_contrato])}}" target="_blank">
@@ -238,9 +238,11 @@
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
-                                    <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Subir Solicitud de Pago Autorizada" id="pago_upload" name="pago_upload" data-toggle="modal" data-target="#Modaluploadpago" data-id='{{$itemData->id_folios}}'>
-                                        <i class="fa fa-upload" aria-hidden="true"></i>
-                                    </a>
+                                    @if(is_null($itemData->arch_pago))
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Subir Solicitud de Pago Autorizada" id="pago_upload" name="pago_upload" data-toggle="modal" data-target="#Modaluploadpago" data-id='{{$itemData->id_folios}}'>
+                                            <i class="fa fa-upload" aria-hidden="true"></i>
+                                        </a>
+                                    @endif
                                 @break
                             @endswitch
                         </td>
@@ -827,7 +829,7 @@
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="contratof_pdf" name="contratof_pdf" hidden>
-                                        <label for="contratof_pdf">
+                                        <label for="contratof_pdf" id=contratof_pdf_label>
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
@@ -871,7 +873,7 @@
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="asistencias_pdf" name="asistencias_pdf" hidden>
-                                        <label for="asistencias_pdf">
+                                        <label for="asistencias_pdf" id="asistencias_pdf_label">
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
@@ -1038,7 +1040,7 @@
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="contratof_pdfc" name="contratof_pdfc" hidden>
-                                        <label for="contratof_pdfc">
+                                        <label for="contratof_pdfc" id="contratof_pdfc_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
@@ -1083,7 +1085,7 @@
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="calificaciones_pdfc" name="calificaciones_pdfc" hidden>
-                                        <label for="calificaciones_pdfc">
+                                        <label for="calificaciones_pdfc" id="calififcaciones_pdfc_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
@@ -1350,6 +1352,44 @@
             console.log(id[1])
         }
 
+        var datos = {valor: id['0']};
+        var url = '/efirma/busqueda';
+        var request = $.ajax ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+            request.done(( respuesta) =>
+        {
+            respuesta.forEach(element => {
+                console.log(element);
+                switch (element['tipo_archivo']) {
+                    case 'Contrato':
+                        // Obtener el elemento <a> por su id
+                        const contratovLink = document.getElementById('show_contratov');
+                        // Construir la URL dinámica utilizando la ruta y el ID correspondiente
+                        const contratovUrl = "/contrato/" + element['id_contrato'];
+                        // Asignar la URL al atributo href
+                        contratovLink.href = contratovUrl;
+                        contratovLink.hidden = false;
+                        document.getElementById('td8v').style.color = "black";
+                    break;
+                    case 'Lista de asistencia':
+                        const asistenciavLink = document.getElementById('show_asistenciasv');
+                        const asistenciavUrl = "/lista/asistencia/" + element['id_curso'];
+                        asistenciavLink.href = asistenciavUrl;
+                        asistenciavLink.hidden = false;
+                        document.getElementById('td10v').style.color = "black";
+                    break;
+                    default:
+                    break;
+                }
+
+            });
+            // console.log(respuesta); show_contrato contratof_pdf(para subir)
+        });
+
     });
 
     $('#validarRecepcionModalCertificacion').on('show.bs.modal', function(event){
@@ -1378,6 +1418,44 @@
             $('#div_val_certificacion').addClass('d-none d-print-none');
         }
 
+        var datos = {valor: id['0']};
+        var url = '/efirma/busqueda';
+        var request = $.ajax ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+            request.done(( respuesta) =>
+        {
+            respuesta.forEach(element => {
+                console.log(element);
+                switch (element['tipo_archivo']) {
+                    case 'Contrato':
+                        // Obtener el elemento <a> por su id
+                        const contratovcLink = document.getElementById('show_contratovc');
+                        // Construir la URL dinámica utilizando la ruta y el ID correspondiente
+                        const contratovcUrl = "/contrato/" + element['id_contrato'];
+                        // Asignar la URL al atributo href
+                        contratovcLink.href = contratovcUrl;
+                        contratovcLink.hidden = false;
+                        document.getElementById('td8vc').style.color = "black";
+                    break;
+                    case 'Lista de calificaciones':
+                        const calificacionesvcLink = document.getElementById('show_calificacionesvc');
+                        const calificacionevcsUrl = "/lista/calificacion/" + element['id_curso'];
+                        calificacionesvcLink.href = calificacionesvcUrl;
+                        calificacionesvcLink.hidden = false;
+                        document.getElementById('td10vc').style.color = "black";
+                    break;
+                    default:
+                    break;
+                }
+
+            });
+            // console.log(respuesta); show_contrato contratof_pdf(para subir)
+        });
+
     });
 
     $('#rechazar_entregaModal').on('show.bs.modal', function(event){
@@ -1402,6 +1480,50 @@
         console.log(id);
         document.getElementById('id_contrato_agenda').value = id[0];
         setAnchorHrefs(id, true, false);
+
+        var datos = {valor: id['0']};
+        var url = '/efirma/busqueda';
+        var request = $.ajax ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+            request.done(( respuesta) =>
+        {
+            respuesta.forEach(element => {
+                console.log(element);
+                switch (element['tipo_archivo']) {
+                    case 'Contrato':
+                        // Obtener el elemento <a> por su id
+                        const contratoLink = document.getElementById('show_contrato');
+                        // Construir la URL dinámica utilizando la ruta y el ID correspondiente
+                        const contratoUrl = "/contrato/" + element['id_contrato'];
+                        // Asignar la URL al atributo href
+                        contratoLink.href = contratoUrl;
+                        contratoLink.hidden = false;
+                        $('#contratof_pdf_label').attr('hidden', true);
+                        $('#contratof_pdf').prop('required', false);
+                        $('#contratof_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td8').style.color = "black";
+                    break;
+                    case 'Lista de asistencia':
+                        const asistenciaLink = document.getElementById('show_asistencias');
+                        const asistenciaUrl = "/lista/asistencia/" + element['id_curso'];
+                        asistenciaLink.href = asistenciaUrl;
+                        asistenciaLink.hidden = false;
+                        $('#asistencias_pdf_label').attr('hidden', true);
+                        $('#asistencias_pdf').prop('required', false);
+                        $('#asistencias_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td10').style.color = "black";
+                    break;
+                    default:
+                    break;
+                }
+
+            });
+            // console.log(respuesta); show_contrato contratof_pdf(para subir)
+        });
     });
 
     $('#agendarModalCertificacion').on('show.bs.modal', function(event){
@@ -1410,6 +1532,50 @@
         // console.log(id);
         document.getElementById('id_contrato_agendac').value = id[0];
         setAnchorHrefs(id, false, false);
+
+        var datos = {valor: id['0']};
+        var url = '/efirma/busqueda';
+        var request = $.ajax ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+            request.done(( respuesta) =>
+        {
+            respuesta.forEach(element => {
+                console.log(element);
+                switch (element['tipo_archivo']) {
+                    case 'Contrato':
+                        // Obtener el elemento <a> por su id
+                        const contratocLink = document.getElementById('show_contratoc');
+                        // Construir la URL dinámica utilizando la ruta y el ID correspondiente
+                        const contratocUrl = "/contrato/" + element['id_contrato'];
+                        // Asignar la URL al atributo href
+                        contratocLink.href = contratocUrl;
+                        contratocLink.hidden = false;
+                        $('#contratof_pdfc_label').attr('hidden', true);
+                        $('#contratof_pdfc').prop('required', false);
+                        $('#contratof_iconc').attr('class', "fas fa-check text-success");
+                        document.getElementById('td8c').style.color = "black";
+                    break;
+                    case 'Lista de calificaciones':
+                        const calificacionesLink = document.getElementById('show_calificacionesc');
+                        const calificacionesUrl = "/lista/calificacion/" + element['id_curso'];
+                        calificacionesLink.href = calificacionesUrl;
+                        calificacionesLink.hidden = false;
+                        $('#asistencias_pdfc_label').attr('hidden', true);
+                        $('#asistencias_pdfc').prop('required', false);
+                        $('#calificaciones_iconc').attr('class', "fas fa-check text-success");
+                        document.getElementById('td10c').style.color = "black";
+                    break;
+                    default:
+                    break;
+                }
+
+            });
+            // console.log(respuesta); show_contrato contratof_pdf(para subir)
+        });
     });
 
     $('#recepcionModal').on('show.bs.modal', function(event){
@@ -1526,12 +1692,12 @@
                     document.getElementById('td'+[i+1]+td).style.color = "black";
 
                     if (idx[idx.length - 1] == "EN ESPERA"){
-                        $(variables[i]).attr('hidden', true);
+                        $(variables[i]+'_label').attr('hidden', true);
                         dnd = anchors[i].substring(1);
                         // $(anchors[i]).parent().parent().css("background-color", "lightgray");
                     } else {
                         // $(anchors[i]).parent().parent().css("background-color", "white");
-                        $(variables[i]).attr('hidden', false);
+                        $(variables[i]+'_label').attr('hidden', false);
                         $(variables[i]).prop('required', false);
                     }
 
@@ -1539,7 +1705,7 @@
             } else {
                 $(anchors[i]).attr('hidden', true);
                 document.getElementById('td'+[i+1]+td).style.color = "red";
-                $(variables[i]).attr('hidden', false);
+                $(variables[i]+'_label').attr('hidden', false);
                 $(variables[i]).prop('required', true);
                 $(icons[i]).attr('class', "fas fa-times text-danger");
                 // $(anchors[i]).parent().parent().css("background-color", "white");

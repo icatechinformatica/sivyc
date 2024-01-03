@@ -15,7 +15,7 @@
                 </li>
             </ul>
         @else
-            <ul class="navbar-nav mr-auto">                
+            <ul class="navbar-nav mr-auto">
                 {{--  <!--SUPERVISIONES
                 @can('supervision.escolar')
                     <li class="nav-item g-mx-5--lg dropdown">
@@ -50,7 +50,7 @@
                         </div>
                     </li>
                 @endcan
-                @canany(['solicitud.apertura', 'solicitud.exoneracion','supre.index','contratos.index','pagos.inicio','prevalidar_index-instructor','metasavances.index'])               
+                @canany(['solicitud.apertura', 'solicitud.exoneracion','supre.index','contratos.index','pagos.inicio','prevalidar_index-instructor','metasavances.index'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitud
@@ -81,10 +81,13 @@
                             @can('metasavances.index')
                                 <a class="dropdown-item" href="{{route('pat.metavance.mostrar')}}">Registro de Metas y Avances PAT</a>
                             @endcan
+                            @can('efirma.index') {{-- Agregar efirma.index a usuarios delegados y academicos --}}
+                                <a class="dropdown-item" href="{{route('firma.inicio')}}">Firma Electronica</a>
+                            @endcan
                         </div>
                     </li>
                     @endcanany
-                    @canany(['grupos.calificaciones', 'grupos.recibos'])
+                    @canany(['grupos.calificaciones', 'grupos.recibos', 'expunico.buzon.index', 'expedientes.unicos.index'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Grupos
@@ -108,9 +111,16 @@
                             @can('grupos.recibos')
                                 <a class="dropdown-item" href="{{route('grupos.recibos.buscar')}}">Buscar Recibo de Pago</a>
                             @endcan
+                            {{-- Expedientes Unicos --}}
+                            @can('expedientes.unicos.index')
+                                <a class="dropdown-item" href="{{route('expunico.principal.mostrar.get')}}">Registro de Expedientes Unicos</a>
+                            @endcan
+                            @can('expunico.buzon.index')
+                                <a class="dropdown-item" href="{{route('buzon.expunico.index')}}">Buzon de Expediente Unicos</a>
+                            @endcan
                         </div>
                     </li>
-                @endcanany                
+                @endcanany
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -155,7 +165,7 @@
                                 <a class="dropdown-item" href="{{route('seguimento.avance.unidades.formatot.ejecutiva.index')}}">Seguimiento Ejecutivo a Unidades Para el Formato T</a>
                         </div>
                     </li>
-                @endcan                
+                @endcan
                 @can('solicitudes')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -184,10 +194,10 @@
                             @endcan
                             @can('fechaspat.index')
                                 <a class="dropdown-item" href="{{route('pat.fechaspat.mostrar')}}">Programación de Fechas de Entrega PAT</a>
-                            @endcan  
+                            @endcan
                             @can('solicitudes.contratos.index')
                                 <a class="dropdown-item" href="{{route('contrato-inicio')}}">Contratos</a>
-                            @endcan                         
+                            @endcan
                             @can('solicitudes.pagos.inicio')
                                 <a class="dropdown-item" href="{{route('pago-inicio')}}">Recepci&oacute;n Digital para Pagos</a>
                             @endcan
@@ -248,7 +258,7 @@
                         Reportes
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        {{-- <a class="dropdown-item" href="{{route('reportes.formatoT')}}">Reporte de Formato T</a>                         --}}                        
+                        {{-- <a class="dropdown-item" href="{{route('reportes.formatoT')}}">Reporte de Formato T</a>                         --}}
                         @can('reportes.cursos')
                             <a class="dropdown-item" href="{{route('reportes.cursos.index')}}">Cursos Autorizados</a>
                         @endcan
@@ -275,7 +285,7 @@
                         @can('reportes.rf001')
                             <a class="dropdown-item" href="{{route('reportes.concentradoingresos')}}">RF-001</a>
                         @endcan
-                        @can('financieros.reportevalrec')                        
+                        @can('financieros.reportevalrec')
                             <a class="dropdown-item" href="{{route('docummentospago.reporte')}}">Trámites Recepcionados</a>
                         @endcan
 

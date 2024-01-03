@@ -104,25 +104,29 @@
         </div>
         <hr style="border-color:dimgray">
         <h2>Datos de Pago de Curso
-            <button type="button" class="btn btn-primary float-right" onclick="addField()">Añadir Movimiento</button>
+            {{-- <button type="button" class="btn btn-primary float-right" onclick="addField()">Añadir Movimiento</button> --}}
         </h2>
         <div id="fieldsContainer">
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
-                    <input type="text" name="norecibo" id="norecibo" placeholder="No.Recibo" class="form-control" readonly />
+                    <label for="inputnorecibo" class="control-label">Folio de Recibo de Pago</label>
+                    <input type="text" name="no_recibo" id="no_recibo" placeholder="No.Recibo" class="form-control" readonly />
                 </div>
                 <div class="form-group col-md-3">
+                    <label for="fecha_movimiento_bancario_0">Fecha de Expedición</label>
+                    <input type="date" class="form-control" id="fecha_expedicion" name="fecha_expedicion" readonly>
+                </div>
+                {{-- <div class="form-group col-md-3">
                     <label for="movimiento_bancario_0">Movimiento Bancario</label>
                     <input type="text" class="form-control" id="movimiento_bancario_0" name="movimiento_bancario_[0]">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="fecha_movimiento_bancario_0">Fecha de Movimiento</label>
                     <input type="date" class="form-control" id="fecha_movimiento_bancario_0" name="fecha_movimiento_bancario_[0]">
-                </div>
+                </div> --}}
             </div>
         </div>
-        <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button>
+        {{-- <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button> --}}
         <br><br><br>
         <div class="row">
             <div class="col-lg-12 margin-tb">
@@ -300,10 +304,12 @@ function textLabel(text) {
                             // total = parseFloat(total).toFixed(2);
 
                             document.getElementById('addmore['+x+'][importe]').value = respuesta['importe_total'];
-                            document.getElementById('norecibo').value = respuesta['recibo'];
-                            document.getElementById('movimiento_bancario').value = respuesta['movimiento_bancario'];
-                            document.getElementById('fecha_movimiento_bancario').value = respuesta['fecha_movimiento_bancario'];
+                            // document.getElementById('norecibo').value = respuesta['recibo'];
+                            // document.getElementById('movimiento_bancario').value = respuesta['movimiento_bancario'];
+                            // document.getElementById('fecha_movimiento_bancario').value = respuesta['fecha_movimiento_bancario'];
                             document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
+                            document.getElementById('no_recibo').value = respuesta['folio_recibo'];
+                            document.getElementById('fecha_expedicion').value = respuesta['fecha_expedicion'];
 
                         }else{
 

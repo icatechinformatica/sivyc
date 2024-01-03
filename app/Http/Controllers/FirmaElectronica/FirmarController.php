@@ -16,16 +16,16 @@ use App\Models\FirmaElectronica\Tokens_icti;
 use App\Models\tbl_curso;
 
 class FirmarController extends Controller {
-    
+
     public function index() {
         $email = Auth::user()->email;
         $docsFirmar = DocumentosFirmar::where('status','!=','CANCELADO')
-                        ->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x 
-                            WHERE x->'_attributes'->>'email_firmante' IN ('".$email."') 
+                        ->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x
+                            WHERE x->'_attributes'->>'email_firmante' IN ('".$email."')
                             AND x->'_attributes'->>'firma_firmante' is null)")->orderBy('id', 'desc')->get();
         $docsFirmados = DocumentosFirmar::where('status', 'EnFirma')
-                        ->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x 
-                        WHERE x->'_attributes'->>'email_firmante' IN ('".$email."') 
+                        ->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x
+                        WHERE x->'_attributes'->>'email_firmante' IN ('".$email."')
                         AND x->'_attributes'->>'firma_firmante' <> '')")
                         ->orWhere(function($query) use ($email) {
                             $query->where('obj_documento_interno->emisor->_attributes->email', $email)
@@ -33,13 +33,13 @@ class FirmarController extends Controller {
                         })->orderBy('id', 'desc')->get();
 
         $docsValidados = DocumentosFirmar::where('status', '=', 'VALIDADO')
-                        ->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x 
+                        ->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x
                         WHERE x->'_attributes'->>'email_firmante' IN ('".$email."'))")
                         ->orWhere(function($query) use ($email) {
                             $query->where('obj_documento_interno->emisor->_attributes->email', $email)
                                     ->where('status', 'VALIDADO');
                         })->orderBy('id', 'desc')->get();
-        
+
         foreach ($docsFirmar as $value) {
             $value->base64xml = base64_encode($value->documento);
         }
@@ -63,7 +63,7 @@ class FirmarController extends Controller {
         foreach ($obj_documento['firmantes']['firmante'][0] as $key => $value) {
             if ($value['_attributes']['curp_firmante'] == $request->curp) {
                 $value['_attributes']['fecha_firmado_firmante'] = $request->fechaFirmado;
-                $value['_attributes']['no_serie_firmante'] = $request->serieFirmante; 
+                $value['_attributes']['no_serie_firmante'] = $request->serieFirmante;
                 $value['_attributes']['firma_firmante'] = $request->firma;
                 $value['_attributes']['certificado'] = $request->certificado;
                 $obj_documento['firmantes']['firmante'][0][$key] = $value;
@@ -72,7 +72,7 @@ class FirmarController extends Controller {
         foreach ($obj_documento_interno['firmantes']['firmante'][0] as $key => $value) {
             if ($value['_attributes']['curp_firmante'] == $request->curp) {
                 $value['_attributes']['fecha_firmado_firmante'] = $request->fechaFirmado;
-                $value['_attributes']['no_serie_firmante'] = $request->serieFirmante; 
+                $value['_attributes']['no_serie_firmante'] = $request->serieFirmante;
                 $value['_attributes']['firma_firmante'] = $request->firma;
                 $value['_attributes']['certificado'] = $request->certificado;
                 $obj_documento_interno['firmantes']['firmante'][0][$key] = $value;
@@ -115,7 +115,7 @@ class FirmarController extends Controller {
                 'obj_documento' => json_encode($obj_documento),
                 'obj_documento_interno' => json_encode($obj_documento_interno),
                 'documento' => $result,
-                'documento_interno' => $result2 
+                'documento_interno' => $result2
             ]);
 
         return redirect()->route('firma.inicio')->with('warning', 'Documento firmado exitosamente!');
@@ -165,12 +165,12 @@ class FirmarController extends Controller {
 
         $result = $documento->link_pdf;
         $fileContent = file_get_contents($result, 'rb');
-        
+
         $pdf = new Fpdi();
         // $pdf->addPage('L','Letter');
         $pageCount =  $pdf->setSourceFile(StreamReader::createByString($fileContent));
-        
-        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) { 
+
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $tplId = $pdf->importPage($pageNo);
             if ($tipo_archivo == 'Contrato') {
                 $pdf->addPage('P','A4'); //
@@ -185,7 +185,7 @@ class FirmarController extends Controller {
         } else {
             $pdf->addPage('L','Letter');
         }
-        
+
         // The new content
         $fontSize = '15';
         $fontColor = `255,0,0`;
@@ -197,7 +197,7 @@ class FirmarController extends Controller {
         // $pdf->SetTextColor($fontColor);
         $pdf->Text($left,$top,$text);
         $pdf->Text(16, 60, 'Firmas e informacion identificadora');
-        
+
         $pdf->SetFont("helvetica", '', 7);
         // documento
         $pdf->SetTextColor(98,98,98);
@@ -206,7 +206,7 @@ class FirmarController extends Controller {
         $pdf->Text(20, 35, 'Documento creado por:');
         $pdf->Text(20, 40, 'Numero de paginas:');
         $pdf->Text(20, 45, 'Numero de firmantes:');
-        
+
         $pdf->SetTextColor($fontColor);
         $pdf->Text(80, 25, $objeto['archivo']['_attributes']['nombre_archivo']);
         $pdf->Text(80, 30, $documento->fecha_sellado);
@@ -233,7 +233,7 @@ class FirmarController extends Controller {
                 $pdf->Text($x, $y + 27, 'Fecha y hora de Firma:');
                 $pdf->Text($x, $y + 32, 'Puesto:');
             }
-            
+
             $pdf->SetTextColor($fontColor);
             $pdf->Text($x + 40, $y, $value['_attributes']['nombre_firmante']);
             if ($tipo_archivo == 'Contrato') {
@@ -254,7 +254,7 @@ class FirmarController extends Controller {
         }
 
         $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$folio";
-        
+
         $parts = explode('.', $folio);
         $locat = storage_path("app/public/qrcode/$parts[0].png");
         $location = str_replace('\\','/', $locat);
@@ -293,9 +293,9 @@ class FirmarController extends Controller {
     public function generarToken(Request $request) {
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
-        ])->post('https://interopera.chiapas.gob.mx/gobid/api/Auth/TokenAppAuth', [ 
-            'nombre' => 'Firma Electronica', 
-            'key' => '4E520F58-7103-479B-A2EC-FEE907409053' 
+        ])->post('https://interopera.chiapas.gob.mx/gobid/api/Auth/TokenAppAuth', [
+            'nombre' => 'Firma Electronica',
+            'key' => '4E520F58-7103-479B-A2EC-FEE907409053'
         ]);
 
         $token = $resToken->json();

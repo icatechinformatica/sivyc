@@ -57,11 +57,13 @@ $(function(){
                             total = parseFloat(total).toFixed(2);
 
                             document.getElementById('addmore['+x+'][importe]').value = total;
-                            document.getElementById('norecibo').value = respuesta['recibo'];
-                            document.getElementById('movimiento_bancario').value = respuesta['movimiento_bancario'];
-                            document.getElementById('fecha_movimiento_bancario').value = respuesta['fecha_movimiento_bancario'];
+                            // document.getElementById('norecibo').value = respuesta['recibo'];
+                            // document.getElementById('movimiento_bancario').value = respuesta['movimiento_bancario'];
+                            // document.getElementById('fecha_movimiento_bancario').value = respuesta['fecha_movimiento_bancario'];
                             // document.getElementById('factura').value = respuesta['factura'];
                             // document.getElementById('fecha_factura').value = respuesta['fecha_factura'];
+                            document.getElementById('no_recibo').value = respuesta['folio_recibo'];
+                            document.getElementById('fecha_expedicion').value = respuesta['fecha_expedicion'];
                             document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
                         }else{
                             console.log("ESto es una respuesta" + respuesta);

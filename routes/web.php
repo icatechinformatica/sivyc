@@ -842,11 +842,11 @@ Route::post('/estadisticas/ecursos','Estadisticas\ecursosController@index')->nam
 Route::post('/cestadisticas/ecursos/xls', 'Estadisticas\ecursosController@xls')->name('estadisticas.ecursos.xls');
 
 //firma electronica
-Route::get('/firma/inicio', 'FirmaElectronica\FirmarController@index')->name('firma.inicio');
-Route::post('/firma/update', 'FirmaElectronica\FirmarController@update')->name('firma.update');
-Route::post('/firma/sellar', 'FirmaElectronica\FirmarController@sellar')->name('firma.sellar');
-Route::post('/firma/generar', 'FirmaElectronica\FirmarController@generarPDF')->name('firma.generarPdf');
-Route::post('/firma/token', 'firmaElectronica\FirmaController@generarToken')->name('firma.token');
+// Route::get('/firma/inicio', 'FirmaElectronica\FirmarController@index')->name('firma.inicio');
+// Route::post('/firma/update', 'FirmaElectronica\FirmarController@update')->name('firma.update');
+// Route::post('/firma/sellar', 'FirmaElectronica\FirmarController@sellar')->name('firma.sellar');
+// Route::post('/firma/generar', 'FirmaElectronica\FirmarController@generarPDF')->name('firma.generarPdf');
+// Route::post('/firma/token', 'firmaElectronica\FirmaController@generarToken')->name('firma.token');
 
 //Notificaciones
 Route::get('send', 'webController\NotificationController@sendNotification');
@@ -890,3 +890,19 @@ Route::get('/reportes/solicitudesApoyo', 'solicitudes\SolApoyoController@index')
 // Formato T
 Route::post('/formatoT/resumenUnidad', 'Validacion\validacionDtaController@resumen_unidad_pdf')->name('resumen.unidad.formatot');
 Route::post('/formatoT/subir/resumenUnidad', 'Validacion\validacionDtaController@subir_resumen_unidad_pdf')->name('subir.resumen.unidad.formatot');
+
+
+// firma electronica
+Route::get('/firma/inicio', 'efirma\FirmaController@index')->name('firma.inicio');
+Route::post('/firma/update', 'efirma\FirmaController@update')->name('firma.update');
+Route::post('/firma/sellar', 'efirma\FirmaController@sellar')->name('firma.sellar');
+Route::post('/firma/generar', 'efirma\FirmaController@generarPDF')->name('firma.generarPdf');
+Route::post('/firma/cancelar', 'efirma\FirmaController@cancelarDocumento')->name('firma.cancelar');
+Route::post('/firma/token', 'efirma\FirmaController@generarToken')->name('firma.token');
+Route::post('/efirma/busqueda', 'efirma\FirmaController@getdocumentos')->name('supre.busqueda.curso');
+Route::post('/asistencia/rechazo', 'efirma\AsistenciaController@rechazo')->name('asistencia-rechazo');
+Route::post('/asistencia/validar', 'efirma\AsistenciaController@generar_xml')->name('asistencia-xml');
+Route::get('/lista/asistencia/{id}', 'efirma\AsistenciaController@asistencia_pdf')->name('asistencia-pdf');
+Route::get('/lista/calificacion/{id}', 'efirma\CalificacionController@calificacion_pdf')->name('calificacion-pdf');
+Route::post('/calificacion/rechazo', 'efirma\CalificacionController@rechazo')->name('calificacion-rechazo');
+Route::post('/calificacion/validar', 'efirma\CalificacionController@generar_xml')->name('calificacion-xml');

@@ -10,6 +10,7 @@ use App\Models\directorio;
 use App\Models\especialidad_instructor;
 use App\Models\contrato_directorio;
 use App\Models\Calendario_Entrega;
+use App\Models\DocumentosFirmar;
 use Illuminate\Http\Request;
 use Redirect,Response;
 use App\Http\Controllers\Controller;
@@ -92,6 +93,10 @@ class PagoController extends Controller
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
         ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
         ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+        ->leftJoin('documentos_firmar', function($join) {
+            $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
+                 ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
+        })
         ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
         ->orderBy('pagos.created_at', 'desc')
         ->PAGINATE(50, [
@@ -103,7 +108,7 @@ class PagoController extends Controller
             'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.soportes_instructor',
             'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
             'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio',
-            'pagos.updated_at','pagos.status_transferencia',
+            'pagos.updated_at','pagos.status_transferencia','documentos_firmar.status AS dstat','arch_pago',
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
             // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
@@ -148,12 +153,18 @@ class PagoController extends Controller
                 ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
                 ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
                 ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
+                // ->WHERE('documentos_firmar.tipo_archivo','Contrato')
                 ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
                 ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                 ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                 ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
-                ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
+                ->leftJoin('documentos_firmar', function($join) {
+                    $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
+                         ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
+                })
+                // ->LEFTJOIN('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')
+                ->LEFTJOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
                 ->orderBy('pagos.created_at', 'desc')
                 // ->orderBy('contratos.fecha_firma', 'desc')
                 ->PAGINATE(50, [
@@ -163,8 +174,8 @@ class PagoController extends Controller
                     'folios.permiso_editar','pagos.status_recepcion','pagos.arch_solicitud_pago','pagos.fecha_agenda','pagos.created_at','pagos.arch_asistencia','pagos.arch_evidencia',
                     'pagos.arch_calificaciones','pagos.arch_evidencia','pagos.agendado_extemporaneo','pagos.observacion_rechazo_recepcion',
                     'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso','tbl_cursos.soportes_instructor',
-                    'tabla_supre.doc_validado','instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
-                    'tbl_cursos.nombre','pagos.fecha_envio','pagos.updated_at','pagos.status_transferencia',
+                    'tabla_supre.doc_validado','instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine','arch_pago',
+                    'tbl_cursos.nombre','pagos.fecha_envio','pagos.updated_at','pagos.status_transferencia','documentos_firmar.status AS dstat',
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
                     // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
@@ -525,9 +536,9 @@ class PagoController extends Controller
 
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
 
-        //return view('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
+        return view('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
         $pdf = PDF::loadView('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
-        return $pdf->download('medium.pdf');
+        return $pdf->stream('medium.pdf');
     }
 
     public function agendar_entrega_pago(Request $request)
