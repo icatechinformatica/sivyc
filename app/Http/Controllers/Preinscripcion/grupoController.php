@@ -218,7 +218,7 @@ class grupoController extends Controller
 
     public function save(Request $request)
     {
-        $objeto_curp = array('url' => ''); //Para json doc_soporte
+        // $objeto_curp = array('url' => ''); //Para json doc_soporte
         if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
         $curp = $request->busqueda;    //dd($request->all());
         $matricula = $message = NULL;
@@ -261,19 +261,18 @@ class grupoController extends Controller
                                     return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
                                 }
                                 #Consultar doc url Curp json by Jose Luis Moreno Arcos
-                                if($curp){
-                                    try {
-                                        $resul_alumnos = Alumnopre::select('requisitos->documento as url_doc')->where('curp', '=', $curp)->first();
-                                        if(isset($resul_alumnos->url_doc)){
-                                            $objeto_curp = array('url' => $resul_alumnos->url_doc);
-                                        }else{
-                                            $objeto_curp = array('url' => '');
-                                        }
-                                    } catch (\Throwable $th) {
-                                        //throw $th;
-                                    }
-
-                                }
+                                // if($curp){
+                                //     try {
+                                //         $resul_alumnos = Alumnopre::where('curp', '=', $curp)->first();
+                                //         if ($resul_alumnos && isset($resul_alumnos->requisitos['documento'])) {
+                                //             $objeto_curp = ['url' => $resul_alumnos->requisitos['documento']];
+                                //         } else {
+                                //             $objeto_curp = ['url' => ''];
+                                //         }
+                                //     } catch (\Throwable $th) {
+                                //         // Manejar la excepción según sea necesario
+                                //     }
+                                // }
 
                                 if ($a_reg) {
                                     $id_especialidad = $a_reg->id_especialidad;
@@ -307,7 +306,7 @@ class grupoController extends Controller
                                     $depen_telrepre = $a_reg->depen_telrepre;
                                     $realizo = $a_reg->realizo;
                                     $iduser_created = $a_reg->iduser_created;
-                                    $jsoncurp = $objeto_curp; //Doc Curp
+                                    // $jsoncurp = $objeto_curp; //Doc Curp
                                 } else {
                                     $id_especialidad = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
                                     $id_unidad = DB::table('tbl_unidades')->select('id', 'plantel')->where('unidad', $request->unidad)->value('id');
@@ -345,7 +344,7 @@ class grupoController extends Controller
                                     }
                                     $realizo = $this->realizo;
                                     $iduser_created =  $this->id_user;
-                                    $jsoncurp = $objeto_curp; //Doc Curp
+                                    // $jsoncurp = $objeto_curp; //Doc Curp
                                 }
                                 if ($id_cerss) $cerrs = true;
                                 else $cerrs = NULL;
@@ -364,7 +363,7 @@ class grupoController extends Controller
                                                         'folio_pago'=>$folio_pago, 'fecha_pago'=>$fecha_pago, 'nombre'=>$alumno->nombre, 'apellido_paterno'=>$alumno->apellido_paterno,
                                                         'apellido_materno'=>$alumno->apellido_materno,'curp'=>$curp,'escolaridad'=>$alumno->escolaridad,
                                                         'id_instructor'=>$instructor,'efisico'=>$efisico,'medio_virtual'=>$medio_virtual,'link_virtual'=>$link_virtual,'servicio'=>$servicio,'cespecifico'=>$cespecifico,
-                                                        'fcespe'=>$fcespe, 'observaciones'=>$observaciones, 'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre, 'doc_soporte'=>$jsoncurp
+                                                        'fcespe'=>$fcespe, 'observaciones'=>$observaciones, 'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre
                                                     ]
                                                 );
                                                 if ($result) $message = "Operación Exitosa!!";
@@ -1346,7 +1345,6 @@ class grupoController extends Controller
         $message = null; //consultar instructores con id y que devuelva campo extra sea igual a true ya que lo devuelva un if si curso extra es igual a false entra a la validacion y si es true entonces cambie valido a true
 
         $curso_extra = DB::TABLE('instructores')->WHERE('id',$id_instructor)->value('curso_extra');
-        $curso_extra = true;
 
         if($curso_extra == false)
         {
