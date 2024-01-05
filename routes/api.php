@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\FotosController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController\Api\PassportController;
+use App\Http\Controllers\efirma\RecibirImgController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +61,7 @@ use App\Http\Controllers\ApiController\Api\PassportController;
 
 
     //api app movil "supervision icatech"eb
-    
+
     Route::post('supervision/movil/cursos-supervisar','ApiController\ApiSupervisionMovil\SupervisionMovilController@getCursosPorSupervisar');
     Route::get('supervision/movil/curso/{clave}','ApiController\ApiSupervisionMovil\SupervisionMovilController@getCurso');
     Route::get('supervision/movil/alumnos/{idGrupo}','ApiController\ApiSupervisionMovil\SupervisionMovilController@getAlumnos');
@@ -99,3 +102,11 @@ Route::post('sivycMovil/login', 'ApiController\ApisMovil\LoginMovil@login');
 Route::post('sivycMovil/updateRead', 'ApiController\ApisMovil\HomeMovil@updateRead');
 Route::post('sivycMovil/updateToken', 'ApiController\ApisMovil\HomeMovil@updateToken');
 Route::post('sivycMovil/getNotificaciones', 'ApiController\ApisMovil\HomeMovil@getNotificaciones');
+
+
+// Route::middleware('jwt')->post('/recibir-imagenes', [RecibirImgController::class, 'recibirImagenes']);
+Route::prefix('v1')->group(function (){
+    //Prefijo V1, Todo lo que este dentro de este grupo se accedera escribiendo v1 en el navegador,
+    //es decir /api/v1/*
+    Route::post('evidencias', [FotosController::class, 'savefotos']);
+});

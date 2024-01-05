@@ -42,9 +42,11 @@ return [
         ],
 
         'api' => [
-            'driver' => 'passport',
+            // 'driver' => 'passport',
+            // 'provider' => 'users',
+            // 'hash' => false,
+            'driver' => 'jwt',
             'provider' => 'users',
-            'hash' => false,
         ],
 
         'api_sice' => [

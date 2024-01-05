@@ -133,6 +133,26 @@
                                                             </tr>
                                                         @endif
                                                     @endforeach
+                                                    {{-- By Jose Luis Reporte Fotografico--}}
+                                                    {{-- @if (count($docsVistoReport) > 0)
+                                                        @foreach ($docsVistoReport as $item)
+                                                            <tr>
+                                                                <td><small>Reporte fotografico</small></td>
+                                                                <td>
+                                                                    <a href="{{route('reportefoto-pdf', ['id' => $item->id])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                </td>
+                                                                <td><small>{{$item->nombre}}</small></td>
+                                                                <td>
+                                                                    <button class="btn btn-outline-danger" type="button" onclick="rechazarDocumento('{{$item->id}}','reportefoto')">Rechazar</button>
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-outline-success" type="button" onclick="validarDocumento('{{$item->id}}','reportefoto')">Validar</button>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @endif --}}
                                                 </tbody>
                                             </table>
                                         </div>
@@ -194,6 +214,11 @@
                                                                 @break
                                                                 @case('Lista de calificaciones')
                                                                     <a href="{{route('calificacion-pdf', ['id' => $docFirmar->idcursos])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
+                                                                @case('Reporte fotografico')
+                                                                    <a href="{{route('reportefoto-pdf', ['id' => $docFirmar->idcursos])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
@@ -281,6 +306,11 @@
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
+                                                                @case('Reporte fotografico')
+                                                                    <a href="{{route('reportefoto-pdf', ['id' => $docFirmado->idcursos])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
                                                                 @default {{-- Contratos --}}
                                                                     <a href="{{route('contrato-pdf', ['id' => $docFirmado->id_contrato])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
@@ -357,6 +387,11 @@
                                                                 @break
                                                                 @case('Lista de calificaciones')
                                                                     <a href="{{route('calificacion-pdf', ['id' => $docValidado->idcursos])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
+                                                                @case('Reporte fotografico')
+                                                                    <a href="{{route('reportefoto-pdf', ['id' => $docValidado->idcursos])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
@@ -581,7 +616,7 @@
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/access.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataSign.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataTransportSign.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos.js"></script>
+    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script>
 
     <script>
         var cadena = '', xmlBase64 = '', curp = '', idFile = '';
@@ -613,7 +648,7 @@
         }
 
         function firmarDocumento(token) {
-            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '87', token);
+            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '22', token);
             // RAQN770121HDFMZV08
             console.log(curp)
             return vresponseSignature;
@@ -680,8 +715,10 @@
                 $('#txtIdValidado').val(id);
                 if(tipo == 'asistencia') {
                     $('#formValidar').attr('action', '/asistencia/validar');
-                } else {
+                } else if(tipo == 'calificacion'){
                     $('#formValidar').attr('action', '/calificacion/validar');
+                }else if(tipo == 'reportefoto'){ //By Jose Luis
+                    $('#formValidar').attr('action', '/reportefoto/validar');
                 }
                 $('#formValidar').submit();
             }
@@ -693,8 +730,10 @@
             $('#txtTipoRechazo').val(tipo);
             if(tipo == 'asistencia') {
                 $('#formRechazo').attr('action', '/asistencia/rechazo');
-            } else {
+            } else if(tipo == 'calificacion') {
                 $('#formRechazo').attr('action', '/calificacion/rechazo');
+            }else if(tipo == 'reportefoto'){ //By Jose Luis
+                $('#formRechazo').attr('action', '/reportefoto/rechazo');
             }
             $('#modalRechazo').modal('toggle');
         }

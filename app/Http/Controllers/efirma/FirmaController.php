@@ -34,6 +34,7 @@ class FirmaController extends Controller {
     // php artisan serve --port=8001
     public function index(Request $request) {
         $docsVistobueno2 = array();
+        $docsVistoReport = array(); #Reporte fotografico
         $email = Auth::user()->email;
         $rol = DB::Table('role_user')->Select('role_id')->Where('user_id', Auth::user()->id)->First();
         $unidad_user = DB::Table('tbl_unidades')->Where('id',Auth::user()->unidad)->Value('ubicacion');
@@ -51,6 +52,17 @@ class FirmaController extends Controller {
             //     })
             //     ->orderByDesc('clave')
             //     ->get();
+
+            #By Jose Luis Moreno
+            $docsVistoReport = tbl_curso::select(
+                'tbl_cursos.id',
+                'tbl_cursos.nombre',
+                'tbl_cursos.evidencia_fotografica',
+                'tbl_cursos.clave',
+                DB::raw("tbl_cursos.evidencia_fotografica->>'status_validacion' as status_validacion"))
+            ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
+            ->where('tbl_unidades.ubicacion',$unidad_user)
+            ->whereRaw("tbl_cursos.evidencia_fotografica->>'status_validacion' = 'ENVIADO'")->get();
 
             $docsVistoBueno2 = tbl_curso::select(
                 'tbl_cursos.id',
@@ -189,10 +201,11 @@ class FirmaController extends Controller {
             $token = $getToken->token;
         }
         // dd($docsFirmados);
-        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol','curpUser'));
+        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol','curpUser',
+                                                                        'docsVistoReport'));
     }
 
-    public function update(Request $request) {
+    public function update(Request $request) {  #Se ejecuta al dar click en firmar
         $documento = DocumentosFirmar::where('id', $request->idFile)->first();
         // dd($documento);
 
@@ -403,6 +416,7 @@ class FirmaController extends Controller {
                             : [])
                 );
 
+
             if($request->txtTipo == 'Contrato') {
                 $folio = folio::Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
                 ->Where('clave',$request->txtClave)
@@ -412,6 +426,22 @@ class FirmaController extends Controller {
                 ->update(
                         ['status' => 'Capturando']
                 );
+            }
+
+            //By jose luis Actualizar json reporte foto en tbl_cursos
+            if($request->txtTipo == 'Reporte fotografico'){
+                try {
+                    $curso = tbl_curso::where('clave', $request->txtClave)->first();
+                    if ($curso) {
+                        $json = $curso->evidencia_fotografica;
+                        $json['status_validacion'] = 'RETORNADO';
+                        $json['observacion_reporte'] = $request->motivo;
+                        $curso->evidencia_fotografica = $json;
+                        $curso->save();
+                    }
+                } catch (\Throwable $th) {
+                    return redirect()->route('firma.inicio')->with('warning', 'Error al actualizar reporte fotografico!');
+                }
             }
             return redirect()->route('firma.inicio')->with('warning', 'Documento cancelado exitosamente!');
         } else {
@@ -435,8 +465,10 @@ class FirmaController extends Controller {
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'SISTEM_IVINCAP',
-            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
+            // 'nombre' => 'SISTEM_IVINCAP',
+            // 'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
+            'nombre' => 'FirmaElectronica',
+            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
         ]);
 
         $token = $resToken->json();
@@ -451,7 +483,7 @@ class FirmaController extends Controller {
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token
-        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
             'xml_Firmado' => $xml
         ]);
         return $response1;

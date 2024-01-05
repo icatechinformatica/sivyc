@@ -28,6 +28,7 @@
         "setasign/fpdi": "^2.0",
         "smalot/pdfparser": "^2.7",
         "spatie/array-to-xml": "^2.15",
+        "tymon/jwt-auth": "^1.0",
         "vyuldashev/xml-to-array": "^1.0"
     },
     "require-dev": {
