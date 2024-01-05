@@ -66,9 +66,9 @@
                     <label for="inputhonorarios">Regimen</label>
                     <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
-                        <option value="HONORARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS') selected @endif >Honorarios</option>
-                        {{-- <option value="ASIMILADOS A SALARIOS" @if($datainstructor->tipo_honorario == 'ASIMILADOS A SALARIOS') selected @endif>Asimilados a Salarios</option> --}}
-                        <option value="HONORARIOS Y ASIMILADOS A SALARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIOS') selected @endif>Honorarios y Asimilados a Salarios</option>
+                        {{-- <option value="HONORARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS') selected @endif >Honorarios</option> --}}
+                        <option value="ASIMILADOS A SALARIOS" @if($datainstructor->tipo_honorario == 'ASIMILADOS A SALARIOS') selected @endif>Asimilados a Salarios</option>
+                        {{-- <option value="HONORARIOS Y ASIMILADOS A SALARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIOS') selected @endif>Honorarios y Asimilados a Salarios</option> --}}
                     </select>
                 </div>
                 <div class="form-group col-md-3">
