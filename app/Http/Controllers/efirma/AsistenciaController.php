@@ -240,7 +240,13 @@ class AsistenciaController extends Controller
                                 ->First();
 
                         //Generacion de QR
-                        $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                        //Verifica si existe link de verificiacion, de lo contrario lo crea y lo guarda
+                        if(isset($documento->link_verficacion)) {
+                            $verificacion = $documento->link_verficacion;
+                        } else {
+                            $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                            $documento->save();
+                        }
                         ob_start();
                         QRcode::png($verificacion);
                         $qrCodeData = ob_get_contents();
@@ -294,17 +300,17 @@ class AsistenciaController extends Controller
         $termino = explode('-', $curso->termino); $termino[2] = '01';
         $meses = $this->verMeses(array($inicio[0].'-'.$inicio[1].'-'.$inicio[2], $termino[0].'-'.$termino[1].'-'.$termino[2]));
 
-        $body = 'SUBSECRETARÍA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS '.
-        'DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO '.
-        'LISTA DE ASISTENCIA '.
-        '(LAD-04) ';
+        $body = "SUBSECRETARÍA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS \n".
+        "DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO \n".
+        "LISTA DE ASISTENCIA \n".
+        "(LAD-04) \n";
 
         foreach($meses as $key => $mes) {
             $consec = 1;
             $body = $body. 'UNIDAD DE CAPACITACIÓN: '. $curso->plantel. ' '.   $curso->unidad. ' CLAVE CCT: '. $curso->cct. ' CICLO ESCOLAR: '. $curso->ciclo. ' GRUPO: '. $curso->grupo. ' MES: '. $mes['mes'] . ' AÑO: '. $mes['year'].
-            ' AREA: '. $curso->area. ' ESPECIALIDAD: '. $curso->espe. ' CURSO: '. $curso->curso. ' CLAVE: '. $curso->clave.
-            ' FECHA INICIO: '. $curso->fechaini. ' FECHA TERMINO: '. $curso->fechafin. ' HORARIO: '. $curso->dia. ' DE '. $curso->hini. ' A '. $curso->hfin. ' CURP: '. $curso->curp.
-            'NUM NÚMERO DE CONTROL NOMBRE DEL ALUMNO PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)';
+            "\n AREA: ". $curso->area. ' ESPECIALIDAD: '. $curso->espe. ' CURSO: '. $curso->curso. ' CLAVE: '. $curso->clave.
+            "\n FECHA INICIO: ". $curso->fechaini. ' FECHA TERMINO: '. $curso->fechafin. ' HORARIO: '. $curso->dia. ' DE '. $curso->hini. ' A '. $curso->hfin. ' CURP: '. $curso->curp.
+            "NUM NÚMERO DE CONTROL NOMBRE DEL ALUMNO PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S) \n";
             foreach($mes['dias'] as $keyD => $dia){
                 $body = ' '. $body. ' '. ($keyD+1);
             }
@@ -312,7 +318,7 @@ class AsistenciaController extends Controller
             foreach($alumnos as $a) {
                 $tAsis = 0;
                 $tFalta = 0;
-                $body = $body. $consec++. ' '. $a->matricula. ' '. $a->alumno. ' ';
+                $body = $body . "\n". $consec++. ' '. $a->matricula. ' '. $a->alumno. ' ';
                 foreach($mes['dias'] as $dia) {
                     if($a->asistencias != null) {
                         foreach($a->asistencias as $asistencia) {
