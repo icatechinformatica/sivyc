@@ -146,7 +146,7 @@
                 </tr>
             </thead>
             <tbody>
-                @php $ret = FALSE; @endphp
+                @php $ret = $cambio_especialidad = FALSE; @endphp
                 @foreach($data->data_especialidad as $cadwell)
                     @if($cadwell['status'] != 'INACTIVO')
                         {{-- @php dd($cadwell);  @endphp --}}
@@ -167,6 +167,7 @@
                                         @php $gondor = (object) $gondor; @endphp
                                         @if($gondor->id == $cadwell->perfilprof_id)
                                             <td><small>{{ $gondor->grado_profesional}} {{$gondor->area_carrera}}</small></td>
+                                            @php $cambio_especialidad = TRUE; @endphp
                                             @break
                                         @endif
                                     @endforeach
@@ -189,7 +190,7 @@
                                         <td><small>BAJA DE INSTRUCTOR. {{$cadwell->motivo}}</small></td>
                                     @elseif($data->status == 'REACTIVACION EN PREVALIDACION' || $data->status == 'REACTIVACION EN FIRMA')
                                         <td><small>REACTIVACIÓN DE INSTRUCTOR</small></td>
-                                    @elseif($data->tipo_honorario != $regimen_actual)
+                                    @elseif($data->tipo_honorario != $regimen_actual && $cambio_especialidad == FALSE)
                                             <td><small>CAMBIO DE REGIMEN FISCAL</small></td>
                                     @else
                                         <td><small>CAMBIO DE INFORMACIÓN BASICA DEL INSTRUCTOR</small></td>
@@ -220,7 +221,7 @@
                                 </td>
                             </tr>
                         @endif
-                        @if(isset($data->onlyins) || $regimen_actual != $data->tipo_honorario)
+                        @if(isset($data->onlyins))
                             <tr>
                                 <td><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></td>
                                 <td><small>{{ $data->curp }}</small></td>
@@ -229,7 +230,7 @@
                                     <td><small>BAJA DE INSTRUCTOR. {{$cadwell->motivo}}</small></td>
                                 @elseif($data->status == 'REACTIVACION EN PREVALIDACION' || $data->status == 'REACTIVACION EN FIRMA')
                                     <td><small>REACTIVACIÓN DE INSTRUCTOR</small></td>
-                                @elseif($data->tipo_honorario != $regimen_actual)
+                                @elseif($data->tipo_honorario != $regimen_actual && $cambio_especialidad == FALSE)
                                     <td><small>CAMBIO DE REGIMEN FISCAL</small></td>
                                 @else
                                     <td><small>CAMBIO DE INFORMACIÓN BASICA DEL INSTRUCTOR</small></td>
