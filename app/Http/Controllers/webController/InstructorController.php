@@ -3312,15 +3312,18 @@ class InstructorController extends Controller
         $tipo_doc = 'VALIDACION';
         $rplc = array('[',']','"');
         $arrtemp = array();
+        $especialidad_cambios = FALSE;
         if(!isset($request->borrador))
         {
             $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA','BAJA EN FIRMA');
+            $especialidad_cambios = TRUE;
         }
         else
         {
             $arrstat = array('REACTIVACION EN CAPTURA','BAJA EN CAPTURA','REVALIDACION EN CAPTURA','EN CAPTURA','PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION','BAJA EN PREVALIDACION');
+            $especialidad_cambios = TRUE;
         }
-        if($instructor->tipo_honorario != $honorario_actual)
+        if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE)
         {
             $arrstat = array('VALIDADO');
         }
