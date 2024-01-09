@@ -419,7 +419,7 @@ class InstructorController extends Controller
 
     public function send_to_dta(Request $request)
     {
-        // dd($request);
+        dd($request);
         $userId = Auth::user()->id;
         $chk_mod_perfil = $chk_mod_esp = false;
         $movimiento = NULL;
