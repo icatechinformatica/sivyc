@@ -75,7 +75,7 @@
                     <h5><b>MOVIMIENTOS A PREVALIDAR</b></h5>
                 </div>
                 @foreach($especialidades as $aztral)
-                    @if($aztral->status == 'EN FIRMA' || $aztral->status == 'REVALIDACION EN FIRMA' || $aztral->status == 'BAJA EN FIRMA' || $aztral->status == 'REACTIVACION EN FIRMA')
+                    @if($aztral->status == 'EN FIRMA' || $aztral->status == 'REVALIDACION EN FIRMA' || $aztral->status == 'BAJA EN FIRMA' || $aztral->status == 'REACTIVACION EN FIRMA' || ($regimen_actual != $data->tipo_honorario && $data->status == 'EN FIRMA'))
                         @can('instructor.editar_fase2')
                             <div class="form-group col-md-3"></div>
                             <div class="form-group col-md-3">
@@ -146,7 +146,7 @@
                 </tr>
             </thead>
             <tbody>
-                @php $ret = FALSE; @endphp
+                @php $ret = $cambio_especialidad = FALSE; @endphp
                 @foreach($data->data_especialidad as $cadwell)
                     @if($cadwell['status'] != 'INACTIVO')
                         {{-- @php dd($cadwell);  @endphp --}}
@@ -167,6 +167,7 @@
                                         @php $gondor = (object) $gondor; @endphp
                                         @if($gondor->id == $cadwell->perfilprof_id)
                                             <td><small>{{ $gondor->grado_profesional}} {{$gondor->area_carrera}}</small></td>
+                                            @php $cambio_especialidad = TRUE; @endphp
                                             @break
                                         @endif
                                     @endforeach
@@ -189,6 +190,8 @@
                                         <td><small>BAJA DE INSTRUCTOR. {{$cadwell->motivo}}</small></td>
                                     @elseif($data->status == 'REACTIVACION EN PREVALIDACION' || $data->status == 'REACTIVACION EN FIRMA')
                                         <td><small>REACTIVACIÓN DE INSTRUCTOR</small></td>
+                                    @elseif($data->tipo_honorario != $regimen_actual && $cambio_especialidad == FALSE)
+                                            <td><small>CAMBIO DE REGIMEN FISCAL</small></td>
                                     @else
                                         <td><small>CAMBIO DE INFORMACIÓN BASICA DEL INSTRUCTOR</small></td>
                                     @endif
@@ -227,6 +230,8 @@
                                     <td><small>BAJA DE INSTRUCTOR. {{$cadwell->motivo}}</small></td>
                                 @elseif($data->status == 'REACTIVACION EN PREVALIDACION' || $data->status == 'REACTIVACION EN FIRMA')
                                     <td><small>REACTIVACIÓN DE INSTRUCTOR</small></td>
+                                @elseif($data->tipo_honorario != $regimen_actual && $cambio_especialidad == FALSE)
+                                    <td><small>CAMBIO DE REGIMEN FISCAL</small></td>
                                 @else
                                     <td><small>CAMBIO DE INFORMACIÓN BASICA DEL INSTRUCTOR</small></td>
                                 @endif
@@ -801,7 +806,7 @@
             $('#returntounidadwarning').prop("class", "d-none d-print-none")
             var button = $(event.relatedTarget);
             var id = button.data('id');
-            // console.log(id)
+            console.log(id)
             if(id['1'] == '1') {
                 $('#divbasico').prop("class", "form-row d-none d-print-none")
                 $('#divfecha').prop("class", "form-row col-md-9")

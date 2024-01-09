@@ -432,11 +432,19 @@ class FirmaController extends Controller {
     }
 
     public function generarToken(Request $request) {
+        // $resToken = Http::withHeaders([
+        //     'Accept' => 'application/json'
+        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+        //     'nombre' => 'SISTEM_IVINCAP',
+        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
+        // ]);
+
+        // Token Prueba
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'SISTEM_IVINCAP',
-            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
+            'nombre' => 'FirmaElectronica',
+            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
         ]);
 
         $token = $resToken->json();
@@ -448,10 +456,18 @@ class FirmaController extends Controller {
     }
 
     public function sellarFile($xml, $token) {
+        // $response1 = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token
+        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+        //     'xml_Firmado' => $xml
+        // ]);
+
+        // Sellado de prueba
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token
-        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
             'xml_Firmado' => $xml
         ]);
         return $response1;
