@@ -31,7 +31,8 @@ class CalificacionController extends Controller
                 ->First();
 
         $body = $this->create_body($request->txtIdValidado,$info); //creacion de body
-        $body = str_replace(["\r", "\n", "\f"], ' ', $body);
+        // dd($body);
+        // $body = str_replace(["\r", "\n", "\f"], ' ', $body);
 
         $nameFileOriginal = 'Lista de calificaciones '.$info->clave.'.pdf';
         $numOficio = 'RESD-05-'.$info->clave;
@@ -230,7 +231,13 @@ class CalificacionController extends Controller
                         ->First();
 
                 //Generacion de QR
-                $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                //Verifica si existe link de verificiacion, de lo contrario lo crea y lo guarda
+                if(isset($documento->link_verficacion)) {
+                    $verificacion = $documento->link_verficacion;
+                } else {
+                    $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                    $documento->save();
+                }
                 ob_start();
                 QRcode::png($verificacion);
                 $qrCodeData = ob_get_contents();
@@ -272,28 +279,38 @@ class CalificacionController extends Controller
                 ->orderby('i.alumno')
                 ->get();
             $consec = 1;
-            $body = 'SUBSECRETARÍA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS '.
-            'DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO '.
-            'REGISTRO DE EVALUACIÓN POR SUBOBJETIVOS '.
-            '(RESD-05) '.
-            'UNIDAD DE CAPACITACIÓN: '. $curso->plantel. ' '.   $curso->unidad. ' CLAVE CCT: '. $curso->cct. ' AREA: '. $curso->area. ' ESPECIALIDAD: '. $curso->espe.
-            ' CURSO: '. $curso->curso. ' CLAVE: '. $curso->clave. ' CICLO ESCOLAR: '. $curso->ciclo. ' FECHA INICIO: '. $curso->fechaini. ' FECHA TERMINO: '. $curso->fechafin.
-            ' GRUPO: '. $curso->grupo. ' HORARIO: '. $curso->dia. ' DE '. $curso->hini. ' A '. $curso->hfin. ' CURP: '. $curso->curp.
-            'NUM NúMERO DE CONTROL NOMBRE DEL ALUMNO PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S) CLAVE DE CADA SUBOBJETIVO RESULTADO RESULTADO FINAL';
+            $body = "SUBSECRETARÍA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS \n".
+            "DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO \n".
+            "REGISTRO DE EVALUACIÓN POR SUBOBJETIVOS \n".
+            "(RESD-05) ".
+            "UNIDAD DE CAPACITACIÓN: ". $curso->plantel. ' '.   $curso->unidad. ' CLAVE CCT: '. $curso->cct. ' AREA: '. $curso->area. ' ESPECIALIDAD: '. $curso->espe.
+            "\n CURSO: ". $curso->curso. ' CLAVE: '. $curso->clave. ' CICLO ESCOLAR: '. $curso->ciclo. ' FECHA INICIO: '. $curso->fechaini. ' FECHA TERMINO: '. $curso->fechafin.
+            "\n GRUPO: ". $curso->grupo. ' HORARIO: '. $curso->dia. ' DE '. $curso->hini. ' A '. $curso->hfin. ' CURP: '. $curso->curp.
+            "\n NUM NúMERO DE CONTROL NOMBRE DEL ALUMNO PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S) CLAVE DE CADA SUBOBJETIVO RESULTADO RESULTADO FINAL";
                     foreach ($alumnos as $a) {
-                        $body = $body. ($consec++). ' '. $a->matricula. ' '. $a->alumno. ' '. $a->calificacion;
+                        $body = $body. "\n". ($consec++). ' '. $a->matricula. ' '. $a->alumno. ' '. $a->calificacion;
                     }
             return $body;
         } else return "Curso no válido para esta Unidad";
     }
 
     public function generarToken() {
+
+        // $resToken = Http::withHeaders([
+        //     'Accept' => 'application/json'
+        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+        //     'nombre' => 'SISTEM_IVINCAP',
+        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
+        // ]);
+
+        // Token Prueba
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'SISTEM_IVINCAP',
-            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
+            'nombre' => 'FirmaElectronica',
+            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
         ]);
+
         $token = $resToken->json();
 
         Tokens_icti::create([
@@ -306,10 +323,18 @@ class CalificacionController extends Controller
     public function getCadenaOriginal($xmlBase64, $token) {
         // dd(config('app.cadena'));
         // dd(Config::get('app.cadena', 'default'));
+        // $response1 = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token,
+        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        //     'xml_OriginalBase64' => $xmlBase64
+        // ]);
+
+        //api prueba
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token,
-        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
             'xml_OriginalBase64' => $xmlBase64
         ]);
 
