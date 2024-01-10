@@ -283,8 +283,9 @@ class InstructorController extends Controller
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $bancos = Banco::all();
+        $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
 
-        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos'));
+        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos','lista_regimen'));
     }
 
     #----- instructor/guardar -----#
@@ -345,6 +346,7 @@ class InstructorController extends Controller
         $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
                         ->ORDERBY('muni','ASC')->GET();
         $bancos = Banco::all();
+        $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
 
         if(isset($idestnac->id))
         {
@@ -414,7 +416,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
         // dd($nrevisionlast);
-        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos'));
+        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos','lista_regimen'));
     }
 
     public function send_to_dta(Request $request)
@@ -1633,6 +1635,7 @@ class InstructorController extends Controller
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $instructor_perfil = new InstructorPerfil();
         $bancos = Banco::all();
+        $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
 
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
@@ -1754,7 +1757,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
 
-        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos'));
+        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen'));
     }
 
     public function save_ins(Request $request)
