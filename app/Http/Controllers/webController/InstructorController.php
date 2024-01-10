@@ -3319,16 +3319,12 @@ class InstructorController extends Controller
         if(!isset($request->borrador))
         {
             $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA','BAJA EN FIRMA');
-            $especialidad_cambios = TRUE;
+            // $especialidad_cambios = TRUE;
         }
         else
         {
             $arrstat = array('REACTIVACION EN CAPTURA','BAJA EN CAPTURA','REVALIDACION EN CAPTURA','EN CAPTURA','PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION','BAJA EN PREVALIDACION');
-            $especialidad_cambios = TRUE;
-        }
-        if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE)
-        {
-            $arrstat = array('VALIDADO');
+            // $especialidad_cambios = TRUE;
         }
         set_time_limit(0);
 
@@ -3344,6 +3340,21 @@ class InstructorController extends Controller
                 $onesp = DB::TABLE('especialidades')->SELECT('nombre')->WHERE('id',$moist->especialidad_id)->FIRST();
                 $moist->especialidad = $onesp->nombre;
                 array_push($arrtemp, $moist);
+                $especialidad_cambios = TRUE;
+            }
+        }
+        if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE)
+        {
+            $arrstat = array('VALIDADO');
+            foreach($especialidades as $moist)
+            {
+                if(in_array($moist->status, $arrstat))
+                {
+                    $onesp = DB::TABLE('especialidades')->SELECT('nombre')->WHERE('id',$moist->especialidad_id)->FIRST();
+                    $moist->especialidad = $onesp->nombre;
+                    array_push($arrtemp, $moist);
+                    $especialidad_cambios = TRUE;
+                }
             }
         }
         $data = $this->make_collection($arrtemp);
