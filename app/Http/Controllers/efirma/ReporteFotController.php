@@ -237,6 +237,7 @@ class ReporteFotController extends Controller
         $path_files = $this->path_files;
         $array_fotos = [];
         $id_curso = $id;
+        $fechapdf = "";
         $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 =  null;
 
         #Distintivo
@@ -244,9 +245,9 @@ class ReporteFotController extends Controller
 
         #Unidad de capacitacion
         $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-        $dia = date('d'); $mes = date('m'); $anio = date('Y');
-        $dia = ($dia) < 10 ? '0'.$dia : $dia;
-        $fecha_gen = $dia.' de '.$meses[$mes-1].' de '.$anio;
+        // $dia = date('d'); $mes = date('m'); $anio = date('Y');
+        // // $dia = ($dia) < 10 ? $dia : $dia;
+        // $fecha_gen = $dia.' de '.$meses[$mes-1].' de '.$anio;
 
         $cursopdf = tbl_curso::select('nombre', 'curso', 'tcapacitacion', 'inicio', 'termino', 'evidencia_fotografica',
         'clave', 'hini', 'hfin', 'tbl_cursos.unidad', 'uni.dunidad', 'uni.ubicacion', 'uni.direccion', 'uni.municipio')
@@ -255,6 +256,12 @@ class ReporteFotController extends Controller
 
         if (isset($cursopdf->evidencia_fotografica['url_fotos'])){
             $array_fotos = $cursopdf->evidencia_fotografica['url_fotos'];
+            if (isset($cursopdf->evidencia_fotografica["fecha_envio"])) {
+                $fechapdf = $cursopdf->evidencia_fotografica["fecha_envio"];
+                $fechaCarbon = Carbon::createFromFormat('Y-m-d', $fechapdf);
+                $dia = ($fechaCarbon->day) < 10 ? '0'.$fechaCarbon->day : $fechaCarbon->day;
+                $fechapdf = $dia.' de '.$meses[$fechaCarbon->month].' de '.$fechaCarbon->year;
+            }
         }
 
         $base64Images = [];
@@ -288,11 +295,21 @@ class ReporteFotController extends Controller
                 $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
                     ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                     ->Where('org.id', Auth::user()->id_organismo)
-                    ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
+                    ->Where('org.nombre', 'LIKE', 'DELEGACIÓN ADMINISTRATIVA%')
                     ->OrWhere('org.id_parent', Auth::user()->id_organismo)
                     // ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
-                    ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
+                    ->Where('org.nombre', 'LIKE', 'DELEGACIÓN ADMINISTRATIVA%')
                     ->First();
+
+                // $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id', 'fun.nombre AS funcionario','fun.curp',
+                // 'fun.cargo','fun.correo', 'us.name', 'us.puesto')
+                //     ->join('tbl_funcionarios AS fun', 'fun.id','org.id')
+                //     ->join('users as us', 'us.email','fun.correo')
+                //     ->where('org.nombre', 'ILIKE', 'DELEGACIÓN ADMINISTRATIVA UC '.$info->ubicacion.'%')
+                //     ->first();
+                // if($dataFirmante == null){
+                //     return "NO SE ENCONTRON DATOS DEL FIRMANTE";
+                // }
 
                 //Generacion de QR
                 $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
@@ -301,11 +318,11 @@ class ReporteFotController extends Controller
                 $qrCodeData = ob_get_contents();
                 ob_end_clean();
                 $qrCodeBase64 = base64_encode($qrCodeData);
+
             }
         }
 
-
-        $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('cursopdf', 'leyenda', 'fecha_gen', 'objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images'));
+        $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('cursopdf', 'leyenda', 'fechapdf', 'objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images'));
         $pdf->setPaper('Letter', 'portrait');
         $file = "ASISTENCIA_$id_curso.PDF";
         return $pdf->stream($file);

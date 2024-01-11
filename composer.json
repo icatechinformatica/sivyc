@@ -16,6 +16,7 @@
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
+        "khanamiryan/qrcode-detector-decoder": "^1.0",
         "laravel/framework": "^7.0",
         "laravel/passport": "^9.0",
         "laravel/tinker": "^2.0",
@@ -23,13 +24,15 @@
         "laravelcollective/html": "^6.0",
         "lcobucci/jwt": "3.3.3",
         "maatwebsite/excel": "^3.1",
+        "phpqrcode/phpqrcode": "dev-master",
         "revolution/laravel-google-sheets": "^5.0",
         "setasign/fpdf": "1.8.*",
         "setasign/fpdi": "^2.0",
         "smalot/pdfparser": "^2.7",
         "spatie/array-to-xml": "^2.15",
         "tymon/jwt-auth": "^1.0",
-        "vyuldashev/xml-to-array": "^1.0"
+        "vyuldashev/xml-to-array": "^1.0",
+        "aferrandini/phpqrcode": "1.0.1"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

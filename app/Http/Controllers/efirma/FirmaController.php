@@ -34,7 +34,7 @@ class FirmaController extends Controller {
     // php artisan serve --port=8001
     public function index(Request $request) {
         $docsVistobueno2 = array();
-        $docsVistoReport = array(); #Reporte fotografico
+        // $docsVistoReport = array(); #Reporte fotografico
         $email = Auth::user()->email;
         $rol = DB::Table('role_user')->Select('role_id')->Where('user_id', Auth::user()->id)->First();
         $unidad_user = DB::Table('tbl_unidades')->Where('id',Auth::user()->unidad)->Value('ubicacion');
@@ -54,15 +54,15 @@ class FirmaController extends Controller {
             //     ->get();
 
             #By Jose Luis Moreno
-            $docsVistoReport = tbl_curso::select(
-                'tbl_cursos.id',
-                'tbl_cursos.nombre',
-                'tbl_cursos.evidencia_fotografica',
-                'tbl_cursos.clave',
-                DB::raw("tbl_cursos.evidencia_fotografica->>'status_validacion' as status_validacion"))
-            ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
-            ->where('tbl_unidades.ubicacion',$unidad_user)
-            ->whereRaw("tbl_cursos.evidencia_fotografica->>'status_validacion' = 'ENVIADO'")->get();
+            // $docsVistoReport = tbl_curso::select(
+            //     'tbl_cursos.id',
+            //     'tbl_cursos.nombre',
+            //     'tbl_cursos.evidencia_fotografica',
+            //     'tbl_cursos.clave',
+            //     DB::raw("tbl_cursos.evidencia_fotografica->>'status_validacion' as status_validacion"))
+            // ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
+            // ->where('tbl_unidades.ubicacion',$unidad_user)
+            // ->whereRaw("tbl_cursos.evidencia_fotografica->>'status_validacion' = 'ENVIADO'")->get();
 
             $docsVistoBueno2 = tbl_curso::select(
                 'tbl_cursos.id',
@@ -201,8 +201,7 @@ class FirmaController extends Controller {
             $token = $getToken->token;
         }
         // dd($docsFirmados);
-        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol','curpUser',
-                                                                        'docsVistoReport'));
+        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol','curpUser'));
     }
 
     public function update(Request $request) {  #Se ejecuta al dar click en firmar
@@ -239,6 +238,17 @@ class FirmaController extends Controller {
         // $array2 = XmlToArray::convert($documento->documento_interno);
         $array['DocumentoChis']['firmantes'] = $obj_documento['firmantes'];
         // $array2['DocumentoChis']['firmantes'] = $obj_documento_interno['firmantes'];
+
+        ##By Jose Luis Moreno/ Creamos nuevo array para ordenar el xml
+        if(isset($obj_documento['anexos'])){
+            $ArrayXml = [
+                "emisor" => $obj_documento['emisor'],
+                "archivo" => $obj_documento['archivo'],
+                "anexos" => $obj_documento['anexos'],
+                "firmantes" => $obj_documento['firmantes'],
+            ];
+            $obj_documento = $ArrayXml;
+        }
 
         $result = ArrayToXml::convert($obj_documento, [
             'rootElementName' => 'DocumentoChis',
