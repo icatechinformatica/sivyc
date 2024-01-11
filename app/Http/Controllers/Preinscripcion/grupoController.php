@@ -156,7 +156,7 @@ class grupoController extends Controller
         $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '');
         try {
             $jsonvincu = ExpeUnico::select('vinculacion')->where('folio_grupo', '=', $_SESSION['folio_grupo'])->first();
-            if ($jsonvincu != null) {
+            if (isset($jsonvincu->vinculacion['doc_1'])) {
                 $docs_json = [$jsonvincu->vinculacion['doc_1']['url_pdf_acta'], $jsonvincu->vinculacion['doc_1']['url_pdf_convenio'],
                 $jsonvincu->vinculacion['doc_3']['url_documento'], $jsonvincu->vinculacion['doc_4']['url_documento']];
                 $linkPDF = array(
