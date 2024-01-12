@@ -3355,7 +3355,6 @@ class InstructorController extends Controller
                     $onesp = DB::TABLE('especialidades')->SELECT('nombre')->WHERE('id',$moist->especialidad_id)->FIRST();
                     $moist->especialidad = $onesp->nombre;
                     array_push($arrtemp, $moist);
-                    $especialidad_cambios = TRUE;
                 }
             }
         }
@@ -3387,7 +3386,7 @@ class InstructorController extends Controller
 
             //GUARDADO DE FECHA Y MEMO DE SOLICITUD
             $thalmor = especialidad_instructor::WHERE('id','=',$item->id)->FIRST();
-            if($item->fecha_solicitud == NULL)
+            if($item->fecha_solicitud == NULL || isset($request->borrador))
             {
                 $item->fecha_solicitud = carbon::now()->toDateString();
                 $date = strtotime($item->fecha_solicitud);
@@ -3429,7 +3428,7 @@ class InstructorController extends Controller
                         $tipo_doc = 'REACTIVACION';
                     break;
                 }
-            } if($instructor->tipo_honorario != $honorario_actual) {
+            } if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE) {
                 $tipo_doc = 'REVALIDACION';
             }
         }
@@ -3446,8 +3445,8 @@ class InstructorController extends Controller
         $direccion = explode("*", $data_unidad->direccion);
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
 
-        if($honorario_actual != $instructor->tipo_honorario) {
-            $date = strtotime(carbon::now());
+        if($honorario_actual != $instructor->tipo_honorario && $especialidad_cambios == FALSE && isset($request->borrador)) {
+            $date = strtotime(carbon::now());dd($especialidad_cambios);
         }
         $D = date('d', $date);
         $MO = date('m',$date);
