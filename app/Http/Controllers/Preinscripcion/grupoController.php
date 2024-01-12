@@ -156,7 +156,7 @@ class grupoController extends Controller
         $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '');
         try {
             $jsonvincu = ExpeUnico::select('vinculacion')->where('folio_grupo', '=', $_SESSION['folio_grupo'])->first();
-            if ($jsonvincu) {
+            if (isset($jsonvincu->vinculacion['doc_1'])) {
                 $docs_json = [$jsonvincu->vinculacion['doc_1']['url_pdf_acta'], $jsonvincu->vinculacion['doc_1']['url_pdf_convenio'],
                 $jsonvincu->vinculacion['doc_3']['url_documento'], $jsonvincu->vinculacion['doc_4']['url_documento']];
                 $linkPDF = array(
@@ -165,9 +165,11 @@ class grupoController extends Controller
                     "soli_ape" => ($docs_json[2] != '') ? $this->path_files.$docs_json[2] : "",
                     "sid" => ($docs_json[3] != '') ? $this->path_files.$docs_json[3] : ""
                 );
+            }else{
+                $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '');
             }
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            dd("Error al cargar documentos ".$th->getMessage());
         }
 
         $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status_folio','ENVIADO')->first();
