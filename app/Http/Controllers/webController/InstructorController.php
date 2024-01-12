@@ -195,8 +195,9 @@ class InstructorController extends Controller
                 {
                     if(isset($boromir->hvalidacion) && ($boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA') || ($regimen_actual != $data->tipo_honorario))
                     {
-                        if($data->status == 'EN FIRMA' && $data->turnado == 'DTA'){
-                            $arch_sol = end($boromir->hvalidacion)['arch_sol'];
+                        if($data->status == 'EN FIRMA' && $data->turnado == 'DTA'  && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA'){
+
+                            $arch_sol = end($boromir->hvalidacion)['arch_sol'];printf($boromir->status . ' /// ');
                         }
                     }
                 }
