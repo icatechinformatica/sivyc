@@ -3446,7 +3446,7 @@ class InstructorController extends Controller
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
 
         if($honorario_actual != $instructor->tipo_honorario && $especialidad_cambios == FALSE && isset($request->borrador)) {
-            $date = strtotime(carbon::now());dd($especialidad_cambios);
+            $date = strtotime(carbon::now());
         }
         $D = date('d', $date);
         $MO = date('m',$date);
