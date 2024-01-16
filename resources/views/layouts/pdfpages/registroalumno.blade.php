@@ -25,11 +25,11 @@
 <body>
     <div class="encabezado">
         <img class="izquierda" src="{{ public_path('img/sep1.png') }}">
-        @if ($alumnos->chk_fotografia == TRUE)
+        {{-- @if ($alumnos->chk_fotografia == TRUE)
            <img class="derecha img-thumbnail mb-3" src="{{ asset($pathimg) }}">
-        @else
+        @else --}}
            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
-        @endif
+        {{-- @endif --}}
         <p><strong>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN <br> ( SID - 01 )</strong></p>
     </div>
     <br>
