@@ -3368,17 +3368,20 @@ class InstructorController extends Controller
             // $item->cursos_impartir = explode(',',str_replace($rplc,'',$item->cursos_impartir));
             if($honorario_actual != $instructor->tipo_honorario || ($item->status != 'BAJA EN FIRMA' && $item->status != 'BAJA EN PREVALIDACION'))
             {
-            $cursos[$count] = DB::TABLE('cursos')->SELECT('cursos.nombre_curso')
-                            ->WHEREIN('id',$item->cursos_impartir)
-                            ->GET();
-            $totalcursos = DB::TABLE('cursos')->SELECT(DB::RAW("COUNT(id) AS total"))
-                            ->WHERE('id_especialidad','=',$item->especialidad_id)
-                            ->FIRST();
-            $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
-                            ->WHERE('id_especialidad','=',$item->especialidad_id)
-                            ->WHERENOTIN('id',$item->cursos_impartir)->GET();
-
-            $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
+                $cursos[$count] = DB::TABLE('cursos')->SELECT('cursos.nombre_curso')
+                                ->WHEREIN('id',$item->cursos_impartir)
+                                ->GET();
+                $totalcursos = DB::TABLE('cursos')->SELECT(DB::RAW("COUNT(id) AS total"))
+                                ->WHERE('id_especialidad','=',$item->especialidad_id)
+                                ->FIRST();
+                $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
+                                ->WHERE('id_especialidad','=',$item->especialidad_id)
+                                ->WHERENOTIN('id',$item->cursos_impartir)->GET();
+                if($totalcursos->total != 0) {
+                    $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
+                } else {
+                    $porcentaje[$count] = 0;
+                }
             }
             else
             {
