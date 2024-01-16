@@ -49,7 +49,7 @@
             <td colspan="4" class="variable"><strong>DATOS DE LA UNIDAD DE CAPACITACIÓN</strong></td>
         </tr>
         <tr>
-          <td colspan="4"><strong>INSTITUTO:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INSTITUTO DE CAPACITACIÓN Y VINCULACION TECNÓLOGICA DEL ESTADO DE CHIAPAS</strong></td>
+          <td colspan="4" style="text-align: center;"><strong>INSTITUTO DE CAPACITACIÓN Y VINCULACION TECNÓLOGICA DEL ESTADO DE CHIAPAS</strong></td>
         </tr>
         <tr>
           <td style="padding-bottom: 2px;"><strong> UNIDAD DE CAPACITACIÓN: {{ $alumnos->unidad }}</strong></td>
@@ -73,7 +73,7 @@
             <td>{{strtoupper($alumnos->curp_alumno) }}</td>
             <td><strong>EDAD:</strong> </td>
             <td>{{$edad}} AÑOS</td>
-            <td><strong>TELEFONO:</strong></td>
+            <td><strong>NUMERO TELEFONICO:</strong></td>
             <td>@php if($alumnos->telefono_casa){echo ($alumnos->telefono_casa); }else{if($alumnos->telefono_personal){echo($alumnos->telefono_personal);}else{echo($alumnos->telefono);} } @endphp</td>
         </tr>
         <tr>
@@ -119,6 +119,14 @@
                 }
             @endphp
         </tr>
+        {{-- <tr>
+            <td colspan="2" style="padding-bottom: 2px;"><strong>OTRA ESPECIFIQUE: </strong></td>
+            <td colspan="5"></td>
+        </tr> --}}
+        <tr>
+            <td colspan="2" style="padding-bottom: 2px;"><strong>CORREO ELECTRÓNICO: </strong></td>
+            <td colspan="5">{{$alumnos->correo}}</td>
+        </tr>
     </table>
     <br>
     <table style="border: 1px solid black">
@@ -133,17 +141,14 @@
             <td colspan="2"><strong>TIPO:</strong>  {{strtoupper($alumnos->tipocurso)}}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>HORARIO:</strong>  {{ $alumnos->horario }}</td>
-            <td colspan="2"><strong>GRUPO:</strong>  {{ $alumnos->grupo }}</td>
-        </tr>
-        <tr>
-            <td colspan="4"><strong>ÚLTIMO GRADO DE ESTUDIOS:</strong>  {{strtoupper($alumnos->ultimo_grado_estudios)}}</td>
+            <td colspan="2"><strong>GRUPO:</strong> {{$alumnos->folio_grupo}}</td>
+            <td colspan="2"><strong>ÚLTIMO GRADO DE ESTUDIOS:</strong>  {{strtoupper($alumnos->ultimo_grado_estudios)}}</td>
         </tr>
         <tr>
             <td colspan="4"><strong>DOCUMENTACIÓN ENTREGADA: </strong><br>
-                        @if($alumnos->chk_acta_nacimiento == TRUE || $alumnos->chk_curp == TRUE)(X) @else() ( ) @endif COPIA DE ACTA DE NACIMIENTO (NO MAYOR A 2 AÑOS) O CURP (VIGENCIA UN AÑO)
-                    <br>@if($alumnos->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS EN CASO DE CONTAR CON EL
-                    <br>@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA DIGITAL O IMPRESA</td>
+                        @if($alumnos->chk_acta_nacimiento == TRUE || $alumnos->chk_curp == TRUE)(X) @else() ( ) @endif CURP ACTUALIZADA O ACTA DE NACIMIENTO
+                    <br>@if($alumnos->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS (EN CASO DE CONTAR CON EL)
+                    {{-- <br>@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA DIGITAL O IMPRESA</td> --}}
         </tr>
         <tr>
             <td colspan="4"><strong>EXTRANJEROS ANEXAR</strong></td>
@@ -160,64 +165,65 @@
             <td colspan="2" style="padding-bottom: 2px;"><strong>DIRECCIÓN: </strong> {{ strtoupper($alumnos->direccion_empresa) }}</td>
         </tr>
         <tr>
-            <td colspan="4" style="font_size: 8px;border: 1px solid black;border-collapse: collapse; padding-bottom: 2px;">NOTA: LA DOCUMENTACIÓN DEBERA ENTREGARSE EN ORIGINAL Y COPIA PARA SU COTEJO.</td>
+            <td colspan="4" style="font_size: 8px; border-collapse: collapse; padding-bottom: 2px; text-align: center;">NOTA: LA DOCUMENTACIÓN DEBERA ENTREGARSE EN ORIGINAL Y COPIA PARA SU COTEJO.</td>
         </tr>
     </table>
     <table style="border: 1px solid black;">
         <tr>
-            <td colspan="3" class="variable"><b>DATOS PARA LA UNIDAD DE CAPACITACIÓN</b></td>
+            <td colspan="5" class="variable"><b>DATOS PARA LA UNIDAD DE CAPACITACIÓN</b></td>
         </tr>
         <tr>
-            <td colspan="3" style="padding-top: 5px;"><b>MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA:</b></td>
+            <td colspan="5" style="padding-top: 5px;"><b>MEDIO POR EL QUE SE ENTERÓ DEL CURSO:</b></td>
         </tr>
         <tr>
-            <td><b>@if($alumnos->medio_entero=="PRENSA") (X) @else() ( ) @endif PRENSA </b></td>
-            <td><b>@if($alumnos->medio_entero=="TELEVISIÓN") (X) @else() ( )  @endif TELEVISIÓN</b></td>
-            <td><b>@if($alumnos->medio_entero=="FOLLETOS,CARTELES,VOLANTE") (X)  @else() ( ) @endif FOLLETOS,CARTELES,VOLANTES</b></td>
+            <td><b>PRENSA @if($alumnos->medio_entero=="PRENSA")(X) @else()( ) @endif</b></td>
+            <td><b>TELEVISIÓN @if($alumnos->medio_entero=="TELEVISIÓN")(X) @else()( )  @endif</b></td>
+            <td><b>RADIO @if($alumnos->medio_entero=="RADIO")(X) @else()( )  @endif</b></td>
+            <td><b>INTERNET @if($alumnos->medio_entero=="INTERNET")(X) @else()( )  @endif</b></td>
+            <td><b>FOLLETOS,CARTELES,VOLANTES @if($alumnos->medio_entero=="FOLLETOS,CARTELES,VOLANTE")(X)  @else()( ) @endif</b></td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td><b>@if($alumnos->medio_entero=="RADIO") (X)  @else() ( ) @endif RADIO</b></td>
             <td><b>@if($alumnos->medio_entero=="INTERNET") (X)  @else() ( ) @endif INTERNET</b></td>
             <td></td>
-        </tr>
+        </tr> --}}
         <tr>
-            <td><b>@if($alumnos->medio_entero!="PRENSA"&&$alumnos->medio_entero!="TELEVISIÓN"&&$alumnos->medio_entero!="FOLLETOS,CARTELES,VOLANTE"&&$alumnos->medio_entero!="RADIO"&&$alumnos->medio_entero!="INTERNET") (X)  @else() ( ) @endif OTROS</b></td>
-            <td><b>ESPECIFIQUE:</b></td>
+            <td><b>OTROS @if($alumnos->medio_entero!="PRENSA"&&$alumnos->medio_entero!="TELEVISIÓN"&&$alumnos->medio_entero!="FOLLETOS,CARTELES,VOLANTE"&&$alumnos->medio_entero!="RADIO"&&$alumnos->medio_entero!="INTERNET")(X)  @else()( ) @endif</b></td>
+            <td colspan="3"><b>ESPECIFIQUE:</b></td>
             <td>@if($alumnos->medio_entero!="PRENSA"&&$alumnos->medio_entero!="TELEVISIÓN"&&$alumnos->medio_entero!="FOLLETOS,CARTELES,VOLANTE"&&$alumnos->medio_entero!="RADIO"&&$alumnos->medio_entero!="INTERNET") {{$alumnos->medio_entero}} @else() @endif</td>
         </tr>
         <tr>
-            <td colspan="3"><b>MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN:</b></td>
+            <td colspan="5"><b>MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN:</b></td>
         </tr>
         <tr>
-            <td><b> @if($alumnos->sistema_capacitacion_especificar=="PARA EMPLEARSE O AUTOEMPLEARSE") (X) @else() ( ) @endif PARA EMPLEARSE O AUTOEMPLEARSE </b></td>
+            <td colspan="2"><b> @if($alumnos->sistema_capacitacion_especificar=="PARA EMPLEARSE O AUTOEMPLEARSE") (X) @else() ( ) @endif PARA EMPLEARSE O AUTOEMPLEARSE </b></td>
             <td></td>
-            <td><b> @if($alumnos->sistema_capacitacion_especificar=="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO") (X) @else() ( ) @endif PARA MEJORAR SU SITUACIÓN EN EL TRABAJO</b></td>
+            <td colspan="2"><b> @if($alumnos->sistema_capacitacion_especificar=="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO") (X) @else() ( ) @endif PARA MEJORAR SU SITUACIÓN EN EL TRABAJO</b></td>
         </tr>
         <tr>
-            <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="PARA AHORRAR GASTOS AL INGRESO FAMILIAR") (X) @else() ( ) @endif PARA AHORRAR GASTOS AL INGRESO FAMILIAR</b></td>
+            <td colspan="2"><b>@if($alumnos->sistema_capacitacion_especificar=="PARA AHORRAR GASTOS AL INGRESO FAMILIAR") (X) @else() ( ) @endif PARA AHORRAR GASTOS AL INGRESO FAMILIAR</b></td>
+            <td></td>
+            <td colspan="2"><b>@if($alumnos->sistema_capacitacion_especificar=="POR DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif POR DISPOSICIÓN DE TIEMPO LIBRE</b></td>
         </tr>
         <tr>
-            <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA") (X) @else() ( ) @endif POR ESTAR EN ESPERA DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA</b></td>
+            <td colspan="5"><b>@if($alumnos->sistema_capacitacion_especificar=="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA") (X) @else() ( ) @endif POR ESTAR EN ESPERA DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA</b></td>
         </tr>
         <tr>
-            <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="POR DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif POR DISPOSICIÓN DE TIEMPO LIBRE</b></td>
-        </tr>
-        <tr>
-            <td><b>@if($alumnos->sistema_capacitacion_especificar!="PARA EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="PARA AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="POR DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif OTROS</b></td>
+            <td colspan="2"><b>@if($alumnos->sistema_capacitacion_especificar!="PARA EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="PARA AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="POR DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif OTROS</b></td>
             <td><b>ESPECIFIQUE:</b></td>
-            <td>@if($alumnos->sistema_capacitacion_especificar!="PARA EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="PARA AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="POR DISPOSICIÓN DE TIEMPO LIBRE") {{$alumnos->sistema_capacitacion_especificar}} @else() @endif</td>
+            <td colspan="2">@if($alumnos->sistema_capacitacion_especificar!="PARA EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="PARA AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="POR DISPOSICIÓN DE TIEMPO LIBRE") {{$alumnos->sistema_capacitacion_especificar}} @else() @endif</td>
         </tr>
         <tr>
-            <td colspan="3" style="text-align: center;">EL ASPIRANTE SE COMPROMETE A CUMPLIR CON LAS NORMAS Y DISPOSICIONES DICTADAS POR LAS AUTORIDADES DE LA UNIDAD</td>
+            <td colspan="5" style="text-align: center;">EL ASPIRANTE SE COMPROMETE A CUMPLIR CON LAS NORMAS Y DISPOSICIONES DICTADAS POR LAS AUTORIDADES DE LA UNIDAD</td>
         </tr>
         <tr>
-            <td style="text-align: center;text-transform: uppercase;">
+            <td colspan="2" style="text-align: center;text-transform: uppercase;">
                 <br><br>
                 {{$alumnos->apellido_paterno}} {{$alumnos->apellido_materno}} {{$alumnos->nombrealumno}} <br>
                 <strong style="text-decoration: overline;">NOMBRE Y FIRMA DEL ASPIRANTE</strong>
             </td>
             <td></td>
-            <td style="text-align: center;text-transform: uppercase;">
+            <td colspan="2" style="text-align: center;text-transform: uppercase;">
                 <br><br>
                 {{$alumnos->realizo}} <br>
                 <strong style="text-decoration: overline;">NOMBRE Y FIRMA DE LA PERSONA QUE INSCRIBE</strong>
@@ -225,13 +231,13 @@
         </tr>
     </table>
     <br>
-    <div style="font_size: 8px; width: 100%;"><strong>AVISO DE PRIVACIDAD:</strong>LOS DATOS PERSONALES CONTENIDOS EN ESTA SID-01 DE INSCRICIÓN, SERÁN PROTEGIDOS CONFORME A LO DISPUESTO POR LA LEY GENERAL DE PROTECCIÓN DE DATOS PERSONALES EN POSESIÓN DE SUJETOS OBLIGADOS, Y DEMÁS NORMATIVIDAD QUE RESULTE APLICABLE</div>
+    <div style="font_size: 8px; width: 100%; text-align: center;"><strong>AVISO DE PRIVACIDAD:</strong>LOS DATOS PERSONALES CONTENIDOS EN ESTA SID-01 DE INSCRICIÓN, SERÁN PROTEGIDOS CONFORME A LO DISPUESTO POR LA LEY GENERAL DE PROTECCIÓN DE DATOS PERSONALES EN POSESIÓN DE SUJETOS OBLIGADOS, Y DEMÁS NORMATIVIDAD QUE RESULTE APLICABLE</div>
     <br>
     <div style="border: 1px solid black; width: 100%;"></div>
     <br>
     <div style="border-style: dotted;border-width: 1px; width: 100%;"></div>
     <br>
-    <table>
+    {{-- <table>
         <tr>
             <td>
                 <br>
@@ -242,22 +248,39 @@
                 <strong>NÚMERO DE SOLICITUD:</strong> {{$alumnos->no_control.$alumnos->id}}
             </td>
         </tr>
-    </table>
+    </table> --}}
     <br>
     <table style="border: 1px solid black;">
         <tr>
-            <td><strong>ASPIRANTE:</strong></td>
-            <td colspan="5" style="text-transform: uppercase;">{{$alumnos->apellido_paterno}} {{$alumnos->apellido_materno}} {{$alumnos->nombrealumno}}</td>
+            <td colspan="6" style="text-align: right; text-align: center;">
+                <strong>COMPROBANTE DEL ASPIRANTE</strong><br>
+            </td>
         </tr>
         <tr>
+            <td colspan="6" style="text-align: left;" colspan="">
+                <strong>NÚMERO DE SOLICITUD:</strong> {{$alumnos->no_control.$alumnos->id}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6"><strong>NOMBRE DEL ASPIRANTE:</strong> {{$alumnos->apellido_paterno}} {{$alumnos->apellido_materno}} {{$alumnos->nombrealumno}}</td>
+            {{-- <td colspan="5" style="text-transform: uppercase;"></td> --}}
+        </tr>
+        <tr>
+            <td colspan="6"><strong>CURSO:</strong> {{$alumnos->nombre_curso}}</td>
+            {{-- <td colspan="5" style="text-transform: uppercase;"></td> --}}
+        </tr>
+        <tr>
+            <td colspan="6"><strong>GRUPO:</strong>{{$alumnos->folio_grupo}}</td>
+            {{-- <td colspan="5" style="text-transform: uppercase;"></td> --}}
+        </tr>
+        {{-- <tr>
             <td><strong>CURSO:</strong></td>
             <td colspan="3" style="text-transform: uppercase;">{{ $alumnos->nombre_curso }}</td>
             <td><strong>HORARIO:</strong> {{$alumnos->horario }}</td>
             <td style="text-transform: uppercase;"><strong>GRUPO:</strong> {{ $alumnos->grupo }}</td>
-        </tr>
+        </tr> --}}
         <tr>
-            <td></td>
-            <td style="text-align: center;">
+            <td colspan = 2 style="text-align: center;">
                 <br><br>
                 <strong style="text-transform: uppercase;">{{$alumnos->realizo}}</strong><br>
                 <strong style="text-decoration: overline;">NOMBRE Y FIRMA DE LA PERSONA QUE RECIBE</strong>

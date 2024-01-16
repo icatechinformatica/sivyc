@@ -15,8 +15,8 @@
                 {{ Session::get('success') }}
             </div>
         @endif
-        {!! Form::open(['route' => 'alumnos.inscritos', 'method' => 'GET', 'class' => 'form-inline' ]) !!}              
-            <div class="row form-inline">       
+        {!! Form::open(['route' => 'alumnos.inscritos', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+            <div class="row form-inline">
                 {{ Form::text('busquedapor', '', ['id'=>'busquedapor', 'class' => 'form-control mr-sm-2', 'placeholder' => 'CURP / NOMBRE / No.CONTROL/ CURSO / No.GRUPO', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 48]) }}
                 {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
             </div>
@@ -27,7 +27,7 @@
                     <tr>
                         <th scope="col">N°CONTROL</th>
                         <th width="85px">FOLIO</th>
-                        <th scope="col">NOMBRE</th>                        
+                        <th scope="col">NOMBRE</th>
                         <th width="85px">N°GRUPO</th>
                         <th width="85px">CLAVE</th>
                         <th scope="col">CURSO</th>
@@ -45,7 +45,7 @@
                         <tr>
                             <td>{{$itemData->no_control}}</td>
                             <td>{{$itemData->folio}}</td>
-                            <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>                            
+                            <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
                             <td>{{$itemData->folio_grupo}}</td>
                             <td scope="row">{{ $itemData->clave }}</td>
                             <td scope="row">{{ $itemData->nombre_curso }}</td>
@@ -66,15 +66,15 @@
                                 </td>
                             @endcan
                             <td>
-                                @if ($itemData->es_cereso == true)
+                                {{-- @if ($itemData->es_cereso == true)
                                     <a href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID DE CERSS" target="_blank">
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                @else
+                                @else --}}
                                     <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID" target="_blank">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
-                                @endif
+                                {{-- @endif --}}
                             </td>
 
                         </tr>
