@@ -14,7 +14,7 @@
         }
         .encabezado{ text-align: center; width: 100%;}
         img.izquierda{ float:left}
-        img.derecha { float: right; width: 2.5cm; height: 3.0cm;}
+        img.derecha { float: right; width: 3cm; height: 1.5cm; margin-top:-10px;}
         .p{ text-decoration: overline;}
         table { width: 100%; border-collapse: collapse;}
         /* td{ padding: 0px; padding-left: 5px; padding-bottom: 3px;} */
@@ -28,7 +28,7 @@
         @if ($alumnos->chk_fotografia == TRUE)
            <img class="derecha img-thumbnail mb-3" src="{{ asset($pathimg) }}">
         @else
-           <img class="derecha img-thumbnail mb-3" src="{{ public_path('img/blade_icons/nophoto.png') }}">
+           <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
         @endif
         <p><strong>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN <br> ( SID - 01 )</strong></p>
     </div>
