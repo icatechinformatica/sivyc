@@ -105,7 +105,7 @@ class InstructorController extends Controller
     {
         // dd($request);
         //CONFIGURACION INICIAL
-        $daesp = $valor = $message = $data = $id_list = $seluni = $arch_sol = $especialidades = $perfiles = $databuzon = $buzonhistory = NULL;
+        $daesp = $valor = $message = $data = $id_list = $seluni = $arch_sol = $especialidades = $perfiles = $databuzon = $buzonhistory = $regimen_actual = NULL;
         $chk_mod_espec = FALSE;
         $userid = Auth::user()->id;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
@@ -156,6 +156,8 @@ class InstructorController extends Controller
                             ->GET();
 
             $data = pre_instructor::WHERE('nrevision', '=', $request->valor)->FIRST();
+            $regimen_actual = instructor::Where('id', $data->id)->Value('tipo_honorario');
+
 
             if(isset($data))
             {
@@ -163,7 +165,7 @@ class InstructorController extends Controller
                 $especialidades = $this->make_collection($data->data_especialidad);
                 foreach($especialidades as $moist)
                 {
-                    if($moist->status != 'VALIDADO' && $moist->status != 'BAJA')
+                    if(($moist->status != 'VALIDADO' && $moist->status != 'BAJA') || $regimen_actual != $data->tipo_honorario)
                     {
                         $chk_mod_espec = TRUE;
                     }
@@ -191,9 +193,12 @@ class InstructorController extends Controller
             {
                 foreach($especialidades as $boromir)
                 {
-                    if(isset($boromir->hvalidacion) && $boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA')
+                    if(isset($boromir->hvalidacion) && ($boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA') || ($regimen_actual != $data->tipo_honorario))
                     {
-                        $arch_sol = end($boromir->hvalidacion)['arch_sol'];
+                        if($data->status == 'EN FIRMA' && $data->turnado == 'DTA'  && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA'){
+
+                            $arch_sol = end($boromir->hvalidacion)['arch_sol'];printf($boromir->status . ' /// ');
+                        }
                     }
                 }
             }
@@ -272,7 +277,8 @@ class InstructorController extends Controller
         $valor = $request->valor;
         $seluni = $request->seluni;
 
-        return view('layouts.pages.initprevalidarinstructor', compact('data','valor','message','id_list','unidades','seluni','nrevisiones','rol','arch_sol','especialidadeslist','critpag','especialidades','perfiles','databuzon','userunidad','buzonhistory','daesp','chk_mod_espec'));
+
+        return view('layouts.pages.initprevalidarinstructor', compact('data','valor','message','id_list','unidades','seluni','nrevisiones','rol','arch_sol','especialidadeslist','critpag','especialidades','perfiles','databuzon','userunidad','buzonhistory','daesp','chk_mod_espec','regimen_actual'));
     }
 
     public function crear_instructor()
@@ -280,8 +286,9 @@ class InstructorController extends Controller
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $bancos = Banco::all();
+        $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
 
-        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos'));
+        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos','lista_regimen'));
     }
 
     #----- instructor/guardar -----#
@@ -342,6 +349,7 @@ class InstructorController extends Controller
         $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
                         ->ORDERBY('muni','ASC')->GET();
         $bancos = Banco::all();
+        $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
 
         if(isset($idestnac->id))
         {
@@ -411,7 +419,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
         // dd($nrevisionlast);
-        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos'));
+        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos','lista_regimen'));
     }
 
     public function send_to_dta(Request $request)
@@ -426,6 +434,7 @@ class InstructorController extends Controller
             $bajachk = FALSE;
             $movimiento = 'Envio a DTA para su prevalidacion ';
             $modInstructor = pre_instructor::find($request->idinstructores);
+            $regimen_actual = instructor::Where('id',$request->idinstructores)->Value('tipo_honorario');
             $perfiles = $this->make_collection($modInstructor->data_perfil);
             $especialidades = $this->make_collection($modInstructor->data_especialidad);
             // se llaman las funciones de string a arrays
@@ -581,7 +590,11 @@ class InstructorController extends Controller
 
             if($chk_mod_perfil == FALSE && $chk_mod_esp == FALSE)
             {
-                $movimiento = $movimiento . 'las modificaciones de informacion general del instructor';
+                if($regimen_actual !=  $modInstructor->tipo_honorario) {
+                    $movimiento = $movimiento . 'modificacion en regimen fiscal';
+                } else {
+                    $movimiento = $movimiento . 'las modificaciones de informacion general del instructor';
+                }
             }
 
             $historico = new instructor_history;
@@ -620,6 +633,7 @@ class InstructorController extends Controller
         foreach($idlist as $bosmer)
         {
             $modInstructor = pre_instructor::find($bosmer);
+            $regimen_actual = instructor::Where('id',$bosmer)->Value('tipo_honorario');
             $modInstructor->turnado = 'UNIDAD';
 
             if($modInstructor->status != 'VALIDADO')
@@ -656,7 +670,7 @@ class InstructorController extends Controller
             }
             foreach($especialidades as $joyo)
             {
-                if($joyo->status != 'VALIDADO' && $joyo->status != 'BAJA')//A
+                if(($joyo->status != 'VALIDADO' && $joyo->status != 'BAJA') || $regimen_actual != $modInstructor->tipo_honorario)//A
                 {
                     $chk_mod_esp = TRUE;
                 }
@@ -743,6 +757,9 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento . $especialidad->nombre . ',  ';
                             break;
                         }
+                    } else if ($regimen_actual != $modInstructor->tipo_honorario && $cadwell->status != 'BAJA') {
+                        $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
+                        $especialidades[$llave]->fecha_validacion = $request->fechadocs;
                     }
                     // $especialidades[$llave]->fecha_validacion = NULL;
                     $especialidades[$llave]->memorandum_validacion = NULL;
@@ -750,7 +767,7 @@ class InstructorController extends Controller
                 $modInstructor->data_especialidad = $especialidades;
             }
 
-            if($chk_mod_perfil == FALSE && $chk_mod_esp == FALSE)
+            if($chk_mod_perfil == FALSE && $chk_mod_esp == FALSE && $regimen_actual == $modInstructor->tipo_honorario)
             {
                 $modInstructor->status = 'VALIDADO';
                 $modInstructor->registro_activo = FALSE;
@@ -778,6 +795,7 @@ class InstructorController extends Controller
     {
         // dd($request);
         $saveInstructor = pre_instructor::find($request->idinsdoctodta);
+        $regimen_actual = instructor::Where('id',$request->idinsdoctodta)->Value('tipo_honorario');
         $userId = Auth::user()->id;
         $stat_arr = array('EN FIRMA','REVALIDACION EN FIRMA','BAJA EN FIRMA','REACTIVACION EN FIRMA');
         $perfiles = $this->make_collection($saveInstructor->data_perfil);
@@ -789,7 +807,7 @@ class InstructorController extends Controller
 
         foreach ($especialidades AS $posi => $cadwell)
         {
-            if(in_array($cadwell->status, $stat_arr))
+            if(in_array($cadwell->status, $stat_arr) || ($regimen_actual != $saveInstructor->tipo_honorario && $cadwell->status != 'BAJA'))
             {
                 if(!isset($cadwell->hvalidacion))
                 {
@@ -914,6 +932,7 @@ class InstructorController extends Controller
         // dd($request);
         $movimientoesp = $movimientoper = $mvalidacion = NULL;
         $saveInstructor = pre_instructor::find($request->idinsvalidar);
+        $regimen_actual = instructor::Where('id',$saveInstructor->id)->Value('tipo_honorario');
         $arrtemp = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA','BAJA EN FIRMA');
         $userId = Auth::user()->id;
         $userUnidad = DB::TABLE('tbl_unidades')->SELECT('cct')
@@ -1009,7 +1028,7 @@ class InstructorController extends Controller
         {
             foreach ($especialidades AS $key => $cadwell)
             {
-                if(in_array($cadwell->status, $arrtemp))
+                if(in_array($cadwell->status, $arrtemp) || ($regimen_actual != $saveInstructor->tipo_honorario && $cadwell->status != 'BAJA'))
                 {
                     $hvalidacion = $cadwell->hvalidacion;
                     $end = count($hvalidacion) - 1;
@@ -1619,6 +1638,7 @@ class InstructorController extends Controller
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $instructor_perfil = new InstructorPerfil();
         $bancos = Banco::all();
+        $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
 
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
@@ -1740,7 +1760,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
 
-        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos'));
+        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen'));
     }
 
     public function save_ins(Request $request)
@@ -2750,10 +2770,12 @@ class InstructorController extends Controller
                         ->GROUPBY('nrevision','registro_activo')
                         ->ORDERBY('nrevision','DESC')
                         ->FIRST();
+            $año = explode('-',$nrevisionlast->nrevision);
+            $año_nrevision = explode('-', $instructor->nrevision);
 
-            if(($instructor->status != 'EN CAPTURA' && $instructor->status != 'RETORNO' && $instructor->nrevision != $nrevisionlast->nrevision) || $instructor->registro_activo == FALSE  || $instructor->nrevision == NULL)
+            if(($instructor->status != 'EN CAPTURA' && $instructor->status != 'RETORNO' && $instructor->nrevision != $nrevisionlast->nrevision) || $instructor->registro_activo == FALSE  || $instructor->nrevision == NULL || $año_nrevision[1] != carbon::now()->year)
             {
-                if(!isset($nrevisionlast))
+                if(!isset($nrevisionlast) || $año[1] != carbon::now()->year)
                 {
                     $nrev = $userunidad->ubicacion['0'] .  $userunidad->ubicacion['1'] . '-' .carbon::now()->year . '-0001';
                 }
@@ -3290,21 +3312,25 @@ class InstructorController extends Controller
     public function solicitud_instructor_pdf(Request $request)
     {
         // dd($request);
+        $instructor = pre_instructor::WHERE('id', $request->idins)->FIRST();
+        $honorario_actual = instructor::Where('id', $request->idins)->First()->Value('tipo_honorario');
         $porcentaje = $cursosnoav = NULL;
         $tipo_doc = 'VALIDACION';
         $rplc = array('[',']','"');
         $arrtemp = array();
+        $especialidad_cambios = FALSE;
         if(!isset($request->borrador))
         {
             $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA','BAJA EN FIRMA');
+            // $especialidad_cambios = TRUE;
         }
         else
         {
             $arrstat = array('REACTIVACION EN CAPTURA','BAJA EN CAPTURA','REVALIDACION EN CAPTURA','EN CAPTURA','PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION','BAJA EN PREVALIDACION');
+            // $especialidad_cambios = TRUE;
         }
         set_time_limit(0);
 
-        $instructor = pre_instructor::WHERE('id', $request->idins)->FIRST();
         $daesp = DB::TABLE('tbl_unidades')
                 ->WHERE('ubicacion','LIKE',$instructor->nrevision[0]. $instructor->nrevision[1] .'%')
                 ->GROUPBY('ubicacion')
@@ -3317,6 +3343,20 @@ class InstructorController extends Controller
                 $onesp = DB::TABLE('especialidades')->SELECT('nombre')->WHERE('id',$moist->especialidad_id)->FIRST();
                 $moist->especialidad = $onesp->nombre;
                 array_push($arrtemp, $moist);
+                $especialidad_cambios = TRUE;
+            }
+        }
+        if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE)
+        {
+            $arrstat = array('VALIDADO');
+            foreach($especialidades as $moist)
+            {
+                if(in_array($moist->status, $arrstat))
+                {
+                    $onesp = DB::TABLE('especialidades')->SELECT('nombre')->WHERE('id',$moist->especialidad_id)->FIRST();
+                    $moist->especialidad = $onesp->nombre;
+                    array_push($arrtemp, $moist);
+                }
             }
         }
         $data = $this->make_collection($arrtemp);
@@ -3326,7 +3366,7 @@ class InstructorController extends Controller
         foreach($data as $count => $item)
         {
             // $item->cursos_impartir = explode(',',str_replace($rplc,'',$item->cursos_impartir));
-            if($item->status != 'BAJA EN FIRMA' && $item->status != 'BAJA EN PREVALIDACION')
+            if($honorario_actual != $instructor->tipo_honorario || ($item->status != 'BAJA EN FIRMA' && $item->status != 'BAJA EN PREVALIDACION'))
             {
             $cursos[$count] = DB::TABLE('cursos')->SELECT('cursos.nombre_curso')
                             ->WHEREIN('id',$item->cursos_impartir)
@@ -3347,7 +3387,7 @@ class InstructorController extends Controller
 
             //GUARDADO DE FECHA Y MEMO DE SOLICITUD
             $thalmor = especialidad_instructor::WHERE('id','=',$item->id)->FIRST();
-            if($item->fecha_solicitud == NULL)
+            if($item->fecha_solicitud == NULL || isset($request->borrador))
             {
                 $item->fecha_solicitud = carbon::now()->toDateString();
                 $date = strtotime($item->fecha_solicitud);
@@ -3389,6 +3429,8 @@ class InstructorController extends Controller
                         $tipo_doc = 'REACTIVACION';
                     break;
                 }
+            } if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE) {
+                $tipo_doc = 'REVALIDACION';
             }
         }
 
@@ -3403,6 +3445,10 @@ class InstructorController extends Controller
         $direccion = $data_unidad->direccion;
         $direccion = explode("*", $data_unidad->direccion);
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
+
+        if($honorario_actual != $instructor->tipo_honorario && $especialidad_cambios == FALSE && isset($request->borrador)) {
+            $date = strtotime(carbon::now());
+        }
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
@@ -3436,12 +3482,13 @@ class InstructorController extends Controller
         $user = auth::user()->id;
 
         $instructor = pre_instructor::find($request->idinsgendocval);
+        $regimen_actual = instructor::Where('id',$instructor->id)->Value('tipo_honorario');
         $special = $this->make_collection($instructor->data_especialidad);
 
         foreach($special as $key => $cadwell)
         {
             $arrtemp = null;
-            if(in_array($cadwell->status, $arrstat))
+            if(in_array($cadwell->status, $arrstat) || ($regimen_actual != $instructor->tipo_honorario && $cadwell->status != 'BAJA'))
             {
                 if($cadwell->status != 'BAJA EN FIRMA' && $cadwell->fecha_validacion == NULL)
                 {

@@ -57,9 +57,12 @@
                     <label for="inputhonorarios">Regimen</label>
                     <select class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
-                        <option value="HONORARIOS">Honorarios</option>
+                        @foreach ($lista_regimen as $regimen)
+                            <option value="{{$regimen->concepto}}">{{$regimen->concepto}}</option>
+                        @endforeach
+                        {{-- <option value="HONORARIOS">Honorarios</option> --}}
                         {{-- <option value="ASIMILADOS A SALARIOS">Asimilados a Salarios</option> --}}
-                        <option value="HONORARIOS Y ASIMILADOS A SALARIOS">Honorarios y Asimilado a Salarios</option>
+                        {{-- <option value="HONORARIOS Y ASIMILADOS A SALARIOS">Honorarios y Asimilado a Salarios</option> --}}
                     </select>
                 </div>
                 <div class="form-group col-md-3">

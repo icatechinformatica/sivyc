@@ -1254,7 +1254,13 @@ class ContratoController extends Controller
                             ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
                             ->Get();
             //Generacion de QR
-            $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+            //Verifica si existe link de verificiacion, de lo contrario lo crea y lo guarda
+            if(isset($documento->link_verficacion)) {
+                $verificacion = $documento->link_verficacion;
+            } else {
+                $documento->link_verficacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                $documento->save();
+            }
             ob_start();
             QRcode::png($verificacion);
             $qrCodeData = ob_get_contents();
