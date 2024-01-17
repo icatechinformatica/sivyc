@@ -35,7 +35,7 @@
 
 @php
     $municipio = $diace = $mesce = $anioce = $totalp = $diaini = $mesini = $anioini = $diafin = $mesfin = $aniofin = $unidad = $dias = $hini = $hfin =
-    $tcapacitacion = $instructor = $curso = $cespecifico = 'DATO REQUERIDO';
+    $tcapacitacion = $instructor = $curso = $cespecifico = $efisico = 'DATO REQUERIDO';
 
     if ($data1) {
         if ($data1->muni) $municipio = $data1->muni;
@@ -51,6 +51,7 @@
         if ($data1->nombre) $instructor = $data1->nombre;
         if ($data1->curso) $curso = $data1->curso;
         if ($data1->cespecifico) $cespecifico = $data1->cespecifico;
+        if ($data1->efisico) $efisico = $data1->efisico;
     }
 
     $dunidad = $delegado_administrativo = $pdelegado_administrativo = $academico = $pacademico = $vinculacion = $pvinculacion = 'DATO REQUERIDO';
@@ -99,7 +100,13 @@
                 {{$mesini != $mesfin ? 'DE '.strtoupper($mesini) : ''}}
                 {{$anioini != $aniofin ? 'DEL '.$anioIni : ''}}
                 AL {{sprintf("%02d", $diafin)}} DE {{strtoupper($mesfin)}} DEL AÑO {{$aniofin.','}} </span> EN EL HORARIO DE <span class="color_dina">{{date("H:i", strtotime($hini))}} A {{date("H:i", strtotime($hfin))}}</span>
-                HORAS, SEDE DEL CURSO MODALIDAD <span class="color_dina">{{$tcapacitacion}}</span>, EN EL MUNICIPIO DE <span class="color_dina">{{$municipio}}</span>, CON UN
+                HORAS, SEDE DEL CURSO
+                @if ($tcapacitacion == 'PRESENCIAL')
+                {{' CON DOMICILIO EN '.$efisico.', '}}
+                @elseif($tcapacitacion == 'A DISTANCIA')
+                {{' PLATAFORMA VIRTUAL, '}}
+                @endif
+                DEL MUNICIPIO DE <span class="color_dina">{{$municipio}}</span>, CON UN
                 COSTO DE $<span class="color_dina">{{ $data3[1]->costo }}</span> PESOS M/N POR PERSONA, SEÑALANDO COMO INSTRUCTOR DEL CURSO AL (A LA) C.
                 <span class="color_dina">{{$instructor}}</span>.
             </div>
