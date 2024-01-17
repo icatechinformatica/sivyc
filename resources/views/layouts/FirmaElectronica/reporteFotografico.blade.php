@@ -5,7 +5,7 @@
     <style>
         body {
             font-family: sans-serif;
-            margin-top: 20%;
+            margin-top: 15%;
             margin-bottom: 4%;
         }
 
@@ -110,7 +110,7 @@
         }
 
         /* by Jose Luis Moreno */
-        table {
+        .estilo_tabla {
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
@@ -118,7 +118,7 @@
             /* margin-top: 20px; */
         }
 
-        th, td {
+        .estilo_colum {
             border: 1px solid #ddd;
             padding: 3px;
             /* text-align: left; */
@@ -148,7 +148,7 @@
     </header>
     <footer>
         @if(!is_null($uuid))
-            <div style="position: absolute; top: -40px; left: 15px; font-size:11px; text-align:justify">
+            <div style="position: absolute; top: -35px; left: 15px; font-size:10px; text-align:justify">
                 <span style="">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas.</span>
             </div>
         @endif
@@ -161,45 +161,50 @@
             @endif
         </div>
     </footer>
-    <div style="margin-top: -13%;">
+    <div style="margin-top: -9%; margin-bottom: 4%;">
         <h6 style="text-align: center;">{{isset($leyenda) ? $leyenda : ''}}</h6>
+    </div>
+    <div style="text-align:center;">
+        <span style="text-align: center;">REPORTE FOTOGRÁFICO DEL INSTRUCTOR</span>
     </div>
     {{-- <h6 style="text-align: center;">{{isset($leyenda) ? $leyenda : ''}}</h6> --}}
     {{-- tabla --}}
     @if ($cursopdf)
-        <table border="1" class="" width="100%">
-            <tbody>
-                <tr>
-                    <td colspan="2"><b>CURSO: </b>{{$cursopdf->curso}}</td>
-                </tr>
-                <tr>
-                    <td colspan="2"><b>TIPO: </b>{{$cursopdf->tcapacitacion}}</td>
-                </tr>
-                <tr>
-                    <td><b>FECHA DE INICIO: </b>{{$cursopdf->inicio}}</td>
-                    <td><b>FECHA DE TERMINO: </b>{{$cursopdf->termino}}</td>
-                </tr>
-                <tr>
-                    <td><b>CLAVE: </b>{{$cursopdf->clave}}</td>
-                    <td><b>HORARIO: </b>{{$cursopdf->hini. ' A '. $cursopdf->hfin}}</td>
-                </tr>
-                <tr>
-                    <td><b>TITULAR DE LA U.C: </b>{{$cursopdf->dunidad}}</td>
-                    <td><b>INSTRUCTOR: </b>{{$cursopdf->nombre}}</td>
-                </tr>
-            </tbody>
-        </table>
-
+        {{-- Lugar y fecha --}}
         <div style="text-align: right;">
-            <p style="">Unidad de Capacitación {{ucfirst(strtolower($cursopdf->ubicacion))}}
+            <p style="margin-bottom: 5px;">Unidad de Capacitación {{ucfirst(strtolower($cursopdf->ubicacion))}}
             @if ($cursopdf->ubicacion != $cursopdf->unidad)
             , Accion Movil {{ucfirst(strtolower($cursopdf->unidad))}}.
             @else
 
             @endif
             </p>
-            <p>{{ucfirst(strtolower($cursopdf->unidad))}}, Chiapas. A {{$fechapdf}}.</p>
+            <p style="margin-top: 0px; margin-bottom: 20px;">{{ucfirst(strtolower($cursopdf->unidad))}}, Chiapas. A {{$fechapdf}}.</p>
         </div>
+
+        <table border="1" class="estilo_tabla" width="100%">
+            <tbody>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum" colspan="2"><b>CURSO: </b>{{$cursopdf->curso}}</td>
+                </tr>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum" colspan="2"><b>TIPO: </b>{{$cursopdf->tcapacitacion}}</td>
+                </tr>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum"><b>FECHA DE INICIO: </b>{{$cursopdf->inicio}}</td>
+                    <td class="estilo_colum"><b>FECHA DE TÉRMINO: </b>{{$cursopdf->termino}}</td>
+                </tr>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum"><b>CLAVE: </b>{{$cursopdf->clave}}</td>
+                    <td class="estilo_colum"><b>HORARIO: </b>{{$cursopdf->hini. ' A '. $cursopdf->hfin}}</td>
+                </tr>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum"><b>NOMBRE DEL TITULAR DE LA U.C: </b>{{$cursopdf->dunidad}}</td>
+                    <td class="estilo_colum"><b>NOMBRE DEL INSTRUCTOR: </b>{{$cursopdf->nombre}}</td>
+                </tr>
+            </tbody>
+        </table>
+
     @endif
     <br><br><br><br>
      {{-- Mostrar imagenes --}}
@@ -219,7 +224,7 @@
     {{-- Apartado de mostrar firmas --}}
     <div>
         @if(!is_null($objeto))
-            <div style="display: inline-block; width: 85%; margin-left: 12px;">
+            <div style="display: inline-block; width: 85%; margin-left: 12px; margin-top: 3%;">
                 <table style="width: 100%;">
                     @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
                         <tr style="">
@@ -248,10 +253,11 @@
                         </tr>
                     @endforeach
                 </table>
+                <div style="display: inline-block; width: 10%;">
+                    <img style="position: fixed; width: 16%; top: 62%; left: 77%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                </div>
             </div>
-            <div style="display: inline-block; width: 15%;">
-                <img style="position: fixed; width: 16%; top: 66%; left: 77%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
-            </div>
+
         @endif
     </div>
         {{-- <img style="position: fixed; width: 18%; top: 30%; left: 75%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}

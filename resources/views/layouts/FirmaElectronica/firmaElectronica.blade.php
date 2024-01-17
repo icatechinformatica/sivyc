@@ -184,7 +184,7 @@
                                             <tbody>
                                                 @foreach ($docsFirmar as $key => $docFirmar)
                                                     @php
-                                                        $firmantes = '';
+                                                        $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docFirmar->obj_documento, true);
                                                         $nameArchivo = $obj['archivo']['_attributes']['nombre_archivo'];
@@ -196,12 +196,14 @@
                                                             }
 
                                                             if(empty($value['_attributes']['firma_firmante'])){
-                                                                $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (NO), ';
+                                                                // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (NO), ';
+                                                                array_push($firmantes, $value['_attributes']['nombre_firmante'].' (NO)');
                                                             } else {
-                                                                $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (SI), ';
+                                                                // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (SI), ';
+                                                                array_push($firmantes, $value['_attributes']['nombre_firmante'].' (SI)');
                                                             }
                                                         }
-                                                        $firmantes = substr($firmantes, 0, -2);
+                                                        // $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
                                                     <tr>
                                                         <td><small>{{$nameArchivo}}</small></td>
@@ -229,7 +231,13 @@
                                                                 @break
                                                             @endswitch
                                                         </td>
-                                                        <td><small>{{$firmantes}}</small></td>
+                                                        <td>
+                                                            <small>
+                                                                @foreach ($firmantes as $item)
+                                                                    <p class="my-0">{{$item}}</p>
+                                                                @endforeach
+                                                            </small>
+                                                        </td>
                                                         <td><small>{{$docFirmar->created_at->format('d-m-Y')}}</small></td>
                                                         <td>
                                                             <button class="btn btn-outline-danger" type="button" onclick="cancelarDocumento('{{$docFirmar->id}}', '{{$nameArchivo}}', '{{$docFirmar->tipo_archivo}}', '{{$docFirmar->numero_o_clave}}')">Cancelar</button>
@@ -275,7 +283,7 @@
                                                 @foreach ($docsFirmados as $docFirmado)
                                                     @php
                                                         $sendValidation = true;
-                                                        $firmantes = '';
+                                                        $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docFirmado->obj_documento, true);
                                                         // $obj2 = json_decode($docFirmado->obj_documento_interno, true);
@@ -284,12 +292,14 @@
                                                         foreach ($obj['firmantes']['firmante'][0] as $value) {
                                                             if(empty($value['_attributes']['firma_firmante'])){
                                                                 $sendValidation = false;
-                                                                $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (NO), ';
+                                                                // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (NO), ';
+                                                                array_push($firmantes, $value['_attributes']['nombre_firmante'].' (NO)');
                                                             } else {
-                                                                $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (SI), ';
+                                                                // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (SI), ';
+                                                                array_push($firmantes, $value['_attributes']['nombre_firmante'].' (SI)');
                                                             }
                                                         }
-                                                        $firmantes = substr($firmantes, 0, -2);
+                                                        // $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
 
                                                     <tr>
@@ -318,7 +328,13 @@
                                                                 @break
                                                             @endswitch
                                                         </td>
-                                                        <td><small>{{$firmantes}}</small></td>
+                                                        <td>
+                                                            <small>
+                                                                @foreach ($firmantes as $item)
+                                                                    <p class="my-0">{{$item}}</p>
+                                                                @endforeach
+                                                            </small>
+                                                        </td>
                                                         <td><small>{{$docFirmado->created_at->format('d-m-Y')}}</small></td>
                                                         <td>
                                                             <button type="button" onclick="cancelarDocumento('{{$docFirmado->id}}', '{{$nameArchivo}}', '{{$docFirmado->tipo_archivo}}', '{{$docFirmado->numero_o_clave}}')" class="btn btn-outline-danger">Cancelar</button>
@@ -366,15 +382,16 @@
                                             <tbody>
                                                 @foreach ($docsValidados as $docValidado)
                                                     @php
-                                                        $firmantes = '';
+                                                        $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docValidado->obj_documento, true);
                                                         $nameArchivo = $obj['archivo']['_attributes']['nombre_archivo'];
 
                                                         foreach ($obj['firmantes']['firmante'][0] as $value) {
-                                                            $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].', ';
+                                                            // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].', ';
+                                                            array_push($firmantes, $value['_attributes']['nombre_firmante']);
                                                         }
-                                                        $firmantes = substr($firmantes, 0, -2);
+                                                        // $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
                                                     <tr>
                                                         <td><small>{{$nameArchivo}}</small></td>
@@ -403,7 +420,13 @@
                                                             @endswitch
                                                             {{-- <button type="button" onclick="descargarDocumento('{{$docValidado->id}}')" class="btn btn-outline-success">Descargar</button> --}}
                                                         </td>
-                                                        <td><small>{{$firmantes}}</small></td>
+                                                        <td>
+                                                            <small>
+                                                                @foreach ($firmantes as $item)
+                                                                    <p class="my-0">{{$item}}</p>
+                                                                @endforeach
+                                                            </small>
+                                                        </td>
                                                         <td><small>{{$docValidado->created_at->format('d-m-Y')}}</small></td>
                                                         <td><small>{{$docValidado->fecha_sellado}}</small></td>
                                                         <td>
@@ -442,20 +465,27 @@
                                             <tbody>
                                                 @foreach ($docsCancelados as $docCancelado)
                                                     @php
-                                                        $firmantes = '';
+                                                        $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docCancelado->obj_documento, true);
                                                         $objCancelado = json_decode($docCancelado->cancelacion, true);
                                                         $nameArchivo = $obj['archivo']['_attributes']['nombre_archivo'];
 
                                                         foreach ($obj['firmantes']['firmante'][0] as $value) {
-                                                            $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].', ';
+                                                            // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].', ';
+                                                            array_push($firmantes, $value['_attributes']['nombre_firmante']);
                                                         }
-                                                        $firmantes = substr($firmantes, 0, -2);
+                                                        // $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
                                                     <tr>
                                                         <td><small>{{$nameArchivo}}</small></td>
-                                                        <td><small>{{$firmantes}}</small></td>
+                                                        <td>
+                                                            <small>
+                                                                @foreach ($firmantes as $item)
+                                                                    <p class="my-0">{{$item}}</p>
+                                                                @endforeach
+                                                            </small>
+                                                        </td>
                                                         <td><small>{{$docCancelado->created_at->format('d-m-Y')}}</small></td>
                                                         <td><small>{{$objCancelado['fecha']}}</small></td>
                                                         <td><small>{{$objCancelado['motivo']}}</small></td>

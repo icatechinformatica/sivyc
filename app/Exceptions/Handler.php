@@ -13,7 +13,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        \App\Exceptions\TokenInvalidException::class
     ];
 
     /**
@@ -53,3 +53,4 @@ class Handler extends ExceptionHandler
         return parent::render($request, $exception);
     }
 }
+

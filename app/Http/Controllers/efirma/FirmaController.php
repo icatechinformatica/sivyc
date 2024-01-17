@@ -239,7 +239,7 @@ class FirmaController extends Controller {
         $array['DocumentoChis']['firmantes'] = $obj_documento['firmantes'];
         // $array2['DocumentoChis']['firmantes'] = $obj_documento_interno['firmantes'];
 
-        ##By Jose Luis Moreno/ Creamos nuevo array para ordenar el xml
+        ##By Jose Luis Moreno/ Creamos nuevo array para ordenar el xml de nuevo
         if(isset($obj_documento['anexos'])){
             $ArrayXml = [
                 "emisor" => $obj_documento['emisor'],
@@ -438,7 +438,7 @@ class FirmaController extends Controller {
                 );
             }
 
-            //By jose luis Actualizar json reporte foto en tbl_cursos
+            //By jose luis moreno Actualizar json reporte foto en tbl_cursos
             if($request->txtTipo == 'Reporte fotografico'){
                 try {
                     $curso = tbl_curso::where('clave', $request->txtClave)->first();

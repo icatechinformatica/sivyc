@@ -104,11 +104,7 @@ Route::post('sivycMovil/updateToken', 'ApiController\ApisMovil\HomeMovil@updateT
 Route::post('sivycMovil/getNotificaciones', 'ApiController\ApisMovil\HomeMovil@getNotificaciones');
 
 
-// Route::middleware('jwt')->post('/recibir-imagenes', [RecibirImgController::class, 'recibirImagenes']);
 Route::prefix('v1')->group(function (){
-    //Prefijo V1, Todo lo que este dentro de este grupo se accedera escribiendo v1 en el navegador,
     //es decir /api/v1/*
-    Route::post('evidencias', [FotosController::class, 'savefotos']);
-    Route::post('mostrar', [FotosController::class, 'mostrarimg']);
     Route::post('catchimg', [FotosController::class, 'recibirimg']);
 });
