@@ -35,7 +35,7 @@
     <br>
     <table style="width: 80%; text-align: center;">
         <tr>
-            <td style="text-decoration: underline;">{{$alumnos->creado}}</td>
+            <td style="text-decoration: underline;">{{$alumnos->inicio}}</td>
             <td>{{str_pad($alumnos->id, 8, "0", STR_PAD_LEFT)}}</td>
         </tr>
         <tr>
