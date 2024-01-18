@@ -1418,7 +1418,7 @@ class grupoController extends Controller
         $folio_grupo =  $_SESSION['folio_grupo'];
 
         //Busqueda 1,2,3
-        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino',
+        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino', 'efisico',
         DB::raw("extract(day from fcespe) as diaes, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
         DB::raw("(hombre + mujer) as totalp"),
         DB::raw("extract(day from inicio) as diaini, to_char(inicio, 'TMmonth') as mesini, extract(year from inicio) as anioini"),
