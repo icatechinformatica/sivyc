@@ -1192,6 +1192,7 @@ class PagoController extends Controller
             $archivos->arch_factura_xml,
             $archivos->arch_contrato,
             $archivos->archivo_ine,
+            $archivos->arch_evidencia,
             // Agrega más archivos según sea necesario
         ];
 
