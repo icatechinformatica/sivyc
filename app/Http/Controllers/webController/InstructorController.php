@@ -1233,7 +1233,7 @@ class InstructorController extends Controller
                             break;
                             case 'REVALIDACION EN FIRMA':
                                 if($request->tipo_envio == 'captura') {
-                                    $movimiento = $movimiento. $item->nombre . ' (REVALIDACION EN FIRMA), ';
+                                    $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION EN FIRMA), ';
                                     $perfiles[$key]->status = 'EN CAPTURA';
                                 } else {
                                     $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION EN FIRMA), ';
