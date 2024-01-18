@@ -95,7 +95,7 @@
         if ($data1->inicio) $diaini = $data1->diaini; $mesini = $data1->mesini; $anioini = $data1->anioini;
         if ($data1->termino) $diafin = $data1->diafin; $mesfin = $data1->mesfin; $aniofin = $data1->aniofin;
         if ($data1->fcgen != null) $diagen = $data1->diagen; $mesgen = $data1->mesgen; $aniogen = $data1->aniogen;
-        if ($data1->cgeneral =! null) $cgeneral = $data1->cgeneral;
+        if ($data1->cgeneral != null) $cgeneral = $data1->cgeneral;
 
 
         if ($data1->id_cerss) {
@@ -285,7 +285,7 @@
                 CAPACITACIÓN PARA EL TRABAJO.
             </div>
             <br>
-            <div align="justify" style="font-size:12px;" class="estilo_p">
+            <div align="justify" style="font-size:12px; margin-bottom:10px;" class="estilo_p">
                 <b>SEGUNDA. - DEL CUMPLIMIENTO.</b> PARA DAR CUMPLIMIENTO AL OBJETO DEL PRESENTE CONVENIO ESPECIFICO,
                 <b>LAS “PARTES”</b> CONVIENEN QUE <b>“ICATECH”</b> OFRECERÁ A <span class="color_dina negrita">“{{$siglas_inst}}”</span>
                 LOS SERVICIOS DE CAPACITACIÓN CONSISTENTES EN EL (LOS) CURSO(S) RELACIONADO(S) EN LA SIGUIENTE TABLA
@@ -426,7 +426,7 @@
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 NO OBSTANTE, LO ANTERIOR, EN CASO DE NO LLEGAR A ALGÚN ACUERDO, <b>LAS “PARTES”</b> SE
                 SOMETEN EXPRESAMENTE A LA JURISDICCIÓN DE LOS TRIBUNALES COMPETENTES DE <b>LA CIUDAD
-                DE TUXTLA GUTIÉRREZ, CHIAPAS; RENUNCIANDO A AQUELLA QUE PUDIERA
+                DE TUXTLA GUTIÉRREZ, CHIAPAS;</b> RENUNCIANDO A AQUELLA QUE PUDIERA
                 CORRESPONDERLES EN RAZÓN DE SUS DOMICILIOS PRESENTES <span style="margin-right: 4px;">O</span> FUTUROS.
             </div>
             <br>
@@ -557,7 +557,7 @@
                                     <br>_______________________________________
                                     <br><span class="color_dina negrita">{{$vinculacion}}</span>
                                     <br>
-                                    <br><span class="color_dina" style="font-weight: normal;">{{$pvinculacion}}</span><span class="color_dina" style="font-weight: normal;">DE LA UNIDAD DE CAPACTITACIÓN {{$unidad}}</span>
+                                    <br><span class="color_dina" style="font-weight: normal;">{{$pvinculacion}}</span><span class="color_dina" style="font-weight: normal;"> DE LA UNIDAD DE CAPACTITACIÓN {{$unidad}}</span>
                             </th>
                             <th colspan="4" style="border: hidden; font-size:12px; vertical-align: top;" align="center">
 
