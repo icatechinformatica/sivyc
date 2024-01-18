@@ -722,7 +722,13 @@ class MetavanceController extends Controller
             ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
-
+        ##Validamos las variables globales de planeacion y area normal
+        $global_ejercicio = strval(date('Y'));
+        if (isset($_SESSION['eje_pat_buzon'])){
+            $global_ejercicio = $_SESSION['eje_pat_buzon'];
+        }else if(isset($_SESSION['eje_pat_registros'])){
+            $global_ejercicio = $_SESSION['eje_pat_registros'];
+        }
         //CONSULTA DE PROCEDIMIENTOS POR FUNCION
         $procedimientos = [];
         for ($i=0; $i < count($funciones); $i++) {
@@ -733,7 +739,7 @@ class MetavanceController extends Controller
             'metas_avances_pat.septiembre', 'metas_avances_pat.octubre', 'metas_avances_pat.noviembre', 'metas_avances_pat.diciembre', 'observaciones', 'observmeta', 'um.numero', 'um.unidadm', 'um.tipo_unidadm')
             ->Join('funciones_proced as f', 'f.id', 'metas_avances_pat.id_proced')
             ->Join('unidades_medida as um', 'f.id_unidadm', 'um.id')
-            ->where('metas_avances_pat.ejercicio', '=', $_SESSION['eje_pat_registros'])
+            ->where('metas_avances_pat.ejercicio', '=', $global_ejercicio)
             ->whereIn('f.id', function($query)use($val, $obtAnio)  {
             $query->select('id')
                   ->from('funciones_proced')
@@ -1158,7 +1164,7 @@ class MetavanceController extends Controller
             $mes_avance = $separador[1];
             $fecha_avance = $fech_carbon->format('d/m/Y');
 
-            $pdf = PDF::loadView('vistas_pat.genpdfavance', compact('area_org', 'org', 'funciones', 'procedimientos', 'mes_meta_avance', 'mes_avance', 'fecha_avance', 'marca', 'firm_logueado'));
+            $pdf = PDF::loadView('vistas_pat.genpdfavance', compact('area_org', 'org', 'funciones', 'procedimientos', 'mes_meta_avance', 'mes_avance', 'fecha_avance', 'marca', 'firm_logueado', 'global_ejercicio'));
             $pdf->setpaper('letter', 'landscape');
             return $pdf->stream('PAT-ICATECH-002.2.pdf');
         }
