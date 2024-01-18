@@ -58,7 +58,7 @@ class FirmaController extends Controller {
                 'tbl_cursos.asis_finalizado',
                 'tbl_cursos.calif_finalizado',
                 'tbl_cursos.clave',
-                \DB::raw("
+                DB::raw("
                     CASE
                         WHEN tipo_archivo = 'Lista de asistencia' THEN
                             CASE WHEN 'Lista de calificaciones' IS NULL THEN 'Ambos' ELSE 'Lista de calificaciones' END
@@ -67,7 +67,7 @@ class FirmaController extends Controller {
                         ELSE 'NA'
                     END AS tipo_archivo_faltante"
                 ),
-                \DB::raw("
+                DB::raw("
                 CASE
                 WHEN tipo_archivo = 'Lista de asistencia' AND documentos_firmar.status = 'CANCELADO' THEN 'asistencia cancelada'
                 WHEN tipo_archivo = 'Lista de calificaciones' AND documentos_firmar.status = 'CANCELADO' THEN
@@ -226,6 +226,17 @@ class FirmaController extends Controller {
         // $array2 = XmlToArray::convert($documento->documento_interno);
         $array['DocumentoChis']['firmantes'] = $obj_documento['firmantes'];
         // $array2['DocumentoChis']['firmantes'] = $obj_documento_interno['firmantes'];
+
+        ##By Jose Luis Moreno/ Creamos nuevo array para ordenar el xml
+        if(isset($obj_documento['anexos'])){
+            $ArrayXml = [
+                "emisor" => $obj_documento['emisor'],
+                "archivo" => $obj_documento['archivo'],
+                "anexos" => $obj_documento['anexos'],
+                "firmantes" => $obj_documento['firmantes'],
+            ];
+            $obj_documento = $ArrayXml;
+        }
 
         $result = ArrayToXml::convert($obj_documento, [
             'rootElementName' => 'DocumentoChis',
@@ -413,6 +424,23 @@ class FirmaController extends Controller {
                         ['status' => 'Capturando']
                 );
             }
+
+            //By jose luis Actualizar json reporte foto en tbl_cursos
+            if($request->txtTipo == 'Reporte fotografico'){
+                try {
+                    $curso = tbl_curso::where('clave', $request->txtClave)->first();
+                    if ($curso) {
+                        $json = $curso->evidencia_fotografica;
+                        $json['status_validacion'] = 'RETORNADO';
+                        $json['observacion_reporte'] = $request->motivo;
+                        $curso->evidencia_fotografica = $json;
+                        $curso->save();
+                    }
+                } catch (\Throwable $th) {
+                    return redirect()->route('firma.inicio')->with('warning', 'Error al actualizar reporte fotografico!');
+                }
+            }
+
             return redirect()->route('firma.inicio')->with('warning', 'Documento cancelado exitosamente!');
         } else {
             return redirect()->route('firma.inicio')->with('danger', 'Debe ingresar el motivo de cancelación');
@@ -432,20 +460,21 @@ class FirmaController extends Controller {
     }
 
     public function generarToken(Request $request) {
-        // $resToken = Http::withHeaders([
-        //     'Accept' => 'application/json'
-        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'SISTEM_IVINCAP',
-        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
-        // ]);
-
-        // Token Prueba
+        //Token de producción
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'FirmaElectronica',
-            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+            'nombre' => 'SISTEM_IVINCAP',
+            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         ]);
+
+        // Token Prueba
+        // $resToken = Http::withHeaders([
+        //     'Accept' => 'application/json'
+        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+        //     'nombre' => 'FirmaElectronica',
+        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        // ]);
 
         $token = $resToken->json();
         Tokens_icti::create([
@@ -456,20 +485,21 @@ class FirmaController extends Controller {
     }
 
     public function sellarFile($xml, $token) {
-        // $response1 = Http::withHeaders([
-        //     'Accept' => 'application/json',
-        //     'Authorization' => 'Bearer '.$token
-        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
-        //     'xml_Firmado' => $xml
-        // ]);
-
-        // Sellado de prueba
+        //Sellado de producción
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token
-        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
             'xml_Firmado' => $xml
         ]);
+
+        // Sellado de prueba
+        // $response1 = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token
+        // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+        //     'xml_Firmado' => $xml
+        // ]);
         return $response1;
     }
 
