@@ -754,9 +754,9 @@ class MetavanceController extends Controller
         }
         //$_SESSION['eje_pat_registros']
         //Consulta de fechas
-        $fechasPat = function ($organismo, $global_ejercicio){
+        $fechasPat = function ($organismo, $anio_eje){
             $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)
-            ->where('periodo', '=', $global_ejercicio)->first();
+            ->where('periodo', '=', $anio_eje)->first();
             return $tblFechas;
         };
 
@@ -1059,7 +1059,7 @@ class MetavanceController extends Controller
 
         if($separador[0] == 'meta'){
             $fecha_enviar = '';
-            $tblFechas =  $fechasPat($organismo); #ejecutamos solo una vez en lugar de varias veces
+            $tblFechas =  $fechasPat($organismo, $global_ejercicio); #ejecutamos solo una vez en lugar de varias veces
             switch ($separador[1]) {
                 case 'crear':
                     // $tblFechas =  $fechasPat($organismo);
@@ -1128,7 +1128,7 @@ class MetavanceController extends Controller
 
             //condicion de fechas
             $fecha_enviar = '';
-            $tblFechas =  $fechasPat($organismo); #Ejecutamos solo una vez
+            $tblFechas =  $fechasPat($organismo, $global_ejercicio); #Ejecutamos solo una vez
             switch ($separador[2]) {
                 case 'crear':
                     // $tblFechas =  $fechasPat($organismo);
