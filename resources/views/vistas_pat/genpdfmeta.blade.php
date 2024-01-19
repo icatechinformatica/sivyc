@@ -25,7 +25,13 @@
     <div id="titulo">
         <h3>SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR</h3>
         <h3>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO</h3>
-        <div id="fontotext"><b style="background: black;">"CALENDARIZADO ANUAL PROGRAMÁTICO DEL PROGRAMA ANUAL DE TRABAJO {{date('Y')}}"</b></div>
+        <div id="fontotext"><b style="background: black;">"CALENDARIZADO ANUAL PROGRAMÁTICO DEL PROGRAMA ANUAL DE TRABAJO
+            @if ($global_ejercicio != strval(date('Y')))
+                {{' '.$global_ejercicio}}"
+            @else
+                {{' '.date('Y')}}"
+            @endif
+        </b></div>
         <h3>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS</h3>
     </div>
 @endsection

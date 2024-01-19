@@ -80,7 +80,7 @@ else{
             {
                 text-align: left;
                 position: absolute;
-                bottom: 35px;
+                bottom: 0px;
                 left: 65px;
                 font-size: 8.5px;
                 color: rgb(255, 255, 255);
@@ -151,7 +151,8 @@ else{
         </header>
         <div>
             <div id="wrappertop">
-                <div align=center><font size=0><b>{{$distintivo}}</b></font><br/>
+                <div align=center>
+                    {{-- <font size=0><b>{{$distintivo}}</b></font><br/> --}}
                     <FONT SIZE=0><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS<br/>
                     <FONT SIZE=0>DIRECCION DE PLANEACION</FONT><br/>
                     <FONT SIZE=0>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO</FONT><br/>

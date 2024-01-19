@@ -1434,6 +1434,7 @@ class grupoController extends Controller
         //Busqueda 6
         $data3 = DB::table('alumnos_registro as ar')->select('ar.nombre', 'ar.apellido_paterno', 'ar.apellido_materno', 'ar.folio_grupo', 'ar.costo', 'ar.curp', 'a.correo', 'a.telefono_personal', 'a.medio_confirmacion')
         ->Join('alumnos_pre as a', 'a.curp', 'ar.curp')
+        ->orderBy('ar.nombre')
         ->where('folio_grupo','=',"$folio_grupo")->get();
 
         $direccion = $data2->direccion;
