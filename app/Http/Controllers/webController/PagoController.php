@@ -1197,8 +1197,10 @@ class PagoController extends Controller
         ];
 
         foreach ($filesToAdd as $file) {
-            $filename = pathinfo($file, PATHINFO_BASENAME);
-            copy($file, $tempDir . '/' . $filename);
+            if(!is_null($file)) {
+                $filename = pathinfo($file, PATHINFO_BASENAME);
+                copy($file, $tempDir . '/' . $filename);
+            }
         }
         // Crea el archivo ZIP
         $zip = new ZipArchive;
