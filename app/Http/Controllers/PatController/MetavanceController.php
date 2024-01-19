@@ -752,11 +752,11 @@ class MetavanceController extends Controller
 
             array_push($procedimientos, $proced);
         }
-
+        //$_SESSION['eje_pat_registros']
         //Consulta de fechas
-        $fechasPat = function ($organismo){
+        $fechasPat = function ($organismo, $global_ejercicio){
             $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)
-            ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
+            ->where('periodo', '=', $global_ejercicio)->first();
             return $tblFechas;
         };
 
@@ -1092,7 +1092,7 @@ class MetavanceController extends Controller
             //Guardamos la fecha antes de la generación
             $fech_carbon = Carbon::parse($fecha_enviar);
             $fecha_meta = $fech_carbon->format('d/m/Y');
-            $pdf = PDF::loadView('vistas_pat.genpdfmeta', compact('area_org', 'org', 'funciones', 'procedimientos', 'fecha_meta', 'marca', 'firm_logueado'));
+            $pdf = PDF::loadView('vistas_pat.genpdfmeta', compact('area_org', 'org', 'funciones', 'procedimientos', 'fecha_meta', 'marca', 'firm_logueado', 'global_ejercicio'));
             $pdf->setpaper('letter', 'landscape');
             return $pdf->stream('PAT-ICATECH-002.1.pdf');
 
