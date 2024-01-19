@@ -1206,9 +1206,10 @@ class ContratoController extends Controller
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura',
                                   'tbl_cursos.tipo_curso','tbl_cursos.espe', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion',
-                                  'instructores.rfc','tbl_cursos.modinstructor','instructores.curp','instructores.domicilio')
+                                  'instructores.rfc','tbl_cursos.modinstructor','instructores.curp','instructores.domicilio','tabla_supre.fecha_validacion')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                          ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_folios')
                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                           ->FIRST();
@@ -1221,7 +1222,7 @@ class ContratoController extends Controller
         $fecha_act = new Carbon('23-06-2022');
         $fecha_fir = new Carbon($data_contrato->fecha_firma);
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        $date = strtotime($data_contrato->fecha_firma);
+        $date = strtotime($data->fecha_validacion);
         $D = date('d', $date);
         $M = $this->toMonth(date('m', $date));
         $Y = date("Y", $date);
