@@ -106,8 +106,7 @@
                 @elseif($tcapacitacion == 'A DISTANCIA')
                 {{' PLATAFORMA VIRTUAL, '}}
                 @endif
-                DEL MUNICIPIO DE <span class="color_dina">{{$municipio}}</span>, CON UN
-                COSTO DE $<span class="color_dina">{{ $data3[1]->costo }}</span> PESOS M/N POR PERSONA, SEÑALANDO COMO INSTRUCTOR DEL CURSO AL (A LA) C.
+                CON UN COSTO DE $<span class="color_dina">{{ $data3[1]->costo }}</span> PESOS M/N POR PERSONA, SEÑALANDO COMO INSTRUCTOR DEL CURSO AL (A LA) C.
                 <span class="color_dina">{{$instructor}}</span>.
             </div>
             <br>
