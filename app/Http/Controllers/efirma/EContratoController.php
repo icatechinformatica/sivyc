@@ -217,7 +217,7 @@ class EContratoController extends Controller
                                   'instructores.curp','instructores.domicilio','tabla_supre.fecha_validacion')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
-                          ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_folios')
+                          ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                           ->FIRST();
