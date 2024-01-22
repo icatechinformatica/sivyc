@@ -241,8 +241,8 @@ class AsistenciaController extends Controller
 
                         //Generacion de QR
                         //Verifica si existe link de verificiacion, de lo contrario lo crea y lo guarda
-                        if(isset($documento->link_verficacion)) {
-                            $verificacion = $documento->link_verficacion;
+                        if(isset($documento->link_verificacion)) {
+                            $verificacion = $documento->link_verificacion;
                         } else {
                             $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
                             $documento->save();
