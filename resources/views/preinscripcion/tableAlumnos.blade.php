@@ -47,11 +47,11 @@
             @endif
           </th>
           <th class="text-center">
-            @if($a->id_cerss)
+            {{-- @if($a->id_cerss)
               <a target="_blank" href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>
-            @else
+            @else --}}
               <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>
-            @endif
+            {{-- @endif --}}
           </th>
           <!--
             <th class="text-center">

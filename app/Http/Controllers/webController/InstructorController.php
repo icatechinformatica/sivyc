@@ -1180,7 +1180,6 @@ class InstructorController extends Controller
         $newb = $newc = $arrtemp = array();
         $retorno_firma = false;
         $stat_arr = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','BAJA EN PREVALIDACION','BAJA EN FIRMA','EN FIRMA','REVALIDACION EN FIRMA');
-
         foreach($idlist as $bosmer)
         {
             $chk_mod_perfil = $chk_mod_esp = $retorno_firma = FALSE;
@@ -1233,8 +1232,14 @@ class InstructorController extends Controller
                                 $perfiles[$key]->status = 'RETORNO';
                             break;
                             case 'REVALIDACION EN FIRMA':
-                                $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION EN FIRMA), ';
-                                $retorno_firma = TRUE;
+                                if($request->tipo_envio == 'captura') {
+                                    $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION EN FIRMA), ';
+                                    $perfiles[$key]->status = 'EN CAPTURA';
+                                } else {
+                                    $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION EN FIRMA), ';
+                                    $retorno_firma = TRUE;
+                                }
+
                             break;
                             case 'BAJA EN FIRMA':
                                 $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
@@ -1327,6 +1332,10 @@ class InstructorController extends Controller
             if($modInstructor->status != 'VALIDADO' && $retorno_firma == FALSE)
             {
                 $modInstructor->status = 'RETORNO';
+            }
+
+            if($request->tipo_envio == 'captura') {
+                $modInstructor->status = 'EN CAPTURA';
             }
             $movimiento = $movimiento . 'con la observacion: ' . $request->observacion_retorno;
 
@@ -3368,17 +3377,20 @@ class InstructorController extends Controller
             // $item->cursos_impartir = explode(',',str_replace($rplc,'',$item->cursos_impartir));
             if($honorario_actual != $instructor->tipo_honorario || ($item->status != 'BAJA EN FIRMA' && $item->status != 'BAJA EN PREVALIDACION'))
             {
-            $cursos[$count] = DB::TABLE('cursos')->SELECT('cursos.nombre_curso')
-                            ->WHEREIN('id',$item->cursos_impartir)
-                            ->GET();
-            $totalcursos = DB::TABLE('cursos')->SELECT(DB::RAW("COUNT(id) AS total"))
-                            ->WHERE('id_especialidad','=',$item->especialidad_id)
-                            ->FIRST();
-            $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
-                            ->WHERE('id_especialidad','=',$item->especialidad_id)
-                            ->WHERENOTIN('id',$item->cursos_impartir)->GET();
-
-            $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
+                $cursos[$count] = DB::TABLE('cursos')->SELECT('cursos.nombre_curso')
+                                ->WHEREIN('id',$item->cursos_impartir)
+                                ->GET();
+                $totalcursos = DB::TABLE('cursos')->SELECT(DB::RAW("COUNT(id) AS total"))
+                                ->WHERE('id_especialidad','=',$item->especialidad_id)
+                                ->FIRST();
+                $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
+                                ->WHERE('id_especialidad','=',$item->especialidad_id)
+                                ->WHERENOTIN('id',$item->cursos_impartir)->GET();
+                if($totalcursos->total != 0) {
+                    $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
+                } else {
+                    $porcentaje[$count] = 0;
+                }
             }
             else
             {

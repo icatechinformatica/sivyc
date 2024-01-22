@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportExcel;
 use ZipArchive;
+use File;
 
 class PagoController extends Controller
 {
@@ -1169,55 +1170,57 @@ class PagoController extends Controller
             $archivos->instructor_mespecialidad = $archivos->archivo_alta;
         }
 
-    $zip = new ZipArchive;
-    $fileName = 'documentacion_'.$id_contrato.'.rar';
-    $zipFileName = public_path('example.zip');
-    $filePath = public_path($fileName);
+        // Nombre del archivo ZIP
+        $zipFileName = 'archivos.zip';
 
-    if ($zip->open($filePath, ZipArchive::CREATE) !== TRUE) {
-        // Handle error creating RAR archive
-        return response("Failed to create RAR archive", 500);
-    }
+        // Directorio temporal para almacenar los archivos antes de comprimirlos
+        $tempDir = storage_path('temp_zip');
 
-        // Add files to the RAR archive
-        $zip->addFile('C:\prueba.pdf', 'solicitud_pago.pdf');
-        $zip->addFile($archivos->arch_solicitud_pago, 'solicitud_pago.pdf');
-        $zip->addFile($archivos->archivo_bancario, 'banco.pdf');
-        $zip->addFile($archivos->instructor_mespecialidad, 'validacion_instructor.pdf');
-        $zip->addFile($archivos->pdf_curso, 'ARC.pdf');
-        $zip->addFile($archivos->doc_validado, 'suficiencia_presupuestal.pdf');
-        $zip->addFile($archivos->arch_factura, 'factura.pdf');
-        $zip->addFile($archivos->arch_factura_xml, 'factura_xml.xml');
-        $zip->addFile($archivos->arch_contrato, 'contrato.pdf');
-        $zip->addFile($archivos->archivo_ine, 'identificacion pdf');
-        dd($zip);
-        if(isset($archivos->arch_asistencia))
-        {
-            $zip->addFile($archivos->arch_asistencia, 'asistencias.pdf');
-        }
-        if(isset($archivos->arch_evidencia))
-        {
-            $zip->addFile($archivos->arch_evidencia, 'evidencia_fotografica.pdf');
-        }
-        if(isset($archivos->arch_calificaciones))
-        {
-            $zip->addFile($archivos->arch_calificaciones, 'calificaciones.pdf');
+        // Asegúrate de que el directorio temporal exista, si no, créalo
+        if (!File::exists($tempDir)) {
+            File::makeDirectory($tempDir);
         }
 
-        $zip->close();
-
-        if (!file_exists($filePath)) {
-            // Handle error: file not found
-            return response("File not found", 500);
-        }
-
-        $headers = [
-            'Content-Type' => 'application/rar',
-            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        // Agrega archivos al directorio temporal (puedes personalizar esto según tus necesidades)
+        $filesToAdd = [
+            $archivos->arch_solicitud_pago,
+            $archivos->archivo_bancario,
+            $archivos->instructor_mespecialidad,
+            $archivos->pdf_curso,
+            $archivos->doc_validado,
+            $archivos->arch_factura,
+            $archivos->arch_factura_xml,
+            $archivos->arch_contrato,
+            $archivos->archivo_ine,
+            $archivos->arch_evidencia,
+            // Agrega más archivos según sea necesario
         ];
 
-        return response()->download($filePath, $fileName, $headers)->deleteFileAfterSend(true);
+        foreach ($filesToAdd as $file) {
+            if(!is_null($file)) {
+                $filename = pathinfo($file, PATHINFO_BASENAME);
+                copy($file, $tempDir . '/' . $filename);
+            }
+        }
+        // Crea el archivo ZIP
+        $zip = new ZipArchive;
+        if ($zip->open(storage_path($zipFileName), ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+            $files = File::allFiles($tempDir);
 
+            foreach ($files as $file) {
+                $zip->addFile($file->getRealPath(), $file->getRelativePathname());
+            }
+
+            $zip->close();
+
+            // Elimina el directorio temporal
+            File::deleteDirectory($tempDir);
+
+            // Descarga el archivo ZIP
+            return response()->download(storage_path($zipFileName))->deleteFileAfterSend(true);
+        } else {
+            return 'No se pudo crear el archivo ZIP';
+        }
     }
 
 
