@@ -1220,10 +1220,6 @@ class ContratoController extends Controller
         $fecha_act = new Carbon('23-06-2022');
         $fecha_fir = new Carbon($data_contrato->fecha_firma);
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        $date = strtotime($data->fecha_validacion);
-        $D = date('d', $date);
-        $M = $this->toMonth(date('m', $date));
-        $Y = date("Y", $date);
 
         $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
         $monto = explode(".",strval($data_contrato->cantidad_numero));
@@ -1234,6 +1230,19 @@ class ContratoController extends Controller
             ->Where('status','VALIDADO')
             ->Where('tipo_archivo','Contrato')
             ->first();
+        if(is_null($documento)) {
+            $firma_electronica = false;
+            $date = strtotime($data_contrato->fecha_firma);
+            $D = date('d', $date);
+            $M = $this->toMonth(date('m', $date));
+            $Y = date("Y", $date);
+        } else {
+            $firma_electronica = true;
+            $date = strtotime($data->fecha_validacion);
+            $D = date('d', $date);
+            $M = $this->toMonth(date('m', $date));
+            $Y = date("Y", $date);
+        }
         if(isset($documento->uuid_sellado)){
             $objeto = json_decode($documento->obj_documento,true);
             $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
@@ -1281,14 +1290,14 @@ class ContratoController extends Controller
         if($data->tipo_curso == 'CURSO')
         {
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
             }
         }
         else
         {
-            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos'));
+            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
         }
 
         $pdf->setPaper('LETTER', 'Portrait');
