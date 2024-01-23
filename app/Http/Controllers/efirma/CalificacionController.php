@@ -323,20 +323,20 @@ class CalificacionController extends Controller
     public function getCadenaOriginal($xmlBase64, $token) {
         // dd(config('app.cadena'));
         // dd(Config::get('app.cadena', 'default'));
-        // $response1 = Http::withHeaders([
-        //     'Accept' => 'application/json',
-        //     'Authorization' => 'Bearer '.$token,
-        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
-        //     'xml_OriginalBase64' => $xmlBase64
-        // ]);
-
-        //api prueba
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token,
-        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
             'xml_OriginalBase64' => $xmlBase64
         ]);
+
+        //api prueba
+        // $response1 = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token,
+        // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        //     'xml_OriginalBase64' => $xmlBase64
+        // ]);
 
         return $response1;
     }
