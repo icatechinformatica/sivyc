@@ -29,7 +29,7 @@ class EContratoController extends Controller
                 ->First();
 
         $body = $this->create_body($id_contrato,$info); //creacion de body
-        $body = str_replace(["\r", "\n", "\f"], ' ', $body);
+        // $body = str_replace(["\r", "\n", "\f"], ' ', $body);
         // $body = utf8_encode($body);
 
         $nameFileOriginal = 'contrato '.$info->clave.'.pdf';
