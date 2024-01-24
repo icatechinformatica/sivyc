@@ -11,7 +11,7 @@
     {{-- <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" /> --}}
 
-    {{-- links de prueba --}}
+    {{-- links de prueba y de produccion --}}
     <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" />
 
@@ -168,7 +168,7 @@
                                             <tbody>
                                                 @foreach ($docsFirmar as $key => $docFirmar)
                                                     @php
-                                                        $firmantes = '';
+                                                        $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docFirmar->obj_documento, true);
                                                         $nameArchivo = $obj['archivo']['_attributes']['nombre_archivo'];
@@ -180,12 +180,14 @@
                                                             }
 
                                                             if(empty($value['_attributes']['firma_firmante'])){
-                                                                $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (NO), ';
+                                                                // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (NO), ';
+                                                                array_push($firmantes, $value['_attributes']['nombre_firmante'].' (NO)');
                                                             } else {
-                                                                $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (SI), ';
+                                                                // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (SI), ';
+                                                                array_push($firmantes, $value['_attributes']['nombre_firmante'].' (SI)');
                                                             }
                                                         }
-                                                        $firmantes = substr($firmantes, 0, -2);
+                                                        // $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
                                                     <tr>
                                                         <td><small>{{$nameArchivo}}</small></td>
@@ -201,6 +203,11 @@
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
+                                                                @case('Reporte fotografico')
+                                                                    <a href="{{route('reportefoto-pdf', ['id' => $docFirmar->idcursos])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
                                                                 @default {{-- Contratos --}}
                                                                     <a href="{{route('contrato-pdf', ['id' => $docFirmar->id_contrato])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
@@ -208,7 +215,13 @@
                                                                 @break
                                                             @endswitch
                                                         </td>
-                                                        <td><small>{{$firmantes}}</small></td>
+                                                        <td>
+                                                            <small>
+                                                                @foreach ($firmantes as $item)
+                                                                    <p class="my-0">{{$item}}</p>
+                                                                @endforeach
+                                                            </small>
+                                                        </td>
                                                         <td><small>{{$docFirmar->created_at->format('d-m-Y')}}</small></td>
                                                         <td>
                                                             <button class="btn btn-outline-danger" type="button" onclick="cancelarDocumento('{{$docFirmar->id}}', '{{$nameArchivo}}', '{{$docFirmar->tipo_archivo}}', '{{$docFirmar->numero_o_clave}}')">Cancelar</button>
@@ -254,7 +267,7 @@
                                                 @foreach ($docsFirmados as $docFirmado)
                                                     @php
                                                         $sendValidation = true;
-                                                        $firmantes = '';
+                                                        $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docFirmado->obj_documento, true);
                                                         // $obj2 = json_decode($docFirmado->obj_documento_interno, true);
@@ -263,12 +276,13 @@
                                                         foreach ($obj['firmantes']['firmante'][0] as $value) {
                                                             if(empty($value['_attributes']['firma_firmante'])){
                                                                 $sendValidation = false;
-                                                                $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (NO), ';
+                                                                // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (NO), ';
+                                                                array_push($firmantes, $value['_attributes']['nombre_firmante'].' (NO)');
                                                             } else {
-                                                                $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (SI), ';
+                                                                // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (SI), ';
+                                                                array_push($firmantes, $value['_attributes']['nombre_firmante'].' (SI)');
                                                             }
                                                         }
-                                                        $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
 
                                                     <tr>
@@ -285,6 +299,11 @@
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
+                                                                @case('Reporte fotografico')
+                                                                    <a href="{{route('reportefoto-pdf', ['id' => $docFirmado->idcursos])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
                                                                 @default {{-- Contratos --}}
                                                                     <a href="{{route('contrato-pdf', ['id' => $docFirmado->id_contrato])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
@@ -292,7 +311,13 @@
                                                                 @break
                                                             @endswitch
                                                         </td>
-                                                        <td><small>{{$firmantes}}</small></td>
+                                                        <td>
+                                                            <small>
+                                                                @foreach ($firmantes as $item)
+                                                                    <p class="my-0">{{$item}}</p>
+                                                                @endforeach
+                                                            </small>
+                                                        </td>
                                                         <td><small>{{$docFirmado->created_at->format('d-m-Y')}}</small></td>
                                                         <td>
                                                             <button type="button" onclick="cancelarDocumento('{{$docFirmado->id}}', '{{$nameArchivo}}', '{{$docFirmado->tipo_archivo}}', '{{$docFirmado->numero_o_clave}}')" class="btn btn-outline-danger">Cancelar</button>
@@ -340,15 +365,16 @@
                                             <tbody>
                                                 @foreach ($docsValidados as $docValidado)
                                                     @php
-                                                        $firmantes = '';
+                                                        $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docValidado->obj_documento, true);
                                                         $nameArchivo = $obj['archivo']['_attributes']['nombre_archivo'];
 
                                                         foreach ($obj['firmantes']['firmante'][0] as $value) {
-                                                            $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].', ';
+                                                            // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].', ';
+                                                            array_push($firmantes, $value['_attributes']['nombre_firmante']);
                                                         }
-                                                        $firmantes = substr($firmantes, 0, -2);
+                                                        // $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
                                                     <tr>
                                                         <td><small>{{$nameArchivo}}</small></td>
@@ -364,6 +390,11 @@
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
+                                                                @case('Reporte fotografico')
+                                                                    <a href="{{route('reportefoto-pdf', ['id' => $docValidado->idcursos])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
                                                                 @default {{-- Contratos --}}
                                                                     <a href="{{route('contrato-pdf', ['id' => $docValidado->id_contrato])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
@@ -372,7 +403,13 @@
                                                             @endswitch
                                                             {{-- <button type="button" onclick="descargarDocumento('{{$docValidado->id}}')" class="btn btn-outline-success">Descargar</button> --}}
                                                         </td>
-                                                        <td><small>{{$firmantes}}</small></td>
+                                                        <td>
+                                                            <small>
+                                                                @foreach ($firmantes as $item)
+                                                                    <p class="my-0">{{$item}}</p>
+                                                                @endforeach
+                                                            </small>
+                                                        </td>
                                                         <td><small>{{$docValidado->created_at->format('d-m-Y')}}</small></td>
                                                         <td><small>{{$docValidado->fecha_sellado}}</small></td>
                                                         <td>
@@ -411,20 +448,26 @@
                                             <tbody>
                                                 @foreach ($docsCancelados as $docCancelado)
                                                     @php
-                                                        $firmantes = '';
+                                                        $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docCancelado->obj_documento, true);
                                                         $objCancelado = json_decode($docCancelado->cancelacion, true);
                                                         $nameArchivo = $obj['archivo']['_attributes']['nombre_archivo'];
 
                                                         foreach ($obj['firmantes']['firmante'][0] as $value) {
-                                                            $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].', ';
+                                                            // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].', ';
+                                                            array_push($firmantes, $value['_attributes']['nombre_firmante']);
                                                         }
-                                                        $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
                                                     <tr>
                                                         <td><small>{{$nameArchivo}}</small></td>
-                                                        <td><small>{{$firmantes}}</small></td>
+                                                        <td>
+                                                            <small>
+                                                                @foreach ($firmantes as $item)
+                                                                    <p class="my-0">{{$item}}</p>
+                                                                @endforeach
+                                                            </small>
+                                                        </td>
                                                         <td><small>{{$docCancelado->created_at->format('d-m-Y')}}</small></td>
                                                         <td><small>{{$objCancelado['fecha']}}</small></td>
                                                         <td><small>{{$objCancelado['motivo']}}</small></td>
@@ -587,10 +630,10 @@
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataTransportSign.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos.js"></script> --}}
 
-    {{-- links de prueba --}}
+    {{-- Todos estos links se ocupan en prueba y en producción --}}
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-    {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/js/bootstrap.min.js"></script> --}}
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/js/jasny-bootstrap.min.js"></script>
+    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/js/bootstrap.min.js"></script>
 
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sjcl.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sha1_002.js"></script>
@@ -636,7 +679,11 @@
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/access.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataSign.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataTransportSign.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script>
+    {{-- Link de producción signature-spv021_doctos --}}
+    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos.js"></script>
+
+    {{-- link de prueba signature-spv021_doctos-prueba--}}
+    {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script> --}}
 
     <script>
         var cadena = '', xmlBase64 = '', curp = '', idFile = '';
@@ -668,7 +715,7 @@
         }
 
         function firmarDocumento(token) {
-            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '30', token);
+            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '87', token);
             // el sistema 87 es el de produccion 30 es de pruebas
             console.log(curp)
             return vresponseSignature;
@@ -735,8 +782,10 @@
                 $('#txtIdValidado').val(id);
                 if(tipo == 'asistencia') {
                     $('#formValidar').attr('action', '/asistencia/validar');
-                } else {
+                } else if(tipo == 'calificacion') {
                     $('#formValidar').attr('action', '/calificacion/validar');
+                }else if(tipo == 'reportefoto'){ //By Jose Luis
+                    $('#formValidar').attr('action', '/reportefoto/validar');
                 }
                 $('#formValidar').submit();
             }
@@ -748,8 +797,10 @@
             $('#txtTipoRechazo').val(tipo);
             if(tipo == 'asistencia') {
                 $('#formRechazo').attr('action', '/asistencia/rechazo');
-            } else {
+            } else if(tipo == 'calificacion'){
                 $('#formRechazo').attr('action', '/calificacion/rechazo');
+            }else if(tipo == 'reportefoto'){ //By Jose Luis
+                $('#formRechazo').attr('action', '/reportefoto/rechazo');
             }
             $('#modalRechazo').modal('toggle');
         }

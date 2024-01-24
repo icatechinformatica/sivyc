@@ -47,11 +47,11 @@
             @endif
           </th>
           <th class="text-center">
-            @if($a->id_cerss)
+            {{-- @if($a->id_cerss)
               <a target="_blank" href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>
-            @else
+            @else --}}
               <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>
-            @endif
+            {{-- @endif --}}
           </th>
           <!--
             <th class="text-center">
@@ -87,9 +87,13 @@
 <div class="d-flex flex-lg-row flex-column col-12 col-lg-12 justify-content-end">
     <button type="button" class="btn mt-1" id="nuevo" >NUEVO</button> &nbsp;&nbsp;
     @can('agenda.vinculacion')
-        @if(isset($grupo->cespecifico))
-            <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_acta_acuerdo"> <i  class="far fa-file-pdf  fa-1x text-mute"></i> ACTA DE ACUERDO</button>
-            <button type="button" class="btn mt-1 bg-warning text-dark d-none" id="gen_convenio_esp"><i  class="far fa-file-pdf  fa-1x text-mute"></i> CONVENIO</button>
+        {{-- @dd($grupo) --}}
+        @if(isset($grupo->cespecifico) && $organismo != null)
+            @if ($organismo == 'CAPACITACION ABIERTA')
+                <button type="button" class="btn mt-1 bg-warning text-dark" id="gen_acta_acuerdo"> <i  class="far fa-file-pdf  fa-1x text-mute"></i> ACTA DE ACUERDO</button>
+            @else
+                <button type="button" class="btn mt-1 bg-warning text-dark d-none" id="gen_convenio_esp"><i  class="far fa-file-pdf  fa-1x text-mute"></i> CONVENIO</button>
+            @endif
         @endif
         <button type="button" class="btn mt-1 bg-warning text-dark" id="gape"><i  class="far fa-file-pdf  fa-1x text-mute"></i> SOLICITUD APERTURA</button>
     @endcan

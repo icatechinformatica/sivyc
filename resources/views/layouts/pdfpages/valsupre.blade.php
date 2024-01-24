@@ -80,7 +80,7 @@ else{
             {
                 text-align: left;
                 position: absolute;
-                bottom: 35px;
+                bottom: 0px;
                 left: 65px;
                 font-size: 8.5px;
                 color: rgb(255, 255, 255);
@@ -151,7 +151,8 @@ else{
         </header>
         <div>
             <div id="wrappertop">
-                <div align=center><font size=0><b>{{$distintivo}}</b></font><br/>
+                <div align=center>
+                    {{-- <font size=0><b>{{$distintivo}}</b></font><br/> --}}
                     <FONT SIZE=0><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS<br/>
                     <FONT SIZE=0>DIRECCION DE PLANEACION</FONT><br/>
                     <FONT SIZE=0>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO</FONT><br/>
@@ -166,8 +167,8 @@ else{
                     <FONT SIZE=0><b>{{$getremitente->puesto}}</b></FONT><br/>
                     <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
                     <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
-                        <font size=0>La Secretaria de Hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal 2023, en ese sentido, con Fundamento en el Art. 13 Y Art. 38 del decreto de presupuesto
-                        de egresos del Estado de Chiapas para el Ejercicio Fiscal 2023 y en apego al tabulador de pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de @if($tipo=='CURSO') Capacitación @else Certificación Extraordinaria @endif, al Padrón de Instructores del ICATECH
+                        <font size=0>La Secretaria de Hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal {{$Y}}, en ese sentido, con Fundamento en el Art. 13 Y Art. 38 del decreto de presupuesto
+                        de egresos del Estado de Chiapas para el Ejercicio Fiscal {{$Y}} y en apego al tabulador de pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de @if($tipo=='CURSO') Capacitación @else Certificación Extraordinaria @endif, al Padrón de Instructores del ICATECH
                         y a la clave de autorización de apertura de cursos y certificación, y demás disposiciones normativas aplicables vigentes; le informo que una vez revisada su solicitud y la información descrita en el formato de Validación de Suficiencia Presupuestal, se otorga la Validación
                         Presupuestal, con el fin de que conforme a lo indicado en la normatividad aplicable vigente se continúe y se cumpla con los procedimientos administrativos que correspondan, observando además el contrato de prestación de servicios profesionales por honorarios @if($data[0]->modinstructor=='ASIMILADOS A SALARIOS') asimilados a salarios @endif en su
                         modalidad de @if($tipo=='CURSO') Horas-Curso @else Certificación Extraordinaria @endif que celebran el ICATECH con el prestador de servicio. @if($data['0']->cp == 12 || $data['0']->cp == 11) Es importante mencionar que la presente validacion tendrá efecto financiero en el mes de diciembre del ejercicio fiscal 2023. @endif<br/></font>
@@ -269,7 +270,10 @@ else{
         </div>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+            <p class='direccion'><b>
+                14 PONIENTE NORTE No. 239 COLONIA MOCTEZUMA.<br>TUXTLA GUTIÉRREZ, CHIAPAS, C.P. 29030 TELEFONO +52(961)6121621.<br>EMAIL: icatech@icatech.chiapas.gob.mx
+                {{-- @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach --}}
+            </br></p>
         </footer>
     </body>
 </html>

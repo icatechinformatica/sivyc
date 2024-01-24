@@ -150,16 +150,16 @@
                 @foreach($data->data_especialidad as $cadwell)
                     @if($cadwell['status'] != 'INACTIVO')
                         {{-- @php dd($cadwell);  @endphp --}}
-                        @if($cadwell['status'] != 'VALIDADO')
+                        @if($cadwell['status'] != 'VALIDADO' || $regimen_actual != $data->tipo_honorario )
                             @php if($data->status == 'RETORNO'){ $ret = TRUE;} $cadwell = (object) $cadwell; @endphp
                             <tr>
                                 <td><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></td>
                                 <td><small>{{ $data->curp }}</small></td>
-                                <td><small>{{ $daesp }}</small></td>
+                                <td><small>{{ $daesp }} </small></td>
                                 @if(!isset($data->onlyins))
                                     @foreach($especialidadeslist as $especialidad)
                                         @if($especialidad->id == $cadwell->especialidad_id)
-                                            <td><small>{{ $especialidad->nombre }}</small></td>
+                                            <td><small>{{ $especialidad->nombre }} @if($data->tipo_honorario != $regimen_actual) (CAMBIO DE REGIMEN FISCAL) @endif</small></td>
                                             @break
                                         @endif
                                     @endforeach
@@ -190,7 +190,7 @@
                                         <td><small>BAJA DE INSTRUCTOR. {{$cadwell->motivo}}</small></td>
                                     @elseif($data->status == 'REACTIVACION EN PREVALIDACION' || $data->status == 'REACTIVACION EN FIRMA')
                                         <td><small>REACTIVACIÓN DE INSTRUCTOR</small></td>
-                                    @elseif($data->tipo_honorario != $regimen_actual && $cambio_especialidad == FALSE)
+                                    @elseif($data->tipo_honorario != $regimen_actual)
                                             <td><small>CAMBIO DE REGIMEN FISCAL</small></td>
                                     @else
                                         <td><small>CAMBIO DE INFORMACIÓN BASICA DEL INSTRUCTOR</small></td>

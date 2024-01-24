@@ -156,7 +156,7 @@ class grupoController extends Controller
         $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '');
         try {
             $jsonvincu = ExpeUnico::select('vinculacion')->where('folio_grupo', '=', $_SESSION['folio_grupo'])->first();
-            if ($jsonvincu) {
+            if (isset($jsonvincu->vinculacion['doc_1'])) {
                 $docs_json = [$jsonvincu->vinculacion['doc_1']['url_pdf_acta'], $jsonvincu->vinculacion['doc_1']['url_pdf_convenio'],
                 $jsonvincu->vinculacion['doc_3']['url_documento'], $jsonvincu->vinculacion['doc_4']['url_documento']];
                 $linkPDF = array(
@@ -165,9 +165,11 @@ class grupoController extends Controller
                     "soli_ape" => ($docs_json[2] != '') ? $this->path_files.$docs_json[2] : "",
                     "sid" => ($docs_json[3] != '') ? $this->path_files.$docs_json[3] : ""
                 );
+            }else{
+                $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '');
             }
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            dd("Error al cargar documentos ".$th->getMessage());
         }
 
         $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status_folio','ENVIADO')->first();
@@ -1416,7 +1418,7 @@ class grupoController extends Controller
         $folio_grupo =  $_SESSION['folio_grupo'];
 
         //Busqueda 1,2,3
-        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino',
+        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino', 'efisico',
         DB::raw("extract(day from fcespe) as diaes, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
         DB::raw("(hombre + mujer) as totalp"),
         DB::raw("extract(day from inicio) as diaini, to_char(inicio, 'TMmonth') as mesini, extract(year from inicio) as anioini"),
@@ -1432,6 +1434,7 @@ class grupoController extends Controller
         //Busqueda 6
         $data3 = DB::table('alumnos_registro as ar')->select('ar.nombre', 'ar.apellido_paterno', 'ar.apellido_materno', 'ar.folio_grupo', 'ar.costo', 'ar.curp', 'a.correo', 'a.telefono_personal', 'a.medio_confirmacion')
         ->Join('alumnos_pre as a', 'a.curp', 'ar.curp')
+        ->orderBy('ar.nombre')
         ->where('folio_grupo','=',"$folio_grupo")->get();
 
         $direccion = $data2->direccion;

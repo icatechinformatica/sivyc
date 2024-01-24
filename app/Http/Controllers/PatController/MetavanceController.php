@@ -302,8 +302,8 @@ class MetavanceController extends Controller
             $query->select('id')
                   ->from('funciones_proced')
                   ->where('id_parent', '=', $val)
-                  ->where('activo', '=', 'true')
-                  ->where(DB::raw("date_part('year' , created_at )"), '=', '2023');
+                  ->where('activo', '=', 'true');
+                //   ->where(DB::raw("date_part('year' , created_at )"), '=', '2023');
             })
             ->orderBy('f.id')
             ->get();
@@ -722,7 +722,13 @@ class MetavanceController extends Controller
             ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
-
+        ##Validamos las variables globales de planeacion y area normal
+        $global_ejercicio = strval(date('Y'));
+        if (isset($_SESSION['eje_pat_buzon'])){
+            $global_ejercicio = $_SESSION['eje_pat_buzon'];
+        }else if(isset($_SESSION['eje_pat_registros'])){
+            $global_ejercicio = $_SESSION['eje_pat_registros'];
+        }
         //CONSULTA DE PROCEDIMIENTOS POR FUNCION
         $procedimientos = [];
         for ($i=0; $i < count($funciones); $i++) {
@@ -733,7 +739,7 @@ class MetavanceController extends Controller
             'metas_avances_pat.septiembre', 'metas_avances_pat.octubre', 'metas_avances_pat.noviembre', 'metas_avances_pat.diciembre', 'observaciones', 'observmeta', 'um.numero', 'um.unidadm', 'um.tipo_unidadm')
             ->Join('funciones_proced as f', 'f.id', 'metas_avances_pat.id_proced')
             ->Join('unidades_medida as um', 'f.id_unidadm', 'um.id')
-            ->where('metas_avances_pat.ejercicio', '=', $_SESSION['eje_pat_registros'])
+            ->where('metas_avances_pat.ejercicio', '=', $global_ejercicio)
             ->whereIn('f.id', function($query)use($val, $obtAnio)  {
             $query->select('id')
                   ->from('funciones_proced')
@@ -746,11 +752,11 @@ class MetavanceController extends Controller
 
             array_push($procedimientos, $proced);
         }
-
+        //$_SESSION['eje_pat_registros']
         //Consulta de fechas
-        $fechasPat = function ($organismo){
+        $fechasPat = function ($organismo, $anio_eje){
             $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)
-            ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
+            ->where('periodo', '=', $anio_eje)->first();
             return $tblFechas;
         };
 
@@ -1053,7 +1059,7 @@ class MetavanceController extends Controller
 
         if($separador[0] == 'meta'){
             $fecha_enviar = '';
-            $tblFechas =  $fechasPat($organismo); #ejecutamos solo una vez en lugar de varias veces
+            $tblFechas =  $fechasPat($organismo, $global_ejercicio); #ejecutamos solo una vez en lugar de varias veces
             switch ($separador[1]) {
                 case 'crear':
                     // $tblFechas =  $fechasPat($organismo);
@@ -1086,7 +1092,7 @@ class MetavanceController extends Controller
             //Guardamos la fecha antes de la generación
             $fech_carbon = Carbon::parse($fecha_enviar);
             $fecha_meta = $fech_carbon->format('d/m/Y');
-            $pdf = PDF::loadView('vistas_pat.genpdfmeta', compact('area_org', 'org', 'funciones', 'procedimientos', 'fecha_meta', 'marca', 'firm_logueado'));
+            $pdf = PDF::loadView('vistas_pat.genpdfmeta', compact('area_org', 'org', 'funciones', 'procedimientos', 'fecha_meta', 'marca', 'firm_logueado', 'global_ejercicio'));
             $pdf->setpaper('letter', 'landscape');
             return $pdf->stream('PAT-ICATECH-002.1.pdf');
 
@@ -1122,7 +1128,7 @@ class MetavanceController extends Controller
 
             //condicion de fechas
             $fecha_enviar = '';
-            $tblFechas =  $fechasPat($organismo); #Ejecutamos solo una vez
+            $tblFechas =  $fechasPat($organismo, $global_ejercicio); #Ejecutamos solo una vez
             switch ($separador[2]) {
                 case 'crear':
                     // $tblFechas =  $fechasPat($organismo);
@@ -1158,7 +1164,7 @@ class MetavanceController extends Controller
             $mes_avance = $separador[1];
             $fecha_avance = $fech_carbon->format('d/m/Y');
 
-            $pdf = PDF::loadView('vistas_pat.genpdfavance', compact('area_org', 'org', 'funciones', 'procedimientos', 'mes_meta_avance', 'mes_avance', 'fecha_avance', 'marca', 'firm_logueado'));
+            $pdf = PDF::loadView('vistas_pat.genpdfavance', compact('area_org', 'org', 'funciones', 'procedimientos', 'mes_meta_avance', 'mes_avance', 'fecha_avance', 'marca', 'firm_logueado', 'global_ejercicio'));
             $pdf->setpaper('letter', 'landscape');
             return $pdf->stream('PAT-ICATECH-002.2.pdf');
         }

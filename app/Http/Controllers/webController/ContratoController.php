@@ -381,11 +381,9 @@ class ContratoController extends Controller
         $idInstructor = DB::Table('tbl_cursos')->Select('id_instructor')->Where('id',$id_curso)->First();
         $instructoresPermitidos = [574, 1605, 1157, 1594, 1562, 1335];
 
-        if (in_array($idInstructor->id_instructor, $instructoresPermitidos)) {
-            // // Metodo de XML para contrato
-            $contratoController = new EContratoController();
-            $result = $contratoController->xml($id_contrato->id_contrato);
-        }
+        // // Metodo de XML para contrato
+        $contratoController = new EContratoController();
+        $result = $contratoController->xml($id_contrato->id_contrato);
 
         // Eliminar el guardado de directorio y reemplazar por la tabla de funcionarios
         $directorio = new contrato_directorio();
@@ -684,16 +682,16 @@ class ContratoController extends Controller
         $idInstructor = DB::Table('tbl_cursos')->Select('id_instructor')->Where('id',$id_curso)->First();
         $instructoresPermitidos = [574, 1605, 1157, 1594, 1562, 1335];
 
-        if (in_array($idInstructor->id_instructor, $instructoresPermitidos)) {
-            // Metodo de XML para contrato AGREGAR BORRADO DE DOCUMENTO CON CADENA UNICA SOLO SI TODAVIA NO ESTA SELLADO
-            $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
-            $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
-                ->Where('tipo_archivo','Contrato')
-                ->Where('status', 'CANCELADO') //poner que evite el status de anulado
-                ->Delete();
-            $contratoController = new EContratoController();
-            $result = $contratoController->xml($request->id_contrato);
-        }
+
+        // Metodo de XML para contrato AGREGAR BORRADO DE DOCUMENTO CON CADENA UNICA SOLO SI TODAVIA NO ESTA SELLADO
+        $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
+        $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
+            ->Where('tipo_archivo','Contrato')
+            ->Where('status', 'CANCELADO') //poner que evite el status de anulado
+            ->Delete();
+        $contratoController = new EContratoController();
+        $result = $contratoController->xml($request->id_contrato);
+
 
         $folio = folio::find($request->id_folio);
         $folio->status = 'Capturando';
@@ -1206,9 +1204,10 @@ class ContratoController extends Controller
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura',
                                   'tbl_cursos.tipo_curso','tbl_cursos.espe', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion',
-                                  'instructores.rfc','tbl_cursos.modinstructor','instructores.curp','instructores.domicilio')
+                                  'instructores.rfc','tbl_cursos.modinstructor','instructores.curp','instructores.domicilio','tabla_supre.fecha_validacion')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                          ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                           ->FIRST();
@@ -1221,10 +1220,6 @@ class ContratoController extends Controller
         $fecha_act = new Carbon('23-06-2022');
         $fecha_fir = new Carbon($data_contrato->fecha_firma);
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        $date = strtotime($data_contrato->fecha_firma);
-        $D = date('d', $date);
-        $M = $this->toMonth(date('m', $date));
-        $Y = date("Y", $date);
 
         $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
         $monto = explode(".",strval($data_contrato->cantidad_numero));
@@ -1235,6 +1230,19 @@ class ContratoController extends Controller
             ->Where('status','VALIDADO')
             ->Where('tipo_archivo','Contrato')
             ->first();
+        if(is_null($documento)) {
+            $firma_electronica = false;
+            $date = strtotime($data_contrato->fecha_firma);
+            $D = date('d', $date);
+            $M = $this->toMonth(date('m', $date));
+            $Y = date("Y", $date);
+        } else {
+            $firma_electronica = true;
+            $date = strtotime($data->fecha_validacion);
+            $D = date('d', $date);
+            $M = $this->toMonth(date('m', $date));
+            $Y = date("Y", $date);
+        }
         if(isset($documento->uuid_sellado)){
             $objeto = json_decode($documento->obj_documento,true);
             $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
@@ -1255,10 +1263,10 @@ class ContratoController extends Controller
                             ->Get();
             //Generacion de QR
             //Verifica si existe link de verificiacion, de lo contrario lo crea y lo guarda
-            if(isset($documento->link_verficacion)) {
-                $verificacion = $documento->link_verficacion;
+            if(isset($documento->link_verificacion)) {
+                $verificacion = $documento->link_verificacion;
             } else {
-                $documento->link_verficacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
                 $documento->save();
             }
             ob_start();
@@ -1282,14 +1290,14 @@ class ContratoController extends Controller
         if($data->tipo_curso == 'CURSO')
         {
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
             }
         }
         else
         {
-            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos'));
+            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
         }
 
         $pdf->setPaper('LETTER', 'Portrait');

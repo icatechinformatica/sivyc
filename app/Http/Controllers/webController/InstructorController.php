@@ -193,9 +193,12 @@ class InstructorController extends Controller
             {
                 foreach($especialidades as $boromir)
                 {
-                    if(isset($boromir->hvalidacion) && $boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA')
+                    if(isset($boromir->hvalidacion) && ($boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA') || ($regimen_actual != $data->tipo_honorario))
                     {
-                        $arch_sol = end($boromir->hvalidacion)['arch_sol'];
+                        if($data->status == 'EN FIRMA' && $data->turnado == 'DTA'  && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA'){
+
+                            $arch_sol = end($boromir->hvalidacion)['arch_sol'];printf($boromir->status . ' /// ');
+                        }
                     }
                 }
             }
@@ -283,8 +286,9 @@ class InstructorController extends Controller
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $bancos = Banco::all();
+        $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
 
-        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos'));
+        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos','lista_regimen'));
     }
 
     #----- instructor/guardar -----#
@@ -345,6 +349,7 @@ class InstructorController extends Controller
         $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
                         ->ORDERBY('muni','ASC')->GET();
         $bancos = Banco::all();
+        $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
 
         if(isset($idestnac->id))
         {
@@ -414,7 +419,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
         // dd($nrevisionlast);
-        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos'));
+        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos','lista_regimen'));
     }
 
     public function send_to_dta(Request $request)
@@ -1175,7 +1180,6 @@ class InstructorController extends Controller
         $newb = $newc = $arrtemp = array();
         $retorno_firma = false;
         $stat_arr = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','BAJA EN PREVALIDACION','BAJA EN FIRMA','EN FIRMA','REVALIDACION EN FIRMA');
-
         foreach($idlist as $bosmer)
         {
             $chk_mod_perfil = $chk_mod_esp = $retorno_firma = FALSE;
@@ -1228,8 +1232,14 @@ class InstructorController extends Controller
                                 $perfiles[$key]->status = 'RETORNO';
                             break;
                             case 'REVALIDACION EN FIRMA':
-                                $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION EN FIRMA), ';
-                                $retorno_firma = TRUE;
+                                if($request->tipo_envio == 'captura') {
+                                    $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION EN FIRMA), ';
+                                    $perfiles[$key]->status = 'EN CAPTURA';
+                                } else {
+                                    $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION EN FIRMA), ';
+                                    $retorno_firma = TRUE;
+                                }
+
                             break;
                             case 'BAJA EN FIRMA':
                                 $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
@@ -1322,6 +1332,10 @@ class InstructorController extends Controller
             if($modInstructor->status != 'VALIDADO' && $retorno_firma == FALSE)
             {
                 $modInstructor->status = 'RETORNO';
+            }
+
+            if($request->tipo_envio == 'captura') {
+                $modInstructor->status = 'EN CAPTURA';
             }
             $movimiento = $movimiento . 'con la observacion: ' . $request->observacion_retorno;
 
@@ -1633,6 +1647,7 @@ class InstructorController extends Controller
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $instructor_perfil = new InstructorPerfil();
         $bancos = Banco::all();
+        $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
 
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
@@ -1754,7 +1769,7 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
 
-        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos'));
+        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen'));
     }
 
     public function save_ins(Request $request)
@@ -3316,16 +3331,12 @@ class InstructorController extends Controller
         if(!isset($request->borrador))
         {
             $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA','BAJA EN FIRMA');
-            $especialidad_cambios = TRUE;
+            // $especialidad_cambios = TRUE;
         }
         else
         {
             $arrstat = array('REACTIVACION EN CAPTURA','BAJA EN CAPTURA','REVALIDACION EN CAPTURA','EN CAPTURA','PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION','BAJA EN PREVALIDACION');
-            $especialidad_cambios = TRUE;
-        }
-        if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE)
-        {
-            $arrstat = array('VALIDADO');
+            // $especialidad_cambios = TRUE;
         }
         set_time_limit(0);
 
@@ -3341,6 +3352,20 @@ class InstructorController extends Controller
                 $onesp = DB::TABLE('especialidades')->SELECT('nombre')->WHERE('id',$moist->especialidad_id)->FIRST();
                 $moist->especialidad = $onesp->nombre;
                 array_push($arrtemp, $moist);
+                $especialidad_cambios = TRUE;
+            }
+        }
+        if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE)
+        {
+            $arrstat = array('VALIDADO');
+            foreach($especialidades as $moist)
+            {
+                if(in_array($moist->status, $arrstat))
+                {
+                    $onesp = DB::TABLE('especialidades')->SELECT('nombre')->WHERE('id',$moist->especialidad_id)->FIRST();
+                    $moist->especialidad = $onesp->nombre;
+                    array_push($arrtemp, $moist);
+                }
             }
         }
         $data = $this->make_collection($arrtemp);
@@ -3352,17 +3377,20 @@ class InstructorController extends Controller
             // $item->cursos_impartir = explode(',',str_replace($rplc,'',$item->cursos_impartir));
             if($honorario_actual != $instructor->tipo_honorario || ($item->status != 'BAJA EN FIRMA' && $item->status != 'BAJA EN PREVALIDACION'))
             {
-            $cursos[$count] = DB::TABLE('cursos')->SELECT('cursos.nombre_curso')
-                            ->WHEREIN('id',$item->cursos_impartir)
-                            ->GET();
-            $totalcursos = DB::TABLE('cursos')->SELECT(DB::RAW("COUNT(id) AS total"))
-                            ->WHERE('id_especialidad','=',$item->especialidad_id)
-                            ->FIRST();
-            $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
-                            ->WHERE('id_especialidad','=',$item->especialidad_id)
-                            ->WHERENOTIN('id',$item->cursos_impartir)->GET();
-
-            $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
+                $cursos[$count] = DB::TABLE('cursos')->SELECT('cursos.nombre_curso')
+                                ->WHEREIN('id',$item->cursos_impartir)
+                                ->GET();
+                $totalcursos = DB::TABLE('cursos')->SELECT(DB::RAW("COUNT(id) AS total"))
+                                ->WHERE('id_especialidad','=',$item->especialidad_id)
+                                ->FIRST();
+                $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
+                                ->WHERE('id_especialidad','=',$item->especialidad_id)
+                                ->WHERENOTIN('id',$item->cursos_impartir)->GET();
+                if($totalcursos->total != 0) {
+                    $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
+                } else {
+                    $porcentaje[$count] = 0;
+                }
             }
             else
             {
@@ -3371,7 +3399,7 @@ class InstructorController extends Controller
 
             //GUARDADO DE FECHA Y MEMO DE SOLICITUD
             $thalmor = especialidad_instructor::WHERE('id','=',$item->id)->FIRST();
-            if($item->fecha_solicitud == NULL)
+            if($item->fecha_solicitud == NULL || isset($request->borrador))
             {
                 $item->fecha_solicitud = carbon::now()->toDateString();
                 $date = strtotime($item->fecha_solicitud);
@@ -3413,7 +3441,7 @@ class InstructorController extends Controller
                         $tipo_doc = 'REACTIVACION';
                     break;
                 }
-            } if($instructor->tipo_honorario != $honorario_actual) {
+            } if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE) {
                 $tipo_doc = 'REVALIDACION';
             }
         }
@@ -3430,7 +3458,7 @@ class InstructorController extends Controller
         $direccion = explode("*", $data_unidad->direccion);
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
 
-        if($honorario_actual != $instructor->tipo_honorario) {
+        if($honorario_actual != $instructor->tipo_honorario && $especialidad_cambios == FALSE && isset($request->borrador)) {
             $date = strtotime(carbon::now());
         }
         $D = date('d', $date);
