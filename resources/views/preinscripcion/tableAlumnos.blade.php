@@ -108,6 +108,42 @@
     @endif
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">REMPLAZO DE ALUMNO</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row d-flex align-items-center">
+              <div class="col-12">
+                  <form id="modal">
+                      <div class="row">
+                          <div class="col">
+                              <label for="">CURP:</label>
+                              <input type="text" id="curpo" name="curpo" class="form-control" readonly>
+                          </div>
+                          <div class="col">
+                              <label for="">NUEVA CURP:</label>
+                              <input name='busqueda1' id='busqueda1' oninput="validarRemplazo(this)" type="text" class="form-control" value="{{old('curp')}}"/>
+                              <pre id="resultado1"></pre>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
+          <button type="button" class="btn btn-primary" id="btnremplazo">REMPLAZAR</button>
+        </div>
+      </div>
+    </div>
+</div>
 
 {{-- Agregamos el apartado de subir PDF Jose Luis Moreno Arcos--}}
 <br>
@@ -146,41 +182,5 @@
 @endcan
 {{-- Termina subir archivo --}}
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">REMPLAZO DE ALUMNO</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row d-flex align-items-center">
-            <div class="col-12">
-                <form id="modal">
-                    <div class="row">
-                        <div class="col">
-                            <label for="">CURP:</label>
-                            <input type="text" id="curpo" name="curpo" class="form-control" readonly>
-                        </div>
-                        <div class="col">
-                            <label for="">NUEVA CURP:</label>
-                            <input name='busqueda1' id='busqueda1' oninput="validarRemplazo(this)" type="text" class="form-control" value="{{old('curp')}}"/>
-                            <pre id="resultado1"></pre>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
-        <button type="button" class="btn btn-primary" id="btnremplazo">REMPLAZAR</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 

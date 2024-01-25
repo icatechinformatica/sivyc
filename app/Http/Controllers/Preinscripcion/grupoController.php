@@ -1498,7 +1498,8 @@ class grupoController extends Controller
         }
 
         #Consultamos los cursos vinculados con la clave de convenio
-        $allcourses = DB::table('tbl_cursos')->select( 'curso', 'costo', 'dura', 'hini', 'hfin', 'cespecifico', 'observaciones', 'folio_grupo', 'inicio', 'termino',
+        $allcourses = DB::table('tbl_cursos')->select('clave','tcapacitacion','espe','curso', 'costo', 'dura', 'hini', 'hfin',
+        'cespecifico', 'observaciones', 'folio_grupo', 'inicio', 'termino','hombre', 'mujer',
         DB::raw("extract(day from fcespe) as diaconvenio, to_char(fcespe, 'TMmonth') as mesconvenio, extract(year from fcespe) as anioconvenio"),
         DB::raw("extract(day from inicio) as diainic, extract(month from inicio) as mesinic, extract(year from inicio) as anioinic"),
         DB::raw("extract(day from termino) as diafinc, extract(month from termino) as mesfinc, extract(year from termino) as aniofinc"))
@@ -1506,7 +1507,6 @@ class grupoController extends Controller
 
         // dd($allcourses);
 
-        // dd($allcourses);
         $array_folios = array();
         for ($i=0; $i < count($allcourses); $i++) {
             $folio = '';
@@ -1530,7 +1530,7 @@ class grupoController extends Controller
             ->Join('cerss as cer', 'cer.id', 'cur.id_cerss')
             ->where('cur.folio_grupo','=',"$folio_grupo")->first();
         }else{
-            $data1 = DB::table('tbl_cursos as cur')->select( 'cur.muni', 'cur.fcespe', 'cur.fcgen', 'cur.dura', 'cur.unidad', 'cur.dia',
+            $data1 = DB::table('tbl_cursos as cur')->select( 'cur.muni', 'cur.fcespe', 'cur.fcgen', 'cur.dura', 'cur.unidad', 'cur.dia as letradia',
             'cur.hini', 'cur.hfin', 'cur.tcapacitacion', 'cur.nombre', 'cur.curso', 'cur.tcapacitacion', 'cur.cespecifico', 'cur.cgeneral', 'cur.fcgen',
             'cur.depen', 'cur.costo', 'cur.inicio', 'cur.termino', 'cur.observaciones','cur.id_cerss', 'cur.instructor_mespecialidad',
             'cur.depen_representante',
