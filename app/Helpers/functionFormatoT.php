@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\DB;
 use Mockery\Undefined;
 use PhpParser\Node\Stmt\Foreach_;
 
-function dataFormatoT($unidad, $status, $fecha) {
+function dataFormatoT($unidad, $status, $fecha_turnado=null, $mes = null ,$add=false, $memo=null) {
     $cad = DB::raw('SUM(CASE WHEN ins.id_gvulnerable ? \'1\' and ins.sexo=\'M\' and ins.lgbt = false or ins.id_gvulnerable ? \'1\' and ins.sexo=\'M\' and ins.lgbt is null THEN 1 ELSE 0 END) as gv1m');
     // dd($cad);
     $var_cursos = DB::table('tbl_cursos as c')
@@ -374,65 +374,62 @@ function dataFormatoT($unidad, $status, $fecha) {
 
             DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_enlaces"),
             'c.status_solicitud_arc02',
-            'c.arc',
+            'c.arc'
 
 
-        )
-        ->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
+        )      
+        
+        ->join('tbl_inscripcion as ins', function ($join) {
+            $join->on('c.id', '=', 'ins.id_curso')
+            ->where('ins.status', '=', 'INSCRITO')
+            ->where('ins.calificacion', '>', '0');
+        })
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
         ->JOIN('tbl_municipios as m', 'm.id', '=', 'c.id_municipio')
-        ->LEFTJOIN('grupos_vulnerables as gv', 'gv.id', '=', 'c.id_gvulnerable')
-        ->WHERE('u.ubicacion', '=', $unidad)
-        ->WHEREIN('c.status', $status)
-        ->WHERE('c.status_curso', '=', 'AUTORIZADO')
-        ->where('ins.status', '=', 'INSCRITO')
-        ->WHERE('c.clave', '!=', 'null')
-        ->where('ins.calificacion', '>', '0')
-        ->where('m.id_estado', '=', '7')
-        // ->orwhere('c.arc', '=', '2')
-        // ->where('c.status_solicitud_arc02', '=', 'VALIDADO')
-        // ->WHERE('c.file_arc02', '!=', null)
-        // ->WHERE('u.ubicacion', '=',  $unidad)
-        // ->WHEREIN('c.status', $status)
-        // ->WHERE('c.status_curso', '=', 'AUTORIZADO')
-        // ->where('ins.status', '=', 'INSCRITO')
-        // ->WHERE('c.clave', '!=', 'null')
-        // ->where('ins.calificacion', '>', '0')
-        // ->where('m.id_estado', '=', '7')
-        ->groupby(
-            'c.id',
-            'c.status',
-            'c.unidad',
-            'c.nombre',
-            'c.clave',
-            'c.mod',
-            'c.espe',
-            'c.curso',
-            'c.inicio',
-            'c.termino',
-            'c.dia',
-            'c.dura',
-            'c.hini',
-            'c.hfin',
-            'c.horas',
-            'c.plantel',
-            'c.programa',
-            'c.muni',
-            'c.depen',
-            'c.cgeneral',
-            'c.mvalida',
-            'c.efisico',
-            'c.cespecifico',
-            'c.sector',
-            'c.mpaqueteria',
-            'c.mexoneracion',
-            'c.nota',
-            'c.termino',
+        ->LEFTJOIN('grupos_vulnerables as gv', 'gv.id', '=', 'c.id_gvulnerable')        
+        ->WHEREIN('c.status', $status)                
+        ->WHERE('c.status_curso', '=', 'AUTORIZADO')        
+        ->WHERE('c.clave', '!=', 'null')//->where('c.id','232260210')
+        ->where('m.id_estado', '=', '7');        
+        
+        if($add==true)
+            $var_cursos = $var_cursos->addSelect('c.tcapacitacion','c.status','c.inicio','c.termino',
+        'c.memos->TURNADO_DTA->MEMORANDUM as memo_turnado_dta','c.memos->TURNADO_DTA->NUMERO as nmemo_turnado_dta',        
+        'c.memos->TURNADO_PLANEACION->PLANEACION->MEMORANDUM as memo_turnado_planeacion','c.memos->TURNADO_PLANEACION->PLANEACION->NUMERO as nmemo_turnado_planeacion',
+        'c.memos->CERRADO_PLANEACION->MEMORANDUM as memo_cerrado_planeacion','c.memos->CERRADO_PLANEACION->NUMERO as nmemo_cerrado_planeacion',
+        'c.resumen_formatot_unidad as memo_turnado_unidad'
+         );
+         
+        if($unidad)
+            $var_cursos = $var_cursos->WHERE('u.ubicacion', '=', $unidad);
+
+        if($mes)
+            $var_cursos = $var_cursos->whereRaw("c.fecha_turnado::TEXT LIKE ?", [$mes.'%']);
+        elseif($fecha_turnado)
+            $var_cursos = $var_cursos->where('c.fecha_turnado', $fecha_turnado);
+
+        if($memo){          // dd($memo);
+                $var_cursos = $var_cursos->where(function($query) use ($memo) {
+                    $query->whereRaw("c.memos #>> '{TURNADO_DTA,NUMERO}' IS NOT NULL")
+                        ->WhereRaw("c.memos #>> '{TURNADO_DTA,NUMERO}' LIKE ?", ['%'.$memo.'%']);
+                })
+                ->orWhere(function($query) use ($memo) {
+                    $query->whereRaw("c.memos #>> '{TURNADO_PLANEACION,PLANEACION,NUMERO}' IS NOT NULL")
+                        ->WhereRaw("c.memos #>> '{TURNADO_PLANEACION,PLANEACION,NUMERO}' LIKE ?", ['%'.$memo.'%']);
+                })
+                ->orWhere(function($query) use ($memo) {
+                    $query->whereRaw("c.memos #>> '{CERRADO_PLANEACION,NUMERO}' IS NOT NULL")
+                        ->WhereRaw("c.memos #>> '{CERRADO_PLANEACION,NUMERO}' LIKE ?", ['%'.$memo.'%']);
+                });
+        } 
+
+        $var_cursos = $var_cursos->groupby([
+            'c.id','ins.id_curso',
             'm.region',
             'gv.grupo'
-        )
+        ])
         ->orderBy('c.termino', 'asc')
-        ->distinct()
+        ->distinct()        
         ->get();
 
     return $var_cursos;

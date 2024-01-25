@@ -127,9 +127,12 @@
                             Formatos T
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
-                            @can('vista.formatot.unidades.indice')
-                                <a class="dropdown-item" href="{{route('vista_formatot')}}">Generación Formato T por Unidades</a>
+                            @can('vista.formatot.unidades.indice') {{--UNIDADES DE CAPACITACION--}}
+                                <a class="dropdown-item" href="{{route('vista_formatot')}}">Generación y Envío de FormatoT</a>
                             @endcan
+                            
+                                <a class="dropdown-item" href="{{route('formatot.consulta.index')}}">Consulta de FormatoT</a>
+                            
                             @can('vista.validacion.enlaces.dta')
                                 <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión de Cursos Formato T</a>
                             @endcan
@@ -149,6 +152,7 @@
                             @can('vista.validacion.enlaces.dta')
                                 <a href="{{ route('checar.memorandum.dta.mes') }}" class="dropdown-item">Memorandums Enviados a DTA</a>
                             @endcan
+                            
                             {{-- agregar nuevo elemento a menu END --}}
                             {{--@can('vista.formatot.unidades.indice')
                                 <a href="{{ route('cursos.reportados.historico.index') }}" class="dropdown-item">Cursos Reportados de Meses Anteriores Para la Unidad</a>
@@ -162,7 +166,7 @@
                             @can('vista.revision.validacion.planeacion.indice')
                                 <a href="{{ route('cursos.reportados.historico.planeacion.index') }}" class="dropdown-item">Cursos Reportados de Meses Anteriores Para la Unidad</a>
                             @endcan--}}
-                                <a class="dropdown-item" href="{{route('seguimento.avance.unidades.formatot.ejecutiva.index')}}">Seguimiento Ejecutivo a Unidades Para el Formato T</a>
+                                <a class="dropdown-item" href="{{route('seguimento.avance.unidades.formatot.ejecutiva.index')}}">Seguimiento Ejecutivo</a>
                         </div>
                     </li>
                 @endcan
