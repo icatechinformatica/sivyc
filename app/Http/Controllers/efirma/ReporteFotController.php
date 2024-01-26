@@ -48,22 +48,55 @@ class ReporteFotController extends Controller
         $leyenda = DB::connection('pgsql')->table('tbl_instituto')->value('distintivo');
 
         #Unidad de capacitacion
-        $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
 
         $cursopdf = tbl_curso::select('nombre', 'curso', 'tcapacitacion', 'inicio', 'termino', 'evidencia_fotografica',
         'clave', 'hini', 'hfin', 'tbl_cursos.unidad', 'uni.dunidad', 'uni.ubicacion', 'uni.direccion', 'uni.municipio')
         ->join('tbl_unidades as uni', 'uni.unidad', 'tbl_cursos.unidad')
         ->where('tbl_cursos.id', '=', $id_curso)->first();
 
+        if ($cursopdf == null) {
+            return redirect()->route('firma.inicio')->with('danger', 'Error al consultar el curso de este documento!');
+        }
+
+        ##Obtenemos el registro firmado con la clave
+        // $consulta_firma = DocumentosFirmar::where('numero_o_clave', $cursopdf->clave)
+        // ->where('tipo_archivo', 'Reporte fotografico')->first();
+
+        ##Validacion de fechas
+        // if ($consulta_firma != null) {
+        //     $documento_firmado = json_decode($consulta_firma->obj_documento, true);
+        // }
+
+        // if (isset($documento_firmado['firmantes']['firmante'][0][0]['_attributes']['fecha_firmado_firmante'])) {
+        //     $fech_firma_firmante = $documento_firmado['firmantes']['firmante'][0][0]['_attributes']['fecha_firmado_firmante'];
+        //     $partes = explode('T', $fech_firma_firmante);
+        //     $fecha_part = $partes[0];
+        //     [$aniof, $mesf, $diaf] = explode('-', $fecha_part);
+        //     $fechapdf = $diaf. ' de '.$meses[$mesf-1].' de '.$aniof;
+        // }else{
+        //     if (isset($cursopdf->evidencia_fotografica["fecha_envio"])) {
+        //         $fechapdf = $cursopdf->evidencia_fotografica["fecha_envio"];
+        //         $fechaCarbon = Carbon::createFromFormat('Y-m-d', $fechapdf);
+        //         $dia = ($fechaCarbon->day) < 10 ? '0'.$fechaCarbon->day : $fechaCarbon->day;
+        //         $fechapdf = $dia.' de '.$meses[$fechaCarbon->month-1].' de '.$fechaCarbon->year;
+        //     }
+        // }
+
+        if (isset($cursopdf->evidencia_fotografica["fecha_envio"])) {
+            $fechapdf = $cursopdf->evidencia_fotografica["fecha_envio"];
+            $fechaCarbon = Carbon::createFromFormat('Y-m-d', $fechapdf);
+            $dia = ($fechaCarbon->day) < 10 ? '0'.$fechaCarbon->day : $fechaCarbon->day;
+            $fechapdf = $dia.' DE '.$meses[$fechaCarbon->month-1].' DE '.$fechaCarbon->year;
+        }else{
+            $fechapdf = '';
+        }
+
+        ##Procesar fotos
         if (isset($cursopdf->evidencia_fotografica['url_fotos'])){
             $array_fotos = $cursopdf->evidencia_fotografica['url_fotos'];
-            if (isset($cursopdf->evidencia_fotografica["fecha_envio"])) {
-                $fechapdf = $cursopdf->evidencia_fotografica["fecha_envio"];
-                $fechaCarbon = Carbon::createFromFormat('Y-m-d', $fechapdf);
-                $dia = ($fechaCarbon->day) < 10 ? '0'.$fechaCarbon->day : $fechaCarbon->day;
-                $fechapdf = $dia.' de '.$meses[$fechaCarbon->month-1].' de '.$fechaCarbon->year;
-            }
         }
+
 
         $base64Images = [];
         foreach ($array_fotos as $url) {
@@ -97,7 +130,7 @@ class ReporteFotController extends Controller
                     ->Where('org.nombre', 'LIKE', 'DELEGACIÓN ADMINISTRATIVA%')
                     ->OrWhere('org.id_parent', Auth::user()->id_organismo)
                     // ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
-                    ->Where('org.nombre', 'LIKE', 'DELEGACIÓN ADMINISTRATIVA%')
+                    // ->Where('org.nombre', 'LIKE', 'DELEGACIÓN ADMINISTRATIVA%')
                     ->First();
 
                 // $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id', 'fun.nombre AS funcionario','fun.curp',
@@ -113,7 +146,6 @@ class ReporteFotController extends Controller
                 //Generacion de QR
                 //Verificacion de prueba
                 // $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
-
                 $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
                 ob_start();
                 QRcode::png($verificacion);
@@ -126,7 +158,7 @@ class ReporteFotController extends Controller
 
         $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('cursopdf', 'leyenda', 'fechapdf', 'objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images'));
         $pdf->setPaper('Letter', 'portrait');
-        $file = "ASISTENCIA_$id_curso.PDF";
+        $file = "REPORTE_FOTOGRAFICO_$id_curso.PDF";
         return $pdf->stream($file);
     }
 
