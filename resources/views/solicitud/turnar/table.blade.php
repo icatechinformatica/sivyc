@@ -67,11 +67,13 @@
                         $activar = false;
                         $rojo = true;                         
                         $aviso = "HORAS AGENDADAS NO CORRESPONDIENTES A LA DURACIÓN DEL CURSO";
-                    }else if( $g->option =='ARC01' AND ( $g->soltermino < date('Y-m-d') ) ){
+                    }
+                    /*else if( $g->option =='ARC01' AND ( $g->soltermino < date('Y-m-d') ) ){
                         $activar = false;
                         $rojo = true;                         
                         $aviso = "EL CURSO HA SOBREPASADO EL LIMITE DE TIEMPO PARA REALIZAR SU SOLICITUD ARC 01";
-                    }else if( !$g->nombre ){
+                    }*/
+                    else if( !$g->nombre ){
                         $activar = false;
                         $rojo = true;                         
                         $aviso = "EL NOMBRE DEL INSTRUCTOR NO SE HA REGISTRADO";

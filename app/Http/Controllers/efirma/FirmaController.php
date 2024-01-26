@@ -111,7 +111,7 @@ class FirmaController extends Controller {
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
             ->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x
-                WHERE x->'_attributes'->>'email_firmante' IN ('".$email."')
+                WHERE x->'_attributes'->>'curp_firmante' IN ('".$curpUser->curp."')
                 AND x->'_attributes'->>'firma_firmante' is null)");
             // ->orderBy('id', 'desc')->get();
 
@@ -121,9 +121,9 @@ class FirmaController extends Controller {
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
-            ->where(function ($query) use ($email) {
+            ->where(function ($query) use ($email,$curpUser) {
                 $query->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x
-                    WHERE x->'_attributes'->>'email_firmante' IN ('".$email."')
+                    WHERE x->'_attributes'->>'curp_firmante' IN ('".$curpUser->curp."')
                     AND x->'_attributes'->>'firma_firmante' <> '')")
                 ->orWhere(function($query1) use ($email) {
                     $query1->where('obj_documento_interno->emisor->_attributes->email', $email)
@@ -137,9 +137,9 @@ class FirmaController extends Controller {
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
-            ->where(function ($query) use ($email) {
+            ->where(function ($query) use ($email, $curpUser) {
                 $query->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x
-                    WHERE x->'_attributes'->>'email_firmante' IN ('".$email."'))")
+                    WHERE x->'_attributes'->>'curp_firmante' IN ('".$curpUser->curp."'))")
                 ->orWhere(function($query1) use ($email) {
                     $query1->where('obj_documento_interno->emisor->_attributes->email', $email)
                             ->where('documentos_firmar.status', 'VALIDADO');

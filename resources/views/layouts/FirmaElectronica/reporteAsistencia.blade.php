@@ -265,8 +265,8 @@
                 </table>
             </div>
             <div style="display: inline-block; width: 15%;">
-                <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
-                {{-- <img style="position: fixed; width: 18%; top: 30%; left: 75%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
+                {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
+                <img style="position: fixed; width: 15%; top: 50%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
             </div>
             {{$key}}
             @endif

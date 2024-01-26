@@ -29,7 +29,7 @@ class EContratoController extends Controller
                 ->First();
 
         $body = $this->create_body($id_contrato,$info); //creacion de body
-        $body = str_replace(["\r", "\n", "\f"], ' ', $body);
+        // $body = str_replace(["\r", "\n", "\f"], ' ', $body);
         // $body = utf8_encode($body);
 
         $nameFileOriginal = 'contrato '.$info->clave.'.pdf';
@@ -46,7 +46,7 @@ class EContratoController extends Controller
                             ->Get();
         // Info de director firmante
         foreach($dataFirmantes as $dataFirmante) {
-            if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA')) {
+            if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA') || str_contains($dataFirmante->cargo, 'ENCARGADO') || str_contains($dataFirmante->cargo, 'ENCARGADA')) {
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
@@ -308,7 +308,7 @@ class EContratoController extends Controller
                     DÉCIMA CUARTA.- RESPONSABILIDAD DEL “PRESTADOR DE SERVICIOS”. Será el responsable de la ejecución de los trabajos y deberá sujetarse en la realización de éstos, a todos aquellos reglamentos administrativos y manuales que las autoridades competentes hayan emitido, así como a las disposiciones establecidas por “ICATECH”.\n
                     DÉCIMA QUINTA.- Las partes convienen que los datos personales insertos en el presente instrumento legal son protegidos por la Ley de Protección de Datos Personales en Posesión de Sujetos Obligados del Estado de Chiapas y la Ley de Transparencia y Acceso a la Información Publica del Estado de Chiapas, así como los Lineamientos Generales de la Custodia y Protección de Datos Personales e Información Reservada y Confidencial en Posesión de los Sujetos Obligados del Estado de Chiapas y demás normatividad aplicable.\n
                     DÉCIMA SEXTA.- JURISDICCIÓN. Para la interpretación y cumplimiento del presente contrato, así como para todo aquello que no esté expresamente estipulado en el mismo, las partes se someterán a la jurisdicción y competencia de los tribunales del fuero común de la ciudad de Tuxtla Gutiérrez, Chiapas, renunciando al fuero que pudiera corresponderles por razón de su domicilio presente o futuro.\n
-                    Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legales, son conformes con los términos del mismo y para constancia lo firman y ratifican ante la presencia de los testigos que al final suscriben; en el municipio de ".$data_contrato->municipio.', Chiapas; '. ", en dos ejemplares en original. el día de la expedición de la suficiencia presupuestal, que se adjunta al presente como si a la letra se insertase, a efecto de garantizar la disponibilidad de la oblicación contractual.\n
+                    Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legales, son conformes con los términos del mismo y para constancia lo firman y ratifican ante la presencia de los testigos que al final suscriben; en el municipio de ".$data_contrato->municipio.', Chiapas; '. ", el día de la expedición de la suficiencia presupuestal, que se adjunta al presente como si a la letra se insertase, a efecto de garantizar la disponibilidad de la oblicación contractual.\n
                     Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas curso No. ". $data_contrato->numero_contrato.', que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. '.$firmantes->dunidad.', '.$firmantes->pdunidad.' '.$data_contrato->unidad_capacitacion.', y el (la) C. '.$nomins.', en el Municipio de '.$data_contrato->municipio.', a '.$D.' de '.$M.' del año '.$Y.";  el día de la expedición de la suficiencia presupuestal.\n";
             }else {
                 //asimilados
