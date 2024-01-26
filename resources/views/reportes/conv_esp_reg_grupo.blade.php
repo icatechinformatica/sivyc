@@ -96,6 +96,7 @@
         if ($data1->termino) $diafin = $data1->diafin; $mesfin = $data1->mesfin; $aniofin = $data1->aniofin;
         if ($data1->fcgen != null) $diagen = $data1->diagen; $mesgen = $data1->mesgen; $aniogen = $data1->aniogen;
         if ($data1->cgeneral != null) $cgeneral = $data1->cgeneral;
+        if ($data1->letradia) $letradia = $data1->letradia;
 
 
         if ($data1->id_cerss) {
@@ -262,7 +263,17 @@
                 <b>II.   DECLARA <span class="color_dina negrita">"{{$siglas_inst}}"</span> QUE:</b>
             </div>
             <br>
-            {{-- pendiente de contenido nuevo --}}
+            {{-- pendiente de contenido nuevo homologar --}}
+            <div align="justify" style="font-size:12px;" class="estilo_p">
+                <b>II.1</b> EL (LA) C.<span class="color_dina negrita">{{$part_firm_user != null && count($part_firm_user) == 3 ? $part_firm_user[0] : $nombre_titular}}</span>,
+                EN SU CARÁCTER DE <span class="color_dina">{{$part_firm_user != null && count($part_firm_user) == 3 ? $part_firm_user[2] : $cargo_fun}}</span>,
+                TIENE PLENA CAPACIDAD JURÍDICA Y VOLUNTAD PARA CELEBRAR Y SUSCRIBIR EL PRESENTE CONVENIO ESPECÍFICO DE PRESTACIÓN DE SERVICIOS EN MATERIA DE CAPACITACIÓN, OBLIGÁNDOSE EN TODOS SUS TÉRMINOS.
+                <br><br>
+                <b>II.2</b> ACREDITA SU PERSONALIDAD JURIDICA CON ….. (8)
+                <br><br>
+                <b>II.3</b> PARA EFECTOS DEL PRESENTE CONVENIO, SEÑALA COMO SU DOMICILIO LEGAL, EL UBICADO EN {{$direccion_org}}
+            </div>
+            <br>
             <div align="left" style="font-size:12px;">
                 <b>III.   DECLARAN "LAS PARTES" QUE:</b>
             </div>
@@ -303,29 +314,48 @@
             @if (!$id_cerss)
                 <table class="tablas" border="1">
                     <thead>
-                        <tr>
+                        {{-- <tr>
                             <th style="font-size:12px;"><b>NOMBRE DEL CURSO</b></th>
                             <th style="font-size:12px;"><b>NÚMERO</b></th>
                             <th style="font-size:12px;"><b>COSTO</b></th>
                             <th style="font-size:12px;"><b>HORAS</b></th>
                             <th style="font-size:12px;"><b>HORARIO</b></th>
                             <th style="font-size:12px;"><b>FECHA INICIO/TERMINO DEL CURSO</b></th>
+                        </tr> --}}
+                        <tr>
+                            <th style="font-size:10px;"><b>ESPECIALIDAD</b></th>
+                            <th style="font-size:10px;"><b>NOMBRE DEL CURSO</b></th>
+                            <th style="font-size:10px;"><b>CLAVE DE GRUPO</b></th>
+                            <th style="font-size:10px;"><b>MODALIDAD</b></th>
+                            <th style="font-size:10px;"><b>COSTO DE RECUPERACIÓN</b></th>
+                            <th style="font-size:10px;"><b>DURACIÓN</b></th>
+                            <th style="font-size:10px;"><b>NUMERO DE ALUMNOS</b></th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach ($allcourses as $key => $curso)
-                        <tr>
+                        {{-- <tr>
                             <td style="font-size:12px;" align="left">{{strtoupper($curso->curso)}}</td>
                             <td style="font-size:12px;">{{$array_folios[$key]}}</td>
-                            {{-- <td style="font-size:12px;">{{$array_folios[$key]}} A {{$curso->diaconvenio}} DE {{strtoupper($curso->mesconvenio)}} DEL {{$curso->anioconvenio}}</td> --}}
                             <td style="font-size:12px;">${{$curso->costo}}</td>
                             <td style="font-size:12px;">{{$curso->dura}}</td>
                             <td style="font-size:12px;">{{date("H:i", strtotime($curso->hini))}} A {{date("H:i", strtotime($curso->hfin))}} HORAS</td>
+                            <td style="font-size:12px;">{{sprintf("%02d", $curso->diainic).'/'.sprintf("%02d", $curso->mesinic).'/'.$curso->anioinic}} AL {{sprintf("%02d", $curso->diafinc).'/'.sprintf("%02d", $curso->mesfinc).'/'.$curso->aniofinc}}</td> --}}
+                            {{-- <td style="font-size:12px;">{{$array_folios[$key]}} A {{$curso->diaconvenio}} DE {{strtoupper($curso->mesconvenio)}} DEL {{$curso->anioconvenio}}</td> --}}
                             {{-- <td style="font-size:12px;">{{strtoupper($curso->hini)}} A {{strtoupper($curso->hfin)}} HRS {{$curso->observaciones != 'NINGUNO' ? '/ '.$curso->observaciones : ''}}</td> --}}
-                            <td style="font-size:12px;">{{sprintf("%02d", $curso->diainic).'/'.sprintf("%02d", $curso->mesinic).'/'.$curso->anioinic}} AL {{sprintf("%02d", $curso->diafinc).'/'.sprintf("%02d", $curso->mesfinc).'/'.$curso->aniofinc}}</td>
                             {{-- <td style="font-size:12px;">DEL {{$curso->diainic}} {{$curso->mesinic != $curso->mesfinc ? 'DE '.strtoupper($curso->mesinic) : ''}}
                                 {{$curso->anioinic != $curso->aniofinc ? 'DEL '.$curso->anioinic : ''}} AL {{$curso->diafinc}} DE {{strtoupper($curso->mesfinc)}} DEL AÑO {{$curso->aniofinc}}
                             </td> --}}
+                        {{-- </tr> --}}
+
+                        <tr>
+                            <td style="font-size:10px;">{{$curso->espe}}</td>
+                            <td style="font-size:10px;">{{$curso->curso}}</td>
+                            <td style="font-size:10px;">{{$curso->clave}}</td>
+                            <td style="font-size:10px;">{{$curso->tcapacitacion}}</td>
+                            <td style="font-size:10px;">${{($curso->costo)/($curso->hombre + $curso->mujer)}}</td>
+                            <td style="font-size:10px;">{{$curso->dura.' HRS'}}</td>
+                            <td style="font-size:10px;">{{$curso->hombre + $curso->mujer}}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -337,7 +367,7 @@
                     <b>TERCERA.– VIGENCIA LAS “PARTES”</b> ACUERDAN QUE LA CAPACITACIÓNES SE IMPARTIRÁN EN EL
                     PERIODO COMPRENDIDO DE <span class="color_dina negrita">{{sprintf("%02d", $diaini)}}{{$mesini != $mesfin ? 'DE '.strtoupper($mesini) : ''}}
                     {{$anioini != $aniofin ? 'DEL '.$anioini : ''}} AL {{sprintf("%02d", $diafin)}} DE {{strtoupper($mesfin)}} DEL AÑO {{$aniofin}}
-                    (DE {{$letradia}}) DE {{date("H:i", strtotime($hini))}} A {{date("H:i", strtotime($hfin))}} HRS </span>. CUBRIENDO UN TOTAL DE <span class="color_dina negrita">{{$dura.' HORAS'}} </span>
+                    ({{$letradia}}) DE {{date("H:i", strtotime($hini))}} A {{date("H:i", strtotime($hfin))}} HRS </span>. CUBRIENDO UN TOTAL DE <span class="color_dina negrita">{{$dura.' HORAS'}} </span>
                     EMITIÉNDOSE AL CONCLUIR LA MISMA UNA CONSTANCIA DE CAPACITACIÓN CON VALIDEZ OFICIAL POR PARTE DE LA SECRETARIA
                     DE EDUCACIÓN PÚBLICA <b>(SEP)</b> EXPEDIDA POR EL <b>“ICATECH”</b>.
                 </div>
