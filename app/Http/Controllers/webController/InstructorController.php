@@ -1335,7 +1335,7 @@ class InstructorController extends Controller
             }
 
             if($request->tipo_envio == 'captura') {
-                $modInstructor->status = 'EN CAPTURA';
+                $modInstructor->status = 'RETORNO';
             }
             $movimiento = $movimiento . 'con la observacion: ' . $request->observacion_retorno;
 
