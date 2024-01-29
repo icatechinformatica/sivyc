@@ -673,24 +673,28 @@ class ContratoController extends Controller
         if($request->factura_xml != NULL)
         {
             $file_xml = $request->file('factura_xml'); # obtenemos el archivo
-            $urldocs = $this->xml_upload($file_xml, $request->id_contrato,'fact ura_xml');
+            $urldocs = $this->xml_upload($file_xml, $request->id_contrato,'factura_xml');
             $contrato->arch_factura_xml = $urldocs;
         }
 
         $contrato->save();
 
-        $idInstructor = DB::Table('tbl_cursos')->Select('id_instructor')->Where('id',$id_curso)->First();
-        $instructoresPermitidos = [574, 1605, 1157, 1594, 1562, 1335];
-
 
         // Metodo de XML para contrato AGREGAR BORRADO DE DOCUMENTO CON CADENA UNICA SOLO SI TODAVIA NO ESTA SELLADO
-        $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
-        $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
             ->Where('tipo_archivo','Contrato')
-            ->Where('status', 'CANCELADO') //poner que evite el status de anulado
-            ->Delete();
-        $contratoController = new EContratoController();
-        $result = $contratoController->xml($request->id_contrato);
+            ->Where('status', 'CANCELADO')
+            ->First();
+
+        if(!is_null($status_doc)){
+            $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
+            $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
+                ->Where('tipo_archivo','Contrato')
+                ->Where('status', 'CANCELADO') //poner que evite el status de CANCELADO ICTI
+                ->Delete();
+            $contratoController = new EContratoController();
+            $result = $contratoController->xml($request->id_contrato);
+        }
 
 
         $folio = folio::find($request->id_folio);
