@@ -392,6 +392,8 @@ class FirmaController extends Controller {
         $date = date('Y-m-d H:i:s');
 
         if ($request->motivo != null) {
+            $DF = DocumentosFirmar::where('id', $request->txtIdCancel)->First();
+
             $data = [
                 'usuario' => Auth::user()->name,
                 'id' => Auth::user()->id,
@@ -400,9 +402,15 @@ class FirmaController extends Controller {
                 'correo' => Auth::user()->email
             ];
 
+            if ($DF->status == 'VALIDADO') {
+                $nuevo_status = 'CANCELADO ICTI';
+            } else {
+                $nuevo_status = 'CANCELADO';
+            }
+
             DocumentosFirmar::where('id', $request->txtIdCancel)
                 ->update([
-                    'status' => 'CANCELADO',
+                    'status' => $nuevo_status,
                     'cancelacion' => $data
                 ]);
             tbl_curso::where('clave', $request->txtClave)
@@ -414,7 +422,7 @@ class FirmaController extends Controller {
                             : [])
                 );
 
-            if($request->txtTipo == 'Contrato') {
+            if($request->txtTipo == 'Contrato' && $nuevo_status == 'CANCELADO') {
                 $folio = folio::Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
                 ->Where('clave',$request->txtClave)
                 ->Value('folios.id_folios');

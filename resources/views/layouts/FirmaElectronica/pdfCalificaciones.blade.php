@@ -220,7 +220,7 @@
                 </table>
             </div>
             <div style="display: inline-block; width: 15%;">
-                <img style="position: fixed; width: 18%; top: 16%; left: 77%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                <img style="position: fixed; width: 15%; top: 45%; left: 79%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
             </div>
         @endif
     </main>

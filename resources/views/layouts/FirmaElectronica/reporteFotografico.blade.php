@@ -172,14 +172,14 @@
     @if ($cursopdf)
         {{-- Lugar y fecha --}}
         <div style="text-align: right;">
-            <p style="margin-bottom: 5px;">Unidad de Capacitación {{ucfirst(strtolower($cursopdf->ubicacion))}}
+            <p style="font-size: 14px; margin-bottom: 5px;">UNIDAD DE CAPACITACIÓN {{$cursopdf->ubicacion}}
             @if ($cursopdf->ubicacion != $cursopdf->unidad)
-            , Accion Movil {{ucfirst(strtolower($cursopdf->unidad))}}.
+            , ACCIÓN MOVIL {{$cursopdf->unidad}}.
             @else
 
             @endif
             </p>
-            <p style="margin-top: 0px; margin-bottom: 20px;">{{ucfirst(strtolower($cursopdf->unidad))}}, Chiapas. A {{$fechapdf}}.</p>
+            <p style="font-size: 14px; margin-top: 0px; margin-bottom: 25px;">{{mb_strtoupper($cursopdf->municipio, 'UTF-8')}}, CHIAPAS. A {{$fechapdf}}.</p>
         </div>
 
         <table border="1" class="estilo_tabla" width="100%">
@@ -206,20 +206,17 @@
         </table>
 
     @endif
-    <br><br><br><br>
+    <br>
      {{-- Mostrar imagenes --}}
      @if (count($base64Images) > 0)
      <div class="" style="text-align: center;">
-         @foreach($base64Images as $base64)
-             <img style="width: 320px; height: 320px; margin-right: 3px; margin-left: 3px;" src="data:image/jpeg;base64,{{$base64}}" alt="Foto">
+         @foreach($base64Images as $key => $base64)
+            <div style="page-break-after: always;">
+                <img style="width: auto; height: auto; max-width: 100%; max-height:100%;" src="data:image/jpeg;base64,{{$base64}}" alt="Foto">
+            </div>
          @endforeach
      </div>
      @endif
-
-    {{-- prueba de imagen --}}
-    {{-- <img src="https://sivyc.icatech.gob.mx/storage/uploadFiles/UNIDAD/revision_exoneracion/1_ICATECH-800-2040-2023_230613104402_23.pdf" alt=""> --}}
-    {{-- <embed src="https://sivyc.icatech.gob.mx/storage/uploadFiles/UNIDAD/revision_exoneracion/1_ICATECH-800-2040-2023_230613104402_23.pdf"/> --}}
-
 
     {{-- Apartado de mostrar firmas --}}
     <div>
@@ -228,33 +225,33 @@
                 <table style="width: 100%;">
                     @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
                         <tr style="">
-                            <td style="font-size: 10px;"><b>Nombre del firmante:</b></td>
-                            <td style="font-size: 10px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
+                            <td style="font-size: 11px; padding-bottom: 10px;"><b>Nombre del firmante:</b></td>
+                            <td style="font-size: 11px; padding-bottom: 10px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
                         </tr>
                         <tr>
-                            <td style="vertical-align: top; font-size: 10px;"><b>Firma Electrónica:</b></td>
-                            <td style="font-size: 10px;">{{ wordwrap($moist['_attributes']['firma_firmante'], 87, "\n", true) }}</td>
+                            <td style="vertical-align: top; font-size: 11px; padding-bottom: 10px;"><b>Firma Electrónica:</b></td>
+                            <td style="font-size: 11px; padding-bottom: 10px;">{{ wordwrap($moist['_attributes']['firma_firmante'], 87, "\n", true) }}</td>
                         </tr>
                         <tr>
-                            <td style="font-size: 10px;"><b>Puesto:</b></td>
+                            <td style="font-size: 11px; padding-bottom: 10px;"><b>Puesto:</b></td>
                             @if ($dataFirmante->curp == $moist['_attributes']['curp_firmante'])
-                                <td style="font-size: 10px;">{{ $dataFirmante->cargo }}</td>
+                                <td style="font-size: 11px; padding-bottom: 10px;">{{ $dataFirmante->cargo }}</td>
                             @else
-                                <td style="font-size: 10px;">Instructor</td>
+                                <td style="font-size: 11px; padding-bottom: 10px;">Instructor</td>
                             @endif
                         </tr>
                         <tr>
-                            <td style="font-size: 10px;"><b>Fecha de Firma:</b></td>
-                            <td style="font-size: 10px;">{{ $moist['_attributes']['fecha_firmado_firmante'] }}</td>
+                            <td style="font-size: 11px; padding-bottom: 10px;"><b>Fecha de Firma:</b></td>
+                            <td style="font-size: 11px; padding-bottom: 10px;">{{ $moist['_attributes']['fecha_firmado_firmante'] }}</td>
                         </tr>
                         <tr>
-                            <td style="font-size: 10px;"><b>Número de Serie:</b></td>
-                            <td style="font-size: 10px;">{{ $moist['_attributes']['no_serie_firmante'] }}</td>
+                            <td style="font-size: 11px; padding-bottom: 10px;"><b>Número de Serie:</b></td>
+                            <td style="font-size: 10px; padding-bottom: 10px;">{{ $moist['_attributes']['no_serie_firmante'] }}</td>
                         </tr>
                     @endforeach
                 </table>
                 <div style="display: inline-block; width: 10%;">
-                    <img style="position: fixed; width: 16%; top: 62%; left: 77%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                    <img style="position: fixed; width: 19%; top: 62%; left: 75%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                 </div>
             </div>
 

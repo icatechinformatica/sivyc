@@ -29,7 +29,7 @@ class EContratoController extends Controller
                 ->First();
 
         $body = $this->create_body($id_contrato,$info); //creacion de body
-        $body = str_replace(["\r", "\n", "\f"], ' ', $body);
+        // $body = str_replace(["\r", "\n", "\f"], ' ', $body);
         // $body = utf8_encode($body);
 
         $nameFileOriginal = 'contrato '.$info->clave.'.pdf';
@@ -46,7 +46,7 @@ class EContratoController extends Controller
                             ->Get();
         // Info de director firmante
         foreach($dataFirmantes as $dataFirmante) {
-            if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA')) {
+            if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA') || str_contains($dataFirmante->cargo, 'ENCARGADO') || str_contains($dataFirmante->cargo, 'ENCARGADA')) {
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
