@@ -58,6 +58,9 @@
              <div style="text-align: right;width:60%">
                 <label for="titulocontrato"><h2>Apartado de Contrato</h2></label>
             </div>
+            <div style="text-align: right;width:90%">
+                <label for="titulocontrato"><h5>fecha: {{$fechaActual}}</h5></label>
+            </div>
              <div class="form-row">
                  <div class="form-group col-md-6">
                     <label for="numero_contrato" class="control-label">Número de Contrato</label>
@@ -113,10 +116,10 @@
                     <label for="lugar_expedicion" class="control-label">Municipio de la Firma</label>
                     <input type="text" class="form-control" id="lugar_expedicion" name="lugar_expedicion" placeholder="Lugar de Expedición" @if(isset($contrato))value="{{$contrato->municipio}}"@endif>
                 </div>
-                <div class="form-group col-md-3">
+                {{-- <div class="form-group col-md-3">
                     <label for="fecha_firma" class="control-label">Fecha de Firma</label>
-                    <input type="date" class="form-control" id="fecha_firma" name="fecha_firma" @if(isset($contrato))value="{{$contrato->fecha_firma}}"@endif>
-                </div>
+                    <input type="date" class="form-control" id="fecha_firma" name="fecha_firma" @if(isset($contrato))value="{{$contrato->fecha_firma}}" @else value="{{$data->inicio}}"@endif readonly>
+                </div> --}}
             </div>
             <div class="form-row">
                 <div class="form-group col-md-5">
@@ -301,7 +304,7 @@
                     </div>
                 </div>
             </div>
-        </form>
+        </form >
         <br>
     </div>
 @endsection

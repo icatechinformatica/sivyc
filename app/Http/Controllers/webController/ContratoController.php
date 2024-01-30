@@ -192,6 +192,8 @@ class ContratoController extends Controller
         $director = $testigo1 = $testigo2 = $testigo3 = null;
         $folio = new folio();
         $perfil = new InstructorPerfil();
+        $fechaActual = Carbon::now();
+        $fechaActual = $fechaActual->format('d-m-Y');
 
         $contrato = contratos::WHERE('id_folios',$id)->FIRST();
         if(isset($contrato))
@@ -204,7 +206,7 @@ class ContratoController extends Controller
         }
         // dd($contrato);
         $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
-                            'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad','tbl_cursos.fecha_apertura',
+                            'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad','tbl_cursos.fecha_apertura',
                             'tbl_cursos.curso','tbl_cursos.clave_especialidad','tbl_cursos.espe','tbl_cursos.soportes_instructor','instructores.nombre AS insnom',
                             'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.id','instructores.archivo_alta','instructores.banco',
                             'instructores.no_cuenta','instructores.interbancaria','instructores.archivo_bancario')
@@ -329,7 +331,7 @@ class ContratoController extends Controller
                                 ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
         // dd($uni_contrato);
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada','memoval','regimen','contrato','director','testigo1','testigo2','testigo3'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada','memoval','regimen','contrato','director','testigo1','testigo2','testigo3','fechaActual'));
     }
 
     public function contrato_save(Request $request)
@@ -355,7 +357,7 @@ class ContratoController extends Controller
         $contrato->cantidad_letras1 = $request->cantidad_letras;
         $contrato->cantidad_numero = $request->cantidad_numero;
         $contrato->municipio = $request->lugar_expedicion;
-        $contrato->fecha_firma = $request->fecha_firma;
+        // $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->id_folios = $request->id_folio;
         $contrato->folio_fiscal = $request->folio_fiscal;
@@ -377,13 +379,6 @@ class ContratoController extends Controller
         $contrato->save();
 
         $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
-
-        $idInstructor = DB::Table('tbl_cursos')->Select('id_instructor')->Where('id',$id_curso)->First();
-        $instructoresPermitidos = [574, 1605, 1157, 1594, 1562, 1335];
-
-        // // Metodo de XML para contrato
-        $contratoController = new EContratoController();
-        $result = $contratoController->xml($id_contrato->id_contrato);
 
         // Eliminar el guardado de directorio y reemplazar por la tabla de funcionarios
         $directorio = new contrato_directorio();
@@ -540,7 +535,7 @@ class ContratoController extends Controller
         // dd($users);
         //event((new NotificationEvent($users, $letter)));
         // if($result == TRUE) {
-            return redirect()->route('contrato-inicio')
+            return redirect()->route('contrato-mod', ['id' => $idc])
                             ->with('success','Contrato y/o Solicitud de Pago Agregado');
         // } else {
             return redirect()->route('contrato-inicio')
@@ -550,14 +545,42 @@ class ContratoController extends Controller
         // return view('layouts.pages.contratocheck', compact('idc'));
     }
 
+    public function generar_contrato_efirma(Request $request) {
+        // // Metodo de XML para contrato
+        // dd($request);
+        $contrato = contratos::WHERE('id_contrato', '=', $request->idc)->FIRST();
+        $fechaActual = Carbon::now();
+        $contrato->fecha_firma = $fechaActual->toDateString();
+        $contrato->save();
+
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clavecurso)->Where('tipo_archivo','Contrato')->First();
+
+        if(!is_null($status_doc)){
+            $documento = DB::Table('documentos_firmar')
+                ->Where('numero_o_clave',$request->clavecurso)
+                ->Where('tipo_archivo','Contrato')
+                ->Delete();
+        }
+
+        $contratoController = new EContratoController();
+        $result = $contratoController->xml($contrato->id_contrato);
+
+        return redirect()->route('contrato-mod', ['id' => $idc])
+                            ->with('success','Contrato Generado en E.Firma exitosamente');
+    }
+
     public function modificar($id)
     {
         $folio = new folio();
         $especialidad = new especialidad();
         $perfil = new InstructorPerfil();
+        $generarEfirma = TRUE;
+        $fechaA = Carbon::now();
+        $fechaActual = $fechaA->format('d-m-Y');
+        $fechaA = $fechaA->format('Y-m-d');
 
         $datacon = contratos::WHERE('id_contrato', '=', $id)->FIRST();
-        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.id_instructor','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
+        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.id_instructor','tbl_cursos.nombre','tbl_cursos.termino','instructores.nombre AS insnom','instructores.apellidoPaterno',
                                'instructores.apellidoMaterno','instructores.archivo_alta','instructores.id','tbl_cursos.instructor_mespecialidad', 'tbl_cursos.curso','tbl_cursos.fecha_apertura')
                         ->WHERE('id_folios', '=', $datacon->id_folios)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -643,7 +666,25 @@ class ContratoController extends Controller
             $pago = $data->importe_total;
         }
 
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago'));
+        // check para validar si todavia se puede firmar electronicamente
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$data->clave)->Where('tipo_archivo','Contrato')->First();
+        if($fechaA > $data->termino){
+            $generarEfirma = FALSE;
+        }
+
+        if(!is_null($status_doc)) {
+            $firmantes = json_decode($status_doc->obj_documento, true);
+            foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                if(isset($firmante['_attributes']['certificado'])) {
+                    $generarFirma = FALSE;
+                }
+            }
+
+        }
+        // FINAL del check
+
+
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago','fechaActual','generarEfirma'));
     }
 
     public function save_mod(Request $request){
@@ -657,7 +698,7 @@ class ContratoController extends Controller
         $contrato->cantidad_numero = $request->cantidad_numero;
         $contrato->cantidad_letras1 = $request->cantidad_letras;
         $contrato->municipio = $request->lugar_expedicion;
-        $contrato->fecha_firma = $request->fecha_firma;
+        // $contrato->fecha_firma = $contrato->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->folio_fiscal = $request->folio_fiscal;
         $contrato->id_curso = $id_curso;
@@ -681,20 +722,20 @@ class ContratoController extends Controller
 
 
         // Metodo de XML para contrato AGREGAR BORRADO DE DOCUMENTO CON CADENA UNICA SOLO SI TODAVIA NO ESTA SELLADO
-        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
-            ->Where('tipo_archivo','Contrato')
-            ->Where('status', 'CANCELADO')
-            ->First();
+        // $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
+        //     ->Where('tipo_archivo','Contrato')
+        //     ->Where('status', 'CANCELADO')
+        //     ->First();
 
-        if(!is_null($status_doc)){
-            $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
-            $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
-                ->Where('tipo_archivo','Contrato')
-                ->Where('status', 'CANCELADO') //poner que evite el status de CANCELADO ICTI
-                ->Delete();
-            $contratoController = new EContratoController();
-            $result = $contratoController->xml($request->id_contrato);
-        }
+        // if(!is_null($status_doc)){
+        //     $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
+        //     $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
+        //         ->Where('tipo_archivo','Contrato')
+        //         ->Where('status', 'CANCELADO') //poner que evite el status de CANCELADO ICTI
+        //         ->Delete();
+        //     $contratoController = new EContratoController();
+        //     $result = $contratoController->xml($request->id_contrato);
+        // }
 
 
         $folio = folio::find($request->id_folio);
@@ -1206,7 +1247,7 @@ class ContratoController extends Controller
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura',
-                                  'tbl_cursos.tipo_curso','tbl_cursos.espe', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
+                                  'tbl_cursos.tipo_curso','tbl_cursos.espe', 'tbl_cursos.clave','tbl_cursos.inicio','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion',
                                   'instructores.rfc','tbl_cursos.modinstructor','instructores.curp','instructores.domicilio','tabla_supre.fecha_validacion')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
@@ -1236,13 +1277,13 @@ class ContratoController extends Controller
             ->first();
         if(is_null($documento)) {
             $firma_electronica = false;
-            $date = strtotime($data_contrato->fecha_firma);
+            $date = strtotime($data->inicio);
             $D = date('d', $date);
             $M = $this->toMonth(date('m', $date));
             $Y = date("Y", $date);
         } else {
             $firma_electronica = true;
-            $date = strtotime($data->fecha_validacion);
+            $date = strtotime($data_contrato->fecha_firma);
             $D = date('d', $date);
             $M = $this->toMonth(date('m', $date));
             $Y = date("Y", $date);
