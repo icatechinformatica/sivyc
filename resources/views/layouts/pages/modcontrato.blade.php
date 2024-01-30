@@ -15,6 +15,11 @@
     }
 </style>
 @section('content')
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="container g-pt-50">
         <form action="{{ route('contrato-savemod') }}" method="post" id="registercontrato"  enctype="multipart/form-data">
             @csrf
@@ -32,6 +37,9 @@
              <div style="text-align: right;width:60%">
                 <label for="titulocontrato"><h2>Apartado de Contrato</h2></label>
             </div>
+            <div style="text-align: right;width:90%">
+                <label for="titulocontrato"><h5>fecha: {{$fechaActual}}</h5></label>
+            </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                 <label for="numero_contrato" class="control-label">Número de Contrato</label>
@@ -41,17 +49,17 @@
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputnombre_curso" class="control-label">Nombre del Curso</label>
-                    <input type="text"  class="form-control" value="{{$data->curso}}" id="nombre_curso" name="nombre_curso">
+                    <input type="text"  class="form-control" value="{{$data->curso}}" id="nombre_curso" name="nombre_curso" readonly>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="clavecurso" class="control-label">Clave del Curso</label>
-                    <input type="text"  value={{$data->clave}} class="form-control" id="clavecurso" name="clavecurso">
+                    <input type="text"  value={{$data->clave}} class="form-control" id="clavecurso" name="clavecurso" readonly>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre_instructor" class="control-label">Nombre del Instructor</label>
-                    <input type="text"  class="form-control" value="{{$nombrecompleto}}" id="nombre_instructor" name="nombre_instructor">
+                    <input type="text"  class="form-control" value="{{$nombrecompleto}}" id="nombre_instructor" name="nombre_instructor" readonly>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="clavecurso" class="control-label">Area de Conocimiento del Instructor</label>
@@ -86,10 +94,10 @@
                     <label for="lugar_expedicion" class="control-label">Municipio de la Firma</label>
                     <input type="text" class="form-control" id="lugar_expedicion" name="lugar_expedicion" placeholder="Lugar de Expedición" value="{{$datacon->municipio}}" >
                 </div>
-                <div class="form-group col-md-3">
+                {{-- <div class="form-group col-md-3">
                     <label for="fecha_firma" class="control-label">Fecha de Firma</label>
-                    <input type="date" class="form-control" id="fecha_firma" name="fecha_firma" value="{{$datacon->fecha_firma}}" >
-                </div>
+                    <input type="date" class="form-control" id="fecha_firma" name="fecha_firma" value="{{$datacon->fecha_firma}}" readonly>
+                </div> --}}
             </div>
             <div class="form-row">
                 <div class="form-group col-md-5">
@@ -278,15 +286,25 @@
             <input id="id_directorio" name="id_directorio" hidden value='{{$data_directorio->id}}'>
             <input id="id_contrato" name="id_contrato" hidden value='{{$datacon->id_contrato}}'>
             <input hidden id="id_pago" name="id_pago" @if(isset($datap))value="{{$datap->id}}"@endif>
-            <div class="row">
-                <div class="col-lg-12 margin-tb">
+            <div class="form-row">
+                <div class="form-group col-md-8">
                     <div class="pull-left">
                         <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                     </div>
-                    <div class="pull-right">
-                        <button type="submit" id="save-contrato" name="save-contrato" class="btn btn-primary" >Guardar</button>
-                    </div>
                 </div>
+                <div class="form-group col-md-2">
+                        <button type="submit" id="save-contrato" name="save-contrato" class="btn btn-primary" >Guardar</button>
+                            </form>
+                </div>
+                @if($generarEfirma != TRUE)
+                    <div class="form-group col-md-2">
+                        <form action="{{ route('contrato-efirma') }}" method="post" id="registerecontrato">
+                            @csrf
+                            <input type="text" name="idc" id="idc" value='{{$datacon->id_contrato}}' hidden>
+                            <input type="text" name="clavecurso" id="clavecurso" value='{{$data->clave}}' hidden>
+                            <button   button type="submit" class="btn btn-red" >Generar E.Firma</button>
+                    </div>
+                @endif
             </div>
         </form>
         <br>
