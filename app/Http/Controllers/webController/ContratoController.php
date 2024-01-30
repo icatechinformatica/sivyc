@@ -565,7 +565,7 @@ class ContratoController extends Controller
         $contratoController = new EContratoController();
         $result = $contratoController->xml($contrato->id_contrato);
 
-        return redirect()->route('contrato-mod', ['id' => $idc])
+        return redirect()->route('contrato-mod', ['id' => $request->idc])
                             ->with('success','Contrato Generado en E.Firma exitosamente');
     }
 
