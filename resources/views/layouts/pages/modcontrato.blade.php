@@ -296,7 +296,7 @@
                         <button type="submit" id="save-contrato" name="save-contrato" class="btn btn-primary" >Guardar</button>
                             </form>
                 </div>
-                @if($generarEfirma != TRUE)
+                @if($generarEfirma == TRUE)
                     <div class="form-group col-md-2">
                         <form action="{{ route('contrato-efirma') }}" method="post" id="registerecontrato">
                             @csrf
