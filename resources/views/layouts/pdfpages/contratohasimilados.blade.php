@@ -208,58 +208,60 @@
                     <br><dd><b>DÉCIMA SEXTA.- JURISDICCIÓN</b>. Para la interpretación y cumplimiento del presente contrato, así como para todo aquello que no esté expresamente estipulado en el mismo, las partes se someterán a la jurisdicción y competencia de los tribunales del fuero común de la ciudad de Tuxtla Gutiérrez, Chiapas, renunciando al fuero que pudiera corresponderles por razón de su domicilio presente o futuro.</dd>
                     <br><dd>Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legal, son conformes con los términos del mismo y lo suscriben el día de su inicio y ratifican para constancia en el municipio de {{$data_contrato->municipio}}, Chiapas.</dd>
                 </div>
-                @if(!is_null($uuid))
-                <div>
-                    <table style="font:9px;">
-                        @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
-                            @php $esInstructor = TRUE; @endphp
-                            @if($key == 2)
-                            <tr><td height="10px;"></td></tr>
-                            @endif
-                            <tr>
-                                <td width="100px;"><b>Nombre del firmate:</b></td>
-                                <td height="25px;">{{$moist['_attributes']['nombre_firmante']}}</td>
-                            </tr>
-                            <tr>
-                                <td style="vertical-align: top;"><b>Firma Electronica:</b></td>
-                                <td>{{wordwrap($moist['_attributes']['firma_firmante'], 100, "\n", true) }}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Puesto:</b></td>
-                                <td height="25px;">{{$puestos[$key]}}</td>
-                                {{-- @foreach($dataFirmantes as $search_puesto)
-                                    @if($search_puesto->curp == $moist['_attributes']['curp_firmante'])
-                                        @php $esInstructor = FALSE; @endphp
-                                        <td height="25px;">{{$search_puesto->cargo}}</td>
-                                        @break
+                @if($firma_electronica == true)
+                    @if(!is_null($uuid))
+                        <div>
+                            <table style="font:9px;">
+                                @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
+                                    @php $esInstructor = TRUE; @endphp
+                                    @if($key == 2)
+                                    <tr><td height="10px;"></td></tr>
                                     @endif
-                                @endforeach
-                                @if($esInstructor == TRUE)
-                                    <td height="25px;">Instructor</td>
-                                @endif --}}
-                            </tr>
-                            <tr>
-                                <td><b>Fecha de Firma:</b></td>
-                                <td>{{$moist['_attributes']['fecha_firmado_firmante']}}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Numero de Serie:</b></td>
-                                <td>{{$moist['_attributes']['no_serie_firmante']}}</td>
-                            </tr>
+                                    <tr>
+                                        <td width="100px;"><b>Nombre del firmate:</b></td>
+                                        <td height="25px;">{{$moist['_attributes']['nombre_firmante']}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top;"><b>Firma Electronica:</b></td>
+                                        <td>{{wordwrap($moist['_attributes']['firma_firmante'], 100, "\n", true) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Puesto:</b></td>
+                                        <td height="25px;">{{$puestos[$key]}}</td>
+                                        {{-- @foreach($dataFirmantes as $search_puesto)
+                                            @if($search_puesto->curp == $moist['_attributes']['curp_firmante'])
+                                                @php $esInstructor = FALSE; @endphp
+                                                <td height="25px;">{{$search_puesto->cargo}}</td>
+                                                @break
+                                            @endif
+                                        @endforeach
+                                        @if($esInstructor == TRUE)
+                                            <td height="25px;">Instructor</td>
+                                        @endif --}}
+                                    </tr>
+                                    <tr>
+                                        <td><b>Fecha de Firma:</b></td>
+                                        <td>{{$moist['_attributes']['fecha_firmado_firmante']}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Numero de Serie:</b></td>
+                                        <td>{{$moist['_attributes']['no_serie_firmante']}}</td>
+                                    </tr>
 
-                        @endforeach
-                    </table></small>
+                                @endforeach
+                            </table></small>
+                    @endif
                     <table style="font:10px;">
                         <tr>
-                            <td width="45px;"><img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"></td>
-                            <td style="vertical-align: top;" width="25px;"><br><b>Folio:</b></td>
+                            <td width="45px;">@if(!is_null($uuid))<img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">@endif</td>
+                            <td style="vertical-align: top;" width="25px;">@if(!is_null($uuid))<br><b>Folio:</b>@endif</td>
                             <td style="vertical-align: top; text-align: justify;">
                                 <br>{{$uuid}}<br><br><br>
                                 Las firmas electronicas que anteceden corresponden al Contrato de prestación de servicios profesionales modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.
                             </td>
                         </tr>
                     </table>
-                </div>
+                    </div>
                 @else
                     <table>
                         <tr>

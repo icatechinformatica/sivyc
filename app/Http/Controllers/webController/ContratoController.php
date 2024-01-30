@@ -673,10 +673,12 @@ class ContratoController extends Controller
         }
 
         if(!is_null($status_doc)) {
-            $firmantes = json_decode($status_doc->obj_documento, true);
-            foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
-                if(isset($firmante['_attributes']['certificado'])) {
-                    $generarFirma = FALSE;
+            if($status_doc->status != 'CANCELADO' && $status_doc->status != 'CANCELADO ICTI') {
+                $firmantes = json_decode($status_doc->obj_documento, true);
+                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                    if(isset($firmante['_attributes']['certificado'])) {
+                        $generarFirma = FALSE;
+                    }
                 }
             }
 
@@ -1272,7 +1274,7 @@ class ContratoController extends Controller
         // carga de firmas electronicas
 
         $documento = DocumentosFirmar::where('numero_o_clave', $data->clave)
-            ->Where('status','VALIDADO')
+            ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
             ->Where('tipo_archivo','Contrato')
             ->first();
         if(is_null($documento)) {
