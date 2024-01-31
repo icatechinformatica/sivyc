@@ -46,7 +46,7 @@ class EContratoController extends Controller
                             ->Get();
         // Info de director firmante
         foreach($dataFirmantes as $dataFirmante) {
-            if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA') || str_contains($dataFirmante->cargo, 'ENCARGADO') || str_contains($dataFirmante->cargo, 'ENCARGADA')) {
+            if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE LA DIREC') || str_contains($dataFirmante->cargo, 'ENCARGADA DE LA DIREC')) {
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
@@ -102,7 +102,7 @@ class EContratoController extends Controller
 
         //Llenado de delegacion firmante
         foreach($dataFirmantes as $dataFirmante) {
-            if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA')) {
+            if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE DELEGA') || str_contains($dataFirmante->cargo, 'ENCARGADA DE DELEGA')) {
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
