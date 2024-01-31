@@ -610,7 +610,7 @@ class ContratoController extends Controller
         {
             foreach($memoval as $me)
             {
-                if($me['memo_val'] == $data->instructor_mespecialidad)
+                if(isset($me['memo_val']) && $me['memo_val'] == $data->instructor_mespecialidad)
                 {
                     $memoval = $me['arch_val'];
                     break;
