@@ -25,7 +25,7 @@
 <body>
     <div class="encabezado">
         <img class="izquierda" src="{{ public_path('img/sep1.png') }}">
-        @if ($alumnos->chk_fotografia == TRUE && $alumnos->inicio < $diaCambioHeader)
+        @if ($alumnos->chk_fotografia == TRUE && $vistaFoto == TRUE)
            <img class="img-thumbnail mb-3" style="float: right; width: 3cm; height: 3cm; margin-top:-10px;" src="{{ asset($pathimg) }}">
         @else
            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
