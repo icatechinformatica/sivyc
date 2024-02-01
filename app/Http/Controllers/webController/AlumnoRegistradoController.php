@@ -207,6 +207,7 @@ class AlumnoRegistradoController extends Controller
                             'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_registro.realizo', 'cursos.costo']);
         $edad = Carbon::parse($alumnos->fecha_nacimiento)->age; //dd($alumnos);
         $date = Carbon::now()->toDateString();
+        $diaCambioHeader = Carbon::createFromFormat('d-m-Y', '13-01-2024');
         $fechaCarbon = Carbon::parse($alumnos->inicio);
         $alumnos->inicio = $fechaCarbon->format('d-m-Y');
         set_time_limit(300);
@@ -218,7 +219,7 @@ class AlumnoRegistradoController extends Controller
         // $pathimg = substr($alumnos->fotografia ,33);
         $pathimg = $alumnos->fotografia;
 
-        $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad','date','pathimg'));
+        $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad','date','pathimg','diaCambioHeader'));
         // (Optional) Setup the paper size and orientation
         $pdf->setPaper('Letter', 'portrait');
         return $pdf->stream('documento_sid_'.$alumnos->no_control.'.pdf');
