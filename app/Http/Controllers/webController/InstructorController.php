@@ -3448,10 +3448,10 @@ class InstructorController extends Controller
 
 
         $instructor->data_especialidad = $especialidades;
-        if(!isset($request->borrador))
-        {
+        // if(!isset($request->borrador))
+        // {
             $instructor->save();
-        }
+        // }
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
         $direccion = $data_unidad->direccion;
