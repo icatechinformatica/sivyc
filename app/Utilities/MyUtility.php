@@ -53,7 +53,7 @@ class MyUtility
             }
 
             if ($centena > 0){                
-                if ($millar<1 and $centena==1) $parteEntera .= "cien ";
+                if ($millar<1 or $centena==1) $parteEntera .= "cien ";
                 else $parteEntera .= $centenas[$centena] . " ";
             }
             if ($decena > 0){                

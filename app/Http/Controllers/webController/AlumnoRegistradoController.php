@@ -191,6 +191,7 @@ class AlumnoRegistradoController extends Controller
     protected function getDocumentoSid($nocontrol)
     {
         $noControl = base64_decode($nocontrol);
+        $vistaFoto = FALSE;
 
         $alumnos = Alumno::WHERE('alumnos_registro.id', '=', $noControl)
                             ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
@@ -207,8 +208,13 @@ class AlumnoRegistradoController extends Controller
                             'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_registro.realizo', 'cursos.costo']);
         $edad = Carbon::parse($alumnos->fecha_nacimiento)->age; //dd($alumnos);
         $date = Carbon::now()->toDateString();
+        $diaCambioHeader = Carbon::createFromFormat('d-m-Y', '12-01-2022');
         $fechaCarbon = Carbon::parse($alumnos->inicio);
         $alumnos->inicio = $fechaCarbon->format('d-m-Y');
+
+        if (Carbon::parse($alumnos->inicio)->lessThan($diaCambioHeader)) {
+            $vistaFoto = TRUE;
+        }
         set_time_limit(300);
 
         // Descomentar este pathimg si se trabajara con el archivo de forma local
@@ -218,7 +224,7 @@ class AlumnoRegistradoController extends Controller
         // $pathimg = substr($alumnos->fotografia ,33);
         $pathimg = $alumnos->fotografia;
 
-        $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad','date','pathimg'));
+        $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad','date','pathimg','vistaFoto'));
         // (Optional) Setup the paper size and orientation
         $pdf->setPaper('Letter', 'portrait');
         return $pdf->stream('documento_sid_'.$alumnos->no_control.'.pdf');
