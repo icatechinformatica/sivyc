@@ -78,15 +78,23 @@ class aperturaController extends Controller
         if($valor){
             #consultamos registros para generar pdf soporte de constancias
             $sop_expediente = DB::table('tbl_cursos_expedientes')->select('sop_constancias')->where('folio_grupo', '=', $valor)->first();
-            if($sop_expediente){
+            if(isset($sop_expediente->sop_constancias)){
                 $sop_constancias = json_decode($sop_expediente->sop_constancias);
-                $num_oficio_sop = $sop_constancias->num_oficio;
-                $titular_sop = ($sop_constancias->titular_depen != "" && $sop_constancias->cargo_titular != "") ? $sop_constancias->titular_depen.', '.$sop_constancias->cargo_titular : '';
 
-                $bddoc_soporte = ExpeUnico::select('academico->doc_25->url_documento as url_documento')
-                ->where('sop_constancias->num_oficio', $num_oficio_sop)->where('academico->doc_25->url_documento', '<>', '')->first();
+                if(isset($sop_constancias->num_oficio) && isset($sop_constancias->titular_depen)
+                && isset($sop_constancias->cargo_titular)){
+                    $num_oficio_sop = $sop_constancias->num_oficio;
+                    $titular_sop = ($sop_constancias->titular_depen != "" && $sop_constancias->cargo_titular != "") ? $sop_constancias->titular_depen.', '.$sop_constancias->cargo_titular : '';
 
-                $url_soporte = ($bddoc_soporte !== null) ? $this->path_files.$bddoc_soporte->url_documento : '';
+                    $bddoc_soporte = ExpeUnico::select('academico->doc_25->url_documento as url_documento')
+                    ->where('sop_constancias->num_oficio', $num_oficio_sop)->where('academico->doc_25->url_documento', '<>', '')->first();
+
+                    $url_soporte = ($bddoc_soporte !== null) ? $this->path_files.$bddoc_soporte->url_documento : '';
+                }
+
+
+
+
             }
 
             $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
