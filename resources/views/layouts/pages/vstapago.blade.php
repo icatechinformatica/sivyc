@@ -1349,8 +1349,26 @@
             $('#div_val_ordinario').addClass('d-none d-print-none');
         }
         else{
-            console.log(id[1])
+
         }
+
+        //By Jose Luis Valid Reporte fotografico / Mostrar documento firmado electronicamente en caso de que exisitiera
+        //de lo contrario mostrar el documento de manera tradicional
+        let data = { "_token": $("meta[name='csrf-token']").attr("content"), "id": id['0'] }
+        $.ajax({
+            type:"post",
+            url: "{{ route('supre.busqueda.reportefoto') }}",
+            data: data,
+            dataType: "json",
+            success: function (response) {
+                if(response.id_curso != ''){
+                    const repoFotograficoLink = document.getElementById('show_evidencia_fotograficav');
+                    const repoFotUrl = "/reportefoto/pdf/" + response.id_curso;
+                    repoFotograficoLink.href = repoFotUrl;
+                    document.getElementById('td11v').style.color = "black";
+                }
+            }
+        });
 
         var datos = {valor: id['0']};
         var url = '/efirma/busqueda';
