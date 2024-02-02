@@ -106,7 +106,7 @@ class FirmaController extends Controller {
             // dd($docsVistoBueno2);
         // }
         $docsFirmar1 = DocumentosFirmar::where('documentos_firmar.status','!=','CANCELADO')
-            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato')
+            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo')
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
@@ -117,7 +117,7 @@ class FirmaController extends Controller {
 
 
         $docsFirmados1 = DocumentosFirmar::where('documentos_firmar.status', 'EnFirma')
-            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato')
+            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo')
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
@@ -133,7 +133,7 @@ class FirmaController extends Controller {
             // ->orderBy('id', 'desc')->get();
 
         $docsValidados1 = DocumentosFirmar::where('documentos_firmar.status', 'VALIDADO')
-            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato')
+            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo')
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')

@@ -45,7 +45,7 @@ class ReporteFotController extends Controller
         $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 =  null;
 
         #Distintivo
-        $leyenda = DB::connection('pgsql')->table('tbl_instituto')->value('distintivo');
+        $leyenda = DB::table('tbl_instituto')->value('distintivo');
 
         #Unidad de capacitacion
         $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
@@ -124,24 +124,23 @@ class ReporteFotController extends Controller
                 $tipo_archivo = $documento->tipo_archivo;
                 $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
 
-                $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
-                    ->Join('tbl_funcionarios AS fun','fun.id','org.id')
-                    ->Where('org.id', Auth::user()->id_organismo)
-                    ->Where('org.nombre', 'LIKE', 'DELEGACIÓN ADMINISTRATIVA%')
-                    ->OrWhere('org.id_parent', Auth::user()->id_organismo)
-                    // ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
-                    // ->Where('org.nombre', 'LIKE', 'DELEGACIÓN ADMINISTRATIVA%')
-                    ->First();
+                // $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
+                //     ->Join('tbl_funcionarios AS fun','fun.id','org.id')
+                //     ->Where('org.id', Auth::user()->id_organismo)
+                //     ->Where('org.nombre', 'LIKE', '%ACADEMICO%')
+                //     ->First();
 
-                // $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id', 'fun.nombre AS funcionario','fun.curp',
-                // 'fun.cargo','fun.correo', 'us.name', 'us.puesto')
-                //     ->join('tbl_funcionarios AS fun', 'fun.id','org.id')
-                //     ->join('users as us', 'us.email','fun.correo')
-                //     ->where('org.nombre', 'ILIKE', 'DELEGACIÓN ADMINISTRATIVA UC '.$info->ubicacion.'%')
-                //     ->first();
-                // if($dataFirmante == null){
-                //     return "NO SE ENCONTRON DATOS DEL FIRMANTE";
-                // }
+                $dataFirmante = DB::Table('tbl_organismos AS org')
+                ->Select('org.id', 'fun.nombre AS funcionario','fun.curp',
+                'fun.cargo','fun.correo', 'org.nombre')
+                    ->join('tbl_funcionarios AS fun', 'fun.id','org.id')
+                    ->where('org.nombre', 'LIKE', '%ACADEMICO%')
+                    ->where('org.nombre', 'LIKE', '%'.$cursopdf->ubicacion.'%')
+                    ->first();
+                if($dataFirmante == null){
+                    dd("No se encontraron datos del academico");
+                }
+
 
                 //Generacion de QR
                 //Verificacion de prueba
@@ -160,6 +159,30 @@ class ReporteFotController extends Controller
         $pdf->setPaper('Letter', 'portrait');
         $file = "REPORTE_FOTOGRAFICO_$id_curso.PDF";
         return $pdf->stream($file);
+    }
+
+    ##By Jose Luis Moreno/ Consulta de evidencias fotograficas
+    protected function getreportefoto(Request $request){
+        ##231920485  2B-23-ADMI-CAE-0192
+        ##contrato 15682
+        $id_contrato = $request->id;
+        $id_curso = "";
+
+        $result = DB::Table('contratos')->Select('tbl_cursos.id AS id_curso')
+            ->Join('folios','folios.id_folios','contratos.id_folios')
+            ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->Join('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')
+            ->Where('contratos.id_contrato',$id_contrato)
+            ->where('documentos_firmar.tipo_archivo', 'Reporte fotografico')
+            ->first();
+        if($result != null){
+            $id_curso = $result->id_curso;
+        }
+
+        return response()->json([
+            'status' => 200,
+            'id_curso' => $id_curso
+        ]);
     }
 
 }
