@@ -172,11 +172,11 @@
     @if ($cursopdf)
         {{-- Lugar y fecha --}}
         <div style="text-align: right;">
-            <p style="font-size: 14px; margin-bottom: 5px;">UNIDAD DE CAPACITACIÓN {{$cursopdf->ubicacion}}
+            <p style="font-size: 14px; margin-bottom: 5px;">
             @if ($cursopdf->ubicacion != $cursopdf->unidad)
-            , ACCIÓN MOVIL {{$cursopdf->unidad}}.
+            UNIDAD DE CAPACITACIÓN {{$cursopdf->ubicacion}}, ACCIÓN MOVIL {{$cursopdf->unidad}}.
             @else
-
+            UNIDAD DE CAPACITACIÓN {{$cursopdf->ubicacion}}.
             @endif
             </p>
             <p style="font-size: 14px; margin-top: 0px; margin-bottom: 25px;">{{mb_strtoupper($cursopdf->municipio, 'UTF-8')}}, CHIAPAS. A {{$fechapdf}}.</p>
@@ -211,7 +211,7 @@
      @if (count($base64Images) > 0)
      <div class="" style="text-align: center;">
          @foreach($base64Images as $key => $base64)
-            <div style="page-break-after: always;">
+            <div style= @if ($objeto == null && $key == (count($base64Images)-1)) @else "page-break-after: always;" @endif>
                 <img style="width: auto; height: auto; max-width: 100%; max-height:100%;" src="data:image/jpeg;base64,{{$base64}}" alt="Foto">
             </div>
          @endforeach
@@ -237,7 +237,7 @@
                             @if ($dataFirmante->curp == $moist['_attributes']['curp_firmante'])
                                 <td style="font-size: 11px; padding-bottom: 10px;">{{ $dataFirmante->cargo }}</td>
                             @else
-                                <td style="font-size: 11px; padding-bottom: 10px;">Instructor</td>
+                                <td style="font-size: 11px; padding-bottom: 10px;">INSTRUCTOR</td>
                             @endif
                         </tr>
                         <tr>
