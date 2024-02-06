@@ -184,7 +184,7 @@ class AsistenciaController extends Controller
                 )->where('tbl_cursos.id',$id);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')->first();
             if ($curso) {
-                if ($curso->turnado == "UNIDAD" and $curso->status != "REPORTADO" and $curso->status != "CANCELADO") {
+                if ($curso->status_curso == "AUTORIZADO") {
                     $alumnos = DB::Table('tbl_inscripcion as i')->select(
                         'i.id',
                         'i.matricula',
