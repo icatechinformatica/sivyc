@@ -156,6 +156,8 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
+                                                    <th scope="col">Grupo</th>
+                                                    <th scope="col">Clave</th>
                                                     <th scope="col">Nombre del documento</th>
                                                     <th scope="col">Ver documento</th>
                                                     <th scope="col">Firmantes</th>
@@ -190,6 +192,8 @@
                                                         // $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
                                                     <tr>
+                                                        <td><p>{{ isset($docFirmar->folio_grupo) ? $docFirmar->folio_grupo : '' }}</p></td>
+                                                        <td><p>{{ isset($docFirmar->numero_o_clave) ? $docFirmar->numero_o_clave : '' }}</p></td>
                                                         <td><small>{{$nameArchivo}}</small></td>
                                                         <td>
                                                             @switch($docFirmar->tipo_archivo)
@@ -254,6 +258,8 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
+                                                    <th scope="col">Grupo</th>
+                                                    <th scope="col">Clave</th>
                                                     <th scope="col">Nombre del documento</th>
                                                     <th scope="col">Ver documento</th>
                                                     <th scope="col">Firmantes</th>
@@ -286,6 +292,8 @@
                                                     @endphp
 
                                                     <tr>
+                                                        <td><p>{{ isset($docFirmado->folio_grupo) ? $docFirmado->folio_grupo : '' }}</p></td>
+                                                        <td><p>{{ isset($docFirmado->numero_o_clave) ? $docFirmado->numero_o_clave : '' }}</p></td>
                                                         <td><small>{{$nameArchivo}}</small></td>
                                                         <td>
                                                             @switch($docFirmado->tipo_archivo)
@@ -353,6 +361,8 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
+                                                    <th scope="col">Grupo</th>
+                                                    <th scope="col">Clave</th>
                                                     <th scope="col">Nombre del documento</th>
                                                     <th scope="col">Descargar</th>
                                                     <th scope="col">Firmantes</th>
@@ -377,6 +387,8 @@
                                                         // $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
                                                     <tr>
+                                                        <td><p>{{ isset($docValidado->folio_grupo) ? $docValidado->folio_grupo : '' }}</p></td>
+                                                        <td><p>{{ isset($docValidado->numero_o_clave) ? $docValidado->numero_o_clave : '' }}</p></td>
                                                         <td><small>{{$nameArchivo}}</small></td>
                                                         <td>
                                                             @switch($docValidado->tipo_archivo)
