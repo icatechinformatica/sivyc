@@ -20,7 +20,7 @@ class MyUtility
     public static function letras($cantidad, $ver_decimal=true){
         $unidades = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
         $decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];        
-        $centenas = ["", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"];
+        $centenas = ["cien", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"];
         $especiales = ["diez", "once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete","dieciocho", "diecinueve"];
     
         $entero = floor($cantidad);//dd($entero);
@@ -53,8 +53,8 @@ class MyUtility
             }
 
             if ($centena > 0){                
-                if ($millar<1 or $centena==1) $parteEntera .= "cien ";
-                else $parteEntera .= $centenas[$centena] . " ";
+                if($centena==1 and $decena==0) $parteEntera .=  $centenas[0] . " ";
+                else $parteEntera .= $centenas[$centena] . " ";                
             }
             if ($decena > 0){                
                 $parteEntera .= $decenas[$decena] . " ";
