@@ -1546,7 +1546,7 @@
                         $('#asistencias_icon').attr('class', "fas fa-check text-success");
                         document.getElementById('td10').style.color = "black";
                     break;
-                    case: 'Reporte fotografico'
+                    case 'Reporte fotografico':
                         const reporteLink = document.getElementById('show_evidencia_fotografica');
                         const reporteUrl = "/reportefoto/pdf/" + element['id_curso'];
                         reporteLink.href = reporteUrl;
