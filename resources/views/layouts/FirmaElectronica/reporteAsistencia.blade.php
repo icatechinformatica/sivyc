@@ -233,7 +233,7 @@
                             <td>{{$tAsis}}</td>
                             <td>{{$tFalta}}</td>
                         </tr>
-                        @if($consec > $i)
+                        @if($consec > $i && isset($alumnos[$consec]->alumno))
                             </tbody>
                             </table>
                             <br><br><br>
