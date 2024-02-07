@@ -240,7 +240,7 @@
                             @if(!is_null($objeto))
                             <div style="display: inline-block; width: 85%;">
                                 <table style="width: 100%; font-size: 5px;">
-                                    @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
+                                    @foreach ($objeto['firmantes']['firmante'][0] as $keys=>$moist)
                                         <tr>
                                             <td style="width: 10%; font-size: 7px;"><b>Nombre del firmante:</b></td>
                                             <td style="width: 90%; font-size: 7px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
@@ -352,7 +352,7 @@
             @if(!is_null($objeto))
             <div style="display: inline-block; width: 85%;">
                 <table style="width: 100%; font-size: 5px;">
-                    @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
+                    @foreach ($objeto['firmantes']['firmante'][0] as $keys=>$moist)
                         <tr>
                             <td style="width: 10%; font-size: 7px;"><b>Nombre del firmante:</b></td>
                             <td style="width: 90%; font-size: 7px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
