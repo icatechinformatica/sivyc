@@ -911,7 +911,7 @@
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="evidencia_fotografica_pdf" name="evidencia_fotografica_pdf" hidden>
-                                        <label for="evidencia_fotografica_pdf">
+                                        <label for="evidencia_fotografica_pdf" id="evidencia_fotografica_pdf_label">
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
@@ -1545,6 +1545,16 @@
                         $('#asistencias_pdf').prop('required', false);
                         $('#asistencias_icon').attr('class', "fas fa-check text-success");
                         document.getElementById('td10').style.color = "black";
+                    break;
+                    case: 'Reporte fotografico'
+                        const reporteLink = document.getElementById('show_evidencia_fotografica');
+                        const reporteUrl = "/reportefoto/pdf/" + element['id_curso'];
+                        reporteLink.href = reporteUrl;
+                        reporteLink.hidden = false;
+                        $('#evidencia_fotografica_pdf_label').attr('hidden', true);
+                        $('#evidencia_fotografica_pdf').prop('required', false);
+                        $('#evidencia_fotografica_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td11').style.color = "black";
                     break;
                     default:
                     break;
