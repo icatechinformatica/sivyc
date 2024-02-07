@@ -136,7 +136,7 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label>DESCRIPCIÓN:</label>
-                            {{ Form::textarea('descripcion', $data->descripcion, ['id'=>'descripcion', 'class' => 'form-control' , 'rows' => '2']) }}
+                            {{ Form::textarea('descripcion', $data->descripcion, ['id'=>'descripcion', 'class' => 'form-control' , 'rows' => '4']) }}
                         </div>                        
                     </div>                     
                 @endif
