@@ -192,7 +192,7 @@ class PagoController extends Controller
             {
                 foreach($memoval as $me)
                 {
-                    if($me['memo_val'] == $ari->instructor_mespecialidad)
+                    if(isset($me['memo_val']) && $me['memo_val'] == $ari->instructor_mespecialidad)
                     {
                         $contratos_folios[$pointer]->arch_mespecialidad = $me['arch_val'];
                         break;
