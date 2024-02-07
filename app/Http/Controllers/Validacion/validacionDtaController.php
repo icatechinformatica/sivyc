@@ -1905,9 +1905,14 @@ class validacionDtaController extends Controller {
                 //                             'pendiente' => false];
             }
 
+
             $moist++;
         }
-        $historial_meses = $rango;
+        if(isset($rango)) {
+            $historial_meses = $rango;
+        } else {
+            $historial_meses = 'ENERO';
+        }
         // Fin info meses anteriores
 
         $unidad = DB::Table('tbl_unidades')->Where('unidad', $request->unidad_reporte)->FIRST();
