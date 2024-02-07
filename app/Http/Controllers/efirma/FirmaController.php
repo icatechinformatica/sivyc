@@ -462,6 +462,7 @@ class FirmaController extends Controller {
             ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
             ->Join('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')
             ->Where('contratos.id_contrato',$request->valor)
+            ->Where('documentos_firmar.status', 'VALIDADO')
             ->Get();
         $json=json_encode($respuesta);
         return $json;
