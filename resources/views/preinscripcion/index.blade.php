@@ -268,7 +268,7 @@
                         <div class="form-group col-md-3">
                             <label for="">COMPROBANTE DE PAGO:</label>
                             <div class="custom-file text-center">
-                                <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()"  @if($recibo) disabled @endif>
+                                <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()"  @if(!$recibo_nulo) disabled @endif>
                                 <label class="custom-file-label" for="customFile">PDF COMPROBANTE DE PAGO</label>
                             </div>
                         </div>
