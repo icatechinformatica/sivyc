@@ -176,8 +176,8 @@ class poaController extends Controller
                  order by p.id_unidad) AS total_curso"),
                 DB::raw("count(tc.*)  as cursos_autorizados"),
                 DB::raw('count(f.*) as suficiencia_autorizada'),
-                DB::raw("COUNT(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN tc.id ELSE 0 END) AS recep_financ"),                
-                DB::raw("count(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE NULL END) AS valid_financ"), 
+                DB::raw("SUM(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN 1 ELSE 0 END) AS recep_financ"),                
+                DB::raw("SUM(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE 0 END) AS valid_financ"), 
 
                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
                 /*HORAS */
@@ -223,10 +223,14 @@ class poaController extends Controller
                         $join->on('p.id_curso','=','tc.id');
                     });
                  })
-                //->where('u.unidad','=','JIQUIPILAS')
-                  ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
-                  ->WhereNotNull('poa.ze')->WhereNotNull('u.ze')
+                //->where('u.unidad','=','REFORMA')
+                ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
+                ->WhereNotNull('poa.ze')->WhereNotNull('u.ze')
                  ->groupby('u.ubicacion','poa.id_unidad','u.ze','poa.ze');
+                 
+                 /*->get();
+
+                 dd($data_total_ze);*/
 
             /***DETALLE POR UNIDAD/ACCION MOVIL */
 
