@@ -89,6 +89,7 @@ class PagoController extends Controller
                     'Finalizado'])
         ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
         ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
+        ->WHERE('pagos.status_recepcion', '!=', null)
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
