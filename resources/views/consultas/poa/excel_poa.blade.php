@@ -165,19 +165,19 @@
             @endforeach
         <tr>
             <td style="{{$hestilo}}"  align="center"><b>TOTAL ZONA III</b></td>
-            @for($n=0;$n<=15;$n++)
+            @for($n=0;$n<=17;$n++)
                 <td style="{{$hestilo}}" align="center"><b>{{ number_format($totalz3[$n], 0, '', ',') }}</b></td>
              @endfor
         </tr>
         <tr>
             <td style="{{$hestilo}}"  align="center"><b>TOTAL ZONA II</b></td>
-            @for($n=0;$n<=15;$n++)
+            @for($n=0;$n<=17;$n++)
                 <td style="{{$hestilo}}" align="center"><b>{{ number_format($totalz2[$n], 0, '', ',') }}</b></td>
              @endfor
         </tr>
         <tr>
             <td style="{{$hestilo}}"  align="center"><b>TOTALES</b></td>
-            @for($n=0;$n<=15;$n++)
+            @for($n=0;$n<=17;$n++)
                 <td style="{{$hestilo}}" align="center"><b>{{ number_format($totales[$n], 0, '', ',') }}</b></td>
              @endfor
         </tr>
