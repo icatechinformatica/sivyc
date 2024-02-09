@@ -89,6 +89,7 @@ class PagoController extends Controller
                     'Finalizado'])
         ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
         ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
+        ->WHERE('pagos.status_recepcion', '!=', null)
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -192,7 +193,7 @@ class PagoController extends Controller
             {
                 foreach($memoval as $me)
                 {
-                    if($me['memo_val'] == $ari->instructor_mespecialidad)
+                    if(isset($me['memo_val']) && $me['memo_val'] == $ari->instructor_mespecialidad)
                     {
                         $contratos_folios[$pointer]->arch_mespecialidad = $me['arch_val'];
                         break;

@@ -4,7 +4,7 @@
     <style>   
         h1 { width: 100%; text-align:center;}
         table { border: 1px solid; width:100%; margin-bottom: 5px; border-spacing: 0; }
-        table tr td{ text-align:justify; font-size: 13px; color:black; padding: 4px; }
+        table tr td{ font-size: 13px; color:black; padding: 4px; }
         .negro {  background-color:black; font-size: 14px; color:white; font-weight:bold; padding-left:7px; width:auto; margin: 0px; }
         .bold {  font-size: 14px; font-weight:bold;}
         .rojo {  font-size: 18px; color:red; font-weight:bold; width:auto; }        
@@ -44,7 +44,7 @@
                     
                     @if($data->id_concepto==1) <b> TOTAL BENEFICIADOS: </b> {{ $data->hombre+$data->mujer}} @endif
                     @if($data->id_concepto>1) 
-                        <b>DESCRIPCIÓN:</b> {{ $data->descripcion}}
+                        @if($data->id_concepto<>9) <b>DESCRIPCIÓN:</b> @endif  {!! nl2br($data->descripcion) !!}
                         @if(isset($data->constancias)) {{ $data->cantidad==1 ?  "CORRESPONDIENTE AL FOLIO NÚMERO: " : "CORRESPONDIENTE A LOS FOLIOS:" }} {{$data->constancias}}. @endif
                     @endif
                 </td>

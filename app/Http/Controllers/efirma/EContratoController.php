@@ -38,7 +38,7 @@ class EContratoController extends Controller
 
         $arrayFirmantes = [];
 
-        $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
+        $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
                             ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                             ->Where('org.id', Auth::user()->id_organismo)
                             ->OrWhere('org.id_parent', Auth::user()->id_organismo)
@@ -46,7 +46,14 @@ class EContratoController extends Controller
                             ->Get();
         // Info de director firmante
         foreach($dataFirmantes as $dataFirmante) {
+
             if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE LA UC') || str_contains($dataFirmante->cargo, 'ENCARGADA DE LA UC')) {
+                if(isset($dataFirmante->incapacidad)) {
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    if($incapacidadFirmante != FALSE) {
+                        $dataFirmante = $incapacidadFirmante;
+                    }
+                }
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
@@ -73,6 +80,12 @@ class EContratoController extends Controller
         //Llenado de academico firmante
         foreach($dataFirmantes as $dataFirmante) {
             if (str_contains($dataFirmante->cargo, 'ACADEMICO')) {
+                if(isset($dataFirmante->incapacidad)) {
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    if($incapacidadFirmante != FALSE) {
+                        $dataFirmante = $incapacidadFirmante;
+                    }
+                }
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
@@ -87,7 +100,14 @@ class EContratoController extends Controller
 
         //Llenado de vinculacion firmante
         foreach($dataFirmantes as $dataFirmante) {
+
             if (str_contains($dataFirmante->cargo, 'VINCULACION')) {
+                if(isset($dataFirmante->incapacidad)) {
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    if($incapacidadFirmante != FALSE) {
+                        $dataFirmante = $incapacidadFirmante;
+                    }
+                }
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
@@ -103,6 +123,12 @@ class EContratoController extends Controller
         //Llenado de delegacion firmante
         foreach($dataFirmantes as $dataFirmante) {
             if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE DELEGA') || str_contains($dataFirmante->cargo, 'ENCARGADA DE DELEGA')) {
+                if(isset($dataFirmante->incapacidad)) {
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    if($incapacidadFirmante != FALSE) {
+                        $dataFirmante = $incapacidadFirmante;
+                    }
+                }
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
@@ -458,6 +484,39 @@ class EContratoController extends Controller
                 Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de certificación extraordinaria No. ".$data_contrato->numero_contrato.', que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. '.$firmantes->dunidad.', '.$firmantes->pdunidad. ' '.$data_contrato->unidad_capacitacion.', y el (la) C. '.$nomins.', en el Municipio de '.$data_contrato->municipio.', a '.$D.' de '.$M.' del año '.$Y.'; el día de la expedición de la suficiencia presupuestal.';
         }
         return $body;
+    }
+
+    private function incapacidad($incapacidad, $incapacitado) {
+        $fechaActual = now();
+        if(!is_null($incapacidad->fecha_inicio)) {
+            $fechaInicio = Carbon::parse($incapacidad->fecha_inicio);
+            $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
+            if ($fechaActual->between($fechaInicio, $fechaTermino)) {
+                // La fecha de hoy está dentro del rango
+                $firmanteIncapacidad = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+                    ->Join('tbl_funcionarios AS fun','fun.id','org.id')
+                    ->Where('fun.id', $incapacidad->id_firmante)
+                    ->First();
+
+                return($firmanteIncapacidad);
+            } else {
+                // La fecha de hoy NO está dentro del rango
+                if($fechaTermino->isPast()) {
+                    $newIncapacidadHistory = 'Ini:'.$incapacidad->fecha_inicio.'/Fin:'.$incapacidad->fecha_termino.'/IdFun:'.$incapacidad->id_firmante;
+                    array_push($incapacidad->historial, $newIncapacidadHistory);
+                    $incapacidad->fecha_inicio = $incapacidad->fecha_termino = $incapacidad->id_firmante = null;
+                    $incapacidad = json_encode($incapacidad);
+
+                    DB::Table('tbl_funcionarios')->Where('nombre',$incapacitado)
+                        ->Update([
+                            'incapacidad' => $incapacidad
+                    ]);
+                }
+
+                return false;
+            }
+        }
+        return false;
     }
 
     //obtener el token

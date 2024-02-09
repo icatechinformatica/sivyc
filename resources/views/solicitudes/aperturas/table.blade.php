@@ -72,13 +72,13 @@
                     }
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >                       
-                        <td class='text-center'>               
-                            @if($g->comprobante_pago)
-                            <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
-                                <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="RECIBO DE PAGO PDF"></i>
-                            </a>
-                            @elseif($g->file_pdf)
+                        <td class='text-center'>                                       
+                            @if($g->file_pdf)
                                 <a class="nav-link" href="{{ env('APP_URL').'/storage/'.$g->file_pdf }}" target="_blank">
+                                    <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="RECIBO DE PAGO PDF"></i>
+                                </a>
+                            @elseif($g->comprobante_pago)
+                                <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
                                     <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="RECIBO DE PAGO PDF"></i>
                                 </a>
                             @else 

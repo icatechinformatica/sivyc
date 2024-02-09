@@ -192,19 +192,19 @@
             @endforeach
             <tr class="bg-light">
                 <td><b>TOTAL ZONA III</b></td>
-                @for($n=0;$n<=15;$n++)
+                @for($n=0;$n<=17;$n++)
                     <td align="center" @if($totalz3[$n]<0) class = 'text-danger' @endif><b>{{ number_format($totalz3[$n], 0, '', ',') }}</b></td>
                 @endfor
             </tr>
             <tr class="bg-light">
                 <td><b>TOTAL ZONA II</b></td>
-                @for($n=0;$n<=15;$n++)
+                @for($n=0;$n<=17;$n++)
                     <td align="center" @if($totalz2[$n]<0) class = 'text-danger' @endif><b>{{ number_format($totalz2[$n], 0, '', ',') }}</b></td>
                 @endfor
             </tr>
             <tr>
                 <td><b>TOTAL GENERAL</b></td>
-                @for($n=0;$n<=15;$n++)
+                @for($n=0;$n<=17;$n++)
                     <td align="center" @if($totales[$n]<0) class = 'text-danger' @endif><b>{{ number_format($totales[$n], 0, '', ',') }}</b></td>
                 @endfor
             </tr>
