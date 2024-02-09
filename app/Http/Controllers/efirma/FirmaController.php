@@ -41,7 +41,13 @@ class FirmaController extends Controller {
             ->Join('tbl_funcionarios','tbl_funcionarios.correo','users.email')
             ->Where('users.id', Auth::user()->id)
             ->First();
-        if(is_null($rol == '31')){$curpUser->curp = ' ';}
+
+        if($rol->role_id == '31'){
+            $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
+                ->Join('tbl_funcionarios','tbl_funcionarios.id','users.id_organismo')
+                ->Where('users.id', Auth::user()->id)
+                ->First();
+            }
         // if($rol->role_id == 30 || $rol->role_id == 31) {
             // $docsVistoBueno2 = tbl_curso::select('tbl_cursos.id', 'tbl_cursos.nombre', 'tbl_cursos.asis_finalizado', 'tbl_cursos.calif_finalizado')
             //     ->leftJoin('documentos_firmar', 'documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
