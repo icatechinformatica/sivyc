@@ -59,29 +59,6 @@ class ReporteFotController extends Controller
             return redirect()->route('firma.inicio')->with('danger', 'Error al consultar el curso de este documento!');
         }
 
-        ##Obtenemos el registro firmado con la clave
-        // $consulta_firma = DocumentosFirmar::where('numero_o_clave', $cursopdf->clave)
-        // ->where('tipo_archivo', 'Reporte fotografico')->first();
-
-        ##Validacion de fechas
-        // if ($consulta_firma != null) {
-        //     $documento_firmado = json_decode($consulta_firma->obj_documento, true);
-        // }
-
-        // if (isset($documento_firmado['firmantes']['firmante'][0][0]['_attributes']['fecha_firmado_firmante'])) {
-        //     $fech_firma_firmante = $documento_firmado['firmantes']['firmante'][0][0]['_attributes']['fecha_firmado_firmante'];
-        //     $partes = explode('T', $fech_firma_firmante);
-        //     $fecha_part = $partes[0];
-        //     [$aniof, $mesf, $diaf] = explode('-', $fecha_part);
-        //     $fechapdf = $diaf. ' de '.$meses[$mesf-1].' de '.$aniof;
-        // }else{
-        //     if (isset($cursopdf->evidencia_fotografica["fecha_envio"])) {
-        //         $fechapdf = $cursopdf->evidencia_fotografica["fecha_envio"];
-        //         $fechaCarbon = Carbon::createFromFormat('Y-m-d', $fechapdf);
-        //         $dia = ($fechaCarbon->day) < 10 ? '0'.$fechaCarbon->day : $fechaCarbon->day;
-        //         $fechapdf = $dia.' de '.$meses[$fechaCarbon->month-1].' de '.$fechaCarbon->year;
-        //     }
-        // }
 
         if (isset($cursopdf->evidencia_fotografica["fecha_envio"])) {
             $fechapdf = $cursopdf->evidencia_fotografica["fecha_envio"];
@@ -130,16 +107,26 @@ class ReporteFotController extends Controller
                 //     ->Where('org.nombre', 'LIKE', '%ACADEMICO%')
                 //     ->First();
 
+                // $dataFirmante = DB::Table('tbl_organismos AS org')
+                // ->Select('org.id', 'fun.nombre AS funcionario','fun.curp',
+                // 'fun.cargo','fun.correo', 'org.nombre')
+                //     ->join('tbl_funcionarios AS fun', 'fun.id','org.id')
+                //     ->where('org.nombre', 'LIKE', '%ACADEMICO%')
+                //     ->where('org.nombre', 'LIKE', '%'.$cursopdf->ubicacion.'%')
+                //     ->first();
+                // if($dataFirmante == null){
+                //     dd("No se encontraron datos del academico");
+                // }
+
+                $puestoUsuario = $objeto['firmantes']['firmante'][0][1]['_attributes']['curp_firmante'];
+
                 $dataFirmante = DB::Table('tbl_organismos AS org')
                 ->Select('org.id', 'fun.nombre AS funcionario','fun.curp',
-                'fun.cargo','fun.correo', 'org.nombre')
+                'fun.cargo','fun.correo', 'org.nombre', 'fun.incapacidad')
                     ->join('tbl_funcionarios AS fun', 'fun.id','org.id')
-                    ->where('org.nombre', 'LIKE', '%ACADEMICO%')
-                    ->where('org.nombre', 'LIKE', '%'.$cursopdf->ubicacion.'%')
+                    ->where('fun.curp', '=', $puestoUsuario)
                     ->first();
-                if($dataFirmante == null){
-                    dd("No se encontraron datos del academico");
-                }
+                if($dataFirmante == null){return "No se encontraron datos del servidor publico";}
 
 
                 //Generacion de QR
