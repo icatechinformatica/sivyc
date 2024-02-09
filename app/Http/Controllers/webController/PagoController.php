@@ -89,6 +89,7 @@ class PagoController extends Controller
                     'Finalizado'])
         ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
         ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
+        ->WHERE('pagos.status_recepcion', '!=', null)
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -107,7 +108,7 @@ class PagoController extends Controller
             'folios.status','pagos.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.status_recepcion','pagos.created_at','pagos.arch_solicitud_pago',
             'pagos.arch_asistencia','pagos.arch_evidencia','pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo',
             'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.soportes_instructor',
-            'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
+            'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tbl_cursos.modinstructor','tabla_supre.doc_validado',
             'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio',
             'pagos.updated_at','pagos.status_transferencia','documentos_firmar.status AS dstat','arch_pago',
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
@@ -174,7 +175,7 @@ class PagoController extends Controller
                     'contratos.arch_factura', 'contratos.arch_factura_xml','folios.status','folios.id_folios','folios.id_supre','pagos.recepcion',
                     'folios.permiso_editar','pagos.status_recepcion','pagos.arch_solicitud_pago','pagos.fecha_agenda','pagos.created_at','pagos.arch_asistencia','pagos.arch_evidencia',
                     'pagos.arch_calificaciones','pagos.arch_evidencia','pagos.agendado_extemporaneo','pagos.observacion_rechazo_recepcion',
-                    'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso','tbl_cursos.soportes_instructor',
+                    'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso','tbl_cursos.modinstructor','tbl_cursos.soportes_instructor',
                     'tabla_supre.doc_validado','instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine','arch_pago',
                     'tbl_cursos.nombre','pagos.fecha_envio','pagos.updated_at','pagos.status_transferencia','documentos_firmar.status AS dstat',
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
@@ -192,7 +193,7 @@ class PagoController extends Controller
             {
                 foreach($memoval as $me)
                 {
-                    if($me['memo_val'] == $ari->instructor_mespecialidad)
+                    if(isset($me['memo_val']) && $me['memo_val'] == $ari->instructor_mespecialidad)
                     {
                         $contratos_folios[$pointer]->arch_mespecialidad = $me['arch_val'];
                         break;
@@ -675,10 +676,11 @@ class PagoController extends Controller
             $archivos->instructor_mespecialidad = $archivos->archivo_alta;
         }
 
-        $update->fecha_agenda = $request->fecha_confirmada;
+        // $update->fecha_agenda = $request->fecha_confirmada;
+        $update->recepcion = carbon::now()->format('d-m-Y');
         $update->status_recepcion = 'VALIDADO';
         $updarray = ['status' => 'VALIDADO',
-                     'fecha_agenda' => $request->fecha_confirmada,
+                    //  'fecha_agenda' => $request->fecha_confirmada,
                      'fecha_validacion' => carbon::now()->format('d-m-Y'),
                      'solicitud_pago' => $update->arch_solicitud_pago,
                      'cuenta_bancaria' => $archivos->archivo_bancario,

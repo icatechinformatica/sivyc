@@ -137,12 +137,12 @@
                 <div align="justify">
                     <dl>
                         <dt>I.  <b>“ICATECH”</b> declara que:<br>
-                        <br><dd>I.1 Es un Organismo Descentralizado de la Administración Pública Estatal, con personalidad jurídica y patrimonio propios, conforme a lo dispuesto en el artículo 1 del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
-                        <br><dd>I.2 La Mtra. Fabiola Lizbeth Astudillo Reyes, en su carácter de Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, cuenta con personalidad jurídica que acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 16 de enero de 2019, por lo que se encuentra plenamente facultada en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo @if($fecha_fir >= $fecha_act) 42 fracción I @else 29 fracción I @endif del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
-                        <br><dd>I.3 {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} tiene personalidad jurídica para representar en este acto a “ICATECH”, como lo acredita con el nombramiento expedido por la Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, y cuenta con plena facultad legal para suscribir el presente Instrumento conforme a lo dispuesto por los artículos @if($fecha_fir >= $fecha_act) 42 fracción I @else 29 fracción I @endif del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas y 12 fracción V, de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
+                        <br><dd>I.1 Es un Organismo Descentralizado de la Administración Pública Estatal, con personalidad jurídica y patrimonio propio, conforme a lo dispuesto en el artículo 1 del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
+                        <br><dd>I.2 La Mtra. Fabiola Lizbeth Astudillo Reyes, en su carácter de Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, cuenta con personalidad jurídica que acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 16 de enero de 2019, por lo que se encuentra plenamente facultada en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
+                        <br><dd>I.3 {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, tiene personalidad jurídica para representar en este acto a “ICATECH”, como lo acredita con el nombramiento expedido por la Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, y cuenta con plena facultad legal para suscribir el presente Instrumento conforme a lo dispuesto por los artículos 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas y 12 fracción V, de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
                         <br><dd>I.4 Tiene por objetivo impartir e impulsar la capacitación para la formación en el trabajo, propiciando la mejor calidad y vinculación de este servicio con el aparato productivo y las necesidades de desarrollo Regional, Estatal y Nacional; actuar como Organismo promotor en materia de capacitación para el trabajo, conforme a lo establecido por la Secretaría de Educación Pública; promover la capacitación que permita adquirir, reforzar o potencializar los conocimientos, habilidades y destrezas necesarias para elevar el nivel de vida, competencia laboral y productividad en el Estado; promover el surgimiento de nuevos perfiles académicos, que correspondan a las necesidades del mercado laboral.</dd>
                         <br><dd>I.5 De acuerdo a las necesidades de <b>“ICATECH”</b>, se requiere contar con los servicios de una persona física con conocimientos en {{$data->espe}}, por lo que se ha determinado llevar a cabo la Contratación bajo el régimen de <b>SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS,</b> en la modalidad de horas curso como <b>"PRESTADOR DE SERVICIOS"</b>.</dd>
-                        <br><dd>I.6 Para los efectos del presente Contrato se cuenta con la clave de grupo {{$data->clave}} y validación del instructor emitido por la Dirección Técnica Académica de <b>“ICATECH”</b> conforme a lo dispuesto por el artículo 4 fracción III de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, emitido por la Dirección Técnica Académica de <b>“ICATECH”</b>.</dd>
+                        <br><dd>I.6 Para los efectos del presente contrato se cuenta con la clave de grupo No: {{$data->clave}}, así como la validación del instructor emitido por la Dirección Técnica Académica de <b>“ICATECH”</b> conforme a lo dispuesto por el artículo 4 fracción III de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, emitido por la Dirección Técnica Académica de <b>“ICATECH”</b>.</dd>
                         <br><dd>I.7 Para los efectos del presente Contrato se cuenta con la suficiencia presupuestal, conforme al presupuesto de egresos autorizado, emitido por la Dirección de Planeación de <b>“ICATECH”</b>.</dd>
                         <br><dd>I.8 Para los efectos del presente Contrato señala como su domicilio legal, el ubicado en la 14 poniente norte, número 239, Colonia Moctezuma, C. P. 29030, en la Ciudad de Tuxtla Gutiérrez, Chiapas.</dd>
                     </dl>
@@ -159,27 +159,26 @@
                 <div align="center"><strong> CLÁUSULAS </strong></div>
                 <br><div align="justify">
                     <dd><b>PRIMERA.- OBJETO DEL CONTRATO</b>. El presente instrumento tiene por objeto establecer al <b>“PRESTADOR DE SERVICIOS”</b> los términos y condiciones que se obliga con <b>“ICATECH”</b>, a brindar sus servicios profesionales bajo el régimen de <b>SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS,</b> para otorgar el curso establecido en el ARC01 y/o ARC02.</dd>
-                    <br><dd><b>SEGUNDA.- MONTO DE LOS SERVICIOS</b>. El monto total de los servicios que <b>“ICATECH”</b>, pagará al <b>“PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b>${{$cantidad}} ({{$data_contrato->cantidad_letras1}} {{$monto['1']}}/100 M.N.)</b>; por curso impartido, mismo que se acumularán y serán pagaderos mensualmente, menos las retenciones que el ICATECH le retendrá como pago provisional por concepto del Impuesto sobre la Renta, de conformidad con lo establecido en el Artículo 96 de la Ley del Impuesto sobre la Renta, enterando a las Autoridades Hacendarias las retenciones correspondientes.</dd>
-                    <br><dd>El monto resultante señalado en el <b>párrafo primero</b> de esta cláusula se otorgará al <b>“PRESTADOR DE SERVICIOS”</b> conforme a la disponibilidad financiera de <b>“ICATECH”</b>; que se realizará en una sola exhibición, por medio de cheque y/o transferencia electrónica interbancaria a la cuenta que señala, y se agrega al presente contrato, por lo que se efectuará la acumulación de todos los cursos impartidos durante el mes y se realizará la determinación del ISR correspondiente. Así mismo, se elaborará un recibo, el cual se le hará llegar al correo que indique, (la cual se agrega al presente instrumento) mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que el <b>“PRESTADOR DE SERVICIOS”</b> no podrá exigir retribución alguna por ningún otro concepto.</dd>
-                    <br><dd><b>TERCERA.- DE LA OBLIGACIÓN DEL “PRESTADOR DE SERVICIOS”</b>. Se obliga a desempeñar las obligaciones que contrae en este acto y con todo el sentido ético y profesional que requiere <b>“ICATECH”</b>, de acuerdo con las políticas y reglamentos del mismo para:</dd>
+                    <br><dd><b>SEGUNDA.- MONTO</b>. El monto que <b>“ICATECH”</b>, pagará al <b>“PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b>${{$cantidad}} ({{$data_contrato->cantidad_letras1}} {{$monto['1']}}/100 M.N.)</b>; por curso impartido, mismo que se acumulará y será pagadero mensualmente, menos las retenciones que el <b>“ICATECH”</b> le retendrá como pago provisional por concepto de Impuesto sobre la Renta, de conformidad con lo establecido al artículo 96 de la Ley del Impuesto sobre la Renta, enterando a las Autoridades Hacendarias las retenciones correspondientes.</dd>
+                    <br><dd>El monto resultante señalado en el <b>párrafo primero</b> de esta cláusula se otorgará al <b>“PRESTADOR DE SERVICIOS”</b> conforme a la disponibilidad financiera de <b>“ICATECH”</b>; que se realizará en una sola exhibición, por medio de cheque y/o transferencia interbancaria a la cuenta que señala, y se agrega al presente Contrato, por lo que se efectuará la acumulación de todos los cursos impartidos durante el mes y se realizará la determinación del ISR correspondiente. Así mismo, se expedirá un recibo, el cual se hará llegar al correo que indique (el cual se agrega al presente Instrumento), mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que el <b>“PRESTADOR DE SERVICIOS”</b> no podrá exigir retribución alguna por ningún otro concepto.</dd>
+                    <br><dd><b>TERCERA.- DE LA OBLIGACIÓN DEL “PRESTADOR DE SERVICIOS”</b>. Se obliga a desempeñar las obligaciones que contrae en este acto conforme a los procedimientos de control escolar y con todo el sentido ético y profesional que requiere <b>“ICATECH”</b>, de acuerdo con las políticas y reglamentos del mismo para:</dd>
                     <Ol type = "I">
-                        <li> Diseñar, preparar y dictar los cursos a su cargo con toda la diligencia y esmero que exige la calidad de <b>“ICATECH”</b>.</li>
-                        <br><li> Asistir con toda puntualidad a sus cursos y aprovechar íntegramente el tiempo necesario para el mejor desarrollo de los mismos.</li>
-                        <br><li> Generar un reporte final del curso impartido o de cualquier incidente o problema que surgió en el desarrollo del mismo.</li>
-                        <br><li> Cumplir con los procedimientos del control escolar de alumnos que implemente <b>“ICATECH”</b>.</li>
-                        <br><li> Respetar las normas de conducta que establece <b>“ICATECH”</b>.</li>
-                        <br><li> Implementar el Lenguaje Incluyente en la impartición de los cursos.</li>
+                        <li> Diseñar, preparar e impartir el curso a su cargo con toda la diligencia y esmero que exige la calidad de <b>“ICATECH”</b>.</li>
+                        <br><li> Vigilar que su curso impartido se aproveche íntegramente el tiempo necesario para el mejor desarrollo del mismo.</li>
+                        <br><li> Realizar la comprobación final del curso impartido.</li>
+                        <br><li> Respetar las normas de conducta.</li>
+                        <br><li> Implementar el Lenguaje Incluyente en la impartición del curso.</li>
                     </Ol>
                 </div>
                 <div align="justify">
-                    <dd><b>CUARTA.- SECRETO PROFESIONAL DEL “PRESTADOR DE SERVICIOS”.</b> En el presente contrato se obliga al <b>“PRESTADOR DE SERVICIOS”</b>, a no divulgar por medio de publicaciones, informes, videos, fotografías, medios electrónicos, conferencias o en cualquier otra forma, los datos y resultados obtenidos de los trabajos de este contrato, sin la autorización expresa de <b>“ICATECH”</b>, pues dichos datos y resultados son considerados confidenciales. Esta obligación subsistirá, aún después de haber terminado la vigencia de este contrato.</dd>
-                    <br><dd><b>QUINTA.- VIGENCIA</b>. La vigencia del presente contrato será conforme a la duración del curso objeto del presente Instrumento, detallados en la <b>CLÁUSULA PRIMERA</b>; el cual será forzoso al <b>“PRESTADOR DE SERVICIOS”</b> y voluntario para <b>“ICATECH”</b> mismo que podrá darlo por terminado anticipadamente en cualquier tiempo, siempre y cuando existan motivos o razones de interés general, incumpla cualquiera de las obligaciones adquiridas con la formalización del presente instrumento o incurra en alguna de las causales previstas en la Cláusula Octava, mediante notificación por escrito a <b>“PRESTADOR DE SERVICIOS”</b>; en todo caso <b>“ICATECH”</b> deberá cubrir el monto únicamente en cuanto a los servicios prestados.</dd>
-                    <br><dd>Concluido el término del presente contrato no podrá haber prórroga automática por el simple transcurso del tiempo y terminará sin necesidad de darse aviso entre las partes. Si terminada la vigencia de este contrato, <b>“ICATECH”</b> tuviere necesidad de seguir utilizando los servicios del <b>“PRESTADOR DE SERVICIOS”</b>, se requerirá la celebración de un nuevo contrato, sin que éste pueda ser computado con el anterior.</dd>
-                    <br><dd><b>SEXTA.- SEGUIMIENTO. “ICATECH”</b> a través de los representantes que al efecto designe, tendrá en todo tiempo el derecho de supervisar el estricto cumplimiento de este contrato, por lo que podrá revisar e inspeccionar las actividades que desempeñe <b>“PRESTADOR DE SERVICIOS”</b>.</dd>
+                    <dd><b>CUARTA.- SECRETO PROFESIONAL DEL “PRESTADOR DE SERVICIOS”.</b> En el presente contrato se obliga al <b>“PRESTADOR DE SERVICIOS”</b>, a no divulgar por medio de publicaciones, informes, videos, fotografías, medios electrónicos, conferencias o en cualquier otra forma, los datos y resultados obtenidos de los trabajos de este Contrato, sin la autorización expresa de <b>“ICATECH”</b>, pues dichos datos y resultados son considerados confidenciales. Esta obligación subsistirá, aún después de haber terminado la vigencia de este Contrato.</dd>
+                    <br><dd><b>QUINTA.- VIGENCIA</b>. La vigencia del presente Contrato será conforme a la duración del curso objeto del presente Instrumento, detallados en la <b>CLÁUSULA PRIMERA</b>; el cual será forzoso al <b>“PRESTADOR DE SERVICIOS”</b> y voluntario para <b>“ICATECH”</b> mismo que podrá darlo por terminado anticipadamente en cualquier tiempo, siempre y cuando existan motivos o razones de interés general, incumpla cualquiera de las obligaciones adquiridas con la formalización del presente instrumento o incurra en alguna de las causales previstas en la Cláusula Octava, mediante notificación por escrito al <b>“PRESTADOR DE SERVICIOS”</b>; en todo caso <b>“ICATECH”</b> deberá cubrir el monto únicamente en cuanto a los servicios prestados.</dd>
+                    <br><dd>Concluido el término del presente Contrato no podrá haber prórroga automática por el simple transcurso del tiempo y terminará sin necesidad de darse aviso entre las partes. Si terminada la vigencia de este contrato, <b>“ICATECH”</b> tuviere necesidad de seguir utilizando los servicios del <b>“PRESTADOR DE SERVICIOS”</b>, se requerirá la celebración de un nuevo Contrato, sin que éste pueda ser computado con el anterior.</dd>
+                    <br><dd><b>SEXTA.- SEGUIMIENTO. “ICATECH”</b> a través de los representantes que al efecto designe, tendrá en todo tiempo el derecho de dar seguimiento del estricto cumplimiento de este contrato, en relación a las actividades del <b>“PRESTADOR DE SERVICIOS”</b>.</dd>
                     <br><dd><b>SÉPTIMA.- PROPIEDAD DE RESULTADOS Y DERECHOS DE AUTOR</b>. Los documentos, estudios y demás materiales que se generen en la ejecución o como consecuencia de este contrato, serán propiedad de <b>“ICATECH”</b>, obligando al <b>“PRESTADOR DE SERVICIOS”</b> a entregarlos al término del presente instrumento.</dd>
                     <br><dd>Se obliga al <b>“PRESTADOR DE SERVICIOS”</b> a responder ilimitadamente de los daños o perjuicios que pudiera causar a <b>“ICATECH”</b> o a terceros, si con motivo de la prestación de los servicios contratados viola derechos de autor, de patentes y/o marcas u otro derecho reservado, por lo que manifiesta en este acto bajo protesta de decir verdad, no encontrarse en ninguno de los supuestos de infracción a la Ley Federal de Derechos de Autor ni a la Ley de Propiedad Industrial.</dd>
                     <br><dd>En caso de que sobreviniera alguna reclamación o controversia legal en contra de <b>“ICATECH”</b> por cualquiera de las causas antes mencionadas, la única obligación de éste será dar aviso al <b>“PRESTADOR DE SERVICIOS”</b> en el domicilio previsto en este instrumento para que ponga a salvo a <b>“ICATECH”</b> de cualquier controversia.</dd>
-                    <br><dd><b>OCTAVA.- RESCISIÓN. “ICATECH”</b> podrá rescindir el presente contrato sin responsabilidad alguna, sin necesidad de declaración judicial, bastando para ello una notificación por escrito cuando concurran causas de interés general, cuando el <b>“PRESTADOR DE SERVICIOS”</b> incumpla algunas de las obligaciones del presente contrato y demás disposiciones contenidas en las leyes que le sean aplicables y cuando a juicio de <b>“ICATECH”</b> incurra en las siguientes causales:</dd>
+                    <br><dd><b>OCTAVA.- RESCISIÓN. “ICATECH”</b> podrá rescindir el presente contrato sin responsabilidad alguna, sin necesidad de declaración judicial, bastando para ello una notificación por escrito cuando concurran causas de interés general, cuando el <b>“PRESTADOR DE SERVICIOS”</b> incumpla algunas de las obligaciones del presente Contrato y demás disposiciones contenidas en las leyes que le sean aplicables y cuando a juicio de <b>“ICATECH”</b> incurra en las siguientes causales:</dd>
                 </div>
                 <ol type = "I">
                     <li>Negligencia o impericia. </li>
@@ -190,77 +189,79 @@
                     <li>Por suspender injustificadamente la prestación de los servicios o por negarse a corregir lo rechazado por <b>“ICATECH”</b>.</li>
                     <li>Por negarse a informar a <b>“ICATECH”</b> sobre los resultados de la prestación del servicio encomendado. </li>
                     <li>Por impedir el desempeño normal de las labores durante la prestación de los servicios. </li>
-                    <li>Si se comprueba que la protesta a que se refiere la Declaración II.2 de <b>“PRESTADOR DE SERVICIOS”</b> se realizó con falsedad.</li>
-                    <li>Por no otorgar los cursos en el tiempo establecido (horas del curso). </li>
+                    <li>Si se comprueba que la protesta a que se refiere la Declaración II.4 de <b>“PRESTADOR DE SERVICIOS”</b> se realizó con falsedad.</li>
+                    <li>Por no otorgar el curso en el tiempo establecido. </li>
                 </ol>
                 <div align="justify"><dd>Asimismo; en caso de tener evidencias de que el curso no fue impartido, se procederá a dar por rescindido el contrato, y se interpondrá la acción legal que corresponda.</dd>
-                    <br><dd>Podrá dar por rescindido al <b>“PRESTADOR DE SERVICIOS”</b> el <b>“ICATECH”</b> de forma anticipada el presente contrato, previo aviso que realice por escrito con un mínimo de 10 días hábiles.</dd>
+                    <br><dd>El <b>“ICATECH”</b> podrá dar por terminado las obligaciones contractuales contraídas con el <b>“PRESTADOR DE SERVICIOS”</b> de forma anticipada, previo aviso que realice por escrito con un mínimo de 10 días hábiles.</dd>
                     <br><dd><b>“ICATECH”</b> se reservará el derecho de aceptar la terminación anticipada del contrato, sin que ello implique la renuncia a deducir las acciones legales que en su caso procedan.</dd>
                     <br><dd><b>NOVENA.- CESIÓN. “PRESTADOR DE SERVICIOS”</b> no podrá en ningún caso ceder total o parcialmente a terceros llámese persona física o persona moral, los derechos y obligaciones derivadas del presente contrato.</dd>
                     <br><dd><b>DÉCIMA.- RELACIONES PROFESIONALES. “ICATECH”</b> no adquiere ni reconoce obligación alguna de carácter laboral a favor del <b>“PRESTADOR DE SERVICIOS”</b>, en virtud de no ser aplicables a la relación contractual que consta en este instrumento, los artículos 1º y 8º de la Ley Federal del Trabajo y 123 apartado “A” y “B” de la Constitución Política de los Estados Unidos Mexicanos, por lo que no será considerado al <b>“PRESTADOR DE SERVICIOS”</b> como trabajador de <b>“ICATECH”</b> para los efectos legales y en particular para obtener las prestaciones establecidas en su artículo 5 A, fracciones V, VI y VII de la Ley del Instituto Mexicano del Seguro Social.</dd>
                     <br><dd>En el presente instrumento se obliga al <b>“PRESTADOR DE SERVICIOS”</b> a ser el único responsable del cumplimiento con las normas laborales, fiscales, o cualquier otro acto contractual de diversa índole, incluso las de seguridad social e INFONAVIT que pudieran derivarse de la prestación de los servicios aquí contratados, consecuentemente libera de toda responsabilidad a <b>“ICATECH”</b> de las obligaciones que pudieran presentarse por estos conceptos.</dd>
-                    <br><dd><b>DÉCIMA PRIMERA.- RECONOCIMIENTO CONTRACTUAL</b>. El presente contrato se rige por lo dispuesto en el Título Décimo del Contrato de Prestación de Servicios, Capítulo I, del Código Civil del Estado de Chiapas @if(!is_null($uuid))y del Código Civil federal artículo 1803, fracción I @endif, por lo que no existe relación de dependencia ni de subordinación entre <b>“ICATECH”</b> y <b>“PRESTADOR DE SERVICIOS”</b>, ni podrán tenerse como tales los necesarios nexos de coordinación entre uno y otro.</dd>
+                    <br><dd><b>DÉCIMA PRIMERA.- RECONOCIMIENTO CONTRACTUAL</b>. El presente contrato se rige por lo dispuesto en el Título Décimo del Contrato de Prestación de Servicios, Capítulo I, del Código Civil del Estado de Chiapas y del Código Civil Federal en su precepto legal 1803, fracción I, por lo que no existe relación de dependencia ni de subordinación entre <b>“ICATECH”</b> y <b>“PRESTADOR DE SERVICIOS”</b>, ni podrán tenerse como tales los necesarios nexos de coordinación entre uno y otro.</dd>
                     <br><dd>El presente contrato constituye el acuerdo de voluntades entre las partes, en relación con el objeto del mismo y deja sin efecto cualquier otra negociación o comunicación entre éstas, ya sea oral o escrita con anterioridad a la fecha de su firma.</dd>
                     <br><dd><b>DÉCIMA SEGUNDA</b>.- Manifiestan ambas partes bajo protesta de decir verdad que en el presente contrato no ha mediado dolo, error, mala fe, engaño, violencia, intimidación, ni cualquiera otra causa que pudiera invalidar el contenido y fuerza.</dd>
                     <br><dd><b>DÉCIMA TERCERA.- DOMICILIOS</b>. Para los efectos del presente instrumento las partes señalan como sus domicilios legales los estipulados en el Apartado de Declaraciones del presente instrumento legal.</dd>
                     <br><dd>Mientras las partes no notifiquen por escrito el cambio de su domicilio, los emplazamientos y demás diligencias judiciales y extrajudiciales, se practicarán en el domicilio señalado en esta cláusula.</dd>
                     <br><dd><b>DÉCIMA CUARTA.- RESPONSABILIDAD DEL “PRESTADOR DE SERVICIOS”</b>. Será el responsable de la ejecución de los trabajos y deberá sujetarse en la realización de éstos, a todos aquellos reglamentos administrativos y manuales que las autoridades competentes hayan emitido, así como a las disposiciones establecidas por <b>“ICATECH”</b>.</dd>
-                    <br><dd><b>DÉCIMA QUINTA</b>.- Las partes convienen que los datos personales insertos en el presente instrumento legal son protegidos por la Ley de Protección de Datos Personales en Posesión de Sujetos Obligados del Estado de Chiapas y la Ley de Transparencia y Acceso a la Información Publica del Estado de Chiapas, así como los Lineamientos Generales de la Custodia y Protección de Datos Personales e Información Reservada y Confidencial en Posesión de los Sujetos Obligados del Estado de Chiapas y demás normatividad aplicable.</dd>
-                    <br><dd><b>DÉCIMA SEXTA.- JURISDICCIÓN</b>. Para la interpretación y cumplimiento del presente contrato, así como para todo aquello que no esté expresamente estipulado en el mismo, las partes se someterán a la jurisdicción y competencia de los tribunales del fuero común de la ciudad de Tuxtla Gutiérrez, Chiapas, renunciando al fuero que pudiera corresponderles por razón de su domicilio presente o futuro.</dd>
-                    <br><dd>Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legales, son conformes con los términos del mismo y para constancia lo firman y ratifican ante la presencia de los testigos que al final suscriben; en el municipio de {{$data_contrato->municipio}}, Chiapas @if($firma_electronica == TRUE); el día de la expedición de la suficiencia presupuestal, que se adjunta al presente como si a la letra se insertase, a efecto de garantizar la disponibilidad financiera de la obligación contractual @endif.</dd>
+                    <br><dd><b>DÉCIMA QUINTA</b>.- Las partes convienen que los datos personales insertos en el presente instrumento legal son protegidos por la Ley de Protección de Datos Personales en Posesión de Sujetos Obligados del Estado de Chiapas y la Ley de Transparencia y Acceso a la Información Pública del Estado de Chiapas, así como los Lineamientos Generales de la Custodia y Protección de Datos Personales e Información Reservada y Confidencial en Posesión de los Sujetos Obligados del Estado de Chiapas y demás normatividad aplicable.</dd>
+                    <br><dd><b>DÉCIMA SEXTA.- JURISDICCIÓN</b>. Para la interpretación y cumplimiento del presente Contrato, así como para todo aquello que no esté expresamente estipulado en el mismo, las partes se someterán a la jurisdicción y competencia de los tribunales del fuero común de la ciudad de Tuxtla Gutiérrez, Chiapas, renunciando al fuero que pudiera corresponderles por razón de su domicilio presente o futuro.</dd>
+                    <br><dd>Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legal, son conformes con los términos del mismo y lo suscriben el día de su inicio y ratifican para constancia en el Municipio de {{$data_contrato->municipio}}, Chiapas.</dd>
                 </div>
-                @if(!is_null($uuid))
-                <div>
-                    <table style="font:9px;">
-                        @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
-                            @php $esInstructor = TRUE; @endphp
-                            @if($key == 2)
-                            <tr><td height="10px;"></td></tr>
-                            @endif
-                            <tr>
-                                <td width="100px;"><b>Nombre del firmate:</b></td>
-                                <td height="25px;">{{$moist['_attributes']['nombre_firmante']}}</td>
-                            </tr>
-                            <tr>
-                                <td style="vertical-align: top;"><b>Firma Electronica:</b></td>
-                                <td>{{wordwrap($moist['_attributes']['firma_firmante'], 100, "\n", true) }}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Puesto:</b></td>
-                                <td height="25px;">{{$puestos[$key]}}</td>
-                                {{-- @foreach($dataFirmantes as $search_puesto)
-                                    @if($search_puesto->curp == $moist['_attributes']['curp_firmante'])
-                                        @php $esInstructor = FALSE; @endphp
-                                        <td height="25px;">{{$search_puesto->cargo}}</td>
-                                        @break
+                @if($firma_electronica == true)
+                    @if(!is_null($uuid))
+                        <div>
+                            <table style="font:9px;">
+                                @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
+                                    @php $esInstructor = TRUE; @endphp
+                                    @if($key == 2)
+                                    <tr><td height="10px;"></td></tr>
                                     @endif
-                                @endforeach
-                                @if($esInstructor == TRUE)
-                                    <td height="25px;">Instructor</td>
-                                @endif --}}
-                            </tr>
-                            <tr>
-                                <td><b>Fecha de Firma:</b></td>
-                                <td>{{$moist['_attributes']['fecha_firmado_firmante']}}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Numero de Serie:</b></td>
-                                <td>{{$moist['_attributes']['no_serie_firmante']}}</td>
-                            </tr>
+                                    <tr>
+                                        <td width="100px;"><b>Nombre del firmate:</b></td>
+                                        <td height="25px;">{{$moist['_attributes']['nombre_firmante']}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top;"><b>Firma Electronica:</b></td>
+                                        <td>{{wordwrap($moist['_attributes']['firma_firmante'], 100, "\n", true) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Puesto:</b></td>
+                                        <td height="25px;">{{$puestos[$key]}}</td>
+                                        {{-- @foreach($dataFirmantes as $search_puesto)
+                                            @if($search_puesto->curp == $moist['_attributes']['curp_firmante'])
+                                                @php $esInstructor = FALSE; @endphp
+                                                <td height="25px;">{{$search_puesto->cargo}}</td>
+                                                @break
+                                            @endif
+                                        @endforeach
+                                        @if($esInstructor == TRUE)
+                                            <td height="25px;">Instructor</td>
+                                        @endif --}}
+                                    </tr>
+                                    <tr>
+                                        <td><b>Fecha de Firma:</b></td>
+                                        <td>{{$moist['_attributes']['fecha_firmado_firmante']}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Numero de Serie:</b></td>
+                                        <td>{{$moist['_attributes']['no_serie_firmante']}}</td>
+                                    </tr>
 
-                        @endforeach
-                    </table></small>
+                                @endforeach
+                            </table></small>
+                    @endif
                     <table style="font:10px;">
                         <tr>
-                            <td width="45px;"><img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"></td>
-                            <td style="vertical-align: top;" width="25px;"><br><b>Folio:</b></td>
+                            <td width="45px;">@if(!is_null($uuid))<img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">@endif</td>
+                            <td style="vertical-align: top;" width="25px;">@if(!is_null($uuid))<br><b>Folio:</b>@endif</td>
                             <td style="vertical-align: top; text-align: justify;">
                                 <br>{{$uuid}}<br><br><br>
-                                Las firmas electronicas que anteceden corresponden al Contrato de prestación de servicios profesionales por sueldos y salarios e ingresos asimilados a salarios en su modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}@if($firma_electronica == TRUE); el día de la expedición de la suficiencia presupuestal @endif.
+                                Las firmas electronicas que anteceden corresponden al Contrato de prestación de servicios profesionales modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.
                             </td>
                         </tr>
                     </table>
-                </div>
+                    </div>
                 @else
                     <table>
                         <tr>
@@ -305,7 +306,7 @@
                     </div>
                     <br>
                     <div align=justify>
-                        <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por sueldos y salarios e ingresos asimilados a salarios en su modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}@if($firma_electronica == TRUE);  el día de la expedición de la suficiencia presupuestal @endif.</small>
+                        <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.</small>
                     </div>
                 @endif
             </div>

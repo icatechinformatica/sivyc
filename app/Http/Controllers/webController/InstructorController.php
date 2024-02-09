@@ -195,7 +195,7 @@ class InstructorController extends Controller
                 {
                     if(isset($boromir->hvalidacion) && ($boromir->status != 'VALIDADO' && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA') || ($regimen_actual != $data->tipo_honorario))
                     {
-                        if($data->status == 'EN FIRMA' && $data->turnado == 'DTA'  && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA'){
+                        if(($data->status == 'BAJA EN FIRMA' || $data->status == 'EN FIRMA') && $data->turnado == 'DTA'  && $boromir->status != 'INACTIVO' && $boromir->status != 'BAJA'){
 
                             $arch_sol = end($boromir->hvalidacion)['arch_sol'];printf($boromir->status . ' /// ');
                         }
@@ -3448,10 +3448,10 @@ class InstructorController extends Controller
 
 
         $instructor->data_especialidad = $especialidades;
-        if(!isset($request->borrador))
-        {
+        // if(!isset($request->borrador))
+        // {
             $instructor->save();
-        }
+        // }
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
         $direccion = $data_unidad->direccion;

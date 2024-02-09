@@ -106,6 +106,12 @@
             margin-left: 10px;
             margin-right: 60px;
         }
+        .page-break {
+            page-break-after: always;
+        }
+        .page-break-non {
+            page-break-after: avoid;
+        }
 
     </style>
 </head>
@@ -159,6 +165,7 @@
                     <th colspan="17">RESULTADO</th>
                 </tr>
             </thead>
+            @php $i = 16; @endphp
             <tbody>
                 @foreach ($alumnos as $a)
                     <tr width="10 px;">
@@ -184,6 +191,64 @@
                         <td></td>
                         <td>{{ $a->calificacion }}</td>
                     </tr>
+                    @if($consec > $i && isset($alumnos[$consec]->alumno))
+                        </tbody>
+                        </table>
+                        <br><br><br>
+                        @if(!is_null($objeto))
+                            <div style="display: inline-block; width: 85%;">
+                                <table style="width: 100%; font-size: 5px;">
+                                    @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
+                                        <tr>
+                                            <td style="width: 10%; font-size: 7px;"><b>Nombre del firmante:</b></td>
+                                            <td style="width: 90%; font-size: 7px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top; font-size: 7px;"><b>Firma Electrónica:</b></td>
+                                            <td style="font-size: 7px;">{{ wordwrap($moist['_attributes']['firma_firmante'], 87, "\n", true) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-size: 7px;"><b>Puesto:</b></td>
+                                            @if ($dataFirmante->curp == $moist['_attributes']['curp_firmante'])
+                                                <td style="font-size: 7px; height: 25px;">{{ $dataFirmante->cargo }}</td>
+                                            @else
+                                                <td style="font-size: 7px; height: 25px;">Instructor</td>
+                                            @endif
+                                        </tr>
+                                        <tr>
+                                            <td style="font-size: 7px;"><b>Fecha de Firma:</b></td>
+                                            <td style="font-size: 7px;">{{ $moist['_attributes']['fecha_firmado_firmante'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-size: 7px;"><b>Número de Serie:</b></td>
+                                            <td style="font-size: 7px;">{{ $moist['_attributes']['no_serie_firmante'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            </div>
+                            <div style="display: inline-block; width: 15%;">
+                                <img style="position: fixed; width: 15%; top: 45%; left: 79%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                            </div>
+                        @endif
+                        <div class="page-break"></div>
+                        @php $i = $i+15; @endphp
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th width="15px" rowspan="2">N<br />U<br />M</th>
+                                    <th width="90px" rowspan="2">N&Uacute;MERO DE <br />CONTROL</th>
+                                    <th width="300px">NOMBRE DEL ALUMNO</th>
+                                    <th colspan="17" width="380"><b>CLAVE DE CADA SUBOBJETIVO</b></th>
+                                    <th rowspan="2"><b>RESULTADO FINAL</b></th>
+
+                                </tr>
+                                <tr>
+                                    <th>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
+                                    <th colspan="17">RESULTADO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    @endif
                 @endforeach
             </tbody>
         </table>

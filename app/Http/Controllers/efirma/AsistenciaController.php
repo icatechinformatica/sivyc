@@ -39,7 +39,8 @@ class AsistenciaController extends Controller
 
         $arrayFirmantes = [];
 
-        $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
+        $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo',
+        'org.nombre', 'fun.incapacidad', 'fun.id as id_fun')
                             ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                             ->Where('org.id', Auth::user()->id_organismo)
                             ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
@@ -47,6 +48,15 @@ class AsistenciaController extends Controller
                             // ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
                             ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
                             ->First();
+        if($dataFirmante == null){
+            return redirect()->route('firma.inicio')->with('danger', 'NO SE ENCONTRARON DATOS DEL FIRMANTE AL REALIZAR LA CONSULTA');
+        }
+        ##Incapacidad
+        $val_inca = $this->valid_incapacidad($dataFirmante);
+        if ($val_inca != null) {
+            $dataFirmante = $val_inca;
+        }
+
         //Llenado de funcionarios firmantes
         $temp = ['_attributes' =>
             [
@@ -160,6 +170,72 @@ class AsistenciaController extends Controller
         }
     }
 
+    ### BY JOSE LUIS / VALIDACIÓN DE INCAPACIDAD
+    public function valid_incapacidad($dataFirmante){
+        $result = null;
+
+        $status_campos = false;
+        if($dataFirmante->incapacidad != null){
+            $dataArray = json_decode($dataFirmante->incapacidad, true);
+
+            ##Validamos los campos json
+            if(isset($dataArray['fecha_inicio']) && isset($dataArray['fecha_termino'])
+            && isset($dataArray['id_firmante']) && isset($dataArray['historial'])){
+
+                if($dataArray['fecha_inicio'] != '' && $dataArray['fecha_termino'] != '' && $dataArray['id_firmante'] != ''){
+                    $fecha_ini = $dataArray['fecha_inicio'];
+                    $fecha_fin = $dataArray['fecha_termino'];
+                    $id_firmante = $dataArray['id_firmante'];
+                    $historial = $dataArray['historial'];
+                    $status_campos = true;
+                }
+            }else{
+                return redirect()->route('firma.inicio')->with('danger', 'LA ESTRUCTURA DEL JSON DE LA INCAPACIDAD NO ES VALIDA!');
+            }
+
+            ##Validar si esta vacio
+            if($status_campos == true){
+                ##Validar las fechas
+                $fechaActual = date("Y-m-d");
+                $fecha_nowObj = new DateTime($fechaActual);
+                $fecha_iniObj = new DateTime($fecha_ini);
+                $fecha_finObj = new DateTime($fecha_fin);
+
+                if($fecha_nowObj >= $fecha_iniObj && $fecha_nowObj <= $fecha_finObj){
+                    ###Realizamos la consulta del nuevo firmante
+                    $dataIncapacidad = DB::Table('tbl_organismos AS org')
+                    ->Select('org.id', 'fun.nombre AS funcionario','fun.curp',
+                    'fun.cargo','fun.correo', 'org.nombre', 'fun.incapacidad')
+                    ->join('tbl_funcionarios AS fun', 'fun.id','org.id')
+                    ->where('fun.id', $id_firmante)
+                    ->first();
+
+                    if ($dataIncapacidad != null) {$result = $dataIncapacidad;}
+                    else{return redirect()->route('firma.inicio')->with('danger', 'NO SE ENCONTRON DATOS DE LA PERSONA QUE TOMARÁ EL LUGAR DEL ACADEMICO!');}
+
+                }else{
+                    ##Historial
+                    $fecha_busqueda = 'Ini:'. $fecha_ini .'/Fin:'. $fecha_fin .'/IdFun:'. $id_firmante;
+                    $clave_ar = array_search($fecha_busqueda, $historial);
+
+                    if($clave_ar === false){ ##No esta en el historial entonces guardamos
+                        $historial[] = $fecha_busqueda;
+                        ##guardar en la bd el nuevo array en el campo historial del json
+                        try {
+                            $jsonHistorial = json_encode($historial);
+                            DB::update('UPDATE tbl_funcionarios SET incapacidad = jsonb_set(incapacidad, \'{historial}\', ?) WHERE id = ?', [$jsonHistorial, $dataFirmante->id_fun]);
+                        } catch (\Throwable $th) {
+                            return redirect()->route('firma.inicio')->with('danger', 'Error: ' . $th->getMessage());
+                        }
+
+                    }
+                }
+            }
+
+        }
+        return $result;
+    }
+
     public function rechazo(Request $request) {
         $curso = tbl_curso::Where('id', $request->txtIdRechazo)->First();
         $curso->observacion_asistencia_rechazo = $request->motivoRechazo;
@@ -184,7 +260,7 @@ class AsistenciaController extends Controller
                 )->where('tbl_cursos.id',$id);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')->first();
             if ($curso) {
-                if ($curso->turnado == "UNIDAD" and $curso->status != "REPORTADO" and $curso->status != "CANCELADO") {
+                if ($curso->status_curso == "AUTORIZADO") {
                     $alumnos = DB::Table('tbl_inscripcion as i')->select(
                         'i.id',
                         'i.matricula',
@@ -230,20 +306,33 @@ class AsistenciaController extends Controller
                         $tipo_archivo = $documento->tipo_archivo;
                         $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
 
-                        $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
-                                ->Join('tbl_funcionarios AS fun','fun.id','org.id')
-                                ->Where('org.id', Auth::user()->id_organismo)
-                                ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
-                                ->OrWhere('org.id_parent', Auth::user()->id_organismo)
-                                // ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
-                                ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
-                                ->First();
+                        // $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre', 'fun.incapacidad')
+                        //         ->Join('tbl_funcionarios AS fun','fun.id','org.id')
+                        //         ->Where('org.id', Auth::user()->id_organismo)
+                        //         ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
+                        //         ->OrWhere('org.id_parent', Auth::user()->id_organismo)
+                        //         // ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
+                        //         ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
+                        //         ->First();
+
+                        ###Buscamos al funcionario y el puesto By Jose Luis
+                        $puestoUsuario = $objeto['firmantes']['firmante'][0][1]['_attributes']['curp_firmante'];
+
+                        $dataFirmante = DB::Table('tbl_organismos AS org')
+                        ->Select('org.id', 'fun.nombre AS funcionario','fun.curp',
+                        'fun.cargo','fun.correo', 'org.nombre', 'fun.incapacidad')
+                            ->join('tbl_funcionarios AS fun', 'fun.id','org.id')
+                            ->where('fun.curp', '=', $puestoUsuario)
+                            ->first();
+                        if($dataFirmante == null){return "No se encontraron datos del servidor publico";}
+
 
                         //Generacion de QR
                         //Verifica si existe link de verificiacion, de lo contrario lo crea y lo guarda
                         if(isset($documento->link_verificacion)) {
                             $verificacion = $documento->link_verificacion;
                         } else {
+                            // $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
                             $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
                             $documento->save();
                         }
@@ -383,12 +472,22 @@ class AsistenciaController extends Controller
     }
 
     public function generarToken() {
+        ## Producción
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
             'nombre' => 'SISTEM_IVINCAP',
             'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         ]);
+
+        ##Prueba
+        // $resToken = Http::withHeaders([
+        //     'Accept' => 'application/json'
+        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+        //     'nombre' => 'FirmaElectronica',
+        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        // ]);
+
         $token = $resToken->json();
 
         Tokens_icti::create([
@@ -401,12 +500,22 @@ class AsistenciaController extends Controller
     public function getCadenaOriginal($xmlBase64, $token) {
         // dd(config('app.cadena'));
         // dd(Config::get('app.cadena', 'default'));
+
+        ##Producción
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token,
         ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
             'xml_OriginalBase64' => $xmlBase64
         ]);
+
+        ##Prueba
+        // $response1 = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token,
+        // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        //     'xml_OriginalBase64' => $xmlBase64
+        // ]);
 
         return $response1;
     }

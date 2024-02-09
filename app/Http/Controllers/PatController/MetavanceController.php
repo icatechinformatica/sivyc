@@ -744,8 +744,8 @@ class MetavanceController extends Controller
             $query->select('id')
                   ->from('funciones_proced')
                   ->where('id_parent', '=', $val)
-                  ->where('activo', '=', 'true') //validar si esta activo
-                  ->where(DB::raw("date_part('year' , created_at )"), '=', '2023');
+                  ->where('activo', '=', 'true'); //validar si esta activo
+                //   ->where(DB::raw("date_part('year' , created_at )"), '=', '2023');
             })
             ->orderBy('f.id')
             ->get();

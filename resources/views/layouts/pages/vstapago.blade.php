@@ -86,8 +86,8 @@
                             <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
                             <option value="fecha_firma">FECHA</option>
                             <option value="mes">MES</option>
-                            <option value="agendar_fecha" @if($tipoPago == 'agendar_fecha') selected @endif>LISTOS PARA ENTREGA FISICA</option>
-                            <option value="entregado_fisicamente" @if($tipoPago == 'entregado_fisicamente') selected @endif>ENTREGADO FISICAMENTE</option>
+                            {{-- <option value="agendar_fecha" @if($tipoPago == 'agendar_fecha') selected @endif>LISTOS PARA ENTREGA FISICA</option>
+                            <option value="entregado_fisicamente" @if($tipoPago == 'entregado_fisicamente') selected @endif>ENTREGADO FISICAMENTE</option> --}}
                         </select>
                         <Div id="divmes" name="divmes" class="d-none d-print-none">
                             <select name="mes" class="form-control mr-sm-2" id="mes">
@@ -258,7 +258,7 @@
                             @endphp
                             @if($itemData->status_recepcion == 'VALIDADO' && isset($itemData->recepcion))
                                 Documentacion Validada
-                                Entregado: {{$itemData->recepcion}}
+                                Digitalmente: {{$itemData->recepcion}}
                                 @if(is_null($itemData->status_transferencia))
                                     @can('contrato.validate')
                                         <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
@@ -278,14 +278,14 @@
                                             </a> --}}
                                         @endcan
                                         @can('contrato.validate')
-                                            <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}"]'>
+                                            <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}","{{$itemData->modinstructor}}"]'>
                                                 Revisar Entrega Digital
                                             </a>
                                         @endcan
                                     @break
                                     @case('Rechazado')
                                         @can('contratos.create')
-                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
+                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}"]'>
                                                 AGENDAR ENTREGA
                                             </a>
                                         @endcan
@@ -303,7 +303,7 @@
                                     @case('No Recibido')
                                         No Recibido Fisicamente
                                         @can('contratos.create')
-                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
+                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}"]'>
                                                 AGENDAR ENTREGA
                                             </a>
                                         @endcan
@@ -320,7 +320,7 @@
                                     @break
                                     @default
                                         @can('contratos.create')
-                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
+                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}"]'>
                                                 AGENDAR ENTREGA
                                             </a>
                                         @endcan
@@ -337,7 +337,7 @@
                         </td>
                         @if (!is_null($itemData->status_recepcion))
                             <td style="font-size: 13px">
-                                <a class="btn btn-success" id="verdocs" name="verdocs" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}","{{$itemData->status_recepcion}}"]'>
+                                <a class="btn btn-success" id="verdocs" name="verdocs" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}","{{$itemData->status_recepcion}}","{{$itemData->modinstructor}}"]'>
                                     Ver
                                 </a>
                                 <a class="btn btn-success" title="Descargar Documentación" href="{{route('downloadRarPagos', ['id_contrato' => $itemData->id_contrato])}}">
@@ -548,17 +548,22 @@
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
-                                <td style="vertical-align:middle;" width='10px;'><i id="factura_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
-                                <td id="td6v" style="text-align: left; vertical-align: left; font-size: 12px;">6.- Factura PDF</td>
-                                <td><a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfv" name="show_fact_pdfv">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
-                                </a></td>
-
                                 <td style="vertical-align:middle;" width='10px;'><i id="asistencias_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
-                                <td id="td10v" style="text-align: left; vertical-align: left; font-size: 12px;">10.- Lista de Asistencias</td>
+                                <td id="td10v" style="text-align: left; vertical-align: left; font-size: 12px;">6.- Lista de Asistencias</td>
                                 <td><a class="nav-link" target="_blanks" title="Lista de Asistencias" id="show_asistenciasv" name="show_asistenciasv">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
+                                <td style="vertical-align:middle;" width='10px;'>
+                                    {{-- <i id="factura_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i> --}}
+                                </td>
+                                <td id="td6v" style="text-align: left; vertical-align: left; font-size: 12px;">
+                                    {{-- 6.- Factura PDF --}}
+                                </td>
+                                <td>
+                                    {{-- <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfv" name="show_fact_pdfv"> --}}
+                                    {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
+                                    {{-- </a> --}}
+                                </td>
                             </tr>
                             <tr>
                                 <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
@@ -567,17 +572,23 @@
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
-                                <td style="vertical-align:middle;" width='10px;'><i id="facturaxml_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
-                                <td id="td7v" style="text-align: left; vertical-align: left; font-size: 12px;">7.- Factura XML</td>
-                                <td><a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlv" name="show_fact_xmlv">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
-                                </a></td>
-
                                 <td style="vertical-align:middle;" width='10px;'><i id="evidencia_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
-                                <td id="td11v" style="text-align: left; vertical-align: left; font-size: 12px;">11.- Reporte de Evidencias Fotográficas</td>
+                                <td id="td11v" style="text-align: left; vertical-align: left; font-size: 12px;">7.- Reporte de Evidencias Fotográficas</td>
                                 <td><a class="nav-link" target="_blanks" title="Reporte de Evidencias Fotográficas" id="show_evidencia_fotograficav" name="show_evidencia_fotograficav">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
+
+                                <td style="vertical-align:middle;" width='10px;'>
+                                    {{-- <i id="facturaxml_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i> --}}
+                                </td>
+                                <td id="td7v" style="text-align: left; vertical-align: left; font-size: 12px;">
+                                    {{-- 7.- Factura XML --}}
+                                </td>
+                                <td>
+                                    {{-- <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlv" name="show_fact_xmlv"> --}}
+                                    {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
+                                    {{-- </a> --}}
+                                </td>
                             </tr>
                             <tr>
                                 <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
@@ -599,11 +610,11 @@
                 @can('contrato.validate')
                     <div style="text-align:center" class="form-group" id="div_val_ordinario">
                         <p>Si validas podras asignar la fecha deseada a este registro.</p>
-                        <button id="rechazar_recepcion" style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega</button>
-                        <button id="validar_cita" style="text-align: right; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#validarCitaModal">Agendar Entrega Fisica</button>
+                        <button id="rechazar_recepcion" style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega Digital</button>
+                        <button id="validar_cita" style="text-align: right; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#validarCitaModal">Validar Entrega Digital</button>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" style="background-color: #12322B;" class="btn" data-dismiss="modal">Cerrar</button>
+                        <button type="button" style="background-color: #12322B; color: white;" class="btn" data-dismiss="modal">Cerasdrar</button>
                     </div>
                 @endcan
             </div>
@@ -720,7 +731,7 @@
                         <p style="text-align: left; padding-left: 15%;"><small>Observacion de Rechazo</small></p>
                         <textarea name="observacion_rechazo" id="observacion_rechazo" cols="50" rows="5" required></textarea><br>
                         <input id="id_contrato_entrega_rechazo" name="id_contrato_entrega_rechazo" hidden>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-dismiss="modal">Cancelar Rechazo</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-dismiss="modal">Cancelar Rechazo</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Rechazar</button>
                     </div>
                 </div>
@@ -747,11 +758,11 @@
                 <div class="modal-body" style="text-align:center">
                     <div style="text-align:center" class="form-group">
                         <p>Si confirmas la fecha de cita se hara el cambio de manera permanente.</p>
-                        <p style="text-align: center; padding-left: 0%;"><small>Fecha de Entrega Fisica</small></p>
-                        <input type="date" name="fecha_confirmada" id="fecha_confirmada" hidden>
-                        <input style="text-align: center" type="text" name="mostrar_fecha" id="mostrar_fecha" readonly><br><br><br>
+                        {{-- <p style="text-align: center; padding-left: 0%;"><small>Fecha de Entrega Fisica</small></p>
+                        <input type="date" name="fecha_confirmada" id="fecha_confirmada" hidden> --}}
+                        {{-- <input style="text-align: center" type="text" name="mostrar_fecha" id="mostrar_fecha" readonly><br><br><br> --}}
                         <input id="id_contrato_cita" name="id_contrato_cita" hidden>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" onclick="cerrarValidarCitaModal()" >Confirmar</button>
                     </div>
                 </div>
@@ -785,7 +796,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdf" name="solpa_pdf" hidden>
                                         <label for="solpa_pdf">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="solpa_name">Subir</span>
@@ -803,7 +814,7 @@
                                     <div style="display: inline-block;">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_pdf" name="factura_pdf" hidden>
                                         <label for="factura_pdf">
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="factura_name">Subir</span>
@@ -830,7 +841,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="contratof_pdf" name="contratof_pdf" hidden>
                                         <label for="contratof_pdf" id=contratof_pdf_label>
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="contratof_name">Subir</span>
@@ -874,7 +885,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="asistencias_pdf" name="asistencias_pdf" hidden>
                                         <label for="asistencias_pdf" id="asistencias_pdf_label">
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="asistencias_name">Subir</span>
@@ -900,8 +911,8 @@
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="evidencia_fotografica_pdf" name="evidencia_fotografica_pdf" hidden>
-                                        <label for="evidencia_fotografica_pdf">
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <label for="evidencia_fotografica_pdf" id="evidencia_fotografica_pdf_label">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="evidencia_fotografica_name">Subir</span>
@@ -920,7 +931,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/xml" id="factura_xml" name="factura_xml" hidden>
                                         <label for="factura_xml">
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="factura_xml_name">Subir</span>
@@ -932,11 +943,11 @@
                     <div style="text-align:right; display:inline-block; width: 60%;" class="form-group">
                         <input id="id_contrato_agenda" name="id_contrato_agenda" hidden>
                         <input id="tipo_envio" name="tipo_envio" hidden>
-                        <button id='guardar' style="text-align: left; font-size: 10px; background-color: #12322B;" type="submit" class="btn" value="guardar" onclick="guardado(this.value)">Guardar</button>
+                        <button id='guardar' style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="submit" class="btn" value="guardar" onclick="guardado(this.value)">Guardar</button>
                         <button id='guardarenviar' style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" value="guardar_enviar" onclick="guardado(this.value)">Guardar y Enviar</button>
                     </div>
                     <div style="text-align:right; display:inline-block; width:30%;">
-                        <button type="button" class="btn" style="text-align: right; background-color: #12322B;" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn" style="text-align: right; background-color: #12322B; color: white;" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -966,7 +977,7 @@
                                     <div style="display: inline-block;">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdfc" name="solpa_pdfc" hidden>
                                         <label for="solpa_pdfc">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="solpa_namec">Subir</span>
@@ -985,7 +996,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_pdfc" name="factura_pdfc" hidden>
                                         <label for="factura_pdfc">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="factura_namec">Subir</span>
@@ -1013,7 +1024,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_xmlc" name="factura_xmlc" hidden>
                                         <label for="factura_xmlc">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="factura_xml_namec">Subir</span>
@@ -1041,7 +1052,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="contratof_pdfc" name="contratof_pdfc" hidden>
                                         <label for="contratof_pdfc" id="contratof_pdfc_label">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="contratof_namec">Subir</span>
@@ -1086,7 +1097,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="calificaciones_pdfc" name="calificaciones_pdfc" hidden>
                                         <label for="calificaciones_pdfc" id="calififcaciones_pdfc_label">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="calificaciones_namec">Subir</span>
@@ -1099,11 +1110,11 @@
                     <div style="text-align:right; display:inline-block; width: 60%;" class="form-group">
                         <input id="id_contrato_agendac" name="id_contrato_agendac" hidden>
                         <input id="tipo_envioc" name="tipo_envioc" hidden>
-                        <button id='guardar' style="text-align: left; font-size: 10px; background-color: #12322B;" type="submit" class="btn" value="guardar" onclick="guardado(this.value)">Guardar</button>
+                        <button id='guardar' style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="submit" class="btn" value="guardar" onclick="guardado(this.value)">Guardar</button>
                         <button id='guardarenviar' style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" value="guardar_enviar" onclick="guardado(this.value)">Guardar y Enviar</button>
                     </div>
                     <div style="text-align:right; display:inline-block; width:30%;">
-                        <button type="button" class="btn" style="text-align: right; background-color: #12322B;" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn" style="text-align: right; background-color: #12322B; color: white;" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -1125,7 +1136,7 @@
                 <div style="text-align:center" class="form-group">
                     <p>Si confirmas o rechazas la recepcion se hara el cambio de manera permanente.</p>
                     {{-- <input id="id_contrato_cita" name="id_contrato_cita" hidden> --}}
-                    <button id="rechazar_recepcion_fisica" style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-toggle="modal" data-target="#rechazar_RecepcionModal">No Recibido</button>
+                    <button id="rechazar_recepcion_fisica" style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-toggle="modal" data-target="#rechazar_RecepcionModal">No Recibido</button>
                     <button id="confirmar_recepcion_fisica" style="text-align: right; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmar_RecepcionModal">Recibido</button>
                 </div>
             </div>
@@ -1152,7 +1163,7 @@
                     <div style="text-align:center" class="form-group">
                         <p>¿Esta Seguro de la Recepción de Documentos?</p>
                         <input id="id_contrato_entrega" name="id_contrato_entrega" hidden>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn btn" data-dismiss="modal">Cancelar</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn btn" data-dismiss="modal">Cancelar</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Confirmar Recepción</button>
                     </div>
                 </div>
@@ -1180,7 +1191,7 @@
                     <div style="text-align:center" class="form-group">
                         <p>¿Esta Seguro de la NO Recepción de Documentos?</p>
                         <input id="id_contrato_noentrega" name="id_contrato_noentrega" hidden>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Confirmar No Recepción</button>
                     </div>
                 </div>
@@ -1204,7 +1215,7 @@
                         <input id="id_contrato_retorno_recepcion" name="id_retorno_recepcion" hidden>
                         <p style="text-align: left; padding-left: 15%;"><small>Observacion de Retorno</small></p>
                         <textarea name="observacion_retorno" id="observacion_retorno" cols="50" rows="5" required></textarea><br>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Confirmar</button>
                     </div>
                 </div>
@@ -1328,7 +1339,7 @@
     });
 
     $('#validarRecepcionModalOrdinaria').on('show.bs.modal', function(event){
-        console.log('hola');
+        // console.log($);
         var button = $(event.relatedTarget);
         var attrid = button.attr('data-id');
         var id = JSON.parse(attrid)
@@ -1344,13 +1355,31 @@
         setAnchorHrefs(id, true, true);
         $('#rechazar_recepcion').data('id', id[0]);
         $('#validar_cita').data('id', [id[0], fechaTexto]);
-        if(typeof id[13] !== 'undefined'){console.log('a')
-            $('#div_val_ordinario').removeClass('form-group');
-            $('#div_val_ordinario').addClass('d-none d-print-none');
-        }
-        else{
-            console.log(id[1])
-        }
+        // if(typeof id[13] !== 'undefined'){console.log('a')
+        //     $('#div_val_ordinario').removeClass('form-group');
+        //     $('#div_val_ordinario').addClass('d-none d-print-none');
+        // }
+        // else{
+
+        // }
+
+        //By Jose Luis Valid Reporte fotografico / Mostrar documento firmado electronicamente en caso de que exisitiera
+        //de lo contrario mostrar el documento de manera tradicional
+        let data = { "_token": $("meta[name='csrf-token']").attr("content"), "id": id['0'] }
+        $.ajax({
+            type:"post",
+            url: "{{ route('supre.busqueda.reportefoto') }}",
+            data: data,
+            dataType: "json",
+            success: function (response) {
+                if(response.id_curso != ''){
+                    const repoFotograficoLink = document.getElementById('show_evidencia_fotograficav');
+                    const repoFotUrl = "/reportefoto/pdf/" + response.id_curso;
+                    repoFotograficoLink.href = repoFotUrl;
+                    document.getElementById('td11v').style.color = "black";
+                }
+            }
+        });
 
         var datos = {valor: id['0']};
         var url = '/efirma/busqueda';
@@ -1381,6 +1410,13 @@
                         asistenciavLink.href = asistenciavUrl;
                         asistenciavLink.hidden = false;
                         document.getElementById('td10v').style.color = "black";
+                    break;
+                    case 'Reporte fotografico':
+                        const reportevLink = document.getElementById('show_evidencia_fotograficav');
+                        const reportevUrl = "/reportefoto/pdf/" + element['id_curso'];
+                        reportevLink.href = reportevUrl;
+                        reportevLink.hidden = false;
+                        document.getElementById('td11v').style.color = "black";
                     break;
                     default:
                     break;
@@ -1516,6 +1552,16 @@
                         $('#asistencias_pdf').prop('required', false);
                         $('#asistencias_icon').attr('class', "fas fa-check text-success");
                         document.getElementById('td10').style.color = "black";
+                    break;
+                    case 'Reporte fotografico':
+                        const reporteLink = document.getElementById('show_evidencia_fotografica');
+                        const reporteUrl = "/reportefoto/pdf/" + element['id_curso'];
+                        reporteLink.href = reporteUrl;
+                        reporteLink.hidden = false;
+                        $('#evidencia_fotografica_pdf_label').attr('hidden', true);
+                        $('#evidencia_fotografica_pdf').prop('required', false);
+                        $('#evidencia_fotografica_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td11').style.color = "black";
                     break;
                     default:
                     break;
@@ -1667,7 +1713,6 @@
             }
         }
 
-
         if (ordinario) {
             anchors.splice(10, 1); // Remove #show_calificaciones from the anchors array
             idx.splice(11, 1); // Remove #show_calificaciones link from the id array
@@ -1683,6 +1728,17 @@
             variables.splice(10, 1);
             icons.splice(10, 1);
         }
+
+        // if(idx[12] == 'ASIMILADOS A SALARIOS') {
+        //     anchors.splice(5,1);
+        //     anchors.splice(5,1);
+        //     idx.splice(6,1);
+        //     idx.splice(6,1);
+        //     variables.splice(5,1);
+        //     variables.splice(5,1);
+        //     icons.splice(5,1);
+        //     icons.splice(5,1);
+        // }
 
         for (let i = 0; i < anchors.length; i++) {
             const href = idx[i+1];
@@ -1703,10 +1759,18 @@
 
                     $(icons[i]).attr('class', "fas fa-check text-success");
             } else {
+                $(variables[i]).prop('required', true);
+
+                if((anchors[i] == '#show_fact_pdf' || anchors[i] == '#show_fact_xml') && (idx[12] == 'ASIMILADOS A SALARIOS' || idx[13] == 'ASIMILADOS A SALARIOS')) {
+                    $(variables[i]).prop('required', false);
+                    document.getElementById('td'+[i+1]+td).style.display = 'none';
+                    document.getElementById('td'+[i+1]+td).previousElementSibling.style.display = 'none';
+                    document.getElementById('td'+[i+1]+td).nextElementSibling.style.display = 'none';
+                }
+
                 $(anchors[i]).attr('hidden', true);
                 document.getElementById('td'+[i+1]+td).style.color = "red";
                 $(variables[i]+'_label').attr('hidden', false);
-                $(variables[i]).prop('required', true);
                 $(icons[i]).attr('class', "fas fa-times text-danger");
                 // $(anchors[i]).parent().parent().css("background-color", "white");
 
@@ -1751,7 +1815,7 @@ function toggleOnOff() {
 
 function guardado(buttonValue) {
     // Código de la función aquí
-    console.log(buttonValue);
+    // console.log(buttonValue);
     var confirmacion = confirm("¿Está seguro de continuar?");
     document.getElementById('tipo_envio').value = buttonValue;
     document.getElementById('tipo_envioc').value = buttonValue;
