@@ -86,8 +86,8 @@
                             <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
                             <option value="fecha_firma">FECHA</option>
                             <option value="mes">MES</option>
-                            <option value="agendar_fecha" @if($tipoPago == 'agendar_fecha') selected @endif>LISTOS PARA ENTREGA FISICA</option>
-                            <option value="entregado_fisicamente" @if($tipoPago == 'entregado_fisicamente') selected @endif>ENTREGADO FISICAMENTE</option>
+                            {{-- <option value="agendar_fecha" @if($tipoPago == 'agendar_fecha') selected @endif>LISTOS PARA ENTREGA FISICA</option>
+                            <option value="entregado_fisicamente" @if($tipoPago == 'entregado_fisicamente') selected @endif>ENTREGADO FISICAMENTE</option> --}}
                         </select>
                         <Div id="divmes" name="divmes" class="d-none d-print-none">
                             <select name="mes" class="form-control mr-sm-2" id="mes">
@@ -1410,6 +1410,13 @@
                         asistenciavLink.href = asistenciavUrl;
                         asistenciavLink.hidden = false;
                         document.getElementById('td10v').style.color = "black";
+                    break;
+                    case 'Reporte fotografico':
+                        const reportevLink = document.getElementById('show_evidencia_fotograficav');
+                        const reportevUrl = "/reportefoto/pdf/" + element['id_curso'];
+                        reportevLink.href = reportevUrl;
+                        reportevLink.hidden = false;
+                        document.getElementById('td11v').style.color = "black";
                     break;
                     default:
                     break;
