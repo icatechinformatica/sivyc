@@ -462,7 +462,8 @@ class grupoController extends Controller
                             if ($request->cerss) $cerrs = true;
                             else $cerrs = NULL;
                             //novo
-                            $unidad = DB::table('tbl_unidades')->select('id','cct', 'plantel')->where('unidad', $request->unidad)->first();
+                            $unidad = DB::table('tbl_unidades')->select('id','cct', 'plantel','ubicacion')->where('unidad', $request->unidad)->first();
+                            $id_ubicacion = DB::table('tbl_unidades')->where('unidad', $unidad->ubicacion)->value('id'); 
                             $municipio = DB::table('tbl_municipios')->select('id','muni','ze')->where('id', $request->id_municipio)->first();
                             $curso = DB::table('cursos as c')->select('c.id','c.nombre_curso','c.horas','c.rango_criterio_pago_maximo as cp','c.costo','e.nombre as espe',
                                 'a.formacion_profesional as area','c.memo_validacion as mpaqueteria','e.clave as clave_especialidad')
@@ -623,7 +624,8 @@ class grupoController extends Controller
                                             'id_cerss' => $request->cerss,'created_at' => $created_at,'updated_at' => $updated_at,'num_revision' => null,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
-                                            'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>json_encode($soportes_instructor)
+                                            'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>json_encode($soportes_instructor),
+                                            'id_unidad'=>$id_ubicacion
                                             ]
                                         );
                                         if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
