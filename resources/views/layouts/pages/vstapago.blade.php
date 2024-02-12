@@ -86,8 +86,8 @@
                             <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
                             <option value="fecha_firma">FECHA</option>
                             <option value="mes">MES</option>
-                            <option value="agendar_fecha" @if($tipoPago == 'agendar_fecha') selected @endif>LISTOS PARA ENTREGA FISICA</option>
-                            <option value="entregado_fisicamente" @if($tipoPago == 'entregado_fisicamente') selected @endif>ENTREGADO FISICAMENTE</option>
+                            {{-- <option value="agendar_fecha" @if($tipoPago == 'agendar_fecha') selected @endif>LISTOS PARA ENTREGA FISICA</option>
+                            <option value="entregado_fisicamente" @if($tipoPago == 'entregado_fisicamente') selected @endif>ENTREGADO FISICAMENTE</option> --}}
                         </select>
                         <Div id="divmes" name="divmes" class="d-none d-print-none">
                             <select name="mes" class="form-control mr-sm-2" id="mes">
@@ -610,11 +610,11 @@
                 @can('contrato.validate')
                     <div style="text-align:center" class="form-group" id="div_val_ordinario">
                         <p>Si validas podras asignar la fecha deseada a este registro.</p>
-                        <button id="rechazar_recepcion" style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega Digital</button>
+                        <button id="rechazar_recepcion" style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega Digital</button>
                         <button id="validar_cita" style="text-align: right; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#validarCitaModal">Validar Entrega Digital</button>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" style="background-color: #12322B;" class="btn" data-dismiss="modal">Cerasdrar</button>
+                        <button type="button" style="background-color: #12322B; color: white;" class="btn" data-dismiss="modal">Cerasdrar</button>
                     </div>
                 @endcan
             </div>
@@ -731,7 +731,7 @@
                         <p style="text-align: left; padding-left: 15%;"><small>Observacion de Rechazo</small></p>
                         <textarea name="observacion_rechazo" id="observacion_rechazo" cols="50" rows="5" required></textarea><br>
                         <input id="id_contrato_entrega_rechazo" name="id_contrato_entrega_rechazo" hidden>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-dismiss="modal">Cancelar Rechazo</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-dismiss="modal">Cancelar Rechazo</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Rechazar</button>
                     </div>
                 </div>
@@ -762,7 +762,7 @@
                         <input type="date" name="fecha_confirmada" id="fecha_confirmada" hidden> --}}
                         {{-- <input style="text-align: center" type="text" name="mostrar_fecha" id="mostrar_fecha" readonly><br><br><br> --}}
                         <input id="id_contrato_cita" name="id_contrato_cita" hidden>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" onclick="cerrarValidarCitaModal()" >Confirmar</button>
                     </div>
                 </div>
@@ -796,7 +796,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdf" name="solpa_pdf" hidden>
                                         <label for="solpa_pdf">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="solpa_name">Subir</span>
@@ -814,7 +814,7 @@
                                     <div style="display: inline-block;">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_pdf" name="factura_pdf" hidden>
                                         <label for="factura_pdf">
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="factura_name">Subir</span>
@@ -841,7 +841,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="contratof_pdf" name="contratof_pdf" hidden>
                                         <label for="contratof_pdf" id=contratof_pdf_label>
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="contratof_name">Subir</span>
@@ -885,7 +885,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="asistencias_pdf" name="asistencias_pdf" hidden>
                                         <label for="asistencias_pdf" id="asistencias_pdf_label">
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="asistencias_name">Subir</span>
@@ -912,7 +912,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="evidencia_fotografica_pdf" name="evidencia_fotografica_pdf" hidden>
                                         <label for="evidencia_fotografica_pdf" id="evidencia_fotografica_pdf_label">
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="evidencia_fotografica_name">Subir</span>
@@ -931,7 +931,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/xml" id="factura_xml" name="factura_xml" hidden>
                                         <label for="factura_xml">
-                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                        <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="factura_xml_name">Subir</span>
@@ -943,11 +943,11 @@
                     <div style="text-align:right; display:inline-block; width: 60%;" class="form-group">
                         <input id="id_contrato_agenda" name="id_contrato_agenda" hidden>
                         <input id="tipo_envio" name="tipo_envio" hidden>
-                        <button id='guardar' style="text-align: left; font-size: 10px; background-color: #12322B;" type="submit" class="btn" value="guardar" onclick="guardado(this.value)">Guardar</button>
+                        <button id='guardar' style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="submit" class="btn" value="guardar" onclick="guardado(this.value)">Guardar</button>
                         <button id='guardarenviar' style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" value="guardar_enviar" onclick="guardado(this.value)">Guardar y Enviar</button>
                     </div>
                     <div style="text-align:right; display:inline-block; width:30%;">
-                        <button type="button" class="btn" style="text-align: right; background-color: #12322B;" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn" style="text-align: right; background-color: #12322B; color: white;" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -977,7 +977,7 @@
                                     <div style="display: inline-block;">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdfc" name="solpa_pdfc" hidden>
                                         <label for="solpa_pdfc">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="solpa_namec">Subir</span>
@@ -996,7 +996,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_pdfc" name="factura_pdfc" hidden>
                                         <label for="factura_pdfc">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="factura_namec">Subir</span>
@@ -1024,7 +1024,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_xmlc" name="factura_xmlc" hidden>
                                         <label for="factura_xmlc">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="factura_xml_namec">Subir</span>
@@ -1052,7 +1052,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="contratof_pdfc" name="contratof_pdfc" hidden>
                                         <label for="contratof_pdfc" id="contratof_pdfc_label">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="contratof_namec">Subir</span>
@@ -1097,7 +1097,7 @@
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="calificaciones_pdfc" name="calificaciones_pdfc" hidden>
                                         <label for="calificaciones_pdfc" id="calififcaciones_pdfc_label">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B;">
+                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
                                             <span id="calificaciones_namec">Subir</span>
@@ -1110,11 +1110,11 @@
                     <div style="text-align:right; display:inline-block; width: 60%;" class="form-group">
                         <input id="id_contrato_agendac" name="id_contrato_agendac" hidden>
                         <input id="tipo_envioc" name="tipo_envioc" hidden>
-                        <button id='guardar' style="text-align: left; font-size: 10px; background-color: #12322B;" type="submit" class="btn" value="guardar" onclick="guardado(this.value)">Guardar</button>
+                        <button id='guardar' style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="submit" class="btn" value="guardar" onclick="guardado(this.value)">Guardar</button>
                         <button id='guardarenviar' style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" value="guardar_enviar" onclick="guardado(this.value)">Guardar y Enviar</button>
                     </div>
                     <div style="text-align:right; display:inline-block; width:30%;">
-                        <button type="button" class="btn" style="text-align: right; background-color: #12322B;" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn" style="text-align: right; background-color: #12322B; color: white;" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -1136,7 +1136,7 @@
                 <div style="text-align:center" class="form-group">
                     <p>Si confirmas o rechazas la recepcion se hara el cambio de manera permanente.</p>
                     {{-- <input id="id_contrato_cita" name="id_contrato_cita" hidden> --}}
-                    <button id="rechazar_recepcion_fisica" style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-toggle="modal" data-target="#rechazar_RecepcionModal">No Recibido</button>
+                    <button id="rechazar_recepcion_fisica" style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-toggle="modal" data-target="#rechazar_RecepcionModal">No Recibido</button>
                     <button id="confirmar_recepcion_fisica" style="text-align: right; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmar_RecepcionModal">Recibido</button>
                 </div>
             </div>
@@ -1163,7 +1163,7 @@
                     <div style="text-align:center" class="form-group">
                         <p>¿Esta Seguro de la Recepción de Documentos?</p>
                         <input id="id_contrato_entrega" name="id_contrato_entrega" hidden>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn btn" data-dismiss="modal">Cancelar</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn btn" data-dismiss="modal">Cancelar</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Confirmar Recepción</button>
                     </div>
                 </div>
@@ -1191,7 +1191,7 @@
                     <div style="text-align:center" class="form-group">
                         <p>¿Esta Seguro de la NO Recepción de Documentos?</p>
                         <input id="id_contrato_noentrega" name="id_contrato_noentrega" hidden>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Confirmar No Recepción</button>
                     </div>
                 </div>
@@ -1215,7 +1215,7 @@
                         <input id="id_contrato_retorno_recepcion" name="id_retorno_recepcion" hidden>
                         <p style="text-align: left; padding-left: 15%;"><small>Observacion de Retorno</small></p>
                         <textarea name="observacion_retorno" id="observacion_retorno" cols="50" rows="5" required></textarea><br>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
+                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
                         <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Confirmar</button>
                     </div>
                 </div>
@@ -1410,6 +1410,13 @@
                         asistenciavLink.href = asistenciavUrl;
                         asistenciavLink.hidden = false;
                         document.getElementById('td10v').style.color = "black";
+                    break;
+                    case 'Reporte fotografico':
+                        const reportevLink = document.getElementById('show_evidencia_fotograficav');
+                        const reportevUrl = "/reportefoto/pdf/" + element['id_curso'];
+                        reportevLink.href = reportevUrl;
+                        reportevLink.hidden = false;
+                        document.getElementById('td11v').style.color = "black";
                     break;
                     default:
                     break;
