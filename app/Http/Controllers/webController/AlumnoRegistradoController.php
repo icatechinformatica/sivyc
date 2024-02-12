@@ -208,7 +208,7 @@ class AlumnoRegistradoController extends Controller
                             'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_registro.realizo', 'cursos.costo']);
         $edad = Carbon::parse($alumnos->fecha_nacimiento)->age; //dd($alumnos);
         $date = Carbon::now()->toDateString();
-        $diaCambioHeader = Carbon::createFromFormat('d-m-Y', '12-01-2022');
+        $diaCambioHeader = Carbon::createFromFormat('d-m-Y', '11-10-2023');
         $fechaCarbon = Carbon::parse($alumnos->inicio);
         $alumnos->inicio = $fechaCarbon->format('d-m-Y');
 
