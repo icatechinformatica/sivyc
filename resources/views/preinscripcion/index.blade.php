@@ -19,15 +19,15 @@
     <?php
         $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable = $servicio = $nombre_curso = $cespe = $fcespe = $nota =
         $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = $efisico = $mvirtual = $lvirtual = $memo = $repre = $tel =
-        $firm_user = $firm_cerss_one = $firm_cerss_two = $url_pdf_acta = $url_pdf_conv = "";    $costo = null;
-        if ($grupo) {
-            $firm_user = $grupo->firma_user;
-            $firm_cerss_one = $grupo->firma_cerss_one;
-            $firm_cerss_two = $grupo->firma_cerss_two;
-            $url_pdf_acta = $grupo->url_pdf_acta;
-            $url_pdf_conv = $grupo->url_pdf_conv;
+        $firm_user = $firm_cerss_one = $firm_cerss_two = $ = $url_pdf_conv = "";    $costo = null;
+        // if ($grupo) {
+        //     $firm_user = $grupo->firma_user;
+        //     $firm_cerss_one = $grupo->firma_cerss_one;
+        //     $firm_cerss_two = $grupo->firma_cerss_two;
+        //     $url_pdf_acta = $grupo->url_pdf_acta;
+        //     $url_pdf_conv = $grupo->url_pdf_conv;
 
-        }
+        // }
         if($curso){
             $id_curso = $curso->id;
             $costo = $curso->costo;
