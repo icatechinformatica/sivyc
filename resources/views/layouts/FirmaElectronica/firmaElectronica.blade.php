@@ -227,12 +227,17 @@
                                                             </small>
                                                         </td>
                                                         <td><small>{{$docFirmar->created_at->format('d-m-Y')}}</small></td>
-                                                        <td>
-                                                            <button class="btn btn-outline-danger" type="button" onclick="cancelarDocumento('{{$docFirmar->id}}', '{{$nameArchivo}}', '{{$docFirmar->tipo_archivo}}', '{{$docFirmar->numero_o_clave}}')">Cancelar</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-outline-primary" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal('{{$key}}')">firmar</button>
-                                                        </td>
+                                                        @if(!in_array($rol->role_id, [31, 47]))
+                                                            <td>
+                                                                <button class="btn btn-outline-danger" type="button" onclick="cancelarDocumento('{{$docFirmar->id}}', '{{$nameArchivo}}', '{{$docFirmar->tipo_archivo}}', '{{$docFirmar->numero_o_clave}}')">Cancelar</button>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-outline-primary" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal('{{$key}}')">firmar</button>
+                                                            </td>
+                                                        @else
+                                                            <td></td>
+                                                            <td></td>
+                                                        @endif
                                                         <input class="d-none" value="{{$docFirmar->id}}" name="idFile{{$key}}" id="idFile{{$key}}" type="text">
                                                         <input class="d-none" value="{{$docFirmar->cadena_original}}" name="cadena{{$key}}" id="cadena{{$key}}" type="text">
                                                         <input class="d-none" value="{{$docFirmar->base64xml}}" name="xml{{$key}}" id="xml{{$key}}" type="text">
@@ -327,19 +332,24 @@
                                                             </small>
                                                         </td>
                                                         <td><small>{{$docFirmado->created_at->format('d-m-Y')}}</small></td>
-                                                        <td>
-                                                            <button type="button" onclick="cancelarDocumento('{{$docFirmado->id}}', '{{$nameArchivo}}', '{{$docFirmado->tipo_archivo}}', '{{$docFirmado->numero_o_clave}}')" class="btn btn-outline-danger">Cancelar</button>
-                                                        </td>
-                                                        <td>
-                                                            {{-- @if ($obj['emisor']['_attributes']['email'] == $email) --}}
-                                                            @can('efirma.sellar')
-                                                                @if ($sendValidation)
-                                                                    <button type="button" onclick="sellardocumento('{{$docFirmado->id}}')" class="btn btn-outline-primary">Sellar</button>
-                                                                @else
-                                                                    Faltan Firmas
-                                                                @endif
-                                                            @endcan
-                                                        </td>
+                                                        @if($rol->role_id == '30' || $rol->role_id == '2')
+                                                            <td>
+                                                                <button type="button" onclick="cancelarDocumento('{{$docFirmado->id}}', '{{$nameArchivo}}', '{{$docFirmado->tipo_archivo}}', '{{$docFirmado->numero_o_clave}}')" class="btn btn-outline-danger">Cancelar</button>
+                                                            </td>
+                                                            <td>
+                                                                {{-- @if ($obj['emisor']['_attributes']['email'] == $email) --}}
+                                                                @can('efirma.sellar')
+                                                                    @if ($sendValidation)
+                                                                        <button type="button" onclick="sellardocumento('{{$docFirmado->id}}')" class="btn btn-outline-primary">Sellar</button>
+                                                                    @else
+                                                                        Faltan Firmas
+                                                                    @endif
+                                                                @endcan
+                                                            </td>
+                                                        @else
+                                                            <td></td>
+                                                            <td></td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -424,9 +434,13 @@
                                                         </td>
                                                         <td><small>{{$docValidado->created_at->format('d-m-Y')}}</small></td>
                                                         <td><small>{{$docValidado->fecha_sellado}}</small></td>
-                                                        <td>
-                                                            <button type="button" onclick="cancelarDocumento('{{$docValidado->id}}', '{{$nameArchivo}}', '{{$docValidado->tipo_archivo}}', '{{$docValidado->numero_o_clave}}')" class="btn btn-outline-danger">Anular</button>
-                                                        </td>
+                                                        @if($rol->role_id == '30' || $rol->role_id == '2')
+                                                            <td>
+                                                                <button type="button" onclick="cancelarDocumento('{{$docValidado->id}}', '{{$nameArchivo}}', '{{$docValidado->tipo_archivo}}', '{{$docValidado->numero_o_clave}}')" class="btn btn-outline-danger">Anular</button>
+                                                            </td>
+                                                        @else
+                                                            <td></td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>

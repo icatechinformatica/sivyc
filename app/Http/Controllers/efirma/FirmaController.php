@@ -42,7 +42,7 @@ class FirmaController extends Controller {
             ->Where('users.id', Auth::user()->id)
             ->First();
 
-        if($rol->role_id == '31'){
+        if($rol->role_id == '31' || $rol->role_id == '47'){
             $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
                 ->Join('tbl_funcionarios','tbl_funcionarios.id','users.id_organismo')
                 ->Where('users.id', Auth::user()->id)
