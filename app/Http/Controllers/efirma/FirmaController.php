@@ -59,57 +59,57 @@ class FirmaController extends Controller {
             //     ->orderByDesc('clave')
             //     ->get();
 
-            $docsVistoBueno2 = tbl_curso::select(
-                'tbl_cursos.id',
-                'tbl_cursos.nombre',
-                'tbl_cursos.asis_finalizado',
-                'tbl_cursos.calif_finalizado',
-                'tbl_cursos.clave',
-                DB::raw("
-                    CASE
-                        WHEN tipo_archivo = 'Lista de asistencia' THEN
-                            CASE WHEN 'Lista de calificaciones' IS NULL THEN 'Ambos' ELSE 'Lista de calificaciones' END
-                        WHEN tipo_archivo = 'Lista de calificaciones' THEN
-                            CASE WHEN 'Lista de asistencia' IS NULL THEN 'Ambos' ELSE 'Lista de asistencia' END
-                        ELSE 'NA'
-                    END AS tipo_archivo_faltante"
-                ),
-                DB::raw("
-                CASE
-                WHEN tipo_archivo = 'Lista de asistencia' AND documentos_firmar.status = 'CANCELADO' THEN 'asistencia cancelada'
-                WHEN tipo_archivo = 'Lista de calificaciones' AND documentos_firmar.status = 'CANCELADO' THEN
-                    CASE
-                        WHEN EXISTS (
-                            SELECT 1
-                            FROM documentos_firmar df2
-                            WHERE df2.numero_o_clave = documentos_firmar.numero_o_clave
-                            AND df2.tipo_archivo = 'Lista de asistencia'
-                            AND df2.status = 'CANCELADO'
-                        ) THEN 'ambos'
-                        ELSE 'calificaciones canceladas'
-                    END
-                ELSE 'NA'
-                END AS archivo_cancelado"
-                )
-            )
-            ->leftJoin('documentos_firmar', 'documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
-            ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
-            ->Where('tbl_unidades.ubicacion',$unidad_user)
-            ->where(function ($query) {
-                $query->where('asis_finalizado', true)
-                    ->orWhere('calif_finalizado', true);
-            })
-            ->whereNotIn('tbl_cursos.clave', function ($subquery) {
-                $subquery->select('numero_o_clave')
-                    ->from('documentos_firmar')
-                    ->whereIn('tipo_archivo', ['Lista de asistencia', 'Lista de calificaciones'])
-                    ->WhereIn('status', ['CANCELADO','VALIDADO','EnFirma'])
-                    // ->Where('status', '=', 'VALIDADO')
-                    ->groupBy('numero_o_clave')
-                    ->havingRaw('COUNT(DISTINCT tipo_archivo) > 1');
-            })
-            ->orderByDesc('tbl_cursos.clave')
-            ->get();
+            // $docsVistoBueno2 = tbl_curso::select(
+            //     'tbl_cursos.id',
+            //     'tbl_cursos.nombre',
+            //     'tbl_cursos.asis_finalizado',
+            //     'tbl_cursos.calif_finalizado',
+            //     'tbl_cursos.clave',
+            //     DB::raw("
+            //         CASE
+            //             WHEN tipo_archivo = 'Lista de asistencia' THEN
+            //                 CASE WHEN 'Lista de calificaciones' IS NULL THEN 'Ambos' ELSE 'Lista de calificaciones' END
+            //             WHEN tipo_archivo = 'Lista de calificaciones' THEN
+            //                 CASE WHEN 'Lista de asistencia' IS NULL THEN 'Ambos' ELSE 'Lista de asistencia' END
+            //             ELSE 'NA'
+            //         END AS tipo_archivo_faltante"
+            //     ),
+            //     DB::raw("
+            //     CASE
+            //     WHEN tipo_archivo = 'Lista de asistencia' AND documentos_firmar.status = 'CANCELADO' THEN 'asistencia cancelada'
+            //     WHEN tipo_archivo = 'Lista de calificaciones' AND documentos_firmar.status = 'CANCELADO' THEN
+            //         CASE
+            //             WHEN EXISTS (
+            //                 SELECT 1
+            //                 FROM documentos_firmar df2
+            //                 WHERE df2.numero_o_clave = documentos_firmar.numero_o_clave
+            //                 AND df2.tipo_archivo = 'Lista de asistencia'
+            //                 AND df2.status = 'CANCELADO'
+            //             ) THEN 'ambos'
+            //             ELSE 'calificaciones canceladas'
+            //         END
+            //     ELSE 'NA'
+            //     END AS archivo_cancelado"
+            //     )
+            // )
+            // ->leftJoin('documentos_firmar', 'documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
+            // ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
+            // ->Where('tbl_unidades.ubicacion',$unidad_user)
+            // ->where(function ($query) {
+            //     $query->where('asis_finalizado', true)
+            //         ->orWhere('calif_finalizado', true);
+            // })
+            // ->whereNotIn('tbl_cursos.clave', function ($subquery) {
+            //     $subquery->select('numero_o_clave')
+            //         ->from('documentos_firmar')
+            //         ->whereIn('tipo_archivo', ['Lista de asistencia', 'Lista de calificaciones'])
+            //         ->WhereIn('status', ['CANCELADO','VALIDADO','EnFirma'])
+            //         // ->Where('status', '=', 'VALIDADO')
+            //         ->groupBy('numero_o_clave')
+            //         ->havingRaw('COUNT(DISTINCT tipo_archivo) > 1');
+            // })
+            // ->orderByDesc('tbl_cursos.clave')
+            // ->get();
             // dd($docsVistoBueno2);
         // }
         $docsFirmar1 = DocumentosFirmar::where('documentos_firmar.status','!=','CANCELADO')
@@ -196,7 +196,7 @@ class FirmaController extends Controller {
             $token = $getToken->token;
         }
         // dd($docsFirmados);
-        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','docsVistoBueno2','rol','curpUser'));
+        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','rol','curpUser'));
     }
 
     public function update(Request $request) {
@@ -305,7 +305,8 @@ class FirmaController extends Controller {
                 ]);
             return redirect()->route('firma.inicio')->with('warning', 'Documento validado exitosamente!');
         } else {
-            return redirect()->route('firma.inicio')->with('danger', $response->json()['descripcionError']);
+            $respuesta_icti = ['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']];
+            return redirect()->route('firma.inicio')->with('danger', $respuesta_icti);
         }
     }
 
@@ -423,9 +424,11 @@ class FirmaController extends Controller {
             tbl_curso::where('clave', $request->txtClave)
                 ->update(
                     $request->txtTipo == 'Lista de asistencia'
-                        ? ['asis_finalizado' => false]
+                        ? ['asis_finalizado' => false,
+                            'observacion_asistencia_rechazo' => $request->motivo]
                         : ($request->txtTipo == 'Lista de calificaciones'
-                            ?  ['calif_finalizado' => false]
+                            ?  ['calif_finalizado' => false,
+                                'observacion_calificacion_rechazo' => $request->motivo]
                             : [])
                 );
 
@@ -516,6 +519,31 @@ class FirmaController extends Controller {
         // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
         //     'xml_Firmado' => $xml
         // ]);
+        return $response1;
+    }
+
+    public function obtener_xml($uuid)
+    {
+        $getToken = Tokens_icti::all()->last();
+        $response = $this->xml_recovery($uuid, $getToken->token);
+        if ($response->json() == null) {
+            $request = new Request();
+            $token = $this->generarToken($request);
+            $response = $this->xml_recovery($uuid, $token);
+        }
+        dd($response);
+
+    }
+
+    public function xml_recovery($uuid, $token)
+    {
+        $response1 = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token
+        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/obtenerXML', [
+            'uuid' => $uuid,
+            'idsistema' => 87
+        ]);
         return $response1;
     }
 

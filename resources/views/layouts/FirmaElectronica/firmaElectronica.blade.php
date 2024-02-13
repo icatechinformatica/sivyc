@@ -32,7 +32,7 @@
 
                 @if ($message = Session::get('danger'))
                     <div class="alert alert-danger">
-                        <p>{{ $message }}</p>
+                        <p>{{ $message['descripcion'] }} con el folio: {{ $message['uuid'] }}</p>
                     </div>
                 @endif
             </div>
@@ -67,13 +67,13 @@
                                     $clase_pestaña = 'nav-item nav-link active';
                                     $clase_contenido = 'tab-pane fade show active';
                                 @endphp
-                                @if($rol->role_id == 30 || $rol->role_id == 31)
+                                {{-- @if($rol->role_id == 30 || $rol->role_id == 31)
                                     <a class="nav-item nav-link active" id="nav-vobo-tab" data-toggle="tab" href="#nav-vobo" role="tab" aria-controls="nav-vobo" aria-selected="true">Vo. Bo.</a>
                                     @php
                                         $clase_pestaña = 'nav-item nav-link';
                                         $clase_contenido = 'tab-pane fade show';
                                     @endphp
-                                @endif
+                                @endif --}}
                                 <a class="{{$clase_pestaña}}" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Por Firmar</a>
                                 <a class="nav-item nav-link" id="nav-firmados-tab" data-toggle="tab" href="#nav-firmados" role="tab" aria-controls="nav-firmados" aria-selected="false">Firmados</a>
                                 <a class="nav-item nav-link" id="nav-validados-tab" data-toggle="tab" href="#nav-validados" role="tab" aria-controls="nav-validados" aria-selected="false">Sellados</a>
@@ -86,7 +86,7 @@
                         <div class="tab-content py-3 px-sm-0" id="nav-tabContent">
                             @if($rol->role_id == 30 || $rol->role_id == 31)
                                 {{-- Vo. Bo.--}}
-                                <div class="tab-pane fade show active" id="nav-vobo" role="tabpanel" aria-labelledby="nav-vobo-tab">
+                                {{-- <div class="tab-pane fade show active" id="nav-vobo" role="tabpanel" aria-labelledby="nav-vobo-tab">
                                     @if ($docsVistoBueno2 != "[]")
                                         <div class="table-responsive">
                                             <table class="table table-hover">
@@ -147,7 +147,7 @@
                                             </div>
                                         </div>
                                     @endif
-                                </div>
+                                </div> --}}
                             @endif
                             {{-- Por Firmar --}}
                             <div class="{{$clase_contenido}}" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
