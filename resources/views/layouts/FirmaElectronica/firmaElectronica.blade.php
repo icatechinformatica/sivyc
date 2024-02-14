@@ -6,6 +6,9 @@
         .colorTop {
             background-color: #541533;
         }
+        .negrita{
+            font-weight: bold;
+        }
 
     </style>
     {{-- <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" />
@@ -74,11 +77,11 @@
                                         $clase_contenido = 'tab-pane fade show';
                                     @endphp
                                 @endif --}}
-                                <a class="{{$clase_pestaña}}" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Por Firmar</a>
-                                <a class="nav-item nav-link" id="nav-firmados-tab" data-toggle="tab" href="#nav-firmados" role="tab" aria-controls="nav-firmados" aria-selected="false">Firmados</a>
-                                <a class="nav-item nav-link" id="nav-validados-tab" data-toggle="tab" href="#nav-validados" role="tab" aria-controls="nav-validados" aria-selected="false">Sellados</a>
-                                <a style="color: #FF5733" class="nav-item nav-link" id="nav-cancelados-tab" data-toggle="tab" href="#nav-cancelados" role="tab" aria-controls="nav-cancelados" aria-selected="false">Cancelados</a>
-                                @if(isset($curpUser))<p  class="nav-item nav-link" style="margin-left: 50%;">CURP: {{$curpUser->curp}}</p>@endif
+                                <a class="{{$clase_pestaña}} font-weight-bold" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Por Firmar</a>
+                                <a class="nav-item nav-link font-weight-bold" id="nav-firmados-tab" data-toggle="tab" href="#nav-firmados" role="tab" aria-controls="nav-firmados" aria-selected="false">Firmados</a>
+                                <a class="nav-item nav-link font-weight-bold" id="nav-validados-tab" data-toggle="tab" href="#nav-validados" role="tab" aria-controls="nav-validados" aria-selected="false">Sellados</a>
+                                <a style="color: #FF5733" class="nav-item nav-link font-weight-bold" id="nav-cancelados-tab" data-toggle="tab" href="#nav-cancelados" role="tab" aria-controls="nav-cancelados" aria-selected="false">Cancelados</a>
+                                @if(isset($curpUser))<p  class="nav-item nav-link font-weight-bold" style="margin-left: 50%;">CURP: {{$curpUser->curp}}</p>@endif
                             </div>
                         </nav>
 
@@ -156,14 +159,14 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Grupo</th>
-                                                    <th scope="col">Clave</th>
-                                                    <th scope="col">Nombre del documento</th>
-                                                    <th scope="col">Ver documento</th>
-                                                    <th scope="col">Firmantes</th>
-                                                    <th scope="col">Creado</th>
-                                                    <th scope="col">Cancelar</th>
-                                                    <th scope="col">Firmar</th>
+                                                    <th scope="col" class="negrita">Grupo</th>
+                                                    <th scope="col" class="negrita">Clave</th>
+                                                    <th scope="col" class="negrita">Nombre del documento</th>
+                                                    <th scope="col" class="negrita">Ver documento</th>
+                                                    <th scope="col" class="negrita">Firmantes</th>
+                                                    <th scope="col" class="negrita">Creado</th>
+                                                    <th scope="col" colspan="2" class="text-center negrita">Acción</th>
+                                                    {{-- <th scope="col">Firmar</th> --}}
                                                 </tr>
                                             </thead>
 
@@ -263,14 +266,14 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Grupo</th>
-                                                    <th scope="col">Clave</th>
-                                                    <th scope="col">Nombre del documento</th>
-                                                    <th scope="col">Ver documento</th>
-                                                    <th scope="col">Firmantes</th>
-                                                    <th scope="col">Creado</th>
-                                                    <th scope="col">Cancelar</th>
-                                                    <th scope="col">Validar</th>
+                                                    <th scope="col" class="negrita">Grupo</th>
+                                                    <th scope="col" class="negrita">Clave</th>
+                                                    <th scope="col" class="negrita">Nombre del documento</th>
+                                                    <th scope="col" class="negrita">Ver documento</th>
+                                                    <th scope="col" class="negrita">Firmantes</th>
+                                                    <th scope="col" class="negrita">Creado</th>
+                                                    <th scope="col" colspan="2" class="text-center negrita">Acción</th>
+                                                    {{-- <th scope="col">Validar</th> --}}
                                                 </tr>
                                             </thead>
 
@@ -371,14 +374,14 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Grupo</th>
-                                                    <th scope="col">Clave</th>
-                                                    <th scope="col">Nombre del documento</th>
-                                                    <th scope="col">Descargar</th>
-                                                    <th scope="col">Firmantes</th>
-                                                    <th scope="col">Creado</th>
-                                                    <th scope="col">Validado</th>
-                                                    <th scope="col">Anular</th>
+                                                    <th scope="col" class="negrita">Grupo</th>
+                                                    <th scope="col" class="negrita">Clave</th>
+                                                    <th scope="col" class="negrita">Nombre del documento</th>
+                                                    <th scope="col" class="negrita">Descargar</th>
+                                                    <th scope="col" class="negrita">Firmantes</th>
+                                                    <th scope="col" class="negrita">Creado</th>
+                                                    <th scope="col" class="negrita">Validado</th>
+                                                    <th scope="col" class="text-center negrita">Acción</th>
                                                 </tr>
                                             </thead>
 
@@ -462,12 +465,13 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Nombre del documento</th>
-                                                    <th scope="col">Firmantes</th>
-                                                    <th scope="col">Creado</th>
-                                                    <th scope="col">Cancelado</th>
-                                                    <th scope="col">Motivo</th>
-                                                    <th scope="col">Canceló</th>
+                                                    <th scope="col" class="negrita">Nombre del documento</th>
+                                                    <th scope="col" class="negrita">Firmantes</th>
+                                                    <th scope="col" class="negrita">Creado</th>
+                                                    <th scope="col" class="negrita">Cancelado</th>
+                                                    <th scope="col" class="negrita">Motivo</th>
+                                                    <th scope="col" class="negrita">Canceló</th>
+                                                    <th scope="col" class="negrita">Acción</th>
                                                 </tr>
                                             </thead>
 
@@ -500,6 +504,19 @@
                                                             <td><small>{{$objCancelado['motivo']}}</small></td>
                                                             <td><small>{{$objCancelado['correo']}}</small></td>
                                                         @endif
+
+                                                        @if($rol->role_id == '30' || $rol->role_id == '2')
+                                                            <td>
+                                                                @if ($docCancelado->status_recepcion != 'VALIDADO' || $docCancelado->status_recepcion != 'En Espera')
+                                                                    @if ($docCancelado->status == 'CANCELADO ICTI')
+                                                                        <button class="btn m-0 btn-danger" onclick="anularCancelacion({{$docCancelado->id}})">DESHACER ANULADO</button>
+                                                                    @endif
+                                                                @endif
+                                                            </td>
+                                                        @else
+                                                            <td></td>
+                                                        @endif
+
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -831,6 +848,23 @@
                 $('#formRechazo').attr('action', '/reportefoto/rechazo');
             }
             $('#modalRechazo').modal('toggle');
+        }
+
+        function anularCancelacion(id_efirma) {
+            let data = {
+                "_token": $("meta[name='csrf-token']").attr("content"),
+                "id_efirma": id_efirma }
+            $.ajax({
+                type:"post",
+                url: "{{ route('efirma.deshacer.anulado') }}",
+                data: data,
+                dataType: "json",
+                success: function (response) {
+                    if (response.status == 200) {
+                        location.reload();
+                    }
+                }
+            });
         }
 
     </script>
