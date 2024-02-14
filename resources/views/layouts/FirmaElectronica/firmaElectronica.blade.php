@@ -244,7 +244,7 @@
                                                         <input class="d-none" value="{{$docFirmar->id}}" name="idFile{{$key}}" id="idFile{{$key}}" type="text">
                                                         <input class="d-none" value="{{$docFirmar->cadena_original}}" name="cadena{{$key}}" id="cadena{{$key}}" type="text">
                                                         <input class="d-none" value="{{$docFirmar->base64xml}}" name="xml{{$key}}" id="xml{{$key}}" type="text">
-                                                        <input class="d-none" value="{{$curp}}" name="curp{{$key}}" id="curp{{$key}}" type="text">
+                                                        <input class="d-none" value="{{$curpUser->curp}}" name="curp{{$key}}" id="curp{{$key}}" type="text">
                                                     </tr>
                                                 @endforeach
                                             </tbody>
