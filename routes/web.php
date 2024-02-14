@@ -908,6 +908,7 @@ Route::post('/calificacion/rechazo', 'efirma\CalificacionController@rechazo')->n
 Route::post('/calificacion/validar', 'efirma\CalificacionController@generar_xml')->name('calificacion-xml');
 Route::post('/contrato/efirma','webController\ContratoController@generar_contrato_efirma')->name('contrato-efirma');
 Route::get('/XMLrecovery/{uuid}', 'efirma\FirmaController@obtener_xml')->name('obtener-xml');
+Route::post('/efirma/anularcancelado', 'efirma\FirmaController@deshacer_anulado')->name('efirma.deshacer.anulado');
 
 # By Jose Luis Moreno Arcos / firma reporte evidencias
 Route::get('/reportefoto/pdf/{id}', 'efirma\ReporteFotController@repofotoPdf')->name('reportefoto-pdf');
