@@ -35,7 +35,11 @@
 
                 @if ($message = Session::get('danger'))
                     <div class="alert alert-danger">
-                        <p>{{ $message['descripcion'] }} con el folio: {{ $message['uuid'] }}</p>
+                        @if(isset($message['descripcion']))
+                            <p>{{ $message['descripcion'] }} con el folio: {{ $message['uuid'] }}</p>
+                        @else
+                            <p>{{$message}}</p>
+                        @endif
                     </div>
                 @endif
             </div>
