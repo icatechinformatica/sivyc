@@ -44,7 +44,7 @@ class FirmaController extends Controller {
 
         if($rol->role_id == '31' || $rol->role_id == '47'){
             $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
-                ->Join('tbl_funcionarios','tbl_funcionarios.id','users.id_organismo')
+                ->Join('tbl_funcionarios','tbl_funcionarios.id_org','users.id_organismo')
                 ->Where('users.id', Auth::user()->id)
                 ->First();
             }
@@ -154,15 +154,29 @@ class FirmaController extends Controller {
             });
             // ->orderBy('id', 'desc')->get();
 
-        $docsCancelados1 = DocumentosFirmar::where('status', 'CANCELADO')
-            ->where(function ($query) use ($email) {
+        // $docsCancelados1 = DocumentosFirmar::where('status', 'CANCELADO')
+        //     ->where(function ($query) use ($email) {
+        //         $query->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x
+        //             WHERE x->'_attributes'->>'email_firmante' IN ('".$email."'))")
+        //         ->orWhere(function($query1) use ($email) {
+        //             $query1->where('obj_documento_interno->emisor->_attributes->email', $email)
+        //                     ->where('status', 'CANCELADO');
+        //         });
+        //     });
+        ##Cancelados
+        $docsCancelados1 = DocumentosFirmar::where('documentos_firmar.status', 'like', 'CANCELADO%')
+            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos', 'tbl_cursos.folio_grupo', 'pa.status_recepcion')
+            ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
+            ->leftjoin('tbl_cursos as tc', 'tc.clave', 'documentos_firmar.numero_o_clave')
+            ->leftjoin('pagos as pa', 'pa.id_curso', 'tc.id')
+            ->where(function ($query) use ($email, $curpUser) {
                 $query->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x
-                    WHERE x->'_attributes'->>'email_firmante' IN ('".$email."'))")
+                    WHERE x->'_attributes'->>'curp_firmante' IN ('".$curpUser->curp."'))")
                 ->orWhere(function($query1) use ($email) {
                     $query1->where('obj_documento_interno->emisor->_attributes->email', $email)
-                            ->where('status', 'CANCELADO');
+                            ->where('documentos_firmar.status', 'like', 'CANCELADO%');
                 });
-            });
+        });
             // ->orderBy('id', 'desc')->get();
 
         $tipo_documento = $request->tipo_documento;
@@ -463,6 +477,21 @@ class FirmaController extends Controller {
         } else {
             return redirect()->route('firma.inicio')->with('danger', 'Debe ingresar el motivo de cancelación');
         }
+    }
+
+    ##Deshacer anulado by Jose Luis
+    public function deshacer_anulado(Request $request) {
+
+        $id_efirma = $request->id_efirma;
+        if ($id_efirma != null) {
+            DocumentosFirmar::where('id', $id_efirma)
+            ->update(['status' => 'VALIDADO']);
+        }
+        return response()->json([
+            'status' => 200,
+            'id_efirma' => $id_efirma,
+            'mensaje' => 'se realizo exitosamente'
+        ]);
     }
 
     protected function getdocumentos(Request $request)
