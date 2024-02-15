@@ -142,7 +142,8 @@ class ReporteFotController extends Controller
             }
         }
 
-        $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('cursopdf', 'leyenda', 'fechapdf', 'objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images'));
+        $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('cursopdf', 'leyenda', 'fechapdf', 'objeto','dataFirmante',
+        'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos'));
         $pdf->setPaper('Letter', 'portrait');
         $file = "REPORTE_FOTOGRAFICO_$id_curso.PDF";
         return $pdf->stream($file);
