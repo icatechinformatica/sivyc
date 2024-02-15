@@ -20,6 +20,12 @@
         <div class="card-header">
             <h1>Registro de Instructor</h1>
         </div>
+        @if(session('mensaje'))
+            <div class="alert alert-danger">
+                {{ session('mensaje') }}
+            </div>
+        @endif
+
         <div class="card card-body">
             @if($datainstructor->rechazo != NULL && $datainstructor->status == 'RETORNO')
                 <div class="row ">
@@ -1069,6 +1075,23 @@
                     <div class="pull-left">
                         <a class="btn mr-sm-4 mt-3" href="{{URL::previous()}}">REGRESAR</a>
                     </div>
+                    @if($roluser->role_id == 39)
+                    </form>
+                    <form action="{{ route('movimiento-retorno') }}" enctype="multipart/form-data" method="post">
+                        @csrf
+                        <div class="pull-right form-group col-md-2">
+                            <label>Status: {{$datainstructor->status}}</label>
+                            <button type="submit" class="btn btn-danger form-control" id="enviarMovimiento">ACEPTAR</button>
+                        </div>
+                        <div class="pull-right form-group">
+                            <label>MOVIMIENTO</label>
+                            <select class="form-control" name="movimiento" id="movimiento">
+                                <option value="sin especificar">SELECCIONE</option>
+                                <option value="retornar en firma">RETORNAR A FIRMA</option>
+                                <option value="retornar a captura">RETORNAR A CAPTURA</option>
+                            </select>
+                        </div>
+                    @endif
                     <input type="hidden" name="id" id="id" value="{{$id}}">
                     @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                         <div class="pull-right">
@@ -3227,6 +3250,27 @@
             var id = button.data('id');
             // console.log(id);
             document.getElementById('idbajaespe').value = id;
+        });
+
+        $('#enviarMovimiento').on('click', function() {
+            // Get the selected value from the dropdown
+            var movimiento = $('#movimiento').val();
+            $.ajax({
+                url: '/retorno/movimiento/instructor', // Replace with the actual endpoint
+                type: 'POST',
+                data: {
+                    movimiento: movimiento,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    // Handle the response from the controller if needed
+                    console.log(response);
+                },
+                error: function(error) {
+                    // Handle the error if the request fails
+                    console.error('AJAX Error:', error.responseText);
+                }
+            });
         });
 
         document.getElementById('reginstructor').addEventListener('submit', function (e) {
