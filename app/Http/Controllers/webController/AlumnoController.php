@@ -170,6 +170,9 @@ class AlumnoController extends Controller {
      *
      */     //insercción de aspiratntes a alumnos_pre//
     public function store(Request $request) {  // EN PRODUCCION
+        $checkPhone = false;
+        if($request->chk_bolsa == true){$checkPhone = true;}
+
         $curp= trim($request->curp);
         if ($request->trabajo) {
             $empleado = true;
@@ -251,7 +254,8 @@ class AlumnoController extends Controller {
             'iduser_updated' => Auth::user()->id,
             'tiene_documentacion'=> true,
             'activo' => true,
-            'medio_confirmacion'=>$request->medio_confirmacion
+            'medio_confirmacion'=>$request->medio_confirmacion,
+            'check_bolsa'=> $checkPhone
         ]);
         //si se pretende cargar nuevos archivos
         $AspiranteId = DB::table('alumnos_pre')->where('curp',$curp)->where('activo',true)->value('id');
