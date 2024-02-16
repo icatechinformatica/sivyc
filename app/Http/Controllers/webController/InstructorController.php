@@ -1172,6 +1172,67 @@ class InstructorController extends Controller
         return redirect('/prevalidacion/instructor')->with('success','REGISTROS VALIDADOS CORRECTAMENTE');
     }
 
+    public function movimiento_retorno(Request $request)
+    {
+        if($request->movimiento != 'sin especificar') {
+            $instructor = pre_instructor::find($request->id);
+            $instructor_oficial = instructor::find($request->id);
+
+            $copiaDataEspecialidad = $instructor->data_especialidad;
+            foreach ($copiaDataEspecialidad as $key => $data) {
+                $hvalidacion = $data['hvalidacion'];
+                // Verificar si hay elementos en hvalidacion
+                if (count($hvalidacion) > 0) {
+                    // Obtener el último elemento
+                    $ultimoElemento = array_pop($hvalidacion);
+                    $data['hvalidacion'] = $hvalidacion;
+                    if($request->movimiento == 'retornar en firma') {
+                        if($data['status'] == 'VALIDADO') {
+                            $data['status'] = 'REVALIDACION EN FIRMA';
+                        } else {
+                            $data['status'] = 'BAJA EN FIRMA';
+                        }
+                    } else {
+                        if($data['status'] == 'VALIDADO') {
+                            $data['status'] = 'REVALIDACION EN CAPTURA';
+                        } else {
+                            $data['status'] = 'BAJA EN CAPTURA';
+                        }
+                    }
+
+                    if($data['new'] == false) {
+                        $especialidad_oficial = especialidad_instructor::WHERE('id', '=', $data['id'])->FIRST();
+                        $hvalidacion_oficial = $especialidad_oficial->hvalidacion;
+                        array_pop($hvalidacion_oficial);
+                        $especialidad_oficial->hvalidacion = $hvalidacion_oficial;
+                        $especialidad_oficial->save();
+                    }
+                    // Actualizar la data en la copia del array
+                    $copiaDataEspecialidad[$key] = $data;
+                }
+            }
+
+            $instructor->data_especialidad = $copiaDataEspecialidad;
+            $instructor->registro_activo = true;
+            $instructor->turnado = 'UNIDAD';
+
+            if($request->movimiento == 'retornar en firma') {
+                $instructor->status = 'EN FIRMA';
+                $instructor_oficial->status = 'EN FIRMA';
+            } else {
+                $instructor->status = 'EN CAPTURA';
+                $instructor_oficial->status = 'EN CAPTURA';
+            }
+
+            $instructor->save();
+            $instructor_oficial->save();
+
+            return back()->with('success', 'Se ha retornado al instructor de manera exitosa');
+        } else {
+            return back()->with('mensaje', 'Error: No se ha especificado el movimiento');
+        }
+    }
+
     public function rechazo_save(Request $request)
     {
         // dd($request);

@@ -6,6 +6,9 @@
         .colorTop {
             background-color: #541533;
         }
+        .negrita{
+            font-weight: bold;
+        }
 
     </style>
     {{-- <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" />
@@ -32,7 +35,11 @@
 
                 @if ($message = Session::get('danger'))
                     <div class="alert alert-danger">
-                        <p>{{ $message }}</p>
+                        @if(isset($message['descripcion']))
+                            <p>{{ $message['descripcion'] }} con el folio: {{ $message['uuid'] }}</p>
+                        @else
+                            <p>{{$message}}</p>
+                        @endif
                     </div>
                 @endif
             </div>
@@ -67,18 +74,18 @@
                                     $clase_pestaña = 'nav-item nav-link active';
                                     $clase_contenido = 'tab-pane fade show active';
                                 @endphp
-                                @if($rol->role_id == 30 || $rol->role_id == 31)
+                                {{-- @if($rol->role_id == 30 || $rol->role_id == 31)
                                     <a class="nav-item nav-link active" id="nav-vobo-tab" data-toggle="tab" href="#nav-vobo" role="tab" aria-controls="nav-vobo" aria-selected="true">Vo. Bo.</a>
                                     @php
                                         $clase_pestaña = 'nav-item nav-link';
                                         $clase_contenido = 'tab-pane fade show';
                                     @endphp
-                                @endif
-                                <a class="{{$clase_pestaña}}" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Por Firmar</a>
-                                <a class="nav-item nav-link" id="nav-firmados-tab" data-toggle="tab" href="#nav-firmados" role="tab" aria-controls="nav-firmados" aria-selected="false">Firmados</a>
-                                <a class="nav-item nav-link" id="nav-validados-tab" data-toggle="tab" href="#nav-validados" role="tab" aria-controls="nav-validados" aria-selected="false">Sellados</a>
-                                <a style="color: #FF5733" class="nav-item nav-link" id="nav-cancelados-tab" data-toggle="tab" href="#nav-cancelados" role="tab" aria-controls="nav-cancelados" aria-selected="false">Cancelados</a>
-                                @if(isset($curpUser))<p  class="nav-item nav-link" style="margin-left: 50%;">CURP: {{$curpUser->curp}}</p>@endif
+                                @endif --}}
+                                <a class="{{$clase_pestaña}} font-weight-bold" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Por Firmar</a>
+                                <a class="nav-item nav-link font-weight-bold" id="nav-firmados-tab" data-toggle="tab" href="#nav-firmados" role="tab" aria-controls="nav-firmados" aria-selected="false">Firmados</a>
+                                <a class="nav-item nav-link font-weight-bold" id="nav-validados-tab" data-toggle="tab" href="#nav-validados" role="tab" aria-controls="nav-validados" aria-selected="false">Sellados</a>
+                                <a style="color: #FF5733" class="nav-item nav-link font-weight-bold" id="nav-cancelados-tab" data-toggle="tab" href="#nav-cancelados" role="tab" aria-controls="nav-cancelados" aria-selected="false">Cancelados</a>
+                                @if(isset($curpUser))<p  class="nav-item nav-link font-weight-bold" style="margin-left: 50%;">CURP: {{$curpUser->curp}}</p>@endif
                             </div>
                         </nav>
 
@@ -86,7 +93,7 @@
                         <div class="tab-content py-3 px-sm-0" id="nav-tabContent">
                             @if($rol->role_id == 30 || $rol->role_id == 31)
                                 {{-- Vo. Bo.--}}
-                                <div class="tab-pane fade show active" id="nav-vobo" role="tabpanel" aria-labelledby="nav-vobo-tab">
+                                {{-- <div class="tab-pane fade show active" id="nav-vobo" role="tabpanel" aria-labelledby="nav-vobo-tab">
                                     @if ($docsVistoBueno2 != "[]")
                                         <div class="table-responsive">
                                             <table class="table table-hover">
@@ -147,7 +154,7 @@
                                             </div>
                                         </div>
                                     @endif
-                                </div>
+                                </div> --}}
                             @endif
                             {{-- Por Firmar --}}
                             <div class="{{$clase_contenido}}" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
@@ -156,14 +163,14 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Grupo</th>
-                                                    <th scope="col">Clave</th>
-                                                    <th scope="col">Nombre del documento</th>
-                                                    <th scope="col">Ver documento</th>
-                                                    <th scope="col">Firmantes</th>
-                                                    <th scope="col">Creado</th>
-                                                    <th scope="col">Cancelar</th>
-                                                    <th scope="col">Firmar</th>
+                                                    <th scope="col" class="negrita">Grupo</th>
+                                                    <th scope="col" class="negrita">Clave</th>
+                                                    <th scope="col" class="negrita">Nombre del documento</th>
+                                                    <th scope="col" class="negrita">Ver documento</th>
+                                                    <th scope="col" class="negrita">Firmantes</th>
+                                                    <th scope="col" class="negrita">Creado</th>
+                                                    <th scope="col" colspan="2" class="text-center negrita">Acción</th>
+                                                    {{-- <th scope="col">Firmar</th> --}}
                                                 </tr>
                                             </thead>
 
@@ -227,16 +234,21 @@
                                                             </small>
                                                         </td>
                                                         <td><small>{{$docFirmar->created_at->format('d-m-Y')}}</small></td>
-                                                        <td>
-                                                            <button class="btn btn-outline-danger" type="button" onclick="cancelarDocumento('{{$docFirmar->id}}', '{{$nameArchivo}}', '{{$docFirmar->tipo_archivo}}', '{{$docFirmar->numero_o_clave}}')">Cancelar</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-outline-primary" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal('{{$key}}')">firmar</button>
-                                                        </td>
+                                                        @if(!in_array($rol->role_id, [31, 47]))
+                                                            <td>
+                                                                <button class="btn btn-outline-danger" type="button" onclick="cancelarDocumento('{{$docFirmar->id}}', '{{$nameArchivo}}', '{{$docFirmar->tipo_archivo}}', '{{$docFirmar->numero_o_clave}}')">Cancelar</button>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-outline-primary" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal('{{$key}}')">firmar</button>
+                                                            </td>
+                                                        @else
+                                                            <td></td>
+                                                            <td></td>
+                                                        @endif
                                                         <input class="d-none" value="{{$docFirmar->id}}" name="idFile{{$key}}" id="idFile{{$key}}" type="text">
                                                         <input class="d-none" value="{{$docFirmar->cadena_original}}" name="cadena{{$key}}" id="cadena{{$key}}" type="text">
                                                         <input class="d-none" value="{{$docFirmar->base64xml}}" name="xml{{$key}}" id="xml{{$key}}" type="text">
-                                                        <input class="d-none" value="{{$curp}}" name="curp{{$key}}" id="curp{{$key}}" type="text">
+                                                        <input class="d-none" value="{{$curpUser->curp}}" name="curp{{$key}}" id="curp{{$key}}" type="text">
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -258,14 +270,14 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Grupo</th>
-                                                    <th scope="col">Clave</th>
-                                                    <th scope="col">Nombre del documento</th>
-                                                    <th scope="col">Ver documento</th>
-                                                    <th scope="col">Firmantes</th>
-                                                    <th scope="col">Creado</th>
-                                                    <th scope="col">Cancelar</th>
-                                                    <th scope="col">Validar</th>
+                                                    <th scope="col" class="negrita">Grupo</th>
+                                                    <th scope="col" class="negrita">Clave</th>
+                                                    <th scope="col" class="negrita">Nombre del documento</th>
+                                                    <th scope="col" class="negrita">Ver documento</th>
+                                                    <th scope="col" class="negrita">Firmantes</th>
+                                                    <th scope="col" class="negrita">Creado</th>
+                                                    <th scope="col" colspan="2" class="text-center negrita">Acción</th>
+                                                    {{-- <th scope="col">Validar</th> --}}
                                                 </tr>
                                             </thead>
 
@@ -327,19 +339,24 @@
                                                             </small>
                                                         </td>
                                                         <td><small>{{$docFirmado->created_at->format('d-m-Y')}}</small></td>
-                                                        <td>
-                                                            <button type="button" onclick="cancelarDocumento('{{$docFirmado->id}}', '{{$nameArchivo}}', '{{$docFirmado->tipo_archivo}}', '{{$docFirmado->numero_o_clave}}')" class="btn btn-outline-danger">Cancelar</button>
-                                                        </td>
-                                                        <td>
-                                                            {{-- @if ($obj['emisor']['_attributes']['email'] == $email) --}}
-                                                            @can('efirma.sellar')
-                                                                @if ($sendValidation)
-                                                                    <button type="button" onclick="sellardocumento('{{$docFirmado->id}}')" class="btn btn-outline-primary">Sellar</button>
-                                                                @else
-                                                                    Faltan Firmas
-                                                                @endif
-                                                            @endcan
-                                                        </td>
+                                                        @if($rol->role_id == '30' || $rol->role_id == '2')
+                                                            <td>
+                                                                <button type="button" onclick="cancelarDocumento('{{$docFirmado->id}}', '{{$nameArchivo}}', '{{$docFirmado->tipo_archivo}}', '{{$docFirmado->numero_o_clave}}')" class="btn btn-outline-danger">Cancelar</button>
+                                                            </td>
+                                                            <td>
+                                                                {{-- @if ($obj['emisor']['_attributes']['email'] == $email) --}}
+                                                                @can('efirma.sellar')
+                                                                    @if ($sendValidation)
+                                                                        <button type="button" onclick="sellardocumento('{{$docFirmado->id}}')" class="btn btn-outline-primary">Sellar</button>
+                                                                    @else
+                                                                        Faltan Firmas
+                                                                    @endif
+                                                                @endcan
+                                                            </td>
+                                                        @else
+                                                            <td></td>
+                                                            <td></td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -361,14 +378,14 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Grupo</th>
-                                                    <th scope="col">Clave</th>
-                                                    <th scope="col">Nombre del documento</th>
-                                                    <th scope="col">Descargar</th>
-                                                    <th scope="col">Firmantes</th>
-                                                    <th scope="col">Creado</th>
-                                                    <th scope="col">Validado</th>
-                                                    <th scope="col">Anular</th>
+                                                    <th scope="col" class="negrita">Grupo</th>
+                                                    <th scope="col" class="negrita">Clave</th>
+                                                    <th scope="col" class="negrita">Nombre del documento</th>
+                                                    <th scope="col" class="negrita">Descargar</th>
+                                                    <th scope="col" class="negrita">Firmantes</th>
+                                                    <th scope="col" class="negrita">Creado</th>
+                                                    <th scope="col" class="negrita">Validado</th>
+                                                    <th scope="col" class="text-center negrita">Acción</th>
                                                 </tr>
                                             </thead>
 
@@ -424,9 +441,13 @@
                                                         </td>
                                                         <td><small>{{$docValidado->created_at->format('d-m-Y')}}</small></td>
                                                         <td><small>{{$docValidado->fecha_sellado}}</small></td>
-                                                        <td>
-                                                            <button type="button" onclick="cancelarDocumento('{{$docValidado->id}}', '{{$nameArchivo}}', '{{$docValidado->tipo_archivo}}', '{{$docValidado->numero_o_clave}}')" class="btn btn-outline-danger">Anular</button>
-                                                        </td>
+                                                        @if($rol->role_id == '30' || $rol->role_id == '2')
+                                                            <td>
+                                                                <button type="button" onclick="cancelarDocumento('{{$docValidado->id}}', '{{$nameArchivo}}', '{{$docValidado->tipo_archivo}}', '{{$docValidado->numero_o_clave}}')" class="btn btn-outline-danger">Anular</button>
+                                                            </td>
+                                                        @else
+                                                            <td></td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -448,12 +469,13 @@
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Nombre del documento</th>
-                                                    <th scope="col">Firmantes</th>
-                                                    <th scope="col">Creado</th>
-                                                    <th scope="col">Cancelado</th>
-                                                    <th scope="col">Motivo</th>
-                                                    <th scope="col">Canceló</th>
+                                                    <th scope="col" class="negrita">Nombre del documento</th>
+                                                    <th scope="col" class="negrita">Firmantes</th>
+                                                    <th scope="col" class="negrita">Creado</th>
+                                                    <th scope="col" class="negrita">Cancelado</th>
+                                                    <th scope="col" class="negrita">Motivo</th>
+                                                    <th scope="col" class="negrita">Canceló</th>
+                                                    <th scope="col" class="negrita">Acción</th>
                                                 </tr>
                                             </thead>
 
@@ -486,6 +508,19 @@
                                                             <td><small>{{$objCancelado['motivo']}}</small></td>
                                                             <td><small>{{$objCancelado['correo']}}</small></td>
                                                         @endif
+
+                                                        @if($rol->role_id == '30' || $rol->role_id == '2')
+                                                            <td>
+                                                                @if ($docCancelado->status_recepcion != 'VALIDADO' || $docCancelado->status_recepcion != 'En Espera')
+                                                                    @if ($docCancelado->status == 'CANCELADO ICTI')
+                                                                        <button class="btn m-0 btn-danger" onclick="anularCancelacion({{$docCancelado->id}})">DESHACER ANULADO</button>
+                                                                    @endif
+                                                                @endif
+                                                            </td>
+                                                        @else
+                                                            <td></td>
+                                                        @endif
+
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -817,6 +852,23 @@
                 $('#formRechazo').attr('action', '/reportefoto/rechazo');
             }
             $('#modalRechazo').modal('toggle');
+        }
+
+        function anularCancelacion(id_efirma) {
+            let data = {
+                "_token": $("meta[name='csrf-token']").attr("content"),
+                "id_efirma": id_efirma }
+            $.ajax({
+                type:"post",
+                url: "{{ route('efirma.deshacer.anulado') }}",
+                data: data,
+                dataType: "json",
+                success: function (response) {
+                    if (response.status == 200) {
+                        location.reload();
+                    }
+                }
+            });
         }
 
     </script>

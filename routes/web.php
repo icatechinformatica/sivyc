@@ -907,6 +907,8 @@ Route::get('/lista/calificacion/{id}', 'efirma\CalificacionController@calificaci
 Route::post('/calificacion/rechazo', 'efirma\CalificacionController@rechazo')->name('calificacion-rechazo');
 Route::post('/calificacion/validar', 'efirma\CalificacionController@generar_xml')->name('calificacion-xml');
 Route::post('/contrato/efirma','webController\ContratoController@generar_contrato_efirma')->name('contrato-efirma');
+Route::get('/XMLrecovery/{uuid}', 'efirma\FirmaController@obtener_xml')->name('obtener-xml');
+Route::post('/efirma/anularcancelado', 'efirma\FirmaController@deshacer_anulado')->name('efirma.deshacer.anulado');
 
 # By Jose Luis Moreno Arcos / firma reporte evidencias
 Route::get('/reportefoto/pdf/{id}', 'efirma\ReporteFotController@repofotoPdf')->name('reportefoto-pdf');
@@ -914,3 +916,5 @@ Route::post('/reportefoto/rechazo', 'efirma\ReporteFotController@rechazo')->name
 ##Realiza la busqueda de reporte fotografico firmado
 Route::post('/report/busqueda', 'efirma\ReporteFotController@getreportefoto')->name('supre.busqueda.reportefoto');
 // Route::post('/reportefoto/validar', 'efirma\ReporteFotController@generar_xml')->name('reportefoto-xml');
+
+Route::post('/retorno/movimiento/instructor', 'webController\InstructorController@movimiento_retorno')->name('movimiento-retorno');
