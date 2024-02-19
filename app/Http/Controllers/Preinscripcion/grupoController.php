@@ -153,7 +153,7 @@ class grupoController extends Controller
         //By Jose Luis Moreno
         $id_usuario = null;
         if($this->admin['slug']) $id_usuario = $this->id_user;
-        $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '', "status_dpto" => '');
+        $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '', "status_dpto" => 'INVALID');
         try {
             $jsonvincu = ExpeUnico::select('vinculacion')->where('folio_grupo', '=', $_SESSION['folio_grupo'])->first();
             if (isset($jsonvincu->vinculacion['doc_1']) && isset($jsonvincu->vinculacion['status_dpto'])) {
@@ -164,7 +164,7 @@ class grupoController extends Controller
                     "convenio" => ($docs_json[1] != '') ? $this->path_files.$docs_json[1] : "",
                     "soli_ape" => ($docs_json[2] != '') ? $this->path_files.$docs_json[2] : "",
                     "sid" => ($docs_json[3] != '') ? $this->path_files.$docs_json[3] : "",
-                    "status_dpto" => ($jsonvincu->vinculacion['status_dpto'] != '') ? $jsonvincu->vinculacion['status_dpto'] : ""
+                    "status_dpto" => ($jsonvincu->vinculacion['status_dpto'] != '') ? $jsonvincu->vinculacion['status_dpto'] : "INVALID"
                 );
             }else{
                 $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '');
