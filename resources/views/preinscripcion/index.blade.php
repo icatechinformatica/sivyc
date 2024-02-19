@@ -734,19 +734,22 @@
             }
 
             //Enviar los archivos al backend
-            function UploadPDF(event) {
+            function UploadPDF(event, status_dpto) {
+
                 event.preventDefault();
+                //Validar el estatus del expediente unico
+                if (status_dpto != 'CAPTURA') {alert("EL EXPEDIENTE UNICO HA SIDO ENVIADO A DTA PARA VALIDACIÓN\nPOR LO TANTO NO ES POSIBLE CARGAR EL DOCUMENTO."); return false;}
+
                  //Obtenermos el valor del input archivo
                 let valSelect = document.getElementById('subirPDF').value;
                 let inputFile = document.getElementById('pdfInputDoc');
                 let partes = valSelect.split('?');
 
                 if (partes[0] == '0'){ alert('SELECCIONA UNA OPCIÓN'); return;}
-                if (partes[1] !== '') {
-                    alert("EL ARCHIVO YA SE ENCUENTRA CARGADO");
-                    return;
-                    // if (confirm("YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE ¿DESEAS REEMPLAZAR EL ARCHIVO CON UNO NUEVO?")) {
-                    // } else return;
+                // if (partes[1] !== '') {alert("EL ARCHIVO YA SE ENCUENTRA CARGADO");return;  }
+                if(partes[1] !== ''){
+                    if (confirm("YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE ¿DESEAS REEMPLAZAR EL ARCHIVO CON UNO NUEVO?")) {
+                    } else return;
                 }
 
                 if (inputFile.files.length === 0) { //Realizamos la validacion si esta el archivo

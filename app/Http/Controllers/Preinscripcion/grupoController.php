@@ -153,17 +153,18 @@ class grupoController extends Controller
         //By Jose Luis Moreno
         $id_usuario = null;
         if($this->admin['slug']) $id_usuario = $this->id_user;
-        $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '');
+        $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '', "status_dpto" => '');
         try {
             $jsonvincu = ExpeUnico::select('vinculacion')->where('folio_grupo', '=', $_SESSION['folio_grupo'])->first();
-            if (isset($jsonvincu->vinculacion['doc_1'])) {
+            if (isset($jsonvincu->vinculacion['doc_1']) && isset($jsonvincu->vinculacion['status_dpto'])) {
                 $docs_json = [$jsonvincu->vinculacion['doc_1']['url_pdf_acta'], $jsonvincu->vinculacion['doc_1']['url_pdf_convenio'],
                 $jsonvincu->vinculacion['doc_3']['url_documento'], $jsonvincu->vinculacion['doc_4']['url_documento']];
                 $linkPDF = array(
                     "acta" => ($docs_json[0] != '') ? $this->path_files.$docs_json[0] : "",
                     "convenio" => ($docs_json[1] != '') ? $this->path_files.$docs_json[1] : "",
                     "soli_ape" => ($docs_json[2] != '') ? $this->path_files.$docs_json[2] : "",
-                    "sid" => ($docs_json[3] != '') ? $this->path_files.$docs_json[3] : ""
+                    "sid" => ($docs_json[3] != '') ? $this->path_files.$docs_json[3] : "",
+                    "status_dpto" => ($jsonvincu->vinculacion['status_dpto'] != '') ? $jsonvincu->vinculacion['status_dpto'] : ""
                 );
             }else{
                 $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '');
@@ -174,8 +175,8 @@ class grupoController extends Controller
 
         $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status_folio','ENVIADO')->first();
         $ubicacion = DB::table('tbl_unidades')->where('id', Auth::user()->unidad)->value('ubicacion');
-        $recibo_nulo = DB::table('tbl_recibos')->whereNull('folio_recibo')->where('unidad',$ubicacion)->exists();        
-        
+        $recibo_nulo = DB::table('tbl_recibos')->whereNull('folio_recibo')->where('unidad',$ubicacion)->exists();
+
         return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'folio_pago', 'fecha_pago',
             'es_vulnerable', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','comprobante','edicion','instructores','instructor',
             'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo'));
@@ -463,7 +464,7 @@ class grupoController extends Controller
                             else $cerrs = NULL;
                             //novo
                             $unidad = DB::table('tbl_unidades')->select('id','cct', 'plantel','ubicacion')->where('unidad', $request->unidad)->first();
-                            $id_ubicacion = DB::table('tbl_unidades')->where('unidad', $unidad->ubicacion)->value('id'); 
+                            $id_ubicacion = DB::table('tbl_unidades')->where('unidad', $unidad->ubicacion)->value('id');
                             $municipio = DB::table('tbl_municipios')->select('id','muni','ze')->where('id', $request->id_municipio)->first();
                             $curso = DB::table('cursos as c')->select('c.id','c.nombre_curso','c.horas','c.rango_criterio_pago_maximo as cp','c.costo','e.nombre as espe',
                                 'a.formacion_profesional as area','c.memo_validacion as mpaqueteria','e.clave as clave_especialidad')
