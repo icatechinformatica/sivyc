@@ -167,7 +167,7 @@ class grupoController extends Controller
                     "status_dpto" => ($jsonvincu->vinculacion['status_dpto'] != '') ? $jsonvincu->vinculacion['status_dpto'] : "INVALID"
                 );
             }else{
-                $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '');
+                $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '', "status_dpto" => 'INVALID');
             }
         } catch (\Throwable $th) {
             dd("Error al cargar documentos ".$th->getMessage());
