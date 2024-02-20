@@ -212,7 +212,8 @@
      <div class="" style="text-align: center;">
          @foreach($base64Images as $key => $base64)
             <div style= @if ($objeto == null && $key == (count($base64Images)-1)) @else "page-break-after: always;" @endif>
-                <img style="width: auto; height: auto; max-width: 100%; max-height:100%;" src="data:image/jpeg;base64,{{$base64}}" alt="Foto">
+                <img style="width: auto; height: auto; max-width: 95%; max-height:95%;" src="data:image/jpeg;base64,{{$base64}}" alt="Foto">
+                <small style="text-align: right; display:block; max-width: 95%; margin-top:2px;">{{basename($array_fotos[$key])}}</small>
             </div>
          @endforeach
      </div>

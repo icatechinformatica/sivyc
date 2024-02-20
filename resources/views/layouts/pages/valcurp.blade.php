@@ -15,12 +15,17 @@
         #resultado.white {
             background-color: white;
         }
+
+        .form-check-input {
+            width: 22px;
+            height: 22px;
+        }
     </style>
     <?php
-        $nombre = $apaterno = $amaterno = $nacionalidad = $telefono_casa = $telefono_cel = $email = $face = $twitter = $instagram = $tiktok = 
+        $nombre = $apaterno = $amaterno = $nacionalidad = $telefono_casa = $telefono_cel = $email = $face = $twitter = $instagram = $tiktok =
         $ecivil = $domicilio = $colonia = $estado = $muni = $localidad = $cp = $etnia = $gvulnerable = $escolaridad = $medio_entero =
         $motivo_eleccion = $empresa_trabaja = $puesto_empresa = $antiguedad = $direccion_empresa = $requisitos = $nexpediente_cerss = $fotografia = null;
-        $publicaciones = $redes = $lgbt = $madre_soltera = $faminmigra = $inmigra = $empleado = $ficha_cerss = $cerss = $confirmacion = false;
+        $publicaciones = $redes = $lgbt = $madre_soltera = $faminmigra = $inmigra = $empleado = $ficha_cerss = $cerss = $confirmacion = $check_bolsa = false;
         if (isset($alumno)) {
             $nombre = $alumno->nombre;
             $apaterno = $alumno->apellido_paterno;
@@ -34,7 +39,7 @@
             $instagram = $alumno->instagram;
             $tiktok = $alumno->tiktok;
             if ($alumno->recibir_publicaciones) { $publicaciones = true; }
-            if ($alumno->ninguna_redsocial) { $redes = true; } 
+            if ($alumno->ninguna_redsocial) { $redes = true; }
             $ecivil = $alumno->estado_civil;
             $domicilio = $alumno->domicilio;
             $colonia = $alumno->colonia;
@@ -42,10 +47,10 @@
             $muni = $alumno->clave_municipio;
             $localidad = $alumno->clave_localidad;
             $cp = $alumno->cp;
-            if ($alumno->lgbt) { $lgbt = true; } 
-            if ($alumno->madre_soltera) { $madre_soltera = true; } 
-            if ($alumno->familia_migrante) { $faminmigra = true; } 
-            if ($alumno->inmigrante) { $inmigra = true; } 
+            if ($alumno->lgbt) { $lgbt = true; }
+            if ($alumno->madre_soltera) { $madre_soltera = true; }
+            if ($alumno->familia_migrante) { $faminmigra = true; }
+            if ($alumno->inmigrante) { $inmigra = true; }
             $etnia = $alumno->etnia;
             $gvulnerable = $alumno->id_gvulnerable;
             $escolaridad = $alumno->ultimo_grado_estudios;
@@ -62,6 +67,7 @@
             $nexpediente_cerss = $alumno->numero_expediente;
             $fotografia = $alumno->fotografia;
             $confirmacion = $alumno->medio_confirmacion;
+            if ($alumno->check_bolsa) {$check_bolsa = true;}
         }
     ?>
     <div class="card card-body">
@@ -236,7 +242,18 @@
                             <input type="text" class="form-control" id="cp" name="cp" value="{{$cp}}">
                         </div>
                     </div>
+                    {{-- Agregar ckeck bolsa de trabajo  --}}
+                    <div class="w-100 p-3 form-inline" style="background-color: #f7d351;">
+                        <span class="font-weight-bold mr-3">¿Usted autoriza dar su número de celular para alguna oportunidad en la Bolsa de Trabajo?</span>
+                        <div class="col-auto">
+                            <div class="form-check">
+                                <label class="form-check-label mr-2 font-weight-bold" for="checkPhone">SI</label>
+                                <input class="form-check-input" id="chk_bolsa" name="chk_bolsa" type="checkbox" value="true" @isset($check_bolsa) @if ($check_bolsa) { checked } @endif @endisset/>&nbsp;&nbsp;</label>
+                            </div>
+                        </div>
+                    </div>
                     <br>
+
                     <div class="form-row">
                         <div class="form-group col">
                             <div class="custom-control custom-checkbox">
@@ -293,11 +310,11 @@
                                     value="{{ $medio_entero }}">
                                 @isset($medio_entero)
                                 @if ($medio_entero == '')
-                                    <option value="">--SELECCIONAR--</option> 
+                                    <option value="">--SELECCIONAR--</option>
                                 @elseif ($medio_entero !='PRENSA'&& $medio_entero !='RADIO'&&$medio_entero !='TELEVISIÓN'&&$medio_entero !='INTERNET'&&$medio_entero !='FOLLETOS, CARTELES, VOLANTES')
-                                    <option value="O">OTRO</option> 
+                                    <option value="O">OTRO</option>
                                 @else
-                                    <option value="{{ $medio_entero }}">{{ $medio_entero }} @endif 
+                                    <option value="{{ $medio_entero }}">{{ $medio_entero }} @endif
                                 @else
                                     <option value="">--SELECCIONAR--</option>
                                 @endisset
@@ -324,10 +341,10 @@
                                 @if ($motivo_eleccion == '')
                                     <option value="">--SELECCIONAR--</option>
                                 @elseif ($motivo_eleccion != 'PARA EMPLEARSE O AUTOEMPLEARSE' && $motivo_eleccion != 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR' && $motivo_eleccion != 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA' && $motivo_eleccion != 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO' && $motivo_eleccion != 'POR DISPOSICIÓN DE TIEMPO LIBRE' && $motivo_eleccion != '')
-                                    <option value="O">OTRO</option> 
+                                    <option value="O">OTRO</option>
                                 @else
-                                    <option value="{{ $motivo_eleccion }}">{{ $motivo_eleccion }} 
-                                @endif 
+                                    <option value="{{ $motivo_eleccion }}">{{ $motivo_eleccion }}
+                                @endif
                                 @else
                                     <option value="">--SELECCIONAR--</option>
                                 @endisset
@@ -394,7 +411,7 @@
                             <table class="table table-striped" style="width: 100%; text-align: left; border-collapse: collapse;">
                                 <tr>
                                     <td style="width: 50%;">
-                                        <label><input id="chk_acta" name="chk_acta" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_acta_nacimiento) { checked } @endif @endisset/>&nbsp;&nbsp;ACTA DE NACIMIENTO</label> 
+                                        <label><input id="chk_acta" name="chk_acta" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_acta_nacimiento) { checked } @endif @endisset/>&nbsp;&nbsp;ACTA DE NACIMIENTO</label>
                                     </td>
                                     <td>
                                         FECHA EXPEDICIÓN
@@ -446,8 +463,8 @@
                                             <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()">
                                             <label class="custom-file-label" for="customFile">SELECCIONAR DOCUMENTO</label>
                                         </div>
-                                        @isset($requisitos) @if($requisitos->documento) 
-                                            <br><br> 
+                                        @isset($requisitos) @if($requisitos->documento)
+                                            <br><br>
                                             <a name="doc_url" id="doc_url" href="{{ $requisitos->documento }}" target="blank" class="btn btn-danger">PDF</a>
                                         @endif @endisset
                                     </td>
@@ -482,7 +499,7 @@
                                     <button type="submit" class="btn btn-primary" id="update" >GUARDAR CAMBIOS</button>
                                 </div>
                             </div>
-                        </div>  
+                        </div>
                     @endcan
                 </div>
             @endif
@@ -503,12 +520,19 @@
                             if(!$("#correo" ).val()) alert("FAVOR DE INGRESAR EL CORREO ELECTRÓNICO.")
                         break;
                     }
-                    
+
                 });
 
-                
+
                 $("#nuevo").click(function(){ $('#frm2').attr({'action':"{{route('alumnos.valid')}}",'target':'_self'}); $('#frm2').submit(); });
                 $("#update").click(function(){
+                    //Validar check bolsa de trabajo
+                    let telefonoCel  = $('#telefono_cel').val();
+                    if( $('#chk_bolsa').is(':checked') && telefonoCel.length != 10) {
+                        alert("Usted activó la casilla de bolsa de trabajo.\nPor lo tanto, debe agregar un número de teléfono.");
+                        return false;
+                    }
+
                     if ($("#frm").valid()) {
                         $('#frm').attr({'action':"{{route('alumnos.save')}}",'target':'_self'}); $('#frm').submit();
                     } else {
@@ -521,48 +545,48 @@
                 $("#municipio" ).change(function(){
                     cmb_loc();
                 });
-                function cmb_muni(){ 
+                function cmb_muni(){
                     var tipo =$('#estado').val();
-                    $("#municipio").empty();                            
+                    $("#municipio").empty();
                     if(tipo){
                         $.ajax({
                             type: "GET",
                             url: "municipio_nov",
                             data:{estado_id:tipo, _token:"{{csrf_token()}}"},
-                            contentType: "application/json",              
+                            contentType: "application/json",
                             dataType: "json",
-                            success: function (data) {// console.log(data); 
+                            success: function (data) {// console.log(data);
                                 $("#municipio").append('<option value="" selected="selected">SELECCIONAR</option>');
-                                $.each(data, function () {                                    
-                                    //$("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');                                    
+                                $.each(data, function () {
+                                    //$("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');
                                     $("#municipio").append('<option value="'+this['clave']+'">'+this['muni']+'</option>');
                                 });
                             }
-                        });                        
+                        });
                     }
-                                    
+
                 };
-                function cmb_loc(){ 
+                function cmb_loc(){
                     var muni =$('#municipio').val();
                     var est = $('#estado').val();
-                    $("#localidad").empty();                            
+                    $("#localidad").empty();
                     if(muni && est){
                         $.ajax({
                             type: "GET",
                             url: "localidad_nov",
                             data:{muni:muni, estado: est, _token:"{{csrf_token()}}"},
-                            contentType: "application/json",              
+                            contentType: "application/json",
                             dataType: "json",
-                            success: function (data) {// console.log(data); 
-                                $("#localidad").append('<option value="" selected="selected">SELECCIONAR</option>');         
-                                $.each(data, function () {                                    
-                                    //$("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');                                    
+                            success: function (data) {// console.log(data);
+                                $("#localidad").append('<option value="" selected="selected">SELECCIONAR</option>');
+                                $.each(data, function () {
+                                    //$("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');
                                     $("#localidad").append('<option value="'+this['clave']+'">'+this['localidad']+'</option>');
                                 });
                             }
-                        });                        
+                        });
                     }
-                                    
+
                 };
                 $('#frm').validate({
                     rules: {

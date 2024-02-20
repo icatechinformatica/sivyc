@@ -72,7 +72,7 @@ class FotosController extends Controller
             #Procedemos a guardar la imagen
             try {
                 for ($i=0; $i < count($imagenes); $i++) {
-                    $url_foto = $this->img_upload($imagenes[$i], $idcurso, 'foto'.$i, $anio);
+                    $url_foto = $this->img_upload($imagenes[$i], $idcurso, 'foto'.($i+1), $anio);
                     array_push($arrayUrlFotos, $url_foto[1]);
                 }
             } catch (\Throwable $th) {
