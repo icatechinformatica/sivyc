@@ -1271,7 +1271,7 @@ class ContratoController extends Controller
         $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
         $monto = explode(".",strval($data_contrato->cantidad_numero));
 
-        // carga de firmas electronicas
+        // carga de firmas electronicas organismo
 
         $documento = DocumentosFirmar::where('numero_o_clave', $data->clave)
             ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
@@ -1302,12 +1302,12 @@ class ContratoController extends Controller
 
             $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
 
-            $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
-                            ->Join('tbl_funcionarios AS fun','fun.id','org.id')
-                            ->Where('org.id', Auth::user()->id_organismo)
-                            ->OrWhere('org.id_parent', Auth::user()->id_organismo)
-                            ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
-                            ->Get();
+            // $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
+            //                 ->Join('tbl_funcionarios AS fun','fun.id','org.id')
+            //                 ->Where('org.id', Auth::user()->id_organismo)
+            //                 ->OrWhere('org.id_parent', Auth::user()->id_organismo)
+            //                 ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
+            //                 ->Get();
             //Generacion de QR
             //Verifica si existe link de verificiacion, de lo contrario lo crea y lo guarda
             if(isset($documento->link_verificacion)) {
