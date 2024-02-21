@@ -15,12 +15,17 @@
         #resultado.white {
             background-color: white;
         }
+
+        .form-check-input {
+            width: 22px;
+            height: 22px;
+        }
     </style>
     <?php
         $nombre = $apaterno = $amaterno = $nacionalidad = $telefono_casa = $telefono_cel = $email = $face = $twitter = $instagram = $tiktok =
         $ecivil = $domicilio = $colonia = $estado = $muni = $localidad = $cp = $etnia = $gvulnerable = $escolaridad = $medio_entero =
         $motivo_eleccion = $empresa_trabaja = $puesto_empresa = $antiguedad = $direccion_empresa = $requisitos = $nexpediente_cerss = $fotografia = null;
-        $publicaciones = $redes = $lgbt = $madre_soltera = $faminmigra = $inmigra = $empleado = $ficha_cerss = $cerss = $confirmacion = false;
+        $publicaciones = $redes = $lgbt = $madre_soltera = $faminmigra = $inmigra = $empleado = $ficha_cerss = $cerss = $confirmacion = $check_bolsa = false;
         if (isset($alumno)) {
             $nombre = $alumno->nombre;
             $apaterno = $alumno->apellido_paterno;
@@ -62,6 +67,7 @@
             $nexpediente_cerss = $alumno->numero_expediente;
             $fotografia = $alumno->fotografia;
             $confirmacion = $alumno->medio_confirmacion;
+            if ($alumno->check_bolsa) {$check_bolsa = true;}
         }
     ?>
     <div class="card card-body">
@@ -169,16 +175,16 @@
                             <label>Tel&eacute;fono Casa:</label>
                             <input id="telefono_casa" name="telefono_casa" class="form-control" type="text" value="{{$telefono_casa}}">
                         </div>
-                        {{-- <div class="form-group col-md-3">
+                        <div class="form-group col-md-3">
                             <label>Tel&eacute;fono Celular:</label>
                             <input id="telefono_cel" name="telefono_cel" class="form-control" type="text" value="{{$telefono_cel}}">
-                        </div> --}}
+                        </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-3">
                             <label>Correo Electr&oacute;nico:</label>
                             <input type="email" id="correo" name="correo" class="form-control" placeholder="usuario@gmail.com" type="text" value="{{$email}}">
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group col-md-3">
                             <label>Facebook:</label>
                             <input id="facebook" name="facebook" class="form-control" type="text" value="{{$face}}">
@@ -236,16 +242,13 @@
                             <input type="text" class="form-control" id="cp" name="cp" value="{{$cp}}">
                         </div>
                     </div>
-                    {{-- Agregar telefono con texto  --}}
+                    {{-- Agregar ckeck bolsa de trabajo  --}}
                     <div class="w-100 p-3 form-inline" style="background-color: #f7d351;">
                         <span class="font-weight-bold mr-3">¿Usted autoriza dar su número de celular para alguna oportunidad en la Bolsa de Trabajo?</span>
                         <div class="col-auto">
-                            <label class="sr-only" for="inlineFormInputGroup">Username</label>
-                            <div class="input-group mb-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text bg-light"><i class="fa fa-phone" aria-hidden="true"></i></div>
-                                </div>
-                                <input id="telefono_cel" name="telefono_cel" class="form-control" type="text" value="{{$telefono_cel}}" placeholder="Teléfono Celular">
+                            <div class="form-check">
+                                <label class="form-check-label mr-2 font-weight-bold" for="checkPhone">SI</label>
+                                <input class="form-check-input" id="chk_bolsa" name="chk_bolsa" type="checkbox" value="true" @isset($check_bolsa) @if ($check_bolsa) { checked } @endif @endisset/>&nbsp;&nbsp;</label>
                             </div>
                         </div>
                     </div>
@@ -523,6 +526,13 @@
 
                 $("#nuevo").click(function(){ $('#frm2').attr({'action':"{{route('alumnos.valid')}}",'target':'_self'}); $('#frm2').submit(); });
                 $("#update").click(function(){
+                    //Validar check bolsa de trabajo
+                    let telefonoCel  = $('#telefono_cel').val();
+                    if( $('#chk_bolsa').is(':checked') && telefonoCel.length != 10) {
+                        alert("Usted activó la casilla de bolsa de trabajo.\nPor lo tanto, debe agregar un número de teléfono.");
+                        return false;
+                    }
+
                     if ($("#frm").valid()) {
                         $('#frm').attr({'action':"{{route('alumnos.save')}}",'target':'_self'}); $('#frm').submit();
                     } else {
