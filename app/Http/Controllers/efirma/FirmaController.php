@@ -435,16 +435,18 @@ class FirmaController extends Controller {
                     'status' => $nuevo_status,
                     'cancelacion' => $data
                 ]);
-            tbl_curso::where('clave', $request->txtClave)
-                ->update(
-                    $request->txtTipo == 'Lista de asistencia'
-                        ? ['asis_finalizado' => false,
-                            'observacion_asistencia_rechazo' => $request->motivo]
-                        : ($request->txtTipo == 'Lista de calificaciones'
-                            ?  ['calif_finalizado' => false,
-                                'observacion_calificacion_rechazo' => $request->motivo]
-                            : [])
-                );
+            if ($nuevo_status == 'CANCELADO') {
+                tbl_curso::where('clave', $request->txtClave)
+                    ->update(
+                        $request->txtTipo == 'Lista de asistencia'
+                            ? ['asis_finalizado' => false,
+                                'observacion_asistencia_rechazo' => $request->motivo]
+                            : ($request->txtTipo == 'Lista de calificaciones'
+                                ?  ['calif_finalizado' => false,
+                                    'observacion_calificacion_rechazo' => $request->motivo]
+                                : [])
+                    );
+            }
 
             if($request->txtTipo == 'Contrato' && $nuevo_status == 'CANCELADO') {
                 $folio = folio::Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
