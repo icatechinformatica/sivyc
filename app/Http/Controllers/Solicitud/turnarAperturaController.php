@@ -507,16 +507,23 @@ class turnarAperturaController extends Controller
     private function ids_extemp($memo){        
             $result = DB::select("SELECT id
                     FROM (
-                        SELECT c.id, c.termino, min(generate_series::date) as fecha_extemp
+                        SELECT c.id, c.termino, min(generate_series::date) as fecha_extemp                            
                         FROM tbl_cursos c 
-                            CROSS JOIN generate_series(
-                                c.inicio+ CAST('3 days' AS INTERVAL),
-                                c.inicio+ CAST('10 days' AS INTERVAL),
-                                '1 day'::interval
-                            )
+                                CROSS JOIN generate_series(
+                                    CASE 
+                                        WHEN date_part('dow',c.inicio) BETWEEN 1 AND 2 THEN c.inicio+ CAST('3 days' AS INTERVAL)
+                                        WHEN date_part('dow',c.inicio) BETWEEN 3 AND 6 THEN c.inicio+ CAST('5 days' AS INTERVAL) 									
+                                        ELSE c.inicio+ CAST('4 days' AS INTERVAL) 
+                                    
+                                    END,
+                                    c.termino,
+                                    '1 day'::interval
+                                )
                         WHERE  munidad = ? 
-                        AND generate_series::date NOT IN(SELECT fecha FROM dias_inhabiles dh WHERE fecha BETWEEN c.inicio AND c.inicio+ CAST('2 days' AS INTERVAL)) 
-                        AND date_part('dow',generate_series::date) not in(0,6)=true group by c.id,c.termino
+                        AND EXTRACT(DOW FROM generate_series::date) BETWEEN 1 AND 5
+  						AND generate_series::date NOT IN(SELECT fecha FROM dias_inhabiles dh WHERE fecha BETWEEN c.inicio AND c.inicio+ CAST('2 days' AS INTERVAL)) 
+                        --AND date_part('dow',generate_series::date) not in(0,6)=true 
+                        group by c.id,c.termino                        
                            
                     ) as global WHERE now()::date>=fecha_extemp or now()::date>termino",[$memo]);
         return $resultArray = array_column(json_decode(json_encode($result), true),'id'); 
