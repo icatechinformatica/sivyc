@@ -125,7 +125,7 @@ class poaController extends Controller
                     /***COSTOS **/
                     DB::raw($query_costos),
                     DB::raw("sum(CASE WHEN supre.status='Validado' THEN  f.importe_total ELSE 0 END)  as costo_supre"),
-                    DB::raw("sum(CASE WHEN p.status_recepcion='VALIDADO' OR p.status_recepcion='recepcion tradicional' OR p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),                    
+                    DB::raw("sum(CASE WHEN p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),
 
                     /***FORMATO T **/
                     DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
@@ -187,7 +187,7 @@ class poaController extends Controller
                  /***COSTOS ***/
                 DB::raw($query_costos),                 
                 DB::raw("sum(CASE WHEN supre.status='Validado' THEN  f.importe_total ELSE 0 END)  as costo_supre"),
-                DB::raw("sum(CASE WHEN p.status_recepcion='VALIDADO' OR p.status_recepcion='recepcion tradicional' OR p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),                    
+                DB::raw("sum(CASE WHEN p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),                    
 
                 /***FORMATO T ***/
                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
@@ -247,7 +247,7 @@ class poaController extends Controller
                   /**COSTOS***/
                   DB::raw($query_costos),                 
                   DB::raw("sum(CASE WHEN supre.status='Validado' THEN  f.importe_total ELSE 0 END)  as costo_supre"),
-                  DB::raw("sum(CASE WHEN p.status_recepcion='VALIDADO' OR p.status_recepcion='recepcion tradicional' OR p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),                    
+                  DB::raw("sum(CASE WHEN p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),                    
 
                   /**FORMATO T **/
                   DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
