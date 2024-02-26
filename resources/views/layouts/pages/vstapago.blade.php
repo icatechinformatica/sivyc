@@ -668,12 +668,12 @@
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td6vc" style="text-align: left; vertical-align: left; font-size: 12px;">
-                                            {{-- 6.- Factura PDF --}}
+                                            6.- Factura PDF
                                         </td>
                                         <td>
-                                            {{-- <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfvc" name="show_fact_pdfvc">
+                                            <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfvc" name="show_fact_pdfvc">
                                                 <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
-                                            </a> --}}
+                                            </a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -682,12 +682,12 @@
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td7vc" style="text-align: left; vertical-align: left; font-size: 12px;">
-                                            {{-- 7.- Factura XML --}}
+                                            7.- Factura XML
                                         </td>
                                         <td>
-                                            {{-- <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlvc" name="show_fact_xmlvc">
+                                            <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlvc" name="show_fact_xmlvc">
                                                 <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
-                                            </a> --}}
+                                            </a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -811,12 +811,12 @@
                                         </label>
                                     </div>
                                 </td>
-                                {{-- <td style="vertical-align:middle;" width='5%'><i id="factura_icon" class="fas fa-check text-success" style="vertical-align:middle;"></i></td> --}}
+                                <td style="vertical-align:middle;" width='5%'><i id="factura_icon" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
                                 <td id="td6" style="text-align: left; vertical-align: middley; font-size: 12px; width: 30%;">
-                                    {{-- 6.- Factura PDF --}}
+                                    6.- Factura PDF
                                 </td>
                                 <td style="width: 15%; text-align: left;">
-                                    {{-- <div style="display: inline-block;">
+                                    <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdf" name="show_fact_pdf">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
@@ -828,7 +828,7 @@
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="factura_name">Subir</span>
-                                    </div> --}}
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -932,10 +932,10 @@
                             <tr>
                                 <td style="vertical-align:middle;" width='10px;'><i id="facturaxml_icon" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
                                 <td id="td7" style="text-align: left; vertical-align: middley; font-size: 12px;">
-                                    {{-- 7.- Factura XML --}}
+                                    7.- Factura XML
                                 </td>
                                 <td style="text-align: left;">
-                                    {{-- <div style="display: inline-block">
+                                    <div style="display: inline-block">
                                         <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xml" name="show_fact_xml">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
@@ -947,7 +947,7 @@
                                             &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                         </a>
                                         <span id="factura_xml_name">Subir</span>
-                                    </div> --}}
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -997,12 +997,12 @@
                                     </div>
                                 </td>
 
-                                {{-- <td style="vertical-align:middle;" width='10px;'><i id="factura_iconc" class="fas fa-check text-success" style="vertical-align:middle;"></i></td> --}}
+                                <td style="vertical-align:middle;" width='10px;'><i id="factura_iconc" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
                                 <td id='td6c' style="text-align: left; vertical-align: middle; font-size: 12px;">
-                                    {{-- 6.- Factura PDF --}}
+                                    6.- Factura PDF
                                 </td>
                                 <td style="text-align: left;">
-                                    {{-- <div style="display: inline-block;">
+                                    <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfc" name="show_fact_pdfc">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
@@ -1015,7 +1015,7 @@
                                             </a>
                                             <span id="factura_namec">Subir</span>
                                         </label>
-                                    </div> --}}
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -1029,10 +1029,10 @@
 
                                 <td style="vertical-align:middle;" width='10px;'><i id="facturaxml_iconc" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
                                 <td id='td7c' style="text-align: left; vertical-align: middle; font-size: 12px;">
-                                    {{-- 7.- Factura XML --}}
+                                    7.- Factura XML
                                 </td>
                                 <td style="text-align: left;">
-                                    {{-- <div style="display: inline-block;">
+                                    <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlc" name="show_fact_xmlc">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
@@ -1045,7 +1045,7 @@
                                             </a>
                                             <span id="factura_xml_namec">Subir</span>
                                         </label>
-                                    </div> --}}
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
