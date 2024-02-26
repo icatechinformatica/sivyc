@@ -33,6 +33,8 @@ class FirmaController extends Controller {
 
     // php artisan serve --port=8001
     public function index(Request $request) {
+        $seleccion = request('section');
+
         $docsVistobueno2 = array();
         $email = Auth::user()->email;
         $rol = DB::Table('role_user')->Select('role_id')->Where('user_id', Auth::user()->id)->First();
@@ -186,15 +188,24 @@ class FirmaController extends Controller {
         $tipo_documento = session('tipo');
 
         if($tipo_documento == null) {
-            $docsFirmar = $docsFirmar1->orderBy('id', 'desc')->get();
-            $docsFirmados = $docsFirmados1->orderBy('id', 'desc')->get();
-            $docsValidados = $docsValidados1->orderBy('id', 'desc')->get();
-            $docsCancelados = $docsCancelados1->orderBy('id', 'desc')->get();
+            // $docsFirmar = $docsFirmar1->orderBy('id', 'desc')->get();
+            // $docsFirmados = $docsFirmados1->orderBy('id', 'desc')->get();
+            // $docsValidados = $docsValidados1->orderBy('id', 'desc')->get();
+            // $docsCancelados = $docsCancelados1->orderBy('id', 'desc')->get();
+
+            $docsFirmar = $docsFirmar1->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsFirmados = $docsFirmados1->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsValidados = $docsValidados1->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsCancelados = $docsCancelados1->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
         } else {
-            $docsFirmar = $docsFirmar1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
-            $docsFirmados = $docsFirmados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
-            $docsValidados = $docsValidados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
-            $docsCancelados = $docsCancelados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
+            // $docsFirmar = $docsFirmar1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
+            // $docsFirmados = $docsFirmados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
+            // $docsValidados = $docsValidados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
+            // $docsCancelados = $docsCancelados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
+            $docsFirmar = $docsFirmar1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsFirmados = $docsFirmados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsValidados = $docsValidados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsCancelados = $docsCancelados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
         }
 
         foreach ($docsFirmar as $value) {
@@ -210,7 +221,7 @@ class FirmaController extends Controller {
             $token = $getToken->token;
         }
         // dd($docsFirmados);
-        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','rol','curpUser'));
+        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','rol','curpUser','seleccion'));
     }
 
     public function update(Request $request) {
