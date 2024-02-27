@@ -1784,7 +1784,7 @@
             } else {
                 $(variables[i]).prop('required', true);
 
-                if((anchors[i] == '#show_fact_pdf' || anchors[i] == '#show_fact_xml') && (idx[12] == 'ASIMILADOS A SALARIOS' || idx[13] == 'ASIMILADOS A SALARIOS')) {
+                if((anchors[i] == '#show_fact_pdf' || anchors[i] == '#show_fact_xml' || anchors[i] == '#show_fact_pdfc' || anchors[i] == '#show_fact_xmlc') && (idx[12] == 'ASIMILADOS A SALARIOS' || idx[13] == 'ASIMILADOS A SALARIOS' || idx[11] == 'ASIMILADOS A SALARIOS')) {
                     $(variables[i]).prop('required', false);
                     document.getElementById('td'+[i+1]+td).style.display = 'none';
                     document.getElementById('td'+[i+1]+td).previousElementSibling.style.display = 'none';
