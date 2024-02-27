@@ -67,7 +67,8 @@ Route::post('/vista/pat/fechaspat/add/metas', 'PatController\FechasController@gu
 Route::post('/vista/pat/fechaspat/consul', 'PatController\FechasController@consulfech')->name('pat.fechaspat.consulfech');
 //Guardar fechas al dar actualizar
 Route::post('/vista/pat/fechaspat/saveupd', 'PatController\FechasController@guardarfech')->name('pat.fechaspat.saveupdate');
-
+//Deshacer validacion
+Route::post('/vista/pat/fechaspat/deshacer', 'PatController\FechasController@return_valid')->name('pat.fechaspat.deshacer');
 
 
 /**Entrada de planeación */

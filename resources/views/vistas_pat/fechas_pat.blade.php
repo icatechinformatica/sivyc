@@ -78,6 +78,12 @@
                 <div class="col-lg-12 margin-tb">
                     {{-- @can('convenios.create') --}}
                         <div class="pull-right">
+                            <a class="btn btn-danger py-1 px-2" data-toggle="tooltip"
+                                data-placement="top" title="DESHACER VALIDACIÓN" href="#" id="btnAbrirModal">
+                                <i class="fa fa-history fa-2x" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="pull-right">
                             <a class="btn btn-success py-1 px-2" data-toggle="tooltip"
                                 data-placement="top" title="AGREGAR FECHAS" href="#" id="btnNuevoReg">
                                 <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
@@ -192,7 +198,7 @@
     </div>
     {{-- termino del card --}}
 
-    {{-- Modal --}}
+    {{-- Modal Fechas Meta / Avance --}}
     <div class="modal fade" id="modalUpdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         {{-- color en el modal --}}
@@ -226,6 +232,79 @@
         </div>
     </div>
 
+    {{-- Modal Deshacer Validación --}}
+    <div class="modal fade" id="modalDeleteValid" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        {{-- color en el modal --}}
+        <div class="modal-dialog modal-sm modal-notify modal-danger" id="" role="document">
+        <!--Content-->
+        <div class="modal-content text-center">
+            <!--Header-->
+            <div class="modal-header d-flex justify-content-center">
+                {{-- Mensaje para el modal --}}
+            <p class="heading font-weight-bold">DESHACER VALIDACIÓN</p>
+            </div>
+
+            <!--Body-->
+            <div class="modal-body">
+                <form action="" method="post" id="frmreturn_valid">
+                    <div class="alert alert-danger alert-dismissible fade show pl-2 text-left" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>Alerta! </strong><span>Al reiniciar PAT se eliminaran los datos del organismo de acuerdo a lo que usted seleccione.</span>
+                    </div>
+                    <div class="form-group">
+                        <select name="" id="ejer_valid" class="form-control">
+                            <option value="">Ejercicio</option>
+                            @for ($i = 2023; $i <= intval(date('Y')); $i++)
+                                <option value="{{$i}}">{{$i}}</option>
+                            @endfor
+                        </select>
+
+                        <select name="" id="list_dptos" class="form-control mt-3">
+                            <option value="">Departamentos</option>
+                            @foreach ($dptos_activos as $item_dpto)
+                                <option value="{{$item_dpto->id}}">{{$item_dpto->nom_dpto}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-between d-row mx-0 px-0">
+                        <div class="col-7 ml-0 pl-0">
+                            <select name="" id="asunto_dpto" class="form-control">
+                                <option value="">Asunto</option>
+                                <option value="meta">Meta Anual</option>
+                                <option value="avance">Avance Mensual</option>
+                            </select>
+                        </div>
+                        <div class="col-5 mr-0 pr-0">
+                            <select name="" id="mes_valid" class="form-control">
+                                <option value="">Mes</option>
+                                @foreach ($meses as $mes_item)
+                                    <option value="{{$mes_item}}">{{$mes_item}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <label for="fechaIniV" class="d-block text-left">Fecha de Inicio</label>
+                        <input type="date" class="form-control datepicker mb-3" name="fechaIniV" id="fechaIniV" value="" placeholder="FECHA DE INICIO">
+                        <label for="fechaFinV" class="d-block text-left">Fecha Limite</label>
+                        <input type="date" class="form-control datepicker" name="fechaFinV" id="fechaFinV" value="" placeholder="FECHA LIMITE">
+                    </div>
+                </form>
+            </div>
+
+            <!--Footer-->
+            <div class="modal-footer flex-center">
+                <button class="btn btn-danger" id="btnReturnValid" onclick="deshacerValid()">Activar</button>
+                <a type="button" class="btn btn-outline-danger waves-effect" id="" data-dismiss="modal">Cancelar</a>
+            </div>
+        </div>
+        <!--/.Content-->
+        </div>
+    </div>
+
 
 
         @section('script_content_js')
@@ -239,7 +318,6 @@
                     }else{
                         alert("¡FALTA INFORMACIÓN!. POR FAVOR , INGRESE UNA FECHA EN CADA CAMPO.")
                     }
-
                 });
             });
 
@@ -392,6 +470,54 @@
                 $('#form_eje').attr('action', url);
                 $("#form_eje").attr("target", '_self');
                 $('#form_eje').submit();
+            }
+
+            //Deshacer Validación
+            $("#btnAbrirModal").click(function () {
+                $('#modalDeleteValid').modal('show');
+            });
+
+            function deshacerValid() {
+                let ejercicio = $("#ejer_valid").val();
+                let departamento = $("#list_dptos").val();
+                let asunto = $("#asunto_dpto").val();
+                let fechaini = $("#fechaIniV").val().trim();
+                let fechafin = $("#fechaFinV").val().trim();
+                let mes = $("#mes_valid").val();
+
+                if (ejercicio != '' && departamento != '' &&  asunto != '' &&
+                    fechaini != '' && fechafin != '') {
+
+                    if (asunto == 'avance' && mes == '') {
+                        alert("SELECCIONE UN MES VALIDO");
+                    }else{
+                        let data = {
+                            "_token": $("meta[name='csrf-token']").attr("content"),
+                            "ejercicio": ejercicio,
+                            "departamento": departamento,
+                            "fechaini": fechaini,
+                            "fechafin": fechafin,
+                            "asunto": asunto,
+                            "mes": mes
+                        }
+                        $.ajax({
+                                type:"post",
+                                url: "{{ route('pat.fechaspat.deshacer') }}",
+                                data: data,
+                                dataType: "json",
+                                success: function (response) {
+                                    // console.log(response);
+                                    alert(response.mensaje);
+                                    if (response.status == 200) {location.reload();}
+                                }
+                        });
+
+
+
+                    }
+                }else{
+                    alert("¡FALTA INFORMACIÓN! POR FAVOR, VERIFIQUE QUE LOS CAMPOS ESTEN SELECCIONADOS");
+                }
             }
 
         </script>
