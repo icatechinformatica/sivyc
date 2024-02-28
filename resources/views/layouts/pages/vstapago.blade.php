@@ -614,7 +614,7 @@
                         <button id="validar_cita" style="text-align: right; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#validarCitaModal">Validar Entrega Digital</button>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" style="background-color: #12322B; color: white;" class="btn" data-dismiss="modal">Cerasdrar</button>
+                        <button type="button" style="background-color: #12322B; color: white;" class="btn" data-dismiss="modal">Cerrar</button>
                     </div>
                 @endcan
             </div>
