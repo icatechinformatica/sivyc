@@ -107,7 +107,7 @@
                             <th rowspan="2" class="text-center">QUITAR</th>
                             @endif                            
                             <th rowspan="2" class="text-center">No.GRUPO</th>
-                            <th rowspan="2" class="text-center">SERVICIO</th>
+                            <th rowspan="2" class="text-center">CURSO/CERTIFICACIÓN</th>
                             <th rowspan="2" class="text-center">UNIDAD/ACCIÓN MÓVIL</th> 
                             <th rowspan="2" class="text-center">CURSO</th>
                             <th rowspan="2" class="text-center">COSTO</th>

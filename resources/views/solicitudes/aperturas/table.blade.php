@@ -17,7 +17,7 @@
                 <th scope="col" class="text-center">FECHA ARC01</th>
                 <th scope="col" class="text-center" >CLAVE</th>                
                 <!--<th scope="col" class="text-center" >MOTIVO</th> -->        
-                <th scope="col" class="text-center">SERVICIO</th>
+                <th scope="col" class="text-center">CURSO /CERTIFICACIÓN</th>
                 <th scope="col" class="text-center">UNIDAD</th>
                 <th scope="col" class="text-center">ESPECIALIDAD</th>
                 <th scope="col" class="text-center">CURSO</th>
