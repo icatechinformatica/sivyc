@@ -48,7 +48,7 @@
         <table class="tb">
                 <tr style="background: #EAECEE;">
                     <th>NÚMERO DE SOLICITUD</th>
-                    <th>SERVICIO</th>
+                    <th>CURSO /<br/>CERTIFICACIÓN</th>
                     <th>ESPECIALIDAD</th>
                     <th>NOMBRE</th>
                     <th>MOD</th>
