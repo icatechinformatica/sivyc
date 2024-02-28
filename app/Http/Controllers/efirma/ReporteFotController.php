@@ -175,6 +175,7 @@ class ReporteFotController extends Controller
             ->Join('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')
             ->Where('contratos.id_contrato',$id_contrato)
             ->where('documentos_firmar.tipo_archivo', 'Reporte fotografico')
+            ->where('documentos_firmar.status', 'VALIDADO')
             ->first();
         if($result != null){
             $id_curso = $result->id_curso;
