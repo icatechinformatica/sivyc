@@ -12,7 +12,7 @@
                 @endif      
                 <th scope="col" class="text-center" >No. GRUPO</th>
                 <th scope="col" class="text-center" >CLAVE</th>
-                <th scope="col" class="text-center">SERVICIO</th>
+                <th scope="col" class="text-center">CURSO /<br/>CERTIFICACIÓN</th>
                 <th scope="col" class="text-center">ESPECIALIDAD</th>
                 <th scope="col" class="text-center">CURSO</th>
                 <th scope="col" class="text-center">INSTRUCTOR</th> 
