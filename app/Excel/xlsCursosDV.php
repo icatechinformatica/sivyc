@@ -24,7 +24,7 @@ class xlsCursosDV implements WithMultipleSheets, WithTitle, FromQuery, WithHeadi
         $this->head = [
             'CATEGORIA','ESPECIALIDAD','NOMBRE','HORAS','OBJETIVO',
             'PERFIL DE INGRESO SUGERIDO','TIPO CAPACITACION','MODALIDAD','CLASIFICACION',
-            'COSTO','SERVICIO','PROYECTO','UNIDADES DISPONIBLES'
+            'COSTO','CURSO/CERTIFICACION','PROYECTO','UNIDADES DISPONIBLES'
         ];
         if($this->title=='PROGRAMA ESTRATÉGICO')array_push($this->head, "DEPENDENCIAS");
     }
