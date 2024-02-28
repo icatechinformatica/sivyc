@@ -5,7 +5,10 @@ namespace App\Http\Controllers\PatController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ModelPat\FechasPat;
+use App\Models\ModelPat\Organismos;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class FechasController extends Controller
@@ -21,6 +24,7 @@ class FechasController extends Controller
      */
     public function index(Request $request, $tipo = null)
     {
+        $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
         //Ejercicio
         $sel_eje = $request->sel_ejercicio;
@@ -41,7 +45,14 @@ class FechasController extends Controller
         ->orderBy('fechas_pat.id', 'asc')
         ->paginate(18, ['fechas_pat.*']);
 
-        return view('vistas_pat.fechas_pat', compact('data', 'mes_avance_get', 'ejercicio', 'anio'));
+        ##Cosulta para deshacer validación
+        $dptos_activos = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as nom_dpto')
+        ->where('o.activo', '=', 'true')
+        ->orderBy('o.id', 'asc')
+        ->get();
+
+
+        return view('vistas_pat.fechas_pat', compact('data', 'mes_avance_get', 'ejercicio', 'anio', 'dptos_activos', 'meses'));
     }
 
     /**
@@ -243,6 +254,108 @@ class FechasController extends Controller
             'mensaje' => 'se realizo exitosamente',
             'datos' => $status_fech_pat
         ]);
+    }
+
+    ##DESHACER VALIDACIÓN
+    public function return_valid(Request $request)
+    {
+        $ejercicio = $request->ejercicio;
+        $departamento = $request->departamento;
+        $fechaini = date("d-m-Y", strtotime($request->fechaini));
+        $fechafin =  date("d-m-Y", strtotime($request->fechafin));
+        $mes = $request->mes;
+        $asunto = $request->asunto;
+
+        $consulta = FechasPat::select('id', 'id_org', 'status_meta', 'fecha_meta', 'fechas_avance', 'status_avance')->where('id_org',$departamento)
+        ->where('periodo',$ejercicio)->where('status','activo')->first();
+
+        if ($consulta == null) {return response()->json(['status' => 500, 'mensaje' => 'Error en la consulta del organismo']);}
+
+        ### Eliminar documento
+        $eliminar_doc = function ($id, $nomdoc){
+            $filePath = 'uploadFiles/pat/'.$id.'/'.$nomdoc;
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+        };
+
+        ##Buscamos si hay algun avance o meta pendiente para no causar conflictos
+        $avance_s = $consulta->status_avance['statusavance'];
+        $meta_s = $consulta->status_meta['statusmeta'];
+
+        if($meta_s == 'activo' || $avance_s == 'activo'){
+            return response()->json([
+                'status' => 100,
+                'mensaje' => "ESTE ORGANISMO TIENE UNA TAREA ACTIVA EN ESTE MOMENTO,\nPOR LO TANTO NO PUEDE DESHACER LA VALIDACIÓN DEL ORGANISMO SELECCIONADO\n\nFAVOR DE COMUNICARSE CON EL GRUPO DE SOPORTE"
+            ]);
+        }
+
+        ###Actualizar columna
+        if($asunto == 'meta'){
+            try {
+                $eliminar_doc($consulta->id, $consulta->fecha_meta['nomdoc_firm']);
+                $meta = FechasPat::find($consulta->id);
+                $url = $meta->fecha_meta;
+                $url2 = $meta->status_meta;
+                $url['fechaemi'] = $fechaini;
+                $url['fechalimit'] = $fechafin;
+                $url['fecmetapdf'] = "";
+                $url['fecmetasave'] = "";
+                $url['fecmetvalid'] = "";
+                $url['nomdoc_firm'] = "";
+                $url['urldoc_firm'] = "";
+                $url['fecmetretorno'] = "";
+                $url['fecenvioplane_m'] = "";
+                $meta->fecha_meta = $url;
+                $url2['captura'] = "1";
+                $url2['proceso'] = "0";
+                $url2['validado'] = "0";
+                $url2['retornado'] = "0";
+                $url2['statusmeta'] = "activo";
+                $meta->status_meta = $url2;
+                $meta->updated_at = date("Y-m-d");
+                $meta->iduser_updated = Auth::user()->id;
+                $meta->save();
+                $mensaje = "SE HA HABILITADO NUEVAMENTE LA META ANUAL DEL ORGANISMO";
+                return response()->json(['status' => 200,'mensaje' => $mensaje]);
+            } catch (\Throwable $th) {
+                return response()->json(['status' => 500,'mensaje' => $th->getMessage()]);
+            }
+
+        }else if($asunto == 'avance'){
+            try {
+                $eliminar_doc($consulta->id, $consulta->fechas_avance[$mes]['nomdoc_firmav']);
+                $avance = FechasPat::find($consulta->id);
+                $url = $avance->fechas_avance;
+                $url2 = $avance->status_avance;
+                $url[$mes]['fechafin'] = $fechafin;
+                $url[$mes]['fechasave'] = "";
+                $url[$mes]['statusmes'] = "";
+                $url[$mes]['fecavanpdf'] = "";
+                $url[$mes]['fecavanvalid'] = "";
+                $url[$mes]['fechaemision'] = $fechaini;
+                $url[$mes]['fecavanreturn'] = "";
+                $url[$mes]['nomdoc_firmav'] = "";
+                $url[$mes]['urldoc_firmav'] = "";
+                $url[$mes]['fecenvioplane_a'] = "";
+                $avance->fechas_avance = $url;
+                $url2['captura'] = "1";
+                $url2['proceso'] = "0";
+                $url2['autorizado'] = "0";
+                $url2['retornado'] = "0";
+                $url2['statusavance'] = "activo";
+                $avance->status_avance = $url2;
+                $avance->updated_at = date("Y-m-d");
+                $avance->iduser_updated = Auth::user()->id;
+                $avance->save();
+                $mensaje = "SE HA HABILITADO NUEVAMENTE EL AVANCE MENSUAL DE ".strtoupper($mes)." DEL ORGANISMO";
+                return response()->json(['status' => 200,'mensaje' => $mensaje]);
+            } catch (\Throwable $th) {
+                return response()->json(['status' => 500,'mensaje' => $th->getMessage()]);
+            }
+        }else{
+            return response()->json(['status' => 200,'mensaje' => "VERIFICA LOS CAMPOS"]);
+        }
     }
 
 

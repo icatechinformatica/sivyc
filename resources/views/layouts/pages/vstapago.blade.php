@@ -614,7 +614,7 @@
                         <button id="validar_cita" style="text-align: right; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#validarCitaModal">Validar Entrega Digital</button>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" style="background-color: #12322B; color: white;" class="btn" data-dismiss="modal">Cerasdrar</button>
+                        <button type="button" style="background-color: #12322B; color: white;" class="btn" data-dismiss="modal">Cerrar</button>
                     </div>
                 @endcan
             </div>
@@ -667,20 +667,28 @@
                                         <td><a class="nav-link" target="_blanks" title="Lista de Calificaciones" id="show_calificacionesvc" name="show_calificacionesvc">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td id="td6vc" style="text-align: left; vertical-align: left; font-size: 12px;">6.- Factura PDF</td>
-                                        <td><a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfvc" name="show_fact_pdfvc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
-                                        </a></td>
+                                        <td id="td6vc" style="text-align: left; vertical-align: left; font-size: 12px;">
+                                            {{-- 6.- Factura PDF --}}
+                                        </td>
+                                        <td>
+                                            <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfvc" name="show_fact_pdfvc">
+                                                {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
+                                            </a>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td id="td3vc" style="text-align: left; vertical-align: left; font-size: 12px;">3.- Validación de Instructor</td>
                                         <td><a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorvc" name="show_validacion_instructorvc">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td id="td7vc" style="text-align: left; vertical-align: left; font-size: 12px;">7.- Factura XML</td>
-                                        <td><a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlvc" name="show_fact_xmlvc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
-                                        </a></td>
+                                        <td id="td7vc" style="text-align: left; vertical-align: left; font-size: 12px;">
+                                            {{-- 7.- Factura XML --}}
+                                        </td>
+                                        <td>
+                                            <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlvc" name="show_fact_xmlvc">
+                                                {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
+                                            </a>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td id="td4vc" style="text-align: left; vertical-align: left; font-size: 12px;">4.- ARC-01/02</td>
@@ -804,7 +812,9 @@
                                     </div>
                                 </td>
                                 <td style="vertical-align:middle;" width='5%'><i id="factura_icon" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
-                                <td id="td6" style="text-align: left; vertical-align: middley; font-size: 12px; width: 30%;">6.- Factura PDF</td>
+                                <td id="td6" style="text-align: left; vertical-align: middley; font-size: 12px; width: 30%;">
+                                    6.- Factura PDF
+                                </td>
                                 <td style="width: 15%; text-align: left;">
                                     <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdf" name="show_fact_pdf">
@@ -921,7 +931,9 @@
                             </tr>
                             <tr>
                                 <td style="vertical-align:middle;" width='10px;'><i id="facturaxml_icon" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
-                                <td id="td7" style="text-align: left; vertical-align: middley; font-size: 12px;">7.- Factura XML</td>
+                                <td id="td7" style="text-align: left; vertical-align: middley; font-size: 12px;">
+                                    7.- Factura XML
+                                </td>
                                 <td style="text-align: left;">
                                     <div style="display: inline-block">
                                         <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xml" name="show_fact_xml">
@@ -985,21 +997,25 @@
                                     </div>
                                 </td>
 
-                                <td style="vertical-align:middle;" width='10px;'><i id="factura_iconc" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
-                                <td id='td6c' style="text-align: left; vertical-align: middle; font-size: 12px;">6.- Factura PDF</td>
+                                <td style="vertical-align:middle;" width='10px;'>
+                                    {{-- <i id="factura_iconc" class="fas fa-check text-success" style="vertical-align:middle;"></i> --}}
+                                </td>
+                                <td id='td6c' style="text-align: left; vertical-align: middle; font-size: 12px;">
+                                    {{-- 6.- Factura PDF --}}
+                                </td>
                                 <td style="text-align: left;">
                                     <div style="display: inline-block;">
-                                        <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfc" name="show_fact_pdfc">
+                                        {{-- <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfc" name="show_fact_pdfc">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
-                                        </a>
+                                        </a> --}}
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_pdfc" name="factura_pdfc" hidden>
                                         <label for="factura_pdfc">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
+                                            {{-- <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
-                                            </a>
-                                            <span id="factura_namec">Subir</span>
+                                            </a> --}}
+                                            {{-- <span id="factura_namec">Subir</span> --}}
                                         </label>
                                     </div>
                                 </td>
@@ -1013,21 +1029,25 @@
                                     </a>
                                 </td>
 
-                                <td style="vertical-align:middle;" width='10px;'><i id="facturaxml_iconc" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
-                                <td id='td7c' style="text-align: left; vertical-align: middle; font-size: 12px;">7.- Factura XML</td>
+                                <td style="vertical-align:middle;" width='10px;'>
+                                    {{-- <i id="facturaxml_iconc" class="fas fa-check text-success" style="vertical-align:middle;"></i> --}}
+                                </td>
+                                <td id='td7c' style="text-align: left; vertical-align: middle; font-size: 12px;">
+                                    {{-- 7.- Factura XML --}}
+                                </td>
                                 <td style="text-align: left;">
                                     <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlc" name="show_fact_xmlc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_xmlc" name="factura_xmlc" hidden>
                                         <label for="factura_xmlc">
-                                            <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
+                                            {{-- <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
-                                            </a>
-                                            <span id="factura_xml_namec">Subir</span>
+                                            </a> --}}
+                                            {{-- <span id="factura_xml_namec">Subir</span> --}}
                                         </label>
                                     </div>
                                 </td>
@@ -1704,7 +1724,10 @@
                         '#show_validacion_suprec', '#show_fact_pdfc', '#show_fact_xmlc',  '#show_contratoc',
                         '#show_identificacionc','#show_asistenciasc', '#show_calificacionesc', '#show_evidencia_fotograficac'];
 
-                variables = ['#solpa_pdfc', , , , , '#factura_pdfc', '#factura_xmlc', '#contratof_pdfc', , '#asistencias_pdfc',
+                //variables = ['#solpa_pdfc', , , , , '#factura_pdfc', '#factura_xmlc', '#contratof_pdfc', , '#asistencias_pdfc',
+                        //'#calificaciones_pdfc', '#evidencia_fotografica_pdfc'];
+                //By Jose Luis / Quitar factura pdf y xml
+                variables = ['#solpa_pdfc', , , , , '#contratof_pdfc', , '#asistencias_pdfc',
                         '#calificaciones_pdfc', '#evidencia_fotografica_pdfc'];
 
                 icons = ['#solpa_iconc', , , , , '#factura_iconc', '#facturaxml_iconc', '#contratof_iconc', , '#asistencias_iconc',
@@ -1761,7 +1784,7 @@
             } else {
                 $(variables[i]).prop('required', true);
 
-                if((anchors[i] == '#show_fact_pdf' || anchors[i] == '#show_fact_xml') && (idx[12] == 'ASIMILADOS A SALARIOS' || idx[13] == 'ASIMILADOS A SALARIOS')) {
+                if((anchors[i] == '#show_fact_pdf' || anchors[i] == '#show_fact_xml' || anchors[i] == '#show_fact_pdfc' || anchors[i] == '#show_fact_xmlc') && (idx[12] == 'ASIMILADOS A SALARIOS' || idx[13] == 'ASIMILADOS A SALARIOS' || idx[11] == 'ASIMILADOS A SALARIOS')) {
                     $(variables[i]).prop('required', false);
                     document.getElementById('td'+[i+1]+td).style.display = 'none';
                     document.getElementById('td'+[i+1]+td).previousElementSibling.style.display = 'none';

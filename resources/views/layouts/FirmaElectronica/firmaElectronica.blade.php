@@ -81,10 +81,10 @@
                                         $clase_contenido = 'tab-pane fade show';
                                     @endphp
                                 @endif --}}
-                                <a class="{{$clase_pestaña}} font-weight-bold" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Por Firmar</a>
-                                <a class="nav-item nav-link font-weight-bold" id="nav-firmados-tab" data-toggle="tab" href="#nav-firmados" role="tab" aria-controls="nav-firmados" aria-selected="false">Firmados</a>
-                                <a class="nav-item nav-link font-weight-bold" id="nav-validados-tab" data-toggle="tab" href="#nav-validados" role="tab" aria-controls="nav-validados" aria-selected="false">Sellados</a>
-                                <a style="color: #FF5733" class="nav-item nav-link font-weight-bold" id="nav-cancelados-tab" data-toggle="tab" href="#nav-cancelados" role="tab" aria-controls="nav-cancelados" aria-selected="false">Cancelados</a>
+                                <a class="{{($seleccion == null || $seleccion == 'por_firmar') ? $clase_pestaña : 'nav-item nav-link'}} font-weight-bold" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" onclick="cambiarSection('por_firmar')">Por Firmar</a>
+                                <a class="{{($seleccion == 'firmados') ? $clase_pestaña : 'nav-item nav-link'}} font-weight-bold" id="nav-firmados-tab" data-toggle="tab" href="#nav-firmados" role="tab" aria-controls="nav-firmados" aria-selected="false" onclick="cambiarSection('firmados')">Firmados</a>
+                                <a class="{{($seleccion == 'sellados') ? $clase_pestaña : 'nav-item nav-link'}} font-weight-bold" id="nav-validados-tab" data-toggle="tab" href="#nav-validados" role="tab" aria-controls="nav-validados" aria-selected="false" onclick="cambiarSection('sellados')">Sellados</a>
+                                <a style="color: #FF5733" class="{{($seleccion == 'cancelados') ? $clase_pestaña : 'nav-item nav-link'}} font-weight-bold" id="nav-cancelados-tab" data-toggle="tab" href="#nav-cancelados" role="tab" aria-controls="nav-cancelados" aria-selected="false" onclick="cambiarSection('cancelados')">Cancelados</a>
                                 @if(isset($curpUser))<p  class="nav-item nav-link font-weight-bold" style="margin-left: 50%;">CURP: {{$curpUser->curp}}</p>@endif
                             </div>
                         </nav>
@@ -157,7 +157,7 @@
                                 </div> --}}
                             @endif
                             {{-- Por Firmar --}}
-                            <div class="{{$clase_contenido}}" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="{{($seleccion == null || $seleccion == 'por_firmar') ? $clase_contenido : 'tab-pane fade'}}" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 @if ($docsFirmar != "[]")
                                     <div class="table-responsive">
                                         <table class="table table-hover">
@@ -254,6 +254,12 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    {{-- Paginación --}}
+                                    <div class="row py-4">
+                                        <div class="col d-flex justify-content-center">
+                                            {{$docsFirmar->appends(request()->query())->links()}}
+                                        </div>
+                                    </div>
                                 @else
                                     <div class="row mt-5">
                                         <div class="col d-flex justify-content-center">
@@ -264,7 +270,7 @@
                             </div>
 
                             {{-- Firmados --}}
-                            <div class="tab-pane fade" id="nav-firmados" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="{{($seleccion == 'firmados') ? $clase_contenido : 'tab-pane fade'}}" id="nav-firmados" role="tabpanel" aria-labelledby="nav-home-tab">
                                 @if ($docsFirmados != "[]")
                                     <div class="table-responsive">
                                         <table class="table table-hover">
@@ -362,6 +368,12 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    {{-- Paginación --}}
+                                    <div class="row py-4">
+                                        <div class="col d-flex justify-content-center">
+                                            {{$docsFirmados->appends(request()->query())->links()}}
+                                        </div>
+                                    </div>
                                 @else
                                     <div class="row mt-3">
                                         <div class="col d-flex justify-content-center">
@@ -372,7 +384,7 @@
                             </div>
 
                             {{-- Sellados --}}
-                            <div class="tab-pane fade" id="nav-validados" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="{{($seleccion == 'sellados') ? $clase_contenido : 'tab-pane fade'}}" id="nav-validados" role="tabpanel" aria-labelledby="nav-home-tab">
                                 @if ($docsValidados != "[]")
                                     <div class="table-responsive">
                                         <table class="table table-hover">
@@ -453,6 +465,15 @@
                                             </tbody>
                                         </table>
                                     </div>
+
+                                    {{-- Paginación --}}
+                                    <div class="row py-4">
+                                        <div class="col d-flex justify-content-center">
+                                            {{-- {{$docsValidados->appends(request()->query())->links()}} --}}
+                                            {{$docsValidados->appends(array_merge(request()->query(), ['section' => 'sellados']))->links()}}
+                                        </div>
+                                    </div>
+
                                 @else
                                     <div class="row mt-3">
                                         <div class="col d-flex justify-content-center">
@@ -463,7 +484,7 @@
                             </div>
 
                             {{-- cancelados --}}
-                            <div class="tab-pane fade" id="nav-cancelados" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="{{($seleccion == 'cancelados') ? $clase_contenido : 'tab-pane fade'}}" id="nav-cancelados" role="tabpanel" aria-labelledby="nav-home-tab">
                                 @if ($docsCancelados != "[]")
                                     <div class="table-responsive">
                                         <table class="table table-hover">
@@ -525,6 +546,12 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
+                                    </div>
+                                    {{-- Paginación --}}
+                                    <div class="row py-4">
+                                        <div class="col d-flex justify-content-center">
+                                            {{$docsCancelados->appends(request()->query())->links()}}
+                                        </div>
                                     </div>
                                 @else
                                     <div class="row mt-3">
@@ -869,6 +896,12 @@
                     }
                 }
             });
+        }
+        function cambiarSection(status) {
+            let queryParams = window.location.search;
+            if(queryParams != ''){
+                window.location.href = window.location.origin + window.location.pathname;
+            }
         }
 
     </script>
