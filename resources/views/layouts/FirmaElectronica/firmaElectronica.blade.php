@@ -352,16 +352,22 @@
                                                             <td>
                                                                 {{-- @if ($obj['emisor']['_attributes']['email'] == $email) --}}
                                                                 @can('efirma.sellar')
-                                                                    @if ($sendValidation && $docFirmado->tipo_archivo == 'Contrato' && $rol->role_id == '2')
+                                                                    {{-- @if ($sendValidation && $docFirmado->tipo_archivo == 'Contrato' && $rol->role_id == '2')
                                                                         <button type="button" onclick="sellardocumento('{{$docFirmado->id}}')" class="btn btn-outline-primary">Sellar</button>
                                                                     @elseif($sendValidation && in_array($docFirmado->tipo_archivo, ['Lista de asistencia','Lista de calificaciones','Reporte fotografico']) && $rol->role_id == '30')
                                                                         <button type="button" onclick="sellardocumento('{{$docFirmado->id}}')" class="btn btn-outline-primary">Sellar</button>
-                                                                    @elseif($sendValidation && !in_array($rol->role_id, ['2','30'])) {{--Directores de unidad--}}
+                                                                    @elseif($sendValidation && !in_array($rol->role_id, ['2','30'])
                                                                         <button type="button" onclick="sellardocumento('{{$docFirmado->id}}')" class="btn btn-outline-primary">Sellar</button>
                                                                     @else
                                                                         Faltan Firmas
+                                                                    @endif --}}
+                                                                    @if ($sendValidation && $docFirmado->tipo_archivo == 'Contrato' && $rol->role_id == '2')
+                                                                    <button type="button" onclick="sellardocumento('{{$docFirmado->id}}')" class="btn btn-outline-primary">Sellar</button>
+                                                                    @else
+                                                                    Faltan Firmas
                                                                     @endif
                                                                 @endcan
+
                                                             </td>
                                                         @else
                                                             <td></td>
