@@ -555,7 +555,7 @@ class ContratoController extends Controller
 
         $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clavecurso)->Where('tipo_archivo','Contrato')->First();
 
-        if(!is_null($status_doc)){
+        if(!is_null($status_doc) && $status_doc->status != 'CANCELADO ICTI' && $status_doc->status != 'VALIDADO'){
             $documento = DB::Table('documentos_firmar')
                 ->Where('numero_o_clave',$request->clavecurso)
                 ->Where('tipo_archivo','Contrato')
