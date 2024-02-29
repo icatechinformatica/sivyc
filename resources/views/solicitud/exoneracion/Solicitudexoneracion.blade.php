@@ -55,7 +55,7 @@
             <table class="tb">
                 <thead>
                     <tr>
-                        <th rowspan="2">SERVICIO</th>
+                        <th rowspan="2">CURSO /<br/>CERTIFICACIÓN</th>
                         <th rowspan="2">UNIDAD DE CAPACITACIÓN Y/O ACCIÓN MÓVIL</th> 
                         <th rowspan="2">NOMBRE DEL CURSO</th>
                         <th rowspan="2">MOD</th>

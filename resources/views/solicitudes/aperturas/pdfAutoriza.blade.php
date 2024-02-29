@@ -81,7 +81,7 @@
      <table class="tablas">
          <thead>
              <tr>
-                 <th style="padding: 0px;" rowspan="2" >SERVICIO</th>
+                 <th style="padding: 0px;" rowspan="2" >CURSO /<br/>CERTIFICACIÓN</th>
                  <th style="padding: 0px;" rowspan="2" >UNIDAD DE CAPACITACIÓN</th>
                  <th style="padding: 0px;" rowspan="2" >ESPECIALIDAD</th>
                  <th style="padding: 0px;" rowspan="2" width="8%" >NOMBRE</th>

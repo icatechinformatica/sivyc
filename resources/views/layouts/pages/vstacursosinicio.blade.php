@@ -87,7 +87,7 @@
                     <th >CLASIFI CACIÓN</th>
                     <th >COSTO</th>
                     <th >ESTATUS</th>
-                    <th >SERVICIO</th>
+                    <th >CURSO /CERTIFICACIÓN</th>
                     <th >PROG. ESTRA.</th>
                     @can('cursos.show')
                         <th >&nbsp;EDIT&nbsp;</th>
