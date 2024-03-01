@@ -395,7 +395,7 @@
         <hr style="border-color:dimgray">
         <div class="form-row">
             <div class="form-group col-md-2">
-                <label for="categoria" class="control-label h6">TIPO DE SERVICIO</label>    
+                <label for="categoria" class="control-label h6">CURSO/CERTIFICACIÓN</label>    
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="CURSO" name="servicio[]" checked>
                     <label class="form-check-label H6" for="flexCheckChecked">

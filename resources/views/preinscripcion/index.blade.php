@@ -136,7 +136,7 @@
                         {{ Form::select('tipo', ['PRESENCIAL'=>'PRESENCIAL','A DISTANCIA'=>'A DISTANCIA'], $tipo, ['id'=>'tipo', 'class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
                     </div>
                     <div class="form-group col-md-2">
-                        <label>SERVICIO:</label>
+                        <label>CURSO/CERTIFICACIÓN:</label>
                         {{ Form::select('tcurso', ["CURSO"=>"CURSO","CERTIFICACION"=>"CERTIFICACION"], $servicio, ['id'=>'tcurso','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
                     </div>
                     <div class="form-group col-md-2">

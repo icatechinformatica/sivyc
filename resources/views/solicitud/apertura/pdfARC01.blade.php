@@ -54,7 +54,7 @@
     <table class="tablas">
         <thead>                        
             <tr>
-                <th rowspan="2">SERVICIO</th>      	  
+                <th rowspan="2">CURSO /<br/>CERTIFICACIÓN</th>      	  
                 <th rowspan="2">ESPECIALIDAD</th>   
                 <th rowspan="2">NOMBRE</th>  
                 <th rowspan="2">MOD</th>               

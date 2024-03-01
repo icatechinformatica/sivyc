@@ -58,7 +58,7 @@
                             @if (($status=='PREVALIDACION') OR ($status=='SOLICITADO') OR ($status=='VALIDADO'))
                               <th rowspan="2" class="text-center">OBSERVACIONES</th>  
                             @endif                            
-                            <th rowspan="2" class="text-center">SERVICIO</th>
+                            <th rowspan="2" class="text-center">CURSO /CERTIFICACIÓN</th>
                             <th rowspan="2" class="text-center">UNIDAD /ACCIÓN MÓVIL</th> 
                             <th rowspan="2" class="text-center">CURSO</th>
                             <th rowspan="2" class="text-center">COSTO</th>
