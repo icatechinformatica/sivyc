@@ -1485,7 +1485,7 @@
             request.done(( respuesta) =>
         {
             respuesta.forEach(element => {
-                console.log(element);
+                // console.log(element);
                 switch (element['tipo_archivo']) {
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
@@ -1500,7 +1500,7 @@
                     case 'Lista de calificaciones':
                         const calificacionesvcLink = document.getElementById('show_calificacionesvc');
                         const calificacionevcsUrl = "/lista/calificacion/" + element['id_curso'];
-                        calificacionesvcLink.href = calificacionesvcUrl;
+                        calificacionesvcLink.href = calificacionevcsUrl;
                         calificacionesvcLink.hidden = false;
                         document.getElementById('td10vc').style.color = "black";
                     break;
