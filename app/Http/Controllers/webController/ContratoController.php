@@ -667,7 +667,9 @@ class ContratoController extends Controller
         }
 
         // check para validar si todavia se puede firmar electronicamente
-        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$data->clave)->Where('tipo_archivo','Contrato')->First();
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$data->clave)
+            ->Where('tipo_archivo','Contrato')
+            ->First();
         if($fechaA > $data->termino){
             $generarEfirma = FALSE;
         }
@@ -677,14 +679,15 @@ class ContratoController extends Controller
                 $firmantes = json_decode($status_doc->obj_documento, true);
                 foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
                     if(isset($firmante['_attributes']['certificado'])) {
-                        $generarFirma = FALSE;
+                        $generarEfirma = FALSE;
                     }
                 }
             }
-
+            if($status_doc->status == 'VALIDADO') {
+                $generarEfirma = FALSE;
+            }
         }
         // FINAL del check
-
 
         return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago','fechaActual','generarEfirma'));
     }
@@ -1236,7 +1239,7 @@ class ContratoController extends Controller
 
     public function contrato_pdf($id)
     {
-        $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = null;
+        $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = $body_html = null;
         $contrato = new contratos();
         $puestos = array();
 
@@ -1283,12 +1286,32 @@ class ContratoController extends Controller
             $D = date('d', $date);
             $M = $this->toMonth(date('m', $date));
             $Y = date("Y", $date);
+            $contratoController = new EContratoController();
+
+            //creacion de body para firma autografa
+            $info = DB::Table('contratos')->Select('tbl_unidades.*','tbl_cursos.clave','tbl_cursos.nombre','tbl_cursos.curp','instructores.correo',
+                    'contratos.numero_contrato')
+                ->Join('folios','folios.id_folios','contratos.id_folios')
+                ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
+                ->Join('tbl_unidades','tbl_unidades.unidad','tabla_supre.unidad_capacitacion')
+                ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+                ->join('instructores','instructores.id','tbl_cursos.id_instructor')
+                ->Where('contratos.id_contrato',$id)
+                ->First();
+            $body_html = $contratoController->create_body($id, $info);
+            // dd($body_html);
         } else {
             $firma_electronica = true;
             $date = strtotime($data_contrato->fecha_firma);
             $D = date('d', $date);
             $M = $this->toMonth(date('m', $date));
             $Y = date("Y", $date);
+
+            $body_html = json_decode($documento->obj_documento_interno);
+            // Quita el primer carácter
+            // $body_html = substr($body_html, 1);
+            // Quita el último carácter
+            // $body_html = substr($body_html, 0, -1);
         }
         if(isset($documento->uuid_sellado)){
             $objeto = json_decode($documento->obj_documento,true);
@@ -1333,19 +1356,19 @@ class ContratoController extends Controller
             }
 
         }
-
-        if($data->tipo_curso == 'CURSO')
-        {
+        // dd(json_decode($documento->obj_documento_interno));
+        // if($data->tipo_curso == 'CURSO')
+        // {
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html'));
             }
-        }
-        else
-        {
-            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
-        }
+        // }
+        // else
+        // {
+        //     $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
+        // }
 
         $pdf->setPaper('LETTER', 'Portrait');
         return $pdf->stream("Contrato-Instructor-$data_contrato->numero_contrato.pdf");
