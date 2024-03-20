@@ -399,7 +399,7 @@
                                                             </small>
                                                         </td>
                                                         <td><small>{{$docFirmado->created_at->format('d-m-Y')}}</small></td>
-                                                        @if($rol->role_id == '30' || $rol->role_id == '2')
+                                                        @if($rol->role_id == '30' || $rol->role_id == '2' || $rol->role_id == '8')
                                                             <td>
                                                                 <button type="button" onclick="cancelarDocumento('{{$docFirmado->id}}', '{{$nameArchivo}}', '{{$docFirmado->tipo_archivo}}', '{{$docFirmado->numero_o_clave}}')" class="btn btn-outline-danger">Cancelar</button>
                                                             </td>
