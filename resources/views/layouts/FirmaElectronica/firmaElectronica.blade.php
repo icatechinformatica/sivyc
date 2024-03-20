@@ -10,6 +10,40 @@
             font-weight: bold;
         }
 
+        /* Estilo del loader */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+            z-index: 9999; /* Asegura que esté por encima de otros elementos */
+            display: none; /* Ocultar inicialmente */
+        }
+
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
     </style>
     {{-- <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" /> --}}
@@ -23,6 +57,11 @@
 @section('content')
     <div class="d-none" id="vHTMLSignature"></div>
     <input class="d-none" id="token" name="token" type="text" value="{{$token}}">
+
+    {{-- Loader --}}
+    <div id="loader-overlay">
+        <div id="loader"></div>
+    </div>
 
     <div class="container-fluid pt-3 px-0 py-0 mx-0 my-0">
         <div class="row">
@@ -63,6 +102,23 @@
 
         <div class="card">
             <div class="card-header">Mis documentos</div>
+            {{-- Buscador --}}
+            <div class="card">
+                <div class="card-body">
+                    <form action="" class="form-inline" id="frmBuscar" method="get">
+                        <input type="text" class="form-control" placeholder="CLAVE DE CURSO" name="txtBusqueda" id="txtBusqueda" value="{{($busqueda_clave != null) ? $busqueda_clave : ''}}">
+                        <input type="hidden" name="seccion" id="seccion">
+                        <a class="btn btn-success ml-3" data-toggle="tooltip"
+                                data-placement="top" title="Buscar" href="#" onclick="Buscar(event)">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                        </a>
+                        <a class="btn btn-danger" data-toggle="tooltip"
+                                data-placement="top" title="Limpiar" href="#" onclick="Limpiar(event)">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </a>
+                    </form>
+                </div>
+            </div>
             <div class="card-body px-0">
 
                 <div class="row">
@@ -158,7 +214,7 @@
                             @endif
                             {{-- Por Firmar --}}
                             <div class="{{($seleccion == null || $seleccion == 'por_firmar') ? $clase_contenido : 'tab-pane fade'}}" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                @if ($docsFirmar != "[]")
+                                @if (count($docsFirmar) != 0)
                                     <div class="table-responsive">
                                         <table class="table table-hover">
                                             <thead>
@@ -257,21 +313,19 @@
                                     {{-- Paginación --}}
                                     <div class="row py-4">
                                         <div class="col d-flex justify-content-center">
-                                            {{$docsFirmar->appends(request()->query())->links()}}
+                                            {{$docsFirmar->appends(array_merge(request()->query(), ['section' => 'por_firmar']))->links()}}
                                         </div>
                                     </div>
                                 @else
-                                    <div class="row mt-5">
-                                        <div class="col d-flex justify-content-center">
-                                            <strong>Sin documentos por firmar</strong>
-                                        </div>
+                                    <div class="alert alert-primary" role="alert">
+                                        <strong class="d-block text-center">No se encontraron documentos en esta sección</strong>
                                     </div>
                                 @endif
                             </div>
 
                             {{-- Firmados --}}
                             <div class="{{($seleccion == 'firmados') ? $clase_contenido : 'tab-pane fade'}}" id="nav-firmados" role="tabpanel" aria-labelledby="nav-home-tab">
-                                @if ($docsFirmados != "[]")
+                                @if (count($docsFirmados) != 0)
                                     <div class="table-responsive">
                                         <table class="table table-hover">
                                             <thead>
@@ -381,21 +435,19 @@
                                     {{-- Paginación --}}
                                     <div class="row py-4">
                                         <div class="col d-flex justify-content-center">
-                                            {{$docsFirmados->appends(request()->query())->links()}}
+                                            {{$docsFirmados->appends(array_merge(request()->query(), ['section' => 'firmados']))->links()}}
                                         </div>
                                     </div>
                                 @else
-                                    <div class="row mt-3">
-                                        <div class="col d-flex justify-content-center">
-                                            <strong>Sin Documentos Firmados</strong>
-                                        </div>
+                                    <div class="alert alert-primary" role="alert">
+                                        <strong class="d-block text-center">No se encontraron documentos en esta sección</strong>
                                     </div>
                                 @endif
                             </div>
 
                             {{-- Sellados --}}
                             <div class="{{($seleccion == 'sellados') ? $clase_contenido : 'tab-pane fade'}}" id="nav-validados" role="tabpanel" aria-labelledby="nav-home-tab">
-                                @if ($docsValidados != "[]")
+                                @if (count($docsValidados) != 0)
                                     <div class="table-responsive">
                                         <table class="table table-hover">
                                             <thead>
@@ -479,23 +531,20 @@
                                     {{-- Paginación --}}
                                     <div class="row py-4">
                                         <div class="col d-flex justify-content-center">
-                                            {{-- {{$docsValidados->appends(request()->query())->links()}} --}}
                                             {{$docsValidados->appends(array_merge(request()->query(), ['section' => 'sellados']))->links()}}
                                         </div>
                                     </div>
 
                                 @else
-                                    <div class="row mt-3">
-                                        <div class="col d-flex justify-content-center">
-                                            <strong>Sin Documentos Validados</strong>
-                                        </div>
+                                    <div class="alert alert-primary" role="alert">
+                                        <strong class="d-block text-center">No se encontraron documentos en esta sección</strong>
                                     </div>
                                 @endif
                             </div>
 
                             {{-- cancelados --}}
                             <div class="{{($seleccion == 'cancelados') ? $clase_contenido : 'tab-pane fade'}}" id="nav-cancelados" role="tabpanel" aria-labelledby="nav-home-tab">
-                                @if ($docsCancelados != "[]")
+                                @if (count($docsCancelados) != 0)
                                     <div class="table-responsive">
                                         <table class="table table-hover">
                                             <thead>
@@ -560,14 +609,12 @@
                                     {{-- Paginación --}}
                                     <div class="row py-4">
                                         <div class="col d-flex justify-content-center">
-                                            {{$docsCancelados->appends(request()->query())->links()}}
+                                            {{$docsCancelados->appends(array_merge(request()->query(), ['section' => 'cancelados']))->links()}}
                                         </div>
                                     </div>
                                 @else
-                                    <div class="row mt-3">
-                                        <div class="col d-flex justify-content-center">
-                                            <strong>Sin Documentos Cancelados</strong>
-                                        </div>
+                                    <div class="alert alert-primary" role="alert">
+                                        <strong class="d-block text-center">No se encontraron documentos en esta sección</strong>
                                     </div>
                                 @endif
                             </div>
@@ -777,6 +824,34 @@
             $('#btnsignature').attr('onclick', 'firmar();');
         });
 
+        // paginacion
+        $(document).on('click', '.pagination a', function(e) {
+            loader('show');
+        });
+
+        //Boton de buscar y limpiar
+        function Buscar(event) {
+            event.preventDefault();
+            if ($("#txtBusqueda").val() != '') {
+                loader('show');
+                $('#frmBuscar').attr('action', "{{route('firma.inicio')}}");
+                $("#frmBuscar").attr("target", '_self');
+                $('#frmBuscar').submit();
+            }else{
+                alert("INGRESA UNA CLAVE VALIDA");
+                return false;
+            }
+        }
+
+        function Limpiar(event) {
+            event.preventDefault();
+            loader('show');
+            $("#txtBusqueda").val("");
+            $('#frmBuscar').attr('action', "{{route('firma.inicio')}}");
+            $("#frmBuscar").attr("target", '_self');
+            $('#frmBuscar').submit();
+        }
+
         function abriModal(key) {
             $('#vHTMLSignature').removeClass('d-none');
             cadena = $('#cadena'+ key).val();
@@ -907,11 +982,28 @@
                 }
             });
         }
+
+        //Cambiar de seccion e implementar loader
         function cambiarSection(status) {
+            $("#seccion").val(status);
             let queryParams = window.location.search;
-            if(queryParams != ''){
-                window.location.href = window.location.origin + window.location.pathname;
+            let bustxtBus = queryParams.indexOf("?txtBusqueda");
+            let buspage = queryParams.indexOf("page");
+
+            console.log(buspage);
+            if(queryParams != '' && bustxtBus != 0 && buspage != -1){
+                loader('show');
+                // window.location.href = window.location.origin + window.location.pathname;
+                var nuevaURL = window.location.origin + window.location.pathname;
+                nuevaURL += '?seccion=' + status;
+                window.location.href = nuevaURL;
             }
+        }
+
+        function loader(make) {
+            if(make == 'hide') make = 'none';
+            if(make == 'show') make = 'block';
+            document.getElementById('loader-overlay').style.display = make;
         }
 
     </script>

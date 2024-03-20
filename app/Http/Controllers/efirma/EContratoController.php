@@ -18,26 +18,6 @@ use Illuminate\Support\Facades\Http;
 class EContratoController extends Controller
 {
     public function prueba() {
-        $dataInsert = DocumentosFirmar::Where('tipo_archivo','Contrato')->Get();
-        foreach($dataInsert as $data) {
-            $info = DB::Table('contratos')->Select('tbl_unidades.*','tbl_cursos.clave','tbl_cursos.nombre','tbl_cursos.curp','instructores.correo',
-                'contratos.numero_contrato','contratos.id_contrato')
-                ->Join('folios','folios.id_folios','contratos.id_folios')
-                ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
-                ->Join('tbl_unidades','tbl_unidades.unidad','tabla_supre.unidad_capacitacion')
-                ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
-                ->join('instructores','instructores.id','tbl_cursos.id_instructor')
-                ->Where('tbl_cursos.clave',$data->numero_o_clave)
-                ->First();
-
-            $body = $this->create_body($info->id_contrato,$info); //creacion de body HTML
-            if(is_null($body)) {
-                $data->obj_documento_interno = null;
-            } else {
-                $data->obj_documento_interno = json_encode($body);
-            }
-            $data->save();
-        }
         dd('completo');
     }
 
@@ -386,8 +366,8 @@ class EContratoController extends Controller
 
             CLÁUSULAS\n
                 PRIMERA.- OBJETO DEL CONTRATO. El presente instrumento tiene por objeto establecer al “PRESTADOR DE SERVICIOS” los términos y condiciones que se obliga con “ICATECH”, a brindar sus servicios profesionales bajo el régimen de SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS, para otorgar el curso establecido en el ARC01 y/o ARC02. \n
-                SEGUNDA.- MONTO. El monto que “ICATECH”, pagará al “PRESTADOR DE SERVICIOS” será por la cantidad de $".$cantidad.' ('.$data_contrato->cantidad_letras1.' '. $monto[1]."/100 M.N.); por curso impartido, menos las retenciones que el “ICATECH” le retendrá como pago provisional por concepto de Impuesto sobre la Renta, de conformidad con lo establecido al artículo 96 de la Ley del Impuesto sobre la Renta, enterando a las Autoridades Hacendarias las retenciones correspondientes.\n
-                El monto resultante señalado en el párrafo primero de esta cláusula se otorgará al “PRESTADOR DE SERVICIOS” conforme a la disponibilidad financiera de “ICATECH”; que se realizará en una sola exhibición, por medio de cheque y/o transferencia interbancaria a la cuenta que señala, y se agrega al presente Contrato, por lo que se efectuará la acumulación de todos los cursos impartidos durante el mes y se realizará la determinación del ISR correspondiente. Así mismo, se expedirá un recibo, el cual se hará llegar al correo que indique (el cual se agrega al presente Instrumento), mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que el “PRESTADOR DE SERVICIOS” no podrá exigir retribución alguna por ningún otro concepto.\n
+                SEGUNDA.- MONTO. El monto que “ICATECH”, pagará al “PRESTADOR DE SERVICIOS” será por la cantidad de $".$cantidad.' ('.$data_contrato->cantidad_letras1.' '. $monto[1]."/100 M.N.); por curso impartido, menos las retenciones que el “ICATECH” le realizará como pago provisional por concepto de Impuesto sobre la Renta, de conformidad con lo establecido al artículo 96 de la Ley del Impuesto sobre la Renta, enterando a las Autoridades Hacendarias las retenciones correspondientes.\n
+                El monto resultante señalado en el párrafo primero de esta cláusula se otorgará al “PRESTADOR DE SERVICIOS” conforme a la disponibilidad financiera de “ICATECH”; que se realizará en una sola exhibición, por medio de cheque y/o transferencia interbancaria a la cuenta que señala, y se agrega al presente Contrato. Así mismo, se expedirá el comprobante fiscal digital por internet (CFDI), el cual se hará llegar al correo que indique (el cual se agrega al presente Instrumento), mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que el “PRESTADOR DE SERVICIOS” no podrá exigir retribución alguna por ningún otro concepto.\n
                 TERCERA.- DE LA OBLIGACIÓN DEL “PRESTADOR DE SERVICIOS”. Se obliga a desempeñar las obligaciones que contrae en este acto conforme a los procedimientos de control escolar y con todo el sentido ético y profesional que requiere “ICATECH”, de acuerdo con las políticas y reglamentos del mismo para:\n
                         I. Diseñar, preparar e impartir el curs a su cargo con toda la diligencia y esmero que exige la calidad de “ICATECH”.\n
                         II. Vigilar que su curso impartido se aproveche íntegramente el tiempo necesario para el mejor desarrollo del mismo.\n
@@ -460,8 +440,8 @@ class EContratoController extends Controller
             <div align="center"><strong> CLÁUSULAS </strong></div>
             <br><div align="justify">
                 <dd><b>PRIMERA.- OBJETO DEL CONTRATO</b>. El presente instrumento tiene por objeto establecer al <b>“PRESTADOR DE SERVICIOS”</b> los términos y condiciones que se obliga con <b>“ICATECH”</b>, a brindar sus servicios profesionales bajo el régimen de <b>SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS,</b> para otorgar el curso establecido en el ARC01 y/o ARC02.</dd>
-                <br><dd><b>SEGUNDA.- MONTO</b>. El monto que <b>“ICATECH”</b>, pagará al <b>“PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b>$'. $cantidad. '('. $data_contrato->cantidad_letras1. ' '. $monto['1']. '/100 M.N.)</b>; por curso impartido, menos las retenciones que el <b>“ICATECH”</b> le retendrá como pago provisional por concepto de Impuesto sobre la Renta, de conformidad con lo establecido al artículo 96 de la Ley del Impuesto sobre la Renta, enterando a las Autoridades Hacendarias las retenciones correspondientes.</dd>
-                <br><dd>El monto resultante señalado en el <b>párrafo primero</b> de esta cláusula se otorgará al <b>“PRESTADOR DE SERVICIOS”</b> conforme a la disponibilidad financiera de <b>“ICATECH”</b>; que se realizará en una sola exhibición, por medio de cheque y/o transferencia interbancaria a la cuenta que señala, y se agrega al presente Contrato, por lo que se efectuará la acumulación de todos los cursos impartidos durante el mes y se realizará la determinación del ISR correspondiente. Así mismo, se expedirá un recibo, el cual se hará llegar al correo que indique (el cual se agrega al presente Instrumento), mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que el <b>“PRESTADOR DE SERVICIOS”</b> no podrá exigir retribución alguna por ningún otro concepto.</dd>
+                <br><dd><b>SEGUNDA.- MONTO</b>. El monto que <b>“ICATECH”</b>, pagará al <b>“PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b>$'. $cantidad. '('. $data_contrato->cantidad_letras1. ' '. $monto['1']. '/100 M.N.)</b>; por curso impartido, menos las retenciones que el <b>“ICATECH”</b> le realizará como pago provisional por concepto de Impuesto sobre la Renta, de conformidad con lo establecido al artículo 96 de la Ley del Impuesto sobre la Renta, enterando a las Autoridades Hacendarias las retenciones correspondientes.</dd>
+                <br><dd>El monto resultante señalado en el <b>párrafo primero</b> de esta cláusula se otorgará al <b>“PRESTADOR DE SERVICIOS”</b> conforme a la disponibilidad financiera de <b>“ICATECH”</b>; que se realizará en una sola exhibición, por medio de cheque y/o transferencia interbancaria a la cuenta que señala, y se agrega al presente Contrato. Así mismo, se expedirá el comprobante fiscal digital por internet (CFDI), el cual se hará llegar al correo que indique (el cual se agrega al presente Instrumento), mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que el <b>“PRESTADOR DE SERVICIOS”</b> no podrá exigir retribución alguna por ningún otro concepto.</dd>
                 <br><dd><b>TERCERA.- DE LA OBLIGACIÓN DEL “PRESTADOR DE SERVICIOS”</b>. Se obliga a desempeñar las obligaciones que contrae en este acto conforme a los procedimientos de control escolar y con todo el sentido ético y profesional que requiere <b>“ICATECH”</b>, de acuerdo con las políticas y reglamentos del mismo para:</dd>
                 <Ol type = "I">
                     <li> Diseñar, preparar e impartir el curso a su cargo con toda la diligencia y esmero que exige la calidad de <b>“ICATECH”</b>.</li>
@@ -551,20 +531,20 @@ class EContratoController extends Controller
     //obtener el token
     public function generarToken() {
 
-        // $resToken = Http::withHeaders([
-        //     'Accept' => 'application/json'
-        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'SISTEM_IVINCAP',
-        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
-        // ]);
-
-        // Token Prueba
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'FirmaElectronica',
-            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+            'nombre' => 'SISTEM_IVINCAP',
+            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         ]);
+
+        // Token Prueba
+        // $resToken = Http::withHeaders([
+        //     'Accept' => 'application/json'
+        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+        //     'nombre' => 'FirmaElectronica',
+        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        // ]);
 
         $token = $resToken->json();
 
@@ -577,20 +557,20 @@ class EContratoController extends Controller
     // obtener la cadena original
     public function getCadenaOriginal($xmlBase64, $token) {
 
-        // $response1 = Http::withHeaders([
-        //     'Accept' => 'application/json',
-        //     'Authorization' => 'Bearer '.$token,
-        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
-        //     'xml_OriginalBase64' => $xmlBase64
-        // ]);
-
-        // api prueba
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token,
-        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
             'xml_OriginalBase64' => $xmlBase64
         ]);
+
+        // api prueba
+        // $response1 = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token,
+        // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        //     'xml_OriginalBase64' => $xmlBase64
+        // ]);
 
         return $response1;
     }
