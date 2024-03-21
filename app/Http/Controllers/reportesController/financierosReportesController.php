@@ -10,24 +10,35 @@ use App\Exports\ExportExcel;
 use App\Models\tbl_unidades;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Carbon\Carbon;
 use PDF;
 
 class financierosReportesController extends Controller
 {
     public function index(){
+        $arrayEjercicio = array();
         $unidades = tbl_unidades::SELECT('ubicacion')->WHERE('id', '!=', '0')->ORDERBY('ubicacion','asc')
                                 ->GROUPBY('ubicacion')
                                 ->GET();
 
-        return view('layouts.pages.reportes.financieros.reporte_cursos', compact('unidades'));
+        for($x = 2020; $x <= intval(CARBON::now()->format('Y')); $x++)
+        {
+            array_push($arrayEjercicio, $x);
+        }
+
+        $añoActual = intval(CARBON::now()->format('Y'));
+
+        return view('layouts.pages.reportes.financieros.reporte_cursos', compact('unidades','arrayEjercicio','añoActual'));
     }
 
     public function cursos_xls(Request $request) {
+
         $query = DB::Table('tbl_cursos')->Select('tbl_cursos.clave','tbl_cursos.dura','tbl_cursos.nombre','folios.folio_validacion')
             ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
             ->Join('folios','folios.id_cursos','tbl_cursos.id')
             ->Join('pagos','pagos.id_curso','tbl_cursos.id')
-            ->Where('tbl_unidades.ubicacion',$request->unidad);
+            ->Where('tbl_unidades.ubicacion',$request->unidad)
+            ->whereYear('inicio', $request->ejercicio);
         switch ($request->status) {
             case 'En Espera':
                 $query = $query->WhereBetween('pagos.solicitud_fecha', [$request->fecha1, $request->fecha2])->Where('pagos.status_recepcion','En Espera');
