@@ -7,6 +7,7 @@
             <th><b>HORAS CURSO</b></th>
             <th><b>INSTRUCTOR</b></th>
             <th><b>SUFICIENCIA PRESUPUESTAL</b></th>
+            <th><b>URL FACTURA XML</b></th>
         </tr>
     </thead>
     <tbody>
@@ -17,6 +18,7 @@
                 <td>{{$cadwell->dura}}</td>
                 <td>{{$cadwell->nombre}}</td>
                 <td>{{$cadwell->folio_validacion}}</td>
+                <td><a href="{{$cadwell->arch_factura_xml}}" download="prueba.xml">XML {{$cadwell->folio_validacion}}</a></td>
             </tr>
         @endforeach
     </tbody>
