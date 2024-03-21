@@ -337,6 +337,9 @@
                         @can('show.cursos.validados')
                             <a class="dropdown-item" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
                         @endcan
+                        @can('consulta.bolsa.trabajo')
+                            <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
+                        @endcan
                     </div>
                 </li>
 
