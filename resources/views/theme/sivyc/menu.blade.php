@@ -130,9 +130,9 @@
                             @can('vista.formatot.unidades.indice') {{--UNIDADES DE CAPACITACION--}}
                                 <a class="dropdown-item" href="{{route('vista_formatot')}}">Generación y Envío de FormatoT</a>
                             @endcan
-                            
+
                                 <a class="dropdown-item" href="{{route('formatot.consulta.index')}}">Consulta de FormatoT</a>
-                            
+
                             @can('vista.validacion.enlaces.dta')
                                 <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión de Cursos Formato T</a>
                             @endcan
@@ -152,7 +152,7 @@
                             @can('vista.validacion.enlaces.dta')
                                 <a href="{{ route('checar.memorandum.dta.mes') }}" class="dropdown-item">Memorandums Enviados a DTA</a>
                             @endcan
-                            
+
                             {{-- agregar nuevo elemento a menu END --}}
                             {{--@can('vista.formatot.unidades.indice')
                                 <a href="{{ route('cursos.reportados.historico.index') }}" class="dropdown-item">Cursos Reportados de Meses Anteriores Para la Unidad</a>
@@ -292,6 +292,9 @@
                         @can('financieros.reportevalrec')
                             <a class="dropdown-item" href="{{route('docummentospago.reporte')}}">Trámites Recepcionados</a>
                         @endcan
+                        @can('financieros.reportecursos')
+                            <a class="dropdown-item" href="{{route('financieros-reporte-cursos')}}">Reporte de Cursos</a>
+                        @endcan
 
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
@@ -333,6 +336,9 @@
                         @endcan
                         @can('show.cursos.validados')
                             <a class="dropdown-item" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
+                        @endcan
+                        @can('consulta.bolsa.trabajo')
+                            <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
                         @endcan
                     </div>
                 </li>

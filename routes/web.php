@@ -25,7 +25,7 @@ Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@histor
 Route::get('/contrato/historial/validado/{id}', 'webController\ContratoController@historial_validado')->name('contrato-validado-historial');
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
-Route::get('/prueba', 'webController\InstructorController@prueba');
+Route::get('/prueba', 'efirma\EContratoController@prueba');
 Route::get('/prueba2', 'webController\CursosController@prueba2');
 Route::get('/contrato/reiniciar/{id}', 'webController\ContratoController@contractRestart')->name('reiniciar-contrato');
 
@@ -767,7 +767,7 @@ Route::put('/exoneraciones/modificar/{id}', 'webController\ExoneracionesControll
     ->middleware('can:exoneraciones.update');
 Route::post('/exoneraciones/sid/municipios', 'webController\ExoneracionesController@getmunicipios');
 
-/*Reporte Financieros 17032023*/
+/*Reporte Financieros 20032024*/
 Route::get('/financieros/reporte', 'webController\PagoController@financieros_reporte')->name('financieros.reporte')->middleware('can:financieros.reporte');
 Route::post('/financieros/reporte/pdf','webController\PagoController@financieros_reportepdf')->name('financieros.reportepdf');
 Route::post('/financieros/upload/pago-autorizado','webController\PagoController@upload_pago_autorizado')->name('doc-pago-guardar');
@@ -781,6 +781,8 @@ Route::post('/financieros/denegado/recepcion-entrega-fisica','webController\Pago
 Route::post('/financieros/aceptado/recepcion-entrega-fisica','webController\PagoController@recibido_entrega_fisica')->name('recibido-entrega-fisica');
 Route::get('/financieros/download-rar/{id_contrato}', 'webController\PagoController@downloadRar')->name('downloadRarPagos');
 Route::post('/financieros/retorno/entrega-fisica','webController\PagoController@retorno_validacion_entrega_fisica')->name('retorno-entrega-fisica');
+Route::get('/financieros/reporte/cursos','reportesController\financierosReportesController@index')->name('financieros-reporte-cursos');
+Route::post('/financieros/reporte/cursos/xls','reportesController\financierosReportesController@cursos_xls')->name('financieros-reporte-cursos-xls');
 
 //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
 Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
@@ -918,3 +920,4 @@ Route::post('/report/busqueda', 'efirma\ReporteFotController@getreportefoto')->n
 // Route::post('/reportefoto/validar', 'efirma\ReporteFotController@generar_xml')->name('reportefoto-xml');
 
 Route::post('/retorno/movimiento/instructor', 'webController\InstructorController@movimiento_retorno')->name('movimiento-retorno');
+

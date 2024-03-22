@@ -33,7 +33,14 @@ class FirmaController extends Controller {
 
     // php artisan serve --port=8001
     public function index(Request $request) {
-        $seleccion = request('section');
+        $seleccion = request('section'); ##Paginacion
+        $seleccion2 = $request->seccion; ##Busqueda
+
+        if($seleccion == null){$seleccion = $seleccion2;}
+
+        if ($seleccion != null) {session(['seccion' => $seleccion]);}
+        else if ($seleccion2 != null) {session(['seccion' => $seleccion2]);}
+        $seleccion = session('seccion');
 
         $docsVistobueno2 = array();
         $email = Auth::user()->email;
@@ -181,13 +188,13 @@ class FirmaController extends Controller {
         });
             // ->orderBy('id', 'desc')->get();
 
-        $tipo_documento = $request->tipo_documento;
-        // if ($tipo_documento != null) {
-            session(['tipo' => $tipo_documento]);
-        // }
-        $tipo_documento = session('tipo');
+        ##BUSQUEDA POR CLAVE
+        $busqueda_clave = null;
+        if($request->txtBusqueda != null || $request->txtBusqueda != ""){
+            $busqueda_clave = $request->txtBusqueda;
+        }
 
-        if($tipo_documento == null) {
+        if($busqueda_clave == null) {
             // $docsFirmar = $docsFirmar1->orderBy('id', 'desc')->get();
             // $docsFirmados = $docsFirmados1->orderBy('id', 'desc')->get();
             // $docsValidados = $docsValidados1->orderBy('id', 'desc')->get();
@@ -202,10 +209,10 @@ class FirmaController extends Controller {
             // $docsFirmados = $docsFirmados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
             // $docsValidados = $docsValidados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
             // $docsCancelados = $docsCancelados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
-            $docsFirmar = $docsFirmar1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
-            $docsFirmados = $docsFirmados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
-            $docsValidados = $docsValidados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
-            $docsCancelados = $docsCancelados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsFirmar = $docsFirmar1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsFirmados = $docsFirmados1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsValidados = $docsValidados1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsCancelados = $docsCancelados1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
         }
 
         foreach ($docsFirmar as $value) {
@@ -221,7 +228,7 @@ class FirmaController extends Controller {
             $token = $getToken->token;
         }
         // dd($docsFirmados);
-        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'tipo_documento', 'token','rol','curpUser','seleccion'));
+        return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'busqueda_clave', 'token','rol','curpUser','seleccion'));
     }
 
     public function update(Request $request) {
@@ -471,7 +478,7 @@ class FirmaController extends Controller {
             }
 
             //By jose luis Actualizar json reporte foto en tbl_cursos
-            if($request->txtTipo == 'Reporte fotografico'){
+            if($request->txtTipo == 'Reporte fotografico' && $nuevo_status == 'CANCELADO'){
                 try {
                     $curso = tbl_curso::where('clave', $request->txtClave)->first();
                     if ($curso) {
