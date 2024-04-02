@@ -46,8 +46,7 @@ class ftcontroller extends Controller {
                 $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
                 $_SESSION['unidad'] = $unidad;
             }
-
-            $var_cursos = dataFormatoT($_SESSION['unidad'], ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
+            $var_cursos = dataFormatoT($_SESSION['unidad'],null,null,null, ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
             foreach ($var_cursos as $value) {
 
                 //--- RUBRO FEDERAL ---
@@ -60,43 +59,43 @@ class ftcontroller extends Controller {
                                         $value->iem7f + $value->ieh7f +
                                         $value->iem8f + $value->ieh8f;
 
-                //-- RUBRO ESTATAL ---
-                $inscritosEdad = $value->iem1 + $value->ieh1 + $value->iel1 +
-                                $value->iem2 + $value->ieh2 + $value->iel2 +
-                                $value->iem3 + $value->ieh3 + $value->iel3 +
-                                $value->iem4 + $value->ieh4 + $value->iel4; //+
+                // //-- RUBRO ESTATAL ---
+                // $inscritosEdad = $value->iem1 + $value->ieh1 + $value->iel1 +
+                //                 $value->iem2 + $value->ieh2 + $value->iel2 +
+                //                 $value->iem3 + $value->ieh3 + $value->iel3 +
+                //                 $value->iem4 + $value->ieh4 + $value->iel4; //+
                                 // $value->iem5 + $value->ieh5 + //$value->iel5 +
                                 // $value->iem6 + $value->ieh6; //+ $value->iel6;
 
-                $inscritosEsc = $value->iesm1 + $value->iesh1 + //$value->iesl1 +
-                                $value->iesm2 + $value->iesh2 + //$value->iesl2 +
-                                $value->iesm3 + $value->iesh3 + //$value->iesl3 +
-                                $value->iesm4 + $value->iesh4 + //$value->iesl4 +
-                                $value->iesm5 + $value->iesh5 + //$value->iesl5 +
-                                $value->iesm6 + $value->iesh6 + //$value->iesl6 +
-                                $value->iesm7 + $value->iesh7 + //$value->iesl7 +
-                                $value->iesm8 + $value->iesh8 + //$value->iesl8 +
-                                $value->iesm9 + $value->iesh9; //+ $value->iesl9;
+                // $inscritosEsc = $value->iesm1 + $value->iesh1 + //$value->iesl1 +
+                //                 $value->iesm2 + $value->iesh2 + //$value->iesl2 +
+                //                 $value->iesm3 + $value->iesh3 + //$value->iesl3 +
+                //                 $value->iesm4 + $value->iesh4 + //$value->iesl4 +
+                //                 $value->iesm5 + $value->iesh5 + //$value->iesl5 +
+                //                 $value->iesm6 + $value->iesh6 + //$value->iesl6 +
+                //                 $value->iesm7 + $value->iesh7 + //$value->iesl7 +
+                //                 $value->iesm8 + $value->iesh8 + //$value->iesl8 +
+                //                 $value->iesm9 + $value->iesh9; //+ $value->iesl9;
 
-                $acreditadosEsc = $value->aesm1 + $value->aesh1 + //$value->aesl1 +
-                                $value->aesm2 + $value->aesh2 + //$value->aesl2 +
-                                $value->aesm3 + $value->aesh3 + //$value->aesl3 +
-                                $value->aesm4 + $value->aesh4 + //$value->aesl4 +
-                                $value->aesm5 + $value->aesh5 + //$value->aesl5 +
-                                $value->aesm6 + $value->aesh6 + //$value->aesl6 +
-                                $value->aesm7 + $value->aesh7 + //$value->aesl7 +
-                                $value->aesm8 + $value->aesh8 + //$value->aesl8 +
-                                $value->aesm9 + $value->aesh9; //+ $value->aesl9;
+                // $acreditadosEsc = $value->aesm1 + $value->aesh1 + //$value->aesl1 +
+                //                 $value->aesm2 + $value->aesh2 + //$value->aesl2 +
+                //                 $value->aesm3 + $value->aesh3 + //$value->aesl3 +
+                //                 $value->aesm4 + $value->aesh4 + //$value->aesl4 +
+                //                 $value->aesm5 + $value->aesh5 + //$value->aesl5 +
+                //                 $value->aesm6 + $value->aesh6 + //$value->aesl6 +
+                //                 $value->aesm7 + $value->aesh7 + //$value->aesl7 +
+                //                 $value->aesm8 + $value->aesh8 + //$value->aesl8 +
+                //                 $value->aesm9 + $value->aesh9; //+ $value->aesl9;
 
-                $desertoresEsc = $value->naesm1 + $value->naesh1 + //$value->naesl1  +
-                                $value->naesm2 + $value->naesh2 + //$value->naesl2 +
-                                $value->naesm3 + $value->naesh3 + //$value->naesl3 +
-                                $value->naesm4 + $value->naesh4 + //$value->naesl4 +
-                                $value->naesm5 + $value->naesh5 + //$value->naesl5 +
-                                $value->naesm6 + $value->naesh6 + //$value->naesl6 +
-                                $value->naesm7 + $value->naesh7 + //$value->naesl7 +
-                                $value->naesm8 + $value->naesh8 + //$value->naesl8 +
-                                $value->naesm9 + $value->naesh9; //+ $value->naesl9;
+                // $desertoresEsc = $value->naesm1 + $value->naesh1 + //$value->naesl1  +
+                //                 $value->naesm2 + $value->naesh2 + //$value->naesl2 +
+                //                 $value->naesm3 + $value->naesh3 + //$value->naesl3 +
+                //                 $value->naesm4 + $value->naesh4 + //$value->naesl4 +
+                //                 $value->naesm5 + $value->naesh5 + //$value->naesl5 +
+                //                 $value->naesm6 + $value->naesh6 + //$value->naesl6 +
+                //                 $value->naesm7 + $value->naesh7 + //$value->naesl7 +
+                //                 $value->naesm8 + $value->naesh8 + //$value->naesl8 +
+                //                 $value->naesm9 + $value->naesh9; //+ $value->naesl9;
 
                 $sumaHM = $value->ihombre + $value->imujer; //+ $value->ilgbt;
                 $sumaED = $value->egresado + $value->desertado;
@@ -104,10 +103,10 @@ class ftcontroller extends Controller {
                 $sumaEgresados = $value->emujer + $value->ehombre; //+ $value->elgbt;
 
                 $value->inscritosEdadFederal = $inscritosEdadFederal;
-                $value->inscritosEdad = $inscritosEdad;
-                $value->inscritosEsc = $inscritosEsc;
-                $value->acreditadosEsc = $acreditadosEsc;
-                $value->desertoresEsc = $desertoresEsc;
+                // $value->inscritosEdad = $inscritosEdad;
+                // $value->inscritosEsc = $inscritosEsc;
+                // $value->acreditadosEsc = $acreditadosEsc;
+                // $value->desertoresEsc = $desertoresEsc;
                 $value->sumaHM = $sumaHM;
                 $value->sumaED = $sumaED;
                 $value->sumaEmDe = $sumaEmDe;
@@ -562,8 +561,9 @@ class ftcontroller extends Controller {
         $anio_actual = Carbon::now()->year;
         $unidad_ = $request->unidadesFormatoT;
 
-        $formatot_planeacion_unidad = dataFormatoT($unidad_, ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
+        $formatot_planeacion_unidad = dataFormatoT($unidad_,null,null,null, ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
         foreach ($formatot_planeacion_unidad as $value) {
+            unset($value->fechaturnado);
             unset($value->id_tbl_cursos);
             unset($value->estadocurso);
             unset($value->madres_solteras);
@@ -574,6 +574,9 @@ class ftcontroller extends Controller {
             unset($value->sumatoria_total_ins_edad);
             unset($value->observaciones_enlaces);
             unset($value->termino);
+            unset($value->turnados_enlaces);
+            unset($value->etnia);
+            unset($value->arc);
         }
 
         // 'id curso', 'ESTADO DEL CURSO', discapacitados, ->, madres solteras
@@ -585,7 +588,7 @@ class ftcontroller extends Controller {
             'INGRESO TOTAL', 'CUOTA MIXTA', 'EXONERACION MUJERES', 'EXONERACION HOMBRES', 'REDUCCION CUOTA MUJERES', 'REDUCCION CUOTA HOMBRES',
             'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO', 'NOMBRE DEL INSTRUCTOR',
             'ESCOLARIDAD DEL INSTRUCTOR', 'STATUS', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION',
-            'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS',  'MIGRANTES', 'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO',
+            'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS',  'MIGRANTES','ADOLESCENTES EN CONDICION DE CALLE','MUJERES JEFAS DE FAMILIA', 'INDIGENA', 'RECLUSOS', 'PROGRAMA ESTRATEGICO',
             'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL',
             'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA','GRUPO VULNERABLE',
             'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES',
@@ -605,79 +608,7 @@ class ftcontroller extends Controller {
             'INSCRITOS ESC-7 MUJERES', 'INSCRITOS ESC-7 HOMBRES',
             'INSCRITOS ESC-8 MUJERES', 'INSCRITOS ESC-8 HOMBRES',
             'INSCRITOS ESC-9 MUJERES', 'INSCRITOS ESC-9 HOMBRES',
-            'ACREDITADOS ESC-1 MUJERES', 'ACREDITADOS ESC-1 HOMBRES',
-            'ACREDITADOS ESC-2 MUJERES', 'ACREDITADOS ESC-2 HOMBRES',
-            'ACREDITADOS ESC-3 MUJERES', 'ACREDITADOS ESC-3 HOMBRES',
-            'ACREDITADOS ESC-4 MUJERES', 'ACREDITADOS ESC-4 HOMBRES',
-            'ACREDITADOS ESC-5 MUJERES', 'ACREDITADOS ESC-5 HOMBRES',
-            'ACREDITADOS ESC-6 MUJERES', 'ACREDITADOS ESC-6 HOMBRES',
-            'ACREDITADOS ESC-7 MUJERES', 'ACREDITADOS ESC-7 HOMBRES',
-            'ACREDITADOS ESC-8 MUJERES', 'ACREDITADOS ESC-8 HOMBRES',
-            'ACREDITADOS ESC-9 MUJERES', 'ACREDITADOS ESC-9 HOMBRES',
-            'DESERTORES ESC-1 MUJERES', 'DESERTORES ESC-1 HOMBRES',
-            'DESERTORES ESC-2 MUJERES', 'DESERTORES ESC-2 HOMBRES',
-            'DESERTORES ESC-3 MUJERES', 'DESERTORES ESC-3 HOMBRES',
-            'DESERTORES ESC-4 MUJERES', 'DESERTORES ESC-4 HOMBRES',
-            'DESERTORES ESC-5 MUJERES', 'DESERTORES ESC-5 HOMBRES',
-            'DESERTORES ESC-6 MUJERES', 'DESERTORES ESC-6 HOMBRES',
-            'DESERTORES ESC-7 MUJERES', 'DESERTORES ESC-7 HOMBRES',
-            'DESERTORES ESC-8 MUJERES', 'DESERTORES ESC-8 HOMBRES',
-            'DESERTORES ESC-9 MUJERES', 'DESERTORES ESC-9 HOMBRES',
             'OBSERVACIONES',
-            'E.INSCRITOS', 'E.FEM', 'E.MASC', 'E.LGBTTTI+', 'E.EGRESADOS', 'E.EGRESADOS FEMENINO', 'E.EGRESADO MASCULINO',
-            'E.EGRESADO LGBTTTI+','E.EXONERACION MUJERES', 'E.EXONERACION HOMBRES', 'E.EXONERACION LGBTTTI+',
-            'E.REDUCCION CUOTA MUJERES', 'E.REDUCCION CUOTA HOMBRES', 'E.REDUCCION CUOTA LGBTTTI+',
-            'E.INSCRITOS EDAD-1 MUJERES', 'E.INSCRITOS EDAD-1 HOMBRES', 'E.INSCRITOS EDAD-1 LGBTTTI+',
-            'E.INSCRITOS EDAD-2 MUJERES', 'E.INSCRITOS EDAD-2 HOMBRES', 'E.INSCRITOS EDAD-2 LGBTTTI+',
-            'E.INSCRITOS EDAD-3 MUJERES', 'E.INSCRITOS EDAD-3 HOMBRES', 'E.INSCRITOS EDAD-3 LGBTTTI+',
-            'E.INSCRITOS EDAD-4 MUJERES', 'E.INSCRITOS EDAD-4 HOMBRES', 'E.INSCRITOS EDAD-4 LGBTTTI+',
-            'E.INSCRITOS ESC-1 MUJERES', 'E.INSCRITOS ESC-1 HOMBRES', 'E.INSCRITOS ESC-1 LGBTTTI+',
-            'E.INSCRITOS ESC-2 MUJERES', 'E.INSCRITOS ESC-2 HOMBRES', 'E.INSCRITOS ESC-2 LGBTTTI+',
-            'E.INSCRITOS ESC-3 MUJERES', 'E.INSCRITOS ESC-3 HOMBRES', 'E.INSCRITOS ESC-3 LGBTTTI+',
-            'E.INSCRITOS ESC-4 MUJERES', 'E.INSCRITOS ESC-4 HOMBRES', 'E.INSCRITOS ESC-4 LGBTTTI+',
-            'E.INSCRITOS ESC-5 MUJERES', 'E.INSCRITOS ESC-5 HOMBRES', 'E.INSCRITOS ESC-5 LGBTTTI+',
-            'E.INSCRITOS ESC-6 MUJERES', 'E.INSCRITOS ESC-6 HOMBRES', 'E.INSCRITOS ESC-6 LGBTTTI+',
-            'E.INSCRITOS ESC-7 MUJERES', 'E.INSCRITOS ESC-7 HOMBRES', 'E.INSCRITOS ESC-7 LGBTTTI+',
-            'E.INSCRITOS ESC-8 MUJERES', 'E.INSCRITOS ESC-8 HOMBRES', 'E.INSCRITOS ESC-8 LGBTTTI+',
-            'E.INSCRITOS ESC-9 MUJERES', 'E.INSCRITOS ESC-9 HOMBRES', 'E.INSCRITOS ESC-9 LGBTTTI+',
-            'E.ACREDITADOS ESC-1 MUJERES', 'E.ACREDITADOS ESC-1 HOMBRES', 'E.ACREDITADOS ESC-1 LGBTTTI+',
-            'E.ACREDITADOS ESC-2 MUJERES', 'E.ACREDITADOS ESC-2 HOMBRES', 'E.ACREDITADOS ESC-2 LGBTTTI+',
-            'E.ACREDITADOS ESC-3 MUJERES', 'E.ACREDITADOS ESC-3 HOMBRES', 'E.ACREDITADOS ESC-3 LGBTTTI+',
-            'E.ACREDITADOS ESC-4 MUJERES', 'E.ACREDITADOS ESC-4 HOMBRES', 'E.ACREDITADOS ESC-4 LGBTTTI+',
-            'E.ACREDITADOS ESC-5 MUJERES', 'E.ACREDITADOS ESC-5 HOMBRES', 'E.ACREDITADOS ESC-5 LGBTTTI+',
-            'E.ACREDITADOS ESC-6 MUJERES', 'E.ACREDITADOS ESC-6 HOMBRES', 'E.ACREDITADOS ESC-6 LGBTTTI+',
-            'E.ACREDITADOS ESC-7 MUJERES', 'E.ACREDITADOS ESC-7 HOMBRES', 'E.ACREDITADOS ESC-7 LGBTTTI+',
-            'E.ACREDITADOS ESC-8 MUJERES', 'E.ACREDITADOS ESC-8 HOMBRES', 'E.ACREDITADOS ESC-8 LGBTTTI+',
-            'E.ACREDITADOS ESC-9 MUJERES', 'E.ACREDITADOS ESC-9 HOMBRES', 'E.ACREDITADOS ESC-9 LGBTTTI+',
-            'E.DESERTORES ESC-1 MUJERES', 'E.DESERTORES ESC-1 HOMBRES', 'E.DESERTORES ESC-1 LGBTTTI+',
-            'E.DESERTORES ESC-2 MUJERES', 'E.DESERTORES ESC-2 HOMBRES', 'E.DESERTORES ESC-2 LGBTTTI+',
-            'E.DESERTORES ESC-3 MUJERES', 'E.DESERTORES ESC-3 HOMBRES', 'E.DESERTORES ESC-3 LGBTTTI+',
-            'E.DESERTORES ESC-4 MUJERES', 'E.DESERTORES ESC-4 HOMBRES', 'E.DESERTORES ESC-4 LGBTTTI+',
-            'E.DESERTORES ESC-5 MUJERES', 'E.DESERTORES ESC-5 HOMBRES', 'E.DESERTORES ESC-5 LGBTTTI+',
-            'E.DESERTORES ESC-6 MUJERES', 'E.DESERTORES ESC-6 HOMBRES', 'E.DESERTORES ESC-6 LGBTTTI+',
-            'E.DESERTORES ESC-7 MUJERES', 'E.DESERTORES ESC-7 HOMBRES', 'E.DESERTORES ESC-7 LGBTTTI+',
-            'E.DESERTORES ESC-8 MUJERES', 'E.DESERTORES ESC-8 HOMBRES', 'E.DESERTORES ESC-8 LGBTTTI+',
-            'E.DESERTORES ESC-9 MUJERES', 'E.DESERTORES ESC-9 HOMBRES', 'E.DESERTORES ESC-9 LGBTTTI+',
-            'E.GRUPO VULNERABLE AFROMEXICANO HOMBRES', 'E. GRUPO VULNERABLE AFROMEXICANO HOMBRES', 'E.GRUPO VULNERABLE AFROMEXICANO LGBTTTI+',
-            'E.GRUPO VULNERABLE DESPLAZADAS HOMBRES', 'E. GRUPO VULNERABLE DESPLAZADAS HOMBRES', 'E.GRUPO VULNERABLE DESPLAZADAS LGBTTTI+',
-            'E.GRUPO VULNERABLE EMBARAZADAS HOMBRES', 'E. GRUPO VULNERABLE EMBARAZADAS HOMBRES', 'E.GRUPO VULNERABLE EMBARAZADAS LGBTTTI+',
-            'E.GRUPO VULNERABLE SITUACION DE CALLE HOMBRES', 'E. GRUPO VULNERABLE SITUACION DE CALLE HOMBRES', 'E.GRUPO VULNERABLE SITUACION DE CALLE LGBTTTI+',
-            'E.GRUPO VULNERABLE ESTUDIANTES HOMBRES', 'E. GRUPO VULNERABLE ESTUDIANTES HOMBRES', 'E.GRUPO VULNERABLE ESTUDIANTES LGBTTTI+',
-            'E.GRUPO VULNERABLE FAMILIAR DE VICTIMA DE VIOLENCIA HOMBRES', 'E. GRUPO VULNERABLE FAMILIAR DE VICTIMA DE VIOLENCIA HOMBRES', 'E.GRUPO VULNERABLE FAMILIAR DE VICTIMA DE VIOLENCIA LGBTTTI+',
-            'E.GRUPO VULNERABLE INDIGENA MUJERES', 'E. GRUPO VULNERABLE INDIGENA HOMBRES', 'E.GRUPO VULNERABLE INDIGENA LGBTTTI+',
-            'E.GRUPO VULNERABLE JEFA DE FAMILIA MUJERES', 'E. GRUPO VULNERABLE JEFA DE FAMILIA HOMBRES', 'E.GRUPO VULNERABLE JEFA DE FAMILIA LGBTTTI+',
-            'E.GRUPO VULNERABLE MIGRANTE HOMBRES', 'E. GRUPO VULNERABLE MIGRANTE HOMBRES', 'E.GRUPO VULNERABLE MIGRANTE LGBTTTI+',
-            'E.GRUPO VULNERABLE LESBIANA HOMBRES', 'E. GRUPO VULNERABLE LESBIANA HOMBRES', 'E.GRUPO VULNERABLE LESBIANA LGBTTTI+',
-            'E.GRUPO VULNERABLE PRIVADA DE LIBERTAD HOMBRES', 'E. GRUPO VULNERABLE PRIVADA DE LIBERTAD HOMBRES', 'E.GRUPO VULNERABLE PRIVADA DE LIBERTAD LGBTTTI+',
-            'E.GRUPO VULNERABLE TRANS HOMBRES', 'E. GRUPO VULNERABLE TRANS HOMBRES', 'E.GRUPO VULNERABLE TRANS LGBTTTI+',
-            'E.GRUPO VULNERABLE TRABAJADORA DEL HOGAR MUJERES', 'E. GRUPO VULNERABLE TRABAJADORA DEL HOGAR HOMBRES', 'E.GRUPO VULNERABLETRABAJADORA DEL HOGAR  LGBTTTI+',
-            'E.GRUPO VULNERABLE TRABAJADORA SEXUAL HOMBRES', 'E. GRUPO VULNERABLE TRABAJADORA SEXUAL HOMBRES', 'E.GRUPO VULNERABLE TRABAJADORA SEXUAL LGBTTTI+',
-            'E.GRUPO VULNERABLE VICTIMA DE VIOLENCIA HOMBRES', 'E. GRUPO VULNERABLE VICTIMA DE VIOLENCIA HOMBRES', 'E.GRUPO VULNERABLE VICTIMA DE VIOLENCIA LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD VISUAL HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD VISUAL HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD VISUAL LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD ADUITIVA HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD ADUITIVA HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD ADUITIVA LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD DEL HABLA HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD DEL HABLA HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD DEL HABLA LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD MOTRIZ HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD MOTRIZ HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD MOTRIZ LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD MENTAL HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD MENTAL HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD MENTAL LGBTTTI+'
 
 
             // 'OBSERVACIONES FIRMA', 'TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO', 'SUMATORIA TOTAL', 'COMENTARIOS ENLACES'
