@@ -1044,6 +1044,8 @@ function dataFormatoT($unidad, $turnado=null, $fecha=null, $mesSearch=null, $sta
             DB::raw("case when c.arc='01' then nota else observaciones end as tnota"),
             DB::raw("c.observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD' AS comentario_enlaces_retorno"), //new
             DB::raw("c.observaciones_formato_t->'COMENTARIOS_UNIDAD' AS observaciones_unidad"), // new
+            'c.status_solicitud_arc02',
+            'c.arc'
         )
 
         ->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
