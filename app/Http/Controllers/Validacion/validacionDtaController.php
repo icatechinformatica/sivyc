@@ -1769,10 +1769,12 @@ class validacionDtaController extends Controller {
 
             $moist++;
         }
+
         if(isset($rango)) {
+
             $historial_meses = $rango;
         } else {
-            $historial_meses = 'ENERO';
+            $historial_meses = null;
         }
         // Fin info meses anteriores
 
