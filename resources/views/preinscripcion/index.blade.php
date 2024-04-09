@@ -737,7 +737,7 @@
 
                 event.preventDefault();
                 //Validar el estatus del expediente unico
-                if (status_dpto != 'CAPTURA') {alert("EL EXPEDIENTE UNICO HA SIDO ENVIADO A DTA PARA VALIDACIÓN\nPOR LO TANTO NO ES POSIBLE CARGAR EL DOCUMENTO."); return false;}
+                // if (status_dpto != 'CAPTURA') {alert("EL EXPEDIENTE UNICO HA SIDO ENVIADO A DTA PARA VALIDACIÓN\nPOR LO TANTO NO ES POSIBLE CARGAR EL DOCUMENTO."); return false;}
 
                  //Obtenermos el valor del input archivo
                 let valSelect = document.getElementById('subirPDF').value;
