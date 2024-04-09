@@ -3090,7 +3090,11 @@
             option,
             i = 0,
             il = id.length;
-            // selectL.empty();
+
+            // Convertir selectL en un objeto jQuery
+            selectLJQ = $(selectL);
+            // Limpiar las opciones del select
+            selectLJQ.empty();
             // console.log(il);
             // console.log( id[0])
             for (; i < il; i += 1)
