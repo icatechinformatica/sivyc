@@ -3090,7 +3090,7 @@
             option,
             i = 0,
             il = id.length;
-            selectL.empty();
+            // selectL.empty();
             // console.log(il);
             // console.log( id[0])
             for (; i < il; i += 1)
