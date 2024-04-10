@@ -39,47 +39,48 @@ class validacionDtaController extends Controller {
         // dd($formato_respuesta);
 
 
-        $cursos_validar = dataFormatoT2do($unidad, ['DTA', 'MEMO_TURNADO_RETORNO'], null, $mesSearch, 'TURNADO_DTA');
-        foreach ($cursos_validar as $key => $value) {
-            // array de folios
-            $temp = substr($value->folios,1);
-            $temp = substr($temp,0, -1);
-            $array = explode(',', $temp);
-            // array de movimientos
-            $temp2 = substr($value->movimientos,1);
-            $temp2 = substr($temp2,0, -1);
-            $array2 = explode(',', $temp2);
+        $cursos_validar = dataFormatoT($unidad, ['DTA', 'MEMO_TURNADO_RETORNO'], null, $mesSearch, ['TURNADO_DTA']);
+        // foreach ($cursos_validar as $key => $value) {
+        //     // array de folios
+        //     // dd($value);
+        //     $temp = substr($value->folios,1);
+        //     $temp = substr($temp,0, -1);
+        //     $array = explode(',', $temp);
+        //     // array de movimientos
+        //     $temp2 = substr($value->movimientos,1);
+        //     $temp2 = substr($temp2,0, -1);
+        //     $array2 = explode(',', $temp2);
 
-            $tempFoliosCancel = ''; $folios = ''; $bloqueFolios = '';
-            foreach ($array2 as $key => $movimiento) {
-                if ($movimiento == 'EXPEDIDO') {
-                    if ($bloqueFolios == '') {
-                        $bloqueFolios = $array[$key].'-';
-                    }
-                }
-                if ($movimiento == 'CANCELADO') {
-                    if (isset($array[$key-1])) {
-                        $bloqueFolios = $bloqueFolios.$array[$key-1];
-                        $folios = $folios.','.$bloqueFolios;
-                        $bloqueFolios = '';
-                    }
-                    $tempFoliosCancel = $tempFoliosCancel.$array[$key].',';
-                }
-                if (($key + 1) == count($array2) && $movimiento != 'CANCELADO') {
-                    $bloqueFolios = $bloqueFolios.$array[$key];
-                    $folios = $folios.','.$bloqueFolios;
-                    $bloqueFolios = '';
-                }
-            }
-            if ($folios != '') {
-                $folios = substr($folios,1);
-            }
-            if ($tempFoliosCancel != '') {
-                $tempFoliosCancel = substr($tempFoliosCancel,0, -1);
-            }
-            $value->bloques_folios = $folios;
-            $value->folios_cancelados = $tempFoliosCancel;
-        }
+        //     $tempFoliosCancel = ''; $folios = ''; $bloqueFolios = '';
+        //     foreach ($array2 as $key => $movimiento) {
+        //         if ($movimiento == 'EXPEDIDO') {
+        //             if ($bloqueFolios == '') {
+        //                 $bloqueFolios = $array[$key].'-';
+        //             }
+        //         }
+        //         if ($movimiento == 'CANCELADO') {
+        //             if (isset($array[$key-1])) {
+        //                 $bloqueFolios = $bloqueFolios.$array[$key-1];
+        //                 $folios = $folios.','.$bloqueFolios;
+        //                 $bloqueFolios = '';
+        //             }
+        //             $tempFoliosCancel = $tempFoliosCancel.$array[$key].',';
+        //         }
+        //         if (($key + 1) == count($array2) && $movimiento != 'CANCELADO') {
+        //             $bloqueFolios = $bloqueFolios.$array[$key];
+        //             $folios = $folios.','.$bloqueFolios;
+        //             $bloqueFolios = '';
+        //         }
+        //     }
+        //     if ($folios != '') {
+        //         $folios = substr($folios,1);
+        //     }
+        //     if ($tempFoliosCancel != '') {
+        //         $tempFoliosCancel = substr($tempFoliosCancel,0, -1);
+        //     }
+        //     $value->bloques_folios = $folios;
+        //     $value->folios_cancelados = $tempFoliosCancel;
+        // }
 
         $memorandum = DB::table('tbl_cursos')
             ->select(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum, memos->'TURNADO_EN_FIRMA'->>'NUMERO' AS num_memo"))
@@ -118,7 +119,7 @@ class validacionDtaController extends Controller {
         $mesSearch = $request->get('mesSearchD');
 
         $ac = Carbon::now()->year; // año actual obtenido del servidor
-        $cursos_validar = dataFormatoT2do($unidades_busqueda, ['REVISION_DTA'], null, $mesSearch, 'REVISION_DTA');
+        $cursos_validar = dataFormatoT($unidades_busqueda, ['REVISION_DTA'], null, $mesSearch, ['REVISION_DTA']);
 
         $formato_respuesta = DB::Table('tbl_cursos')->Select('tbl_cursos.id','tbl_cursos.resumen_formatot_unidad')
         ->Join('tbl_unidades','tbl_unidades.unidad', 'tbl_cursos.unidad')
@@ -835,7 +836,7 @@ class validacionDtaController extends Controller {
         $unidadActual = $request->unidad_;
         $mesSearch = $request->mes_;
 
-        $formatot_enlace_dta = dataFormatoT2do($unidadActual, ['DTA', 'MEMO_TURNADO_RETORNO'], null, $mesSearch, 'TURNADO_DTA');
+        $formatot_enlace_dta = dataFormatoT($unidadActual, ['DTA', 'MEMO_TURNADO_RETORNO'], null, $mesSearch, ['TURNADO_DTA']);
         foreach ($formatot_enlace_dta as $value) {
             unset($value->id_tbl_cursos);
             unset($value->estadocurso);
@@ -848,52 +849,54 @@ class validacionDtaController extends Controller {
             unset($value->sumatoria_total_ins_edad);
             unset($value->observaciones_enlaces);
             unset($value->observaciones_unidad);
+            unset($value->etnia);
+            unset($value->arc);
 
-            // array de folios
-            $temp = substr($value->folios,1);
-            $temp = substr($temp,0, -1);
-            $array = explode(',', $temp);
-            // array de movimientos
-            $temp2 = substr($value->movimientos,1);
-            $temp2 = substr($temp2,0, -1);
-            $array2 = explode(',', $temp2);
+        //     // array de folios
+        //     $temp = substr($value->folios,1);
+        //     $temp = substr($temp,0, -1);
+        //     $array = explode(',', $temp);
+        //     // array de movimientos
+        //     $temp2 = substr($value->movimientos,1);
+        //     $temp2 = substr($temp2,0, -1);
+        //     $array2 = explode(',', $temp2);
 
-            $tempFoliosCancel = ''; $folios = ''; $bloqueFolios = '';
-            foreach ($array2 as $key => $movimiento) {
-                if ($movimiento == 'EXPEDIDO') {
-                    if ($bloqueFolios == '') {
-                        $bloqueFolios = $array[$key].'-';
-                    }
-                }
-                if ($movimiento == 'CANCELADO') {
-                    if (isset($array[$key-1])) {
-                        $bloqueFolios = $bloqueFolios.$array[$key-1];
-                        $folios = $folios.','.$bloqueFolios;
-                        $bloqueFolios = '';
-                    }
-                    $tempFoliosCancel = $tempFoliosCancel.$array[$key].',';
-                }
-                if (($key + 1) == count($array2) && $movimiento != 'CANCELADO') {
-                    $bloqueFolios = $bloqueFolios.$array[$key];
-                    $folios = $folios.','.$bloqueFolios;
-                    $bloqueFolios = '';
-                }
-            }
-            if ($folios != '') {
-                $folios = substr($folios,1);
-            }
-            if ($tempFoliosCancel != '') {
-                $tempFoliosCancel = substr($tempFoliosCancel,0, -1);
-            }
-            $value->folios = $folios;
-            $value->movimientos = $tempFoliosCancel;
+        //     $tempFoliosCancel = ''; $folios = ''; $bloqueFolios = '';
+        //     foreach ($array2 as $key => $movimiento) {
+        //         if ($movimiento == 'EXPEDIDO') {
+        //             if ($bloqueFolios == '') {
+        //                 $bloqueFolios = $array[$key].'-';
+        //             }
+        //         }
+        //         if ($movimiento == 'CANCELADO') {
+        //             if (isset($array[$key-1])) {
+        //                 $bloqueFolios = $bloqueFolios.$array[$key-1];
+        //                 $folios = $folios.','.$bloqueFolios;
+        //                 $bloqueFolios = '';
+        //             }
+        //             $tempFoliosCancel = $tempFoliosCancel.$array[$key].',';
+        //         }
+        //         if (($key + 1) == count($array2) && $movimiento != 'CANCELADO') {
+        //             $bloqueFolios = $bloqueFolios.$array[$key];
+        //             $folios = $folios.','.$bloqueFolios;
+        //             $bloqueFolios = '';
+        //         }
+        //     }
+        //     if ($folios != '') {
+        //         $folios = substr($folios,1);
+        //     }
+        //     if ($tempFoliosCancel != '') {
+        //         $tempFoliosCancel = substr($tempFoliosCancel,0, -1);
+        //     }
+        //     $value->folios = $folios;
+        //     $value->movimientos = $tempFoliosCancel;
         }
 
         $head = [
-            'MES REPORTADO', 'UNIDAD DE CAPACITACION', 'TIPO DE PLANTEL (UNIDAD, AULA MOVIL, ACCION MOVIL O CAPACITACION EXTERNA)', 'ESPECIALIDAD', 'CURSO', 'CLAVE DEL GRUPO', 'MODALIDAD', 'FOLIOS', 'FOLIOS CANCELADOS', 'DURACION TOTAL EN HORAS', 'TURNO', 'DIA INICIO', 'MES INICIO', 'DIA TERMINO', 'MES TERMINO', 'PERIODO', 'HRS. DIARIAS', 'DIAS', 'HORARIO', 'INSCRITOS', 'FEM', 'MASC',
+            'MES REPORTADO', 'UNIDAD DE CAPACITACION', 'TIPO DE PLANTEL (UNIDAD, AULA MOVIL, ACCION MOVIL O CAPACITACION EXTERNA)', 'ESPECIALIDAD', 'CURSO', 'CLAVE DEL GRUPO', 'MODALIDAD', 'DURACION TOTAL EN HORAS', 'TURNO', 'DIA INICIO', 'MES INICIO', 'DIA TERMINO', 'MES TERMINO', 'PERIODO', 'HRS. DIARIAS', 'DIAS', 'HORARIO', 'INSCRITOS', 'FEM', 'MASC',
             'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'CUOTA MIXTA', 'EXONERACION MUJERES', 'EXONERACION HOMBRES', 'REDUCCION CUOTA MUJERES', 'REDUCCION CUOTA HOMBRES', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
-            'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'DOCUMENTO ADQUIRIDO', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS', 'MIGRANTES',
-            'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA', 'GRUPO VULNERABLE',
+            'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'DOCUMENTO ADQUIRIDO', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS', 'MIGRANTES','ADOLESCENTES EN CONDICION DE CALLE','MUJERES JEFAS DE FAMILIA',
+            'INDIGENA', 'RECLUSOS', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA', 'GRUPO VULNERABLE',
             'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES',
             'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES',
             'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES',
@@ -911,79 +914,7 @@ class validacionDtaController extends Controller {
             'INSCRITOS ESC-7 MUJERES', 'INSCRITOS ESC-7 HOMBRES',
             'INSCRITOS ESC-8 MUJERES', 'INSCRITOS ESC-8 HOMBRES',
             'INSCRITOS ESC-9 MUJERES', 'INSCRITOS ESC-9 HOMBRES',
-            'ACREDITADOS ESC-1 MUJERES', 'ACREDITADOS ESC-1 HOMBRES',
-            'ACREDITADOS ESC-2 MUJERES', 'ACREDITADOS ESC-2 HOMBRES',
-            'ACREDITADOS ESC-3 MUJERES', 'ACREDITADOS ESC-3 HOMBRES',
-            'ACREDITADOS ESC-4 MUJERES', 'ACREDITADOS ESC-4 HOMBRES',
-            'ACREDITADOS ESC-5 MUJERES', 'ACREDITADOS ESC-5 HOMBRES',
-            'ACREDITADOS ESC-6 MUJERES', 'ACREDITADOS ESC-6 HOMBRES',
-            'ACREDITADOS ESC-7 MUJERES', 'ACREDITADOS ESC-7 HOMBRES',
-            'ACREDITADOS ESC-8 MUJERES', 'ACREDITADOS ESC-8 HOMBRES',
-            'ACREDITADOS ESC-9 MUJERES', 'ACREDITADOS ESC-9 HOMBRES',
-            'DESERTORES ESC-1 MUJERES', 'DESERTORES ESC-1 HOMBRES',
-            'DESERTORES ESC-2 MUJERES', 'DESERTORES ESC-2 HOMBRES',
-            'DESERTORES ESC-3 MUJERES', 'DESERTORES ESC-3 HOMBRES',
-            'DESERTORES ESC-4 MUJERES', 'DESERTORES ESC-4 HOMBRES',
-            'DESERTORES ESC-5 MUJERES', 'DESERTORES ESC-5 HOMBRES',
-            'DESERTORES ESC-6 MUJERES', 'DESERTORES ESC-6 HOMBRES',
-            'DESERTORES ESC-7 MUJERES', 'DESERTORES ESC-7 HOMBRES',
-            'DESERTORES ESC-8 MUJERES', 'DESERTORES ESC-8 HOMBRES',
-            'DESERTORES ESC-9 MUJERES', 'DESERTORES ESC-9 HOMBRES',
-            'OBSERVACIONES','TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO',
-            'E.INSCRITOS', 'E.FEM', 'E.MASC', 'E.LGBTTTI+', 'E.EGRESADOS', 'E.EGRESADOS FEMENINO', 'E.EGRESADO MASCULINO',
-            'E.EGRESADO LGBTTTI+','E.EXONERACION MUJERES', 'E.EXONERACION HOMBRES', 'E.EXONERACION LGBTTTI+',
-            'E.REDUCCION CUOTA MUJERES', 'E.REDUCCION CUOTA HOMBRES', 'E.REDUCCION CUOTA LGBTTTI+',
-            'E.INSCRITOS EDAD-1 MUJERES', 'E.INSCRITOS EDAD-1 HOMBRES', 'E.INSCRITOS EDAD-1 LGBTTTI+',
-            'E.INSCRITOS EDAD-2 MUJERES', 'E.INSCRITOS EDAD-2 HOMBRES', 'E.INSCRITOS EDAD-2 LGBTTTI+',
-            'E.INSCRITOS EDAD-3 MUJERES', 'E.INSCRITOS EDAD-3 HOMBRES', 'E.INSCRITOS EDAD-3 LGBTTTI+',
-            'E.INSCRITOS EDAD-4 MUJERES', 'E.INSCRITOS EDAD-4 HOMBRES', 'E.INSCRITOS EDAD-4 LGBTTTI+',
-            'E.INSCRITOS ESC-1 MUJERES', 'E.INSCRITOS ESC-1 HOMBRES', 'E.INSCRITOS ESC-1 LGBTTTI+',
-            'E.INSCRITOS ESC-2 MUJERES', 'E.INSCRITOS ESC-2 HOMBRES', 'E.INSCRITOS ESC-2 LGBTTTI+',
-            'E.INSCRITOS ESC-3 MUJERES', 'E.INSCRITOS ESC-3 HOMBRES', 'E.INSCRITOS ESC-3 LGBTTTI+',
-            'E.INSCRITOS ESC-4 MUJERES', 'E.INSCRITOS ESC-4 HOMBRES', 'E.INSCRITOS ESC-4 LGBTTTI+',
-            'E.INSCRITOS ESC-5 MUJERES', 'E.INSCRITOS ESC-5 HOMBRES', 'E.INSCRITOS ESC-5 LGBTTTI+',
-            'E.INSCRITOS ESC-6 MUJERES', 'E.INSCRITOS ESC-6 HOMBRES', 'E.INSCRITOS ESC-6 LGBTTTI+',
-            'E.INSCRITOS ESC-7 MUJERES', 'E.INSCRITOS ESC-7 HOMBRES', 'E.INSCRITOS ESC-7 LGBTTTI+',
-            'E.INSCRITOS ESC-8 MUJERES', 'E.INSCRITOS ESC-8 HOMBRES', 'E.INSCRITOS ESC-8 LGBTTTI+',
-            'E.INSCRITOS ESC-9 MUJERES', 'E.INSCRITOS ESC-9 HOMBRES', 'E.INSCRITOS ESC-9 LGBTTTI+',
-            'E.ACREDITADOS ESC-1 MUJERES', 'E.ACREDITADOS ESC-1 HOMBRES', 'E.ACREDITADOS ESC-1 LGBTTTI+',
-            'E.ACREDITADOS ESC-2 MUJERES', 'E.ACREDITADOS ESC-2 HOMBRES', 'E.ACREDITADOS ESC-2 LGBTTTI+',
-            'E.ACREDITADOS ESC-3 MUJERES', 'E.ACREDITADOS ESC-3 HOMBRES', 'E.ACREDITADOS ESC-3 LGBTTTI+',
-            'E.ACREDITADOS ESC-4 MUJERES', 'E.ACREDITADOS ESC-4 HOMBRES', 'E.ACREDITADOS ESC-4 LGBTTTI+',
-            'E.ACREDITADOS ESC-5 MUJERES', 'E.ACREDITADOS ESC-5 HOMBRES', 'E.ACREDITADOS ESC-5 LGBTTTI+',
-            'E.ACREDITADOS ESC-6 MUJERES', 'E.ACREDITADOS ESC-6 HOMBRES', 'E.ACREDITADOS ESC-6 LGBTTTI+',
-            'E.ACREDITADOS ESC-7 MUJERES', 'E.ACREDITADOS ESC-7 HOMBRES', 'E.ACREDITADOS ESC-7 LGBTTTI+',
-            'E.ACREDITADOS ESC-8 MUJERES', 'E.ACREDITADOS ESC-8 HOMBRES', 'E.ACREDITADOS ESC-8 LGBTTTI+',
-            'E.ACREDITADOS ESC-9 MUJERES', 'E.ACREDITADOS ESC-9 HOMBRES', 'E.ACREDITADOS ESC-9 LGBTTTI+',
-            'E.DESERTORES ESC-1 MUJERES', 'E.DESERTORES ESC-1 HOMBRES', 'E.DESERTORES ESC-1 LGBTTTI+',
-            'E.DESERTORES ESC-2 MUJERES', 'E.DESERTORES ESC-2 HOMBRES', 'E.DESERTORES ESC-2 LGBTTTI+',
-            'E.DESERTORES ESC-3 MUJERES', 'E.DESERTORES ESC-3 HOMBRES', 'E.DESERTORES ESC-3 LGBTTTI+',
-            'E.DESERTORES ESC-4 MUJERES', 'E.DESERTORES ESC-4 HOMBRES', 'E.DESERTORES ESC-4 LGBTTTI+',
-            'E.DESERTORES ESC-5 MUJERES', 'E.DESERTORES ESC-5 HOMBRES', 'E.DESERTORES ESC-5 LGBTTTI+',
-            'E.DESERTORES ESC-6 MUJERES', 'E.DESERTORES ESC-6 HOMBRES', 'E.DESERTORES ESC-6 LGBTTTI+',
-            'E.DESERTORES ESC-7 MUJERES', 'E.DESERTORES ESC-7 HOMBRES', 'E.DESERTORES ESC-7 LGBTTTI+',
-            'E.DESERTORES ESC-8 MUJERES', 'E.DESERTORES ESC-8 HOMBRES', 'E.DESERTORES ESC-8 LGBTTTI+',
-            'E.DESERTORES ESC-9 MUJERES', 'E.DESERTORES ESC-9 HOMBRES', 'E.DESERTORES ESC-9 LGBTTTI+',
-            'E.GRUPO VULNERABLE AFROMEXICANO HOMBRES', 'E. GRUPO VULNERABLE AFROMEXICANO HOMBRES', 'E.GRUPO VULNERABLE AFROMEXICANO LGBTTTI+',
-            'E.GRUPO VULNERABLE DESPLAZADAS HOMBRES', 'E. GRUPO VULNERABLE DESPLAZADAS HOMBRES', 'E.GRUPO VULNERABLE DESPLAZADAS LGBTTTI+',
-            'E.GRUPO VULNERABLE EMBARAZADAS HOMBRES', 'E. GRUPO VULNERABLE EMBARAZADAS HOMBRES', 'E.GRUPO VULNERABLE EMBARAZADAS LGBTTTI+',
-            'E.GRUPO VULNERABLE SITUACION DE CALLE HOMBRES', 'E. GRUPO VULNERABLE SITUACION DE CALLE HOMBRES', 'E.GRUPO VULNERABLE SITUACION DE CALLE LGBTTTI+',
-            'E.GRUPO VULNERABLE ESTUDIANTES HOMBRES', 'E. GRUPO VULNERABLE ESTUDIANTES HOMBRES', 'E.GRUPO VULNERABLE ESTUDIANTES LGBTTTI+',
-            'E.GRUPO VULNERABLE FAMILIAR DE VICTIMA DE VIOLENCIA HOMBRES', 'E. GRUPO VULNERABLE FAMILIAR DE VICTIMA DE VIOLENCIA HOMBRES', 'E.GRUPO VULNERABLE FAMILIAR DE VICTIMA DE VIOLENCIA LGBTTTI+',
-            'E.GRUPO VULNERABLE INDIGENA HOMBRES', 'E. GRUPO VULNERABLE INDIGENA HOMBRES', 'E.GRUPO VULNERABLE INDIGENA LGBTTTI+',
-            'E.GRUPO VULNERABLE JEFA DE FAMILIA HOMBRES', 'E. GRUPO VULNERABLE JEFA DE FAMILIA HOMBRES', 'E.GRUPO VULNERABLE JEFA DE FAMILIA LGBTTTI+',
-            'E.GRUPO VULNERABLE MIGRANTE HOMBRES', 'E. GRUPO VULNERABLE MIGRANTE HOMBRES', 'E.GRUPO VULNERABLE MIGRANTE LGBTTTI+',
-            'E.GRUPO VULNERABLE LESBIANA HOMBRES', 'E. GRUPO VULNERABLE LESBIANA HOMBRES', 'E.GRUPO VULNERABLE LESBIANA LGBTTTI+',
-            'E.GRUPO VULNERABLE PRIVADA DE LIBERTAD HOMBRES', 'E. GRUPO VULNERABLE PRIVADA DE LIBERTAD HOMBRES', 'E.GRUPO VULNERABLE PRIVADA DE LIBERTAD LGBTTTI+',
-            'E.GRUPO VULNERABLE TRANS HOMBRES', 'E. GRUPO VULNERABLE TRANS HOMBRES', 'E.GRUPO VULNERABLE TRANS LGBTTTI+',
-            'E.GRUPO VULNERABLE TRABAJADORA DEL HOGAR HOMBRES', 'E. GRUPO VULNERABLE TRABAJADORA DEL HOGAR HOMBRES', 'E.GRUPO VULNERABLETRABAJADORA DEL HOGAR  LGBTTTI+',
-            'E.GRUPO VULNERABLE TRABAJADORA SEXUAL HOMBRES', 'E. GRUPO VULNERABLE TRABAJADORA SEXUAL HOMBRES', 'E.GRUPO VULNERABLE TRABAJADORA SEXUAL LGBTTTI+',
-            'E.GRUPO VULNERABLE VICTIMA DE VIOLENCIA HOMBRES', 'E. GRUPO VULNERABLE VICTIMA DE VIOLENCIA HOMBRES', 'E.GRUPO VULNERABLE VICTIMA DE VIOLENCIA LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD VISUAL HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD VISUAL HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD VISUAL LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD ADUITIVA HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD ADUITIVA HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD ADUITIVA LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD DEL HABLA HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD DEL HABLA HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD DEL HABLA LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD MOTRIZ HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD MOTRIZ HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD MOTRIZ LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD MENTAL HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD MENTAL HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD MENTAL LGBTTTI+'
+            'OBSERVACIONES'
         ];
 
         $nombreLayout = "FORMATO_T_PARA_ENLACES_DIRECCION_TECNICA_ACADEMICA.xlsx";
@@ -1001,7 +932,7 @@ class validacionDtaController extends Controller {
     {
         $anioActual = Carbon::now()->year;
 
-        $reporteDirectorDTA = dataFormatoT2do($request->unidadD, ['REVISION_DTA'], null, $request->mesSearch, 'REVISION_DTA');
+        $reporteDirectorDTA = dataFormatoT($request->unidadD, ['REVISION_DTA'], null, $request->mesSearch, ['REVISION_DTA']);
         foreach ($reporteDirectorDTA as $value) {
             unset($value->id_tbl_cursos);
             unset($value->estadocurso);
@@ -1014,13 +945,15 @@ class validacionDtaController extends Controller {
             unset($value->sumatoria_total_ins_edad);
             unset($value->observaciones_enlaces);
             unset($value->observaciones_unidad);
+            unset($value->etnia);
+            unset($value->arc);
         }
 
         $cabecera = [
             'MES REPORTADO', 'UNIDAD DE CAPACITACION', 'TIPO DE PLANTEL (UNIDAD, AULA MOVIL, ACCION MOVIL O CAPACITACION EXTERNA)', 'ESPECIALIDAD', 'CURSO', 'CLAVE DEL GRUPO', 'MODALIDAD', 'DURACION TOTAL EN HORAS', 'TURNO', 'DIA INICIO', 'MES INICIO', 'DIA TERMINO', 'MES TERMINO', 'PERIODO', 'HRS. DIARIAS', 'DIAS', 'HORARIO', 'INSCRITOS', 'FEM', 'MASC',
             'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'CUOTA MIXTA', 'EXONERACION MUJERES', 'EXONERACION HOMBRES', 'REDUCCION CUOTA MUJERES', 'REDUCCION CUOTA HOMBRES', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
-            'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'DOCUMENTO ADQUIRIDO', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS', 'MIGRANTES',
-            'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA', 'GRUPO VULNERABLE',
+            'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'DOCUMENTO ADQUIRIDO', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS', 'MIGRANTES','ADOLESCENTES EN CONDICION DE CALLE','MUJERES JEFAS DE FAMILIA',
+            'INDIGENA', 'RECLUSOS', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA', 'GRUPO VULNERABLE',
             'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES',
             'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES',
             'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES',
@@ -1038,79 +971,7 @@ class validacionDtaController extends Controller {
             'INSCRITOS ESC-7 MUJERES', 'INSCRITOS ESC-7 HOMBRES',
             'INSCRITOS ESC-8 MUJERES', 'INSCRITOS ESC-8 HOMBRES',
             'INSCRITOS ESC-9 MUJERES', 'INSCRITOS ESC-9 HOMBRES',
-            'ACREDITADOS ESC-1 MUJERES', 'ACREDITADOS ESC-1 HOMBRES',
-            'ACREDITADOS ESC-2 MUJERES', 'ACREDITADOS ESC-2 HOMBRES',
-            'ACREDITADOS ESC-3 MUJERES', 'ACREDITADOS ESC-3 HOMBRES',
-            'ACREDITADOS ESC-4 MUJERES', 'ACREDITADOS ESC-4 HOMBRES',
-            'ACREDITADOS ESC-5 MUJERES', 'ACREDITADOS ESC-5 HOMBRES',
-            'ACREDITADOS ESC-6 MUJERES', 'ACREDITADOS ESC-6 HOMBRES',
-            'ACREDITADOS ESC-7 MUJERES', 'ACREDITADOS ESC-7 HOMBRES',
-            'ACREDITADOS ESC-8 MUJERES', 'ACREDITADOS ESC-8 HOMBRES',
-            'ACREDITADOS ESC-9 MUJERES', 'ACREDITADOS ESC-9 HOMBRES',
-            'DESERTORES ESC-1 MUJERES', 'DESERTORES ESC-1 HOMBRES',
-            'DESERTORES ESC-2 MUJERES', 'DESERTORES ESC-2 HOMBRES',
-            'DESERTORES ESC-3 MUJERES', 'DESERTORES ESC-3 HOMBRES',
-            'DESERTORES ESC-4 MUJERES', 'DESERTORES ESC-4 HOMBRES',
-            'DESERTORES ESC-5 MUJERES', 'DESERTORES ESC-5 HOMBRES',
-            'DESERTORES ESC-6 MUJERES', 'DESERTORES ESC-6 HOMBRES',
-            'DESERTORES ESC-7 MUJERES', 'DESERTORES ESC-7 HOMBRES',
-            'DESERTORES ESC-8 MUJERES', 'DESERTORES ESC-8 HOMBRES',
-            'DESERTORES ESC-9 MUJERES', 'DESERTORES ESC-9 HOMBRES',
-            'OBSERVACIONES','TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO',
-            'E.INSCRITOS', 'E.FEM', 'E.MASC', 'E.LGBTTTI+', 'E.EGRESADOS', 'E.EGRESADOS FEMENINO', 'E.EGRESADO MASCULINO',
-            'E.EGRESADO LGBTTTI+','E.EXONERACION MUJERES', 'E.EXONERACION HOMBRES', 'E.EXONERACION LGBTTTI+',
-            'E.REDUCCION CUOTA MUJERES', 'E.REDUCCION CUOTA HOMBRES', 'E.REDUCCION CUOTA LGBTTTI+',
-            'E.INSCRITOS EDAD-1 MUJERES', 'E.INSCRITOS EDAD-1 HOMBRES', 'E.INSCRITOS EDAD-1 LGBTTTI+',
-            'E.INSCRITOS EDAD-2 MUJERES', 'E.INSCRITOS EDAD-2 HOMBRES', 'E.INSCRITOS EDAD-2 LGBTTTI+',
-            'E.INSCRITOS EDAD-3 MUJERES', 'E.INSCRITOS EDAD-3 HOMBRES', 'E.INSCRITOS EDAD-3 LGBTTTI+',
-            'E.INSCRITOS EDAD-4 MUJERES', 'E.INSCRITOS EDAD-4 HOMBRES', 'E.INSCRITOS EDAD-4 LGBTTTI+',
-            'E.INSCRITOS ESC-1 MUJERES', 'E.INSCRITOS ESC-1 HOMBRES', 'E.INSCRITOS ESC-1 LGBTTTI+',
-            'E.INSCRITOS ESC-2 MUJERES', 'E.INSCRITOS ESC-2 HOMBRES', 'E.INSCRITOS ESC-2 LGBTTTI+',
-            'E.INSCRITOS ESC-3 MUJERES', 'E.INSCRITOS ESC-3 HOMBRES', 'E.INSCRITOS ESC-3 LGBTTTI+',
-            'E.INSCRITOS ESC-4 MUJERES', 'E.INSCRITOS ESC-4 HOMBRES', 'E.INSCRITOS ESC-4 LGBTTTI+',
-            'E.INSCRITOS ESC-5 MUJERES', 'E.INSCRITOS ESC-5 HOMBRES', 'E.INSCRITOS ESC-5 LGBTTTI+',
-            'E.INSCRITOS ESC-6 MUJERES', 'E.INSCRITOS ESC-6 HOMBRES', 'E.INSCRITOS ESC-6 LGBTTTI+',
-            'E.INSCRITOS ESC-7 MUJERES', 'E.INSCRITOS ESC-7 HOMBRES', 'E.INSCRITOS ESC-7 LGBTTTI+',
-            'E.INSCRITOS ESC-8 MUJERES', 'E.INSCRITOS ESC-8 HOMBRES', 'E.INSCRITOS ESC-8 LGBTTTI+',
-            'E.INSCRITOS ESC-9 MUJERES', 'E.INSCRITOS ESC-9 HOMBRES', 'E.INSCRITOS ESC-9 LGBTTTI+',
-            'E.ACREDITADOS ESC-1 MUJERES', 'E.ACREDITADOS ESC-1 HOMBRES', 'E.ACREDITADOS ESC-1 LGBTTTI+',
-            'E.ACREDITADOS ESC-2 MUJERES', 'E.ACREDITADOS ESC-2 HOMBRES', 'E.ACREDITADOS ESC-2 LGBTTTI+',
-            'E.ACREDITADOS ESC-3 MUJERES', 'E.ACREDITADOS ESC-3 HOMBRES', 'E.ACREDITADOS ESC-3 LGBTTTI+',
-            'E.ACREDITADOS ESC-4 MUJERES', 'E.ACREDITADOS ESC-4 HOMBRES', 'E.ACREDITADOS ESC-4 LGBTTTI+',
-            'E.ACREDITADOS ESC-5 MUJERES', 'E.ACREDITADOS ESC-5 HOMBRES', 'E.ACREDITADOS ESC-5 LGBTTTI+',
-            'E.ACREDITADOS ESC-6 MUJERES', 'E.ACREDITADOS ESC-6 HOMBRES', 'E.ACREDITADOS ESC-6 LGBTTTI+',
-            'E.ACREDITADOS ESC-7 MUJERES', 'E.ACREDITADOS ESC-7 HOMBRES', 'E.ACREDITADOS ESC-7 LGBTTTI+',
-            'E.ACREDITADOS ESC-8 MUJERES', 'E.ACREDITADOS ESC-8 HOMBRES', 'E.ACREDITADOS ESC-8 LGBTTTI+',
-            'E.ACREDITADOS ESC-9 MUJERES', 'E.ACREDITADOS ESC-9 HOMBRES', 'E.ACREDITADOS ESC-9 LGBTTTI+',
-            'E.DESERTORES ESC-1 MUJERES', 'E.DESERTORES ESC-1 HOMBRES', 'E.DESERTORES ESC-1 LGBTTTI+',
-            'E.DESERTORES ESC-2 MUJERES', 'E.DESERTORES ESC-2 HOMBRES', 'E.DESERTORES ESC-2 LGBTTTI+',
-            'E.DESERTORES ESC-3 MUJERES', 'E.DESERTORES ESC-3 HOMBRES', 'E.DESERTORES ESC-3 LGBTTTI+',
-            'E.DESERTORES ESC-4 MUJERES', 'E.DESERTORES ESC-4 HOMBRES', 'E.DESERTORES ESC-4 LGBTTTI+',
-            'E.DESERTORES ESC-5 MUJERES', 'E.DESERTORES ESC-5 HOMBRES', 'E.DESERTORES ESC-5 LGBTTTI+',
-            'E.DESERTORES ESC-6 MUJERES', 'E.DESERTORES ESC-6 HOMBRES', 'E.DESERTORES ESC-6 LGBTTTI+',
-            'E.DESERTORES ESC-7 MUJERES', 'E.DESERTORES ESC-7 HOMBRES', 'E.DESERTORES ESC-7 LGBTTTI+',
-            'E.DESERTORES ESC-8 MUJERES', 'E.DESERTORES ESC-8 HOMBRES', 'E.DESERTORES ESC-8 LGBTTTI+',
-            'E.DESERTORES ESC-9 MUJERES', 'E.DESERTORES ESC-9 HOMBRES', 'E.DESERTORES ESC-9 LGBTTTI+',
-            'E.GRUPO VULNERABLE AFROMEXICANO HOMBRES', 'E. GRUPO VULNERABLE AFROMEXICANO HOMBRES', 'E.GRUPO VULNERABLE AFROMEXICANO LGBTTTI+',
-            'E.GRUPO VULNERABLE DESPLAZADAS HOMBRES', 'E. GRUPO VULNERABLE DESPLAZADAS HOMBRES', 'E.GRUPO VULNERABLE DESPLAZADAS LGBTTTI+',
-            'E.GRUPO VULNERABLE EMBARAZADAS HOMBRES', 'E. GRUPO VULNERABLE EMBARAZADAS HOMBRES', 'E.GRUPO VULNERABLE EMBARAZADAS LGBTTTI+',
-            'E.GRUPO VULNERABLE SITUACION DE CALLE HOMBRES', 'E. GRUPO VULNERABLE SITUACION DE CALLE HOMBRES', 'E.GRUPO VULNERABLE SITUACION DE CALLE LGBTTTI+',
-            'E.GRUPO VULNERABLE ESTUDIANTES HOMBRES', 'E. GRUPO VULNERABLE ESTUDIANTES HOMBRES', 'E.GRUPO VULNERABLE ESTUDIANTES LGBTTTI+',
-            'E.GRUPO VULNERABLE FAMILIAR DE VICTIMA DE VIOLENCIA HOMBRES', 'E. GRUPO VULNERABLE FAMILIAR DE VICTIMA DE VIOLENCIA HOMBRES', 'E.GRUPO VULNERABLE FAMILIAR DE VICTIMA DE VIOLENCIA LGBTTTI+',
-            'E.GRUPO VULNERABLE INDIGENA HOMBRES', 'E. GRUPO VULNERABLE INDIGENA HOMBRES', 'E.GRUPO VULNERABLE INDIGENA LGBTTTI+',
-            'E.GRUPO VULNERABLE JEFA DE FAMILIA HOMBRES', 'E. GRUPO VULNERABLE JEFA DE FAMILIA HOMBRES', 'E.GRUPO VULNERABLE JEFA DE FAMILIA LGBTTTI+',
-            'E.GRUPO VULNERABLE MIGRANTE HOMBRES', 'E. GRUPO VULNERABLE MIGRANTE HOMBRES', 'E.GRUPO VULNERABLE MIGRANTE LGBTTTI+',
-            'E.GRUPO VULNERABLE LESBIANA HOMBRES', 'E. GRUPO VULNERABLE LESBIANA HOMBRES', 'E.GRUPO VULNERABLE LESBIANA LGBTTTI+',
-            'E.GRUPO VULNERABLE PRIVADA DE LIBERTAD HOMBRES', 'E. GRUPO VULNERABLE PRIVADA DE LIBERTAD HOMBRES', 'E.GRUPO VULNERABLE PRIVADA DE LIBERTAD LGBTTTI+',
-            'E.GRUPO VULNERABLE TRANS HOMBRES', 'E. GRUPO VULNERABLE TRANS HOMBRES', 'E.GRUPO VULNERABLE TRANS LGBTTTI+',
-            'E.GRUPO VULNERABLE TRABAJADORA DEL HOGAR HOMBRES', 'E. GRUPO VULNERABLE TRABAJADORA DEL HOGAR HOMBRES', 'E.GRUPO VULNERABLETRABAJADORA DEL HOGAR  LGBTTTI+',
-            'E.GRUPO VULNERABLE TRABAJADORA SEXUAL HOMBRES', 'E. GRUPO VULNERABLE TRABAJADORA SEXUAL HOMBRES', 'E.GRUPO VULNERABLE TRABAJADORA SEXUAL LGBTTTI+',
-            'E.GRUPO VULNERABLE VICTIMA DE VIOLENCIA HOMBRES', 'E. GRUPO VULNERABLE VICTIMA DE VIOLENCIA HOMBRES', 'E.GRUPO VULNERABLE VICTIMA DE VIOLENCIA LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD VISUAL HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD VISUAL HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD VISUAL LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD ADUITIVA HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD ADUITIVA HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD ADUITIVA LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD DEL HABLA HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD DEL HABLA HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD DEL HABLA LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD MOTRIZ HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD MOTRIZ HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD MOTRIZ LGBTTTI+',
-            'E.GRUPO VULNERABLE DISCAPACIDAD MENTAL HOMBRES', 'E. GRUPO VULNERABLE DISCAPACIDAD MENTAL HOMBRES', 'E.GRUPO VULNERABLE DISCAPACIDAD MENTAL LGBTTTI+'
+            'OBSERVACIONES'
         ];
 
         $nombreLayout = "FORMATO_T_PARA_DIRECTOR_DE_DIRECCION_TECNICA_ACADEMICA.xlsx";
@@ -1908,10 +1769,12 @@ class validacionDtaController extends Controller {
 
             $moist++;
         }
+
         if(isset($rango)) {
+
             $historial_meses = $rango;
         } else {
-            $historial_meses = 'ENERO';
+            $historial_meses = null;
         }
         // Fin info meses anteriores
 

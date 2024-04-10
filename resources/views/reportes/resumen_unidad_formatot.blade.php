@@ -87,7 +87,7 @@
                 pasado <b>{{$info_cursos['fecha_envio']}}</b> por medio del Sistema Integral de Vinculación y Capacitación (SIVYC), le informo que fueron recibidos
                 un total de @foreach($count_cursos as $key => $data)@if(array_key_last($count_cursos) == $key) y @endif <b>{{$data}}</b> cursos de la @if($unidad->ubicacion == $key) Unidad @else Acción Móvil @endif <b>{{$key}}</b>;@endforeach
                 de lo anterior, hago de su conocimiento que, una vez revisada la información, se reportaron a la Dirección de Planeación de este Instituto un total de <b>{{$info_cursos['total_cursos']}}</b> cursos.
-                No omito manifestar que no cuentan con cursos pendientes por reportar en formato T del mes <b>{{$historial_meses}}.</b>
+                @if(!is_null($historial_meses))No omito manifestar que no cuentan con cursos pendientes por reportar en formato T del mes <b>{{$historial_meses}}.@endif</b>
             </div>
             <br><br>
             <div align="justify" style="font-size:16px;">Sin más por el momento, agradezco su atención y le envio un cordial saludo.</div>
