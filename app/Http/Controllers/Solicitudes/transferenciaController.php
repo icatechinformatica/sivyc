@@ -344,7 +344,7 @@ class transferenciaController extends Controller
             
             $file = $request->file('arch_pago');         
             $path = $ejercicio.$this->path.'comprobantes_pagos/';        
-            $name_file = "pago_".trim(substr($request->numero_pago,-4)."_".date('YmdHis')."_".Auth::user()->id.".pdf");         
+            $name_file = "pago_".trim($request->numero_pago."_".date('YmdHis')."_".Auth::user()->id.".pdf");         
             $file_result = MyUtility::upload_file($path,$file,$name_file); 
             
             if($file_result["up"]){

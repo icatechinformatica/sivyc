@@ -44,7 +44,7 @@
                             <th class="text-center small">BANCO / CUENTA/CLABE</th>                            
                             <th class="text-center small align-middle">IMPORTE</th>    
                             <th class="text-center small align-middle">FOLIO FISCAL</th> 
-                            @if(in_array($request->status, ["PAGADO", "FINALIZADO"]))
+                            @can('transferencia.pagado')
                                 <th class="text-center small">NÚM. TRANSF.</th> 
                             @endcan
                             @can('transferencia.layout')                                
@@ -57,7 +57,7 @@
                                 <th class="text-center small align-middle">ESTATUS</th>  
                             @endcan                   
                                       
-                            @if(in_array($request->status, ["PAGADO", "FINALIZADO"]))                          
+                            @can('transferencia.pagado')                         
                                 <th class="text-center small align-middle">COMPROBANTE</th>
                                 <th class="text-center small align-middle">EDITAR</th>
                             @endif                            
@@ -81,7 +81,7 @@
                                     <td class="p-2">{{ $item->banco }}: {{ $item->cuenta }} <br/> {{ $item->clabe }}</td>                                    
                                     <td class=" text-right p-2">{{ number_format($item->importe_neto, 2, '.', ',') }}</td>    
                                     <td class="p-2">{{ $item->folio_fiscal }}</td>    
-                                    @if($item->status=='PAGADO')
+                                    @can('transferencia.pagado')
                                             <td class="p-2">{{ $item->no_pago }}</td>   
                                     @endif                            
                                     @can('transferencia.layout')                                        
@@ -119,19 +119,13 @@
                                                 <i  class="far fa-file-pdf  fa-2x text-muted pt-2"  title='ARCHIVO NO DISPONIBLE.'></i>
                                             @endif
                                         </td>
-                                        <td class="text-center p-2">      
-                                            @if($item->status=='PENDIENTE')                                         
-                                                <div class="form-check p-0 pt-2">
-                                                    <input class="custom-check" type="checkbox" value="{{ $item->id }}" name="ids[]"    @if($item->status=='PAGADO'){{'checked'}} @endif >
-                                                </div>   
-                                            @else                                                 
-                                                {{ $item->status}}
-                                            @endif                                                                                                               
+                                        <td class="text-center p-2">                                                                                                
+                                            {{ $item->status}}                                            
                                         </td>
                                        
                                     @endcan
 
-                                    @if($item->status=='PAGADO')                                            
+                                    @can('transferencia.pagado')                                 
                                             <td class="text-center p-2"> 
                                                 @if( $item->arch_pago)
                                                     <a class="nav-link" href="{{$item->arch_pago}}" target="_blank">
@@ -170,10 +164,8 @@
         </div>
         <div class="row form-inline justify-content-end">            
                 @csrf                          
-                @can('transferencia.pagado')
-                    @if(in_array($request->status, ["PENDIENTE", "PAGADO","FINALIZADO"]))
+                @can('transferencia.pagado')                
                         {{ Form::button('REGISTRAR PAGOS', ['id'=>'registrar_pagos','class' => 'btn btn-danger']) }}                    
-                    @endif
                 @endcan
                 @can('transferencia.layout')                    
                     @if (count($data) > 0 && in_array($request->status, ["PENDIENTE", "MARCADO", "GENERADO"]))
