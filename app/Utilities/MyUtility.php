@@ -92,24 +92,28 @@ class MyUtility
         return strtoupper(trim($parteEntera) . $parteDecimal );
     }
 
-    public static function upload_file($path, $file, $name, $file_delete){       
+    public static function upload_file($path, $file, $name, $file_delete=null){ 
         //php artisan storage:link
-        $ext = $file->getClientOriginalExtension();
-        $ext = strtolower($ext);
-        $mgs= null;
-        $up = false;
-        if($ext == "pdf"){                 
-            $up = Storage::disk('public')->put($path.$name, file_get_contents($file));
-            if($up){                
-                if(Storage::exists($file_delete)){
-                    Storage::delete($file_delete);
-                    $msg = "El archivo ha sido reemplazado correctamente!";
-                }else $msg = "El archivo ha sido cargado correctamente!";
-            }
-        }else $msg= "Formato de Archivo no válido, sólo PDF.";
-                
-        $data_file = ["message"=>$msg, 'url_file'=>$path, 'up'=>$up];
-       
+        $data_file = ["message"=>null, 'url_file'=>null, 'up'=>null];
+        if($file){
+            $ext = $file->getClientOriginalExtension();
+            $ext = strtolower($ext);
+            $msg= null;
+            $up = false;
+            if($ext == "pdf"){          
+                $up = Storage::disk('public')->put($path.$name, file_get_contents($file));
+                if($up){
+                    if($file_delete){
+                        if(Storage::exists($file_delete)){
+                            Storage::delete($file_delete);
+                            $msg = "El archivo ha sido reemplazado correctamente!";
+                        }
+                    }else $msg = "El archivo ha sido cargado correctamente!";
+                }
+            }else $msg= "Formato de Archivo no válido, sólo PDF.";
+                    
+            $data_file = ["message"=>$msg, 'url_file'=>$path, 'up'=>$up];
+        }
         return $data_file;
     }
 }
