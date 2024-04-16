@@ -590,7 +590,7 @@ class grupoController extends Controller
                                             'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago, 'updated_at' => date('Y-m-d H:i:s'),
                                             'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'cespecifico' => $request->cespecifico,'fcespe' => $request->fcespe,
                                             'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,
-                                            'id_instructor' => $instructor->id,'modinstructor' => $tipo_honorario,
+                                            'id_instructor' => $instructor->id,'nombre' => $instructor->instructor,'modinstructor' => $tipo_honorario,
                                             'curp' => $instructor->curp,'rfc' => $instructor->rfc,'modinstructor' => $tipo_honorario,'instructor_escolaridad' => $instructor->escolaridad,
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
