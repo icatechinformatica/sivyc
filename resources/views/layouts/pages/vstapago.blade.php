@@ -821,7 +821,7 @@
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdf" name="solpa_pdf" hidden>
-                                        <label for="solpa_pdf">
+                                        <label for="solpa_pdf" id="solpa_pdf_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
@@ -1006,7 +1006,7 @@
                                     </div>
                                     <div style="display: inline-block;">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdfc" name="solpa_pdfc" hidden>
-                                        <label for="solpa_pdfc">
+                                        <label for="solpa_pdfc" id="solpa_pdfc_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
@@ -1381,7 +1381,7 @@
     });
 
     $('#validarRecepcionModalOrdinaria').on('show.bs.modal', function(event){
-        // console.log($);
+        // console.log('test');
         var button = $(event.relatedTarget);
         var attrid = button.attr('data-id');
         var id = JSON.parse(attrid)
@@ -1460,6 +1460,13 @@
                         reportevLink.hidden = false;
                         document.getElementById('td11v').style.color = "black";
                     break;
+                    case 'Solicitud Pago':
+                        const solpavLink = document.getElementById('show_solpav');
+                        const solpavUrl = "/contrato/solicitud-pago/pdf/" + element['id_folios'];
+                        solpavLink.href = solpavUrl;
+                        solpavLink.hidden = false;
+                        document.getElementById('td1v').style.color = "black";
+                    break;
                     default:
                     break;
                 }
@@ -1536,6 +1543,13 @@
                         calificacionesvcLink.href = calificacionevcsUrl;
                         calificacionesvcLink.hidden = false;
                         document.getElementById('td10vc').style.color = "black";
+                    break;
+                    case 'Solicitud Pago':
+                        const solpavcLink = document.getElementById('show_solpavc');
+                        const solpavcUrl = "/contrato/solicitud-pago/pdf/" + element['id_folios'];
+                        solpavcLink.href = solpavcUrl;
+                        solpavcLink.hidden = false;
+                        document.getElementById('td1vc').style.color = "black";
                     break;
                     default:
                     break;
@@ -1630,6 +1644,17 @@
                         $('#evidencia_fotografica_icon').attr('class', "fas fa-check text-success");
                         document.getElementById('td11').style.color = "black";
                     break;
+                    case 'Solicitud Pago':
+                        // console.log('aaa');
+                        const solpaLink = document.getElementById('show_solpa');
+                        const solpaUrl = "/contrato/solicitud-pago/pdf/" + element['id_folios'];
+                        solpaLink.href = solpaUrl;
+                        solpaLink.hidden = false;
+                        $('#solpa_pdf_label').attr('hidden', true);
+                        $('#solpa_pdf').prop('required', false);
+                        $('#solpa_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td1').style.color = "black";
+                    break;
                     default:
                     break;
                 }
@@ -1685,6 +1710,16 @@
                         $('#asistencias_pdfc').prop('required', false);
                         $('#calificaciones_iconc').attr('class', "fas fa-check text-success");
                         document.getElementById('td10c').style.color = "black";
+                    break;
+                    case 'Solicitud Pago':
+                        const solpacLink = document.getElementById('show_solpac');
+                        const solpacUrl = "/contrato/solicitud-pago/pdf/" + element['id_folios'];
+                        solpacLink.href = solpacUrl;
+                        solpacLink.hidden = false;
+                        $('#solpa_pdfc_label').attr('hidden', true);
+                        $('#solpa_pdfc').prop('required', false);
+                        $('#solpa_iconc').attr('class', "fas fa-check text-success");
+                        document.getElementById('td1c').style.color = "black";
                     break;
                     default:
                     break;

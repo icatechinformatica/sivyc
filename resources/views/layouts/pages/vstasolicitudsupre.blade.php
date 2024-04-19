@@ -106,11 +106,11 @@
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$idh}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                    @can('supre.delete')
+                                    {{-- @can('supre.delete')
                                         <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $idh])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
-                                    @endcan
+                                    @endcan --}}
                                     @if ($itemData->doc_supre == NULL)
                                         @can('supre.edit')
                                             <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $idh])}}">
@@ -262,11 +262,11 @@
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$idh}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                    @can('supre.delete')
+                                    {{-- @can('supre.delete')
                                         <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $idh])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
-                                    @endcan
+                                    @endcan --}}
                                     @if ($itemData->doc_supre == NULL)
                                         @can('supre.edit')
                                             <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $idh])}}">
