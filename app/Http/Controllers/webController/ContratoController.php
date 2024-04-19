@@ -29,6 +29,7 @@ use App\Models\tbl_unidades;
 use Illuminate\Pagination\Paginator;
 use DateTime;
 use App\Http\Controllers\efirma\EContratoController;
+use App\Http\Controllers\efirma\EPagoController;
 
 class ContratoController extends Controller
 {
@@ -569,12 +570,29 @@ class ContratoController extends Controller
                             ->with('success','Contrato Generado en E.Firma exitosamente');
     }
 
+    public function generar_solicitud_pago_efirma(Request $request) {
+        // // Metodo de XML para solicitud de pago
+        // dd($request);
+        $pago = pago::Where('id',$request->idp)->First();
+        $fechaActual = Carbon::now();
+        // $contrato = $fechaActual->toDateString();
+        // $contrato->save();
+
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clavecurso)->Where('tipo_archivo','Solicitud Pago')->First();
+
+        $pagoController = new EPagoController();
+        $result = $pagoController->generar_xml($pago->id);
+
+        return redirect()->route('contrato-mod', ['id' => $request->idcon])
+                            ->with('success','Solicitud de Pago Generado en E.Firma Exitosamente');
+    }
+
     public function modificar($id)
     {
         $folio = new folio();
         $especialidad = new especialidad();
         $perfil = new InstructorPerfil();
-        $generarEfirma = TRUE;
+        $generarEfirmaContrato = $generarEfirmaPago = TRUE;
         $fechaA = Carbon::now();
         $fechaActual = $fechaA->format('d-m-Y');
         $fechaA = $fechaA->format('Y-m-d');
@@ -666,12 +684,12 @@ class ContratoController extends Controller
             $pago = $data->importe_total;
         }
 
-        // check para validar si todavia se puede firmar electronicamente
+        // check para validar si todavia se puede firmar electronicamente el contrato
         $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$data->clave)
             ->Where('tipo_archivo','Contrato')
             ->First();
         if($fechaA > $data->termino){
-            $generarEfirma = FALSE;
+            $generarEfirmaContrato = FALSE;
         }
 
         if(!is_null($status_doc)) {
@@ -679,17 +697,37 @@ class ContratoController extends Controller
                 $firmantes = json_decode($status_doc->obj_documento, true);
                 foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
                     if(isset($firmante['_attributes']['certificado'])) {
-                        $generarEfirma = FALSE;
+                        $generarEfirmaContrato = FALSE;
                     }
                 }
             }
             if($status_doc->status == 'VALIDADO') {
-                $generarEfirma = FALSE;
+                $generarEfirmaContrato = FALSE;
             }
         }
         // FINAL del check
 
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago','fechaActual','generarEfirma'));
+        // check para validar si todavia se puede firmar electronicamente la solicitud de pago
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$data->clave)
+            ->Where('tipo_archivo','Solicitud Pago')
+            ->First();
+
+        if(!is_null($status_doc)) {
+            if($status_doc->status != 'CANCELADO' && $status_doc->status != 'CANCELADO ICTI') {
+                $firmantes = json_decode($status_doc->obj_documento, true);
+                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                    if(isset($firmante['_attributes']['certificado'])) {
+                        $generarEfirmaPago = FALSE;
+                    }
+                }
+            }
+            if($status_doc->status == 'VALIDADO') {
+                $generarEfirmaPago = FALSE;
+            }
+        }
+        // FINAL del check
+
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago','fechaActual','generarEfirmaContrato','generarEfirmaPago'));
     }
 
     public function save_mod(Request $request){
@@ -1425,56 +1463,90 @@ class ContratoController extends Controller
     }
 
     public function solicitudpago_pdf($id){
-        // dd($id);
+        $data = DB::Table('folios')->Select('clave','ubicacion')
+            ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
+            ->Where('folios.id_folios',$id)
+            ->First();
+
         $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
-        $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso','tbl_cursos.instructor_mespecialidad',
-                              'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','instructores.nombre',
-                              'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
-                              'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
-                              'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido')
-                        ->WHERE('folios.id_folios', '=', $id)
-                        ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                        ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
-                        ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
-                        ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
-                        ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
-                        ->FIRST();
-        if($data->solicitud_fecha == NULL)
-        {
-            $date = strtotime($data->created_at);
-            $D = date('d', $date);
-            $M = $this->toMonth(date('m',$date));
-            $Y = date("Y",$date);
-        }
-        else
-        {
-            $date = strtotime($data->solicitud_fecha);
-            $D = date('d', $date);
-            $M = $this->toMonth(date('m',$date));
-            $Y = date("Y",$date);
+
+        $director = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('f.activo', 'true')
+            ->Where('u.unidad', $data->ubicacion)
+            ->First();
+
+        $ccp1 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('o.id',1)
+            ->Where('f.activo', 'true')
+            ->First();
+
+        $ccp2 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('o.id',12)
+            ->Where('f.activo', 'true')
+            ->First();
+
+        $ccp3 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DELEG%')
+            ->Where('f.activo', 'true')
+            ->Where('u.unidad', $data->ubicacion)
+            ->First();
+
+        $documento = DocumentosFirmar::where('numero_o_clave', $data->clave)
+            ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
+            ->Where('tipo_archivo','Solicitud Pago')
+            ->first();
+        if(is_null($documento)) {
+            $firma_electronica = false;
+
+            $pagoController = new EPagoController();
+            $body_html = $pagoController->create_body($id);
+            // dd($body_html);
+        } else {
+            // dd('a');
+            $firma_electronica = true;
+            $body_html = json_decode($documento->obj_documento_interno);
+            if(isset($documento->uuid_sellado)){
+                $objeto = json_decode($documento->obj_documento,true);
+                $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
+                $no_oficio = $no_oficio->{'@attributes'}->no_oficio;
+                $uuid = $documento->uuid_sellado;
+                $cadena_sello = $documento->cadena_sello;
+                $fecha_sello = $documento->fecha_sellado;
+                $folio = $documento->nombre_archivo;
+                $tipo_archivo = $documento->tipo_archivo;
+
+                $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
+
+                if(isset($documento->link_verificacion)) {
+                    $verificacion = $documento->link_verificacion;
+                } else {
+                    $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                    $documento->save();
+                }
+                ob_start();
+                QRcode::png($verificacion);
+                $qrCodeData = ob_get_contents();
+                ob_end_clean();
+                $qrCodeBase64 = base64_encode($qrCodeData);
+                // Fin de Generacion
+                foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
+                    $puesto = DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+                }
+            }
         }
 
-        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
-        $elaboro = directorio::WHERE('id', '=', $data_directorio->solpa_elaboro)->FIRST();
-        if(isset($data_directorio->solpa_iddirector))
-        {
-            $director = directorio::WHERE('id', '=', $data_directorio->solpa_iddirector)->FIRST();
-        }
-        else
-        {
-            $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
-        }
-        $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
-        $ccp1 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp1)->FIRST();
-        $ccp2 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp2)->FIRST();
-        $ccp3 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp3)->FIRST();
-        // dd($para);
-
-        $direccion = tbl_unidades::WHERE('unidad',$data->unidad_capacitacion)->VALUE('direccion');
+        $direccion = tbl_unidades::WHERE('unidad',$data->ubicacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director','distintivo','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','director','ccp1','ccp2','ccp3','body_html','distintivo','direccion','objeto','puesto','qrCodeBase64'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 

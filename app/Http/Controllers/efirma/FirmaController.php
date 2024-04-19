@@ -57,72 +57,9 @@ class FirmaController extends Controller {
                 ->Where('users.id', Auth::user()->id)
                 ->First();
             }
-        // if($rol->role_id == 30 || $rol->role_id == 31) {
-            // $docsVistoBueno2 = tbl_curso::select('tbl_cursos.id', 'tbl_cursos.nombre', 'tbl_cursos.asis_finalizado', 'tbl_cursos.calif_finalizado')
-            //     ->leftJoin('documentos_firmar', 'documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
-            //     // ->whereIn('tipo_archivo', ['Lista de asistencia', 'Lista de calificaciones'])
-            //     ->where(function ($query) {
-            //         $query->where('asis_finalizado', true)
-            //             ->orWhere('calif_finalizado', true);
-            //     })
-            //     ->orderByDesc('clave')
-            //     ->get();
 
-            // $docsVistoBueno2 = tbl_curso::select(
-            //     'tbl_cursos.id',
-            //     'tbl_cursos.nombre',
-            //     'tbl_cursos.asis_finalizado',
-            //     'tbl_cursos.calif_finalizado',
-            //     'tbl_cursos.clave',
-            //     DB::raw("
-            //         CASE
-            //             WHEN tipo_archivo = 'Lista de asistencia' THEN
-            //                 CASE WHEN 'Lista de calificaciones' IS NULL THEN 'Ambos' ELSE 'Lista de calificaciones' END
-            //             WHEN tipo_archivo = 'Lista de calificaciones' THEN
-            //                 CASE WHEN 'Lista de asistencia' IS NULL THEN 'Ambos' ELSE 'Lista de asistencia' END
-            //             ELSE 'NA'
-            //         END AS tipo_archivo_faltante"
-            //     ),
-            //     DB::raw("
-            //     CASE
-            //     WHEN tipo_archivo = 'Lista de asistencia' AND documentos_firmar.status = 'CANCELADO' THEN 'asistencia cancelada'
-            //     WHEN tipo_archivo = 'Lista de calificaciones' AND documentos_firmar.status = 'CANCELADO' THEN
-            //         CASE
-            //             WHEN EXISTS (
-            //                 SELECT 1
-            //                 FROM documentos_firmar df2
-            //                 WHERE df2.numero_o_clave = documentos_firmar.numero_o_clave
-            //                 AND df2.tipo_archivo = 'Lista de asistencia'
-            //                 AND df2.status = 'CANCELADO'
-            //             ) THEN 'ambos'
-            //             ELSE 'calificaciones canceladas'
-            //         END
-            //     ELSE 'NA'
-            //     END AS archivo_cancelado"
-            //     )
-            // )
-            // ->leftJoin('documentos_firmar', 'documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
-            // ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
-            // ->Where('tbl_unidades.ubicacion',$unidad_user)
-            // ->where(function ($query) {
-            //     $query->where('asis_finalizado', true)
-            //         ->orWhere('calif_finalizado', true);
-            // })
-            // ->whereNotIn('tbl_cursos.clave', function ($subquery) {
-            //     $subquery->select('numero_o_clave')
-            //         ->from('documentos_firmar')
-            //         ->whereIn('tipo_archivo', ['Lista de asistencia', 'Lista de calificaciones'])
-            //         ->WhereIn('status', ['CANCELADO','VALIDADO','EnFirma'])
-            //         // ->Where('status', '=', 'VALIDADO')
-            //         ->groupBy('numero_o_clave')
-            //         ->havingRaw('COUNT(DISTINCT tipo_archivo) > 1');
-            // })
-            // ->orderByDesc('tbl_cursos.clave')
-            // ->get();
-            // dd($docsVistoBueno2);
-        // }
         $docsFirmar1 = DocumentosFirmar::where('documentos_firmar.status','!=','CANCELADO')
-            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo')
+            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo','folios.id_folios')
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
@@ -133,7 +70,7 @@ class FirmaController extends Controller {
 
 
         $docsFirmados1 = DocumentosFirmar::where('documentos_firmar.status', 'EnFirma')
-            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo')
+            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo','folios.id_folios')
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
@@ -149,7 +86,7 @@ class FirmaController extends Controller {
             // ->orderBy('id', 'desc')->get();
 
         $docsValidados1 = DocumentosFirmar::where('documentos_firmar.status', 'VALIDADO')
-            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo')
+            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo','folios.id_folios')
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
@@ -163,16 +100,6 @@ class FirmaController extends Controller {
             });
             // ->orderBy('id', 'desc')->get();
 
-        // $docsCancelados1 = DocumentosFirmar::where('status', 'CANCELADO')
-        //     ->where(function ($query) use ($email) {
-        //         $query->whereRaw("EXISTS(SELECT TRUE FROM jsonb_array_elements(obj_documento->'firmantes'->'firmante'->0) x
-        //             WHERE x->'_attributes'->>'email_firmante' IN ('".$email."'))")
-        //         ->orWhere(function($query1) use ($email) {
-        //             $query1->where('obj_documento_interno->emisor->_attributes->email', $email)
-        //                     ->where('status', 'CANCELADO');
-        //         });
-        //     });
-        ##Cancelados
         $docsCancelados1 = DocumentosFirmar::where('documentos_firmar.status', 'like', 'CANCELADO%')
             ->Select('documentos_firmar.*','tbl_cursos.id as idcursos', 'tbl_cursos.folio_grupo', 'pa.status_recepcion')
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
@@ -516,7 +443,7 @@ class FirmaController extends Controller {
 
     protected function getdocumentos(Request $request)
     {
-        $respuesta = DB::Table('contratos')->Select('documentos_firmar.tipo_archivo','contratos.id_contrato','tbl_cursos.id AS id_curso')
+        $respuesta = DB::Table('contratos')->Select('documentos_firmar.tipo_archivo','contratos.id_contrato','tbl_cursos.id AS id_curso','folios.id_folios')
             ->Join('folios','folios.id_folios','contratos.id_folios')
             ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
             ->Join('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')

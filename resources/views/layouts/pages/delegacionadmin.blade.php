@@ -30,12 +30,6 @@
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
-                {{-- <select name="unidad" id="unidad" class="form-control">
-                    <option value="sin especificar">SIN ESPECIFICAR</option>
-                    @foreach ($unidades as $data )
-                        <option value="{{$data->unidad}}">{{$data->unidad}}</option>
-                    @endforeach
-                </select> --}}
                 <input type="text" class="form-control" id="unidad" name="unidad" value="{{$unidad->ubicacion}}" readonly>
             </div>
             <div class="form-group col-md-5">
@@ -116,17 +110,8 @@
                     <label for="fecha_movimiento_bancario_0">Fecha de Expedición</label>
                     <input type="date" class="form-control" id="fecha_expedicion" name="fecha_expedicion" readonly>
                 </div>
-                {{-- <div class="form-group col-md-3">
-                    <label for="movimiento_bancario_0">Movimiento Bancario</label>
-                    <input type="text" class="form-control" id="movimiento_bancario_0" name="movimiento_bancario_[0]">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="fecha_movimiento_bancario_0">Fecha de Movimiento</label>
-                    <input type="date" class="form-control" id="fecha_movimiento_bancario_0" name="fecha_movimiento_bancario_[0]">
-                </div> --}}
             </div>
         </div>
-        {{-- <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button> --}}
         <br><br><br>
         <div class="row">
             <div class="col-lg-12 margin-tb">
@@ -284,10 +269,7 @@ function textLabel(text) {
                         document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Clave de Curso Invalida';
                     } else {
                         if(!respuesta.hasOwnProperty('error')){
-                            // iva = respuesta[0] * 0.16;
-                            // iva = parseFloat(iva).toFixed(2);
                             if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS') {
-                                // total = respuesta[0]*1.16
                                 document.getElementById('addmore['+x+'][iva]').value = respuesta['iva'];
                                 if(respuesta['tabuladorConIva'] == true) {
                                     document.getElementById('tdiva').style.display = 'none';
@@ -296,17 +278,11 @@ function textLabel(text) {
                                     document.getElementById('tdiva').style.display = 'table-cell';
                                     document.getElementById('thiva').style.display = 'table-cell';
                                 }
-                                // style="display:none;"
                             } else {
-                                // total = respuesta[0]
                                 document.getElementById('addmore['+x+'][iva]').value = 0.00;
                             }
-                            // total = parseFloat(total).toFixed(2);
 
                             document.getElementById('addmore['+x+'][importe]').value = respuesta['importe_total'];
-                            // document.getElementById('norecibo').value = respuesta['recibo'];
-                            // document.getElementById('movimiento_bancario').value = respuesta['movimiento_bancario'];
-                            // document.getElementById('fecha_movimiento_bancario').value = respuesta['fecha_movimiento_bancario'];
                             document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
                             document.getElementById('no_recibo').value = respuesta['folio_recibo'];
                             document.getElementById('fecha_expedicion').value = respuesta['fecha_expedicion'];
@@ -326,137 +302,11 @@ function textLabel(text) {
             } else {
 
             }
-            /*var url = '/supre/busqueda/tipo_curso';
-                var request = $.ajax
-                ({
-                    url: url,
-                    method: 'POST',
-                    data: datos,
-                    dataType: 'json'
-                });
-                request.done(( respuesta) =>
-                {
-                    if (respuesta == 'CERT')
-                    {
-                        document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Curso Certificado Extraordinario';
-                    }
-                    if (respuesta == 'NORMAL')
-                    {
-                        document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
-                    }
-                });*/
         });
     });
 
-   /* $( document ).on('input', function(){
-        $('input').on('input', function(event){
-            id = this.id;
-            x = id.substring(8,10);
-            comp = x.substring(1);
-            if(comp == ']')
-            {
-                x = id.substring(8,9);
-            }
-            if (id == 'addmore['+x+'][folio]') {
-                var valor = (document.getElementById(id).value).toUpperCase();
-                var datos = {valor: valor};
-                var url = '/supre/busqueda/folio';
-                var request = $.ajax
-                ({
-                    url: url,
-                    method: 'POST',
-                    data: datos,
-                    dataType: 'json'
-                });
-                console.log('hola');
-                request.done(( respuesta) =>
-                {
-                    console.log(respuesta);
-                    if (respuesta != 'N/A') {
-                        document.getElementById('addmore['+x+'][avisofolio]').innerHTML = 'Folio Existente';
-                    } else {
-                        if(!respuesta.hasOwnProperty('error')){
-                            console.log('respuesta= ')
-                            console.log(respuesta)
-                            document.getElementById('addmore['+x+'][avisofolio]').innerHTML = null;
-                        }else{
-
-                            //Puedes mostrar un mensaje de error en algún div del DOM
-                        }
-                    }
-                });
-
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                alert( "Hubo un error: " + textStatus );
-            });
-
-            } else {
-
-            }
-        });
-    });*/
 
 });
-        // evento de cargar los datos en el elemento jquery con los inputs dinámicos
-       /* $('.claveCurso').on('input', function(event){
-            id = this.id;
-            x = id.substring(8,10);
-            comp = x.substring(1);
-            if(comp == ']')
-            {
-                x = id.substring(8,9);
-            }
-            console.log('hola');
-            if (id == 'addmore['+x+'][clavecurso]') {
-                var valor = (document.getElementById(id).value).toUpperCase();
-                var datos = {valor: valor, _token: "{{ csrf_token() }}"};
-                var url = "{{ route('supre.busqueda.curso') }}";
-                var request = $.ajax
-                ({
-                    url: url,
-                    method: 'POST',
-                    data: datos,
-                    dataType: 'json'
-                });
-
-                request.done(( respuesta) =>
-                {
-                    console.log(respuesta);
-                    if (respuesta == 'N/A') {
-                        document.getElementById('addmore['+x+'][importe]').value = null;
-                        document.getElementById('addmore['+x+'][iva]').value = null;
-                        document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Clave de Curso Invalida';
-                    } else {
-                        if(!respuesta.hasOwnProperty('error')){
-                            console.log('respuesta= ')
-                            console.log(respuesta)
-                            iva = respuesta * 0.16;
-                            iva = parseFloat(iva).toFixed(2);
-                            total = respuesta*1.16
-                            total = parseFloat(total).toFixed(2);
-
-                            document.getElementById('addmore['+x+'][importe]').value = total;
-
-                            document.getElementById('addmore['+x+'][iva]').value = iva;
-
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
-                        }else{
-                            console.log("Esto es una respuesta de Error:" + respuesta);
-                            //Puedes mostrar un mensaje de error en algún div del DOM
-                        }
-                    }
-                });
-
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                alert( "Hubo un error: " + jqXHR.responseText );
-            });
-
-            } else {
-
-            }
-        });*/
 
     });
 </script>
