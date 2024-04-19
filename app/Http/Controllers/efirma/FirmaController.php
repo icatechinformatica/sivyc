@@ -33,6 +33,7 @@ class FirmaController extends Controller {
 
     // php artisan serve --port=8001
     public function index(Request $request) {
+
         $seleccion = request('section'); ##Paginacion
         $seleccion2 = $request->seccion; ##Busqueda
 

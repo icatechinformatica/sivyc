@@ -384,7 +384,7 @@ class ContratoController extends Controller
         $directorio = new contrato_directorio();
         $directorio->contrato_iddirector = $request->id_director;
         $directorio->contrato_idtestigo1 = $request->id_testigo1;
-        $directorio->contrato_idtestigo2 = $request->id_testigo2;
+        // $directorio->contrato_idtestigo2 = $request->id_testigo2;
         $directorio->contrato_idtestigo3 = $request->id_testigo3;
         $directorio->id_contrato = $id_contrato->id_contrato;
         $directorio->save();
@@ -625,7 +625,7 @@ class ContratoController extends Controller
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
         $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
         $testigo1 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
-        $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        // $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
         $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $datacon->unidad_capacitacion)->FIRST();
@@ -751,7 +751,7 @@ class ContratoController extends Controller
         $directorio = contrato_directorio::find($request->id_directorio);
         $directorio->contrato_iddirector = $request->id_director;
         $directorio->contrato_idtestigo1 = $request->id_testigo1;
-        $directorio->contrato_idtestigo2 = $request->id_testigo2;
+        // $directorio->contrato_idtestigo2 = $request->id_testigo2;
         $directorio->contrato_idtestigo3 = $request->id_testigo3;
         $directorio->save();
 
@@ -1248,7 +1248,7 @@ class ContratoController extends Controller
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
         $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
         $testigo1 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
-        $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        // $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura',
@@ -1360,9 +1360,9 @@ class ContratoController extends Controller
         // if($data->tipo_curso == 'CURSO')
         // {
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html'));
             }
         // }
         // else
