@@ -139,7 +139,7 @@
                     <input type="text" name="id_testigo1" id="id_testigo1" value="{{$testigo1->id}}" hidden>
                 </div>
             </div>
-            <div class="form-row">
+            {{-- <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputtestigo2" class="control-label">Nombre de Testigo del Departamento de Vinculación</label>
                     <input type="text" class="form-control" id="testigo2" name="testigo2" value="{{$testigo2->nombre}} {{$testigo2->apellidoPaterno}} {{$testigo2->apellidoMaterno}}" >
@@ -149,7 +149,7 @@
                     <input readonly type="text" class="form-control" id="puesto_testigo2" name="puesto_testigo2" value="{{$testigo2->puesto}}">
                     <input type="text" name="id_testigo2" id="id_testigo2" value="{{$testigo2->id}}" hidden>
                 </div>
-            </div>
+            </div> --}}
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputtestigo2" class="control-label">Nombre de Testigo de la Delegación Administrativa</label>
