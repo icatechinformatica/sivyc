@@ -944,6 +944,9 @@ class grupoController extends Controller
         if ($_SESSION['folio_grupo']) {
             $data = $cursos = []; $unidad = '';
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
+            $alum = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->first();
+
+
             $memo = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->value('mpreapertura');
             $date = date('Y-m-d');
             if (DB::table('alumnos_registro')->where('mpreapertura',$memo)->value('fmpreapertura')) {
@@ -1014,7 +1017,12 @@ class grupoController extends Controller
                     if($cursos[0]->fecha_turnado>0) $date = $cursos[0]->fecha_turnado;
                     $mes = $meses[date('m',strtotime($date))];
                     $date = date('d',strtotime($date)).' de '.$mes.' del '.date('Y',strtotime($date));
-                    $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first(); //dd($reg_unidad);
+                    $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first(); //dd($reg_unidad);                    
+                    if($reg_unidad->vinculacion==$reg_unidad->dunidad ){
+                        $vinculador = DB::table('users')->where('id','=', $alum->iduser_created)->first();
+                        $reg_unidad->vinculacion = mb_strtoupper($vinculador->name, 'UTF-8');
+                        $reg_unidad->pvinculacion = mb_strtoupper($vinculador->puesto, 'UTF-8');                                                
+                    }
                     $direccion = $reg_unidad->direccion;
                     $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion'));
                     $pdf->setpaper('letter', 'landscape');
