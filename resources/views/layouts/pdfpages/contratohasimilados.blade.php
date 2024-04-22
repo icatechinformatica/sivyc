@@ -127,10 +127,13 @@
 </head>
     <body>
         <footer>
-            <div class="page-number">
-                <small class="link">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} <br> Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas </small>
-            </div>
-            {{-- <div class="page-number"></div> --}}
+            @if($firma_electronica == true)
+                <div class="page-number">
+                    <small class="link">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} <br> Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas </small>
+                </div>
+            @else
+                <div class="page-number"></div>
+            @endif
         </footer>
         <div class= "container g-pt-30" style="font-size: 12px; margin-bottom: 25px;">
             <div id="content">
