@@ -40,9 +40,11 @@
                 <td>{{$cadwell->apellidoMaterno}}</td>
                 <td>{{$cadwell->rfc}}</td>
                 <td>{{$cadwell->curp}}</td>
-                <td>{{$datosBanco->banco}}</td>
-                <td>{{$datosBanco->no_cuenta}}</td>
-                <td>{{$datosBanco->interbancaria}}</td>
+                @if(!is_null($datosBanco))
+                    <td>{{$datosBanco->banco}}</td>
+                    <td>{{$datosBanco->no_cuenta}}</td>
+                    <td>{{$datosBanco->interbancaria}}</td>
+                @endif
                 <td>{{$cadwell->folio_validacion}}</td>
                 <td>{{$cadwell->inicio}}</td>
                 <td>{{$total}}</td>
