@@ -39,7 +39,7 @@ class EContratoController extends Controller
 
         $nameFileOriginal = 'contrato '.$info->clave.'.pdf';
         $numOficio = $info->numero_contrato;
-        $numFirmantes = '5';
+        $numFirmantes = '4';
 
         $arrayFirmantes = [];
 
@@ -104,26 +104,26 @@ class EContratoController extends Controller
         }
 
         //Llenado de vinculacion firmante
-        foreach($dataFirmantes as $dataFirmante) {
+        // foreach($dataFirmantes as $dataFirmante) {
 
-            if (str_contains($dataFirmante->cargo, 'VINCULACION')) {
-                if(isset($dataFirmante->incapacidad)) {
-                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
-                    if($incapacidadFirmante != FALSE) {
-                        $dataFirmante = $incapacidadFirmante;
-                    }
-                }
-                $temp = ['_attributes' =>
-                    [
-                        'curp_firmante' => $dataFirmante->curp,
-                        'nombre_firmante' => $dataFirmante->funcionario,
-                        'email_firmante' => $dataFirmante->correo,
-                        'tipo_firmante' => 'FM'
-                    ]
-                ];
-                array_push($arrayFirmantes, $temp);
-            }
-        }
+        //     if (str_contains($dataFirmante->cargo, 'VINCULACION')) {
+        //         if(isset($dataFirmante->incapacidad)) {
+        //             $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+        //             if($incapacidadFirmante != FALSE) {
+        //                 $dataFirmante = $incapacidadFirmante;
+        //             }
+        //         }
+        //         $temp = ['_attributes' =>
+        //             [
+        //                 'curp_firmante' => $dataFirmante->curp,
+        //                 'nombre_firmante' => $dataFirmante->funcionario,
+        //                 'email_firmante' => $dataFirmante->correo,
+        //                 'tipo_firmante' => 'FM'
+        //             ]
+        //         ];
+        //         array_push($arrayFirmantes, $temp);
+        //     }
+        // }
 
         //Llenado de delegacion firmante
         foreach($dataFirmantes as $dataFirmante) {

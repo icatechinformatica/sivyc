@@ -54,15 +54,17 @@
         if ($data1->efisico) $efisico = $data1->efisico;
     }
 
-    $dunidad = $delegado_administrativo = $pdelegado_administrativo = $academico = $pacademico = $vinculacion = $pvinculacion = 'DATO REQUERIDO';
-    if ($data2) {
-        if ($data2->dunidad) $dunidad = $data2->dunidad;
-        if ($data2->delegado_administrativo) $delegado_administrativo = $data2->delegado_administrativo;
-        if ($data2->pdelegado_administrativo) $pdelegado_administrativo = $data2->pdelegado_administrativo;
-        if ($data2->academico) $academico = $data2->academico;
-        if ($data2->pacademico) $pacademico = $data2->pacademico;
-        if ($data2->vinculacion) $vinculacion = $data2->vinculacion;
-        if ($data2->pvinculacion) $pvinculacion = $data2->pvinculacion;
+    $dunidad = $pdunidad = $delegado_administrativo = $pdelegado_administrativo = $academico =
+    $pacademico = $vinculacion = $pvinculacion = 'DATO REQUERIDO';
+    if ($data2 != null) {
+        $dunidad = $data2->dunidad;
+        $pdunidad = $data2->pdunidad;
+        $academico = $data2->academico;
+        $pacademico = $data2->pacademico;
+        $vinculacion = $data2->vinculacion;
+        $pvinculacion = $data2->pvinculacion;
+        $delegado_administrativo = $data2->delegado_administrativo;
+        $pdelegado_administrativo = $data2->pdelegado_administrativo;
     }
 @endphp
 
@@ -164,7 +166,7 @@
             </table>
             {{-- Firmantes --}}
             <div style="margin-top: 30px;">
-                <div align=center style="font-size:12px; margin-bottom:60px;"><b>TITULAR DE LA DIRECCIÓN DE LA UNIDAD DE CAPACITACIÓN.</b></div>
+                <div align=center style="font-size:12px; margin-bottom:60px;"><b>{{$pdunidad}}</b></div>
                 <div align=center style="font-size:12px;"><b><span class="color_dina">{{$dunidad}}</span></b></div>
             </div>
             {{-- Tabla para las firmas --}}
@@ -176,8 +178,8 @@
                             <p><b><span class="color_dina">{{$pdelegado_administrativo}}</span></b></p></td>
                     </tr>
                     <tr>
-                        <td style="font-size:12px;"><p><b>{{$academico}}<br><br><br><br> TITULAR DEL DEPARTAMENTO ACADÉMICO</b></p></td>
-                        <td style="font-size:12px;"><p><b>{{$vinculacion}}<br><br><br><br> TITULAR DEL DEPARTAMENTO DE VINCULACIÓN</b></p></td>
+                        <td style="font-size:12px;"><p><b>{{$academico}}<br><br><br><br> {{$pacademico}}</b></p></td>
+                        <td style="font-size:12px;"><p><b>{{$vinculacion}}<br><br><br><br> {{$pvinculacion}}</b></p></td>
                     </tr>
             </table>
             <br><br>

@@ -127,9 +127,15 @@
 </head>
     <body>
         <footer>
-            <div class="page-number"></div>
+            @if($firma_electronica == true)
+                <div class="page-number">
+                    <small class="link">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} <br> Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas </small>
+                </div>
+            @else
+                <div class="page-number"></div>
+            @endif
         </footer>
-        <div class= "container g-pt-30" style="font-size: 12px;">
+        <div class= "container g-pt-30" style="font-size: 12px; margin-bottom: 25px;">
             <div id="content">
                     {!! $body_html !!}
                 @if($firma_electronica == true)
@@ -147,7 +153,7 @@
                                     </tr>
                                     <tr>
                                         <td style="vertical-align: top;"><b>Firma Electronica:</b></td>
-                                        <td>{{wordwrap($moist['_attributes']['firma_firmante'], 100, "\n", true) }}</td>
+                                        <td>{{wordwrap($moist['_attributes']['firma_firmante'], 50, "\n", true) }}</td>
                                     </tr>
                                     <tr>
                                         <td><b>Puesto:</b></td>
@@ -206,7 +212,7 @@
                         </tr>
                     </table>
                     <p align="center"><b>"TESTIGOS"</b></p>
-                    <br><br>
+                    <br><br><br><br>
                     <table>
                         <tr>
                             <td colspan="2"><p align="center"></p></td>
@@ -214,20 +220,20 @@
                         </tr>
                         <tr>
                             <td colspan="2"><div align="center"><b>{{$testigo1->nombre}} {{$testigo1->apellidoPaterno}} {{$testigo1->apellidoMaterno}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$testigo2->nombre}} {{$testigo2->apellidoPaterno}} {{$testigo2->apellidoMaterno}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></td></div>
                         </tr>
                         <tr>
                             <td colspan="2"><div align="center"><b>{{$testigo1->puesto}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$testigo2->puesto}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$testigo3->puesto}}</b></td></div>
                         </tr>
                     </table>
-                    <div align=center>
+                    {{-- <div align=center>
                         <br>
                         <br/>
                         <br>________________________________________
                         <br><small><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></small>
                         <br><small><b>{{$testigo3->puesto}}</b> </small></b>
-                    </div>
+                    </div> --}}
                     <br>
                     <div align=justify>
                         <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales en su modalidad de @if($data->tipo_curso=='CURSO') horas curso @else   certificación extraordinaria @endif No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.</small>

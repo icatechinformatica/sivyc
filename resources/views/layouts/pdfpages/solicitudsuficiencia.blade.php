@@ -104,7 +104,7 @@
                             <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
                             <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR</small></td>
                             <td scope="col" width="10px"><small style="font-size: 10px;">UNIDAD/ A.M. DE CAP.</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">SERVICIO</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">CURSO/CERTIFICACION</small></td>
                             <td scope="col" ><small style="font-size: 10px;">NOMBRE</small></td>
                             <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
                             <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>

@@ -877,10 +877,19 @@ class aperturaController extends Controller
         ->selectRaw('(SELECT COUNT(id_curso) FROM public.tbl_folios WHERE id_curso = c.id) AS cantidad_folios')
         ->selectRaw('(SELECT MIN(folio) FROM public.tbl_folios WHERE id_curso = c.id) AS primer_folio')
         ->selectRaw('(SELECT MAX(folio) FROM public.tbl_folios WHERE id_curso = c.id) AS ultimo_folio')
+        // ->selectRaw('(SELECT folio FROM public.tbl_folios WHERE id_curso = c.id) AS all_folios')
+        ->selectRaw('(SELECT STRING_AGG(folio, \',\') FROM public.tbl_folios WHERE id_curso = c.id) AS all_folios')
         ->join('tbl_cursos_expedientes as e', 'c.folio_grupo', '=', 'e.folio_grupo')
         ->whereJsonContains('e.sop_constancias->num_oficio', $numficio)
         ->orderByRaw('EXTRACT(MONTH FROM c.termino)')
         ->get();
+
+        ##Procesar folios
+        $rango_folios = [];
+        foreach ($tabla_contenido as $cursos){
+            $rango = $this->process_folios($cursos->all_folios);
+            $rango_folios[] = $rango;
+        }
 
         #RANGO DE MESES
         $bd_rango_mes = DB::table('tbl_cursos as c')
@@ -911,8 +920,39 @@ class aperturaController extends Controller
         $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
 
         $pdf = PDF::loadView('reportes.soporte_entrega_constancia',compact('distintivo', 'direccion', 'data', 'unidad', 'organismo', 'numficio',
-        'partes_titu', 'municipio', 'fecha_comp', 'tabla_contenido', 'rango_mes', 'total_cursos', 'total_folios', 'dta_certificacion'));
+        'partes_titu', 'municipio', 'fecha_comp', 'tabla_contenido', 'rango_mes', 'total_cursos', 'total_folios', 'dta_certificacion','rango_folios'));
         return $pdf->stream('Soporte de Entrega');
+    }
+
+    ##Procesar rango de folios de alumnos
+    protected function process_folios($cadena){
+        //$cadena = "A151362,A151363,A151364,A151365,A151366,A151367,A151368,A151369,A151370,A159321,A159322,A159323,A159324,A159325,A159326";
+
+        $elementos = explode(",", $cadena);
+        $rangos = [];
+        $numeros = [];
+        foreach ($elementos as $key => $elemento) {
+            $numero = (int)str_replace("A", "", $elemento); // Elimina la letra "A" y convierte a entero
+            $numeros[] = $numero;
+        }
+
+        $resultado = [];
+        $inicio = $numeros[0];
+        $anterior = $numeros[0];
+
+        foreach ($numeros as $index => $numero) {
+            // Verificar si es el último elemento o si el próximo número no es consecutivo
+            if ($index == count($numeros) - 1 || $numeros[$index + 1] != $numero + 1) {
+                // Agregar el inicio y este número al resultado si es el final de una serie
+                $resultado[] = $inicio;
+                $resultado[] = $numero;
+                // Actualizar el nuevo inicio si hay más números después
+                if ($index != count($numeros) - 1) {
+                    $inicio = $numeros[$index + 1];
+                }
+            }
+        }
+        return $resultado;
     }
 
 

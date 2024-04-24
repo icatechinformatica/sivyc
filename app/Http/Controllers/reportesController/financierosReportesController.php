@@ -33,11 +33,14 @@ class financierosReportesController extends Controller
 
     public function cursos_xls(Request $request) {
 
-        $query = DB::Table('tbl_cursos')->Select('tbl_cursos.clave','tbl_cursos.dura','tbl_cursos.nombre','folios.folio_validacion','contratos.arch_factura_xml')
+        $query = DB::Table('tbl_cursos')->Select('tbl_cursos.clave','tbl_cursos.dura','tbl_cursos.soportes_instructor','tbl_cursos.curso',"instructores.apellidoPaterno","instructores.apellidoMaterno",
+            'instructores.nombre','tbl_cursos.rfc','tbl_cursos.curp','tbl_cursos.inicio','tbl_cursos.termino','folios.folio_validacion','folios.iva',
+            'folios.importe_total','contratos.arch_factura_xml')
             ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
             ->Join('folios','folios.id_cursos','tbl_cursos.id')
             ->Join('pagos','pagos.id_curso','tbl_cursos.id')
             ->Join('contratos','contratos.id_curso','tbl_cursos.id')
+            ->Join('instructores','instructores.id','tbl_cursos.id_instructor')
             ->whereYear('inicio', $request->ejercicio);
 
         if($request->unidad != 'SIN ESPECIFICAR') {
@@ -57,8 +60,9 @@ class financierosReportesController extends Controller
         }
 
         $data = $query->Get();
+        // dd(json_decode($data[0]->soportes_instructor));
 
-        $head = ['CLAVE','HORAS CURSO','INSTRUCTOR','SUFICIENCIA PRESUPUESTAL','URL FACTURA XML'];
+        $head = ['CLAVE','HORAS CURSO','CURSO','INSTRUCTOR','BANCO','NO. CUENTA','CLABE','SUFICIENCIA PRESUPUESTAL','URL FACTURA XML'];
         $title = "Cursos Reporte " . $request->status;
         $name = $title."_".date('Ymd').".xlsx";
         $view = 'layouts.pages.reportes.financieros.xls_reporte_cursos';
