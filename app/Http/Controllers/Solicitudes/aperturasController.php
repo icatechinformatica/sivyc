@@ -497,7 +497,7 @@ class aperturasController extends Controller
         if ($memo AND ($opt == 'ARC01' OR $opt == 'ARC02')) {
             switch($request->pmovimiento){
                 case "EDICION":
-                    $result = DB::table('tbl_cursos')->where('nmunidad',$memo)->where('status','NO REPORTADO')->update(['status_curso' => 'EDICION']);
+                    $result = DB::table('tbl_cursos')->where('nmunidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['status_curso' => 'EDICION']);
                     if($result)$message = "SOLICITUD ENVIADA PARA EDICION.";  
                 break;
                 default:
