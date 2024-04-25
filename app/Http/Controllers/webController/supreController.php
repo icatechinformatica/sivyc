@@ -90,10 +90,28 @@ class supreController extends Controller
 
     public function frm_formulario() {
         $prueba = '2023-10-17';
+        $funcionarios = array();
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
-        $unidad = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
+        $unidad = tbl_unidades::SELECT('ubicacion','id')->WHERE('id',Auth::user()->unidad)->FIRST();
 
-        return view('layouts.pages.delegacionadmin', compact('unidades','unidad'));
+        $agenda = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org','o.id')
+            ->Where('o.id_unidad',$unidad->id)
+            ->Get();
+
+        Foreach($agenda as $moist) {
+            if(str_contains($moist->cargo, 'DIRECT')){
+                $funcionarios['director'] = $moist->nombre;
+                $funcionarios['directorp'] = $moist->cargo;
+
+            }
+            if(str_contains($moist->cargo, 'ADMINISTRATIVO')) {
+                $funcionarios['delegado'] = $moist->nombre;
+                $funcionarios['delegadop'] = $moist->cargo;
+            }
+
+        }
+        return view('layouts.pages.delegacionadmin', compact('unidades','unidad','funcionarios'));
     }
 
     public function store(Request $request) {
@@ -138,15 +156,15 @@ class supreController extends Controller
             // auth()->user()->notify(new SupreNotification($supre));
 
             $id = $supre->id;
-            $directorio->supre_dest = $request->id_destino;
-            $directorio->supre_rem = $request->id_remitente;
-            $directorio->supre_valida = $request->id_valida;
-            $directorio->supre_elabora = $request->id_elabora;
-            $directorio->supre_ccp1 = $request->id_ccp1;
-            $directorio->supre_ccp2 = $request->id_ccp2;
-            $directorio->id_supre = $id;
-            $directorio->save();
-            $id_directorio = $directorio->id;
+            // $directorio->supre_dest = $request->id_destino;
+            // $directorio->supre_rem = $request->id_remitente;
+            // $directorio->supre_valida = $request->id_valida;
+            // $directorio->supre_elabora = $request->id_elabora;
+            // $directorio->supre_ccp1 = $request->id_ccp1;
+            // $directorio->supre_ccp2 = $request->id_ccp2;
+            // $directorio->id_supre = $id;
+            // $directorio->save();
+            // $id_directorio = $directorio->id;
 
             //Guarda Folios
             foreach ($request->addmore as $key => $value)
@@ -231,7 +249,9 @@ class supreController extends Controller
 
             // return redirect()->route('supre-inicio')
             //     ->with('success','Solicitud de Suficiencia Presupuestal agregado');
-            return view('layouts.pages.suprecheck',compact('id','id_directorio'));
+
+            $id = base64_encode($id);
+            return view('layouts.pages.suprecheck',compact('id'));
         }
         else
         {
@@ -1188,23 +1208,40 @@ class supreController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
-        $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
+        $unidad = tbl_unidades::SELECT('tbl_unidades.id','tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
                                 ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
                                 ->FIRST();
         $unidad->cct = substr($unidad->cct, 0, 4);
         $direccion = explode("*", $unidad->direccion);
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        //$getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
-        $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
-                                    'directorio.puesto','directorio.area_adscripcion_id','area_adscripcion.area')
-                                    ->WHERE('directorio.id', '=', $directorio->supre_rem)
-                                    ->LEFTJOIN('area_adscripcion', 'area_adscripcion.id', '=', 'directorio.area_adscripcion_id')
-                                    ->FIRST();
-        $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
-        $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
-        //$getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
-        //$getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
+        if(is_null($directorio)) {
+            $getvalida = $getremitente = DB::Table('tbl_organismos AS o')
+                ->Select('f.nombre','f.cargo')
+                ->Join('tbl_funcionarios AS f','f.id_org','o.id')
+                ->Where('o.id_parent','1')
+                ->Where('o.id_unidad',$unidad->id)
+                ->Where('f.activo','true')
+                ->First();
+
+            $getelabora = DB::Table('tbl_organismos AS o')
+                ->Select('f.nombre','f.cargo')
+                ->Join('tbl_funcionarios AS f','f.id_org','o.id')
+                ->Where('o.id_unidad',$unidad->id)
+                ->Where('f.activo','true')
+                ->Where('f.cargo','LIKE',)
+                ->Get();
+            dd($getelabora);
+        }else {
+            $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
+                                        'directorio.puesto','directorio.area_adscripcion_id','area_adscripcion.area')
+                                        ->WHERE('directorio.id', '=', $directorio->supre_rem)
+                                        ->LEFTJOIN('area_adscripcion', 'area_adscripcion.id', '=', 'directorio.area_adscripcion_id')
+                                        ->FIRST();
+            $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
+            $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
+        }
+
 
         $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getremitente','getvalida','getelabora','directorio','unidad','distintivo','uj','direccion'));
         return  $pdf->stream('medium.pdf');
