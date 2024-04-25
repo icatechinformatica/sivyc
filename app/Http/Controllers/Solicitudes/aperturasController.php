@@ -27,9 +27,6 @@ class aperturasController extends Controller
         $this->path_pdf = "DTA/autorizado_arc01/";
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
 
-        $this->movARC01 = ['RETORNADO'=>'RETORNAR A UNIDAD'/*,'EN FIRMA'=>'ASIGNAR CLAVES','AUTORIZADO'=>'ENVIAR AUTORIZACION'*/];
-        $this->movARC02 = ['RETORNADO'=>'RETORNAR A UNIDAD'/*"CANCELADO"=>"CANCELAR APERTURA", "EN CORRECCION"=>"EN CORRECCION" ,"AUTORIZADO" => "ENVIAR AUTORIZACION"*/];
-
         $this->middleware(function ($request, $next) {
             $this->id_user = Auth::user()->id;
             $this->realizo = mb_strtoupper(Auth::user()->name,'utf-8');
@@ -494,37 +491,38 @@ class aperturasController extends Controller
     }
 
     public function validar_preliminar(Request $request){
-
         $memo = $request->memo;
         $opt = $request->opt;
         $message = 'Operación fallida, vuelva a intentar..';
         if ($memo AND ($opt == 'ARC01' OR $opt == 'ARC02')) {
-            // dd($request->all());
-            if ($opt == 'ARC01') {
-                $status = 'status_solicitud';
-                $llave = 'munidad';
-            }elseif ($opt == 'ARC02') {
-                $status = 'status_solicitud_arc02';
-                $llave = 'nmunidad';
+            switch($request->pmovimiento){
+                case "EDICION":
+                    $result = DB::table('tbl_cursos')->where('nmunidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['status_curso' => 'EDICION']);
+                    if($result)$message = "SOLICITUD ENVIADA PARA EDICION.";  
+                break;
+                default:
+                    if ($opt == 'ARC01') {
+                        $status = 'status_solicitud';
+                        $llave = 'munidad';
+                    }elseif ($opt == 'ARC02') {
+                        $status = 'status_solicitud_arc02';
+                        $llave = 'nmunidad';
+                    }                    
+                    $ids = array_keys($request->prespuesta);                    
+                    $result = DB::table('tbl_cursos')->where($llave,$memo)->wherein('id',$ids)->update([$status => 'VALIDADO', 'obspreliminar' => null]);
+                    if ($result){
+                            $result2 = DB::table('tbl_cursos_history')
+                                ->where($llave,$memo)
+                                ->where('id_tbl_cursos',$ids)
+                                ->orderBy('fenviado_preliminar', 'DESC')
+                                ->take(1)
+                                ->update(['status_solicitud' => 'VALIDADO', 'obspreliminar' => null, 'frespuesta_preliminar' => date('Y-m-d H:i:s')]);
+                    }                    
+                    if($result2)$message = "SOLICITUD ENVIADA COMO PREVALIDADA.";                    
+                break;
             }
-            foreach ($request->prespuesta as $key => $value) {
-                $result = DB::table('tbl_cursos')
-                    ->where($llave,$memo)
-                    ->where('id',$key)
-                    ->update([$status => 'VALIDADO', 'obspreliminar' => null]);
-                if ($result) {
-                    $result2 = DB::table('tbl_cursos_history')
-                        ->where($llave,$memo)
-                        ->where('id_tbl_cursos',$key)
-                        ->orderBy('fenviado_preliminar', 'DESC')
-                        ->take(1)
-                        ->update(['status_solicitud' => 'VALIDADO', 'obspreliminar' => null, 'frespuesta_preliminar' => date('Y-m-d H:i:s')]);
-                }
-            }
-            if ($result2) {
-                $message = "La solicitud retonado a la Unidad.";
-            }
-        };
+        }
+      
         return redirect('solicitudes/aperturas')->with('message',$message);
     }
 

@@ -132,7 +132,7 @@
                             <br><b>Elabora</b><br><br><br><br><br>
                             ________________________________________________ <br>
                             <b>{{$reg_unidad->vinculacion}}</b><br>
-                            Titular del Departamento de Vinculación de la Unidad de Capacitación {{$reg_unidad->ubicacion}} <br>&nbsp;
+                            {{$reg_unidad->pvinculacion}} DE LA UNIDAD DE CAPACITACIÓN {{$reg_unidad->ubicacion}} <br>&nbsp;
                         </div>
                         <div></div>
                     </td>
@@ -145,7 +145,7 @@
                             <br><b>Valida</b><br><br><br><br><br>
                             ________________________________________________ <br>
                             <b>{{$reg_unidad->dunidad}}</b> <br>
-                            Titular de la Dirección de la Unidad de Capacitación {{$reg_unidad->ubicacion}} <br>&nbsp;
+                            {{$reg_unidad->pdunidad}} DE LA UNIDAD DE CAPACITACIÓN {{$reg_unidad->ubicacion}} <br>&nbsp;
                         </div>
                         <div></div>                        
                     </td>

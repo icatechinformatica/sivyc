@@ -129,7 +129,16 @@
                         <td>DEL {{ \Carbon\Carbon::createFromFormat('Y-m-d', $curso->inicio)->format('d/m/Y') }}
                             AL {{ \Carbon\Carbon::createFromFormat('Y-m-d', $curso->termino)->format('d/m/Y') }}
                             HORARIO: {{date("H:i", strtotime($curso->hini))}} A {{date("H:i", strtotime($curso->hfin))}} HRS.</td>
-                        <td align="center">{{$curso->primer_folio.' - '.$curso->ultimo_folio}}</td>
+                        {{-- <td align="center">{{$curso->primer_folio.' - '.$curso->ultimo_folio}}</td> --}}
+                        <td align="center">
+                            @for ($i = 0; $i < count($rango_folios[$key]); $i++)
+                                @if ($i % 2 == 0)
+                                    {{'A'.$rango_folios[$key][$i].' -'}}
+                                @else
+                                    {{'A'.$rango_folios[$key][$i]}}
+                                @endif
+                            @endfor
+                        </td>
                         <td>{{$curso->cantidad_folios}}</td>
                     </tr>
                 @endforeach
