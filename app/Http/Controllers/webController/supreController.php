@@ -91,11 +91,27 @@ class supreController extends Controller
 
     public function frm_formulario() {
         $prueba = '2023-10-17';
+        $funcionarios = array();
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
-        $unidad = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
+        $unidad = tbl_unidades::SELECT('ubicacion','id')->WHERE('id',Auth::user()->unidad)->FIRST();
 
-        $funcionarios = $this->funcionarios_supre($unidad->ubicacion);
+        $agenda = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org','o.id')
+            ->Where('o.id_unidad',$unidad->id)
+            ->Get();
 
+        Foreach($agenda as $moist) {
+            if(str_contains($moist->cargo, 'DIRECT')){
+                $funcionarios['director'] = $moist->nombre;
+                $funcionarios['directorp'] = $moist->cargo;
+
+            }
+            if(str_contains($moist->cargo, 'ADMINISTRATIVO')) {
+                $funcionarios['delegado'] = $moist->nombre;
+                $funcionarios['delegadop'] = $moist->cargo;
+            }
+
+        }
         return view('layouts.pages.delegacionadmin', compact('unidades','unidad','funcionarios'));
     }
 
@@ -237,6 +253,8 @@ class supreController extends Controller
 
             // return redirect()->route('supre-inicio')
             //     ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+
+            $id = base64_encode($id);
             return view('layouts.pages.suprecheck',compact('id'));
         }
         else
@@ -1193,13 +1211,41 @@ class supreController extends Controller
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
-        $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
+
+        $unidad = tbl_unidades::SELECT('tbl_unidades.id','tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
                                 ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
                                 ->FIRST();
         $unidad->cct = substr($unidad->cct, 0, 4);
         $direccion = explode("*", $unidad->direccion);
 
-        $funcionarios = $this->funcionarios_supre($data_supre->unidad_capacitacion);
+        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
+        if(is_null($directorio)) {
+            $getvalida = $getremitente = DB::Table('tbl_organismos AS o')
+                ->Select('f.nombre','f.cargo')
+                ->Join('tbl_funcionarios AS f','f.id_org','o.id')
+                ->Where('o.id_parent','1')
+                ->Where('o.id_unidad',$unidad->id)
+                ->Where('f.activo','true')
+                ->First();
+
+            $getelabora = DB::Table('tbl_organismos AS o')
+                ->Select('f.nombre','f.cargo')
+                ->Join('tbl_funcionarios AS f','f.id_org','o.id')
+                ->Where('o.id_unidad',$unidad->id)
+                ->Where('f.activo','true')
+                ->Where('f.cargo','LIKE',)
+                ->Get();
+            dd($getelabora);
+        }else {
+            $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
+                                        'directorio.puesto','directorio.area_adscripcion_id','area_adscripcion.area')
+                                        ->WHERE('directorio.id', '=', $directorio->supre_rem)
+                                        ->LEFTJOIN('area_adscripcion', 'area_adscripcion.id', '=', 'directorio.area_adscripcion_id')
+                                        ->FIRST();
+            $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
+            $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
+        }
+
 
         $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','unidad','distintivo','uj','direccion','funcionarios'));
         return  $pdf->stream('medium.pdf');

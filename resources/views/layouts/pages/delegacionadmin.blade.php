@@ -66,34 +66,34 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputremitente" class="control-label">Remitente</label>
-                <input type="text" class="form-control" readonly id="remitente" name="remitente" placeholder="Nombre" value="{{$funcionarios['director']}}">
+                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre" readonly value="{{$funcionarios['director']}}">
             </div>
             <div class="form-group col-md-6">
                 <label for="inputremitente" class="control-label">Puesto</label>
-                <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto" value="{{$funcionarios['directorp']}}">
-                {{-- <input id="id_remitente" name="id_remitente" type="text" hidden> --}}
+                <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto" readonly value="{{$funcionarios['directorp']}}">
+                <input id="id_remitente" name="id_remitente" type="text" hidden>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="inputvalida" class="control-label">Nombre de Quien Valida</label>
-                <input type="text" class="form-control" readonly id="nombre_valida" name="nombre_valida" placeholder="Nombre" value="{{$funcionarios['delegado']}}">
+                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre" readonly value="{{$funcionarios['director']}}">
             </div>
             <div class="form-group col-md-4">
                 <label for="inputvalida" class="control-label">Puesto de Quien Valida</label>
-                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto" value="{{$funcionarios['delegadop']}}">
-                {{-- <input id="id_valida" name="id_valida" type="text" hidden> --}}
+                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto" readonly value="{{$funcionarios['directorp']}}">
+                <input id="id_valida" name="id_valida" type="text" hidden>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="inputelabora" class="control-label">Nombre de Quien Elabora</label>
-                <input type="text" class="form-control" readonly id="nombre_elabora" name="nombre_elabora" placeholder="Nombre" value="{{$funcionarios['elabora']}}">
+                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre" readonly value="{{$funcionarios['delegado']}}">
             </div>
             <div class="form-group col-md-4">
                 <label for="inputelabora" class="control-label">Puesto de Quien Elabora</label>
-                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto" value="{{$funcionarios['elaborap']}}">
-                {{-- <input id="id_elabora" name="id_elabora" type="text" hidden> --}}
+                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto" readonly value="{{$funcionarios['delegadop']}}">
+                <input id="id_elabora" name="id_elabora" type="text" hidden>
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -133,6 +133,15 @@
 <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
 <script type="text/javascript">
     let fieldCounter = 1;
+
+     // Obtener el elemento de input de fecha
+     var inputFecha = document.getElementById('fecha');
+    // Obtener la fecha actual en el formato 'YYYY-MM-DD'
+    var fechaActual = new Date().toISOString().split('T')[0];
+    // Establecer la fecha actual como valor inicial del campo de fecha
+    inputFecha.value = fechaActual;
+    // Establecer la fecha mínima en el elemento de input (la fecha actual)
+    inputFecha.min = fechaActual;
 
 function addField() {
     const fieldsContainer = document.getElementById("fieldsContainer");
