@@ -1432,6 +1432,7 @@ class grupoController extends Controller
 
     private function valida_instructor($id_instructor)
     {
+        return ['valido' => true, 'message' => null]; //QUITAR ESTA LINEA EL 01 de JULIO 2024
         //echo $id_instructor;
         $valido = false;
         $message = null; //consultar instructores con id y que devuelva campo extra sea igual a true ya que lo devuelva un if si curso extra es igual a false entra a la validacion y si es true entonces cambie valido a true
