@@ -65,9 +65,11 @@ class grupoController extends Controller
                 THEN CONCAT('20',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
                 ELSE CONCAT('19',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
                 END AS fnacimiento"),'ar.id_especialidad','ar.id_instructor','ar.efisico','ar.escolaridad','ar.servicio','ar.medio_virtual','ar.link_virtual','ar.cespecifico',
-                'ar.fcespe','ar.observaciones','ar.mpreapertura','ar.depen_repre','ar.depen_telrepre','tc.clave','tc.status_curso')
+                'ar.fcespe','ar.observaciones','ar.mpreapertura','ar.depen_repre','ar.depen_telrepre','tc.clave','tc.status_curso',
+                'tc.solicita','tu.vinculacion','tu.pvinculacion','tu.dunidad')
             ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)
             ->leftjoin('tbl_cursos as tc', 'tc.folio_grupo', 'ar.folio_grupo')
+            ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' )
             ->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')->get();
             //dd($alumnos);
             if (count($alumnos) > 0) {
@@ -596,7 +598,7 @@ class grupoController extends Controller
                                             'id_municipio' => $municipio->id,'clave_localidad' => $request->localidad,'id_gvulnerable' => $request->grupo_vulnerable,
                                             'id_cerss' => $request->cerss,'created_at' => $created_at,'updated_at' => $updated_at,
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,
-                                            'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel
+                                            'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel,'solicita'=>$request->solicita
                                             ]);
 
                                         if($tc_curso->cp == $cp AND $result_curso){
@@ -644,7 +646,7 @@ class grupoController extends Controller
                                             'curp' => $instructor->curp,'rfc' => $instructor->rfc,'modinstructor' => $tipo_honorario,'instructor_escolaridad' => $instructor->escolaridad,
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
-                                            'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp
+                                            'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp,'solicita'=>$request->solicita
                                         ]);
                                       //  dd($instructor);
                                         if ($result_curso) $message = "Operación Exitosa!!";
@@ -684,7 +686,7 @@ class grupoController extends Controller
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
                                             'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>json_encode($soportes_instructor),
-                                            'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null
+                                            'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null,'solicita'=>$request->solicita
                                             //,'programa' => null,'nota' => null,'plantel' => null
                                             ]
                                         );
@@ -958,14 +960,14 @@ class grupoController extends Controller
                     ->select(
                         'tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                         'tc.costo',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante as depen_repre',
-                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad','ar.fecha_turnado'
+                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita'
                     )
                     ->leftJoin('alumnos_registro as ar', 'tc.folio_grupo', 'ar.folio_grupo')
                     ->where('ar.mpreapertura', $memo)
                     ->where('ar.eliminado', false)
                     ->groupBy('tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                     'tc.costo','tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante','tc.depen_telrepre','tc.nombre','ar.realizo',
-                    'ar.observaciones','ar.efisico','tc.unidad','ar.fecha_turnado')
+                    'ar.observaciones','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita')
                     ->orderBy('folio_grupo')
                     ->get(); //dd($cursos);
                 if (count($cursos) > 0) {
@@ -1018,10 +1020,12 @@ class grupoController extends Controller
                     $mes = $meses[date('m',strtotime($date))];
                     $date = date('d',strtotime($date)).' de '.$mes.' del '.date('Y',strtotime($date));
                     $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first(); //dd($reg_unidad);
-                    if($reg_unidad->vinculacion==$reg_unidad->dunidad ){
-                        $vinculador = DB::table('users')->where('id','=', $alum->iduser_created)->first();
-                        $reg_unidad->vinculacion = mb_strtoupper($vinculador->name, 'UTF-8');
-                        $reg_unidad->pvinculacion = mb_strtoupper($vinculador->puesto, 'UTF-8');
+                    if($reg_unidad->vinculacion==$reg_unidad->dunidad and $cursos[0]->solicita){
+                        $solicitaParts = explode(",", $cursos[0]->solicita);
+                        $nombre = isset($solicitaParts[0]) ? $solicitaParts[0] : 'Nombre no disponible';
+                        $cargo = isset($solicitaParts[1]) ? $solicitaParts[1] : 'Cargo no disponible';
+                        $reg_unidad->vinculacion = mb_strtoupper($nombre, 'UTF-8');
+                        $reg_unidad->pvinculacion = mb_strtoupper($cargo, 'UTF-8');
                     }
                     $direccion = $reg_unidad->direccion;
                     $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion'));
@@ -1428,6 +1432,7 @@ class grupoController extends Controller
 
     private function valida_instructor($id_instructor)
     {
+        return ['valido' => true, 'message' => null]; //QUITAR ESTA LINEA EL 01 de JULIO 2024
         //echo $id_instructor;
         $valido = false;
         $message = null; //consultar instructores con id y que devuelva campo extra sea igual a true ya que lo devuelva un if si curso extra es igual a false entra a la validacion y si es true entonces cambie valido a true

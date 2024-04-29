@@ -3687,7 +3687,7 @@ class InstructorController extends Controller
         }
         $especialidades = $this->make_collection($especialidades);
 
-        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
+        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
         ->WHERE('unidad', '!=', 'VILLA CORZO')
         ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
         $direccion = $data_unidad->direccion;
@@ -3734,7 +3734,8 @@ class InstructorController extends Controller
 
         $instructor->data_especialidad = $special;
         $instructor->save();
-        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
+
+        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
         ->WHERE('unidad', '!=', 'VILLA CORZO')
         ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
         $direccion = '14 PONIENTE NORTE NO. 239*COLONIA MOCTEZUMA.*TUXTLA GUTIÉRREZ, CP 29030 TELEFONO: 9616121621* EMAIL: ICATECH@ICATECH.CHIAPAS.GOB.MX';

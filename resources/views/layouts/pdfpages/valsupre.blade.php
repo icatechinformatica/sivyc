@@ -265,7 +265,7 @@ else{
                 <FONT SIZE=0><b>C.c.p.</b>JORGE LUIS BARRAGAN LOPEZ.-JEFE DE DEPARTAMENTO DE RECURSOS FINANCIEROS.-mismo fin</FONT><br/>
                 {{-- <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br> --}}
                 <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->delegado_administrativo}}.-{{$getccp4->pdelegado_administrativo}}.-mismo fin</FONT><br>
-                <FONT SIZE=0><b>C.c.p.</b>Archivo/ Minutario</FONT>
+                <FONT SIZE=0><b>C.c.p.</b>Archivo</FONT>
             </div>
         </div>
         <footer>
