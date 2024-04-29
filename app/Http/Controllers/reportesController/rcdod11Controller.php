@@ -8,9 +8,13 @@ use PDF;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use DateTime;
 
 class rcdod11Controller extends Controller
 {
+    function __construct() {
+        $this->periodo = ["7"=>"1","8"=>"1","9"=>"1","10"=>"2","11"=>"2","12"=>"2","1"=>"3","2"=>"3","3"=>"3","4"=>"4","5"=>"4","6"=>"4"];     
+    }
     public function index(Request $request){
         $id_user = Auth::user()->id;//dd($id_user);
         $id_unidad= Auth::user()->unidad;
@@ -71,7 +75,8 @@ class rcdod11Controller extends Controller
             $consulta=$consulta->orderBy('tf.nombre')->get();//dd($consulta);
         }
 
-        return view('reportes.rcdod11.rcdod11formu', compact('unidades','tipo','consulta'));
+        
+        return view('reportes.rcdod11.rcdod11formu', compact('unidades','tipo','consulta','request'));
 
     }
     public function pdf(Request $request){
@@ -81,23 +86,11 @@ class rcdod11Controller extends Controller
 
         if($unidad==null||$unidad=='TODO'){return redirect()->route('carter')->with('success', 'Selecione una unidad');}
         if($finicio==null||$ftermino==null){return redirect()->route('carter')->with('success', 'Selecione un rango de fecha');}
-        $sq=DB::table('tbl_unidades')->select('unidad','cct','plantel','dunidad')->where('unidad',$unidad)->get();//dd($sq);
-
-        // $consulta=DB::table('tbl_cursos as tc')
-        //     ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
-        //     ->join('tbl_folios as tf', 'i.id_folio','=','tf.id')
-        //     ->select('tf.matricula','i.alumno','tf.folio',DB::raw("(select f.folio from tbl_folios as f where f.movimiento='DUPLICADO' and i.matricula=f.matricula and f.id_curso=i.id_curso)as duplicado"))
-        //     ->where('tc.status','=','REPORTADO')
-        //     ->whereIn('tf.motivo',['ROBO O EXTRAVIO','NO SOLICITADO'])
-        //     ->where('tf.movimiento','=','CANCELADO')
-        //     ->where('tc.unidad',$unidad)
-        //     ->where('tc.termino','>=',$finicio)
-        //     ->where('tc.termino','<=',$ftermino)
-        //     ->orderBy('tf.nombre')
-        //     ->get();//dd($consulta);
+        $sq=DB::table('tbl_unidades')->select('unidad','cct','plantel','dunidad','pdunidad')->where('unidad',$unidad)->first();
+        
         $consulta=DB::table('tbl_cursos as tc')
             ->join('tbl_folios as tf', 'tc.id','=','tf.id_curso')
-            ->select('tf.matricula','tf.nombre as alumno',
+            ->select('tf.matricula','tf.nombre as alumno','tc.mod','tc.espe',
                 DB::raw("(select f.folio from tbl_folios as f where f.movimiento='CANCELADO' and f.motivo in ('ROBO O EXTRAVIO','NO SOLICITADO') and tf.matricula=f.matricula and f.id_curso=tc.id)as folio"),
                 'tf.folio as duplicado')
             ->whereIn('tc.status',['REPORTADO','TURNADO_PLANEACION'])
@@ -107,12 +100,16 @@ class rcdod11Controller extends Controller
             ->where('tc.termino','<=',$ftermino)
             ->orderBy('tf.nombre')
             ->get();
-
-
+            
+        if($request->fecha_termino){
+            $fecha_objeto = new DateTime($request->fecha_termino);
+            $mes_termino = ltrim($fecha_objeto->format('m'), '0');        
+            $periodo = $this->periodo[$mes_termino];
+        }else $periodo = "DATO REQUERIDO";
 
         if(count($consulta)==0){return redirect()->route('carter')->with('success', 'No se ha encontrado registros');}
 
-        $pdf = PDF::loadView('reportes.rcdod11.rcdod11pdf', compact('sq','consulta'));
+        $pdf = PDF::loadView('reportes.rcdod11.rcdod11pdf', compact('sq','consulta','periodo'));
     	$pdf->setPaper('A4', 'landscape');
     	//portrait
     	return $pdf-> stream('rcdod11.pdf');

@@ -13,78 +13,111 @@ $anioSi = date('Y', strtotime('+1 year')) ;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>RCDOD-11</title>
+
+    <style type="text/ccs">
+        body {  font-family: sans-serif;}
+        @page {  margin: 90px 25px 140px 25px; }    
+        header {  position: fixed; left: 0px; top: -60px; right: 0px; text-align: center; }
+        header h6 { height: 14px; padding: 0px; margin: 0; font-size: 12px;}    
+        img.izquierda { float: left; width: 100; height: 40; } 
+
+        .tabla_madre{border: 1px solid black; font-size: 12px; padding: 0px 0px 3px 10px; margin-bottom:3px;}
+        .table1 { width: 100%; border-collapse: collapse;}
+        .table1 tr td { font-size: 11px; padding: 0px; margin:0px; line-height: 8px;}
+        .table1 tr td p { font-size: 11px; padding: 0px; margin:0px;}
+
+        .table {width: 100%; border-collapse: collapse;}
+        .table tr th { border: 1px solid black; font-size: 11px; padding: 0px; margin:0px; line-height: 13px; font-size: 10px;}
+        .table tr td { border: 1px solid black; font-size: 11px; padding: 5px; margin:0px; line-height: 24px;}
+        .center{ text-align:center; }
+
+        main {padding: 0; margin: 0; margin-top: 0px; }        
+        footer { position:fixed;   left:0px;   bottom:-100px;   height:90px;   width:100%;}       
+        .tablaf { border-collapse: collapse; width: 100%;}
+        .tablaf tr td { font-size: 10px; padding: 3px;  text-align:center; height:90px;}
+
+        
+    </style>
 </head>
-<style type="text/ccs">
-    .tabla_madre{border: 1px solid black;}
-    .table{width: 100%; text-align: center; border-collapse: collapse;}
-    .centrado{width:50%;padding:8px;margin:auto; text-align:center;}
-    div{font_size: 12px;font-weight: bold;}
-    .p{text-decoration: overline;}
-    .variable{text-align: center;border: 1px solid black; HEIGHT: 5%;}
-    .variable2{text-align: left;border: 1px solid black;}
-    img.izquierda {
-        float: left;
-        width: 100;
-        height: 40;
-      }
-      
-    img.derecha {
-        float: right;
-        width: 100;
-        height: 40;
-      }
-</style>
 <body>
-    <div>
-        <div><img src="img/sep3.png" class="izquierda"></div>
-        <div><img src="img/gobLogo.jpg" class="derecha"></div>
-        <p class="centrado" style="font_size: 14px">SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br> DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br> REGISTRO Y CONTROL DE DUPLICADOS OTORGADOS <br> (RCDOD-11)</p>
-    </div>
-    <div class="tabla_madre">
-        <table class="table">
-            <thead>
-                <tr><td>INSTITUTO: CHIAPAS</td><td></td><td>TIPO DE DOCUMENTO</td></tr>
-            <tr><td>UNIDAD DE CAPACITACIÓN PARA EL TRABAJO INDUSTRIAL NÚMERO: {{$sq[0]->plantel}}</td><td></td><td>DIPLOMAS: CURSOS Y/O ESPECIALIDAD( )</td></tr>
-            <tr><td></td><td></td><td>CONSTANCIAS: CAE Y/O EXTENSIÓN (X)</td></tr>
-            <tr><td>CLAVE CCT: {{$sq[0]->cct}}</td><td>CICLO QUE SE REPORTA:@if(date("m")>="01"&&date("m")<="07"){{$anioAnterior}}-{{$ciclo}} @else {{$ciclo}}-{{$anioSi}}@endif</td><td>FECHA: {{$fecha}}</td></tr>
-            </thead>
-            <tbody> 
-            </tbody>
-        </table>
-    </div>
-    <br>
-    <div>
-        <table class="table">
-            <tr>
-                <td class="variable">NUM</td>
-                <td class="variable">NÚMERO DE CONTROL</td>
-                <td class="variable" style="width: 35%"><P>NOMBRE DEL ALUMNO</P><P>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</P></td>
-                <td class="variable">FOLIO DEL DIPLOMA</td>
-                <td class="variable">FOLIO DEL DUPLICADO</td>
-                <td class="variable">FECHA DE RECIBIDO</td>
-                <td class="variable" style="width: 15%">FIRMA DEL ALUMNO</td>
-            </tr>
-            @foreach($consulta as $item)
-            <tr>
-                <td class="variable">{{$i++}}</td>
-                <td class="variable2">{{$item->matricula}}</td>
-                <td class="variable2">{{$item->alumno}}</td>
-                <td class="variable">{{$item->folio}}</td>
-                <td class="variable">{{$item->duplicado}}</td>
-                <td class="variable"></td>
-                <td class="variable"></td>
-            </tr>
-            @endforeach
-        </table>
-    </div>
-    <br><br><br><br><br><br><br><br><br><br>
-    <div>
-        <table class="table">
-            <tr>
-                <td style="align: left">{{$sq[0]->dunidad}} <br> <p class="p"> NOMBRE Y FIRMA DEL DIRECTOR DE LA UNIDAD</p></td>
-                <td><p class="p">SELLO</p></td>
-            </tr>
-        </table>
-    </div>
+    <header>
+        <img src="img/reportes/sep.png" alt='sep' width="16%" style='position:fixed; left:0; margin: -60px 0 0 20px;' />
+        <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N MEDIA SUPERIOR</h6>
+        <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
+        <h6>REGISTRO Y CONTROL DE DUPLICADOS OTORGADOS</h6>
+        <h6>(RCDOD-11)</h6>
+    </header>    
+    <footer>
+            <table class="tablaf"  width="100%">
+                <tr>
+                    <td style="width: 40%">
+                        <p>{{$sq->dunidad}}</p>
+                        <hr style="width: 70%">
+                        <p>{{$sq->pdunidad}}</p>
+                    </td>
+                    <td style="width: 30%">&nbsp;</td>
+                    <td style="width: 30%">
+                        <hr style="width: 60%">
+                        SELLO
+                    </td>
+                </tr>
+           </table>
+     </footer>
+     <main> 
+        <div class="tabla_madre">
+            <table class="table1">  
+                <tr>
+                    <td style="width:75%;" rowspan="2">
+                        <p><b>INSTITUTO DESCENTRALIZADO:</b> &nbsp;&nbsp;INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TÉCNOLOGICO DEL ESTADO DE CHIAPAS</p><br/>
+                        <p><b>UNIDAD DE CAPACITACIÓN:</b> &nbsp;&nbsp;{{$sq->unidad}} <b style="margin-left:20px;">No.</b> &nbsp;&nbsp;{{$sq->plantel}} </p><br/>
+                        <p><b>CLAVE CCT:</b> &nbsp;&nbsp;{{$sq->cct}} <b style="margin-left:100px;">PERIODO:</b>&nbsp;&nbsp; {{$periodo}}
+                        <b style="margin-left:100px;">FECHA:</b> &nbsp;&nbsp; {{$fecha}} </p><br/>
+
+                    </td>
+                    <td colspan="2" style="text-align: center;"><b>TIPO DE DOCUMENTO</b></td>
+                </tr>
+                <tr>                
+                    <td style="width:9%;">                                 
+                        <b>DIPLOMA: </b>
+                        <br/><br/><br/><br/>
+                        <b>CONSTANCIA:</b>
+                        <br/><br/><br/>
+                    </td>
+                    <td>      
+                        CURSO(&nbsp;) <br/><br/>ESPECIALIDAD(&nbsp;)<br/><br/>
+                        CAE({{ $consulta[0]->mod=='CAE' ? 'X' : ' ' }}) <br/><br/>EXTENSION({{ $consulta[0]->mod=='EXT' ? 'X' : ' ' }})
+                    </td>
+                </tr>           
+            </table>
+        </div>    
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="width: 1%">N<br/>U<br/>M</th>
+                        <th style="width: 5%">NÚMERO DE<br/>CONTROL</th>
+                        <th style="width: 27%">NOMBRE DEL ALUMNO<br/>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
+                        <th style="width: 23%">ESPECIALIDAD</th>
+                        <th style="width: 7%">FOLIO DEL<br/>DIPLOMA O<br/>CONSTANCIA</th>
+                        <th style="width: 7%">FOLIO DEL DUPLICADO</th>
+                        <th>FECHA DE<br/>RECIBIDO</th>
+                        <th style="width: 16%">FIRMA DEL <br/>ALUMNO</th>
+                    </tr>
+                </thead>           
+                @foreach($consulta as $item)
+                <tr>
+                    <td>{{$i++}}</td>
+                    <td>{{$item->matricula}}</td>
+                    <td>{{$item->alumno}}</td>
+                    <td>{{$item->espe}}</td>
+                    <td class="center">{{$item->folio}}</td>
+                    <td class="center">{{$item->duplicado}}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                @endforeach
+            </table>
+        </div>
+    </main>
 </body>
 </html>
