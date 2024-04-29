@@ -25,21 +25,21 @@ $i=1;
                         <option selected disabled="">Selecciona la unidad</option>
                         <option value="TODO">TODO</option>
                         @if($tipo=='string')
-                        <option value="{{$unidades}}">{{$unidades}}</option>
+                        <option value="{{$unidades}}" @if($unidades === $request->unidades) selected @endif>{{$unidades}}</option>
                         @else
                         @foreach($unidades as $unidad)
-                        <option value="{{$unidad}}">{{$unidad}}</option>
+                        <option value="{{$unidad}}"  @if($unidad === $request->unidades) selected @endif>{{$unidad}}</option>
                         @endforeach
                         @endif  
                     </select>
                 </div>
-                <div class="form-group">
-                    <input type="date" name="fecha_inicio" class="form-control" placeholder="Fecha de inicio">
+                <div class="form-group  ml-2">
+                    <input type="date" name="fecha_inicio" class="form-control" placeholder="Fecha de inicio" value="{{ $request->fecha_inicio}}">
                 </div>
-                <div class="form-group">
-                    <input type="date" name="fecha_termino" class="form-control" placeholder="Fecha de termino">
+                <div class="form-group ml-2">
+                    <input type="date" name="fecha_termino" class="form-control" placeholder="Fecha de termino" value="{{ $request->fecha_termino}}">
                 </div>
-                <div class="form-group">
+                <div class="form-group ml-2">
                     <input type="submit" value="Filtrar" name="filtrar" id="filtrar" class="btn">
                 </div>
                 <div class="form-group">
@@ -53,13 +53,11 @@ $i=1;
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <td>NUM</td>
-                            <td>NÚMERO DE CONTROL</td>
-                            <td style="whidth:35%; text-align:center"><P>NOMBRE DEL ALUMNO</P><P>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</P></td>
+                            <td>NO.</td>
+                            <td>MATRÍCULA</td>
+                            <td>ALUMNO</td>
                             <td>FOLIO DEL DIPLOMA</td>
-                            <td>FOLIO DEL DUPLICADO</td>
-                            <td>FECHA DE RECIBIDO</td>
-                            <td>FIRMA DEL ALUMNO</td>
+                            <td>FOLIO DEL DUPLICADO</td>                           
                         </tr>
                     </thead>
                     @if(isset($consulta))
@@ -70,9 +68,7 @@ $i=1;
                             <td>{{$item->matricula}}</td>
                             <td>{{$item->alumno}}</td>
                             <td>{{$item->folio}}</td>
-                            <td>{{$item->duplicado}}</td>
-                            <td></td>
-                            <td></td>
+                            <td>{{$item->duplicado}}</td>                            
                         </tr>
                         @endforeach
                     </tbody>
