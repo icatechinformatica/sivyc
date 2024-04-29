@@ -124,7 +124,7 @@
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
         <div>&nbsp;
-            <div align=right> <b>Unidad de Capacitación {{$data_unidad->unidad}}</b> </div>
+            <div align=right> <b>Unidad de Capacitación {{$data_unidad->ubicacion}}</b> </div>
             <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_solicitud}}</b></div>
             <div align=right> <b>{{$data_unidad->municipio}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
@@ -132,7 +132,7 @@
             <br>{{$data_unidad->pdacademico}}.
             <br>Presente.<br>
 
-            <br><p class="text-justify">Por medio de la presente, me dirijo a usted para solicitar la baja operativa del instructor externo de la unidad {{$data_unidad->unidad}} que a continuación se menciona:</p>
+            <br><p class="text-justify">Por medio de la presente, me dirijo a usted para solicitar la baja operativa del instructor externo de la unidad {{$data_unidad->ubicacion}} que a continuación se menciona:</p>
             <div class="table table-responsive">
                 <table class="tablad" style="border-color: black">
                     <thead>
@@ -174,10 +174,10 @@
             <p class="text-left">Sin otro particular, aprovecho la ocasión para saludarlo.</p>
             <br><p class="text-left"><p>Atentamente.</p></p>
             <br><br><br><br><b>{{$data_unidad->dunidad}}.</b>
-            <br><b>{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.
+            <br><b>{{$data_unidad->pdunidad}} DE {{$data_unidad->ubicacion}}.
             <br><br><h6><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-  Para su conocimiento</b></small></h6>
             <h6><small><b>Archivo/Minutario<b></small></h6>
-            <small><small><b>Elaboró y Validó: {{$data_unidad->academico}}.- {{$data_unidad->pacademico}} DE {{$data_unidad->unidad}}.</b></small></small>
+            <small><small><b>Elaboró y Validó: {{$data_unidad->academico}}.- {{$data_unidad->pacademico}} DE {{$data_unidad->ubicacion}}.</b></small></small>
         </div>
     </body>
 </html>
