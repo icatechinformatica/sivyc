@@ -175,7 +175,7 @@
             <br><b>{{$data_unidad->pdacademico}}.
             <br><br><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-  Para su conocimiento.</b></small>
             <br><small><b>C.c.p. {{$data_unidad->academico}}.- {{$data_unidad->pacademico}}.-  Mismo fin.</b></small>
-            <br><small><b>Archivo/Minutario<b></small>
+            <br><small><b>Archivo<b></small>
             <br><small><small><b>Validó: {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.</b></small></small>
             <br><small><small><b>Elaboró: {{$elabora->name}}.- {{$elabora->puesto}}.</b></small></small>
         </div>

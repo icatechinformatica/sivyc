@@ -176,7 +176,7 @@
             <br><br><br><br><b>{{$data_unidad->dunidad}}.</b>
             <br><b>{{$data_unidad->pdunidad}} DE {{$data_unidad->ubicacion}}.
             <br><br><h6><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-  Para su conocimiento</b></small></h6>
-            <h6><small><b>Archivo/Minutario<b></small></h6>
+            <h6><small><b>Archivo<b></small></h6>
             <small><small><b>Elaboró y Validó: {{$data_unidad->academico}}.- {{$data_unidad->pacademico}} DE {{$data_unidad->ubicacion}}.</b></small></small>
         </div>
     </body>

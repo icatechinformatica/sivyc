@@ -116,7 +116,7 @@
             <br><br><br>
             <div style="font-size:9px;"> <b>C.c.p  {{ $reg_unidad->dgeneral }}  , {{ $reg_unidad->pdgeneral }} . Para su conocimiento.</b> </div>
             <div style="font-size:9px"><b>C.c. {{ $directorio->nombre." ".$directorio->apellidoPaterno." ".$directorio->apellidoMaterno }} - {{ $directorio->puesto }} . Para su conocimiento.</b></div>
-            <div style="font-size:9px;"> <b>Archivo: Minutario.</b> </div>
+            <div style="font-size:9px;"> <b>Archivo.</b> </div>
             <div style="font-size:8px;"> <b>Validó: {{ $reg_unidad->dacademico }} - {{ $reg_unidad->pdacademico }}</b></div>
             <div style="font-size:8px;"> <b>Elaboró: {{ $jefeDepto->nombre." ".$jefeDepto->apellidoPaterno." ".$jefeDepto->apellidoMaterno }} - {{ $jefeDepto->puesto }} . </b></div>
             {{-- <div style="font-size:8px;"> <b>Elaboró:  {{ $reg_unidad->academico }} .  {{ $reg_unidad->pacademico }} .</b></div> --}}

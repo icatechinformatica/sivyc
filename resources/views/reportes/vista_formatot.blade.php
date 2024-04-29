@@ -155,19 +155,6 @@
                             <table id="table-911" class="table" style='width: 100%; margin-left: -1.8em;'>
                                 <caption>CURSOS A ENVIAR POR UNIDADES</caption>
                                 <thead class="thead-dark">
-                                    {{-- <tr align="center">
-                                        {{-- <th scope="col" colspan="59">GENERAL</th>
-                                        <th scope="col" colspan="33" style="background-color: #621032;">FEDERAL</th>
-                                        <th scope="col" colspan="31" style="background-color: #621032;">FEDERAL</th>
-                                        <th scope="col" colspan="32" style="background-color: #621032;">FEDERAL</th>
-                                        <th scope="col" colspan="31" style="background-color: #621032;">FEDERAL</th>
-                                        <th scope="col" colspan="33" style="background-color: #AF9A5A;">ESTATAL</th>
-                                        <th scope="col" colspan="34" style="background-color: #AF9A5A;">ESTATAL</th>
-                                        <th scope="col" colspan="33" style="background-color: #AF9A5A;">ESTATAL</th>
-                                        <th scope="col" colspan="34" style="background-color: #AF9A5A;">ESTATAL</th>
-                                        <th scope="col" colspan="33" style="background-color: #AF9A5A;">ESTATAL</th>
-                                        <th scope="col" colspan="3"></th>
-                                    </tr> --}}
                                     <tr align="center">
                                         <th scope="col">N°</th>
                                         <th scope="col">
@@ -269,6 +256,44 @@
                                         <th scope="col">INSC ESCOL H8</th>
                                         <th scope="col">INSC ESCOL M9</th>
                                         <th scope="col">INSC ESCOL H9</th>
+
+                                        <th scope="col">ACRE ESCOL M1</th>
+                                        <th scope="col">ACRE ESCOL H1</th>
+                                        <th scope="col">ACRE ESCOL M2</th>
+                                        <th scope="col">ACRE ESCOL H2</th>
+                                        <th scope="col">ACRE ESCOL M3</th>
+                                        <th scope="col">ACRE ESCOL H3</th>
+                                        <th scope="col">ACRE ESCOL M4</th>
+                                        <th scope="col">ACRE ESCOL H4</th>
+                                        <th scope="col">ACRE ESCOL M5</th>
+                                        <th scope="col">ACRE ESCOL H5</th>
+                                        <th scope="col">ACRE ESCOL M6</th>
+                                        <th scope="col">ACRE ESCOL H6</th>
+                                        <th scope="col">ACRE ESCOL M7</th>
+                                        <th scope="col">ACRE ESCOL H7</th>
+                                        <th scope="col">ACRE ESCOL M8</th>
+                                        <th scope="col">ACRE ESCOL H8</th>
+                                        <th scope="col">ACRE ESCOL M9</th>
+                                        <th scope="col">ACRE ESCOL H9</th>
+
+                                        <th scope="col">DESER ESCOL M1</th>
+                                        <th scope="col">DESER ESCOL H1</th>
+                                        <th scope="col">DESER ESCOL M2</th>
+                                        <th scope="col">DESER ESCOL H2</th>
+                                        <th scope="col">DESER ESCOL M3</th>
+                                        <th scope="col">DESER ESCOL H3</th>
+                                        <th scope="col">DESER ESCOL M4</th>
+                                        <th scope="col">DESER ESCOL H4</th>
+                                        <th scope="col">DESER ESCOL M5</th>
+                                        <th scope="col">DESER ESCOL H5</th>
+                                        <th scope="col">DESER ESCOL M6</th>
+                                        <th scope="col">DESER ESCOL H6</th>
+                                        <th scope="col">DESER ESCOL M7</th>
+                                        <th scope="col">DESER ESCOL H7</th>
+                                        <th scope="col">DESER ESCOL M8</th>
+                                        <th scope="col">DESER ESCOL H8</th>
+                                        <th scope="col">DESER ESCOL M9</th>
+                                        <th scope="col">DESER ESCOL H9</th>
 
                                         <th scope="col" WIDTH="500">OBSERVACIONES</th>
                                         <th scope="col" width="500">COMENTARIOS</th>
@@ -442,6 +467,44 @@
                                             <td>{{ $datas->iesh8 }}</td>
                                             <td>{{ $datas->iesm9 }}</td>
                                             <td>{{ $datas->iesh9 }}</td>
+
+                                            <td>{{ $datas->aesm1 }}</td>
+                                            <td>{{ $datas->aesh1 }}</td>
+                                            <td>{{ $datas->aesm2 }}</td>
+                                            <td>{{ $datas->aesh2 }}</td>
+                                            <td>{{ $datas->aesm3 }}</td>
+                                            <td>{{ $datas->aesh3 }}</td>
+                                            <td>{{ $datas->aesm4 }}</td>
+                                            <td>{{ $datas->aesh4 }}</td>
+                                            <td>{{ $datas->aesm5 }}</td>
+                                            <td>{{ $datas->aesh5 }}</td>
+                                            <td>{{ $datas->aesm6 }}</td>
+                                            <td>{{ $datas->aesh6 }}</td>
+                                            <td>{{ $datas->aesm7 }}</td>
+                                            <td>{{ $datas->aesh7 }}</td>
+                                            <td>{{ $datas->aesm8 }}</td>
+                                            <td>{{ $datas->aesh8 }}</td>
+                                            <td>{{ $datas->aesm9 }}</td>
+                                            <td>{{ $datas->aesh9 }}</td>
+
+                                            <td>{{ $datas->naesm1 }}</td>
+                                            <td>{{ $datas->naesh1 }}</td>
+                                            <td>{{ $datas->naesm2 }}</td>
+                                            <td>{{ $datas->naesh2 }}</td>
+                                            <td>{{ $datas->naesm3 }}</td>
+                                            <td>{{ $datas->naesh3 }}</td>
+                                            <td>{{ $datas->naesm4 }}</td>
+                                            <td>{{ $datas->naesh4 }}</td>
+                                            <td>{{ $datas->naesm5 }}</td>
+                                            <td>{{ $datas->naesh5 }}</td>
+                                            <td>{{ $datas->naesm6 }}</td>
+                                            <td>{{ $datas->naesh6 }}</td>
+                                            <td>{{ $datas->naesm7 }}</td>
+                                            <td>{{ $datas->naesh7 }}</td>
+                                            <td>{{ $datas->naesm8 }}</td>
+                                            <td>{{ $datas->naesh8 }}</td>
+                                            <td>{{ $datas->naesm9 }}</td>
+                                            <td>{{ $datas->naesh9 }}</td>
 
                                             <td>
                                                 <div style="width:800px; word-wrap: break-word">{{ $datas->tnota }}
