@@ -366,7 +366,7 @@
                             @if ($dataFirmante->curp == $moist['_attributes']['curp_firmante'])
                                 <td style="font-size: 7px; height: 25px;">{{ $dataFirmante->cargo }}</td>
                             @else
-                                <td style="font-size: 7px; height: 25px;">Instructor externo</td>
+                                <td style="font-size: 7px; height: 25px;">INSTRUCTOR EXTERNO</td>
                             @endif
                         </tr>
                         <tr>
