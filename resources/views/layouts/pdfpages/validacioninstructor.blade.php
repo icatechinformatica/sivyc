@@ -260,7 +260,7 @@
                     “Este documento es de uso interno y no tiene validez jurídica ni contractual, se extiende únicamente con fines académicos. Estos datos y resultados son considerados confidenciales por lo que se prohíbe su reproducción parcial o total para fines distintos al uso interno de la Dirección Técnica Académica y las Unidades de Capacitación”.
                     <br><br>
                     <small><small>C.c.p. {{$unidad->jcyc}} .- {{$unidad->pjcyc}}. – Para su conocimiento - Edificio.</small></small>
-                    <br><small><small>Archivo /Minutario.</small></small>
+                    <br><small><small>Archivo</small></small>
                 </div>
         </div>
     </body>

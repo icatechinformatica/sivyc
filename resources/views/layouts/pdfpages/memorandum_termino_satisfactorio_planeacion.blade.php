@@ -172,7 +172,7 @@
             <br><br><br>
             <div style="font-size:10px;"> <b>C.C.P  {{ $reg_unidad->dgeneral }}  , {{ $reg_unidad->pdgeneral }} . EDIFICIO.</b> </div>
             <div style="font-size:10px"><b>C.C. ING. {{ $directorio->nombre." ".$directorio->apellidoPaterno." ".$directorio->apellidoMaterno }} - {{ $directorio->puesto }} . EDIFICIO.</b></div>
-            <div style="font-size:9px;"> <b>ARCHIVO: MINUTARIO.</b> </div>
+            <div style="font-size:9px;"> <b>ARCHIVO.</b> </div>
             <div style="font-size:9px;"> <b>VALIDÓ:  ING. {{ $directorio->nombre." ".$directorio->apellidoPaterno." ".$directorio->apellidoMaterno }} - {{ $directorio->puesto }} .</b> </div>
             <div style="font-size:9px;"> <b>ELABORÓ:  LIC. VIANEY SOLEDAD RÍOS CRUZ. - ANALISTA TÉCNICO ESPECIALIZADO.</b></div>
             <br><br>

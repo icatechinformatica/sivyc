@@ -234,7 +234,7 @@
                             <td colspan="2"><div align="center">{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</div></td>
                         </tr>
                     </table>
-                    <h6><small><b>Archivo/Minutario<b></small></h6>
+                    <h6><small><b>Archivo<b></small></h6>
                     <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</b></small></small>
                     <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
                 @endif

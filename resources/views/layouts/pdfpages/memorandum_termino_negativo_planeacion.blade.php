@@ -132,7 +132,7 @@
     {{-- SECCIÓN DE PIE DE PÁGINA --}}
     <footer>
         <script type="text/php">
-            if (isset($pdf)) 
+            if (isset($pdf))
             {
                 $x = 275;
                 $y = 725;
@@ -202,7 +202,7 @@
             <div style="font-size:11px"><b>C.C. ING.
                     {{ $directorio->nombre . ' ' . $directorio->apellidoPaterno . ' ' . $directorio->apellidoMaterno }} -
                     {{ $directorio->puesto }} . EDIFICIO.</b></div>
-            <div style="font-size:10px;"> <b>ARCHIVO: MINUTARIO.</b> </div>
+            <div style="font-size:10px;"> <b>ARCHIVO.</b> </div>
             <div style="font-size:10px;"> <b>VALIDÓ: ING.
                     {{ $directorio->nombre . ' ' . $directorio->apellidoPaterno . ' ' . $directorio->apellidoMaterno }} -
                     {{ $directorio->puesto }} .</b> </div>
