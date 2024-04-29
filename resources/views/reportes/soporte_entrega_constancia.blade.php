@@ -154,7 +154,7 @@
         </div>
         <br>
         <div class="textofin">
-            <p class="delet_space_p">C.C.P. ARCHIVO/MINUTARIO</p>
+            <p class="delet_space_p">C.C.P. ARCHIVO</p>
             <p class="delet_space_p">{{isset($dta_certificacion) ? $dta_certificacion : 'dato requerido'}}
                 TITULAR DEL DEPARTAMENTO DE CERTIFICACIÓN Y CONTROL DE LA DIRECCIÓN TÉCNICA ACADÉMICA.</p>
         </div>
