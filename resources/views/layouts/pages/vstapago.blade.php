@@ -553,16 +553,17 @@
                                 <td><a class="nav-link" target="_blanks" title="Lista de Asistencias" id="show_asistenciasv" name="show_asistenciasv">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
-                                <td style="vertical-align:middle;" width='10px;'>
-                                    {{-- <i id="factura_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i> --}}
+
+                                <td style="vertical-align:middle;" width='10px;' class="fac_pdf_ord">
+                                    <i id="factura_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i>
                                 </td>
-                                <td id="td6v" style="text-align: left; vertical-align: left; font-size: 12px;">
-                                    {{-- 6.- Factura PDF --}}
+                                <td id="td6v" style="text-align: left; vertical-align: left; font-size: 12px;" class="fac_pdf_ord">
+                                    6.- Factura PDF
                                 </td>
-                                <td>
-                                    {{-- <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfv" name="show_fact_pdfv"> --}}
-                                    {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
-                                    {{-- </a> --}}
+                                <td class="fac_pdf_ord">
+                                    <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfv" name="show_fact_pdfv">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    </a>
                                 </td>
                             </tr>
                             <tr>
@@ -578,16 +579,16 @@
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
-                                <td style="vertical-align:middle;" width='10px;'>
-                                    {{-- <i id="facturaxml_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i> --}}
+                                <td style="vertical-align:middle;" width='10px;' class="fac_xml_ord">
+                                    <i id="facturaxml_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i>
                                 </td>
-                                <td id="td7v" style="text-align: left; vertical-align: left; font-size: 12px;">
-                                    {{-- 7.- Factura XML --}}
+                                <td id="td7v" style="text-align: left; vertical-align: left; font-size: 12px;" class="fac_xml_ord">
+                                    7.- Factura XML
                                 </td>
-                                <td>
-                                    {{-- <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlv" name="show_fact_xmlv"> --}}
-                                    {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
-                                    {{-- </a> --}}
+                                <td class="fac_xml_ord">
+                                    <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlv" name="show_fact_xmlv">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    </a>
                                 </td>
                             </tr>
                             <tr>
@@ -653,26 +654,31 @@
                                         <td><a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprevc" name="show_validacion_suprevc">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td id="td9vc" style="text-align: left; vertical-align: left; font-size: 12px;">9.- Identificación de Instructor</td>
-                                        <td><a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacionvc" name="show_identificacionvc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
-                                        </a></td>
+
+                                        <td id="td7vc" style="text-align: left; vertical-align: left; font-size: 12px;" class="fac_xml_cer">
+                                            9.- Factura XML
+                                        </td>
+                                        <td class="fac_xml_cer">
+                                            <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlvc" name="show_fact_xmlvc">
+                                                <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td id="td2vc" style="text-align: left; vertical-align: left; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
                                         <td><a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariavc" name="show_cuenta_bancariavc">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td id='td10vc' style="text-align: left; vertical-align: left; font-size: 12px;">10.- Lista de Calificaciones</td>
+                                        <td id='td10vc' style="text-align: left; vertical-align: left; font-size: 12px;">6.- Lista de Calificaciones</td>
                                         <td><a class="nav-link" target="_blanks" title="Lista de Calificaciones" id="show_calificacionesvc" name="show_calificacionesvc">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td id="td6vc" style="text-align: left; vertical-align: left; font-size: 12px;">
-                                            {{-- 6.- Factura PDF --}}
+                                        <td id="td6vc" style="text-align: left; vertical-align: left; font-size: 12px;" class="fac_pdf_cer">
+                                            10.- Factura PDF
                                         </td>
-                                        <td>
+                                        <td class="fac_pdf_cer">
                                             <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfvc" name="show_fact_pdfvc">
-                                                {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
+                                                <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -681,14 +687,11 @@
                                         <td><a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorvc" name="show_validacion_instructorvc">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td id="td7vc" style="text-align: left; vertical-align: left; font-size: 12px;">
-                                            {{-- 7.- Factura XML --}}
-                                        </td>
-                                        <td>
-                                            <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlvc" name="show_fact_xmlvc">
-                                                {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
-                                            </a>
-                                        </td>
+
+                                        <td id="td9vc" style="text-align: left; vertical-align: left; font-size: 12px;">7.- Identificación de Instructor</td>
+                                        <td><a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacionvc" name="show_identificacionvc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        </a></td>
                                     </tr>
                                     <tr>
                                         <td id="td4vc" style="text-align: left; vertical-align: left; font-size: 12px;">4.- ARC-01/02</td>
@@ -1453,6 +1456,17 @@
             // console.log(respuesta); show_contrato contratof_pdf(para subir)
         });
 
+        if(id[14] != 'HONORARIOS') {
+            var e1 = document.getElementsByClassName("fac_pdf_ord");
+            var e2 = document.getElementsByClassName("fac_xml_ord");
+            // Itera sobre los elementos y ocúltalos
+            for (var i = 0; i < e1.length; i++) {
+                e1[i].style.display = "none"; // Oculta el elemento
+                e2[i].style.display = "none"; // Oculta el elemento
+
+            }
+        }
+
     });
 
     $('#validarRecepcionModalCertificacion').on('show.bs.modal', function(event){
@@ -1525,6 +1539,17 @@
             });
             // console.log(respuesta); show_contrato contratof_pdf(para subir)
         });
+
+        if(id[13] != 'HONORARIOS') {
+            var e1 = document.getElementsByClassName("fac_pdf_cer");
+            var e2 = document.getElementsByClassName("fac_xml_cer");
+            // Itera sobre los elementos y ocúltalos
+            for (var i = 0; i < e1.length; i++) {
+                e1[i].style.display = "none"; // Oculta el elemento
+                e2[i].style.display = "none"; // Oculta el elemento
+
+            }
+        }
 
     });
 
