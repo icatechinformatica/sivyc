@@ -59,6 +59,10 @@
             $memo = $alumnos[0]->mpreapertura;
             $repre = $alumnos[0]->depen_repre;
             $tel = $alumnos[0]->depen_telrepre;
+            if($alumnos[0]->solicita) $solicita = $alumnos[0]->solicita;
+            else $solicita = $alumnos[0]->vinculacion.",".$alumnos[0]->pvinculacion;
+            if($alumnos[0]->vinculacion==$alumnos[0]->dunidad) $editar_solicita=true;
+            else $editar_solicita='false';
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
@@ -68,6 +72,7 @@
             $folio_pago = $recibo->folio_recibo;
             $fecha_pago = $recibo->fecha_expedicion;
         }
+        
     ?>
     <div class="card-header">
         Preinscripci&oacute;n / Registro de Grupo
@@ -306,6 +311,13 @@
                             <div class="form-group col-md-12">
                                 <label for="">OBSERVACIONES:</label>
                                 <textarea name="observaciones" id="observaciones" rows="5" class="form-control">{{$nota}}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="">SOLICITANTE (NOMBRE,CARGO):</label>  
+                                                                                          
+                                {!! Form::text('solicita', $solicita, ['id'=>'solicita', 'class' => 'form-control', 'placeholder' => 'NOMBRE,CARGO', 'aria-label' => 'SOLICITANTE', $editar_solicita ? '' : 'readonly' => 'readonly']) !!}                                
                             </div>
                         </div>
                         <br>
