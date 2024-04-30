@@ -41,7 +41,7 @@
                             <br /><br /><br /><br /><br /><br />
                             {{ $curso->nombre }}
                             <hr width="280px" />
-                            NOMBRE Y FIRMA DEL INSTRUCTOR
+                            INSTRUCTOR EXTERNO
                             <br /><br /><br />
                         </td>
                         <td width="25%">&nbsp;</td>

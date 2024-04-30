@@ -229,7 +229,7 @@ if($data->tipo_curso=='CERTIFICACION'){
                 <p><FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimiento.<br/>
                 <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-Mismo fin.</FONT><br/>
                 <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}.-{{$ccp3->puesto}}.-Mismo fin.</FONT><br/>
-                <FONT SIZE=1><b><small></C></b>Archivo/ Minutario<small></FONT><br/>
+                <FONT SIZE=1><b><small></C></b>Archivo.<small></FONT><br/>
                 <FONT SIZE=1><b><small></C></b>Validó: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}.- {{$elaboro->puesto}} {{$data->unidad_capacitacion}}.</small></FONT><br/>
                 <FONT SIZE=1><b><small></C></b>Elaboró: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}.- {{$elaboro->puesto}} {{$data->unidad_capacitacion}}.</small></FONT></p>
             </div>

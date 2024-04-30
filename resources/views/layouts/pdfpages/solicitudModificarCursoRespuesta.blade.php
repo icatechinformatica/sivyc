@@ -122,7 +122,7 @@
         <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
         <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
     </footer>
-    
+
 
     <br><br><br>
     <table class="mt-3" width="100%">
@@ -138,7 +138,7 @@
                 </td>
             </tr>
             <tr>
-                <td width="50%"><small>CC: <strong>ARCHIVO MINUTARIO</strong></small></td>
+                <td width="50%"><small>CC: <strong>ARCHIVO.</strong></small></td>
                 <td class="text-right" width="50%"><small>FECHA: <strong>{{$solicitud[0]->fecha_solicitud}}</strong></small></td>
             </tr>
         </tbody>

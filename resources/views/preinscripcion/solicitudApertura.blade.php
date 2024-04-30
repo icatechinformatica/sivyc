@@ -43,7 +43,7 @@
             CCP: {{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}. <br>
             {{ $reg_unidad->delegado_administrativo }},{{ $reg_unidad->pdelegado_administrativo }}.
         </div>
-        Archivo/Minutario<br/>
+        Archivo<br/>
         <p>&nbsp;&nbsp;&nbsp;Por medio del presente le solicito a Usted la siguiente apertura:</p>
         <table class="tb">
                 <tr style="background: #EAECEE;">
