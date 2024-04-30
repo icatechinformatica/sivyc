@@ -187,7 +187,7 @@
          </tr>
      </table>
      <p style="font-size: 7px;">CCP. {{ $reg_unidad->academico}}.-{{ $reg_unidad->pacademico}} DE LA UNIDAD DE CAPACITACIÓN {{ $reg_unidad->ubicacion}}.<br/>
-     ARCHIVO/MINUTARIO<BR/>
+     ARCHIVO<BR/>
      </p>
 @endsection
 @section('js')

@@ -48,7 +48,7 @@
         PARA: {{ $reg_unidad->dacademico }}, {{$reg_unidad->pdacademico}}<br/>
         DE: {{ $reg_unidad->dunidad }}, {{$reg_unidad->pdunidad}}<br/>
         ASUNTO: SOLICITUD DE APERTURA<br/><br/>     
-        CC. ARCHIVO/MINUTARIO
+        CC. ARCHIVO
     </div>  
     
     <table class="tablas">
