@@ -59,42 +59,22 @@
         <table class="tabla" width="100%" >
             <tbody>
                 <tr>
-                    <th height="440px" colspan="2" style="border-bottom: white;">&nbsp;</th>
-                    <th height="440px" colspan="4" style="border-bottom: white;">&nbsp;</th>
+                    <th height="440px" colspan="3" style="border-bottom: white;">&nbsp;</th>                    
                 </tr>
                 <tr>
-                    <th colspan="2" style="border-bottom: white;">INSCRIPCI&Oacute;N</th>
-                    <th colspan="4" style="border-bottom: white;">ACREDITACI&Oacute;N / CERTIFICACI&Oacute;N</th>
+                    <th colspan="3" style="border-bottom: white;">INSCRIPCI&Oacute;N</th>                    
                 </tr>
                 <tr>
-                    <td width="300px" style=" border-right: white;">
-                        <br /><br /><br /><br /><br /><br />
-                        C. {{ $curso->dunidad }}
+                    <td width="30%" style=" border-right: white;"> </td>             
+                    <td width="40%" style=" border-right: white; padding-top:63px;  padding-bottom:30px;"> 
+                        C. {{ $curso->dunidad }} 
                         <hr width="250px" />
-                        NOMBRE Y FIRMA DEL {{ $curso->pdunidad }}
-                        <br /><br /><br />
-                    </td>
-                    <td width="92px"><br /><br /><br /><br /><br /><br />SELLO </td>
-                    <td style=" border-right: white;">
-                        <br /><br /><br /><br /><br /><br />
-                        C. {{ $curso->dunidad }}
-                        <hr width="220px" />
-                        NOMBRE Y FIRMA DEL {{ $curso->pdunidad }}
-                        <br /><br /><br />
-                    </td>
-                     <td width="50px" style=" border-right: white;"><br /><br /><br /><br /><br /><br />SELLO </td>
-                     <td style=" border-right: white;">
-                        <br /><br /><br /><br /><br /><br />
-                        C. {{ $curso->dgeneral }}
-                        <hr width="220px" />
-                        NOMBRE Y FIRMA DEL {{ $curso->pdgeneral }}
-                        <br /><br /><br />
-                    </td>
-                     <td width="55px"><br /><br /><br /><br /><br /><br />SELLO </td>
+                        {{ $curso->pdunidad }} {{ $curso->unidad }}                       
+                    </td>                    
+                    <td width="30%" style="text-align: left; padding-top:50px;">SELLO </td>
                 </tr>
             </tbody>
        </table>
-
      </footer>
      <div id="content">
         <table class="tabla">

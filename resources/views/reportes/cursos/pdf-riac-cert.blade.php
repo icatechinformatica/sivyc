@@ -69,7 +69,7 @@
                     <td width="40%" style=" border-right: white; padding-top:63px;  padding-bottom:30px;"> 
                         C. {{ $curso->dunidad }} 
                         <hr width="250px" />
-                        {{ $curso->pdunidad }}                        
+                        {{ $curso->pdunidad }} {{ $curso->unidad }}               
                     </td>                    
                     <td width="30%" style="text-align: left; padding-top:50px;">SELLO </td>
                 </tr>
