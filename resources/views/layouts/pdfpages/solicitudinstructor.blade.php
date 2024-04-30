@@ -194,7 +194,7 @@
                     </tbody>
                 </table>
             {{-- </div> --}}
-            <small><b>"La documentación presentada por esta Unidad de Capacitación ha sido previamente cotejada con el ejemplar original".</b></small>
+            <small><b>"La documentación proporcionada por el candidato a instructor externo a esta Unidad de Capacitación ha sido previamente cotejada con el ejemplar original".</b></small>
             <br><p class="text-left">Sin más por el momento le envío un cordial saludo.</p>
             <br><p class="text-left"><p>Atentamente.</p></p>
             <b>{{$data_unidad->dunidad}}.</b>
@@ -210,7 +210,7 @@
                     <br><br><b>{{$data_unidad->dacademico}}.</b>
                     <br>{{$data_unidad->pdacademico}}.
                     <br>Presente.<br>
-                    <br><p class="text-justify">Por este medio hago constar que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} fue entrevistado (a) y evaluado (a) por el Departamento Tecnico de esta Unidad de Capacitación a mi cargo, concluyendo que la persona es idónea para otorgar cursos de capacitación dentro de la Especialidad de {{$altmer->especialidad}}, así mismo cabe señalar que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica vigente de la Dirección Técnica Académica del Instituto.</p>
+                    <br><p class="text-justify">Por este medio hago constar que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} fue entrevistado (a) y evaluado (a) por el Departamento Académico de esta Unidad de Capacitación a mi cargo, concluyendo que la persona es idónea para otorgar cursos de capacitación dentro de la Especialidad de {{$altmer->especialidad}}, así mismo cabe señalar que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica vigente de la Dirección Técnica Académica del Instituto.</p>
                     <br><p class="text-justify">Mucho agradeceré que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} sea integrado al "Padrón de Instructores de Capacitación para y en el Trabajo".</p>
                     <br><p class="text-justify">Sin otro particular, se emite la presente Constancia de Selección, a los {{$fecha_letra}} días del mes de {{$M}} del {{$Y}}, en la Ciudad de {{$data_unidad->municipio}}, Chiapas.</p>
                     <br><p class="text-left"><p>Atentamente.</p></p>
@@ -234,7 +234,7 @@
                             <td colspan="2"><div align="center">{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</div></td>
                         </tr>
                     </table>
-                    <h6><small><b>Archivo/Minutario<b></small></h6>
+                    <h6><small><b>Archivo<b></small></h6>
                     <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</b></small></small>
                     <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
                 @endif

@@ -124,12 +124,12 @@
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
         <div>
-            <div align=right> <b>Unidad de Capacitación {{$data_unidad->unidad}}</b> </div>
+            <div align=right> <b>Unidad de Capacitación {{$data_unidad->ubicacion}}</b> </div>
             <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_baja}}</b></div>
             <div align=right> <b>{{$especialidades[0]->unidad_solicita}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
             <br><br><b>{{$data_unidad->dunidad}}..</b>
-            <br>{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}
+            <br>{{$data_unidad->pdunidad}} DE {{$data_unidad->ubicacion}}
             <br>Presente.<br>
 
             <br><p class="text-justify">En relación a la solicitud de baja en el Registro del Padrón de Instructores mediante memorándum No. <b>{{$especialidades[0]->memorandum_solicitud}}</b> de fecha <b>{{$DS}} DE {{$MS}} DEL {{$YS}}</b>, me permito informarle que, a petición de la Unidad, procedió la baja del siguiente instructor por las causas que se describen a continuación:</p>
@@ -175,7 +175,7 @@
             <br><b>{{$data_unidad->pdacademico}}.
             <br><br><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-  Para su conocimiento.</b></small>
             <br><small><b>C.c.p. {{$data_unidad->academico}}.- {{$data_unidad->pacademico}}.-  Mismo fin.</b></small>
-            <br><small><b>Archivo/Minutario<b></small>
+            <br><small><b>Archivo<b></small>
             <br><small><small><b>Validó: {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.</b></small></small>
             <br><small><small><b>Elaboró: {{$elabora->name}}.- {{$elabora->puesto}}.</b></small></small>
         </div>

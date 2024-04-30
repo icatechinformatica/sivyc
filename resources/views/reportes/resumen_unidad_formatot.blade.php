@@ -98,7 +98,7 @@
             <div align="justify" style="font-size:14px;"><b>{{$unidad->pdacademico}}.</b></div>
             <br><br><br>
             <div align="justify" style="font-size:10px;">C.c.p. {{$unidad->academico}} - {{$unidad->pacademico}}, Ciudad.</div>
-            <div align="justify" style="font-size:10px;">Archivo Minutario.</div>
+            <div align="justify" style="font-size:10px;">Archivo.</div>
             <div align="justify" style="font-size:10px;">Validó: {{$unidad->certificacion_control}} - {{$unidad->pcertificacion_control}}, Edificio.</div>
             <div align="justify" style="font-size:10px;">Elaboró: {{$elabora['nombre']}} - {{$elabora['puesto']}}.</div>
         </div>

@@ -151,7 +151,7 @@
                 {{-- <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div> --}}
                 {{-- <div style="font-size:9px;"> <b>C.C.P LIC. YESENIA FUSIKO. KOMUKAI HORITA, JEFA DEL DEPARTAMENTO ACADÉMICO. PARA SU CONOCIMIENTO, CIUDAD.</b> </div> --}}
                 <div style="font-size:9px;"> <b>C.c.p. {{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
-                <div style="font-size:9px;"> <b>ARCHIVO / MINUTARIO.</b> </div>
+                <div style="font-size:9px;"> <b>ARCHIVO</b> </div>
                 <div style="font-size:7px;"> <b>VALIDÓ: ING. MARÍA TERESA JIMÉNEZ FONSECA. JEFA DEL DEPTO. DE CERTIFICACIÓN Y CONTROL</b> </div>
                 <div style="font-size:7px;"> <b>ELABORÓ: {{ $elabora }}.</b> </div>
             </div><br>
