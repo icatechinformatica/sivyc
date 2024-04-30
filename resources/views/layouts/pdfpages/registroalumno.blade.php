@@ -30,17 +30,21 @@
         @else
            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}" width="20%">
         @endif
-        <p><strong>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN <br> ( SID - 01 )</strong></p>
+        <p><strong>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN</strong></p>
+        <p><strong>( SID - 01 )<strong></p>
     </div>
     <br>
-    <table style="width: 80%; text-align: center;">
+    <table style="width: 95%; text-align: center;">
         <tr>
-            <td style="text-decoration: underline;"> {{date('d/m/Y',strtotime($alumnos->inicio))}}</td>
-            <td>{{str_pad($alumnos->id, 8, "0", STR_PAD_LEFT)}}</td>
+            <td style=" width: 20%; text-decoration: underline;"> {{date('d/m/Y',strtotime($alumnos->inicio))}}</td>
+            <td style=" width: 60%;"> </td>
+            <td  style=" width: 20%; text-align: center;">{{str_pad($alumnos->id, 8, "0", STR_PAD_LEFT)}}</td>
         </tr>
+        
         <tr>
             <td>FECHA</td>
-            <td class="p">NÚMERO DE SOLICITUD</td>
+            <td></td>
+            <td class="p" style="text-align: center;">NÚMERO DE SOLICITUD</td>
         </tr>
     </table>
     <br>
