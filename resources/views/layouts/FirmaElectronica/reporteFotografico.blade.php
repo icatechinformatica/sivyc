@@ -174,7 +174,7 @@
         <div style="text-align: right;">
             <p style="font-size: 14px; margin-bottom: 5px;">
             @if ($cursopdf->ubicacion != $cursopdf->unidad)
-            UNIDAD DE CAPACITACIÓN {{$cursopdf->ubicacion}}, ACCIÓN MOVIL {{$cursopdf->unidad}}.
+            UNIDAD DE CAPACITACIÓN {{$cursopdf->ubicacion}}, CENTRO DE TRABAJO ACCIÓN MÓVIL {{$cursopdf->unidad}}.
             @else
             UNIDAD DE CAPACITACIÓN {{$cursopdf->ubicacion}}.
             @endif
