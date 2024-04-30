@@ -129,11 +129,11 @@ class contratos extends Model
                     {
                         if($tipo_status == 'En Espera')
                         {
-                            return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad)->WHERE('pagos.status_recepcion', '=', $tipo_status)->ORDERBY('pagos.fecha_envio','ASC');
+                            return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad)->WHERE('pagos.status_recepcion', '=', $tipo_status)->WHERE('folios.status', '!=', 'Finalizado')->ORDERBY('pagos.fecha_envio','ASC');
                         }
                         else
                         {
-                            return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad)->WHERE('pagos.status_recepcion', '=', $tipo_status)->ORDERBY('pagos.updated_at','ASC');
+                            return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad)->WHERE('pagos.status_recepcion', '=', $tipo_status)->WHERE('folios.status', '!=', 'Finalizado')->ORDERBY('pagos.updated_at','ASC');
                         }
                     }
                     else
@@ -168,9 +168,9 @@ class contratos extends Model
                 {
                     if($tipo_status == 'En Espera' || $tipo_status == 'VALIDADO')
                     {
-                        return $query->whereDate('pagos.fecha_envio', '>=', $dateini)->whereDate('pagos.fecha_envio', '<=', $datefin)->WHERE('pagos.status_recepcion', '=', $tipo_status);
+                        return $query->whereDate('pagos.fecha_envio', '>=', $dateini)->whereDate('pagos.fecha_envio', '<=', $datefin)->WHERE('pagos.status_recepcion', '=', $tipo_status)->WHERE('folios.status', '!=', 'Finalizado');
                     }
-                    return $query->whereDate('pagos.created_at', '>=', $dateini)->whereDate('pagos.created_at', '<=', $datefin)->WHERE('folios.status', '=', $tipo_status);
+                    return $query->whereDate('pagos.created_at', '>=', $dateini)->whereDate('pagos.created_at', '<=', $datefin)->WHERE('folios.status', '=', $tipo_status)->WHERE('folios.status', '!=', 'Finalizado');
                 }
                 else
                 {
@@ -221,11 +221,11 @@ class contratos extends Model
             {
                 if($tipo_status == 'En Espera')
                 {
-                    return $query->WHERE('pagos.status_recepcion', '=', $tipo_status)->ORDERBY('pagos.fecha_envio','ASC');
+                    return $query->WHERE('pagos.status_recepcion', '=', $tipo_status)->WHERE('folios.status', '!=', 'Finalizado')->ORDERBY('pagos.fecha_envio','ASC');
                 }
                 else
                 {
-                    return $query->WHERE('pagos.status_recepcion', '=', $tipo_status)->ORDERBY('pagos.updated_at','ASC');
+                    return $query->WHERE('pagos.status_recepcion', '=', $tipo_status)->WHERE('folios.status', '!=', 'Finalizado')->ORDERBY('pagos.updated_at','ASC');
                 }
             }
             else

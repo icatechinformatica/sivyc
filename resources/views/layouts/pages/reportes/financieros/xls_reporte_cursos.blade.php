@@ -20,6 +20,7 @@
             <th><b>INICIO CURSO</b></th>
             <th><b>FINAL CURSO</b></th>
             <th><b>URL FACTURA XML</b></th>
+            <th><b>URL FACTURA PDF</b></th>
         </tr>
     </thead>
     <tbody>
@@ -52,8 +53,10 @@
                 <td>{{$cadwell->termino}}</td>
                 @if(is_null($cadwell->arch_factura_xml))
                     <td>N/A</td>
+                    <td>N/A</td>
                 @else
-                    <td><a href="{{$cadwell->arch_factura_xml}}" download="prueba.xml">XML {{$cadwell->folio_validacion}}</a></td>
+                    <td><a href="{{$cadwell->arch_factura_xml}}" download="factura.xml">XML {{$cadwell->folio_validacion}}</a></td>
+                    <td><a href="{{$cadwell->arch_factura}}" download="factura.pdf">PDF {{$cadwell->folio_validacion}}</a></td>
                 @endif
             </tr>
         @endforeach
