@@ -200,7 +200,7 @@
             <b>{{$data_unidad->dunidad}}.</b>
             <br><b>{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.
             <br><h6><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-Mismo Fin</b></small></h6>
-            <h6><small><b>Archivo/Minutario<b></small></h6>
+            <h6><small><b>Archivo<b></small></h6>
             <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</b></small></small>
             <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
             @foreach ($data as $altmer)
