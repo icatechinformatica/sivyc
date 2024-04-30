@@ -35,7 +35,7 @@ class financierosReportesController extends Controller
 
         $query = DB::Table('tbl_cursos')->Select('tbl_cursos.clave','tbl_cursos.dura','tbl_cursos.soportes_instructor','tbl_cursos.curso',"instructores.apellidoPaterno","instructores.apellidoMaterno",
             'instructores.nombre','tbl_cursos.rfc','tbl_cursos.curp','tbl_cursos.inicio','tbl_cursos.termino','folios.folio_validacion','folios.iva',
-            'folios.importe_total','contratos.arch_factura_xml')
+            'folios.importe_total','contratos.arch_factura_xml','contratos.arch_factura')
             ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
             ->Join('folios','folios.id_cursos','tbl_cursos.id')
             ->Join('pagos','pagos.id_curso','tbl_cursos.id')
