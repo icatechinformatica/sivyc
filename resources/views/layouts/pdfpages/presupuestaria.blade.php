@@ -134,7 +134,7 @@ else{$tipo='CURSO';}
             @endif
             <br><br><br><h6><small><b>C.c.p.  C.P. SALVADOR BETANZOS SOLIS.-DIRECTOR DE PLANEACION.-Mismo Fin</b></small></h6>
             <h6><small><b>C.P. JORGE LUIS BARRAGAN LOPEZ.-JEFE DE DEPARTAMENTO DE RECURSOS FINANCIEROS.-Mismo Fin</b></small></h6>
-            <h6><small><b>Archivo/Minutario<b></small></h6>
+            <h6><small><b>Archivo.<b></small></h6>
             <br><br><small><b>Valido: {{$getvalida->nombre}} {{$getvalida->apellidoPaterno}} {{$getvalida->apellidoMaterno}}.-{{$getvalida->puesto}}</b></small></h6>
             <br><small><b>Elaboró:  {{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}.-{{$getelabora->puesto}}</b></small></h6>
         </div>

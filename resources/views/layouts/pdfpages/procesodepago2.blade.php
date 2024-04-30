@@ -92,7 +92,7 @@
                 <br><br><br><p><FONT SIZE=1><b><C.c.p.</C></b>.-Para su conocimiento<br/>
                 <FONT SIZE=1><b><C.c.p.</C></b>.-mismo fin</FONT><br/>
                 <FONT SIZE=1><b><C.c.p.</C></b>.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>Archivo/ Minutario</FONT><br/>
+                <FONT SIZE=1><b><C.c.p.</C></b>Archivo</FONT><br/>
                 <FONT SIZE=1><b><C.c.p.</C></b>Elaboró:</FONT></p>
             </div>
         </div>
