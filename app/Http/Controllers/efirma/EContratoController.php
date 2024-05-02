@@ -84,7 +84,7 @@ class EContratoController extends Controller
 
         //Llenado de academico firmante
         foreach($dataFirmantes as $dataFirmante) {
-            if (str_contains($dataFirmante->cargo, 'ACADEMICO')) {
+            if (str_contains($dataFirmante->cargo, 'ACADÉMICO')) {
                 if(isset($dataFirmante->incapacidad)) {
                     $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
                     if($incapacidadFirmante != FALSE) {
