@@ -102,7 +102,7 @@
                         <tr class="active">
                             <td scope="col"><small style="font-size: 10px;">No. DE SUFICIENCIA</small></td>
                             <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR EXTERNO</small></td>
                             <td scope="col" width="10px"><small style="font-size: 10px;">UNIDAD/ACCION MOVIL</small></td>
                             <td scope="col" ><small style="font-size: 10px;">CURSO/CERTIFICACION</small></td>
                             <td scope="col" ><small style="font-size: 10px;">NOMBRE</small></td>
@@ -157,9 +157,9 @@
             </div>
             <div align=center> <b>SOLICITA
                 <br>
-                <br><small>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</small>
+                <br><small>{{$getremitente->nombre}}</small>
                 <br>________________________________________
-                <br><small>{{$getremitente->puesto}} DE CAPACITACIÓN {{$data2->unidad_capacitacion}}
+                <br><small>{{$getremitente->cargo}}
             </div>
         </div>
         <footer>

@@ -163,8 +163,8 @@ else{
                 Fecha: {{$Dv}} de {{$Mv}} del {{$Yv}}</FONT>
                 </div>
                 <div class="b"> <FONT SIZE=0>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}}</font><br/>
-                    <FONT SIZE=0><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b></FONT><br/>
-                    <FONT SIZE=0><b>{{$getremitente->puesto}}</b></FONT><br/>
+                    <FONT SIZE=0><b>{{$para->nombre}}</b></FONT><br/>
+                    <FONT SIZE=0><b>{{$para->cargo}}</b></FONT><br/>
                     <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
                     <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
                         <font size=0>La Secretaria de Hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal {{$Y}}, en ese sentido, con Fundamento en el Art. 13 Y Art. 38 del decreto de presupuesto
@@ -184,7 +184,7 @@ else{
                         <tr class="active">
                             <td width="10px"><small style="font-size: 8px;">No. DE SUFICIENCIA</small></td>
                             <td scope="col" ><small style="font-size: 8px;">FECHA</small></td>
-                            <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR EXTERNO</small></td>
                             <td width="10px"><small style="font-size: 8px;">UNIDAD/ ACCION MOVIL</small></td>
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">SERVICIO</small></td>
                             <td scope="col" ><small style="font-size: 8px;">NOMBRE</small></td>
@@ -255,16 +255,16 @@ else{
         </div>
         <div id="wrapperbot">
             <div align=center>
-                <small><small>LUIS ALFONSO CRUZ VELASCO</small></small>
+                <small><small>{{$getfirmante->nombre}}</small></small>
                 <br><small>________________________________________</small><br/>
-                <br><small><small>JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO</small></small></b>
+                <br><small><small>{{$getfirmante->cargo}}</small></small></b>
             </div>
             <div><br><br><br>
-                <FONT SIZE=0><b>C.c.p.</b>FABIOLA LIZBETH ASTUDILLO REYES.-DIRECTORA GENERAL.-Para su conocimiento</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>SALVADOR BETANZOS SOLIS.-DIRECTOR DE PLANEACION.-mismo fin</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>JORGE LUIS BARRAGAN LOPEZ.-JEFE DE DEPARTAMENTO DE RECURSOS FINANCIEROS.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$getccp1->nombre}}.-{{$getccp1->cargo}}.-Para su conocimiento</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$getccp2->nombre}}.-{{$getccp2->cargo}}.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$getccp3->nombre}}.-{{$getccp3->cargo}}.-mismo fin</FONT><br/>
                 {{-- <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br> --}}
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->delegado_administrativo}}.-{{$getccp4->pdelegado_administrativo}}.-mismo fin</FONT><br>
+                <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}}.-{{$getccp4->cargo}}.-mismo fin</FONT><br>
                 <FONT SIZE=0><b>C.c.p.</b>Archivo</FONT>
             </div>
         </div>
