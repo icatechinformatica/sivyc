@@ -53,7 +53,7 @@ $anioSi = date('Y', strtotime('+1 year')) ;
                     <td style="width: 40%">
                         <p>{{$sq->dunidad}}</p>
                         <hr style="width: 70%">
-                        <p>{{$sq->pdunidad}}</p>
+                        <p>{{$sq->pdunidad}} {{$sq->ubicacion}}</p>
                     </td>
                     <td style="width: 30%">&nbsp;</td>
                     <td style="width: 30%">
