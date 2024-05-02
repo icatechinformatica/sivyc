@@ -165,7 +165,7 @@
         <h6 style="text-align: center;">{{isset($leyenda) ? $leyenda : ''}}</h6>
     </div>
     <div style="text-align:center;">
-        <span style="text-align: center;">REPORTE FOTOGRÁFICO DEL INSTRUCTOR</span>
+        <span style="text-align: center;">REPORTE FOTOGRÁFICO DE INSTRUCTOR EXTERNO</span>
     </div>
     {{-- <h6 style="text-align: center;">{{isset($leyenda) ? $leyenda : ''}}</h6> --}}
     {{-- tabla --}}
