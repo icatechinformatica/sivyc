@@ -21,14 +21,14 @@ $anioSi = date('Y', strtotime('+1 year')) ;
         header h6 { height: 14px; padding: 0px; margin: 0; font-size: 12px;}    
         img.izquierda { float: left; width: 100; height: 40; } 
 
-        .tabla_madre{border: 1px solid black; font-size: 12px; padding: 0px 0px 3px 10px; margin-bottom:3px;}
-        .table1 { width: 100%; border-collapse: collapse;}
-        .table1 tr td { font-size: 11px; padding: 0px; margin:0px; line-height: 8px;}
-        .table1 tr td p { font-size: 11px; padding: 0px; margin:0px;}
+        .tabla_madre{border: 1px solid black; font-size: 12px; padding: 6px 0px 5px 11px; margin-bottom:3px;}
+        .table1 { width: 100%; border-collapse: collapse; }
+        .table1 tr td { font-size: 11px; margin:0px; padding: 0px; line-height: 8px;}
+        .table1 tr td p { font-size: 11px; padding: 0px; margin:0px; line-height: 10px;}
 
         .table {width: 100%; border-collapse: collapse;}
         .table tr th { border: 1px solid black; font-size: 11px; padding: 0px; margin:0px; line-height: 13px; font-size: 10px;}
-        .table tr td { border: 1px solid black; font-size: 11px; padding: 5px; margin:0px; line-height: 24px;}
+        .table tr td { border: 1px solid black; font-size: 11px; padding: 5px; margin:0px; line-height: 25px;}
         .center{ text-align:center; }
 
         main {padding: 0; margin: 0; margin-top: 0px; }        
@@ -67,25 +67,20 @@ $anioSi = date('Y', strtotime('+1 year')) ;
         <div class="tabla_madre">
             <table class="table1">  
                 <tr>
-                    <td style="width:75%;" rowspan="2">
+                    <td rowspan="2" style="width:75%;" ><br/>
                         <p><b>INSTITUTO DESCENTRALIZADO:</b> &nbsp;&nbsp;INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TÉCNOLOGICO DEL ESTADO DE CHIAPAS</p><br/>
                         <p><b>UNIDAD DE CAPACITACIÓN:</b> &nbsp;&nbsp;{{$sq->unidad}} <b style="margin-left:20px;">No.</b> &nbsp;&nbsp;{{$sq->plantel}} </p><br/>
                         <p><b>CLAVE CCT:</b> &nbsp;&nbsp;{{$sq->cct}} <b style="margin-left:100px;">PERIODO:</b>&nbsp;&nbsp; {{$periodo}}
                         <b style="margin-left:100px;">FECHA:</b> &nbsp;&nbsp; {{$fecha}} </p><br/>
-
-                    </td>
+                    </td>                    
                     <td colspan="2" style="text-align: center;"><b>TIPO DE DOCUMENTO</b></td>
-                </tr>
-                <tr>                
-                    <td style="width:9%;">                                 
-                        <b>DIPLOMA: </b>
-                        <br/><br/><br/><br/>
-                        <b>CONSTANCIA:</b>
-                        <br/><br/><br/>
+                </tr>               
+                <tr>
+                    <td  style="width:9%;  vertical-align: top;">                        
+                        <b>CONSTANCIA:</b>                        
                     </td>
-                    <td>      
-                        CURSO(&nbsp;) <br/><br/>ESPECIALIDAD(&nbsp;)<br/><br/>
-                        CAE({{ $consulta[0]->mod=='CAE' ? 'X' : ' ' }}) <br/><br/>EXTENSION({{ $consulta[0]->mod=='EXT' ? 'X' : ' ' }})
+                    <td>
+                        CAE ({{ $consulta[0]->mod=='CAE' ? 'X' : ' ' }}) <br/><br/> EXTENSION ({{ $consulta[0]->mod=='EXT' ? 'X' : ' ' }})
                     </td>
                 </tr>           
             </table>
@@ -97,7 +92,7 @@ $anioSi = date('Y', strtotime('+1 year')) ;
                         <th style="width: 1%">N<br/>U<br/>M</th>
                         <th style="width: 5%">NÚMERO DE<br/>CONTROL</th>
                         <th style="width: 27%">NOMBRE DEL ALUMNO<br/>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
-                        <th style="width: 23%">ESPECIALIDAD</th>
+                        <th style="width: 23%" >ESPECIALIDAD</th>
                         <th style="width: 7%">FOLIO DEL<br/>DIPLOMA O<br/>CONSTANCIA</th>
                         <th style="width: 7%">FOLIO DEL DUPLICADO</th>
                         <th>FECHA DE<br/>RECIBIDO</th>
@@ -109,7 +104,7 @@ $anioSi = date('Y', strtotime('+1 year')) ;
                     <td>{{$i++}}</td>
                     <td>{{$item->matricula}}</td>
                     <td>{{$item->alumno}}</td>
-                    <td>{{$item->espe}}</td>
+                    <td >{{$item->espe}}</td>
                     <td class="center">{{$item->folio}}</td>
                     <td class="center">{{$item->duplicado}}</td>
                     <td></td>
