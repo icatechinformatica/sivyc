@@ -83,6 +83,7 @@ class rcdod11Controller extends Controller
         $unidad= $request->unidades; //dd($unidad);
         $finicio=$request->fecha_inicio;
         $ftermino=$request->fecha_termino;
+        $mod = $request->mod;
 
         if($unidad==null||$unidad=='TODO'){return redirect()->route('carter')->with('success', 'Selecione una unidad');}
         if($finicio==null||$ftermino==null){return redirect()->route('carter')->with('success', 'Selecione un rango de fecha');}
@@ -96,6 +97,7 @@ class rcdod11Controller extends Controller
             ->whereIn('tc.status',['REPORTADO','TURNADO_PLANEACION'])
             ->where('tf.movimiento','=','DUPLICADO')
             ->where('tc.unidad',$unidad)
+            ->where('tc.mod',$mod)
             ->where('tc.termino','>=',$finicio)
             ->where('tc.termino','<=',$ftermino)
             ->orderBy('tf.nombre')

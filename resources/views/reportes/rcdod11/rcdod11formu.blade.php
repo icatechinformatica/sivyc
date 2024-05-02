@@ -6,7 +6,8 @@ $i=1;
 @section('content')
 <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
     <style>
-        table tr th .nav-link {padding: 25px; margin: 0;}
+        table tr th .nav-link {padding: 5px; margin: 0;}
+        table tr th {padding: 5px; margin: 0;}
     </style>
     <div class="card-header">
         Reporte RCDOD-11
@@ -22,7 +23,7 @@ $i=1;
             <div class="row form-inline">
                 <div class="form-group">
                     <select name="unidades" id="unidades" class="form-control" placeholder=" ">
-                        <option selected disabled="">Selecciona la unidad</option>
+                        <option selected disabled="">UNIDAD/ACCION MÓVIL</option>
                         <option value="TODO">TODO</option>
                         @if($tipo=='string')
                         <option value="{{$unidades}}" @if($unidades === $request->unidades) selected @endif>{{$unidades}}</option>
@@ -33,12 +34,19 @@ $i=1;
                         @endif  
                     </select>
                 </div>
+                <div class="form-group ml-2">
+                    <select name="mod" id="mod" class="form-control" placeholder=" ">                        
+                        <option value="CAE"  @if($request->mod == "CAE") selected @endif>CAE</option>
+                        <option value="EXT"  @if($request->mod=="EXT") selected @endif>EXT</option>
+                    </select>
+                </div>
                 <div class="form-group  ml-2">
                     <input type="date" name="fecha_inicio" class="form-control" placeholder="Fecha de inicio" value="{{ $request->fecha_inicio}}">
                 </div>
                 <div class="form-group ml-2">
                     <input type="date" name="fecha_termino" class="form-control" placeholder="Fecha de termino" value="{{ $request->fecha_termino}}">
                 </div>
+                
                 <div class="form-group ml-2">
                     <input type="submit" value="Filtrar" name="filtrar" id="filtrar" class="btn">
                 </div>
@@ -53,22 +61,22 @@ $i=1;
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <td>NO.</td>
-                            <td>MATRÍCULA</td>
-                            <td>ALUMNO</td>
-                            <td>FOLIO DEL DIPLOMA</td>
-                            <td>FOLIO DEL DUPLICADO</td>                           
+                            <th class="text-center">NO.</th>
+                            <th class="text-center">MATRÍCULA</th>
+                            <th class="text-center">ALUMNO</th>
+                            <th class="text-center">FOLIO DEL <br/>DIPLOMA</th>
+                            <th class="text-center">FOLIO DEL </br>DUPLICADO</th> 
                         </tr>
                     </thead>
                     @if(isset($consulta))
                     <tbody>
                         @foreach($consulta as $item)
                         <tr>
-                            <td>{{$i++}}</td>
-                            <td>{{$item->matricula}}</td>
+                            <td class="text-center">{{$i++}}</td>
+                            <td class="text-center">{{$item->matricula}}</td>
                             <td>{{$item->alumno}}</td>
-                            <td>{{$item->folio}}</td>
-                            <td>{{$item->duplicado}}</td>                            
+                            <td class="text-center">{{$item->folio}}</td>
+                            <td class="text-center">{{$item->duplicado}}</td>                            
                         </tr>
                         @endforeach
                     </tbody>
@@ -81,7 +89,7 @@ $i=1;
 @section('script_content_js') 
         <script language="javascript">           
             $(document).ready(function(){ 
-                $("#filtrar" ).click(function(){ $('#frm').attr('action', "{{route('carter')}}"); $('#frm').submit(); });
+                $("#filtrar" ).click(function(){ $("#frm").attr("target", '_self'); $('#frm').attr('action', "{{route('carter')}}"); $('#frm').submit(); });
                 $("#pdf" ).click(function(){ $('#frm').attr('action', "{{route('carter.pdf')}}"); $("#frm").attr("target", '_blanck');$('#frm').submit();});                                
             });
         </script>  
