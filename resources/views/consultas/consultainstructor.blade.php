@@ -44,7 +44,7 @@
                         <td>MEMORÁNDUM</td>
                         <td>CURSO</td>
                         <td>ESPECIALIDAD</td>
-                        <td>SERVICIO</td>
+                        <td>CURSO/CERTIFICACION</td>
                         <td>DURA</td>
                         <td>CAPACITACIÓN</td>
                         <td>ESTATUS</td>

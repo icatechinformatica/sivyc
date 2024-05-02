@@ -103,7 +103,7 @@
                             <td scope="col"><small style="font-size: 10px;">No. DE SUFICIENCIA</small></td>
                             <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
                             <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR</small></td>
-                            <td scope="col" width="10px"><small style="font-size: 10px;">UNIDAD/ A.M. DE CAP.</small></td>
+                            <td scope="col" width="10px"><small style="font-size: 10px;">UNIDAD/ACCION MOVIL</small></td>
                             <td scope="col" ><small style="font-size: 10px;">CURSO/CERTIFICACION</small></td>
                             <td scope="col" ><small style="font-size: 10px;">NOMBRE</small></td>
                             <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
@@ -159,7 +159,7 @@
                 <br>
                 <br><small>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</small>
                 <br>________________________________________
-                <br><small>{{$getremitente->puesto}} <br> <font style="text-transform: uppercase;">{{$getremitente->area}}</font></small></b>
+                <br><small>{{$getremitente->puesto}} DE CAPACITACIÓN {{$data2->unidad_capacitacion}}
             </div>
         </div>
         <footer>

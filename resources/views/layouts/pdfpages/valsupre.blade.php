@@ -185,7 +185,7 @@ else{
                             <td width="10px"><small style="font-size: 8px;">No. DE SUFICIENCIA</small></td>
                             <td scope="col" ><small style="font-size: 8px;">FECHA</small></td>
                             <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR</small></td>
-                            <td width="10px"><small style="font-size: 8px;">UNIDAD/ A.M. DE CAP.</small></td>
+                            <td width="10px"><small style="font-size: 8px;">UNIDAD/ ACCION MOVIL</small></td>
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">SERVICIO</small></td>
                             <td scope="col" ><small style="font-size: 8px;">NOMBRE</small></td>
                             <td scope="col"><small style="font-size: 8px;">CLAVE DEL GRUPO</small></td>

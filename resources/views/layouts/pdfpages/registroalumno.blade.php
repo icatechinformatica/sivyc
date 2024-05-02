@@ -14,7 +14,7 @@
         }
         .encabezado{ text-align: center; width: 100%;}
         img.izquierda{ float:left}
-        img.derecha { float: right; width: 3cm; height: 1.5cm; margin-top:-10px;}
+        img.derecha { float: right;  margin-top:-10px;}
         .p{ text-decoration: overline;}
         table { width: 100%; border-collapse: collapse;}
         /* td{ padding: 0px; padding-left: 5px; padding-bottom: 3px;} */
@@ -24,23 +24,27 @@
 </head>
 <body>
     <div class="encabezado">
-        <img class="izquierda" src="{{ public_path('img/sep1.png') }}">
+        <img class="izquierda" src="{{ public_path('img/reportes/sep.png') }}" width="23%">
         @if ($alumnos->chk_fotografia == TRUE && $vistaFoto == TRUE)
-           <img class="img-thumbnail mb-3" style="float: right; width: 3cm; height: 3cm; margin-top:-10px;" src="{{ asset($pathimg) }}">
+           <img class="img-thumbnail mb-3" style="float: right; width: 3cm; height: 3cm; margin-top:-10px;" src="{{ asset($pathimg) }}" >
         @else
-           <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
+           <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}" width="20%">
         @endif
-        <p><strong>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN <br> ( SID - 01 )</strong></p>
+        <p><strong>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN</strong></p>
+        <p><strong>( SID - 01 )<strong></p>
     </div>
     <br>
-    <table style="width: 80%; text-align: center;">
+    <table style="width: 95%; text-align: center;">
         <tr>
-            <td style="text-decoration: underline;">{{$alumnos->inicio}}</td>
-            <td>{{str_pad($alumnos->id, 8, "0", STR_PAD_LEFT)}}</td>
+            <td style=" width: 20%; text-decoration: underline;"> {{date('d/m/Y',strtotime($alumnos->inicio))}}</td>
+            <td style=" width: 60%;"> </td>
+            <td  style=" width: 20%; text-align: center;">{{str_pad($alumnos->id, 8, "0", STR_PAD_LEFT)}}</td>
         </tr>
+        
         <tr>
             <td>FECHA</td>
-            <td class="p">NÚMERO DE SOLICITUD</td>
+            <td></td>
+            <td class="p" style="text-align: center;">NÚMERO DE SOLICITUD</td>
         </tr>
     </table>
     <br>
@@ -240,8 +244,9 @@
     {{-- <table>
         <tr>
             <td>
-                <br>
-                <strong>FECHA:</strong> {{$alumnos->creado}}
+                <br>                
+
+                <strong>FECHA:</strong> {{ date('d/m/Y',strtotime($alumnos->creado))}}
             </td>
             <td style="text-align: right;">
                 <strong>COMPROBANTE DEL ASPIRANTE</strong><br>

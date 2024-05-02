@@ -126,7 +126,7 @@ else{$tipo='CURSO';}
             <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
             <br><p class="text-left"><p>Atentamente.</p></p>
             <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
-            <br><b>{{$getremitente->puesto}} <br> <font style="text-transform: uppercase;">{{$getremitente->area}}</font> </b>
+            <br><b>{{$getremitente->puesto}} DE CAPACITACIÓN {{$unidad->ubicacion}}</b>
             <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
             @if ($unidad->cct != '07EI')
                 <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
