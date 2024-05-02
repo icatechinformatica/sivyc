@@ -1432,13 +1432,15 @@ class ContratoController extends Controller
                               'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido')
+                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido',
+                              'tbl_unidades.ubicacion')
                         ->WHERE('folios.id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
                         ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                         ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
+                        ->JOIN('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
                         ->FIRST();
         if($data->solicitud_fecha == NULL)
         {
@@ -1454,27 +1456,42 @@ class ContratoController extends Controller
             $M = $this->toMonth(date('m',$date));
             $Y = date("Y",$date);
         }
-
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
-        $elaboro = directorio::WHERE('id', '=', $data_directorio->solpa_elaboro)->FIRST();
-        if(isset($data_directorio->solpa_iddirector))
-        {
-            $director = directorio::WHERE('id', '=', $data_directorio->solpa_iddirector)->FIRST();
-        }
-        else
-        {
-            $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
-        }
         $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
-        $ccp1 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp1)->FIRST();
-        $ccp2 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp2)->FIRST();
-        $ccp3 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp3)->FIRST();
+
+        $director = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('f.activo', 'true')
+            ->Where('u.unidad', $data->ubicacion)
+            ->First();
+
+        $ccp1 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('o.id',1)
+            ->Where('f.activo', 'true')
+            ->First();
+
+        $ccp2 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('o.id',12)
+            ->Where('f.activo', 'true')
+            ->First();
+
+        $ccp3 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DELEG%')
+            ->Where('f.activo', 'true')
+            ->Where('u.unidad', $data->ubicacion)
+            ->First();
         // dd($para);
 
         $direccion = tbl_unidades::WHERE('unidad',$data->unidad_capacitacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director','distintivo','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','ccp1','ccp2','ccp3','para','director','distintivo','direccion'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 
