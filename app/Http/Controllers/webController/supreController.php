@@ -95,16 +95,15 @@ class supreController extends Controller
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         $unidad = tbl_unidades::SELECT('ubicacion','id')->WHERE('id',Auth::user()->unidad)->FIRST();
 
-        $agenda = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        $agenda = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','o.id_parent')
             ->Join('tbl_funcionarios AS f', 'f.id_org','o.id')
             ->Where('o.id_unidad',$unidad->id)
             ->Get();
 
         Foreach($agenda as $moist) {
-            if(str_contains($moist->cargo, 'DIRECT')){
+            if($moist->id_parent == 1){
                 $funcionarios['director'] = $moist->nombre;
                 $funcionarios['directorp'] = $moist->cargo;
-
             }
             if(str_contains($moist->cargo, 'ADMINISTRATIVO')) {
                 $funcionarios['delegado'] = $moist->nombre;
@@ -255,7 +254,9 @@ class supreController extends Controller
             //     ->with('success','Solicitud de Suficiencia Presupuestal agregado');
 
             $id = base64_encode($id);
-            return view('layouts.pages.suprecheck',compact('id'));
+            return redirect()->route('modificar_supre', ['id' => $id])
+                             ->with('success','Solicitud de Suficiencia Presupuestal Guardado');
+            // return view('layouts.pages.suprecheck',compact('id'));
         }
         else
         {
@@ -279,8 +280,8 @@ class supreController extends Controller
         // $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
 
-        $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
-        $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $getsupre->unidad_capacitacion)->GET();
+        $unidadsel = tbl_unidades::SELECT('id','unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
+        // $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $getsupre->unidad_capacitacion)->GET();
 
         $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.comentario',
                                 'folios.importe_total','folios.iva','tbl_cursos.clave',
@@ -301,7 +302,23 @@ class supreController extends Controller
         //     $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
         // }
 
-        $funcionarios = $this->funcionarios_supre($getsupre->unidad_capacitacion);
+        $agenda = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','o.id_parent')
+            ->Join('tbl_funcionarios AS f', 'f.id_org','o.id')
+            ->Where('o.id_unidad',$unidadsel->id)
+            ->Get();
+
+        Foreach($agenda as $moist) {
+            if($moist->id_parent == 1){
+                $funcionarios['director'] = $moist->nombre;
+                $funcionarios['directorp'] = $moist->cargo;
+            }
+            if(str_contains($moist->cargo, 'ADMINISTRATIVO')) {
+                $funcionarios['delegado'] = $moist->nombre;
+                $funcionarios['delegadop'] = $moist->cargo;
+            }
+
+        }
+
         $getfolios[0]->mov_bancario = json_decode($getfolios[0]->mov_bancario);
 
         $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
@@ -314,7 +331,7 @@ class supreController extends Controller
                 ->Where('id',$getfolios[0]->id)
                 ->First();
         }
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios', 'unidadsel','unidadlist','recibo','funcionarios'));
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios','unidadsel','recibo','funcionarios'));
     }
 
     public function solicitud_mod_guardar(Request $request)

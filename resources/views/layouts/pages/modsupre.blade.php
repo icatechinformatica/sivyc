@@ -12,15 +12,17 @@
       }
 </style>
  <div class="container g-pt-50">
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
    <form action="{{ route('supre-mod-save') }}" id="regsupre" method="POST">
        @csrf
        <div style="text-align: right;width:82%">
            <label for="tituloSupre1"><h2>Modificación de Solicitud para Suficiencia Presupuestal</h2></label>
         </div>
         <br><br>
-        <div style="text-align: right;width:100%">
-            <button type="button" id="mod_supre" class="btn btn-warning btn-lg">Modificar Campos</button>
-        </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputobservacion" class="control-label"><b>Observaciones de Rechazo</b></label>
@@ -30,7 +32,7 @@
         <br>
         <hr style="border-color:dimgray">
         <div class="form-row">
-            <div class="form-group col-md-3">
+            {{-- <div class="form-group col-md-3">
                 <label for="unidad" class="control-label">Unidad de Capacitacion </label>
                 <select name="unidad" id="unidad" class="form-control">
                     <option selected value="{{$unidadsel->unidad}}">{{$unidadsel->unidad}}</option>
@@ -38,6 +40,10 @@
                         <option value="{{$data->unidad}}">{{$data->unidad}}</option>
                     @endforeach
                 </select>
+            </div> --}}
+            <div class="form-group col-md-3">
+                <label for="unidad" class="control-label">Unidad de Capacitación </label>
+                <input type="text" class="form-control" id="unidad" name="unidad" value="{{$unidadsel->unidad}}" readonly>
             </div>
             <div class="form-group col-md-5">
                 <label for="mamorandum" class="control-label">Memorandum No. </label>
@@ -62,7 +68,7 @@
                 @foreach ( $getfolios as $key=>$data )
                 <tr>
                     <td><input type="text" id="addmore[{{$key}}][folio]" name="addmore[{{$key}}][folio]" value="{{ $data->folio_validacion }}" placeholder="folio" class="form-control" /></td>
-                    <td><input type="text" id="addmore[{{$key}}][numeropresupuesto]" name="addmore[{{$key}}][numeropresupuesto]" value="12101" placeholder="numero presupuesto" class="form-control" /></td>
+                    <td><input readonly type="text" id="addmore[{{$key}}][numeropresupuesto]" name="addmore[{{$key}}][numeropresupuesto]" value="12101" placeholder="numero presupuesto" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][clavecurso]" name="addmore[{{$key}}][clavecurso]" value="{{ $data->clave}}" placeholder="clave curso" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][importe]" name="addmore[{{$key}}][importe]" value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" readonly /><footer name="addmore[0][aviso]" id="addmore[0][aviso]" style="color: red"></footer></td>
                     <td id="tdiva"><input type="text" id="addmore[{{$key}}][iva]" name="addmore[{{$key}}][iva]" value="{{ $data->iva }}" placeholder="Iva" class="form-control" readonly /></td>
@@ -94,33 +100,33 @@
         <div class="form-row">
             <div class="form-group col-md-6"> <!--  -->
                 <label for="inputremitente" class="control-label">Remitente</label>
-                <input type="text" class="form-control" aria-required="true" readonly value="{{$funcionarios['director']}}" id="remitente" name="remitente" placeholder="Nombre">
+                <input type="text" class="form-control" readonly value="{{$funcionarios['director']}}" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!--  -->
                 <label for="inputremitente" class="control-label">Puesto</label>
-                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['directorp']}}"  id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
+                <input type="text" class="form-control" readonly value="{{$funcionarios['directorp']}}" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
                 {{-- <input id="id_remitente" name="id_remitente" type="text" value="{{$getremitente->id}}" hidden> --}}
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Valida</label>
-                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['delegado']}}" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
+                <input type="text" class="form-control" readonly value="{{$funcionarios['director']}}" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Valida</label>
-                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['delegadop']}}"  id="puesto_valida" name="puesto_valida" placeholder="Puesto">
+                <input type="text" class="form-control" readonly value="{{$funcionarios['directorp']}}" onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto">
                 {{-- <input id="id_valida" name="id_valida" type="text" value="{{$getvalida->id}}" hidden> --}}
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Elabora</label>
-                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['elabora']}}" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
+                <input type="text" class="form-control" readonly value="{{$funcionarios['delegado']}}" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Elabora</label>
-                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['elaborap']}}" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
+                <input type="text" class="form-control" readonly value="{{$funcionarios['delegadop']}}" onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
                 {{-- <input id="id_elabora" name="id_elabora" type="text" value="{{$getelabora->id}}" hidden> --}}
             </div>
         </div>
@@ -170,15 +176,22 @@
         {{-- <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}"> --}}
         {{-- <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button> --}}
         <br><br><br>
-        <div class="row">
+        <div class="form-row">
             <input hidden id=id_supre name="id_supre" value={{$getsupre->id}}>
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
-                </div>
-                <div class="pull-right">
-                    <button type="submit" disabled id="btn_guardar_supre" class="btn btn-primary" >Guardar</button>
-                </div>
+            <div class="form-group col-md-7">
+                <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+            </div>
+            <div class="form-group col-md-2">
+                <button type="submit" id="btn_guardar_supre" class="btn btn-primary" >Guardar</button>
+            </div>
+            </form>
+            <div class="form-group col-md-3">
+                <form action="{{ route('solicitud-pago-efirma') }}" method="post" id="registersolicitudpago">
+                    @csrf
+                    <input type="text" name="ids" id="ids" value='{{$getsupre->id}}' hidden>
+                    <input type="text" name="clavecurso" id="clavecursos" value='{{$data->clave}}' hidden>
+                    <button   button type="submit" class="btn btn-red" >Generar Suficiencia E.Firma</button>
+                </form>
             </div>
         </div>
         <br>
