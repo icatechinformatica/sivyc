@@ -76,7 +76,7 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 15px;
+                bottom: 0px;
                 left: 65px;
                 font-size: 8.5px;
                 color: rgb(255, 255, 255);
