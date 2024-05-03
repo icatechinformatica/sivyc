@@ -13,9 +13,9 @@
 
         .cuadro{ border: 1px solid black; width: 50px; padding: 10px;}
         #curso {text-align: justify; }
-        #curso b{margin-left: 10px; margin-right: 50px;}
+        #curso b{margin-left: 10px; margin-right: 15px;}
         .tab{ margin-left: 10px; margin-right: 50px;}        
-        .block{ margin-right:18px;}
+        .block{ margin-right:12px; white-space: nowrap; display: inline-block;}
 
         .tabla { border-collapse: collapse; width: 100%;}
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}       
