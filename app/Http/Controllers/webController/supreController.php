@@ -1194,19 +1194,42 @@ class supreController extends Controller
         $unidad->cct = substr($unidad->cct, 0, 4);
         $direccion = explode("*", $unidad->direccion);
 
-        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        //$getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
-        $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
-                                    'directorio.puesto','directorio.area_adscripcion_id','area_adscripcion.area')
-                                    ->WHERE('directorio.id', '=', $directorio->supre_rem)
-                                    ->LEFTJOIN('area_adscripcion', 'area_adscripcion.id', '=', 'directorio.area_adscripcion_id')
-                                    ->FIRST();
-        $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
-        $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
-        //$getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
-        //$getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
+        $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+        ->Where('o.id',9)
+        ->Where('f.activo', 'true')
+        ->First();
 
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getremitente','getvalida','getelabora','directorio','unidad','distintivo','uj','direccion'));
+        $getremitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+        ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+        ->Where('o.id_parent',1)
+        ->Where('f.activo', 'true')
+        ->Where('u.unidad', $unidad->ubicacion)
+        ->First();
+
+        $ccp1 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+        ->Where('o.id',6)
+        ->Where('f.activo', 'true')
+        ->First();
+
+        $ccp2 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+        ->Where('o.id',13)
+        ->Where('f.activo', 'true')
+        ->First();
+
+        $getelabora = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+        ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+        ->Where('f.activo', 'true')
+        ->Where('u.unidad', $unidad->ubicacion)
+        ->Where('o.nombre', 'LIKE', '%DELEGA%')
+        ->First();
+
+
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getremitente','getelabora','unidad','distintivo','uj','direccion','destino','ccp1','ccp2'));
         return  $pdf->stream('medium.pdf');
     }
 
@@ -1305,12 +1328,13 @@ class supreController extends Controller
         $direccion = tbl_unidades::WHERE('unidad',$data2->unidad_capacitacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
-                                    'directorio.puesto','directorio.area_adscripcion_id','area_adscripcion.area')
-                                    ->WHERE('directorio.id', '=', $directorio->supre_rem)
-                                    ->LEFTJOIN('area_adscripcion', 'area_adscripcion.id', '=', 'directorio.area_adscripcion_id')
-                                    ->FIRST();
+        $getremitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('f.activo', 'true')
+            ->Where('u.unidad', $data2->unidad_capacitacion)
+            ->First();
 
         $date = strtotime($data2->fecha);
         $D = date('d', $date);
@@ -1424,19 +1448,54 @@ class supreController extends Controller
         $Yv = date("Y",$datev);
 
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
-        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
-        $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
-        //$getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
-        //$getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
-        //$getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
-        // $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
-        $getccp4 = DB::TABLE('tbl_unidades')->SELECT('delegado_administrativo','pdelegado_administrativo')->WHERE('unidad',$data2->unidad_capacitacion)->FIRST();
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp4','recursos','distintivo','direccion','criterio'));
+
+        //mejorar los querys hacerlos en uno y solo agregarles el id_parent a parte
+
+        $para = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('f.activo', 'true')
+            ->Where('u.unidad', $data2->unidad_capacitacion)
+            ->First();
+
+        $getfirmante = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('o.id',9)
+            ->Where('f.activo', 'true')
+            ->First();
+
+        $getccp1 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('o.id', 1)
+            ->Where('f.activo', 'true')
+            ->First();
+
+        $getccp2 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('o.id', 6)
+            ->Where('f.activo', 'true')
+            ->First();
+
+        $getccp3 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('o.id', 13)
+            ->Where('f.activo', 'true')
+            ->First();
+
+        $getccp4 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('f.activo', 'true')
+            ->Where('u.unidad', $data2->unidad_capacitacion)
+            ->Where('o.nombre', 'LIKE', '%DELEGA%')
+            ->First();
+
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','para','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos','distintivo','direccion','criterio'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
 
-        return view('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
+        return view('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','para','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
     }
 
     protected function monthToString($month)
@@ -1990,7 +2049,7 @@ class supreController extends Controller
 
         $cabecera = [
             'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA DE CREACION EN EL SISTEMA', 'FECHA',
-            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'SERVICIO', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
+            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'CURSO/CERTIFICACION', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
             'Z.E.','HSM','MUNICIPIO','LOCALIDAD', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES','BENEFICIARIOS'

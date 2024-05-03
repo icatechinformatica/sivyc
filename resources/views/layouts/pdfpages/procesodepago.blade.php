@@ -79,7 +79,7 @@ if($data->tipo_curso=='CERTIFICACION'){
             {
                 text-align: left;
                 position: absolute;
-                bottom: 5px;
+                bottom: 0px;
                 left: 65px;
                 font-size: 8.5px;
                 color: rgb(255, 255, 255);
@@ -107,7 +107,7 @@ if($data->tipo_curso=='CERTIFICACION'){
                 <br><br><b>{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}.</b>
                 <br>{{$para->puesto}}.
                 <br><br>Presente.
-                <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura <font style="text-transform:lowercase;"> {{$tipo}}</font> y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente, que se detalla a continuación:</p>
+                <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura <font style="text-transform:lowercase;"> {{$tipo}}</font> y validación de instructor externo, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente, que se detalla a continuación:</p>
                 <div align=center>
                     <FONT SIZE=2><b>DATOS {{$tipo}}</b></FONT>
                 </div>
@@ -129,7 +129,7 @@ if($data->tipo_curso=='CERTIFICACION'){
                 </table>
                 <br>
                 <div align=center>
-                    <FONT SIZE=2> <b>DATOS DEL INSTRUCTOR</b></FONT>
+                    <FONT SIZE=2> <b>DATOS DEL INSTRUCTOR EXTERNO</b></FONT>
                 </div>
                 <table>
                     <tbody>
@@ -192,46 +192,27 @@ if($data->tipo_curso=='CERTIFICACION'){
                 <br><p class="text-left"><p>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;"> {{$tipo}}</font>, obra en poder de la Unidad de Capacitación.</p></p>
                 <br><br>
                 <table class="table1">
-                    @if($Y != '2024')
-                        <tr>
-                            <td colspan="2"><p align="center">Atentamente</p></td>
-                            <td colspan="2"><p align="center">Autoriza</p></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
-                            <td colspan="2"><div align="center">Mtro. Walter Domínguez Camacho</td></div>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><div align="center">{{$director->puesto}} {{$data->unidad_capacitacion}}</td></div>
-                            <td colspan="2"><div align="center">Director Administrativo</td></div>
-                        </tr>
-                    @else
-                        <tr>
-                            <td><p align="center">Atentamente</p></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
-                        </tr>
-                        <tr>
-                            <td><div align="center">{{$director->puesto}} {{$data->unidad_capacitacion}}</td></div>
-                        </tr>
-                    @endif
+                    <tr>
+                        <td><p align="center">Atentamente</p></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div align="center">{{$director->nombre}}</td></div>
+                    </tr>
+                    <tr>
+                        <td><div align="center">{{$director->cargo}}</td></div>
+                    </tr>
                 </table>
-                <p><FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimiento.<br/>
-                <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-Mismo fin.</FONT><br/>
-                <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}.-{{$ccp3->puesto}}.-Mismo fin.</FONT><br/>
-                <FONT SIZE=1><b><small></C></b>Archivo.<small></FONT><br/>
-                <FONT SIZE=1><b><small></C></b>Validó: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}.- {{$elaboro->puesto}} {{$data->unidad_capacitacion}}.</small></FONT><br/>
-                <FONT SIZE=1><b><small></C></b>Elaboró: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}.- {{$elaboro->puesto}} {{$data->unidad_capacitacion}}.</small></FONT></p>
+                <p style="line-height:0.8em;">
+                    <b><small>C.c.p.{{$ccp1->nombre}}.- {{$ccp1->cargo}}.-Para su conocimiento.</small></b><br/>
+                    <b><small>C.c.p.{{$ccp2->nombre}}.- {{$ccp2->cargo}}.-Mismo fin.</small></b><br/>
+                    <b><small>C.c.p.{{$ccp3->nombre}}.- {{$ccp3->cargo}}.-Mismo fin.</small></b><br/>
+                    <b><small>Archivo<small></b><br/>
+                    <b><small>Validó: {{$ccp3->nombre}}.- {{$ccp3->cargo}}.</small></b><br/>
+                    <b><small>Elaboró: {{$ccp3->nombre}}.- {{$ccp3->cargo}}.</small></b>
+                </p>
             </div>
         </div>
         <footer>
