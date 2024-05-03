@@ -27,163 +27,146 @@ switch( $mes){
     <title>Reporte RDCD-08</title>
 </head>
 <style type="text/ccs">
-    @page{margin: 20px 30px 40px}
-    .tabla_madre{border: 1px solid black;}
-    .table{width: 100%; text-align: center; border-collapse: collapse;}
-    .centrado{width:50%;padding:1px;margin:auto; text-align:center;}
-    div{font_size: 12px;}
+    body {  font-family: sans-serif;}
+    @page {  margin: 80px 25px 140px 25px; }
+    header {  position: fixed; left: 0px; top: -50px; right: 0px; text-align: center; }
+    header h6 { height: 14px; padding: 0px; margin: 0; font-size: 11px;} 
+    main {padding: 0; margin: 0; margin-top: 15px; }        
+    footer { position:fixed;   left:0px;   bottom:-100px;   height:90px;   width:100%;}       
+    .tablaf { border-collapse: collapse; width: 100%;}
+    .tablaf tr td { font-size: 10px; padding: 3px;  text-align:center; height:90px;}
+
+    .tabla_madre{border: 1px solid black; font-size: 11px; }
+    .table1 { width: 100%; border-collapse: collapse; margin:6px 0px 6px 15px;}
+    .table1 tr td { margin:0px; padding: 0px; line-height: 12px;}
+    .table1 tr td p{ margin:0px; padding: 0px; line-height: 10px;}
+
+    .table{width: 100%; text-align: center; border-collapse: collapse; }
+    .table tr th { margin:0px; padding: 5px; line-height: 12px; font-size: 10px;}
+    .table tr td { margin:0px; padding: 5px; line-height: 12px; font-size: 11px;}
+    .centrado{width:50%; padding:3px; margin:auto; text-align:center; font-size: 11px;  font-weight: bold;}    
     .p{text-decoration: overline;}
+    
+    .div_madre{border: 1px solid black; height:650px; }
+
     .variable{text-align: center;border: 1px solid black;}
     img.izquierda {
         float: left;
-        width: 120;
-        height: 50;
+        width: 18%;        
       }
 </style>
 <body>
-    <div>
-        <img src="img/sep.png" class="izquierda">
-        <p style="font_size: 14px;width:80%;padding:8px;margin:auto; text-align:center;">SUBSECRETARIA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>REPORTE DE DIPLOMAS O COSTANCIAS EXPEDIDOS <br>(RDCD-08)</p>
-    </div>
-    <table style="border: 1px solid black; width: 100%; font_size: 12px;">
-        <tr style="text-align: center; padding: 1px;">
-            <td colspan="7">
-                INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA <br> DEL ESTADO DE CHIAPAS
-            </td>
-        </tr>
-        <tr>
-            <td colspan="5"></td>
-            <td colspan="2">
-                TIPO DE DOCUMENTO:
-            </td>
-        </tr>
-        <tr>
-            <td>
-                UNIDAD DE CAPACITACIÓN: {{$unidad}} <br>
-                CLAVE CCT: {{$cct->cct}} <br>
-                PERIODO QUE SE REPORTA:{{$periodo}} <br>
-                FECHA: {{$fecha}}
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td style="text-align: right;">
-                DIPLOMA  <br><br>
-                CONSTANCIA
-            </td>
-            <td style="text-align: right;">
-                CURSO( ) <br>
-                ESPECIALIDAD( )<br>
-                R.O.C.O.( ) <br>
-                @php if($modalidad=="CAE"){echo "CAE(X)";} else {echo"CAE( )";} @endphp <br>
-                @php if($modalidad=="EXT"){echo "EXT(X)";} else {echo"EXT( )";} @endphp <br>
-                @php if($modalidad=="GRAL"){echo "GRAL(X)";} else {echo"GRAL( )";} @endphp
-            </td>
-        </tr>
-    </table>
-    {{-- <div class="tabla_madre">
-        <div class="centrado"><p>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNILÓGICA DEL ESTADO DE CHIAPAS</p></div>
-        <div >
-            <table width="100%">
-                <tr><td></td><td align='right'>TIPO DE DOCUMENTO</td><td></td></tr>
+    <header>
+        <img src="img/reportes/sep.png" alt='sep' width="20%" style='position:fixed; left:0; margin: -50px 0px;' />
+        <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N MEDIA SUPERIOR</h6>
+        <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
+        <h6>REPORTE DE DIPLOMAS O CONSTANCIAS EXPEDIDOS</h6>
+        <h6>(RDCD-08)</h6>
+    </header>    
+    <footer>
+            <table class="tablaf"  width="100%">
                 <tr>
-                    <td>UNIDAD DE CAPACITACIÓN: {{$unidad}}</td>
-                    <td align='right'>DIPLOMA</td>
-                    <td align='right'>CURSO( )</td>
+                    <td style="width: 60%">
+                        <p>{{$cct->dunidad}}</p>
+                        <hr style="width: 70%">
+                        <p>{{$cct->pdunidad}} {{$cct->ubicacion}}</p>
+                    </td>
+                    <td style="width: 10%">&nbsp;</td>
+                    <td style="width: 30%">
+                        <hr style="width: 60%">
+                        SELLO
+                    </td>
+                </tr>
+           </table>
+     </footer>
+     <main>     
+     <div class="tabla_madre">
+            <table class="table1">  
+                <tr>
+                    <td colspan="3" style="text-align: center;">
+                        INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TÉCNOLOGICO DEL ESTADO DE CHIAPAS
+                    </td>                                    
+                </tr>    
+                <tr>
+                    <td rowspan="2" style="width:65%;" >   <br/>                      
+                        <p><b>{{ (substr($cct->cct, 0, 5) == "07EIC") ? "UNIDAD DE CAPACITACIÓN" : "CENTRO DE TRABAJO ACCIÓN MÓVIL" }}:</b>
+                            &nbsp;&nbsp;{{$cct->plantel}}&nbsp;&nbsp;{{$cct->unidad}}</p> <br/>
+                        <p><b>CLAVE CCT:</b> &nbsp;&nbsp;{{$cct->cct}} </p><br/>
+                        <p><b>PERIODO QUE SE REPORTA:</b>&nbsp;&nbsp; {{$periodo}} <p> <br/>
+                        <p><b>FECHA:</b> &nbsp;&nbsp; {{$fecha}} </p>
+                    </td>                    
+                    <td colspan="2" style="text-align: center;"><b>TIPO DE DOCUMENTO</b></td>
+                </tr>               
+                <tr>
+                    <td  style="width:12%;  vertical-align: top;">                        
+                        <b>CONSTANCIA:</b>                        
+                    </td>
+                    <td>                            
+                        <p>CAE ({{ $modalidad=='CAE' ? 'X' : ' ' }}) <br/></p>
+                        <p  style="padding-top:6px;">EXTENSION ({{ $modalidad=='EXT' ? 'X' : ' ' }})<br/></p>
+                        <p  style="padding-top:6px;">GRAL ({{ $modalidad=='GRAL' ? 'X' : ' ' }})</p>
+                    </td>
+                </tr>           
+            </table>
+        </div>   
+        
+        <div><p class="centrado">SERIE ASIGNADA A LA UNIDAD DE CAPACITACIÓN</p></div>
+        <div>
+            <table class="table">
+                <tr>
+                    <td class="variable">DEL FOLIO:</td>
+                    <td class="variable">AL FOLIO:</td>
+                    <td class="variable">CANTIDAD</td>
+                    <td class="variable">FECHA DEL ACTA ADMVA. DE<br/> ASIGNACIÓN:</td>
                 </tr>
                 <tr>
-                    <td>CLAVE CCT: {{$cct->cct}}</td>
-                    <td></td>
-                    <td align='right'>ESPECIALIDAD( )</td>
-                </tr>
-                <tr>
-                    <td>PERIODO QUE SE REPORTA:{{$periodo}}</td>
-                    <td></td>
-                    <td align='right'>R.O.C.O.( )</td>
-                </tr>
-                <tr>
-                    <td>FECHA: {{$fecha}}</td>
-                    <td align='right'>CONSTANCIA</td>
-                    <td align='right'>@php if($modalidad=="CAE"){echo "CAE(X)";} else {echo"CAE( )";} @endphp</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td align='right'>@php if($modalidad=="EXT"){echo "EXT(X)";} else {echo"EXT( )";} @endphp</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td align='right'>@php if($modalidad=="GRAL"){echo "GRAL(X)";} else {echo"GRAL( )";} @endphp</td>
+                    <td class="variable">{{$consulta[0]->finicial}}</td>
+                    <td class="variable">{{$consulta[0]->ffinal}}</td>
+                    <td class="variable">{{$consulta[0]->total}}</td>
+                    <td class="variable">{{$consulta[0]->facta}}</td>
                 </tr>
             </table>
         </div>
-    </div> --}}
-    <div><p class="centrado">SERIE ASIGNADA A LA UNIDAD</p></div>
-    <div>
-        <table class="table">
-            <tr>
-                <td class="variable">DEL FOLIO:</td>
-                <td class="variable">AL FOLIO:</td>
-                <td class="variable">CANTIDAD</td>
-                <td class="variable">FECHA DEL ACTA ADMVA. DE ASIGNACIÓN:</td>
-            </tr>
-            <tr>
-                <td class="variable">{{$consulta[0]->finicial}}</td>
-                <td class="variable">{{$consulta[0]->ffinal}}</td>
-                <td class="variable">{{$consulta[0]->total}}</td>
-                <td class="variable">{{$consulta[0]->facta}}</td>
-            </tr>
-        </table>
-    </div>
-    <div><p class="centrado">DIPLOMAS UTILIZADOS</p></div>
-    <div>
-        <table class="table">
-            <tr>
-                <td colspan="2" class="variable">FOLIOS</td>
-                <td rowspan="2" class="variable">FECHA</td>
-                <td rowspan="2" class="variable">CANTIDAD EXPEDIDA</td>
-                <td rowspan="2" class="variable">CANTIDAD CANCELADA</td>
-                <td rowspan="2" class="variable">CANTIDAD EXISTENTE</td>
-            </tr>
-            <tr>
-                <td class="variable">DEL</td>
-                <td class="variable">AL</td>
-            </tr>
-            @foreach($cuerpo as $key=>$item)
-            <tr>
-                <td class="variable">{{$item->mini}}</td>
-                <td class="variable">{{$item->maxi}}</td>
-                <td class="variable">{{$item->fecha_expedicion}}</td>
-                <td class="variable">{{$item->expedidos}}</td>
-                <td class="variable">{{$item->cancelados}}</td>
-                <td class="variable">@php $total= $total- ($item->expedidos + $item->cancelados); @endphp {{$total}}</td>
-            </tr>
-            @endforeach
-            {{-- @if (count($fcancelados)>0)
-            <tr>
-                <td colspan="6" class="variable">
-                    @foreach($fcancelados as $alo)FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},@endforeach
+        <div><p class="centrado">CONSTANCIAS UTILIZADOS</p></div>
+        <div class="div_madre">
+            <table class="table">
+                <tr>
+                    <td colspan="2" class="variable">FOLIOS</td>
+                    <td rowspan="2" class="variable">FECHA</td>
+                    <td rowspan="2" class="variable">CANTIDAD<br/> EXPEDIDA</td>
+                    <td rowspan="2" class="variable">CANTIDAD<br/> CANCELADA</td>
+                    <td rowspan="2" class="variable">CANTIDAD<br/> EXISTENTE</td>
+                </tr>
+                <tr>
+                    <td class="variable">DEL</td>
+                    <td class="variable">AL</td>
+                </tr>
+                @foreach($cuerpo as $key=>$item)
+                <tr>
+                    <td class="variable">{{$item->mini}}</td>
+                    <td class="variable">{{$item->maxi}}</td>
+                    <td class="variable">{{$item->fecha_expedicion}}</td>
+                    <td class="variable">{{$item->expedidos}}</td>
+                    <td class="variable">{{$item->cancelados}}</td>
+                    <td class="variable">@php $total= $total- ($item->expedidos + $item->cancelados); @endphp {{$total}}</td>
+                </tr>
+                @endforeach
+                {{-- @if (count($fcancelados)>0)
+                <tr>
+                    <td colspan="6" class="variable">
+                        @foreach($fcancelados as $alo)FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},@endforeach
                 </td>
             </tr>
             @endif --}}
         </table>
-        <div style="margin-top: 50px; border: 1px solid #000;">
-            @if (count($fcancelados)>0)
+        @if (count($fcancelados)>0)
+            <div style="margin-top: 50px; border: 1px solid #000;">
+            
                     @foreach($fcancelados as $alo)FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},@endforeach
-            @endif
-        </div>
-    </div>
-    <br><br><br><br>
-    <div>
-        <table class="table">
-            <tr>
-                <td style="align: left"> {{$cct->dunidad}} <br><p class="p"> NOMBRE Y FIRMA DEL DIRECTOR(A) DE LA UNIDAD {{$unidad}}</p></td>
-                <td><p class="p">SELLO</p></td>
-            </tr>
-        </table>
-    </div>
-
+            
+            </div>
+        @endif
+    </div>    
+    </main>
 </body>
 </html>
