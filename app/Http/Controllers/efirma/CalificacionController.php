@@ -44,10 +44,10 @@ class CalificacionController extends Controller
         'org.nombre', 'fun.incapacidad', 'fun.id as id_fun')
                             ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                             ->Where('org.id', Auth::user()->id_organismo)
-                            ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
+                            ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADÉMICO%')
                             ->OrWhere('org.id_parent', Auth::user()->id_organismo)
                             // ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
-                            ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADEMICO%')
+                            ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADÉMICO%')
                             ->First();
         if($dataFirmante->curp == null)
         {
@@ -368,7 +368,7 @@ class CalificacionController extends Controller
                 ->orderby('i.alumno')
                 ->get();
             $consec = 1;
-            $body = "SUBSECRETARÍA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS \n".
+            $body = "SUBSECRETARÍA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICA \n".
             "DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO \n".
             "REGISTRO DE EVALUACIÓN POR SUBOBJETIVOS \n".
             "(RESD-05) ".
