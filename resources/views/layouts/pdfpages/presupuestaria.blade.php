@@ -88,11 +88,11 @@ else{$tipo='CURSO';}
             <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
             <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-            <br><br><b>LUIS ALFONSO CRUZ VELASCO.</b>
-            <br>JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO.
+            <br><br><b>{{$destino->nombre}}.</b>
+            <br>{{$destino->cargo}}.
             <br><br>Presente.
 
-            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 {{$uj[0]->modinstructor}}, para la contratación de instructores para la impartición de
+            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 {{$uj[0]->modinstructor}}, para la contratación de instructores externos para la impartición de
             @if ($uj[0]->tipo_curso=='CERTIFICACION')
                 certificación extraordinaria
             @else
@@ -125,18 +125,18 @@ else{$tipo='CURSO';}
             </table>
             <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
             <br><p class="text-left"><p>Atentamente.</p></p>
-            <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
-            <br><b>{{$getremitente->puesto}} DE CAPACITACIÓN {{$unidad->ubicacion}}</b>
+            <br><br><b>{{$getremitente->nombre}}</b> <!-- now -->
+            <br><b>{{$getremitente->cargo}}</b>
             <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
             @if ($unidad->cct != '07EI')
                 <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
             @else
             @endif
-            <br><br><br><h6><small><b>C.c.p.  C.P. SALVADOR BETANZOS SOLIS.-DIRECTOR DE PLANEACION.-Mismo Fin</b></small></h6>
-            <h6><small><b>C.P. JORGE LUIS BARRAGAN LOPEZ.-JEFE DE DEPARTAMENTO DE RECURSOS FINANCIEROS.-Mismo Fin</b></small></h6>
+            <br><br><br><h6><small><b>C.c.p.  {{$ccp1->nombre}}.-{{$ccp1->cargo}}.-Mismo Fin</b></small></h6>
+            <h6><small><b>C.c.p. {{$ccp2->nombre}}.-{{$ccp2->cargo}}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo.<b></small></h6>
-            <br><br><small><b>Valido: {{$getvalida->nombre}} {{$getvalida->apellidoPaterno}} {{$getvalida->apellidoMaterno}}.-{{$getvalida->puesto}}</b></small></h6>
-            <br><small><b>Elaboró:  {{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}.-{{$getelabora->puesto}}</b></small></h6>
+            <br><br><small><b>Valido: {{$getremitente->nombre}}.-{{$getremitente->cargo}}</b></small></h6>
+            <br><small><b>Elaboró:  {{$getelabora->nombre}}.-{{$getelabora->cargo}}</b></small></h6>
         </div>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
