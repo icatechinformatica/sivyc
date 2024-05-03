@@ -30,7 +30,7 @@
         if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0"))
             $nombre_unidad = "UNIDAD DE CAPACITACIÓN ";
         else
-            $nombre_unidad = "ACCIÓN MÓVIL ";
+            $nombre_unidad = "CENTRO DE TRABAJO ACCIÓN MÓVIL ";
 
         $valido= $reg_cursos[0]->valido;
         $munidad = $reg_cursos[0]->munidad;
@@ -72,7 +72,7 @@
 @endsection
 @section('body')
     <div id="para">
-        PARA: {{ $reg_unidad->dunidad }}.- {{$reg_unidad->pdunidad}}<br/>
+        PARA: {{ $reg_unidad->dunidad }}.- {{$reg_unidad->pdunidad}} {{$reg_unidad->ubicacion}}<br/>
         DE: {{ $reg_unidad->dacademico }}.- {{$reg_unidad->pdacademico}}<br/>
         ASUNTO: {{ $asunto }}<br/><br/>
     </div>
@@ -94,10 +94,10 @@
                  <th style="padding: 0px;" rowspan="2" >HORARIO</th>
                  <th style="padding: 0px;" rowspan="2" width='8%'>DIAS</th>
                  <th style="padding: 0px;" rowspan="2" >C<br>U<br>P<br>O</th>
-                 <th style="padding: 0px;" rowspan="2" width="8%" >INSTRUCTOR</th>
+                 <th style="padding: 0px;" rowspan="2" width="8%" >INSTRUCTOR<br/>EXTERNO</th>
                  <th style="padding: 0px;" rowspan="2" >CRITE<br>RIO<br>DE<br>PAGO</th>
                  <th style="padding: 0px;" rowspan="2" >MUNICIPIO</th>
-                 <th style="padding: 0px;" rowspan="2" width="10%" >ESPACIO FISICO<br>MEDIO VIRTUAL</th>
+                 <th style="padding: 0px;" rowspan="2" width="10%" >ESPACIO FÍSICO<br>MEDIO VIRTUAL</th>
                  <th style="padding: 0px;" rowspan="2" >ZON<br>A<br>ECO<br>NOM<br>ICA</th>
                  <th style="padding: 0px;" colspan="3" >TIPO DE <BR/> CUOTA</th>
                  <th style="padding: 0px;" rowspan="2" width='15%'>OBSERVACIONES</th>

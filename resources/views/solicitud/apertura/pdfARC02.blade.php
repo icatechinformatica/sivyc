@@ -21,7 +21,7 @@
         if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0")) 
             $nombre_unidad = "UNIDAD DE CAPACITACIÓN ";
         else
-            $nombre_unidad = "ACCIÓN MÓVIL ";          
+            $nombre_unidad = "CENTRO DE TRABAJO ACCIÓN MÓVIL ";          
     @endphp
     <div id="titulo">
         <h4>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}</h4>
@@ -42,21 +42,21 @@
 @section('body')
     <div id="para"> 
         PARA: {{ $reg_unidad->dacademico }}, {{$reg_unidad->pdacademico}}<br/>
-        DE: {{ $reg_unidad->dunidad }}, {{$reg_unidad->pdunidad}}<br/>
+        DE: {{ $reg_unidad->dunidad }}, {{$reg_unidad->pdunidad}} {{$reg_unidad->ubicacion}}<br/>
         ASUNTO: SOLICITUD DE REPROGRAMACION, CANCELACION O CORRECCIÓN<br/><br/>     
         CC. ARCHIVO
     </div>
     <table class="tablas">
             <tbody>
                 <tr> 
-                    <th rowspan="2">SERVICIO</th>     	  
+                    <th rowspan="2">CURSO/CERTIFICACIÓN</th>     	  
                     <th rowspan="2">NOMBRE</th>     
                     <th rowspan="2">MOD</th>               
                     <th colspan="2">TIPO</th>       
                     <th rowspan="2">HORAS</th>
                     <th rowspan="2">CLAVE</th>
                     <th rowspan="2">NUM. DE <br> MEMORANDUM DE <br> AUT. DE CLAVE</th>
-                    <th rowspan="2">INSTRUCTOR</th>
+                    <th rowspan="2">INSTRUCTOR<br/>EXTERNO</th>
                     <th rowspan="2">INICIO </th>  
                     <th rowspan="2">TERMINO</th>                    
                     <th rowspan="2">ESPACIO FISICO</th>
@@ -70,7 +70,7 @@
                 </tr>
                 @foreach($reg_cursos as $a)         
                     <tr>
-                        <td>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION EXTRAORDINARIA';} @endphp</td>
+                        <td>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION';} @endphp</td>
                         <td style="width: 8%;">{{ $a->curso }}</td>
                         <td>{{ $a->mod }}</td>                           
                         <td>@if($a->tcapacitacion=="PRESENCIAL"){{ "X" }}@endif</td>
@@ -110,7 +110,7 @@
                     <td> </td><td> </td><td> </td><td> </td>                
                     <td align="center"><b>{{ $reg_unidad->pacademico }}</b></td>                    
                     <td> </td><td> </td><td> </td><td> </td><td> </td>
-                    <td align="center"><b>{{ $reg_unidad->pdunidad }}</b></td>                
+                    <td align="center"><b>{{ $reg_unidad->pdunidad }} {{$reg_unidad->ubicacion}}</b></td>                
                 </tr>
             </table>           
         </div>
