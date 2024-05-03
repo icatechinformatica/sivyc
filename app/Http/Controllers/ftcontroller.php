@@ -344,7 +344,7 @@ class ftcontroller extends Controller {
                     $fecha_ahora = Carbon::now();
                     $date = $fecha_ahora->format('Y-m-d'); // fecha
                     $numero_memo = $request->get('numero_memo'); // número de memo
-                    $fecha_nueva=$fecha_ahora->format('d-m-Y');
+                    $fecha_nueva=$fecha_ahora->format('d/m/Y');
 
                     // buscamos si hay cursos con ese numero de memo y se reinician
                     $cursosChecks = \DB::select("SELECT id FROM tbl_cursos as c where c.status = 'EN_FIRMA' and c.memos->'TURNADO_EN_FIRMA'->>'NUMERO' = '$numero_memo'");
@@ -391,19 +391,29 @@ class ftcontroller extends Controller {
                         $_SESSION['unidad'] = $unidad;
                     }
                     $mes=date("m");
-                    $elaboro = Auth::user()->name;
+
                     $reg_cursos=DB::table('tbl_cursos')->select(db::raw("sum(case when extract(month from termino) = ".$mes." then 1 else 0 end) as tota"),'unidad','curso','mod','inicio','termino',db::raw("sum(hombre + mujer) as cupo"),'nombre','clave','ciclo',
                                 'memos->TURNADO_EN_FIRMA->FECHA as fecha', DB::raw("case when arc='01' then nota else observaciones end as tnota"))
                     ->where(DB::raw("memos->'TURNADO_EN_FIRMA'->>'NUMERO'"), $numero_memo)
                     ->where('status', 'EN_FIRMA')
                     ->groupby('unidad','curso','mod','inicio','termino','nombre','clave','ciclo','memos->TURNADO_EN_FIRMA->FECHA', DB::raw("observaciones_formato_t->'OBSERVACION_PARA_FIRMA'->>'OBSERVACION_FIRMA'"), 'arc', 'nota', 'observaciones')->get();
-                    $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
-                    'pvinculacion','jcyc','pjcyc', 'direccion', 'ubicacion', 'codigo_postal')->where('unidad',$_SESSION['unidad'])->whereNotIn('direccion', ['N/A', 'null'])->first();
+
+                    $reg_unidad=DB::table('tbl_unidades')->select('unidad','ubicacion','codigo_postal')->where('unidad',$_SESSION['unidad'])->whereNotIn('direccion', ['N/A', 'null'])->first();
+
+                    $destinatario = clone $remitente = clone $elabora = clone $ccp = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+                    ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+                    ->Where('f.activo', 'true');
+
+                    $destinatario = $destinatario->Where('o.id',16)->First();
+                    $remitente = $remitente->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')->Where('o.id_parent',1)->Where('u.unidad', $reg_unidad->ubicacion)->First();
+                    $elabora = $elabora->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')->Where('u.unidad', $reg_unidad->ubicacion)->Where('o.nombre', 'LIKE', '%ACAD%')->First();
+                    $ccp = $ccp->Where('o.id',18)->First();
+
                     $leyenda = Instituto::first();
                     $leyenda = $leyenda->distintivo;
                     $direccion = DB::Table('tbl_unidades')->WHERE('unidad',$unidad)->VALUE('direccion');
                     $direccion = explode("*", $direccion);
-                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'elaboro', 'leyenda','direccion'));
+                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'leyenda','direccion','destinatario','remitente','elabora','ccp'));
                     return $pdf->stream('Memo_unidad_para_DTA.pdf');
                     /**
                      * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX

@@ -135,7 +135,7 @@ else{$tipo='CURSO';}
             <br><br><br><h6><small><b>C.c.p.  {{$ccp1->nombre}}.-{{$ccp1->cargo}}.-Mismo Fin</b></small></h6>
             <h6><small><b>C.c.p. {{$ccp2->nombre}}.-{{$ccp2->cargo}}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo.<b></small></h6>
-            <br><br><small><b>Valido: {{$getremitente->nombre}}.-{{$getremitente->cargo}}</b></small></h6>
+            <br><br><small><b>Valido: {{$getelabora->nombre}}.-{{$getelabora->cargo}}</b></small></h6>
             <br><small><b>Elaboró:  {{$getelabora->nombre}}.-{{$getelabora->cargo}}</b></small></h6>
         </div>
         <footer>
