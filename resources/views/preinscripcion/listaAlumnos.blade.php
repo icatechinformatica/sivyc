@@ -36,7 +36,7 @@
             <table class="tb">
                 <thead>
                     <tr>
-                        <th colspan="8">DATOS GENERALES DEL CURSO DE CAPACITACIÓN O CERTIFICACIÓN EXTRAORDINARIA</th>
+                        <th colspan="8">DATOS GENERALES DEL CURSO DE CAPACITACIÓN O CERTIFICACIÓN</th>
                     </tr>
                     <tr>
                         <th>NOMBRE DEL CURSO</th>
