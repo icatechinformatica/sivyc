@@ -436,8 +436,8 @@ class recibosController extends Controller
                     ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')
                     ->leftjoin('tbl_recibos as tr', function ($join) use ($request) {                    
                         $join->on('tr.folio_grupo','=','tc.folio_grupo')
-                        ->where('tr.id_concepto','1')
-                        ->whereNotIn('tr.status_folio',['CANCELADO']); 
+                        ->where('tr.id_concepto','1');
+                        //->whereNotIn('tr.status_folio',['CANCELADO']); 
                     })
                     ->join('tbl_recibos as max', function ($join) {
                             $join->on('max.unidad', '=', 'tu.ubicacion')                    
@@ -552,7 +552,7 @@ class recibosController extends Controller
         }else return "ACCIÓN INVÁlIDA";exit;
     }
 
-    public function aceptar(Request $request){ 
+    public function aceptar(Request $request){
         [$data , $message] = $this->recibo_validate($request->id_recibo); 
         if($data){
             $message["ERROR"] = "LA OPERACIÓN NO SE HA EJECUTADO CORRECTAMENTE, POR FAVOR INTENTE DE NUEVO.";
@@ -647,6 +647,16 @@ class recibosController extends Controller
                         ]
                     );
                     if($request) $message["ALERT"] = "SOLICITUD ENVIADA CORRECTAMENTE!!";                      
+                break;
+                case "CANCELAR": //CANCELACION POR ARC02                    
+                    $result = DB::table('tbl_recibos')->where('id',$data->id)->update(                
+                        [  'status_folio'=> 'CANCELADO',
+                           'fecha_status'=> date('Y-m-d H:i:s'),                           
+                           'iduser_updated' => $this->user->id,
+                           'updated_at'=> date('Y-m-d H:m:s')                           
+                        ]
+                    );
+                    if($request) $message["ALERT"] = "LA CANCELACION HA SIDO ENVIADA CORRECTAMENTE!!";                      
                 break;
             }            
         }
