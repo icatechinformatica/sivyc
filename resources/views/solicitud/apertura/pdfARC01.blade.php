@@ -25,7 +25,7 @@
         if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0")) 
             $nombre_unidad = "UNIDAD DE CAPACITACIÓN ";
         else
-            $nombre_unidad = "ACCIÓN MÓVIL ";          
+            $nombre_unidad = "CENTRO DE TRABAJO ACCIÓN MÓVIL ";          
     @endphp
     <div id="titulo">
         <h4>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}</h4>
@@ -46,7 +46,7 @@
 @section('body')
     <div id="para"> 
         PARA: {{ $reg_unidad->dacademico }}, {{$reg_unidad->pdacademico}}<br/>
-        DE: {{ $reg_unidad->dunidad }}, {{$reg_unidad->pdunidad}}<br/>
+        DE: {{ $reg_unidad->dunidad }}, {{$reg_unidad->pdunidad}} {{$reg_unidad->ubicacion}}<br/>
         ASUNTO: SOLICITUD DE APERTURA<br/><br/>     
         CC. ARCHIVO
     </div>  
@@ -67,7 +67,7 @@
                 <th rowspan="2">DIAS</th>
                 <th rowspan="2">C<br>U<br>P<br>O</th>
                 <th colspan="2">INSCRI TOS</th>       
-                <th rowspan="2">INSTRUCTOR</th>
+                <th rowspan="2">INSTRUCTOR <br/>EXTERNO</th>
                 <th rowspan="2" >CRITE<br>RIO<br>DE<br>PAGO</th>
                 <th rowspan="2">MUNICIPIO</th>
                 <th rowspan="2">ZON<br>A<br>ECO<br>NOM<br>ICA</th>
@@ -150,7 +150,7 @@
                     <b>Vo. Bo.</b><br><br><br><br><br><br>
                     <b>{{ $reg_unidad->dunidad }}</b><br>_____________________________________________________
                     <br>
-                    <b>{{ $reg_unidad->pdunidad }}</b>
+                    <b>{{ $reg_unidad->pdunidad }} {{$reg_unidad->ubicacion}}</b>
                 </th>
                 <th>
                     <br><br><br><b>SELLO UNIDAD DE<br>CAPACITACION</b><br>

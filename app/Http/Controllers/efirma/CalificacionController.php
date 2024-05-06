@@ -368,7 +368,7 @@ class CalificacionController extends Controller
                 ->orderby('i.alumno')
                 ->get();
             $consec = 1;
-            $body = "SUBSECRETARÍA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICA \n".
+            $body = "SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR \n".
             "DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO \n".
             "REGISTRO DE EVALUACIÓN POR SUBOBJETIVOS \n".
             "(RESD-05) ".

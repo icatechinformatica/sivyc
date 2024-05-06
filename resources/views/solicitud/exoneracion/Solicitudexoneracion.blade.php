@@ -39,7 +39,7 @@
                     <td><b>{{$reg_unidad->dgeneral}}.</b></td>
                 </tr>
                 <tr>
-                    <td><b>Director(a) General del ICATECH.</b></td>
+                    <td><b>Directora General del ICATECH.</b></td>
                 </tr>
                 <tr>
                     <td><b>Presente.</b></td>
@@ -56,8 +56,8 @@
                 <thead>
                     <tr>
                         <th rowspan="2">CURSO /<br/>CERTIFICACIÓN</th>
-                        <th rowspan="2">UNIDAD DE CAPACITACIÓN Y/O ACCIÓN MÓVIL</th> 
-                        <th rowspan="2">NOMBRE DEL CURSO</th>
+                        <th rowspan="2">UNIDAD DE CAPACITACIÓN /<br/>CENTRO DE TRABAJO ACCIÓN MÓVIL</th> 
+                        <th rowspan="2">NOMBRE DEL CURSO / <br/>CERTIFICACIÓN</th>
                         <th rowspan="2">MOD</th>
                         <th rowspan="2">COSTO</th>
                         <th rowspan="2">HORAS</th>
@@ -159,14 +159,14 @@
                             <b>Capacitación y Vinculación Tecnológica del Estado de Chiapas</b><br>
                             <b>Autoriza</b><br><br>
                             ________________________________________________ <br>
-                            <b>{{$reg_unidad->dgeneral}}.</b> <br>
-                            Director(a) General del ICATECH <br>&nbsp;
+                            <b>{{$reg_unidad->dgeneral}}</b> <br>
+                            {{$reg_unidad->pdgeneral}}<br>&nbsp;
                         </div>
                         <div style="border: black 1px solid;"> <br>
                             <b>Vo.Bo.</b><br><br>
                             ________________________________________________ <br>
                             <b>{{$reg_unidad->dacademico}}</b> <br>
-                            Director(a) de Técnica Académica <br>&nbsp;
+                            {{$reg_unidad->pdacademico}}<br>&nbsp;
                         </div>
                     </td>
                 </tr>
@@ -182,10 +182,10 @@
             <table class="tb">
                 <thead>
                     <tr>
-                        <th colspan="7">DATOS GENERALES DEL CURSO DE CAPACITACIÓN O CERTIFICACIÓN EXTRAORDINARIA</th>
+                        <th colspan="7">DATOS GENERALES DEL CURSO DE CAPACITACIÓN O CERTIFICACIÓN</th>
                     </tr>
                     <tr>
-                        <th>NOMBRE DEL CURSO</th>
+                        <th>NOMBRE DEL CURSO / CERTIFICACIÓN</th>
                         <th colspan="3">{{$item['curso']}}</th>
                         <th colspan="2">MODALIDAD</th>
                         <th>{{$item['mod']}}</th>

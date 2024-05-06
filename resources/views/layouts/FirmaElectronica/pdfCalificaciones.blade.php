@@ -121,7 +121,7 @@
     <header>
         <img src="img/reportes/sep.png" alt='sep' width="16%"
             style='position:fixed; left:0; margin: -170px 0 0 20px;' />
-        <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N E INVESTIGACI&Oacute;N TECNOL&Oacute;GICAS</h6>
+        <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N MEDIA SUPERIOR</h6>
         <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
         <h6>REGISTRO DE EVALUACI&Oacute;N POR SUBOBJETIVOS</h6>
         <h6>(RESD-05)</h6>

@@ -389,7 +389,7 @@ class AsistenciaController extends Controller
         $termino = explode('-', $curso->termino); $termino[2] = '01';
         $meses = $this->verMeses(array($inicio[0].'-'.$inicio[1].'-'.$inicio[2], $termino[0].'-'.$termino[1].'-'.$termino[2]));
 
-        $body = "SUBSECRETARÍA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICA \n".
+        $body = "SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR\n".
         "DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO \n".
         "LISTA DE ASISTENCIA \n".
         "(LAD-04) \n";

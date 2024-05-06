@@ -20,14 +20,14 @@
         footer .page:after { content: counter(page, sans-serif);}
         .tablaf { border-collapse: collapse; width: 100%;}
         .tablaf tr td { font-size: 9px; text-align: center; padding: 3px;}
-        .block{ margin-right:18px;}
+        .block{ margin-right:18px; white-space: nowrap; display: inline-block;}
      </style>
 </head>
 <body>
 
      <header>
-            <img src="img/reportes/sep.png" alt='sep' width="16%" style='position:fixed; left:0; margin: -170px 0 0 20px;' />
-            <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N E INVESTIGACI&Oacute;N TECNOL&Oacute;GICAS</h6>
+            <img src="img/reportes/sep.png" alt='sep' width="16%" style='position:fixed; left:0; margin: -150px 0 0 20px;' />
+            <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N MEDIA SUPERIOR</h6>
             <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
             <h6>REGISTRO DE EVALUACI&Oacute;N POR SUBOBJETIVOS</h6>
             <h6>(RESD-05)</h6>           
@@ -48,25 +48,24 @@
      </header>
 
      <footer>
-            <table class="tablaf"  width="100%">
+     <table class="tablaf"  width="100%">
                 <tbody>
-                    <tr>
-                        <td width="10%">&nbsp; </td>
-                        <td width="25%" >
+                    <tr>                        
+                        <td width="35%" >
                             <br /><br /><br /><br /><br /><br />
                             {{ $curso->nombre }}
                             <hr width="280px" />
                             INSTRUCTOR EXTERNO
                             <br /><br /><br />
                         </td>
-                        <td width="25%">&nbsp;</td>
-                        <td width="15%">
+                        <td width="30%">&nbsp;</td>
+                        <td width="35%">
                             <br /><br /><br /><br /><br /><br />
-                            <hr width="120px" />
-                            SELLO
+                            {{$curso->academico}}
+                            <hr width="80%" />
+                            {{$curso->pacademico}}
                             <br /><br /><br />
-                        </td>
-                        <td width="15%">&nbsp;</td>
+                        </td>                        
                     </tr>
                 </tbody>
            </table>

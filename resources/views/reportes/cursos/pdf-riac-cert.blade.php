@@ -14,9 +14,9 @@
         .cuadro{ border: 1px solid black; width: 50px; padding: 10px;}
 
         #curso {text-align: justify; }
-        #curso b{margin-left: 10px; margin-right: 50px;}
+        #curso b{margin-left: 10px; margin-right: 15px;}
         .tab{ margin-left: 10px; margin-right: 50px;}        
-        .block{ margin-right:18px;}
+        .block{ margin-right:12px; white-space: nowrap; display: inline-block;}
 
         .tabla { border-collapse: collapse; width: 100%;}
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
@@ -26,7 +26,7 @@
 <body>
      <header>
             <img src="img/reportes/sep.png" alt='sep' width="16%" style='position:fixed; left:0; margin: -170px 0 0 20px;' />
-            <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N E INVESTIGACI&Oacute;N TECNOL&Oacute;GICAS</h6>
+            <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N MEDIA SUPERIOR</h6>
             <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
             <h6>REGISTRO DE INSCRIPCI&Oacute;N, ACREDITACI&Oacute;N Y CERTIFICACI&Oacute;N</h6>
             <h6>(RIACD-02)</h6>
