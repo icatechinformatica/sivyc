@@ -89,7 +89,7 @@
         <tbody>
             @foreach($reg_cursos as $a)
             <tr>
-                <td>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION EXTRAORDINARIA';} @endphp</td>
+                <td>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION';} @endphp</td>
                 <td>{{ $a->espe }}</td>
                 <td>{{ $a->curso }}</td>
                 <td>{{ $a->mod }}</td>                           
