@@ -32,15 +32,6 @@
         <br>
         <hr style="border-color:dimgray">
         <div class="form-row">
-            {{-- <div class="form-group col-md-3">
-                <label for="unidad" class="control-label">Unidad de Capacitacion </label>
-                <select name="unidad" id="unidad" class="form-control">
-                    <option selected value="{{$unidadsel->unidad}}">{{$unidadsel->unidad}}</option>
-                    @foreach ($unidadlist as $data )
-                        <option value="{{$data->unidad}}">{{$data->unidad}}</option>
-                    @endforeach
-                </select>
-            </div> --}}
             <div class="form-group col-md-3">
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
                 <input type="text" class="form-control" id="unidad" name="unidad" value="{{$unidadsel->unidad}}" readonly>
@@ -74,11 +65,6 @@
                     <td id="tdiva"><input type="text" id="addmore[{{$key}}][iva]" name="addmore[{{$key}}][iva]" value="{{ $data->iva }}" placeholder="Iva" class="form-control" readonly /></td>
                     <td><input type="text" id="addmore[{{$key}}][comentario]" name="addmore[{{$key}}][comentario]" value="{{ $data->comentario }}" placeholder="comentario" class="form-control" /></td>
                     <input hidden id="addmore[{{$key}}][id_cursos]" name="addmore[{{$key}}][id_cursos]" value="{{$data->id_cursos}}">
-                    {{-- @if ($key == 0)
-                    <td><button type="button" name="addmodsupre" id="addmodsupre" class="btn btn-success">Agregar</button></td>
-                    @else
-                    <td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td>
-                    @endif --}}
                 </tr>
 
                 @endforeach
@@ -127,50 +113,22 @@
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Elabora</label>
                 <input type="text" class="form-control" readonly value="{{$funcionarios['delegadop']}}" onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
-                {{-- <input id="id_elabora" name="id_elabora" type="text" value="{{$getelabora->id}}" hidden> --}}
             </div>
         </div>
         <hr style="border-color:dimgray">
         <h2>Datos de Pago de Curso
-            <button type="button" class="btn btn-primary float-right" onclick="addField()">Añadir Movimiento</button>
         </h2>
         <div id="fieldsContainer">
-            {{-- @if(isset($data->mov_bancario)) --}}
-            {{-- @php $data->mov_bancario = json_decode($data->mov_bancario) @endphp --}}
-                {{-- @foreach ($data->mov_bancario as $keygen => $movitem) --}}
                     <div class="form-row">
-                        {{-- @if ($keygen == 0) --}}
                             <div class="form-group col-md-3">
                                 <label for="inputnorecibo" class="control-label">Folio de Recibo de Pago</label>
                                 <input type="text" name="no_recibo" id="no_recibo" value="{{$recibo->folio_recibo}}" class="form-control" readonly />
                             </div>
-                        {{-- @endif --}}
-                        {{-- <div class="form-group col-md-3">
-                            <label for="movimiento_bancario_{{$keygen}}">Movimiento Bancario</label>
-                            <input type="text" class="form-control" id="movimiento_bancario_0" value="{{$movitem->movimiento_bancario}}" name="movimiento_bancario_[{{$keygen}}]">
-                        </div> --}}
                         <div class="form-group col-md-3">
                             <label for="fecha_expedicion">Fecha de Expedición</label>
                             <input type="date" class="form-control" id="fecha_expedicion" value="{{$recibo->fecha_expedicion}}" name="fecha_expedicion" readonly>
                         </div>
                     </div>
-                {{-- @endforeach --}}
-            {{-- @else
-                <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
-                            <input type="text" name="norecibo" id="norecibo" value="{{$data->folio_pago}}" class="form-control" readonly />
-                        </div>
-                    <div class="form-group col-md-3">
-                        <label for="movimiento_bancario_0">Movimiento Bancario</label>
-                        <input type="text" class="form-control" id="movimiento_bancario_0" value="{{$movitem->movimiento_bancario}}" name="movimiento_bancario_[0]">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="fecha_movimiento_bancario_{{$keygen}}">Fecha de Movimiento</label>
-                        <input type="date" class="form-control" id="fecha_movimiento_bancario_0" value="{{$movitem->fecha_movimiento_bancario}}" name="fecha_movimiento_bancario_[0]">
-                    </div>
-                </div>
-            @endif --}}
         </div>
         {{-- <input id="keyfield" name="keyfield" hidden value="{{$keygen}}"> --}}
         {{-- <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}"> --}}
@@ -190,7 +148,7 @@
                     @csrf
                     <input type="text" name="ids" id="ids" value='{{$getsupre->id}}' hidden>
                     <input type="text" name="clavecurso" id="clavecursos" value='{{$data->clave}}' hidden>
-                    <button   button type="submit" class="btn btn-red" >Generar Suficiencia E.Firma</button>
+                    <button button type="submit" class="btn btn-red" >Generar Suficiencia E.Firma</button>
                 </form>
             </div>
         </div>
@@ -200,48 +158,6 @@
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
  <script type="text/javascript">
-    let fieldCounter = document.getElementById("keyfield").value;
-
-    function addField() {
-        const fieldsContainer = document.getElementById("fieldsContainer");
-        const formRow = document.createElement("div");
-        formRow.className = "form-row";
-        formRow.id = `formRow${fieldCounter}`;
-        fieldsContainer.appendChild(formRow);
-
-        const textFormGroup = createFormGroup(textLabel("Movimiento Bancario"), textInput(`movimiento_bancario_[${fieldCounter}]`));
-        formRow.appendChild(textFormGroup);
-
-        const dateFormGroup = createFormGroup(textLabel("Fecha de Movimiento"), dateInput(`fecha_movimiento_bancario_[${fieldCounter}]`));
-        formRow.appendChild(dateFormGroup);
-
-        fieldCounter++;
-        updateDeleteButton();
-    }
-
-    function deleteField() {
-        if (fieldCounter === 0) return;
-        const formRow = document.getElementById(`formRow${--fieldCounter}`);
-        formRow.remove();
-        updateDeleteButton();
-    }
-
-    function updateDeleteButton() {
-        const deleteButton = document.getElementById("deleteButton");
-        if (fieldCounter === 0) {
-            deleteButton.style.display = "none";
-        } else {
-            deleteButton.style.display = "inline-block";
-        }
-    }
-
-    function createFormGroup(label, input) {
-        const formGroup = document.createElement("div");
-        formGroup.className = "form-group col-md-3";
-        formGroup.appendChild(label);
-        formGroup.appendChild(input);
-        return formGroup;
-    }
 
     function textInput(id) {
         const input = document.createElement("input");
