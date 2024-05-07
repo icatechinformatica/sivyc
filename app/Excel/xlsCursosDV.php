@@ -121,7 +121,7 @@ class xlsCursosDV implements WithMultipleSheets, WithTitle, FromQuery, WithHeadi
     public function sheets():array
     {
         $sheets = [];
-        $hojas = ['CURSOS'=>'CURSOS','CERTIFICACION'=>'CERTIFICACIÓN EXTRAORDINARIA','PROGRAMA'=>'PROGRAMA ESTRATÉGICO'];        
+        $hojas = ['CURSOS'=>'CURSOS','CERTIFICACION'=>'CERTIFICACIÓN','PROGRAMA'=>'PROGRAMA ESTRATÉGICO'];        
         $sheets[] = new xlsCursosDV ( $hojas[$this->title]);        
         return $sheets;
     }

@@ -571,7 +571,7 @@ class CursosController extends Controller
                 return (new xlsCursosMultiple(1))->download($nombreLayout);
             break;
             case 'CURSOS'|| 'CERTIFICACION' || 'PROGRAMA':
-                $file_name = ['CURSOS'=>'CURSOS', 'CERTIFICACION'=>'CERTIFICACIÓN EXTRAORDINARIA', 'PROGRAMA'=>'PROGRAMA ESTRATÉGICO'];
+                $file_name = ['CURSOS'=>'CURSOS', 'CERTIFICACION'=>'CERTIFICACIÓN', 'PROGRAMA'=>'PROGRAMA ESTRATÉGICO'];
                 $nombreLayout = "CATALOGO DE ".$file_name[$xls]."_".$fecha.'.xlsx';
                 return (new xlsCursosDV($xls))->download($nombreLayout);
             break;

@@ -130,7 +130,7 @@
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->unidad}}</small></td>
                                 @if ($item->tipo_curso=='CERTIFICACION')
-                                    <td><small style="font-size: 10px;">CERTIFICACIÓN EXTRAORDINARIA</small></td>
+                                    <td><small style="font-size: 10px;">CERTIFICACIÓN</small></td>
                                 @else
                                     <td><small style="font-size: 10px;">CURSO</small></td>
                                 @endif
