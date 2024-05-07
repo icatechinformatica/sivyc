@@ -213,7 +213,7 @@ else{
                                 <td><small style="font-size: 8px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
                                 <td><small style="font-size: 8px;">{{$item->unidad}}</small></td>
                                 @if ($item->tipo_curso=='CERTIFICACION')
-                                    <td><small style="font-size: 8px;">CERTIFICACIÓN EXTRAORDINARIA</small></td>
+                                    <td><small style="font-size: 8px;">CERTIFICACIÓN</small></td>
                                 @else
                                     <td><small style="font-size: 8px;">CURSO</small></td>
                                 @endif

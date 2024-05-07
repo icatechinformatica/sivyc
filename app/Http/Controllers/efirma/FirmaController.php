@@ -328,7 +328,7 @@ class FirmaController extends Controller {
         }
         if ($response->json()['status'] == 1) { //exitoso
             $decode = base64_decode($response->json()['xml']);
-            DocumentosFirmar::where('id', $request->txtIdFirmado)
+            $test = DocumentosFirmar::where('id', $documento->id)
                 ->update([
                     'status' => 'VALIDADO',
                     'uuid_sellado' => $response->json()['uuid'],
@@ -336,6 +336,8 @@ class FirmaController extends Controller {
                     'documento' => $decode,
                     'cadena_sello' => $response->json()['cadenaSello']
                 ]);
+            
+            // dd($tes)
             return redirect()->route('firma.inicio')->with('warning', 'Documento validado exitosamente!');
         } else {
             $respuesta_icti = ['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']];
