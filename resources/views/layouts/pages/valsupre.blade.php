@@ -92,6 +92,10 @@
                             <option value="FEDERAL Y ESTATAL" @if($criterio_pago->cp == '12') selected @endif>FEDERAL Y ESTATAL</option>
                         </select>
                     </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputobservacion">Observación</label>
+                        <textarea name="observacion" id="observacion" cols="6" rows="6" class="form-control"></textarea>
+                    </div>
                 </div>
                 <!--<div id="div2" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">

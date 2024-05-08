@@ -202,7 +202,8 @@ else{
                                 <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
                             @endif
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
-                            <td width="160px" ><small style="font-size: 8px;">OBSERVACION</small></td>
+                            <td width="140px" ><small style="font-size: 8px;">OBSERVACION</small></td>
+                            <td scope="col"><small style="font-size: 8px;">Observación del Dpto. Programación y Ppto.</small></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -247,6 +248,7 @@ else{
                                     @endif
                                 </small></td>
                                 <td><small style="font-size: 8px;">{{$item->comentario}}</small></td>
+                                <td><small style="font-size: 8px;">{{$data2->observacion_validacion}}</small></td>
                             </tr>
                         @endforeach
                     </tbody>
