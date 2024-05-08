@@ -1507,7 +1507,7 @@ class InstructorController extends Controller
 
         foreach ($especialidades AS $key => $cadwell)
         {
-            if($cadwell->status == 'BAJA EN FIRMA')
+            if($cadwell->status == 'BAJA EN FIRMA' && $cadwell->new == false)
             {
                 $upd = especialidad_instructor::find($cadwell->id);
                 $hvalidacion = $cadwell->hvalidacion;
