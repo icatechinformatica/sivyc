@@ -56,6 +56,10 @@
                             <option value="FEDERAL Y ESTATAL" @if($data->financiamiento == 'FEDERAL Y ESTATAL') selected @endif>FEDERAL Y ESTATAL</option>
                         </select>
                     </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputobservacion">Observación</label>
+                        <textarea name="observacion" id="observacion" cols="6" rows="6" class="form-control">{{$data->observacion_validacion}}</textarea>
+                    </div>
                 </div>
                 <!--
                 <div class="form-row">
