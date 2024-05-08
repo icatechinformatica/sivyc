@@ -260,6 +260,7 @@ class AsistenciaController extends Controller
                 )->where('tbl_cursos.id',$id);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')->first();
             if ($curso) {
+                dd($curso->status_curso);
                 if ($curso->status_curso == "AUTORIZADO") {
                     $alumnos = DB::Table('tbl_inscripcion as i')->select(
                         'i.id',
@@ -273,7 +274,7 @@ class AsistenciaController extends Controller
                     })->where('i.id_curso', $curso->id)
                         ->where('i.status', 'INSCRITO')
                         ->orderby('i.alumno')->get();
-                    if (!$alumnos) return "NO HAY ALUMNOS INSCRITOS";
+                    if (!$alumnos) return back()->with('warning', 'El curso esta en '.$cursos->status_curso);
 
                     foreach ($alumnos as $key => $value) {
                         $value->asistencias = json_decode($value->asistencias, true);
