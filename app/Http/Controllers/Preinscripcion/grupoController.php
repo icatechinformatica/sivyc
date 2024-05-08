@@ -555,7 +555,7 @@ class grupoController extends Controller
                                 $ctotal = $costo_total - $total_pago;
                                 if ($total_pago == 0) {
                                     $tipo_pago = "EXO";
-                                    if ($cp > 7) $cp = 7; //EXONERACION Criterio de Pago Máximo 7
+                                    //if ($cp > 7) $cp = 7; //EXONERACION Criterio de Pago Máximo 7
                                 } elseif ($ctotal > 0) $tipo_pago = "EPAR";
                                 else $tipo_pago = "PINS";
                                 /*ID DEL CURSO DE 10 DIGITOS*/
@@ -726,12 +726,10 @@ class grupoController extends Controller
     }
 
     public function genera_folio()
-    {
-        //$consec = DB::table('alumnos_registro')->where('ejercicio', $this->ejercicio)->where('cct', $this->data['cct_unidad'])->where('eliminado', false)->value(DB::RAW('max(cast(substring(folio_grupo,7,4) as int))')) + 1;
+    {        
         $consec = DB::table('alumnos_registro')->where('ejercicio', $this->ejercicio)->where('cct', $this->data['cct_unidad'])->where('eliminado', false)->value(DB::RAW("cast(substring(max(folio_grupo) from '.{4}$') as int)")) + 1;
         $consec = str_pad($consec, 4, "0", STR_PAD_LEFT);
         $folio = $this->data['cct_unidad'] . "-" . $this->ejercicio . $consec;
-
         return $folio;
     }
 
