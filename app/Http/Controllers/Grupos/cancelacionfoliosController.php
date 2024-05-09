@@ -43,26 +43,28 @@ class cancelacionfoliosController extends Controller
         else $clave = $request->clave;
              
     
-        if($clave){
-                    
+        if($clave){                    
             $data = DB::table('tbl_inscripcion as i')
                 ->select('i.id as id_inscripcion','i.matricula','i.alumno','i.reexpedicion',
-                'f.id as id_folio','f.folio','f.fecha_expedicion','f.movimiento','f.motivo','c.unidad','c.clave','c.curso')
+                'f.id as id_folio','f.folio','f.fecha_expedicion','f.movimiento','f.motivo','c.unidad','c.clave','c.curso','tb.mod')
                 ->where('i.status','INSCRITO')
                 ->leftJoin('tbl_folios as f', function($join){                                        
                         $join->on('f.id_curso', '=', 'i.id_curso');
                         $join->on('f.matricula', '=', 'i.matricula');                            
                     })
                 ->LEFTJOIN('tbl_cursos as c', 'c.id', '=', 'i.id_curso')
+                ->LEFTJOIN('tbl_banco_folios as tb', 'tb.id', '=', 'f.id_banco_folios')
                 ->where('c.clave',$clave);
-                if($_SESSION['unidades'])$data = $data->whereIn('c.unidad',$_SESSION['unidades']); 
-                if($request->matricula) $data = $data->where('i.matricula',$request->matricula);
+            if($_SESSION['unidades'])$data = $data->whereIn('c.unidad',$_SESSION['unidades']); 
+            if($request->matricula) $data = $data->where('i.matricula',$request->matricula);
                 
-                $data = $data->orderby('i.alumno','ASC')->get();
-            //    var_dump($data);exit;
+            $data = $data->orderby('i.alumno','ASC')->get();
+            
             if(count($data)==0) $message= "Clave inválida para la Unidad de Capacitación.";
-            else $_SESSION['clave'] = $clave;  
-           // echo $message; exit;
+            elseif($data[0]->mod=='EFIRMA' ){
+                $_SESSION['clave'] = $clave;                
+                $this->motivo = ['NO SOLICITADO'=>'NO SOLICITADO','ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO'];
+            }
         }
 
         $motivo = $this->motivo;

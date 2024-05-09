@@ -53,9 +53,15 @@
                                 <h4 class="bg-warning text-center p-2">&nbsp;{{$data->status_folio}} &nbsp;</h4>
                             @endif
                             @if($data->file_pdf)
-                                <a class="nav-link pt-0" href="{{$path_files}}{{ $data->file_pdf}}" target="_blank">
-                                    <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
-                                </a>
+                                @if($data->status_folio == 'CANCELADO') 
+                                    <a class="nav-link pt-0" href="{{ route('grupos.recibos.cancelado') }}" target="_blank">
+                                        <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
+                                    </a>
+                                @else
+                                    <a class="nav-link pt-0" href="{{$path_files}}{{ $data->file_pdf}}" target="_blank">
+                                        <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
+                                    </a>
+                                @endif
                             @endif
                         </div>                    
                 </div>       
