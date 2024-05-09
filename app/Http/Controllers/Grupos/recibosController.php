@@ -11,6 +11,9 @@ use Carbon\Carbon;
 use PDF;
 use Illuminate\Http\Response;
 
+use setasign\Fpdi\Fpdi;
+use \setasign\Fpdi\PdfParser\StreamReader;
+
 class recibosController extends Controller
 {   
     function __construct(Request $request) {  
@@ -436,8 +439,8 @@ class recibosController extends Controller
                     ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')
                     ->leftjoin('tbl_recibos as tr', function ($join) use ($request) {                    
                         $join->on('tr.folio_grupo','=','tc.folio_grupo')
-                        ->where('tr.id_concepto','1')
-                        ->whereNotIn('tr.status_folio',['CANCELADO']); 
+                        ->where('tr.id_concepto','1');
+                        //->whereNotIn('tr.status_folio',['CANCELADO']); 
                     })
                     ->join('tbl_recibos as max', function ($join) {
                             $join->on('max.unidad', '=', 'tu.ubicacion')                    
@@ -552,7 +555,7 @@ class recibosController extends Controller
         }else return "ACCIÓN INVÁlIDA";exit;
     }
 
-    public function aceptar(Request $request){ 
+    public function aceptar(Request $request){
         [$data , $message] = $this->recibo_validate($request->id_recibo); 
         if($data){
             $message["ERROR"] = "LA OPERACIÓN NO SE HA EJECUTADO CORRECTAMENTE, POR FAVOR INTENTE DE NUEVO.";
@@ -608,7 +611,7 @@ class recibosController extends Controller
                         if(isset($data->inicio))$anio = date('Y', strtotime($data->inicio));
                         else $anio = date('Y');
                         $name_file = $data->folio_recibo."_".date('ymdHis')."_". $this->user->id.".pdf";                                
-                        $path = $anio.$this->path.$data->id."/"; //2023/expendientes/id/
+                        $path = $anio.$this->path."/recibos_pago/"; //2023/expendientes/recibos_pago/
                         $file = $request->file('file_recibo'); 
                         $file_result = MyUtility::upload_file($path,$file,$name_file,$data->file_pdf); //dd($file_result);
                         $url_file = $file_result["url_file"];                 
@@ -648,6 +651,16 @@ class recibosController extends Controller
                     );
                     if($request) $message["ALERT"] = "SOLICITUD ENVIADA CORRECTAMENTE!!";                      
                 break;
+                case "CANCELAR": //CANCELACION POR ARC02                    
+                    $result = DB::table('tbl_recibos')->where('id',$data->id)->update(                
+                        [  'status_folio'=> 'CANCELADO',
+                           'fecha_status'=> date('Y-m-d H:i:s'),                           
+                           'iduser_updated' => $this->user->id,
+                           'updated_at'=> date('Y-m-d H:m:s')                           
+                        ]
+                    );
+                    if($request) $message["ALERT"] = "LA CANCELACION HA SIDO ENVIADA CORRECTAMENTE!!";                      
+                break;
             }            
         }
         //dd($result);
@@ -682,6 +695,37 @@ class recibosController extends Controller
          $result = DB::table('tbl_folios')->wherein('id',$id_folios)->update(['id_recibo' => $id_recibo]);//asigna nuevamente                            
 
          return count($id_folios);
+    }
+
+    public function pdfRecibo_CANCELADO()
+    {
+        $data = $_SESSION['data'];         
+        $file = $data->file_pdf;
+        $pdfFile = fopen(storage_path('app/public/'.$file), 'r');        
+
+        $name_pdf= substr(strrchr($file, "/"), 1);        
+        $name_pdf = substr($name_pdf, 0, strpos($name_pdf, "_"));        
+        $outputFile = 'recibo_'.$name_pdf.'.pdf';
+        $watermarkText = "CANCELADO";
+
+        $pdf = new Fpdi();
+        $pdf->AddPage();
+        $pageCount = $pdf->setSourceFile($pdfFile);        
+        for ($pageNumber = 1; $pageNumber <= $pageCount; $pageNumber++) {
+            $template = $pdf->importPage($pageNumber);
+            
+            $pdf->useTemplate($template);
+            $pdf->SetFont('Arial', 'B', 80);
+            //$pdf->SetAlpha(1);
+            
+            $pdf->SetTextColor(127, 127, 127);
+            $pdf->SetXY(10, 100); // Posición del texto
+            //$pdf->Rotate(45); // Rotar el texto
+            $pdf->Cell(0, 0, $watermarkText, 0, 1, 'C');
+            $pdf->AddPage();
+        }        
+        return $pdf->Output('I', $outputFile);
+        
     }
     
 /*

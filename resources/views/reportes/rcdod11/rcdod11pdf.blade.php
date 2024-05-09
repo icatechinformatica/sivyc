@@ -53,7 +53,7 @@ $anioSi = date('Y', strtotime('+1 year')) ;
                     <td style="width: 40%">
                         <p>{{$sq->dunidad}}</p>
                         <hr style="width: 70%">
-                        <p>{{$sq->pdunidad}} {{$sq->ubicacion}}</p>
+                        <p>{{$sq->pdunidad}}  {{$sq->ubicacion}}</p>
                     </td>
                     <td style="width: 30%">&nbsp;</td>
                     <td style="width: 30%">
@@ -69,7 +69,7 @@ $anioSi = date('Y', strtotime('+1 year')) ;
                 <tr>
                     <td rowspan="2" style="width:75%;" ><br/>
                         <p><b>INSTITUTO DESCENTRALIZADO:</b> &nbsp;&nbsp;INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TÉCNOLOGICO DEL ESTADO DE CHIAPAS</p><br/>
-                        <p><b>UNIDAD DE CAPACITACIÓN:</b> &nbsp;&nbsp;{{$sq->unidad}} <b style="margin-left:20px;">No.</b> &nbsp;&nbsp;{{$sq->plantel}} </p><br/>
+                        <p><b>{{ (substr($sq->cct, 0, 5) == "07EIC") ? "UNIDAD DE CAPACITACIÓN" : "CENTRO DE TRABAJO ACCIÓN MÓVIL" }}:</b> &nbsp;&nbsp;{{$sq->plantel}}&nbsp;&nbsp;{{$sq->unidad}}</p><br/>
                         <p><b>CLAVE CCT:</b> &nbsp;&nbsp;{{$sq->cct}} <b style="margin-left:100px;">PERIODO:</b>&nbsp;&nbsp; {{$periodo}}
                         <b style="margin-left:100px;">FECHA:</b> &nbsp;&nbsp; {{$fecha}} </p><br/>
                     </td>                    
@@ -91,12 +91,12 @@ $anioSi = date('Y', strtotime('+1 year')) ;
                     <tr>
                         <th style="width: 1%">N<br/>U<br/>M</th>
                         <th style="width: 5%">NÚMERO DE<br/>CONTROL</th>
-                        <th style="width: 27%">NOMBRE DEL ALUMNO<br/>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
+                        <th style="width: 27%">NOMBRE DEL CAPACITADO<br/>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
                         <th style="width: 23%" >ESPECIALIDAD</th>
                         <th style="width: 7%">FOLIO DEL<br/>DIPLOMA O<br/>CONSTANCIA</th>
                         <th style="width: 7%">FOLIO DEL DUPLICADO</th>
                         <th>FECHA DE<br/>RECIBIDO</th>
-                        <th style="width: 16%">FIRMA DEL <br/>ALUMNO</th>
+                        <th style="width: 16%">FIRMA DEL <br/>CAPACITADO</th>
                     </tr>
                 </thead>           
                 @foreach($consulta as $item)

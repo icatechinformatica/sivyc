@@ -448,6 +448,7 @@ class supreController extends Controller
         }
         $supre->permiso_editar = FALSE;
         $supre->fecha_status = carbon::now();
+        $supre->observacion_validacion = $request->observacion;
         $supre->save();
 
         supre_directorio::where('id', '=', $request->directorio_id)

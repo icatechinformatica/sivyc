@@ -18,7 +18,7 @@
         .tablaf { border-collapse: collapse; width: 100%;}
         .tablaf tr td { font-size: 9px; text-align: center; padding: 3px; }
                 
-        .block{ margin-right:25px;  }
+        .block{ margin-right:25px;  white-space: nowrap; display: inline-block;}
      </style>
 </head>
 <body>

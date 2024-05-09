@@ -87,13 +87,19 @@ class grupoController extends Controller
                 if (($alumnos[0]->turnado == 'VINCULACION' or  $alumnos[0]->status_curso=='EDICION' )and isset($this->data['cct_unidad'])) $this->activar = true;
                 else $this->activar = false;
                 //dd($this->activar);
-                $curso = DB::table('cursos')->where('id', $alumnos[0]->id_curso)->where('cursos.estado', true)->first();
+                $curso = DB::table('cursos')->where('id', $alumnos[0]->id_curso);
+                    if($alumnos[0]->status_curso!='AUTORIZADO')
+                        $curso = $curso->where('cursos.estado', true);                    
+                $curso = $curso->first();
+
                 $clave = DB::table('tbl_municipios')->where('id', $alumnos[0]->id_muni)->value('clave');
                 $localidad = DB::table('tbl_localidades')->where('clave_municipio', '=', $clave)->pluck('localidad', 'clave');
                 $cursos = DB::table('cursos')
-                    ->where('tipo_curso','like',"%$tipo%")
-                    ->where('cursos.estado', true)
-                    ->where('modalidad','like',"%$mod%")
+                    ->where('tipo_curso','like',"%$tipo%");
+                if($alumnos[0]->status_curso!='AUTORIZADO')
+                    $cursos = $cursos->where('cursos.estado', true);
+
+                    $cursos = $cursos->where('modalidad','like',"%$mod%")
                     ->whereJsonContains('unidades_disponible', [$alumnos[0]->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
                 $edicion = DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','EDICION')->exists();
                 $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
@@ -549,7 +555,7 @@ class grupoController extends Controller
                                 $ctotal = $costo_total - $total_pago;
                                 if ($total_pago == 0) {
                                     $tipo_pago = "EXO";
-                                    if ($cp > 7) $cp = 7; //EXONERACION Criterio de Pago Máximo 7
+                                    //if ($cp > 7) $cp = 7; //EXONERACION Criterio de Pago Máximo 7
                                 } elseif ($ctotal > 0) $tipo_pago = "EPAR";
                                 else $tipo_pago = "PINS";
                                 /*ID DEL CURSO DE 10 DIGITOS*/
@@ -720,12 +726,10 @@ class grupoController extends Controller
     }
 
     public function genera_folio()
-    {
-        //$consec = DB::table('alumnos_registro')->where('ejercicio', $this->ejercicio)->where('cct', $this->data['cct_unidad'])->where('eliminado', false)->value(DB::RAW('max(cast(substring(folio_grupo,7,4) as int))')) + 1;
+    {        
         $consec = DB::table('alumnos_registro')->where('ejercicio', $this->ejercicio)->where('cct', $this->data['cct_unidad'])->where('eliminado', false)->value(DB::RAW("cast(substring(max(folio_grupo) from '.{4}$') as int)")) + 1;
         $consec = str_pad($consec, 4, "0", STR_PAD_LEFT);
         $folio = $this->data['cct_unidad'] . "-" . $this->ejercicio . $consec;
-
         return $folio;
     }
 

@@ -1,12 +1,24 @@
 <!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
 @extends('theme.sivyc.layout')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
+    <style>    
+        .form-check-input{
+            width:22px;
+            height:22px;
+        }    
+        .efirma {
+            margin:5px 15px;
+            height:22px;
+            font-weight: bold;
+        }
+    </style>
+@endsection
 @section('title', 'Reportes | SIVyC Icatech')
-@section('content')
-    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+@section('content') 
    
     <div class="card-header">
-        Asignación de Folios
-        
+        Asignación de Folios        
     </div>
     <div class="card card-body" style=" min-height:450px;">
         @if($message)
@@ -16,11 +28,10 @@
                 </div>
             </div>
         @endif
-        <?php
+        @php
             if(isset($curso)) $clave = $curso->clave;
-            else $clave = null;
-            
-        ?>
+            else $clave = null;            
+        @endphp
         {{ Form::open(['route' => 'grupos.asignarfolios', 'method' => 'post', 'id'=>'frm']) }}                    
 
          <div class="row">
@@ -30,6 +41,10 @@
              <div class="form-group col-md-2">
                     {{ Form::text('matricula', $matricula, ['id'=>'matricula', 'class' => 'form-control', 'placeholder' => 'MATRICULA', 'aria-label' => 'MATRICULA', 'size' => 15]) }}
             </div>
+            <div class="form-group col-md-2" style="display: none;">
+                {{ Form::checkbox('efirma', true, $efirma, ['id' => 'efirma', 'class' => 'form-control form-check-input']) }}
+                <label for="efirma" class="efirma"> EFIRMA</label>
+            </div>            
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['class' => 'btn', 'type' => 'submit']) }}
             </div>

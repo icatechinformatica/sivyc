@@ -117,7 +117,7 @@ class rdcdController extends Controller
          ->get();
 
          $cct=DB::table('tbl_unidades')
-         ->select('cct','dunidad')->where('unidad', '=', $consulta[0]->unidad)
+         ->select('cct','dunidad','ubicacion','pdunidad','unidad','plantel')->where('unidad', '=', $consulta[0]->unidad)
          ->first();//dd($cct->cct);
          $unidad=$consulta[0]->unidad;
          $modalidad=$consulta[0]->mod;

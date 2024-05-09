@@ -59,16 +59,20 @@
         </div>
     @endif
     @if(isset($data))
-        @php $bajaesp = FALSE;
+        @php $bajaesp = $bajaborrador = FALSE;
             foreach ($especialidades AS $moist)
             {
                 if ($moist->status == 'BAJA EN FIRMA')
                 {
                     $bajaesp = TRUE;
                 }
+                if ($moist->status == 'BAJA EN PREVALIDACION')
+                {
+                    $bajaborrador = TRUE;
+                }
             }
         @endphp
-        <form @if($data->status == 'BAJA EN FIRMA' || $data->status == 'BAJA EN PREVALIDACION') action="{{ route('instructor-baja-solicitud-pdf') }}" @else action="{{ route('instructor-solicitud-pdf') }}" @endif method="post" target="_blank" >
+        <form @if($data->status == 'BAJA EN FIRMA' || $data->status == 'BAJA EN PREVALIDACION' || $bajaborrador == TRUE) action="{{ route('instructor-baja-solicitud-pdf') }}" @else action="{{ route('instructor-solicitud-pdf') }}" @endif method="post" target="_blank" >
             @csrf
             <div class="form-row">
                 <div class="form-group col-md-3 text-center">

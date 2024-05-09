@@ -260,6 +260,7 @@ class AsistenciaController extends Controller
                 )->where('tbl_cursos.id',$id);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')->first();
             if ($curso) {
+
                 if ($curso->status_curso == "AUTORIZADO") {
                     $alumnos = DB::Table('tbl_inscripcion as i')->select(
                         'i.id',
@@ -273,7 +274,7 @@ class AsistenciaController extends Controller
                     })->where('i.id_curso', $curso->id)
                         ->where('i.status', 'INSCRITO')
                         ->orderby('i.alumno')->get();
-                    if (!$alumnos) return "NO HAY ALUMNOS INSCRITOS";
+                    if (!$alumnos) return back()->with('warning', 'El curso esta en '.$cursos->status_curso);
 
                     foreach ($alumnos as $key => $value) {
                         $value->asistencias = json_decode($value->asistencias, true);
@@ -389,7 +390,7 @@ class AsistenciaController extends Controller
         $termino = explode('-', $curso->termino); $termino[2] = '01';
         $meses = $this->verMeses(array($inicio[0].'-'.$inicio[1].'-'.$inicio[2], $termino[0].'-'.$termino[1].'-'.$termino[2]));
 
-        $body = "SUBSECRETARÍA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICA \n".
+        $body = "SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR\n".
         "DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO \n".
         "LISTA DE ASISTENCIA \n".
         "(LAD-04) \n";

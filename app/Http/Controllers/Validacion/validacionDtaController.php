@@ -1783,6 +1783,7 @@ class validacionDtaController extends Controller {
                 ->First();
 
             if(!is_null($cursos_validar)){
+
                 if(isset($historial_fin)){
                     $rango = $historial_meses . $historial_fin;
                 }
@@ -1791,7 +1792,8 @@ class validacionDtaController extends Controller {
                 //                             'pendiente' => true];
             } else {
                 if(is_null($historial_meses)){
-                    $historial_meses = $this->monthToString($moist);
+                    $rango = $historial_meses = $this->monthToString($moist);
+
 
                 } else {
                     $historial_fin = '-' . $this->monthToString($moist);

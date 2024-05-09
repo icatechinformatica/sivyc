@@ -46,18 +46,22 @@
                         <div class="form-group col-md-6 justify-content-end ">                        
                             <h4 class="bg-light p-2">&nbsp; RECIBO No. &nbsp;<span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</b>&nbsp;</span> &nbsp;</h4>
                             @if($data->status_folio == 'DISPONIBLE') 
-                                <h4 class="text-center text-white p-2" style="background-color: #33A731;">&nbsp;DISPONIBLE &nbsp;</h4>
-                            @elseif($data->status_folio == 'ENVIADO') 
-                                <h4 class="text-center text-white bg-danger p-2" >&nbsp;ENVIADO &nbsp;</h4>
-                            @elseif($data->status_folio == 'IMPRENTA') 
-                                <h4 class="text-center text-white bg-danger p-2" >&nbsp;DE IMPRENTA &nbsp;</h4>
+                                <h4 class="text-center text-white p-2" style="background-color: #33A731;">&nbsp;{{$data->status_folio}} &nbsp;</h4>
+                            @elseif(in_array($data->status_folio, ['IMPRENTA','ENVIADO','CANCELADO'])) 
+                                <h4 class="text-center text-white bg-danger p-2" >&nbsp;{{$data->status_folio}} &nbsp;</h4>
                             @else
                                 <h4 class="bg-warning text-center p-2">&nbsp;{{$data->status_folio}} &nbsp;</h4>
                             @endif
                             @if($data->file_pdf)
-                                <a class="nav-link pt-0" href="{{$path_files}}{{ $data->file_pdf}}" target="_blank">
-                                    <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
-                                </a>
+                                @if($data->status_folio == 'CANCELADO') 
+                                    <a class="nav-link pt-0" href="{{ route('grupos.recibos.cancelado') }}" target="_blank">
+                                        <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
+                                    </a>
+                                @else
+                                    <a class="nav-link pt-0" href="{{$path_files}}{{ $data->file_pdf}}" target="_blank">
+                                        <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
+                                    </a>
+                                @endif
                             @endif
                         </div>                    
                 </div>       
@@ -182,7 +186,9 @@
                             {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control', 'placeholder' => 'RECIBIÓ', 'title' => 'RECIBIÓ', 'disabled'=>'true']) }}
                         </div>
                         <div class="form-group col-md-2 m-1 "> <br/>
-                            {{ Form::button('GUARDAR CAMBIOS', ['id'=>'modificar','class' => 'btn', 'value'=> route('grupos.recibos.modificar')]) }}                                      
+                        @if($data->status_folio != 'CANCELADO')
+                             {{ Form::button('GUARDAR CAMBIOS', ['id'=>'modificar','class' => 'btn', 'value'=> route('grupos.recibos.modificar')]) }}
+                        @endif
                         </div>
                     </div>                     
                 @endif
@@ -203,7 +209,7 @@
                     </div>                    
                     {{ Form::select('status_recibo', $status_recibo, '', ['id'=>'status_recibo','class' => 'form-control', 'title'=>'ESTATUS','style'=>'display:none'] ) }}                    
                     {{ Form::text('motivo', '', ['id'=>'motivo', 'class' => 'form-control col-md-4 m-1 ', 'placeholder' => 'MOTIVO', 'title' => 'MOTIVO', 'style'=>'display:none']) }}
-                    @if($data->status_folio == 'DENEGADO')                        
+                    @if($data->status_folio == 'DENEGADO')                     
                             Observaciones:
                             {{ Form::text('movimiento', 'DENEGADO', ['id'=>'movimiento', 'class' => 'form-control col-md-4 m-1 ','style'=>'display:none']) }}
                             {{ Form::textarea('observaciones', $data->observaciones, ['id'=>'observaciones', 'class' => 'form-control col-md-6 m-1', 'disabled'=>'true', 'row'=>2, 'style' => 'height: 4em;']) }}
@@ -219,7 +225,7 @@
                             {{ Form::select('status_recibo', $status_recibo, '', ['id'=>'status_recibo','class' => 'form-control', 'title'=>'ESTATUS'] ) }}
                             {{ Form::button('ASIGNAR', ['id'=>'asignar','class' => 'btn btn-danger', 'value'=> route('grupos.recibos.asignar')]) }}
                     @else                        
-                        @if(!in_array($data->status_folio, ['IMPRENTA','DISPONIBLE','ENVIADO']) OR (!$data->status_curso AND $data->id_concepto==1)) 
+                        @if(!in_array($data->status_folio, ['IMPRENTA','DISPONIBLE','ENVIADO','CANCELADO']) OR (!$data->status_curso AND $data->id_concepto==1)) 
                                 {{ Form::button('GENERAR RECIBO', ['id'=>'pdfRecibo','class' => 'btn', 'value' => route('grupos.recibos.pdf')]) }}
                         @endif
                             @if($data->status_folio == "CARGADO") 
