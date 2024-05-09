@@ -203,7 +203,7 @@ else{
                             @endif
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
                             <td width="140px" ><small style="font-size: 8px;">OBSERVACION</small></td>
-                            <td scope="col"><small style="font-size: 8px;">Observación del Dpto. Programación y Ppto.</small></td>
+                            {{-- <td scope="col"><small style="font-size: 8px;">Observación del Dpto. Programación y Ppto.</small></td> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -248,13 +248,18 @@ else{
                                     @endif
                                 </small></td>
                                 <td><small style="font-size: 8px;">{{$item->comentario}}</small></td>
-                                <td><small style="font-size: 8px;">{{$data2->observacion_validacion}}</small></td>
+                                {{-- <td><small style="font-size: 8px;">{{$data2->observacion_validacion}}</small></td> --}}
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
+        @if(!is_null($data2->observacion_validacion))
+            <div class="d" style="border: 1px solid black;">
+                <small><b>Observación del Departamento de Programación y Presupuesto:</b> {{$data2->observacion_validacion}}</small>
+            </div><br>
+        @endif
         <div id="wrapperbot">
             <div align=center>
                 <small><small>{{$getfirmante->nombre}}</small></small>
