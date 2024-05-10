@@ -94,51 +94,13 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputobservacion">Observación</label>
-                        <textarea name="observacion" id="observacion" cols="6" rows="6" class="form-control"></textarea>
+                        <textarea style="text-transform: none;" name="observacion" id="observacion" cols="6" rows="6" class="form-control"></textarea>
                     </div>
                 </div>
-                <!--<div id="div2" class="form-row d-none d-print-none">
-                    <div class="form-group col-md-4">
-                        <label for="inputnombre_firmante">Nombre del Firmante</label>
-                        <input  type="text" name="nombre_firmante" id="nombre_firmante" class="form-control">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputpuesto_firmante">Puesto de firmante</label>
-                        <input name="puesto_firmante" readonly id="puesto_firmante" type="text" class="form-control">
-                        <input id="id_firmante" name="id_firmante" hidden>
-                    </div>
-                </div>-->
                 <hr style="border-color:dimgray">
                 <div id="div3" class="d-none d-print-none">
                     <h3>Con Copia Para El Delegado:</h3>
                 </div>
-            <!-- START CCP -->
-                <!--<div id="div4" class="form-row d-none d-print-none" >
-                    <div class="form-group col-md-4">
-                        <input  type="text" name="ccp1" id="ccp1" class="form-control" placeholder="Nombre Completo">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <input name="ccpa1" readonly id="ccpa1" class="form-control" placeholder="Puesto">
-                        <input id="id_ccp1" name="id_ccp1" hidden>
-                    </div>
-                </div>
-                <div id="div5" class="form-row d-none d-print-none">
-                    <div class="form-group col-md-4">
-                        <input  type="text" name="ccp2" id="ccp2" class="form-control" placeholder="Nombre Completo">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <input name="ccpa2" id="ccpa2" readonly class="form-control" placeholder="Puesto">
-                        <input id="id_ccp2" name="id_ccp2" hidden>
-                    </div>
-                </div>
-                <div id="div6" class="form-row d-none d-print-none">
-                    <div class="form-group col-md-4">
-                        <input  type="text" name="ccp3" id="ccp3" class="form-control" placeholder="Nombre Completo">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <input name="ccpa3" id="ccpa3" readonly class="form-control" placeholder="Puesto">
-                        <input id="id_ccp3" name="id_ccp3" hidden>
-                    </div>-->
                 </div>
                 <div id="div7" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
@@ -146,10 +108,8 @@
                     </div>
                     <div class="form-group col-md-4">
                         <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" value="{{$delegado->pdelegado_administrativo}}" readonly>
-                        {{-- <input id="id_ccp4" name="id_ccp4" hidden required> --}}
                     </div>
                 </div>
-            <!--END CCP-->
                 <div id="confval" class="row d-none d-print-none">
                     <div class="col-lg-12 margin-tb">
                         <div class="pull-right">

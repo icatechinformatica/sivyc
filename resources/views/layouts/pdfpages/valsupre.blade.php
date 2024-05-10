@@ -256,8 +256,8 @@ else{
             </div>
         </div>
         @if(!is_null($data2->observacion_validacion))
-            <div class="d" style="border: 1px solid black;">
-                <small><b>Observación del Departamento de Programación y Presupuesto:</b> {{$data2->observacion_validacion}}</small>
+            <div class="d">
+                <small><small><b>Observación del Departamento de Programación y Presupuesto:</b> {{$data2->observacion_validacion}}</small></small>
             </div><br>
         @endif
         <div id="wrapperbot">
