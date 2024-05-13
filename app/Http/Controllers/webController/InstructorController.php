@@ -1184,8 +1184,10 @@ class InstructorController extends Controller
                 // Verificar si hay elementos en hvalidacion
                 if (count($hvalidacion) > 0) {
                     // Obtener el último elemento
-                    $ultimoElemento = array_pop($hvalidacion);
-                    $data['hvalidacion'] = $hvalidacion;
+                    if((in_array($data['status'],['REVALIDACION EN FIRMA', 'BAJA EN FIRMA', 'EN FIRMA']) && $instructor['turnado'] == 'UNIDAD') || $data['status'] == 'VALIDADO') {
+                        $ultimoElemento = array_pop($hvalidacion);
+                        $data['hvalidacion'] = $hvalidacion;
+                    }
                     if($request->movimiento == 'retornar en firma') {
                         if($data['status'] == 'VALIDADO') {
                             $data['status'] = 'REVALIDACION EN FIRMA';
@@ -1193,14 +1195,14 @@ class InstructorController extends Controller
                             $data['status'] = 'BAJA EN FIRMA';
                         }
                     } else {
-                        if($data['status'] == 'VALIDADO') {
+                        if($data['status'] != 'BAJA') {
                             $data['status'] = 'REVALIDACION EN CAPTURA';
                         } else {
                             $data['status'] = 'BAJA EN CAPTURA';
                         }
                     }
 
-                    if($data['new'] == false) {
+                    if($data['new'] == false && $data['status'] == 'VALIDADO') {
                         $especialidad_oficial = especialidad_instructor::WHERE('id', '=', $data['id'])->FIRST();
                         $hvalidacion_oficial = $especialidad_oficial->hvalidacion;
                         array_pop($hvalidacion_oficial);
