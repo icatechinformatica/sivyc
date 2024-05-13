@@ -31,9 +31,7 @@
             <h6>(RIACD-02)</h6>
             <div id="tipo">
                 EXT: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="EXT"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;</span>&nbsp;
-                CAE: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="CAE"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;</span>&nbsp;
-                REG: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="REG"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;&nbsp;</span>&nbsp;
-                EMP: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="EMP"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;&nbsp;</span>
+                CAE: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="CAE"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;</span>&nbsp;                
             </div>
             <div id="curso">
                 INSTITUTO DESCENTRALIZADO: <b>INSTITUTO DE CAPACITACI&Oacute;N Y VINCULACI&Oacute;N TECNOL&Oacute;GICA DEL ESTADO DE CHIAPAS</b>
