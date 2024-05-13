@@ -1184,7 +1184,7 @@ class InstructorController extends Controller
                 // Verificar si hay elementos en hvalidacion
                 if (count($hvalidacion) > 0) {
                     // Obtener el último elemento
-                    if((in_array($data['status'],['REVALIDACION EN FIRMA', 'BAJA EN FIRMA', 'EN FIRMA']) && $instructor['turnado'] == 'UNIDAD') || $data['status'] == 'VALIDADO') {
+                    if((in_array($data['status'],['REVALIDACION EN FIRMA', 'BAJA EN FIRMA', 'EN FIRMA']) && $instructor['turnado'] == 'DTA') || $data['status'] == 'VALIDADO') {
                         $ultimoElemento = array_pop($hvalidacion);
                         $data['hvalidacion'] = $hvalidacion;
                     }
