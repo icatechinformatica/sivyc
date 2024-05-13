@@ -708,10 +708,10 @@ class recibosController extends Controller
         $outputFile = 'recibo_'.$name_pdf.'.pdf';
         $watermarkText = "CANCELADO";
 
-        $pdf = new Fpdi();
-        $pdf->AddPage();
+        $pdf = new Fpdi();        
         $pageCount = $pdf->setSourceFile($pdfFile);        
         for ($pageNumber = 1; $pageNumber <= $pageCount; $pageNumber++) {
+            $pdf->AddPage();
             $template = $pdf->importPage($pageNumber);
             
             $pdf->useTemplate($template);
@@ -721,8 +721,7 @@ class recibosController extends Controller
             $pdf->SetTextColor(127, 127, 127);
             $pdf->SetXY(10, 100); // Posición del texto
             //$pdf->Rotate(45); // Rotar el texto
-            $pdf->Cell(0, 0, $watermarkText, 0, 1, 'C');
-            $pdf->AddPage();
+            $pdf->Cell(0, 0, $watermarkText, 0, 1, 'C');            
         }        
         return $pdf->Output('I', $outputFile);
         
