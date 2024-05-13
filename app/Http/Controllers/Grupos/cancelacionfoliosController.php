@@ -59,10 +59,9 @@ class cancelacionfoliosController extends Controller
             if($request->matricula) $data = $data->where('i.matricula',$request->matricula);
                 
             $data = $data->orderby('i.alumno','ASC')->get();
-            
+            $_SESSION['clave'] = $clave;
             if(count($data)==0) $message= "Clave inválida para la Unidad de Capacitación.";
-            elseif($data[0]->mod=='EFIRMA' ){
-                $_SESSION['clave'] = $clave;                
+            elseif($data[0]->mod=='EFIRMA' ){                                
                 $this->motivo = ['NO SOLICITADO'=>'NO SOLICITADO','ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO'];
             }
         }
