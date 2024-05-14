@@ -1439,7 +1439,7 @@ class ContratoController extends Controller
                               'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido',
+                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido','pagos.elabora',
                               'tbl_unidades.ubicacion')
                         ->WHERE('folios.id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -1463,42 +1463,15 @@ class ContratoController extends Controller
             $M = $this->toMonth(date('m',$date));
             $Y = date("Y",$date);
         }
-        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
-        $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
-
-        $director = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
-            ->Where('o.id_parent',1)
-            ->Where('f.activo', 'true')
-            ->Where('u.unidad', $data->ubicacion)
-            ->First();
-
-        $ccp1 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id',1)
-            ->Where('f.activo', 'true')
-            ->First();
-
-        $ccp2 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id',12)
-            ->Where('f.activo', 'true')
-            ->First();
-
-        $ccp3 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
-            ->Where('o.nombre','LIKE','DELEG%')
-            ->Where('f.activo', 'true')
-            ->Where('u.unidad', $data->ubicacion)
-            ->First();
-        // dd($para);
+        // $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
+        // $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
+        if(!is_null($data->elabora)) {$data->elabora = json_decode($data->elabora);}
+        $funcionarios = $this->funcionarios_pagos($data->ubicacion);
 
         $direccion = tbl_unidades::WHERE('unidad',$data->unidad_capacitacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','ccp1','ccp2','ccp3','para','director','distintivo','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','distintivo','direccion','funcionarios'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 

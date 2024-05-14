@@ -104,8 +104,8 @@ if($data->tipo_curso=='CERTIFICACION'){
                 <div align=right>
                     <b>{{$data->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b>
                 </div>
-                <br><br><b>{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}.</b>
-                <br>{{$para->puesto}}.
+                <br><br><b>{{$funcionarios['destino']}}</b>
+                <br>{{$funcionarios['destinop']}}.
                 <br><br>Presente.
                 <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura <font style="text-transform:lowercase;"> {{$tipo}}</font> y validación de instructor externo, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente, que se detalla a continuación:</p>
                 <div align=center>
@@ -199,19 +199,19 @@ if($data->tipo_curso=='CERTIFICACION'){
                         <td></td>
                     </tr>
                     <tr>
-                        <td><div align="center">{{$director->nombre}}</td></div>
+                        <td><div align="center">{{$funcionarios['director']}}</td></div>
                     </tr>
                     <tr>
-                        <td><div align="center">{{$director->cargo}}</td></div>
+                        <td><div align="center">{{$funcionarios['directorp']}}</td></div>
                     </tr>
                 </table>
                 <p style="line-height:0.8em;">
-                    <b><small>C.c.p.{{$ccp1->nombre}}.- {{$ccp1->cargo}}.-Para su conocimiento.</small></b><br/>
-                    <b><small>C.c.p.{{$ccp2->nombre}}.- {{$ccp2->cargo}}.-Mismo fin.</small></b><br/>
-                    <b><small>C.c.p.{{$ccp3->nombre}}.- {{$ccp3->cargo}}.-Mismo fin.</small></b><br/>
+                    <b><small>C.c.p.{{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Para su conocimiento.</small></b><br/>
+                    <b><small>C.c.p.{{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo fin.</small></b><br/>
+                    <b><small>C.c.p.{{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.-Mismo fin.</small></b><br/>
                     <b><small>Archivo<small></b><br/>
-                    <b><small>Validó: {{$ccp3->nombre}}.- {{$ccp3->cargo}}.</small></b><br/>
-                    <b><small>Elaboró: {{$ccp3->nombre}}.- {{$ccp3->cargo}}.</small></b>
+                    <b><small>Validó: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.</small></b><br/>
+                    <b><small>Elaboró: @if(!is_null($data->elabora)){{$data->elabora->nombre}}.- {{$data->elabora->puesto}}@else{{$funcionarios['elabora']}}.- {{$funcionarios['elaborap']}}@endif.</small></b>
                 </p>
             </div>
         </div>
