@@ -183,35 +183,35 @@
             <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputeremite">Nombre de Remitente</label>
-                        <input id="remitente" name="remitente" type="text" class="form-control" @if(isset($director))value="{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}" @endif>
+                        <input id="remitente" name="remitente" type="text" class="form-control" readonly value="{{$funcionarios['director']}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto de Remitente</label>
-                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" @if(isset($director))value="{{$director->puesto}}" @endif>
-                        <input id="id_remitente" name="id_remitente" @if(isset($director))value="{{$director->id}}" @endif hidden>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" value="{{$funcionarios['directorp']}}">
+                        {{-- <input id="id_remitente" name="id_remitente" @if(isset($director))value="{{$director->id}}" @endif hidden> --}}
                     </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputelaboro">Nombre de Quien Elabora</label>
-                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" @if(isset($elaboro))value="{{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}"@endif>
+                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" readonly value="{{$funcionarios['elabora']}}">
 
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_para">Puesto de Quien Elabora</label>
-                    <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" @if(isset($elaboro))value="{{$para->puesto}}"@endif>
-                    <input id="id_elabora" name="id_elabora" hidden @if(isset($elaboro))value="{{$directorio->solpa_elaboro}}"@endif>
+                    <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" value="{{$funcionarios['elaborap']}}">
+                    {{-- <input id="id_elabora" name="id_elabora" hidden @if(isset($elaboro))value="{{$directorio->solpa_elaboro}}"@endif> --}}
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre_para">Nombre del Destinatario</label>
-                    <input id="destino" name="destino" type="text" class="form-control" @if(isset($para))value="{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}"@endif>
+                    <input id="destino" name="destino" type="text" class="form-control" readonly value="{{$funcionarios['destino']}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_para">Puesto del Destinatario</label>
-                    <input id="destino_puesto" readonly name="destino_puesto" type="text" class="form-control" @if(isset($para))value="{{$para->puesto}}"@endif>
-                    <input id="id_destino" name="id_destino" hidden @if(isset($para))value="{{$directorio->solpa_para}}"@endif>
+                    <input id="destino_puesto" readonly name="destino_puesto" type="text" class="form-control" value="{{$funcionarios['destinop']}}">
+                    {{-- <input id="id_destino" name="id_destino" hidden @if(isset($para))value="{{$directorio->solpa_para}}"@endif> --}}
                 </div>
             </div>
             <br>
@@ -248,36 +248,36 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp1">Nombre</label>
-                        <input id="ccp1" name="ccp1" type="text" class="form-control" @if(isset($ccp1->nombre))value="{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}"@endif>
+                        <input id="ccp1" name="ccp1" type="text" class="form-control" readonly value="{{$funcionarios['ccp1']}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control" @if(isset($ccp1->nombre))value="{{$ccp1->puesto}}"@endif>
-                        <input id="id_ccp1" name="id_ccp1" hidden @if(isset($ccp1->nombre))value="{{$directorio->solpa_ccp1}}"@endif>
+                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control" value="{{$funcionarios['ccp1p']}}">
+                        {{-- <input id="id_ccp1" name="id_ccp1" hidden @if(isset($ccp1->nombre))value="{{$directorio->solpa_ccp1}}"@endif> --}}
                     </div>
                 </div>
                 <h3>CCP 2</h3>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp2">Nombre</label>
-                        <input id="ccp2" name="ccp2" type="text" class="form-control" @if(isset($ccp2->nombre)) value="{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}" @endif>
+                        <input id="ccp2" name="ccp2" type="text" class="form-control" readonly value="{{$funcionarios['ccp2']}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control"  @if(isset($ccp2->nombre)) value="{{$ccp2->puesto}}" @endif>
-                        <input id="id_ccp2" name="id_ccp2" hidden  @if(isset($ccp2->nombre)) value="{{$directorio->solpa_ccp2}}" @endif>
+                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control"  value="{{$funcionarios['ccp2p']}}">
+                        {{-- <input id="id_ccp2" name="id_ccp2" hidden  @if(isset($ccp2->nombre)) value="{{$directorio->solpa_ccp2}}" @endif> --}}
                     </div>
                 </div>
                 <h3>CCP 3</h3>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp3">Nombre</label>
-                        <input id="ccp3" name="ccp3" type="text" class="form-control" @if(isset($ccp3->nombre)) value="{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}" @endif>
+                        <input id="ccp3" name="ccp3" type="text" class="form-control" readonly value="{{$funcionarios['delegado']}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control" @if(isset($ccp3->nombre)) value="{{$ccp3->puesto}}"@endif>
-                        <input id="id_ccp3" name="id_ccp3" hidden @if(isset($ccp3->nombre)) value="{{$directorio->solpa_ccp3}}"@endif>
+                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control" value="{{$funcionarios['delegadop']}}">
+                        {{-- <input id="id_ccp3" name="id_ccp3" hidden @if(isset($ccp3->nombre)) value="{{$directorio->solpa_ccp3}}"@endif> --}}
                     </div>
                 </div>
             <!-- END CC -->
