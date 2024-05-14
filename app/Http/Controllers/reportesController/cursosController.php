@@ -50,7 +50,8 @@ class cursosController extends Controller
             $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),'inicio','termino',
             DB::raw("to_char(inicio, 'DD/MM/YYYY') as fechaini"),DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),
             'u.plantel',DB::raw('EXTRACT(MONTH FROM inicio)  as mes_inicio'),DB::raw('EXTRACT(YEAR FROM inicio)  as anio_inicio'),
-            'u.academico','u.pacademico' )
+            DB::raw("CONCAT ('C. ',trim(substring(u.academico , position('.' in u.academico)+1,char_length(u.academico)))) as academico"),
+            'u.pacademico' )
             ->where('clave',$clave);
             if($_SESSION['unidades'])$curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
@@ -100,7 +101,8 @@ class cursosController extends Controller
         if($clave){
             $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),
             DB::raw("to_char(inicio, 'DD/MM/YYYY') as fechaini"),DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),'u.plantel',
-            'u.academico','u.pacademico')
+            DB::raw("CONCAT ('C. ',trim(substring(u.academico , position('.' in u.academico)+1,char_length(u.academico)))) as academico"),
+            'u.pacademico')
             ->where('clave',$clave);
             if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
