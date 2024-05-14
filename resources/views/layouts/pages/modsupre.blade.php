@@ -23,12 +23,14 @@
            <label for="tituloSupre1"><h2>Modificación de Solicitud para Suficiencia Presupuestal</h2></label>
         </div>
         <br><br>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="inputobservacion" class="control-label"><b>Observaciones de Rechazo</b></label>
-                <textarea cols="4" rows="4" type="text" class="form-control" readonly aria-required="true" onkeypress="return soloLetras(event)" id="observacion" name="observacion">{{ $getsupre->observacion}}</textarea>
+        @if(!is_null($getsupre->observacion))
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputobservacion" class="control-label"><b>Observaciones de Rechazo</b></label>
+                    <textarea cols="4" rows="4" type="text" class="form-control" readonly aria-required="true" onkeypress="return soloLetras(event)" id="observacion" name="observacion">{{ $getsupre->observacion}}</textarea>
+                </div>
             </div>
-        </div>
+        @endif
         <br>
         <hr style="border-color:dimgray">
         <div class="form-row">
@@ -144,10 +146,10 @@
             </div>
             </form>
             <div class="form-group col-md-3">
-                <form action="{{ route('solicitud-pago-efirma') }}" method="post" id="registersolicitudpago">
+                <form action="{{ route('supre-efirma') }}" method="post" id="registersolicitudpago">
                     @csrf
                     <input type="text" name="ids" id="ids" value='{{$getsupre->id}}' hidden>
-                    <input type="text" name="clavecurso" id="clavecursos" value='{{$data->clave}}' hidden>
+                    <input type="text" name="clave_curso" id="clave_curso" value='{{$data->clave}}' hidden>
                     <button button type="submit" class="btn btn-red" >Generar Suficiencia E.Firma</button>
                 </form>
             </div>

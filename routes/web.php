@@ -910,6 +910,7 @@ Route::post('/calificacion/rechazo', 'efirma\CalificacionController@rechazo')->n
 Route::post('/calificacion/validar', 'efirma\CalificacionController@generar_xml')->name('calificacion-xml');
 Route::post('/contrato/efirma','webController\ContratoController@generar_contrato_efirma')->name('contrato-efirma');
 Route::post('/solicitudPago/efirma','webController\ContratoController@generar_solicitud_pago_efirma')->name('solicitud-pago-efirma');
+Route::post('/supre/efirma','webController\supreController@generar_supre_efirma')->name('supre-efirma');
 Route::get('/XMLrecovery/{uuid}', 'efirma\FirmaController@obtener_xml')->name('obtener-xml');
 Route::post('/efirma/anularcancelado', 'efirma\FirmaController@deshacer_anulado')->name('efirma.deshacer.anulado');
 

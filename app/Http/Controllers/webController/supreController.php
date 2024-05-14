@@ -25,6 +25,7 @@ use App\Models\pago;
 use Illuminate\Support\Facades\Auth;
 use App\Events\NotificationEvent;
 use App\User;
+use App\Http\Controllers\efirma\EPagoController;
 
 class supreController extends Controller
 {
@@ -404,10 +405,26 @@ class supreController extends Controller
             // }
             // $mvtobanc->mov_bancario = $generalarr;
             // $mvtobanc->save();
-}
+        }
         // return redirect()->route('supre-inicio')
         // ->with('success','Solicitud de Suficiencia Presupuestal agregado');
         return view('layouts.pages.suprecheck',compact('id','id_directorio'));
+    }
+
+    public function generar_supre_efirma(request $request) {
+        // dd($request);
+
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clave_curso)->Where('tipo_archivo','supre')->First();
+        if(!is_null($status_doc) && in_array($status_doc->status, ['CANCELADO', 'EN FIRMA'])){
+            dd('a');
+        }
+        dd('b');
+
+        $pagoController = new ESupreController();
+        $result = $pagoController->generar_xml($pago->id);
+
+        return redirect()->route('contrato-mod', ['id' => $request->idcon])
+                            ->with('success','Solicitud de Pago Generado en E.Firma Exitosamente');
     }
 
     public function validacion_supre_inicio(){
