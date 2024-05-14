@@ -198,34 +198,34 @@
             <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputeremite">Nombre de Remitente</label>
-                        <input id="remitente" name="remitente" type="text" class="form-control">
+                        <input id="remitente" name="remitente" type="text" class="form-control" readonly value="{{$funcionarios['director']}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto de Remitente</label>
-                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control">
-                        <input id="id_remitente" name="id_remitente" hidden>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" value="{{$funcionarios['directorp']}}">
+                        {{-- <input id="id_remitente" name="id_remitente" hidden> --}}
                     </div>
             </div>
             <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputelaboro">Nombre de Quien Elabora</label>
-                        <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control">
+                        <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" readonly value="{{$funcionarios['elabora']}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto de Quien Elabora</label>
-                        <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control">
-                        <input id="id_elabora" name="id_elabora" hidden>
+                        <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" value="{{$funcionarios['elaborap']}}">
+                        {{-- <input id="id_elabora" name="id_elabora" hidden> --}}
                     </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre_para">Nombre del Destinatario</label>
-                    <input id="destino" name="destino" type="text" class="form-control">
+                    <input id="destino" name="destino" type="text" class="form-control" readonly value="{{$funcionarios['destino']}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_para">Puesto del Destinatario</label>
-                    <input id="destino_puesto" readonly name="destino_puesto" type="text" class="form-control">
-                    <input id="id_destino" name="id_destino" hidden>
+                    <input id="destino_puesto" readonly name="destino_puesto" type="text" class="form-control" value="{{$funcionarios['destinop']}}">
+                    {{-- <input id="id_destino" name="id_destino" hidden> --}}
                 </div>
             </div>
             <br>
@@ -259,36 +259,36 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp1">Nombre</label>
-                        <input id="ccp1" name="ccp1" type="text" class="form-control">
+                        <input id="ccp1" name="ccp1" type="text" class="form-control" readonly value="{{$funcionarios['ccp1']}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control">
-                        <input id="id_ccp1" name="id_ccp1" hidden>
+                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control" value="{{$funcionarios['ccp1p']}}">
+                        {{-- <input id="id_ccp1" name="id_ccp1" hidden> --}}
                     </div>
                 </div>
                 <h3>CCP 2</h3>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp2">Nombre</label>
-                        <input id="ccp2" name="ccp2" type="text" class="form-control">
+                        <input id="ccp2" name="ccp2" type="text" class="form-control" readonly value="{{$funcionarios['ccp2']}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control">
-                        <input id="id_ccp2" name="id_ccp2" hidden>
+                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control" value="{{$funcionarios['ccp2']}}">
+                        {{-- <input id="id_ccp2" name="id_ccp2" hidden> --}}
                     </div>
                 </div>
                 <h3>CCP 3</h3>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp3">Nombre</label>
-                        <input id="ccp3" name="ccp3" type="text" class="form-control">
+                        <input id="ccp3" name="ccp3" type="text" class="form-control" readonly value="{{$funcionarios['delegado']}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control">
-                        <input id="id_ccp3" name="id_ccp3" hidden>
+                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control" value="{{$funcionarios['delegadop']}}">
+                        {{-- <input id="id_ccp3" name="id_ccp3" hidden> --}}
                     </div>
                 </div>
             <!-- END CC -->
