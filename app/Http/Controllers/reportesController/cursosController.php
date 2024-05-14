@@ -47,7 +47,7 @@ class cursosController extends Controller
 
         $file = "LISTA_ASISTENCIA_$clave.PDF";
         if($clave){
-            $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),'inicio','termino',
+            $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),'inicio','termino',DB::raw("CONCAT ('C. ',nombre) as nombre"),
             DB::raw("to_char(inicio, 'DD/MM/YYYY') as fechaini"),DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),
             'u.plantel',DB::raw('EXTRACT(MONTH FROM inicio)  as mes_inicio'),DB::raw('EXTRACT(YEAR FROM inicio)  as anio_inicio'),
             DB::raw("CONCAT ('C. ',trim(substring(u.academico , position('.' in u.academico)+1,char_length(u.academico)))) as academico"),
@@ -99,7 +99,7 @@ class cursosController extends Controller
         $clave = $request->get('clave');
         $file = "CALIFICACIONES_$clave.PDF";
         if($clave){
-            $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),
+            $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),DB::raw("CONCAT ('C. ',nombre) as nombre"),
             DB::raw("to_char(inicio, 'DD/MM/YYYY') as fechaini"),DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),'u.plantel',
             DB::raw("CONCAT ('C. ',trim(substring(u.academico , position('.' in u.academico)+1,char_length(u.academico)))) as academico"),
             'u.pacademico')
