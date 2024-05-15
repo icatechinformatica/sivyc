@@ -421,7 +421,7 @@ class grupoController extends Controller
                     if ($request->inicio <= $request->termino) {
                         $folio = $_SESSION['folio_grupo'];
                         $mapertura = $request->mapertura;
-                        $tc_curso = DB::table('tbl_cursos')->where('unidad', $request->unidad)->where('folio_grupo', $_SESSION['folio_grupo'])->select('id','status_curso','created_at','id_instructor','cp')->first();
+                        $tc_curso = DB::table('tbl_cursos')->where('unidad', $request->unidad)->where('folio_grupo', $_SESSION['folio_grupo'])->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')->first();
                         if(!$tc_curso) { $tc_curso = new \stdClass(); $tc_curso->id = $tc_curso->status_curso = $tc_curso->created_at = $tc_curso->id_instructor = $tc_curso->cp = null;}
 
 
@@ -545,15 +545,15 @@ class grupoController extends Controller
                                     }
                                     
                                     ///SI CAMBIA DE TIPO DE PAGO Y REDUCCION CANCELADA=> SE ACTUALIZA LOS COSTOS EN tbl_inscriçion
-                                    if ($tc_curso->status_curso == 'EDICION') {                                        
-                                        Inscripcion::join('alumnos_registro as ar', function ($join) {
-                                            $join->on('tbl_inscripcion.matricula', '=', 'ar.no_control')
-                                                 ->where('tbl_inscripcion.folio_grupo', '=', $_SESSION['folio_grupo']);                                                    
+                                    if ($tc_curso->status_curso == 'EDICION' AND $_SESSION['folio_grupo']) {                                        
+                                        Inscripcion::join('alumnos_registro', function ($join) {
+                                            $join->on('tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
+                                                 ->where('tbl_inscripcion.folio_grupo', '=', $_SESSION['folio_grupo']);                                      
                                         })
                                         ->update([
-                                            'tbl_inscripcion.costo' => DB::raw('ar.costo'),
-                                            'tbl_inscripcion.tinscripcion' => DB::raw('ar.tinscripcion'),
-                                            'tbl_inscripcion.abrinscri' => DB::raw('ar.abrinscri'),
+                                            'tbl_inscripcion.costo' => DB::raw('alumnos_registro.costo'),
+                                            'tbl_inscripcion.tinscripcion' => DB::raw('alumnos_registro.tinscripcion'),
+                                            'tbl_inscripcion.abrinscri' => DB::raw('alumnos_registro.abrinscri'),
                                         ]);
                                     }
                                 }
