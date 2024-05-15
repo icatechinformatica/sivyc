@@ -157,9 +157,9 @@
             </div>
             <div align=center> <b>SOLICITA
                 <br>
-                <br><small>{{$getremitente->nombre}}</small>
+                <br><small>{{$funcionarios['director']}}</small>
                 <br>________________________________________
-                <br><small>{{$getremitente->cargo}}
+                <br><small>{{$funcionarios['directorp']}}</small>
             </div>
         </div>
         <footer>

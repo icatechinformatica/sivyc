@@ -19,7 +19,8 @@ class supre extends Model
     ];
 
     protected $casts = [
-        'porcentaje_financiamiento' => 'array'
+        'porcentaje_financiamiento' => 'array',
+        'elabora' => 'array'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
