@@ -163,7 +163,7 @@ else{
                 Fecha: {{$Dv}} de {{$Mv}} del {{$Yv}}</FONT>
                 </div>
                 <div class="b"> <FONT SIZE=0>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}}</font><br/>
-                    <FONT SIZE=0><b>{{$funcionarios['director']}}</b></FONT><br/>
+                    <FONT SIZE=0><b>C. {{$funcionarios['director']}}</b></FONT><br/>
                     <FONT SIZE=0><b>{{$funcionarios['directorp']}}</b></FONT><br/>
                     <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
                     <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
@@ -262,7 +262,7 @@ else{
         @endif
         <div id="wrapperbot">
             <div align=center>
-                <small><small>{{$funcionarios['remitente']}}</small></small>
+                <small><small>C. {{$funcionarios['remitente']}}</small></small>
                 <br><small>________________________________________</small><br/>
                 <br><small><small>{{$funcionarios['remitentep']}}</small></small></b>
             </div>

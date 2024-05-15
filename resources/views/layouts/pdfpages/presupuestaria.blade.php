@@ -88,7 +88,7 @@ else{$tipo='CURSO';}
             <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
             <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-            <br><br><b>{{$funcionarios['destino']}}.</b>
+            <br><br><b>C. {{$funcionarios['destino']}}.</b>
             <br>{{$funcionarios['destinop']}}.
             <br><br>Presente.
 
@@ -125,7 +125,7 @@ else{$tipo='CURSO';}
             </table>
             <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
             <br><p class="text-left"><p>Atentamente.</p></p>
-            <br><br><b>{{$funcionarios['director']}}</b> <!-- now -->
+            <br><br><b> C. {{$funcionarios['director']}}</b> <!-- now -->
             <br><b>{{$funcionarios['directorp']}}</b>
             <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
             @if ($unidad->cct != '07EI')

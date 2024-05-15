@@ -157,7 +157,7 @@
             </div>
             <div align=center> <b>SOLICITA
                 <br>
-                <br><small>{{$funcionarios['director']}}</small>
+                <br><small>C. {{$funcionarios['director']}}</small>
                 <br>________________________________________
                 <br><small>{{$funcionarios['directorp']}}</small>
             </div>
