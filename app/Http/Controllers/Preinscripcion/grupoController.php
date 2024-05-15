@@ -545,16 +545,15 @@ class grupoController extends Controller
                                     }
                                     
                                     ///SI CAMBIA DE TIPO DE PAGO Y REDUCCION CANCELADA=> SE ACTUALIZA LOS COSTOS EN tbl_inscriçion
-                                    if($tc_curso->status_curso=='EDICION'){                                        
-                                        Inscripcion::join('alumnos_registro ar', function ($join) {
-                                            $join->on('tbl_inscripion.matricula', '=', 'ar.no_control')
-                                                ->where('tbl_inscripion.folio_grupo', '=', $_SESSION['folio_grupo']);                                                    
-                                            })
+                                    if ($tc_curso->status_curso == 'EDICION') {                                        
+                                        Inscripcion::join('alumnos_registro as ar', function ($join) {
+                                            $join->on('tbl_inscripcion.matricula', '=', 'ar.no_control')
+                                                 ->where('tbl_inscripcion.folio_grupo', '=', $_SESSION['folio_grupo']);                                                    
+                                        })
                                         ->update([
                                             'tbl_inscripcion.costo' => DB::raw('ar.costo'),
                                             'tbl_inscripcion.tinscripcion' => DB::raw('ar.tinscripcion'),
                                             'tbl_inscripcion.abrinscri' => DB::raw('ar.abrinscri'),
-                                            
                                         ]);
                                     }
                                 }
