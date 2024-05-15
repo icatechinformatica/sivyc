@@ -136,7 +136,7 @@ else{$tipo='CURSO';}
             <h6><small><b>C.c.p. {{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo.<b></small></h6>
             <br><br><small><b>Valido: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
-            <br><small><b>Elaboró: @if(!is_null($data_supre->elabora)){{$data_supre->elabora['nombre']}}.- {{$data_supre->elabora['puesto']}}@else{{$funcionarios['elabora']}}.- {{$funcionarios['elaborap']}}@endif</b></small></h6>
+            <br><small><b>Elaboró: @if(!is_null($data_supre->elabora)){{strtoupper($data_supre->elabora['nombre'])}}.- {{strtoupper($data_supre->elabora['puesto'])}}@else{{$funcionarios['elabora']}}.- {{$funcionarios['elaborap']}}@endif</b></small></h6>
         </div>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">

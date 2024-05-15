@@ -211,7 +211,7 @@ if($data->tipo_curso=='CERTIFICACION'){
                     <b><small>C.c.p.{{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.-Mismo fin.</small></b><br/>
                     <b><small>Archivo<small></b><br/>
                     <b><small>Validó: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.</small></b><br/>
-                    <b><small>Elaboró: @if(!is_null($data->elabora)){{$data->elabora->nombre}}.- {{$data->elabora->puesto}}@else{{$funcionarios['elabora']}}.- {{$funcionarios['elaborap']}}@endif.</small></b>
+                    <b><small>Elaboró: @if(!is_null($data->elabora)){{strtoupper($data->elabora->nombre)}}.- {{strtoupper($data->elabora->puesto)}}@else{{$funcionarios['elabora']}}.- {{$funcionarios['elaborap']}}@endif.</small></b>
                 </p>
             </div>
         </div>

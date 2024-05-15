@@ -1788,8 +1788,8 @@ class supreController extends Controller
             'ccp2p' => $ccp2->cargo,
             'delegado' => $delegado->nombre,
             'delegadop' => $delegado->cargo,
-            'elabora' => Auth::user()->name,
-            'elaborap' => Auth::user()->puesto
+            'elabora' => strtoupper(Auth::user()->name),
+            'elaborap' => strtoupper(Auth::user()->puesto)
         ];
 
         return $funcionarios;
@@ -1827,8 +1827,8 @@ class supreController extends Controller
             'ccp3p' => $ccp3->cargo,
             'delegado' => $delegado->nombre,
             'delegadop' => $delegado->cargo,
-            'elabora' => Auth::user()->name,
-            'elaborap' => Auth::user()->puesto
+            'elabora' => strtoupper(Auth::user()->name),
+            'elaborap' => strtoupper(Auth::user()->puesto)
         ];
 
         return $funcionarios;
