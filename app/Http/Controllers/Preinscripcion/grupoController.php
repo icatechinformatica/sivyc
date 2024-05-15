@@ -542,19 +542,20 @@ class grupoController extends Controller
                                             $abrins = ($diferencia > 0) ? 'EP' : 'PI';
                                         }
                                         Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]); 
-                                    }
                                     
-                                    ///SI CAMBIA DE TIPO DE PAGO Y REDUCCION CANCELADA=> SE ACTUALIZA LOS COSTOS EN tbl_inscriçion
-                                    if ($tc_curso->status_curso == 'EDICION' AND $_SESSION['folio_grupo']) {                                        
-                                        Inscripcion::join('alumnos_registro', function ($join) {
-                                            $join->on('tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
-                                                 ->where('tbl_inscripcion.folio_grupo', '=', $_SESSION['folio_grupo']);                                      
-                                        })
-                                        ->update([
-                                            'tbl_inscripcion.costo' => DB::raw('alumnos_registro.costo'),
-                                            'tbl_inscripcion.tinscripcion' => DB::raw('alumnos_registro.tinscripcion'),
-                                            'tbl_inscripcion.abrinscri' => DB::raw('alumnos_registro.abrinscri'),
-                                        ]);
+                                    
+                                        ///SI CAMBIA DE TIPO DE PAGO Y REDUCCION CANCELADA=> SE ACTUALIZA LOS COSTOS EN tbl_inscriçion
+                                        if ($tc_curso->status_curso == 'EDICION' AND $_SESSION['folio_grupo']) {   
+                                            DB::table('tbl_inscripcion')
+                                            ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')                                        
+                                            ->where('tbl_inscripcion.folio_grupo', $_SESSION['folio_grupo'])
+                                            ->where('alumnos_registro.id', $key)                                            
+                                            ->update([
+                                                'tbl_inscripcion.costo' => $pago,
+                                                'tbl_inscripcion.tinscripcion' => $tinscripcion,
+                                                'tbl_inscripcion.abrinscri' => $abrins
+                                            ]);
+                                        }
                                     }
                                 }
                                 
