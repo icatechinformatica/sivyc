@@ -131,13 +131,24 @@
                             HORARIO: {{date("H:i", strtotime($curso->hini))}} A {{date("H:i", strtotime($curso->hfin))}} HRS.</td>
                         {{-- <td align="center">{{$curso->primer_folio.' - '.$curso->ultimo_folio}}</td> --}}
                         <td align="center">
-                            @for ($i = 0; $i < count($rango_folios[$key]); $i++)
-                                @if ($i % 2 == 0)
-                                    {{'A'.$rango_folios[$key][$i].' -'}}
-                                @else
-                                    {{'A'.$rango_folios[$key][$i]}}
+                            @php
+                                $numerosUnicos = $numerosDuplicados = [];
+                                foreach ($rango_folios[$key] as $numero) {
+                                    if (in_array($numero, $numerosUnicos)) { // Si el número ya está en el array de números únicos, lo movemos al array de duplicados
+                                        $numerosDuplicados[] = $numero;
+                                        continue;
+                                    }
+                                    $numerosUnicos[] = $numero; // Si no está en el array de números únicos, lo agregamos ahí
+                                }
+                            @endphp
+                            @foreach ($numerosUnicos as $indice => $num)
+                                @if (!in_array($num, $numerosDuplicados))
+                                    @if ($indice % 2 == 0) {{'A'.$num.' - ' }} @else {{'A'.$num }} @endif
                                 @endif
-                            @endfor
+                            @endforeach
+                            @foreach ($numerosDuplicados as $ind => $dup)
+                                @if ($ind == 0) {{'A'.$dup}} @else {{','.'A'.$dup}} @endif
+                            @endforeach
                         </td>
                         <td>{{$curso->cantidad_folios}}</td>
                     </tr>
