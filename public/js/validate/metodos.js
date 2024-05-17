@@ -137,8 +137,10 @@ $(function(){
 
 
     $("input[type=text], textarea, select").keyup(function () {
-        var inputPosition = this.selectionStart;
-        this.value = this.value.toUpperCase();
-        this.selectionStart = this.selectionEnd = inputPosition;
+        if (this.id !== 'observacion') {
+            var inputPosition = this.selectionStart;
+            this.value = this.value.toUpperCase();
+            this.selectionStart = this.selectionEnd = inputPosition;
+        }
     });
 });

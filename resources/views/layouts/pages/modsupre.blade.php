@@ -94,34 +94,34 @@
         <div class="form-row">
             <div class="form-group col-md-6"> <!--  -->
                 <label for="inputremitente" class="control-label">Remitente</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre">
+                <input type="text" class="form-control" aria-required="true" readonly value="{{$funcionarios['director']}}" id="remitente" name="remitente" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!--  -->
                 <label for="inputremitente" class="control-label">Puesto</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getremitente->puesto }}" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
-                <input id="id_remitente" name="id_remitente" type="text" value="{{$getremitente->id}}" hidden>
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['directorp']}}"  id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
+                {{-- <input id="id_remitente" name="id_remitente" type="text" value="{{$getremitente->id}}" hidden> --}}
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Valida</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{$getvalida->nombre}} {{$getvalida->apellidoPaterno}} {{$getvalida->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['delegado']}}" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Valida</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getvalida->puesto }}" onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto">
-                <input id="id_valida" name="id_valida" type="text" value="{{$getvalida->id}}" hidden>
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['delegadop']}}"  id="puesto_valida" name="puesto_valida" placeholder="Puesto">
+                {{-- <input id="id_valida" name="id_valida" type="text" value="{{$getvalida->id}}" hidden> --}}
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Elabora</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['elabora']}}" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Elabora</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getelabora->puesto }}" onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
-                <input id="id_elabora" name="id_elabora" type="text" value="{{$getelabora->id}}" hidden>
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['elaborap']}}" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
+                {{-- <input id="id_elabora" name="id_elabora" type="text" value="{{$getelabora->id}}" hidden> --}}
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -167,7 +167,7 @@
             @endif --}}
         </div>
         {{-- <input id="keyfield" name="keyfield" hidden value="{{$keygen}}"> --}}
-        <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}">
+        {{-- <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}"> --}}
         {{-- <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button> --}}
         <br><br><br>
         <div class="row">

@@ -93,7 +93,9 @@ class supreController extends Controller
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         $unidad = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
 
-        return view('layouts.pages.delegacionadmin', compact('unidades','unidad'));
+        $funcionarios = $this->funcionarios_supre($unidad->ubicacion);
+
+        return view('layouts.pages.delegacionadmin', compact('unidades','unidad','funcionarios'));
     }
 
     public function store(Request $request) {
@@ -126,7 +128,7 @@ class supreController extends Controller
             }
             $supre = new supre();
             $curso_validado = new tbl_curso();
-            $directorio = new supre_directorio();
+            // $directorio = new supre_directorio();
 
             //Guarda Solicitud
             $supre->unidad_capacitacion = strtoupper($request->unidad);
@@ -134,19 +136,22 @@ class supreController extends Controller
             $supre->fecha = strtoupper($request->fecha);
             $supre->status = 'En_Proceso';
             $supre->fecha_status = strtoupper($request->fecha);
+            $supre->elabora = ['nombre' => $request->nombre_elabora,
+                               'puesto' => $request->puesto_elabora];
+
             $supre->save();
             // auth()->user()->notify(new SupreNotification($supre));
 
             $id = $supre->id;
-            $directorio->supre_dest = $request->id_destino;
-            $directorio->supre_rem = $request->id_remitente;
-            $directorio->supre_valida = $request->id_valida;
-            $directorio->supre_elabora = $request->id_elabora;
-            $directorio->supre_ccp1 = $request->id_ccp1;
-            $directorio->supre_ccp2 = $request->id_ccp2;
-            $directorio->id_supre = $id;
-            $directorio->save();
-            $id_directorio = $directorio->id;
+            // $directorio->supre_dest = $request->id_destino;
+            // $directorio->supre_rem = $request->id_remitente;
+            // $directorio->supre_valida = $request->id_valida;
+            // $directorio->supre_elabora = $request->id_elabora;
+            // $directorio->supre_ccp1 = $request->id_ccp1;
+            // $directorio->supre_ccp2 = $request->id_ccp2;
+            // $directorio->id_supre = $id;
+            // $directorio->save();
+            // $id_directorio = $directorio->id;
 
             //Guarda Folios
             foreach ($request->addmore as $key => $value)
@@ -231,7 +236,7 @@ class supreController extends Controller
 
             // return redirect()->route('supre-inicio')
             //     ->with('success','Solicitud de Suficiencia Presupuestal agregado');
-            return view('layouts.pages.suprecheck',compact('id','id_directorio'));
+            return view('layouts.pages.suprecheck',compact('id'));
         }
         else
         {
@@ -252,7 +257,7 @@ class supreController extends Controller
         $getccp1 = null;
         $getccp2 = null;
 
-        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
+        // $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
 
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
@@ -264,18 +269,20 @@ class supreController extends Controller
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                             ->GET();
-        if($directorio->supre_rem != NULL)
-        {
-            $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
-        }
-        if($directorio->supre_valida != NULL)
-        {
-            $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
-        }
-        if($directorio->supre_elabora != NULL)
-        {
-            $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
-        }
+        // if($directorio->supre_rem != NULL)
+        // {
+        //     $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        // }
+        // if($directorio->supre_valida != NULL)
+        // {
+        //     $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
+        // }
+        // if($directorio->supre_elabora != NULL)
+        // {
+        //     $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
+        // }
+
+        $funcionarios = $this->funcionarios_supre($getsupre->unidad_capacitacion);
         $getfolios[0]->mov_bancario = json_decode($getfolios[0]->mov_bancario);
 
         $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
@@ -288,7 +295,7 @@ class supreController extends Controller
                 ->Where('id',$getfolios[0]->id)
                 ->First();
         }
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios','getremitente','getvalida','getelabora','directorio', 'unidadsel','unidadlist','recibo'));
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios', 'unidadsel','unidadlist','recibo','funcionarios'));
     }
 
     public function solicitud_mod_guardar(Request $request)
@@ -299,20 +306,24 @@ class supreController extends Controller
         $curso_validado = new tbl_curso();
         $id_directorio = $request->id_directorio;
 
+        $elabora = ['nombre' => $request->nombre_elabora,
+                    'puesto' => $request->puesto_elabora];
+
         supre::where('id', '=', $request->id_supre)
         ->update(['status' => 'En_Proceso',
                   'unidad_capacitacion' => $request->unidad,
                   'no_memo' => $request->no_memo,
                   'fecha' => $request->fecha,
-                  'fecha_status' => carbon::now()]);
+                  'fecha_status' => carbon::now(),
+                  'elabora' => $elabora]);
 
-        supre_directorio::where('id', '=', $request->id_directorio)
-        ->update(['supre_dest' => $request->id_destino,
-                  'supre_rem' => $request->id_remitente,
-                  'supre_valida' => $request->id_valida,
-                  'supre_elabora' => $request->id_elabora,
-                  'supre_ccp1' => $request->id_ccp1,
-                  'supre_ccp2' => $request->id_ccp2,]);
+        // supre_directorio::where('id', '=', $request->id_directorio)
+        // ->update(['supre_dest' => $request->id_destino,
+        //           'supre_rem' => $request->id_remitente,
+        //           'supre_valida' => $request->id_valida,
+        //           'supre_elabora' => $request->id_elabora,
+        //           'supre_ccp1' => $request->id_ccp1,
+        //           'supre_ccp2' => $request->id_ccp2,]);
 
             if($request->id_supre != NULL)
             {
@@ -383,8 +394,8 @@ class supreController extends Controller
             ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
             ->Where('tabla_supre.id',$data->id)
             ->Value('fecha_apertura');
-        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+
+        $funcionarios = $this->funcionarios_supre($data->unidad_capacitacion);
         $criterio_pago = DB::TABLE('criterio_pago')
             ->SELECT('cp','perfil_profesional')
             ->JOIN('tbl_cursos','tbl_cursos.cp','criterio_pago.id')
@@ -394,14 +405,14 @@ class supreController extends Controller
         if($criterio_pago == null) {
             $criterio_pago = DB::TABLE('criterio_pago')->SELECT('id AS cp','perfil_profesional')->WHERE('id','11')->FIRST();
         }
-        $delegado = DB::TABLE('tbl_unidades')->SELECT('delegado_administrativo','pdelegado_administrativo')->WHERE('unidad',$data->unidad_capacitacion)->FIRST();
+
 
         // $notification = DB::table('notifications')
         //                 ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
         //                 ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
         // dd($notification);
 
-        return view('layouts.pages.valsupre',compact('data','getremitente','directorio','criterio_pago','delegado','fecha_apertura'));
+        return view('layouts.pages.valsupre',compact('data','criterio_pago','fecha_apertura','funcionarios'));
     }
 
     public function supre_rechazo(Request $request){
@@ -450,13 +461,6 @@ class supreController extends Controller
         $supre->fecha_status = carbon::now();
         $supre->observacion_validacion = $request->observacion;
         $supre->save();
-
-        supre_directorio::where('id', '=', $request->directorio_id)
-        ->update(['val_firmante' => $request->id_firmante,
-                  'val_ccp1' => $request->id_ccp1,
-                  'val_ccp2' => $request->id_ccp2,
-                  'val_ccp3' => $request->id_ccp3,
-                  'val_ccp4' => $request->id_ccp4,]);
 
         folio::where('id_supre', '=', $request->id)
         ->update(['status' => 'Validado']);
@@ -1188,49 +1192,15 @@ class supreController extends Controller
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
-
         $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
                                 ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
                                 ->FIRST();
         $unidad->cct = substr($unidad->cct, 0, 4);
         $direccion = explode("*", $unidad->direccion);
 
-        $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-        ->Where('o.id',9)
-        ->Where('f.activo', 'true')
-        ->First();
+        $funcionarios = $this->funcionarios_supre($data_supre->unidad_capacitacion);
 
-        $getremitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-        ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
-        ->Where('o.id_parent',1)
-        ->Where('f.activo', 'true')
-        ->Where('u.unidad', $unidad->ubicacion)
-        ->First();
-
-        $ccp1 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-        ->Where('o.id',6)
-        ->Where('f.activo', 'true')
-        ->First();
-
-        $ccp2 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-        ->Where('o.id',13)
-        ->Where('f.activo', 'true')
-        ->First();
-
-        $getelabora = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-        ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-        ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
-        ->Where('f.activo', 'true')
-        ->Where('u.unidad', $unidad->ubicacion)
-        ->Where('o.nombre', 'LIKE', '%DELEGA%')
-        ->First();
-
-
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getremitente','getelabora','unidad','distintivo','uj','direccion','destino','ccp1','ccp2'));
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','unidad','distintivo','uj','direccion','funcionarios'));
         return  $pdf->stream('medium.pdf');
     }
 
@@ -1329,13 +1299,7 @@ class supreController extends Controller
         $direccion = tbl_unidades::WHERE('unidad',$data2->unidad_capacitacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $getremitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
-            ->Where('o.id_parent',1)
-            ->Where('f.activo', 'true')
-            ->Where('u.unidad', $data2->unidad_capacitacion)
-            ->First();
+        $funcionarios = $this->funcionarios_supre($data2->unidad_capacitacion);
 
         $date = strtotime($data2->fecha);
         $D = date('d', $date);
@@ -1347,7 +1311,7 @@ class supreController extends Controller
         $Mv = $this->monthToString(date('m',$datev));
         $Yv = date("Y",$datev);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','distintivo','direccion','criterio'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','funcionarios','distintivo','direccion','criterio'));
         $pdf->setPaper('A4', 'Landscape');
 
         return $pdf->stream('download.pdf');
@@ -1452,47 +1416,9 @@ class supreController extends Controller
 
         //mejorar los querys hacerlos en uno y solo agregarles el id_parent a parte
 
-        $para = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
-            ->Where('o.id_parent',1)
-            ->Where('f.activo', 'true')
-            ->Where('u.unidad', $data2->unidad_capacitacion)
-            ->First();
+        $funcionarios = $this->funcionarios_valsupre($data2->unidad_capacitacion);
 
-        $getfirmante = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id',9)
-            ->Where('f.activo', 'true')
-            ->First();
-
-        $getccp1 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id', 1)
-            ->Where('f.activo', 'true')
-            ->First();
-
-        $getccp2 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id', 6)
-            ->Where('f.activo', 'true')
-            ->First();
-
-        $getccp3 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id', 13)
-            ->Where('f.activo', 'true')
-            ->First();
-
-        $getccp4 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
-            ->Where('f.activo', 'true')
-            ->Where('u.unidad', $data2->unidad_capacitacion)
-            ->Where('o.nombre', 'LIKE', '%DELEGA%')
-            ->First();
-
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','para','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos','distintivo','direccion','criterio'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','recursos','distintivo','direccion','criterio','funcionarios'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
 
@@ -1831,6 +1757,81 @@ class supreController extends Controller
         $impuestos['isr_determinado'] = floatval(number_format($impuestos['impuesto_marginal'] + $impuestos['cuota_fija'], 2, '.', ''));
         $impuestos['ingreso_neto'] = floatval(number_format($impuestos['subtotal'] - $impuestos['isr_determinado'], 2, '.', ''));
         return $impuestos;
+    }
+
+    public function funcionarios_supre($unidad) {
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true');
+
+        $direc = $direc->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $destino = $destino->Where('o.id',9)->First();
+        $ccp1 = $ccp1->Where('o.id',6)->First();
+        $ccp2 = $ccp2->Where('o.id',13)->First();
+        $delegado = $delegado->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DELEG%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $funcionarios = [
+            'director' => $direc->nombre,
+            'directorp' => $direc->cargo,
+            'destino' => $destino->nombre,
+            'destinop' => $destino->cargo,
+            'ccp1' => $ccp1->nombre,
+            'ccp1p' => $ccp1->cargo,
+            'ccp2' => $ccp2->nombre,
+            'ccp2p' => $ccp2->cargo,
+            'delegado' => $delegado->nombre,
+            'delegadop' => $delegado->cargo,
+            'elabora' => strtoupper(Auth::user()->name),
+            'elaborap' => strtoupper(Auth::user()->puesto)
+        ];
+
+        return $funcionarios;
+    }
+
+    public function funcionarios_valsupre($unidad) {
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $ccp3 = clone $delegado = clone $remitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true');
+
+        $direc = $direc->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $remitente = $remitente->Where('o.id',9)->First();
+        $ccp1 = $ccp1->Where('o.id',1)->First();
+        $ccp2 = $ccp2->Where('o.id',6)->First();
+        $ccp3 = $ccp3->Where('o.id',13)->First();
+        $delegado = $delegado->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DELEG%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $funcionarios = [
+            'director' => $direc->nombre,
+            'directorp' => $direc->cargo,
+            'remitente' => $remitente->nombre,
+            'remitentep' => $remitente->cargo,
+            'ccp1' => $ccp1->nombre,
+            'ccp1p' => $ccp1->cargo,
+            'ccp2' => $ccp2->nombre,
+            'ccp2p' => $ccp2->cargo,
+            'ccp3' => $ccp3->nombre,
+            'ccp3p' => $ccp3->cargo,
+            'delegado' => $delegado->nombre,
+            'delegadop' => $delegado->cargo,
+            'elabora' => strtoupper(Auth::user()->name),
+            'elaborap' => strtoupper(Auth::user()->puesto)
+        ];
+
+        return $funcionarios;
     }
 
     public function isr_finder($importe, $consulta)

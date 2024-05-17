@@ -262,7 +262,7 @@ class ContratoController extends Controller
         }
 
         $año_referencia = '01-01-' . CARBON::now()->format('Y');
-        $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
+        $uni = $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
 
         $xpld = explode('-', $data->folio_validacion);
         $counter = strlen($xpld[3]);
@@ -319,6 +319,7 @@ class ContratoController extends Controller
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
         // --- APARTADO DE SOLICITUD DE PAGO ---
+        $funcionarios = array();
         $X = new contratos();
         $folio_p = new folio();
         $dataf = $folio_p::where('id_folios', '=', $id)->first();
@@ -329,9 +330,12 @@ class ContratoController extends Controller
                                       'tbl_cursos.nombre','tbl_cursos.curso','tbl_cursos.inicio','tbl_cursos.termino')
                                 ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
                                 ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
+
+        $funcionarios = $this->funcionarios_pagos($uni->ubicacion);
+
         // dd($uni_contrato);
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada','memoval','regimen','contrato','director','testigo1','testigo2','testigo3','fechaActual'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada','memoval','regimen','contrato','director','testigo1','testigo2','testigo3','fechaActual','funcionarios'));
     }
 
     public function contrato_save(Request $request)
@@ -666,7 +670,9 @@ class ContratoController extends Controller
             $pago = $data->importe_total;
         }
 
-        // check para validar si todavia se puede firmar electronicamente
+        $funcionarios = $this->funcionarios_pagos($datacon->unidad_capacitacion);
+
+        // check para validar si todavia se puede firmar electronicamente el contrato
         $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$data->clave)
             ->Where('tipo_archivo','Contrato')
             ->First();
@@ -688,8 +694,8 @@ class ContratoController extends Controller
             }
         }
         // FINAL del check
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago','fechaActual','generarEfirma','funcionarios'));
 
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago','fechaActual','generarEfirma'));
     }
 
     public function save_mod(Request $request){
@@ -759,7 +765,6 @@ class ContratoController extends Controller
 
         // metodo de solicitud de pagos
         if($this->setsolpa($request) == true) {
-
             $id_instructor  = DB::TABLE('contratos')
             ->JOIN('folios','folios.id_folios','contratos.id_folios')
             ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
@@ -796,6 +801,8 @@ class ContratoController extends Controller
             $pago->id_curso = $id_curso;
             // $pago->fecha_agenda = $request->fecha_agenda;
             $pago->fecha_status = carbon::now();
+            $pago->elabora = ['nombre' => $request->nombre_elabora,
+                              'puesto' => $request->puesto_elabora];
 
             if($request->arch_asistencia != NULL)
             {
@@ -814,15 +821,15 @@ class ContratoController extends Controller
             }
 
             $pago->save();
-            contrato_directorio::updateOrInsert(
-                ['id_contrato' => $request->id_contrato],
-                ['solpa_iddirector' => $request->id_remitente,
-                    'solpa_elaboro' => $request->id_elabora,
-                    'solpa_para' => $request->id_destino,
-                    'solpa_ccp1' => $request->id_ccp1,
-                    'solpa_ccp2' => $request->id_ccp2,
-                    'solpa_ccp3' => $request->id_ccp3]
-            );
+            // contrato_directorio::updateOrInsert(
+            //     ['id_contrato' => $request->id_contrato],
+            //     ['solpa_iddirector' => $request->id_remitente,
+            //         'solpa_elaboro' => $request->id_elabora,
+            //         'solpa_para' => $request->id_destino,
+            //         'solpa_ccp1' => $request->id_ccp1,
+            //         'solpa_ccp2' => $request->id_ccp2,
+            //         'solpa_ccp3' => $request->id_ccp3]
+            // );
 
             if(isset($request->arch_factura))
             {
@@ -1432,7 +1439,7 @@ class ContratoController extends Controller
                               'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido',
+                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido','pagos.elabora',
                               'tbl_unidades.ubicacion')
                         ->WHERE('folios.id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -1456,42 +1463,15 @@ class ContratoController extends Controller
             $M = $this->toMonth(date('m',$date));
             $Y = date("Y",$date);
         }
-        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
-        $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
-
-        $director = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
-            ->Where('o.id_parent',1)
-            ->Where('f.activo', 'true')
-            ->Where('u.unidad', $data->ubicacion)
-            ->First();
-
-        $ccp1 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id',1)
-            ->Where('f.activo', 'true')
-            ->First();
-
-        $ccp2 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id',12)
-            ->Where('f.activo', 'true')
-            ->First();
-
-        $ccp3 = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
-            ->Where('o.nombre','LIKE','DELEG%')
-            ->Where('f.activo', 'true')
-            ->Where('u.unidad', $data->ubicacion)
-            ->First();
-        // dd($para);
+        // $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
+        // $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
+        if(!is_null($data->elabora)) {$data->elabora = json_decode($data->elabora);}
+        $funcionarios = $this->funcionarios_pagos($data->ubicacion);
 
         $direccion = tbl_unidades::WHERE('unidad',$data->unidad_capacitacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','ccp1','ccp2','ccp3','para','director','distintivo','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','distintivo','direccion','funcionarios'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 
@@ -1642,13 +1622,7 @@ class ContratoController extends Controller
         $requiredFields = [
             'no_memo',
             'liquido',
-            'solicitud_fecha',
-            'id_remitente',
-            'id_elabora',
-            'id_destino',
-            'id_ccp1',
-            'id_ccp2',
-            'id_ccp3',
+            'solicitud_fecha'
         ];
 
         foreach ($requiredFields as $field) {
@@ -1658,5 +1632,41 @@ class ContratoController extends Controller
         }
 
         return true;
+    }
+
+    public function funcionarios_pagos($unidad) {
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true');
+
+        $direc = $direc->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $destino = $destino->Where('o.id',13)->First();
+        $ccp1 = $ccp1->Where('o.id',1)->First();
+        $ccp2 = $ccp2->Where('o.id',12)->First();
+        $delegado = $delegado->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DELEG%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $funcionarios = [
+            'director' => $direc->nombre,
+            'directorp' => $direc->cargo,
+            'destino' => $destino->nombre,
+            'destinop' => $destino->cargo,
+            'ccp1' => $ccp1->nombre,
+            'ccp1p' => $ccp1->cargo,
+            'ccp2' => $ccp2->nombre,
+            'ccp2p' => $ccp2->cargo,
+            'delegado' => $delegado->nombre,
+            'delegadop' => $delegado->cargo,
+            'elabora' => strtoupper(Auth::user()->name),
+            'elaborap' => strtoupper(Auth::user()->puesto)
+        ];
+
+        return $funcionarios;
     }
 }
