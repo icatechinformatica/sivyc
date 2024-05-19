@@ -820,4 +820,219 @@ class CursosController extends Controller
             return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
         }
     }
+
+    ## By Jose Luis / FUNCION GUARDAR DATOS DE LA CARTA DESCRIPTIVA
+    public function carta_descriptiva($id, $parte)
+    {
+        $idCurso = base64_decode($id);
+        $tparte = $parte;
+        $json_general = $json_tematico = $json_didactico = [];
+
+        $curso = DB::Table('cursos as cu')->SELECT('cu.id','cu.nombre_curso','cu.modalidad','cu.horas', 'cu.duracion','cu.tipo_curso',
+                    'especialidades.nombre AS especialidad', 'cu.id_especialidad')
+                    ->WHERE('cu.id', '=', $idCurso)
+                    ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cu.id_especialidad')
+                    ->FIRST();
+
+        $datos_carta = DB::table('tbl_carta_descriptiva')->select('id', 'datos_generales', 'cont_tematico', 'rec_didacticos')
+        ->where('id_curso', '=', $idCurso)->first();
+
+        if(isset($datos_carta->datos_generales)){$json_general = json_decode($datos_carta->datos_generales, true);}
+        if(isset($datos_carta->cont_tematico)){$json_tematico = json_decode($datos_carta->cont_tematico, true);}
+        if(isset($datos_carta->rec_didacticos)){$json_didactico = json_decode($datos_carta->rec_didacticos, true);}
+        // dd(is_array($json_tematico));
+        // dd($json_general, count($json_general));
+
+        return view('layouts.pages.frm_cartadescrip', compact('idCurso', 'tparte', 'curso', 'json_general', 'json_tematico', 'json_didactico'));
+    }
+
+
+    public function edit_cartadescrip(Request $request)
+    {
+        $id_curso = $request->input('id_curso');
+        $indice = $request->input('indice');
+        $accion = $request->input('accion');
+
+        $jsonBActual = DB::table('tbl_carta_descriptiva')->where('id_curso', $id_curso)->value('cont_tematico');
+        $arrayObjetos = json_decode($jsonBActual, true);
+
+        if($accion == 'eliminar'){
+            if (isset($arrayObjetos[$indice])) {
+                // Eliminar el objeto usando unset
+                unset($arrayObjetos[$indice]);
+                $nuevoJsonB = json_encode($arrayObjetos);
+                DB::table('tbl_carta_descriptiva')->where('id_curso', $id_curso)->update(['cont_tematico' => $nuevoJsonB]);
+                return response()->json(['status' => 200, 'mensaje' => '¡Registro eliminado!', 'accion' => $accion]);
+            }else{
+                return response()->json(['status' => 500, 'mensaje' => 'No existe el indice']);
+            }
+
+        }else if($accion == 'editar'){
+            return response()->json(['status' => 200, 'mensaje' => 'Carga de datos del registro', 'accion' => $accion, 'datos' => $arrayObjetos[$indice], 'indice' => $indice]);
+        }
+
+    }
+
+    //por post
+    public function save_parte_uno(Request $request)
+    {
+        // dd($request->input('id_curso'));
+        $data = [];
+        $mensaje = "";
+        $id_curso = $request->input('id_curso');
+        if($id_curso == null || $id_curso == '') return "No se encontró el id del curso";
+
+        $data = [
+            "entidad" => $request->input('entidad'),
+            "tipocap" => $request->input('tipocap'),
+            "ciclo_esc" => $request->input('ciclo_esc'),
+            "duracion" => $request->input('duracion'),
+            "pogrm_estra" => $request->input('pogrm_estra'),
+            "form_profesion" => $request->input('form_profesion'),
+            "modalidad" => $request->input('modalidad'),
+            "especialidad" => $request->input('especialidad'),
+            "perfil_instruc" => $request->input('perfil_instruc'),
+            "curso" => $request->input('curso'),
+            "aprendizaje_esp" => $request->input('aprendizaje_esp'),
+            "obj_especificos" => $request->input('obj_especificos'),
+            "transversalidad" => $request->input('transversalidad'),
+            "dirigido" => $request->input('dirigido'),
+            "proces_evalua" => $request->input('proces_evalua'),
+            "observaciones" => $request->input('observaciones')
+        ];
+
+        if(count($data) > 0){
+            try {
+                $result = DB::table('tbl_carta_descriptiva')
+                ->UpdateOrInsert(
+                    ['id_curso'=>$id_curso],
+                    ['id_curso'=>$id_curso, 'datos_generales' => json_encode($data),'iduser_created'=> Auth::user()->id]);
+
+                if ($result) {
+                    $mensaje = "Datos guardados con exito";
+                    return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'general'])->with('message', $mensaje);
+                }
+            } catch (\Throwable $th) {
+                $mensaje = "Error: ".$th->getMessage();
+                return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'general'])->with('message', $mensaje);
+            }
+        }else{
+            $mensaje = "No contiene datos para guardar";
+            return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'general'])->with('message', $mensaje);
+        }
+
+        // cursos-catalogo.cartadescriptiva
+    }
+
+
+    public function save_parte_tres(Request $request)
+    {
+        // dd($request->input('id_curso'));
+        $data = [];
+        $mensaje = "";
+        $id_curso = $request->input('id_curso3');
+        if($id_curso == null || $id_curso == '') return "No se encontró el id del curso";
+
+        $data = [
+            "elem_apoyo" => $request->input('elem_apoyo'),
+            "auxiliares_ense" => $request->input('auxiliares_ense'),
+            "referencias" => $request->input('referencias')
+        ];
+
+        if(count($data) > 0){
+            try {
+                $result = DB::table('tbl_carta_descriptiva')
+                ->UpdateOrInsert(
+                    ['id_curso'=>$id_curso],
+                    ['id_curso'=>$id_curso, 'rec_didacticos' => json_encode($data),'iduser_created'=> Auth::user()->id]);
+
+                if ($result) {
+                    $mensaje = "Datos guardados con exito";
+                    return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'didactico'])->with('message', $mensaje);
+                }
+            } catch (\Throwable $th) {
+                $mensaje = "Error: ".$th->getMessage();
+                return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'didactico'])->with('message', $mensaje);
+            }
+        }else{
+            $mensaje = "No contiene datos para guardar";
+            return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'didactico'])->with('message', $mensaje);
+        }
+
+        // cursos-catalogo.cartadescriptiva
+    }
+
+
+    public function save_parte_dos(Request $request)
+    {
+
+        // dd($request->all());
+        $data_req = $request->all();
+        $id_curso = $request->input('id_curso2');
+        $indice_array = $request->input('indice_oculto');
+
+        $inputs = array_filter($data_req, function($value, $key) {
+            return preg_match('/^input\d+$/', $key) && !empty($value);
+        }, ARRAY_FILTER_USE_BOTH);
+        // Convierte los valores filtrados a mayúsculas
+        // $inputs = array_map('strtoupper', $inputs);
+
+        $nombre_modulo = mb_strtoupper($request->input('name_modulo'), 'UTF-8');
+
+        $consultaBD = DB::table('tbl_carta_descriptiva')->where('id_curso', $id_curso)->value('cont_tematico');
+        $data = json_decode($consultaBD, true);
+
+        $sel_hora = "";
+        $cursoHora = (int) $request->input('curso_hora');
+        if ($cursoHora > 1) {$sel_hora = "HORAS"; } else {$sel_hora = "HORA";}
+
+        if(is_null($indice_array)){ ## INSERTAR NUEVO REGISTRO EN EL JSON TEMATICO
+            if (!is_array($data)) {$data = [];}
+
+            $objeto = [
+                "name_modulo" => $nombre_modulo,
+                "estra_dida" => $request->input('estra_dida'),
+                "proceso_evalua" => $request->input('proceso_evalua'),
+                "curso_hora" => $request->input('curso_hora'),
+                "sel_horario" => $sel_hora,
+                "val_inputs" => $inputs
+            ];
+            $data[] = $objeto;
+        }else{ ## ACTUALIZAR EL REGISTRO MEDIANTE EL INDICE
+            if (isset($data[$indice_array])) {
+                $objeto = $data[$indice_array];
+
+                $objeto['name_modulo'] = $nombre_modulo;
+                $objeto['estra_dida'] = $request->input('estra_dida');
+                $objeto['proceso_evalua'] = $request->input('proceso_evalua');
+                $objeto['curso_hora'] = $request->input('curso_hora');
+                $objeto['sel_horario'] = $sel_hora;
+                $objeto['val_inputs'] = $inputs;
+                $data[$indice_array] = $objeto;
+            }
+        }
+
+        ##Inertar elementos
+        if(count($data) > 0){
+            try {
+                $result = DB::table('tbl_carta_descriptiva')
+                ->UpdateOrInsert(
+                    ['id_curso'=>$id_curso],
+                    ['id_curso'=>$id_curso, 'cont_tematico' => json_encode($data),'iduser_created'=> Auth::user()->id]);
+
+                if ($result) {
+                    $mensaje = "Datos guardados con exito";
+                    return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', $mensaje);
+                }
+            } catch (\Throwable $th) {
+                $mensaje = "Error: ".$th->getMessage();
+                return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', $mensaje);
+            }
+        }else{
+            $mensaje = "No contiene datos para guardar";
+            return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', $mensaje);
+        }
+
+    }
+
 }
