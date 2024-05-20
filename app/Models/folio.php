@@ -12,7 +12,7 @@ class folio extends Model
 
     protected $fillable = [
         'id_folios','numero_presupuesto','folio_validacion','iva','importe_hora','importe_total',
-        'id_supre','id_cursos','status','comentario','cancelo','permiso_editar','fecha_rechazado','impuestos'
+        'id_supre','id_cursos','status','comentario','cancelo','permiso_editar','fecha_rechazado','impuestos','edicion_pago'
     ];
 
     protected $casts = ['impuestos' => 'array'];
