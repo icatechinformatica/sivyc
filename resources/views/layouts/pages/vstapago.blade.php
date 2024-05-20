@@ -260,11 +260,19 @@
                                 Documentacion Validada
                                 Digitalmente: {{$itemData->recepcion}}
                                 @if(is_null($itemData->status_transferencia))
-                                    @can('contrato.validate')
-                                        <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
-                                            Retornar Recepción
-                                        </a>
-                                    @endcan
+                                    @if($itemData->edicion_pago == TRUE)
+                                        @can('contratos.create')
+                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}","{{$itemData->edicion_pago}}"]'>
+                                                EDITAR ENTREGA
+                                            </a>
+                                        @endcan
+                                    @else
+                                        @can('contrato.validate')
+                                            <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
+                                                Retorno o Edición
+                                            </a>
+                                        @endcan
+                                    @endif
                                 @else
                                     <br>En Layout de Pago
                                 @endif
@@ -330,7 +338,7 @@
                             @if ($itemData->status_recepcion == 'recepcion tradicional')
                                 @can('contrato.validate')
                                     <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
-                                        Retornar Recepción
+                                        Retorno o Edición
                                     </a>
                                 @endcan
                             @endif
@@ -1229,22 +1237,25 @@
 <!-- Modal Retornar Entrega Fisica de Documentacion-->
 <div class="modal fade" id="retornarRecepcionModal" role="dialog">
     <div class="modal-dialog">
-        <form method="POST" action="{{ route('retorno-entrega-fisica') }}" id="retornar_entrega">
+        <form method="POST" action="{{ route('edicion-entrega-fisica') }}" id="editar_entrega">
             @csrf
             <div class="modal-content">
                 <div class="modal-body" style="text-align:center">
                     <div style="text-align:center" class="form-group">
-                        <p>¿Retornar Entrega Fisica?</p>
-                        <input id="id_contrato_retorno_recepcion" name="id_retorno_recepcion" hidden>
-                        <p style="text-align: left; padding-left: 15%;"><small>Observacion de Retorno</small></p>
+                        <p>Retornar o Editar Documentación</p>
+                        <p style="text-align: left; padding-left: 15%;"><small>Observación</small></p>
                         <textarea name="observacion_retorno" id="observacion_retorno" cols="50" rows="5" required></textarea><br>
-                        <button style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-dismiss="modal">Cancelar</button>
-                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger" >Confirmar</button>
+                        <br>
+                        <p><b>Movimiento a Realizar</b></p>
+                        <button id="editar_btn" style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="submit" class="btn">EDITAR</button>
+                        <input id="id_contrato_retorno_recepcion" name="id_retorno_recepcion" hidden>
+                        <button id="retornar_btn" style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger">RETORNAR</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            {{-- retorno-entrega-fisica --}}
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </div>
         </form>
     </div>
@@ -1560,6 +1571,9 @@
         var id = button.data('id');
         console.log(id);
         document.getElementById('id_contrato_agenda').value = id[0];
+        if(id[14] == 1) {
+            $('#guardarenviar').hide();
+        }
         setAnchorHrefs(id, true, false);
 
         var datos = {valor: id['0']};
@@ -1573,7 +1587,7 @@
             request.done(( respuesta) =>
         {
             respuesta.forEach(element => {
-                console.log(element);
+                // console.log(element);
                 switch (element['tipo_archivo']) {
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
@@ -1623,6 +1637,10 @@
         // console.log(id);
         document.getElementById('id_contrato_agendac').value = id[0];
         setAnchorHrefs(id, false, false);
+
+        if(id[14] == 1) {
+            $('#guardarenviar').hide();
+        }
 
         var datos = {valor: id['0']};
         var url = '/efirma/busqueda';
@@ -1902,7 +1920,19 @@ function cerrarValidarCitaModal() {
     setTimeout(validando(event), 500);
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('editar_entrega');
+    const editarBtn = document.getElementById('editar_btn');
+    const retornarBtn = document.getElementById('retornar_btn');
 
+    editarBtn.addEventListener('click', function() {
+        form.action = '{{ route("edicion-entrega-fisica") }}';
+    });
+
+    retornarBtn.addEventListener('click', function() {
+        form.action = '{{ route("retorno-entrega-fisica") }}';
+    });
+});
 
 </script>
 @endsection

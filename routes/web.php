@@ -781,6 +781,7 @@ Route::post('/financieros/denegado/recepcion-entrega-fisica','webController\Pago
 Route::post('/financieros/aceptado/recepcion-entrega-fisica','webController\PagoController@recibido_entrega_fisica')->name('recibido-entrega-fisica');
 Route::get('/financieros/download-rar/{id_contrato}', 'webController\PagoController@downloadRar')->name('downloadRarPagos');
 Route::post('/financieros/retorno/entrega-fisica','webController\PagoController@retorno_validacion_entrega_fisica')->name('retorno-entrega-fisica');
+Route::post('/financieros/edicion/entrega-fisica','webController\PagoController@edicion_validacion_entrega_fisica')->name('edicion-entrega-fisica');
 Route::get('/financieros/reporte/cursos','reportesController\financierosReportesController@index')->name('financieros-reporte-cursos');
 Route::post('/financieros/reporte/cursos/xls','reportesController\financierosReportesController@cursos_xls')->name('financieros-reporte-cursos-xls');
 
