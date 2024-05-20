@@ -874,11 +874,11 @@ class aperturaController extends Controller
         $tabla_contenido = DB::table('tbl_cursos as c')
         ->select('c.id', 'c.curso', 'c.folio_grupo', 'c.clave', 'c.cespecifico', 'c.inicio',
         'c.termino', 'c.tcapacitacion', 'c.mod', 'c.nombre', 'c.hini', 'c.hfin')
-        ->selectRaw('(SELECT COUNT(id_curso) FROM public.tbl_folios WHERE id_curso = c.id) AS cantidad_folios')
+        ->selectRaw('(SELECT COUNT(id_curso) FROM public.tbl_folios WHERE id_curso = c.id AND motivo = \'ACREDITADO\') AS cantidad_folios')
         ->selectRaw('(SELECT MIN(folio) FROM public.tbl_folios WHERE id_curso = c.id) AS primer_folio')
         ->selectRaw('(SELECT MAX(folio) FROM public.tbl_folios WHERE id_curso = c.id) AS ultimo_folio')
         // ->selectRaw('(SELECT folio FROM public.tbl_folios WHERE id_curso = c.id) AS all_folios')
-        ->selectRaw('(SELECT STRING_AGG(folio, \',\') FROM public.tbl_folios WHERE id_curso = c.id) AS all_folios')
+        ->selectRaw('(SELECT STRING_AGG(folio, \',\') FROM public.tbl_folios WHERE id_curso = c.id AND motivo = \'ACREDITADO\') AS all_folios')
         ->join('tbl_cursos_expedientes as e', 'c.folio_grupo', '=', 'e.folio_grupo')
         ->whereJsonContains('e.sop_constancias->num_oficio', $numficio)
         ->orderByRaw('EXTRACT(MONTH FROM c.termino)')
