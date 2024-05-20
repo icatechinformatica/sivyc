@@ -53,15 +53,9 @@
                                 <h4 class="bg-warning text-center p-2">&nbsp;{{$data->status_folio}} &nbsp;</h4>
                             @endif
                             @if($data->file_pdf)
-                                @if($data->status_folio == 'CANCELADO') 
-                                    <a class="nav-link pt-0" href="{{ route('grupos.recibos.cancelado') }}" target="_blank">
-                                        <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
-                                    </a>
-                                @else
-                                    <a class="nav-link pt-0" href="{{$path_files}}{{ $data->file_pdf}}" target="_blank">
-                                        <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
-                                    </a>
-                                @endif
+                                <a class="nav-link pt-0" href="{{ route('grupos.recibos.descargar', ['folio_recibo' => $data->folio_recibo]) }}" target="_blank">
+                                    <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
+                                </a>
                             @endif
                         </div>                    
                 </div>       
@@ -195,15 +189,9 @@
                 <div class="row w-100 form-inline justify-content-end mt-4">                    
                     <h5 class="bg-light p-2">RECIBO No. <span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</b>&nbsp;</span></h5>
                     @if($data->file_pdf)
-                         @if($data->status_folio == 'CANCELADO') 
-                            <a class="nav-link pt-0" href="{{ route('grupos.recibos.cancelado') }}" target="_blank">
-                                <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
-                            </a>
-                        @else
-                            <a class="nav-link pt-0" href="{{$path_files}}{{ $data->file_pdf}}" target="_blank">
-                                <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
-                            </a>
-                        @endif
+                        <a class="nav-link pt-0" href="{{ route('grupos.recibos.descargar', ['folio_recibo' => $data->folio_recibo]) }}" target="_blank">
+                            <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
+                        </a>
                     @endif
                         
                     @if($movimientos)
