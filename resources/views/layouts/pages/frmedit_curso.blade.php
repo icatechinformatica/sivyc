@@ -78,7 +78,7 @@
         .selectBox2 {
             position: relative;
             width: 600px;
-            
+
         }
 
         .selectBox2 select {
@@ -139,7 +139,7 @@
     <div class="card-header">
         Catálogos / Cursos / Editar
     </div>
-    <div class="card card-body" style=" min-height:450px;"> 
+    <div class="card card-body" style=" min-height:450px;">
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -148,7 +148,7 @@
                         @endforeach
                     </ul>
                 </div><br />
-            @endif        
+            @endif
        <div class="col-lg-12 margin-tb">
         <form method="POST" action="{{ route('cursos-catalogo.update', ['id' => $cursos[0]->id ])}}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
         @csrf
@@ -173,14 +173,14 @@
                 MEMORÁNDUM ACTUALIZACIÓN
             </a>
             @endif
-            
+
             @if ($cursos[0]->file_carta_descriptiva)
             <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->file_carta_descriptiva}}" target="_blank">
                 CARTA DESCRIPTIVA
             </a>
             @endif
         </div>
-        <hr />        
+        <hr />
         <div class="form-row">
             <div class="form-group col-md-7">
                 <label for="nombrecurso" class="control-label">NOMBRE DEL CURSO</label>
@@ -195,7 +195,7 @@
                     @endforeach
                     <option value="0" @if($otrauni == TRUE) selected @endif>OTRO</option>
                 </select>
-            </div>            
+            </div>
             <div class="form-group col-md-2">
                 <div class="unidad_especificar" @if($otrauni == false) style="display: none" @endif>
                     <label for="unidad_ubicacion_especificar" class="control-label">ESPECIFIQUE</label>
@@ -242,33 +242,33 @@
                     <option {{ trim($cursos[0]->clasificacion) == "B-INTERMEDIO" ? "selected" : "" }} value="B-INTERMEDIO">B-INTERMEDIO</option>
                     <option {{ trim($cursos[0]->clasificacion) == "C-AVANZADO" ? "selected" : "" }} value="C-AVANZADO">C-AVANZADO</option>
                 </select>
-            </div>            
+            </div>
             <div class="form-group col-md-3">
                 <label for="costo" class="control-label">COSTO</label>
                 <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="COSTO" value="{{$cursos[0]->costo}}">
-            </div>          
+            </div>
             <div class="form-group col-md-3">
               <label for="duracion" class="control-label">DURACIÓN EN HORAS</label>
               <input type="text" class="form-control" id="duracion" name="duracion" placeholder="DURACIÓN EN HORAS" value="{{$cursos[0]->horas}}">
-            </div>            
+            </div>
         </div>
-        <div class="form-row">            
+        <div class="form-row">
             <div class="form-group col-md-4">
               <label for="perfil" class="control-label">PERFIL DE INGRESO SUGERIDO</label>
-              
+
               <select class="form-control" id="perfil" name="perfil">
                     <option value="">--SELECCIONAR--</option>
-                    @foreach ($perfil as $p)                        
+                    @foreach ($perfil as $p)
                         <option value="{{$p}}" {{$cursos[0]->perfil == $p ? "selected" : "" }} >{{$p}}</option>
                     @endforeach
                 </select>
-            </div>            
+            </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
               <label for="objetivo" class="control-label">OBJETIVO DEL CURSO</label>
               <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="4" placeholder="OBJETIVO DEL CURSO">{{ $cursos[0]->objetivo }}</textarea>
-            </div>          
+            </div>
             <div class="form-group col-md-6">
                 <label for="descripcionCurso" class="control-label">OBSERVACIONES</label>
                 <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="4" placeholder="DESCRIPCIÓN">{{ $cursos[0]->descripcion }}</textarea>
@@ -301,13 +301,13 @@
             <div class="form-group col-md-4">
                 <label for="documento_memo_actualizacion" class="control-label">Documento Memo Actualización</label>
                 <input type="file" class="form-control" id="documento_memo_actualizacion" name="documento_memo_actualizacion">
-            </div>           
+            </div>
             <div class="form-group col-md-4">
                 <label for="documento_memo_validacion" class="control-label">Documento Memo Validación</label>
                 <input type="file" class="form-control" id="documento_memo_validacion" name="documento_memo_validacion">
             </div>
         </div>
-        <div class="form-row">         
+        <div class="form-row">
             <div class="form-group col-md-6">
               <label for="fecha_validacion" class="control-label">Fecha Validación</label>
               <input type="text" class="form-control" id="fecha_validacion" name="fecha_validacion" value="{{$fechaVal}}">
@@ -321,9 +321,9 @@
             <div class="form-group col-md-3">
                 <label for="cambios_especialidad" class="control-label">CAMBIOS DE ESPECIALIDAD</label>
                 <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control" value="{{$cursos[0]->cambios_especialidad}}">
-            </div>            
+            </div>
             <div class="form-group col-md-3">
-                <label for="categoria" class="control-label">CATEGORIA</label>                
+                <label for="categoria" class="control-label">CATEGORIA</label>
                 <select class="form-control" id="categoria" name="categoria">
                     <option value="">--SELECCIONAR--</option>
                     @foreach ($categorias as $c)
@@ -404,8 +404,8 @@
                     </div>
                 </div>
             </div>
-        </div>        
-        <div class="form-row">                        
+        </div>
+        <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="file_carta_descriptiva" class="control-label">SUBIR CARTA DESCRIPTIVA</label>
                 <input type="file" class="form-control" id="file_carta_descriptiva" name="file_carta_descriptiva">
@@ -414,7 +414,7 @@
             <div class="form-group col-md-4  col-md-offset-2">
                 <label for="documento_solicitud_autorizacion" class="control-label">&nbsp;</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="true" name="proyecto" id="proyecto" @if($cursos[0]->proyecto==true){{"checked"}} @endif />                    
+                    <input class="form-check-input" type="checkbox" value="true" name="proyecto" id="proyecto" @if($cursos[0]->proyecto==true){{"checked"}} @endif />
                     <label class="form-check-label H6" for="flexCheckChecked">
                         PROYECTO
                     </label>
@@ -424,33 +424,42 @@
         <hr style="border-color:dimgray">
         <div class="form-row">
             <div class="form-group col-md-2">
-                <label for="categoria" class="control-label h6">CURSO/CERTIFICACIÓN</label>    
+                <label for="categoria" class="control-label h6">CURSO/CERTIFICACIÓN</label>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="CURSO" name="servicio[]" @if(in_array("CURSO",json_decode($cursos[0]->servicio))){{"checked"}} @endif >
                     <label class="form-check-label H6" for="flexCheckChecked">
                         CURSO
                     </label>
-                </div>  
+                </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="CERTIFICACION" name="servicio[]"  @if(in_array("CERTIFICACION",json_decode($cursos[0]->servicio))){{"checked"}} @endif>                    
+                    <input class="form-check-input" type="checkbox" value="CERTIFICACION" name="servicio[]"  @if(in_array("CERTIFICACION",json_decode($cursos[0]->servicio))){{"checked"}} @endif>
                     <label class="form-check-label H6" for="flexCheckChecked">
                         CERTIFICACIÓN
                     </label>
-                </div>      
+                </div>
             </div>
             <div class="form-group col-md-2">
-                <label for="categoria" class="control-label h6">ESTATUS DEL CURSO</label>                
+                <label for="categoria" class="control-label h6">ESTATUS DEL CURSO</label>
                 <select class="form-control" aria-label="estado" name="estado" id="estado">
                     <option value='1' @if($cursos[0]->estado==true){{"selected"}} @endif >ACTIVO</option>
                     <option value='2' @if($cursos[0]->estado==false){{"selected"}} @endif >INACTIVO</option>
                     <option value='3' @if(is_null($cursos[0]->estado)){{"selected"}} @endif >BAJA</option>
                 </select>
-            </div>            
+            </div>
             <div class="form-group col-md-8">
                 <label for="motivo" class="control-label h6">MOTIVO</label>
                 <textarea name="motivo" id="motivo" class="form-control"  rows="1" placeholder="MOTIVO">{{ trim($cursos[0]->motivo) }}</textarea>
             </div>
-        </div> <br/><br/>
+        </div>
+        {{-- By jose luis moreno --}}
+        <hr style="border-color:dimgray">
+        <span class="h5 mb-3">DE LA CARTA DESCRIPTIVA</span>
+        <div class="row ml-0 mt-3">
+            <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'general']) }}" class="btn-sm btn-primary">DATOS GENERALES</a>
+            <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'tematico']) }}" class="btn-sm btn-primary mx-3">CONTENIDO TEMÁTICO</a>
+            <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'didactico']) }}" class="btn-sm btn-primary">RECURSOS DIDÁCTICOS</a>
+        </div>
+        <hr style="border-color:dimgray">
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -458,7 +467,7 @@
                 </div>
                 <div class="pull-center">
                     <a class="btn" href="{{ route('curso-alta_baja', ['id' => $cursos[0]->id]) }}" >Activar por Unidad</a>                </div>
-                <div class="pull-right">                    
+                <div class="pull-right">
                     @can('cursos.update')
                         <button type="submit" class="btn btn-danger" >Guardar Cambios</button>
                     @endcan
@@ -481,7 +490,7 @@
             }else{
                 $('.unidad_especificar').css("display", "none");
             }
-        });        
+        });
         function showCheckboxes() {
             var checkboxes = document.getElementById("checkboxes");
             if (!expanded) {
