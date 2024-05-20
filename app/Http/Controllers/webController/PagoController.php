@@ -109,7 +109,7 @@ class PagoController extends Controller
             'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.soportes_instructor',
             'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tbl_cursos.modinstructor','tabla_supre.doc_validado',
             'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio',
-            'pagos.updated_at','pagos.status_transferencia','documentos_firmar.status AS dstat','arch_pago',
+            'pagos.updated_at','pagos.status_transferencia','documentos_firmar.status AS dstat','arch_pago','edicion_pago',
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
             // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
@@ -160,7 +160,7 @@ class PagoController extends Controller
                         'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.soportes_instructor',
                         'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tbl_cursos.modinstructor','tabla_supre.doc_validado',
                         'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio',
-                        'pagos.updated_at','pagos.status_transferencia','documentos_firmar.status AS dstat','arch_pago',
+                        'pagos.updated_at','pagos.status_transferencia','documentos_firmar.status AS dstat','arch_pago','edicion_pago',
                         DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
                         DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
                         // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
@@ -649,6 +649,10 @@ class PagoController extends Controller
             pago::where('id_contrato', $id_contrato)
             ->update(['status_recepcion' => 'En Espera',
                       'fecha_envio' => carbon::now()->format('d-m-Y')]);
+        } else {
+            $idf = DB::Table('contratos')->Where('id_contrato',$id_contrato)->Value('id_folios');
+            $update = folio::Find($idf)
+                ->update(['edicion_pago' => FALSE,]);
         }
 
         $contrato->save();
@@ -960,10 +964,40 @@ class PagoController extends Controller
                 ->with('success', 'No Recepción de Documentos Guardado Correctamente');
     }
 
+    public function edicion_validacion_entrega_fisica(Request $request) {
+        // dd($request);
+        $arrhistorial = array();
+        $id_folios = DB::Table('contratos')->Where('id_contrato',$request->id_retorno_recepcion)->Value('id_folios');
+        $upd = folio::Find($id_folios);
+        $upd->edicion_pago = True;
+        $upd->save();
+
+        $update = pago::WHERE('id_contrato',$request->id_retorno_recepcion)->first();
+        $updarray = ['status' => 'Permiso de Edicion',
+                        'observacion' => $request->observacion_retorno,
+                        'fecha_retorno' => carbon::now()->format('d-m-Y'),
+                        'usuario_retorno' => Auth::user()->name,];
+
+        if(!isset($update->historial))
+        {
+            array_push($arrhistorial,$updarray);
+        }
+        else
+        {
+            $arrhistorial = $update->historial;
+            array_push($arrhistorial,$updarray);
+        }
+        $update->historial = $arrhistorial;
+        $update->save();
+
+
+
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Permiso de Edición Otorgada Correctamente');
+    }
+
     public function retorno_validacion_entrega_fisica(Request $request)
     {
-        // dd($request);
-
         $updarray = $arrhistorial = array();
         $update = pago::WHERE('id_contrato',$request->id_retorno_recepcion)->first();
         if($update->status_recepcion == 'recepcion tradicional') {
