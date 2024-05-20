@@ -50,7 +50,7 @@
                         @endif
                      </td> 
                      <td class="text-center">
-                        @if($item->total>$item->contador)                        
+                        @if($item->total>$item->contador AND $item->mod<>'EFIRMA')                        
                             <a class="nav-link" onclick="editar('{{ $item->id }}',{{$item->contador}})">
                                 <i  class="fa fa-edit  fa-2x fa-lg text-success"></i>
                             </a>
@@ -60,7 +60,7 @@
             @endforeach
                 <tr>
                     <td colspan="13" >
-                       {{ $data->render() }}
+                       {{ $data->appends(Request::only(['num_acta']))->render() }}
                      </td>
                 </tr>
         </tbody>
