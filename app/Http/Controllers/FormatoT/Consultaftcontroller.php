@@ -74,12 +74,12 @@ class Consultaftcontroller extends Controller {
         if($request->fecha){
             if($request->mes){
                 $mes = date("Y-m", strtotime($request->fecha));
-                $data = dataFormatoT($request->unidad, ['REPORTADO'], null, $mes, true);
+                $data = dataFormatoTold($request->unidad, ['REPORTADO'], null, $mes, true);
             }else
-                $data = dataFormatoT($request->unidad, ['REPORTADO'], $request->fecha, null, true);
+                $data = dataFormatoTold($request->unidad, ['REPORTADO'], $request->fecha, null, true);
         }
         if($request->valor){            
-            $data = dataFormatoT($request->unidad ['REPORTADO'], null, null, true, $request->valor);
+            $data = dataFormatoTold($request->unidad ['REPORTADO'], null, null, true, $request->valor);
         }
 
         $unidades = $this->unidades;
