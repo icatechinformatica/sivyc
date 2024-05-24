@@ -17,6 +17,11 @@
             {{ session('success') }}
         </div>
     @endif
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
    <form action="{{ route('supre-mod-save') }}" id="regsupre" method="POST">
        @csrf
        <div style="text-align: right;width:82%">
@@ -40,11 +45,11 @@
             </div>
             <div class="form-group col-md-5">
                 <label for="mamorandum" class="control-label">Memorandum No. </label>
-                <input type="text" class="form-control" disabled id="no_memo" name="no_memo" aria-required="true" value="{{ $getsupre->no_memo }}" placeholder="ICATECH/0000/000/2020">
+                <input type="text" class="form-control" id="no_memo" name="no_memo" aria-required="true" value="{{ $getsupre->no_memo }}" placeholder="ICATECH/0000/000/2020">
             </div>
             <div class="form-group col-md-2">
                 <label for="fecha" class="control-label">Fecha</label>
-                <input class="form-control" name="fecha" disabled type="date" aria-required="true" value="{{ $getsupre->fecha }}" id="fecha">
+                <input class="form-control" name="fecha" type="date" aria-required="true" value="{{ $getsupre->fecha }}" id="fecha">
             </div>
         </div>
         <div class="field_wrapper">
@@ -88,33 +93,34 @@
         <div class="form-row">
             <div class="form-group col-md-6"> <!--  -->
                 <label for="inputremitente" class="control-label">Remitente</label>
-                <input type="text" class="form-control" readonly value="{{$funcionarios['director']}}" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre">
+                <input type="text" class="form-control" aria-required="true" readonly value="{{$funcionarios['director']}}" id="remitente" name="remitente" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!--  -->
                 <label for="inputremitente" class="control-label">Puesto</label>
-                <input type="text" class="form-control" readonly value="{{$funcionarios['directorp']}}" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['directorp']}}"  id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
                 {{-- <input id="id_remitente" name="id_remitente" type="text" value="{{$getremitente->id}}" hidden> --}}
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Valida</label>
-                <input type="text" class="form-control" readonly value="{{$funcionarios['director']}}" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['delegado']}}" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Valida</label>
-                <input type="text" class="form-control" readonly value="{{$funcionarios['directorp']}}" onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto">
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['delegadop']}}"  id="puesto_valida" name="puesto_valida" placeholder="Puesto">
                 {{-- <input id="id_valida" name="id_valida" type="text" value="{{$getvalida->id}}" hidden> --}}
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Elabora</label>
-                <input type="text" class="form-control" readonly value="{{$funcionarios['delegado']}}" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['elabora']}}" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Elabora</label>
-                <input type="text" class="form-control" readonly value="{{$funcionarios['delegadop']}}" onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
+                <input type="text" class="form-control" readonly aria-required="true" value="{{$funcionarios['elaborap']}}" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
+                {{-- <input id="id_elabora" name="id_elabora" type="text" value="{{$getelabora->id}}" hidden> --}}
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -132,9 +138,6 @@
                         </div>
                     </div>
         </div>
-        {{-- <input id="keyfield" name="keyfield" hidden value="{{$keygen}}"> --}}
-        {{-- <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}"> --}}
-        {{-- <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button> --}}
         <br><br><br>
         <div class="form-row">
             <input hidden id=id_supre name="id_supre" value={{$getsupre->id}}>
@@ -145,6 +148,7 @@
                 <button type="submit" id="btn_guardar_supre" class="btn btn-primary" >Guardar</button>
             </div>
             </form>
+            @if($generarEfirmaSupre)
             <div class="form-group col-md-3">
                 <form action="{{ route('supre-efirma') }}" method="post" id="registersolicitudpago">
                     @csrf
@@ -153,6 +157,7 @@
                     <button button type="submit" class="btn btn-red" >Generar Suficiencia E.Firma</button>
                 </form>
             </div>
+            @endif
         </div>
         <br>
     </form>

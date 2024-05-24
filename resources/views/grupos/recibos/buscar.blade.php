@@ -77,8 +77,8 @@
                                     </td>
                                     <td class="text-center">                                
                                         @if($item->file_pdf)
-                                            <a class="nav-link pt-0" href="{{$path_files}}{{ $item->file_pdf}}" target="_blank">
-                                                <i  class="far fa-file-pdf  fa-3x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
+                                            <a class="nav-link pt-0" href="{{ route('grupos.recibos.descargar', ['folio_recibo' => $item->folio_recibo]) }}" target="_blank">
+                                                <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
                                             </a>
                                         @else
                                             <i  class="far fa-file-pdf  fa-3x text-muted pt-0"  title='ARCHIVO NO DISPONIBLE.'></i>

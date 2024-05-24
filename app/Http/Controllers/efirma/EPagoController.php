@@ -349,7 +349,7 @@ class EPagoController extends Controller
 
         $token = $resToken->json();
 
-        Tokens_icti::create([
+        Tokens_icti::Where('sistema','sivyc')->update([
             'token' => $token
         ]);
         return $token;

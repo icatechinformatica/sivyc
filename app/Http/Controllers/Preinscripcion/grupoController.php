@@ -22,6 +22,7 @@ use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
 use App\Models\ModelExpe\ExpeUnico;
 use App\Models\Alumnopre;
+use App\Models\Inscripcion;
 
 use function PHPSTORM_META\type;
 
@@ -420,7 +421,7 @@ class grupoController extends Controller
                     if ($request->inicio <= $request->termino) {
                         $folio = $_SESSION['folio_grupo'];
                         $mapertura = $request->mapertura;
-                        $tc_curso = DB::table('tbl_cursos')->where('unidad', $request->unidad)->where('folio_grupo', $_SESSION['folio_grupo'])->select('id','status_curso','created_at','id_instructor','cp')->first();
+                        $tc_curso = DB::table('tbl_cursos')->where('unidad', $request->unidad)->where('folio_grupo', $_SESSION['folio_grupo'])->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')->first();
                         if(!$tc_curso) { $tc_curso = new \stdClass(); $tc_curso->id = $tc_curso->status_curso = $tc_curso->created_at = $tc_curso->id_instructor = $tc_curso->cp = null;}
 
 
@@ -530,29 +531,47 @@ class grupoController extends Controller
 
                                 /*REGISTRANDO COSTO Y TIPO DE INSCRIPCION*/
                                 $total_pago = 0;
-                                $sx = DB::table('alumnos_registro')->select(DB::raw("COUNT(curp) as total"),DB::raw("SUM(CASE WHEN substring(curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),DB::raw("SUM(CASE WHEN substring(curp,11,1) ='M' THEN 1 ELSE 0 END) as mujer"))->where('folio_grupo',$_SESSION['folio_grupo'])->first();
-                                foreach ($request->costo as $key => $pago) {
-                                    if (!$pago) {
-                                        $pago = 0;
-                                    }
-                                    $diferencia = $costo_individual - $pago;
-                                    if ($pago == 0) {
+                                if (!(DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists())){
+                                    foreach ($request->costo as $key => $pago) {
+                                        $pago = $pago ?: 0; // Si $pago es null, asigna 0.                                        
+                                        $diferencia = $costo_individual - $pago;
                                         $tinscripcion = "EXONERACION";
                                         $abrins = 'ET';
-                                    } elseif ($diferencia > 0) {
-                                        $tinscripcion = "REDUCCION DE CUOTA";
-                                        $abrins = 'EP';
-                                    } else {
-                                        $tinscripcion = "PAGO ORDINARIO";
-                                        $abrins = 'PI';
+                                        if ($pago > 0) {
+                                            $tinscripcion = ($diferencia > 0) ? "REDUCCION DE CUOTA" : "PAGO ORDINARIO";
+                                            $abrins = ($diferencia > 0) ? 'EP' : 'PI';
+                                        }
+                                        Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]); 
+                                    
+                                    
+                                        ///SI CAMBIA DE TIPO DE PAGO Y REDUCCION CANCELADA=> SE ACTUALIZA LOS COSTOS EN tbl_inscriçion
+                                        if ($tc_curso->status_curso == 'EDICION' AND $_SESSION['folio_grupo']) {   
+                                            DB::table('tbl_inscripcion')
+                                            ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')                                        
+                                            ->where('tbl_inscripcion.folio_grupo', $_SESSION['folio_grupo'])
+                                            ->where('alumnos_registro.id', $key)                                            
+                                            ->update([
+                                                'tbl_inscripcion.costo' => $pago,
+                                                'tbl_inscripcion.tinscripcion' => $tinscripcion,
+                                                'tbl_inscripcion.abrinscri' => $abrins
+                                            ]);
+                                        }
                                     }
-                                    if (!(DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists())) {
-                                        Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
-                                    }
-                                    $total_pago += $pago * 1;
                                 }
-                                $costo_total = $curso->costo * $sx->total;
+                                
+                                $sx = DB::table('alumnos_registro')->select(
+                                    DB::raw("COUNT(curp) as total"),DB::raw("SUM(CASE WHEN substring(curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),
+                                    DB::raw("SUM(CASE WHEN substring(curp,11,1) ='M' THEN 1 ELSE 0 END) as mujer"),
+                                    DB::raw("SUM(costo) as costo")
+                                    )->where('folio_grupo',$_SESSION['folio_grupo'])->first();
+                                
+                                //TOTAL PAGADO
+                                $total_pago = $sx->costo*1;                                
+                                //COSTO TOTAL DEL CURSO
+                                $costo_total = $curso->costo * $sx->total;                                
+                                //DIFERENCIA COSTO - PAGADO
                                 $ctotal = $costo_total - $total_pago;
+
                                 if ($total_pago == 0) {
                                     $tipo_pago = "EXO";
                                     //if ($cp > 7) $cp = 7; //EXONERACION Criterio de Pago Máximo 7
