@@ -133,17 +133,17 @@ Route::post('autocomplet/bolsa/cursos', 'Consultas\BolsaTrabController@autocompl
 Route::get('consultas/bolsa/reporte', 'Consultas\BolsaTrabController@crear_reporte_excel')->name('consulta.bolsa.reporte');
 
 /** MODULO DE EFIRMA BUZON FOLIO ALUMNOS */
-// Route::get('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
-// Route::post('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
-// Route::post('grupos/efirma/buzon/eliminar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@cancelar_doc')->name('grupo.efirma.canceldoc');
-// Route::get('grupos/efirma/pdf/{id}', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generar_pdf')->name('grupo.efirma.pdf');
-// Route::post('grupos/efirma/token', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generarToken')->name('efirma.token');
-// Route::post('grupos/efirma/buzon/update', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@firmar_documento')->name('grupo.efirma.update');
-// Route::post('grupos/efirma/buzon/sellar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@sellar_documento')->name('grupo.efirma.sellar');
+Route::get('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
+Route::post('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
+Route::post('grupos/efirma/buzon/eliminar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@cancelar_doc')->name('grupo.efirma.canceldoc');
+Route::get('grupos/efirma/pdf/{id}', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generar_pdf')->name('grupo.efirma.pdf');
+Route::post('grupos/efirma/token', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generarToken')->name('efirma.token');
+Route::post('grupos/efirma/buzon/update', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@firmar_documento')->name('grupo.efirma.update');
+Route::post('grupos/efirma/buzon/sellar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@sellar_documento')->name('grupo.efirma.sellar');
 
 
 //Ruta para le boton de generar xml de folios en el modulo de asigar folios
-// Route::post('/grupos/asignarfolios/generar', 'Grupos\asignarfoliosController@efolios_insert')->name('grupos.asignarfolios.efolios');
+Route::post('/grupos/asignarfolios/generar', 'Grupos\asignarfoliosController@efolios_insert')->name('grupos.asignarfolios.efolios');
 
 //Ruta para la nueva funcionalidad de agregar carta descriptiva de cursos
 Route::get('/cursos/carta-descriptiva/{id}/{parte}', 'webController\CursosController@carta_descriptiva')->name('cursos-catalogo.cartadescriptiva');
