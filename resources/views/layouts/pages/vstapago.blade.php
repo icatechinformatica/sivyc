@@ -1250,12 +1250,13 @@
                         <button id="editar_btn" style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="submit" class="btn">EDITAR</button>
                         <input id="id_contrato_retorno_recepcion" name="id_retorno_recepcion" hidden>
                         <button id="retornar_btn" style="text-align: right; font-size: 10px;" type="submit" class="btn btn-danger">RETORNAR</button>
+                        <button type="button" class="btn"  style="background-color: #12322B; color: white;" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
             {{-- retorno-entrega-fisica --}}
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
             </div>
         </form>
     </div>
