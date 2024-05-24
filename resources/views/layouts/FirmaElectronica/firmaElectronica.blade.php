@@ -213,6 +213,12 @@
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
+                                                                @case('supre')
+                                                                    @php $ids =  base64_encode($docFirmar->id_supre) @endphp
+                                                                    <a href="{{route('supre-pdf', ['id' => $ids])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
                                                                 @default {{-- Contratos --}}
                                                                     <a href="{{route('contrato-pdf', ['id' => $docFirmar->id_contrato])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
@@ -324,6 +330,12 @@
                                                                 @break
                                                                 @case('Solicitud Pago')
                                                                     <a href="{{route('solpa-pdf', ['id' => $docFirmado->id_folios])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
+                                                                @case('supre')
+                                                                    @php $ids =  base64_encode($docFirmado->id_supre) @endphp
+                                                                    <a href="{{route('supre-pdf', ['id' => $ids])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
@@ -446,6 +458,11 @@
                                                                             <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                         </a>
                                                                     @endif
+                                                                @break
+                                                                @case('Solicitud Pago')
+                                                                    <a href="{{route('solpa-pdf', ['id' => $docValidado->id_folios])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
                                                                 @break
                                                                 @case('Solicitud Pago')
                                                                     <a href="{{route('solpa-pdf', ['id' => $docValidado->id_folios])}}" target="_blank">
@@ -719,10 +736,10 @@
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataSign.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataTransportSign.js"></script>
     {{-- Link de producción signature-spv021_doctos --}}
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos.js"></script>
+    {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos.js"></script> --}}
 
     {{-- link de prueba signature-spv021_doctos-prueba--}}
-    {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script> --}}
+    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script>
 
     <script>
         var cadena = '', xmlBase64 = '', curp = '', idFile = '';
@@ -782,7 +799,7 @@
         }
 
         function firmarDocumento(token) {
-            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '87', token);
+            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '30', token);
             // el sistema 87 es el de produccion 30 es de pruebas
             console.log(curp)
             return vresponseSignature;

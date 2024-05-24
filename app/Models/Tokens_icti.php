@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Tokens_icti extends Model {
     protected $table = 'tokens_icti';
 
-    protected $fillable = ['token'];
+    protected $fillable = ['token','sistema'];
 
 }

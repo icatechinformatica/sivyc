@@ -1,7 +1,3 @@
-<?php
-if ($uj[0]->tipo_curso=='CERTIFICACION'){$tipo='CERTIFICACIÓN EXTRAORDINARIA';}
-else{$tipo='CURSO';}
-?>
 <html>
     <head>
         <meta charset="utf-8">
@@ -76,6 +72,16 @@ else{$tipo='CURSO';}
                 color: rgb(255, 255, 255);
                 line-height: 1;
             }
+            .landscape {
+                page: landscape;
+                size: landscape;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            .page-break-non {
+                page-break-after: avoid;
+            }
         </style>
     </head>
     <body>
@@ -83,54 +89,21 @@ else{$tipo='CURSO';}
             <img class="izquierda" src="{{ public_path('img/formatos/bannervertical.jpeg') }}">
             <h6><i>{{$distintivo}}<i></h6>
         </header>
+        <footer>
+            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+        </footer>
         <div class= "container g-pt-30">
-            <div align=right> <b>Unidad de Capacitación {{$unidad->ubicacion}}</b> </div>
-            <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
-            <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
-
-            <br><br><b>C. {{$funcionarios['destino']}}.</b>
-            <br>{{$funcionarios['destinop']}}.
-            <br><br>Presente.
-
-            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 {{$uj[0]->modinstructor}}, para la contratación de instructores externos para la impartición de
-            @if ($uj[0]->tipo_curso=='CERTIFICACION')
-                certificación extraordinaria
+            {!!$bodySupre!!}
+            @if(!is_null($uuid))
             @else
-                curso
-            @endif
-            de la
-            @if ($unidad->cct == '07EI')
-                    Unidad de Capacitación <b>{{$unidad->ubicacion}}</b>,
-            @else
-                    Acción Movil <b>{{$data_supre->unidad_capacitacion}}</b>,
-            @endif
-                 de acuerdo a los números de folio que se indican en el cuadro analítico siguiente y acorde a lo que se describe en el formato anexo.</p>
-            <br><div align=justify><b>Números de Folio</b></div>
-
-            <table class="table table-bordered">
-                <thead>
-                </thead>
-                <tbody>
-                    @foreach ($data_folio as $key=>$value )
-                        @if ($key == 0 || $key == 3 || $key == 6 || $key == 9 || $key == 12 || $key == 15 || $key == 18 || $key == 21)
-                        <tr><td>{{$value->folio_validacion}}</td>
-                        @else
-                        <td>{{$value->folio_validacion}}</td>
-                        @endif
-                        @if ($key == 2 || $key == 5 || $key == 8 || $key == 11 || $key == 14 || $key == 17 || $key == 20)
-                        </tr>
-                        @endif
-                    @endforeach
-                </tbody>
-            </table>
-            <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
-            <br><p class="text-left"><p>Atentamente.</p></p>
-            <br><br><b> C. {{$funcionarios['director']}}</b> <!-- now -->
-            <br><b>{{$funcionarios['directorp']}}</b>
-            <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
-            @if ($unidad->cct != '07EI')
-                <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
-            @else
+                <br><br><b> C. {{$funcionarios['director']}}</b> <!-- now -->
+                <br><b>{{$funcionarios['directorp']}}</b>
+                <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
+                @if ($unidad->cct != '07EI')
+                    <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
+                @else
+                @endif
             @endif
             <br><br><br><h6><small><b>C.c.p. {{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Mismo Fin</b></small></h6>
             <h6><small><b>C.c.p. {{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo Fin</b></small></h6>
@@ -138,10 +111,6 @@ else{$tipo='CURSO';}
             <br><br><small><b>Valido: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
             <br><small><b>Elaboró: @if(!is_null($data_supre->elabora)){{strtoupper($data_supre->elabora['nombre'])}}.- {{strtoupper($data_supre->elabora['puesto'])}}@else{{$funcionarios['elabora']}}.- {{$funcionarios['elaborap']}}@endif</b></small></h6>
         </div>
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
-        </footer>
     </body>
 </html>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

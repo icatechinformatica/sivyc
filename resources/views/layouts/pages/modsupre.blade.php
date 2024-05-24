@@ -17,6 +17,11 @@
             {{ session('success') }}
         </div>
     @endif
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
    <form action="{{ route('supre-mod-save') }}" id="regsupre" method="POST">
        @csrf
        <div style="text-align: right;width:82%">
@@ -40,11 +45,11 @@
             </div>
             <div class="form-group col-md-5">
                 <label for="mamorandum" class="control-label">Memorandum No. </label>
-                <input type="text" class="form-control" disabled id="no_memo" name="no_memo" aria-required="true" value="{{ $getsupre->no_memo }}" placeholder="ICATECH/0000/000/2020">
+                <input type="text" class="form-control" id="no_memo" name="no_memo" aria-required="true" value="{{ $getsupre->no_memo }}" placeholder="ICATECH/0000/000/2020">
             </div>
             <div class="form-group col-md-2">
                 <label for="fecha" class="control-label">Fecha</label>
-                <input class="form-control" name="fecha" disabled type="date" aria-required="true" value="{{ $getsupre->fecha }}" id="fecha">
+                <input class="form-control" name="fecha" type="date" aria-required="true" value="{{ $getsupre->fecha }}" id="fecha">
             </div>
         </div>
         <div class="field_wrapper">
@@ -132,9 +137,6 @@
                         </div>
                     </div>
         </div>
-        {{-- <input id="keyfield" name="keyfield" hidden value="{{$keygen}}"> --}}
-        {{-- <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}"> --}}
-        {{-- <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button> --}}
         <br><br><br>
         <div class="form-row">
             <input hidden id=id_supre name="id_supre" value={{$getsupre->id}}>
@@ -145,6 +147,7 @@
                 <button type="submit" id="btn_guardar_supre" class="btn btn-primary" >Guardar</button>
             </div>
             </form>
+            @if($generarEfirmaSupre)
             <div class="form-group col-md-3">
                 <form action="{{ route('supre-efirma') }}" method="post" id="registersolicitudpago">
                     @csrf
@@ -153,6 +156,7 @@
                     <button button type="submit" class="btn btn-red" >Generar Suficiencia E.Firma</button>
                 </form>
             </div>
+            @endif
         </div>
         <br>
     </form>

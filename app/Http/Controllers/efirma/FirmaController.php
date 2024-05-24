@@ -58,7 +58,7 @@ class FirmaController extends Controller {
             }
 
         $docsFirmar1 = DocumentosFirmar::where('documentos_firmar.status','!=','CANCELADO')
-            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo','folios.id_folios')
+            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo','folios.id_folios','folios.id_supre')
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
@@ -69,7 +69,7 @@ class FirmaController extends Controller {
 
 
         $docsFirmados1 = DocumentosFirmar::where('documentos_firmar.status', 'EnFirma')
-            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo','folios.id_folios')
+            ->Select('documentos_firmar.*','tbl_cursos.id as idcursos','contratos.id_contrato', 'tbl_cursos.folio_grupo','folios.id_folios','folios.id_supre')
             ->Join('tbl_cursos','tbl_cursos.clave','documentos_firmar.numero_o_clave')
             ->LeftJoin('folios','folios.id_cursos','tbl_cursos.id')
             ->LeftJoin('contratos','contratos.id_folios','folios.id_folios')
@@ -473,7 +473,7 @@ class FirmaController extends Controller {
         // ]);
 
         $token = $resToken->json();
-        Tokens_icti::create([
+        Tokens_icti::Where('sistema','sivyc')->update([
             'token' => $token
         ]);
 

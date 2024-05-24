@@ -10,30 +10,34 @@ use Illuminate\Support\Facades\DB;
 use Spatie\ArrayToXml\ArrayToXml;
 use App\Models\DocumentosFirmar;
 use Illuminate\Http\Request;
+use App\Models\tbl_unidades;
 use App\Models\Tokens_icti;
-use App\Models\contratos;
+use App\Models\supre;
 use App\Models\folio;
 use Carbon\Carbon;
 use PDF;
 
 class ESupreController extends Controller
 {
-    public function generar_xml($id_pago){
-        // dd($info);
-        $info = DB::Table('pagos')->Select('tbl_unidades.*','tbl_cursos.clave','tbl_cursos.nombre','tbl_cursos.curp','instructores.correo',
-                    'contratos.numero_contrato','folios.id_folios','pagos.no_memo')
-                ->Join('contratos','contratos.id_contrato','pagos.id_contrato')
-                ->Join('folios','folios.id_folios','contratos.id_folios')
+    public function generar_xml($id_supre){
+        // dd($id_supre);
+        $info = DB::Table('folios')->Select('tbl_unidades.*','tbl_cursos.clave','tbl_cursos.nombre','tbl_cursos.curp','instructores.correo',
+                    'tabla_supre.no_memo','folios.id_folios')
                 ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
                 ->Join('tbl_unidades','tbl_unidades.unidad','tabla_supre.unidad_capacitacion')
                 ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
                 ->join('instructores','instructores.id','tbl_cursos.id_instructor')
-                ->Where('pagos.id',$id_pago)
+                ->Where('tabla_supre.id',$id_supre)
                 ->First();
 
-        $body = $this->create_body($info->id_folios); //creacion de body
+        $body = $this->create_body($id_supre); //creacion de body
+        if(is_null($body))
+        {
+            $error = ['error' => 1];
+            return $error;
+        }
 
-        $nameFileOriginal = 'solicitud de pago '.$info->clave.'.pdf';
+        $nameFileOriginal = 'solicitud de suficiencia presupuestal '.$info->clave.'.pdf';
         $numOficio = $info->no_memo;
         $numFirmantes = '1';
 
@@ -65,6 +69,14 @@ class ESupreController extends Controller
 
         array_push($arrayFirmantes, $temp);
 
+        $anexos= ['_attributes' =>
+            [
+                'nombre_anexo' => 'formato-de-solcitud-de-suficiencia-presupuestal-'.$numOficio.'.pdf',
+                'md5_anexo' => $body['anexoMD5']
+            ]
+        ];
+        array_pop($body);
+
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
             'emisor' => [
@@ -82,7 +94,13 @@ class ESupreController extends Controller
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
                 // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body)]
+                'cuerpo' => [strip_tags($body['supre'])]
+            ],
+            'anexos' => [
+                '_attributes' => [
+                    'num_anexos' => '1'
+                ],
+                'anexo' => $anexos
             ],
             'firmantes' => [
                 '_attributes' => [
@@ -109,14 +127,14 @@ class ESupreController extends Controller
                 'fecha_creacion' => $dateFormat,
                 'no_oficio' => $numOficio,
                 'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                'asunto_docto' => 'Contrato de Instructor',
-                'tipo_docto' => 'CNT',
+                'asunto_docto' => 'Solicitud de Suficiencia Presupuestal',
+                'tipo_docto' => 'OFC',
                 'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
             ],
         ]);
         //Generacion de cadena unica mediante el ICTI
         $xmlBase64 = base64_encode($result);
-        $getToken = Tokens_icti::all()->last();
+        $getToken = Tokens_icti::Where('sistema', 'sivyc')->First();
         if ($getToken) {
             $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
             if ($response->json() == null) {
@@ -144,7 +162,7 @@ class ESupreController extends Controller
             $dataInsert->status = 'EnFirma';
             // $dataInsert->link_pdf = $urlFile;
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
-            $dataInsert->tipo_archivo = 'Solicitud Pago';
+            $dataInsert->tipo_archivo = 'supre';
             $dataInsert->numero_o_clave = $info->clave;
             $dataInsert->nombre_archivo = $nameFileOriginal;
             $dataInsert->documento = $result;
@@ -154,144 +172,185 @@ class ESupreController extends Controller
 
             return TRUE;
         } else {
-            return FALSE;
+            $error = ['error' => 2];
+            return $error;
         }
 
     }
 
-    public function create_body($id_folio) {
-        $body_html = NULL;
-        $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso','tbl_cursos.instructor_mespecialidad',
-                              'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','tbl_unidades.ubicacion','instructores.nombre',
-                              'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
-                              'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
-                              'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido')
-                        ->WHERE('folios.id_folios', '=', $id_folio)
-                        ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                        ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
-                        ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
-                        ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
-                        ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
-                        ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
-                        ->FIRST();
+    public function create_body($id) {
+        $body_html = array();
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
+        $data_supre = supre::WHERE('id', '=', $id)->FIRST(); //cambiar data2 a data_supre en tabla supre
+        $data= supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
+                        'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso',
+                        'tbl_cursos.modinstructor','tbl_cursos.fecha_apertura', 'tbl_cursos.cp')
+                    ->WHERE('id_supre', '=', $id )
+                    ->WHERE('folios.status', '!=', 'Cancelado')
+                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                    ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                    ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                    ->GET();
 
-        $para = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id',13)
-            ->Where('f.activo', 'true')
-            ->First();
+        $data_folio = folio::WHERE('id_supre', '=', $id)->WHERE('status', '!=', 'Cancelado')->GET();
+        $date = strtotime($data_supre->fecha);
+        $D = date('d', $date);
+        $MO = date('m',$date);
+        $M = $this->monthToString(date('m',$date));//A
+        $Y = date("Y",$date);
+        $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
+            ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
+            ->FIRST();
+        $unidad->cct = substr($unidad->cct, 0, 4);
+        $direccion = explode("*", $unidad->direccion);
 
-        if($data->solicitud_fecha == NULL)
+        $funcionarios = $this->funcionarios_supre($data_supre->unidad_capacitacion);
+
+        //table supre
+        $inicio = date('Y-m-d', strtotime($data[0]->fecha_apertura));
+        $Curso = $data[0];
+
+        if($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp > 5) {
+            $Curso->cp = $Curso->cp - 1;
+        } else if ($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp == 5) {
+            $Curso->cp = 55; // este id es del antiguo C.P. 5
+        }
+
+        if ($Curso->ze == 'II')
         {
-            $date = strtotime($data->created_at);
-            $D = date('d', $date);
-            $M = $this->toMonth(date('m',$date));
-            $Y = date("Y",$date);
+            $queryraw = "jsonb_array_elements(ze2->'vigencias') AS vigencia";
         }
         else
         {
-            $date = strtotime($data->solicitud_fecha);
-            $D = date('d', $date);
-            $M = $this->toMonth(date('m',$date));
-            $Y = date("Y",$date);
+            $queryraw = "jsonb_array_elements(ze3->'vigencias') AS vigencia";
         }
 
-        if($data->tipo_curso=='CERTIFICACION'){
-            $tipo='DE LA CERTIFICACIÓN EXTRAORDINARIA';
-        }else{
-            $tipo='DEL CURSO';
+        $criterio = DB::table('criterio_pago')->select('fecha', 'monto')
+            ->fromSub(function ($query) use ($Curso, $inicio, $queryraw) {
+                $query->selectRaw("(vigencia->>'fecha')::date AS fecha, (vigencia->>'monto')::numeric AS monto")
+                    ->from('criterio_pago')
+                    ->crossJoin(DB::raw($queryraw))
+                    ->where('id', $Curso->cp)
+                    ->whereRaw("(vigencia->>'fecha')::date <= ?", [$inicio]);
+            }, 'sub')
+            ->orderBy('fecha', 'DESC')
+            ->limit(1)
+            ->first();
+
+        $tipop = $data[0]['modinstructor'];
+
+
+        $body_html['supre'] = '<div align=right> <b>Unidad de Capacitación '. $unidad->ubicacion.'</b> </div>
+        <div align=right> <b>Memorandum No. '. $data_supre->no_memo.'</b></div>
+        <div align=right> <b>'.$data_supre->unidad_capacitacion.', Chiapas '.$D.' de '.$M.' del '.$Y.'.</b></div>
+
+        <br><br><b>C. '.$funcionarios['destino'].'.</b>
+        <br>'.$funcionarios['destinop'].'.
+        <br><br>Presente.
+
+        <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 '.$data[0]->modinstructor.', para la contratación de instructores externos para la impartición de';
+        if ($data[0]->tipo_curso=='CERTIFICACION') {
+            $body_html['supre'] =  $body_html['supre'] . ' certificación extraordinaria';
+        } else {
+            $body_html['supre'] =  $body_html['supre'] . ' curso';
         }
 
-        $body_html = '<div align=right>
-            <b>Unidad de Capacitación '.$data->unidad_capacitacion.'.</b>
-        </div>
-        <div align=right>
-            <b>Memorandum No. '.$data->no_memo.'.</b>
-        </div>
-        <div align=right>
-            <b>'.$data->unidad_capacitacion.', Chiapas '.$D.' de '.$M.' del '.$Y.'.</b>
-        </div>
-        <b>'.$para->nombre.'.</b>
-        <br>'.$para->cargo.'.
-        <br>Presente.
-        <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura <font style="text-transform:lowercase;"> '.$tipo.'</font> y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente, que se detalla a continuación:</p>
-        <div align=center>
-            <FONT SIZE=2><b>DATOS '.$tipo.'</b></FONT>
-        </div>
-        <table>
-            <tbody>
-                <tr>
-                    <td><small>'.$data->curso.'</small></td>
-                    <td><small>Clave: '.$data->clave.'</small></td>
-                </tr>
-                <tr>
-                    <td><small>Especialidad: '.$data->espe.'</small></td>
-                    <td><small>Modalidad: '.$data->mod.'</small></td>
-                </tr>
-                <tr>
-                    <td><small>Fecha de Inicio y Término: '.$data->inicio.' AL '.$data->termino.'</small></td>
-                    <td><small>Horario: '.$data->hini.' A '.$data->hfin.'</small></td>
-                </tr>
-            </tbody>
+        $body_html['supre'] =  $body_html['supre'] . ' de la';
+
+        if ($unidad->cct == '07EI') {
+            $body_html['supre'] =  $body_html['supre'] . ' Unidad de Capacitación <b> '. $unidad->ubicacion.'</b>,';
+        } else {
+            $body_html['supre'] =  $body_html['supre'] . ' Acción Movil <b> '.$data_supre->unidad_capacitacion.'</b>,';
+        }
+
+        $body_html['supre'] =  $body_html['supre'] . ' de acuerdo a los números de folio que se indican en el cuadro analítico siguiente y acorde a lo que se describe en el formato anexo.</p>
+        <br><div align=justify><b>Números de Folio</b></div>
+        <table class="table table-bordered">
+            <thead>
+            </thead>
+            <tbody>';
+                foreach ($data_folio as $key=>$value ) {
+                    $body_html['supre'] =  $body_html['supre'] . '<tr><td>'.$value->folio_validacion.'</td>';
+                }
+            $body_html['supre'] =  $body_html['supre'] . '</tbody>
         </table>
-        <br>
-        <div align=center>
-            <FONT SIZE=2> <b>DATOS DEL INSTRUCTOR</b></FONT>
+        <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
+        <br><p class="text-left"><p>Atentamente.</p></p>';
+
+        $body_html['tabla'] = '<div align=center><b><h6>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
+            <br>DIRECCIÓN DE PLANEACIÓN
+            <br>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO
+            <br>FORMATO DE SOLICITUD DE SUFICIENCIA PRESUPUESTAL
+            <br>UNIDAD DE CAPACITACIÓN '.$data_supre->unidad_capacitacion.' ANEXO DE MEMORÁNDUM No. '.$data_supre->no_memo.'</h6></b> </div>
         </div>
-        <table>
-            <tbody>
-                <tr>
-                    <td><small>Nombre: '.$data->nombre. ' '. $data->apellidoPaterno.' '.$data->apellidoMaterno.'</small></td>
-                    <td><small>Número de Contrato: '.$data->numero_contrato.'</small></td>
-                </tr>
-                <tr>
-                    <td><small>Registro STPS: NO APLICA</small></td>
-                    <td><small>Memorándum de Validación: '.$data->instructor_mespecialidad.'</small></td>
-                </tr>
-                <tr>
-                    <td><small>RFC: '.$data->rfc.'</small></td>
-                    <td><small>Importe: '.$data->liquido.'</small></td>
-                </tr>
-            </tbody>
-        </table>
-        <br>
-        <div align=center>
-            <FONT SIZE=2> <b>DATOS DE LA CUENTA PARA DEPOSITO O TRANSFERENCIA INTERBANCARIA</b></FONT>
-        </div>
-        <table>
-            <tbody>'.($data->modinstructor == 'HONORARIOS' ?
-                '<tr>
-                <td><small>Banco: '.$data->banco.'</small></td>
-                </tr>
-                <tr>
-                    <td><small>Número de Cuenta: '.$data->no_cuenta.'</small></td>
-                </tr>
-                <tr>
-                    <td><small>Clabe Interbancaria: '.$data->interbancaria.'</small></td>
-                </tr>'
-            : ($data->banco == NULL ?
-                '<tr>
-                    <td><small>Banco: NO APLICA</small></td>
-                </tr>
-                <tr>
-                    <td><small>Número de Cuenta: NO APLICA</small></td>
-                </tr>
-                <tr>
-                    <td><small>Clabe Interbancaria: NO APLICA</small></td>
-                </tr>'
-            :   '<tr>
-                    <td><small>Banco: '.$data->banco.'</small></td>
-                </tr>
-                <tr>
-                    <td><small>Número de Cuenta: '.$data->no_cuenta.'</small></td>
-                </tr>
-                <tr>
-                    <td><small>Clabe Interbancaria: '.$data->interbancaria.'</small></td>
-                </tr>')) .
-            '</tbody>
-        </table>
-        <p class="text-left"><p>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;">'.$tipo.'</font>, obra en poder de la Unidad de Capacitación.</p></p>';
+        <div class="form-row">
+            <table width="700" class="table table-striped" id="table-one">
+                <thead>
+                    <tr class="active">
+                        <td scope="col"><small style="font-size: 10px;">No. DE SUFICIENCIA</small></td>
+                        <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
+                        <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR EXTERNO</small></td>
+                        <td scope="col" width="10px"><small style="font-size: 10px;">UNIDAD/ACCION MOVIL</small></td>
+                        <td scope="col" ><small style="font-size: 10px;">CURSO/CERTIFICACION</small></td>
+                        <td scope="col" ><small style="font-size: 10px;">NOMBRE</small></td>
+                        <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
+                        <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
+                        <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>';
+                        if($data[0]['fecha_apertura'] <  '2023-10-12') {
+                            $body_html['tabla'] = $body_html['tabla']. '<td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>';
+                            if($tipop == 'HONORARIOS'){$body_html['tabla'] = $body_html['tabla'].'<td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>';}
+                            $body_html['tabla'] = $body_html['tabla'].'<td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
+                            <td scope="col"><small style="font-size: 10px;">IMPORTE</small></td>';
+                        } else {
+                            $body_html['tabla'] = $body_html['tabla'].'<td scope="col" ><small style="font-size: 10px;">COSTO POR HORA</small></td>
+                            <td scope="col"><small style="font-size: 10px;">TOTAL IMPORTE</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>';
+                        }
+                        $body_html['tabla'] = $body_html['tabla'].'<td scope="col" ><small style="font-size: 10px;">OBSERVACION<small></td>
+                    </tr>
+                </thead>
+                <tbody>';
+                    foreach ($data as $key=>$item) {
+                        $body_html['tabla'] = $body_html['tabla']. '<tr>
+                            <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->folio_validacion.'</small></td>
+                            <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->fecha.'</small></td>
+                            <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->nombre.' '.$item->apellidoPaterno.' '.$item->apellidoMaterno.'</small></td>
+                            <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->unidad.'</small></td>';
+                            if ($item->tipo_curso=='CERTIFICACION') {
+                                $body_html['tabla'] = $body_html['tabla'].'<td><small style="font-size: 10px;">CERTIFICACIÓN</small></td>';
+                            } else {
+                                $body_html['tabla'] = $body_html['tabla'].'<td><small style="font-size: 10px;">CURSO</small></td>';
+                            }
+                            $body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->curso_nombre.'</td>
+                            <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->clave.'</small></td>
+                            <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->ze.'</small></td>
+                            <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->dura.'</small></td>';
+                            if($data[0]['fecha_apertura'] <  '2023-10-12') {
+                                $body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($item->importe_hora, 2, '.', ',') .'</td>';
+                                if($item->modinstructor == 'HONORARIOS'){$body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($item->iva, 2, '.', ',').'</td>';}
+                                $body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">';
+                                if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS'){$body_html['tabla'] = $body_html['tabla'].'12101 HONORARIOS'; } else {$body_html['tabla'] = $body_html['tabla'].'12101 ASIMILADOS A SALARIOS'; } $body_html['tabla'] = $body_html['tabla'].'</td>
+                                <td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($item->importe_total, 2, '.', ',') .'</td>';
+                            } else {
+                                $body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($criterio->monto, 2, '.', ',').'</td>
+                                <td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($item->importe_total, 2, '.', ',') .'</td>
+                                <td scope="col" class="text-center"><small style="font-size: 10px;">';
+                                if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS'){$body_html['tabla'] = $body_html['tabla'].'12101 HONORARIOS'; } else { $body_html['tabla'] = $body_html['tabla'].'12101 ASIMILADOS A SALARIOS'; }$body_html['tabla'] = $body_html['tabla'].'</td>';
+                            }
+                            $body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->comentario.'</small></td>
+                        </tr>';
+                    }
+                    $body_html['tabla'] = $body_html['tabla'].'</tbody>
+            </table>';
+
+        //Generación de MD5 al anexo
+        $uuid = null;
+        $bodyTabla = $body_html['tabla'];
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('bodyTabla','distintivo','direccion','uuid','funcionarios'));
+        $pdf->setPaper('A4', 'Landscape');
+        $pdfContent = $pdf->output();
+        $body_html['anexoMD5'] = md5($pdfContent);
 
         return $body_html;
     }
@@ -376,55 +435,93 @@ class ESupreController extends Controller
         return $response1;
     }
 
-    protected function toMonth($m)
+    protected function monthToString($month)
     {
-        switch ($m) {
+        switch ($month)
+        {
             case 1:
-                return "Enero";
+                return 'ENERO';
             break;
+
             case 2:
-                return "Febrero";
+                return 'FEBRERO';
             break;
+
             case 3:
-                return "Marzo";
+                return 'MARZO';
             break;
+
             case 4:
-                return "Abril";
+                return 'ABRIL';
             break;
+
             case 5:
-                return "Mayo";
+                return 'MAYO';
             break;
+
             case 6:
-                return "Junio";
+                return 'JUNIO';
             break;
+
             case 7:
-                return "Julio";
+                return 'JULIO';
             break;
+
             case 8:
-                return "Agosto";
+                return 'AGOSTO';
             break;
+
             case 9:
-                return "Septiembre";
+                return 'SEPTIEMBRE';
             break;
+
             case 10:
-                return "Octubre";
+                return 'OCTUBRE';
             break;
+
             case 11:
-                return "Noviembre";
+                return 'NOVIEMBRE';
             break;
+
             case 12:
-                return "Diciembre";
+                return 'DICIEMBRE';
             break;
-
-
         }
     }
 
-    protected function numberFormat($numero)
-    {
-        $part = explode(".", $numero);
-        $part[0] = number_format($part['0']);
-        $cadwell = implode(".", $part);
-        return ($cadwell);
+    public function funcionarios_supre($unidad) {
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true');
+
+        $direc = $direc->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $destino = $destino->Where('o.id',9)->First();
+        $ccp1 = $ccp1->Where('o.id',6)->First();
+        $ccp2 = $ccp2->Where('o.id',13)->First();
+        $delegado = $delegado->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DELEG%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $funcionarios = [
+            'director' => $direc->nombre,
+            'directorp' => $direc->cargo,
+            'destino' => $destino->nombre,
+            'destinop' => $destino->cargo,
+            'ccp1' => $ccp1->nombre,
+            'ccp1p' => $ccp1->cargo,
+            'ccp2' => $ccp2->nombre,
+            'ccp2p' => $ccp2->cargo,
+            'delegado' => $delegado->nombre,
+            'delegadop' => $delegado->cargo,
+            'elabora' => strtoupper(Auth::user()->name),
+            'elaborap' => strtoupper(Auth::user()->puesto)
+        ];
+
+        return $funcionarios;
     }
 }
