@@ -40,22 +40,17 @@ class InstructorController extends Controller
 {
     public function prueba()
     {
-        $zip = new ZipArchive();
-        $zipFileName = public_path('example.zip');
-
-        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
-            // Add files or directories to the ZIP archive
-            $zip->addFile(public_path('file1.txt'), 'file1.txt');
-            $zip->addFile(public_path('file2.txt'), 'file2.txt');
-            $zip->addEmptyDir('new_directory');
-
-            $zip->close();
-            dd($zipFileName);
-
-            return 'ZIP archive created successfully.';
-        } else {
-            return 'Failed to create ZIP archive.';
-        }
+        $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
+        ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
+        ->Join('folios','folios.id_cursos','pagos.id_curso')
+        ->Where('id_instructor','528')
+        ->where(function ($query) {
+            $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
+                ->orWhereNull('pagos.status_recepcion')
+                ->orWhere('folios.edicion_pago','TRUE');
+        })
+        ->Get();
+        dd($data_ins_curso);
 
     }
 
@@ -4446,10 +4441,12 @@ class InstructorController extends Controller
 
         $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
         ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
+        ->Join('folios','folios.id_cursos','pagos.id_curso')
         ->Where('id_instructor',$saveInstructor->id)
         ->where(function ($query) {
             $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
-                ->orWhereNull('pagos.status_recepcion');
+                ->orWhereNull('pagos.status_recepcion')
+                ->orWhere('folios.edicion_pago','TRUE');
         })
         ->Get();
 
