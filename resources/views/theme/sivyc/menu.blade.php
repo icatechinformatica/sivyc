@@ -84,6 +84,9 @@
                             @can('efirma.index') {{-- Agregar efirma.index a usuarios delegados y academicos --}}
                                 <a class="dropdown-item" href="{{route('firma.inicio')}}">Firma Electronica</a>
                             @endcan
+                            @can('buzon.efirma.constancias')
+                            <a class="dropdown-item" href="{{route('grupo.efirma.index')}}">eFirma Constancias</a>
+                            @endcan
                         </div>
                     </li>
                     @endcanany
