@@ -4446,7 +4446,7 @@ class InstructorController extends Controller
         ->where(function ($query) {
             $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
                 ->orWhereNull('pagos.status_recepcion')
-                ->orWhere('pagos.status', 'Rechazado')
+                ->orWhere('pagos.status_recepcion', 'Rechazado')
                 ->orWhere('folios.edicion_pago','TRUE');
         })
         ->Get();
