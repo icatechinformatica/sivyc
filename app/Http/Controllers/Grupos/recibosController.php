@@ -573,7 +573,7 @@ class recibosController extends Controller
                     $result = null;
                     [$data , $message] = $this->data($request);// dd($data);
                     if($data->deshacer){
-                        $result = DB::table('tbl_recibos')->where('id',$data->id_recibo)->whereIn('status_folio', ['ASIGNADO','CARGADO'])->update(                                        [ 
+                        $result = DB::table('tbl_recibos')->where('id',$data->id_recibo)->whereIn('status_folio', ['ASIGNADO','CARGADO','ENVIADO'])->update(                                        [ 
                                 'importe' => 0, 'importe_letra' =>null,'status_folio' => null,
                                 'fecha_status' => null, 'id_curso' => null, 'folio_grupo' => null,
                                 'fecha_expedicion' => null, 'recibio' => null,                   
