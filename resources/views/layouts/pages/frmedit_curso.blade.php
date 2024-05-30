@@ -452,13 +452,15 @@
             </div>
         </div>
         {{-- By jose luis moreno --}}
-        <hr style="border-color:dimgray" class="d-none">
-        <span class="h5 mb-3 d-none">DE LA CARTA DESCRIPTIVA</span>
-        <div class="row ml-0 mt-3 d-none">
-            <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'general']) }}" class="btn-sm btn-primary">DATOS GENERALES</a>
-            <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'tematico']) }}" class="btn-sm btn-primary mx-3">CONTENIDO TEMÁTICO</a>
-            <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'didactico']) }}" class="btn-sm btn-primary">RECURSOS DIDÁCTICOS</a>
-        </div>
+        @can('show.carta.descriptiva')
+            <hr style="border-color:dimgray" class="">
+            <span class="h5 mb-3">DE LA CARTA DESCRIPTIVA</span>
+            <div class="row ml-0 mt-3">
+                <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'general']) }}" class="btn-sm btn-primary">DATOS GENERALES</a>
+                <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'tematico']) }}" class="btn-sm btn-primary mx-3">CONTENIDO TEMÁTICO</a>
+                <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'didactico']) }}" class="btn-sm btn-primary">RECURSOS DIDÁCTICOS</a>
+            </div>
+        @endcan
         <hr style="border-color:dimgray">
         <div class="row">
             <div class="col-lg-12 margin-tb">
