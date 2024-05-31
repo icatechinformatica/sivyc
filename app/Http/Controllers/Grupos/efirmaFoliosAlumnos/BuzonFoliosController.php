@@ -197,7 +197,9 @@ class BuzonFoliosController extends Controller
                 if ($consulta->status_doc == 'sellado') {
                     $uuid = $consulta->uuid_sellado;
                     $cadena_sello = $consulta->cadena_sello;
-                    $fecha_sello = $consulta->fecha_sellado;
+                    $fecha_sello_form = $consulta->fecha_sellado;
+                    $date = Carbon::parse($fecha_sello_form);
+                    $fecha_sello = $date->format('d/m/Y');
                     $no_oficio = $consulta->no_oficio;
 
                     $objeto  = $consulta->obj_documento['firmantes']['firmante'][0];
@@ -212,9 +214,9 @@ class BuzonFoliosController extends Controller
                     }
 
 
-                    $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                    // $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
                     // dd($verificacion);
-                    // $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                    $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
                     ob_start();
                     QRcode::png($verificacion);
                     $qrCodeData = ob_get_contents();
