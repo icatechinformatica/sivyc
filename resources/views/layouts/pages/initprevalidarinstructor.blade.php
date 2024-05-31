@@ -66,10 +66,10 @@
                 {
                     $bajaesp = TRUE;
                 }
-                if ($moist->status == 'BAJA EN PREVALIDACION')
-                {
-                    $bajaborrador = TRUE;
-                }
+                // if ($moist->status == 'BAJA EN PREVALIDACION')
+                // {
+                //     $bajaborrador = TRUE;
+                // }
             }
         @endphp
         <form @if($data->status == 'BAJA EN FIRMA' || $data->status == 'BAJA EN PREVALIDACION' || $bajaborrador == TRUE) action="{{ route('instructor-baja-solicitud-pdf') }}" @else action="{{ route('instructor-solicitud-pdf') }}" @endif method="post" target="_blank" >

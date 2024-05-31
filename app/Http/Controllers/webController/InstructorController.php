@@ -40,22 +40,17 @@ class InstructorController extends Controller
 {
     public function prueba()
     {
-        $zip = new ZipArchive();
-        $zipFileName = public_path('example.zip');
-
-        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
-            // Add files or directories to the ZIP archive
-            $zip->addFile(public_path('file1.txt'), 'file1.txt');
-            $zip->addFile(public_path('file2.txt'), 'file2.txt');
-            $zip->addEmptyDir('new_directory');
-
-            $zip->close();
-            dd($zipFileName);
-
-            return 'ZIP archive created successfully.';
-        } else {
-            return 'Failed to create ZIP archive.';
-        }
+        $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
+        ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
+        ->Join('folios','folios.id_cursos','pagos.id_curso')
+        ->Where('id_instructor','528')
+        ->where(function ($query) {
+            $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
+                ->orWhereNull('pagos.status_recepcion')
+                ->orWhere('folios.edicion_pago','TRUE');
+        })
+        ->Get();
+        dd($data_ins_curso);
 
     }
 
@@ -1184,8 +1179,10 @@ class InstructorController extends Controller
                 // Verificar si hay elementos en hvalidacion
                 if (count($hvalidacion) > 0) {
                     // Obtener el último elemento
-                    $ultimoElemento = array_pop($hvalidacion);
-                    $data['hvalidacion'] = $hvalidacion;
+                    if((in_array($data['status'],['REVALIDACION EN FIRMA', 'BAJA EN FIRMA', 'EN FIRMA']) && $instructor['turnado'] == 'DTA') || $data['status'] == 'VALIDADO') {
+                        $ultimoElemento = array_pop($hvalidacion);
+                        $data['hvalidacion'] = $hvalidacion;
+                    }
                     if($request->movimiento == 'retornar en firma') {
                         if($data['status'] == 'VALIDADO') {
                             $data['status'] = 'REVALIDACION EN FIRMA';
@@ -1193,14 +1190,14 @@ class InstructorController extends Controller
                             $data['status'] = 'BAJA EN FIRMA';
                         }
                     } else {
-                        if($data['status'] == 'VALIDADO') {
+                        if($data['status'] != 'BAJA') {
                             $data['status'] = 'REVALIDACION EN CAPTURA';
                         } else {
                             $data['status'] = 'BAJA EN CAPTURA';
                         }
                     }
 
-                    if($data['new'] == false) {
+                    if($data['new'] == false && $data['status'] == 'VALIDADO') {
                         $especialidad_oficial = especialidad_instructor::WHERE('id', '=', $data['id'])->FIRST();
                         $hvalidacion_oficial = $especialidad_oficial->hvalidacion;
                         array_pop($hvalidacion_oficial);
@@ -4444,10 +4441,13 @@ class InstructorController extends Controller
 
         $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
         ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
+        ->Join('folios','folios.id_cursos','pagos.id_curso')
         ->Where('id_instructor',$saveInstructor->id)
         ->where(function ($query) {
             $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
-                ->orWhereNull('pagos.status_recepcion');
+                ->orWhereNull('pagos.status_recepcion')
+                ->orWhere('pagos.status_recepcion', 'Rechazado')
+                ->orWhere('folios.edicion_pago','TRUE');
         })
         ->Get();
 

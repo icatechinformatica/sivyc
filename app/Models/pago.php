@@ -20,7 +20,8 @@ class pago extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
     protected $casts = ['fecha_rechazo' => 'array',
-                        'historial' => 'array'];
+                        'historial' => 'array',
+                        'elabora' => 'array'];
 
     /**
      * obtener el instructor que pertenece al perfil

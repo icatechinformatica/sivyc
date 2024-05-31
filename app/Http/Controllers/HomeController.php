@@ -60,7 +60,7 @@ class HomeController extends Controller
         $data = json_encode($data);
         
         if($request->mes)$mes_ant = $request->mes;
-        else $mes_ant = date("n")-1;
+        else $mes_ant = date("n");
         $mes_ant = $meses[($mes_ant==0) ? 12 : str_pad($mes_ant, 2, '0', STR_PAD_LEFT)];
                 
         $data_asistencia = DB::table('tbl_instituto')->where('id',1)->value('asistencia_tecnica->E'.$anio.'->'.$mes_ant);

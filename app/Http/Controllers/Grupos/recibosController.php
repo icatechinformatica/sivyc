@@ -573,7 +573,7 @@ class recibosController extends Controller
                     $result = null;
                     [$data , $message] = $this->data($request);// dd($data);
                     if($data->deshacer){
-                        $result = DB::table('tbl_recibos')->where('id',$data->id_recibo)->whereIn('status_folio', ['ASIGNADO','CARGADO'])->update(                                        [ 
+                        $result = DB::table('tbl_recibos')->where('id',$data->id_recibo)->whereIn('status_folio', ['ASIGNADO','CARGADO','ENVIADO'])->update(                                        [ 
                                 'importe' => 0, 'importe_letra' =>null,'status_folio' => null,
                                 'fecha_status' => null, 'id_curso' => null, 'folio_grupo' => null,
                                 'fecha_expedicion' => null, 'recibio' => null,                   
@@ -697,51 +697,48 @@ class recibosController extends Controller
          return count($id_folios);
     }
 
-    public function pdfRecibo_CANCELADO()
+    
+    public function pdfDescargar(Request $request)
     {
-        $data = $_SESSION['data'];         
-        $file = $data->file_pdf;
-        $pdfFile = fopen(storage_path('app/public/'.$file), 'r');        
+        //$url = $request->input('folio_recibo'); dd($url);
+        //dd($request->query());
+        $folio_recibo = $file = null;
+        if($request->query('folio_recibo')){
+            $folio_recibo = $request->query('folio_recibo'); 
+            $row = DB::table('tbl_recibos')->where('folio_recibo',$folio_recibo)->first(['file_pdf','status_folio']);
+            if($row){
+                $file = $row->file_pdf;
+                $status_folio = $row->status_folio;            
+                if (file_exists(storage_path('app/public/'.$file))) {               
+                    $pdfFile = fopen(storage_path('app/public/'.$file), 'r');        
 
-        $name_pdf= substr(strrchr($file, "/"), 1);        
-        $name_pdf = substr($name_pdf, 0, strpos($name_pdf, "_"));        
-        $outputFile = 'recibo_'.$name_pdf.'.pdf';
-        $watermarkText = "CANCELADO";
+                    $name_pdf= substr(strrchr($file, "/"), 1);        
+                    $name_pdf = substr($name_pdf, 0, strpos($name_pdf, "_"));        
+                    $outputFile = 'recibo_'.$name_pdf.'.pdf';
+                    if($status_folio == 'CANCELADO')  $watermarkText = "CANCELADO";
+                    else $watermarkText = null;
 
-        $pdf = new Fpdi();
-        $pdf->AddPage();
-        $pageCount = $pdf->setSourceFile($pdfFile);        
-        for ($pageNumber = 1; $pageNumber <= $pageCount; $pageNumber++) {
-            $template = $pdf->importPage($pageNumber);
-            
-            $pdf->useTemplate($template);
-            $pdf->SetFont('Arial', 'B', 80);
-            //$pdf->SetAlpha(1);
-            
-            $pdf->SetTextColor(127, 127, 127);
-            $pdf->SetXY(10, 100); // Posición del texto
-            //$pdf->Rotate(45); // Rotar el texto
-            $pdf->Cell(0, 0, $watermarkText, 0, 1, 'C');
-            $pdf->AddPage();
-        }        
-        return $pdf->Output('I', $outputFile);
+                    $pdf = new Fpdi();        
+                    $pageCount = $pdf->setSourceFile($pdfFile);        
+                    for ($pageNumber = 1; $pageNumber <= $pageCount; $pageNumber++) {
+                        $pdf->AddPage('P', array(216, 280)); 
+                        $template = $pdf->importPage($pageNumber);                        
+                        $pdf->useTemplate($template);                        
+                        if($watermarkText){
+                            $pdf->SetFont('Arial', 'B', 80);
+                            $pdf->SetTextColor(127, 127, 127);
+                            $pdf->SetXY(10, 100); 
+                            $pdf->Cell(0, 0, $watermarkText, 0, 1, 'C');    
+                            }
+                    }        
+                    return $pdf->Output('I', $outputFile);
+                }echo "El archivo no existe en la ruta especificada.";
+            } else {
+                // El archivo no existe, maneja esta situación de acuerdo a tus necesidades
+                echo "El archivo no existe en la ruta especificada.";
+            }
         
+        }else echo  "OPERACIÓN NO VÁLIDA!!";
     }
-    
-/*
-    function encryptData($data, $key) {
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("aes-256-cbc"));
-        $encrypted_data = openssl_encrypt($data, "aes-256-cbc", $key, 0, $iv);
-        return base64_encode($iv . $encrypted_data);
-    }
-    
-    function decryptData($encrypted_data, $key) {
-        $data = base64_decode($encrypted_data);
-        $iv_size = openssl_cipher_iv_length("aes-256-cbc");
-        $iv = substr($data, 0, $iv_size);
-        $encrypted_data = substr($data, $iv_size);
-        return openssl_decrypt($encrypted_data, "aes-256-cbc", $key, 0, $iv);
-    }
-    */
 
 }

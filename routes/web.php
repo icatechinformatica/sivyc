@@ -25,7 +25,7 @@ Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@histor
 Route::get('/contrato/historial/validado/{id}', 'webController\ContratoController@historial_validado')->name('contrato-validado-historial');
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
-Route::get('/prueba', 'efirma\EContratoController@prueba');
+Route::get('/prueba', 'webController\InstructorController@prueba');
 Route::get('/prueba2', 'webController\CursosController@prueba2');
 Route::get('/contrato/reiniciar/{id}', 'webController\ContratoController@contractRestart')->name('reiniciar-contrato');
 
@@ -781,6 +781,7 @@ Route::post('/financieros/denegado/recepcion-entrega-fisica','webController\Pago
 Route::post('/financieros/aceptado/recepcion-entrega-fisica','webController\PagoController@recibido_entrega_fisica')->name('recibido-entrega-fisica');
 Route::get('/financieros/download-rar/{id_contrato}', 'webController\PagoController@downloadRar')->name('downloadRarPagos');
 Route::post('/financieros/retorno/entrega-fisica','webController\PagoController@retorno_validacion_entrega_fisica')->name('retorno-entrega-fisica');
+Route::post('/financieros/edicion/entrega-fisica','webController\PagoController@edicion_validacion_entrega_fisica')->name('edicion-entrega-fisica');
 Route::get('/financieros/reporte/cursos','reportesController\financierosReportesController@index')->name('financieros-reporte-cursos');
 Route::post('/financieros/reporte/cursos/xls','reportesController\financierosReportesController@cursos_xls')->name('financieros-reporte-cursos-xls');
 

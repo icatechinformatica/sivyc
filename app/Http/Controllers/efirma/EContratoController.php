@@ -52,7 +52,7 @@ class EContratoController extends Controller
         // Info de director firmante
         foreach($dataFirmantes as $dataFirmante) {
 
-            if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE LA UC') || str_contains($dataFirmante->cargo, 'ENCARGADA DE LA UC')) {
+            if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($dataFirmante->cargo, 'ENCARGADA DE LA UNIDAD')) {
                 if(isset($dataFirmante->incapacidad)) {
                     $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
                     if($incapacidadFirmante != FALSE) {

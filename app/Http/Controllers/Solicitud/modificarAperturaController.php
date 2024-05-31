@@ -88,8 +88,8 @@ class modificarAperturaController extends Controller
                 ['nmunidad' => 0,
                 'num_revision_arc02' => null,
                 'opcion' => 'NINGUNO',
+                'motivo' => 'NINGUNO',
                 'arc' => '01',                
-                'status_curso' => 'AUTORIZADO',    
                 'status_solicitud_arc02' => null,            
                 'observaciones' => 'NINGUNO'                
                 ]

@@ -163,8 +163,8 @@ else{
                 Fecha: {{$Dv}} de {{$Mv}} del {{$Yv}}</FONT>
                 </div>
                 <div class="b"> <FONT SIZE=0>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}}</font><br/>
-                    <FONT SIZE=0><b>{{$para->nombre}}</b></FONT><br/>
-                    <FONT SIZE=0><b>{{$para->cargo}}</b></FONT><br/>
+                    <FONT SIZE=0><b>C. {{$funcionarios['director']}}</b></FONT><br/>
+                    <FONT SIZE=0><b>{{$funcionarios['directorp']}}</b></FONT><br/>
                     <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
                     <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
                         <font size=0>La Secretaria de Hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal {{$Y}}, en ese sentido, con Fundamento en el Art. 13 Y Art. 38 del decreto de presupuesto
@@ -203,7 +203,7 @@ else{
                             @endif
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
                             <td width="140px" ><small style="font-size: 8px;">OBSERVACION</small></td>
-                            <td scope="col"><small style="font-size: 8px;">Observación del Dpto. Programación y Ppto.</small></td>
+                            {{-- <td scope="col"><small style="font-size: 8px;">Observación del Dpto. Programación y Ppto.</small></td> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -248,25 +248,30 @@ else{
                                     @endif
                                 </small></td>
                                 <td><small style="font-size: 8px;">{{$item->comentario}}</small></td>
-                                <td><small style="font-size: 8px;">{{$data2->observacion_validacion}}</small></td>
+                                {{-- <td><small style="font-size: 8px;">{{$data2->observacion_validacion}}</small></td> --}}
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
+        @if(!is_null($data2->observacion_validacion))
+            <div class="d">
+                <small><small><b>Observación del Departamento de Programación y Presupuesto:</b> {{$data2->observacion_validacion}}</small></small>
+            </div><br>
+        @endif
         <div id="wrapperbot">
             <div align=center>
-                <small><small>{{$getfirmante->nombre}}</small></small>
+                <small><small>C. {{$funcionarios['remitente']}}</small></small>
                 <br><small>________________________________________</small><br/>
-                <br><small><small>{{$getfirmante->cargo}}</small></small></b>
+                <br><small><small>{{$funcionarios['remitentep']}}</small></small></b>
             </div>
             <div><br><br><br>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp1->nombre}}.-{{$getccp1->cargo}}.-Para su conocimiento</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp2->nombre}}.-{{$getccp2->cargo}}.-mismo fin</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp3->nombre}}.-{{$getccp3->cargo}}.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['ccp1']}}.-{{$funcionarios['ccp1p']}}.-Para su conocimiento</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['ccp2']}}.-{{$funcionarios['ccp2p']}}.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['ccp3']}}.-{{$funcionarios['ccp3p']}}.-mismo fin</FONT><br/>
                 {{-- <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br> --}}
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}}.-{{$getccp4->cargo}}.-mismo fin</FONT><br>
+                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['delegado']}}.-{{$funcionarios['delegadop']}}.-mismo fin</FONT><br>
                 <FONT SIZE=0><b>C.c.p.</b>Archivo</FONT>
             </div>
         </div>

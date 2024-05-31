@@ -88,8 +88,8 @@ else{$tipo='CURSO';}
             <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
             <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-            <br><br><b>{{$destino->nombre}}.</b>
-            <br>{{$destino->cargo}}.
+            <br><br><b>C. {{$funcionarios['destino']}}.</b>
+            <br>{{$funcionarios['destinop']}}.
             <br><br>Presente.
 
             <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 {{$uj[0]->modinstructor}}, para la contratación de instructores externos para la impartición de
@@ -125,18 +125,18 @@ else{$tipo='CURSO';}
             </table>
             <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
             <br><p class="text-left"><p>Atentamente.</p></p>
-            <br><br><b>{{$getremitente->nombre}}</b> <!-- now -->
-            <br><b>{{$getremitente->cargo}}</b>
+            <br><br><b> C. {{$funcionarios['director']}}</b> <!-- now -->
+            <br><b>{{$funcionarios['directorp']}}</b>
             <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
             @if ($unidad->cct != '07EI')
                 <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
             @else
             @endif
-            <br><br><br><h6><small><b>C.c.p.  {{$ccp1->nombre}}.-{{$ccp1->cargo}}.-Mismo Fin</b></small></h6>
-            <h6><small><b>C.c.p. {{$ccp2->nombre}}.-{{$ccp2->cargo}}.-Mismo Fin</b></small></h6>
+            <br><br><br><h6><small><b>C.c.p. {{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Mismo Fin</b></small></h6>
+            <h6><small><b>C.c.p. {{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo.<b></small></h6>
-            <br><br><small><b>Valido: {{$getelabora->nombre}}.-{{$getelabora->cargo}}</b></small></h6>
-            <br><small><b>Elaboró:  {{$getelabora->nombre}}.-{{$getelabora->cargo}}</b></small></h6>
+            <br><br><small><b>Valido: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
+            <br><small><b>Elaboró: @if(!is_null($data_supre->elabora)){{strtoupper($data_supre->elabora['nombre'])}}.- {{strtoupper($data_supre->elabora['puesto'])}}@else{{$funcionarios['elabora']}}.- {{$funcionarios['elaborap']}}@endif</b></small></h6>
         </div>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">

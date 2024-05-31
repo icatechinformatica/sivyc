@@ -8,7 +8,7 @@
 
     <style>
         body{font-family: sans-serif}
-        @page {margin: 20px 50px 50px 50px;size: letter;}
+        @page {margin: 20px 50px 110px 50px;size: letter;}
         header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;}
         img.izquierda {float: left;width: 100%;height: 60px;}
         img.izquierdabot {
@@ -26,7 +26,7 @@
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
         .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
         .tablag tr td { font-size: 8px; padding: 0px;}
-        footer {position:fixed;left:0px;bottom:70px;width:100%;}
+        footer {position:fixed;left:0px;bottom:0px;width:100%;}
         footer .page:after { content: counter(page, sans-serif);}
         .contenedor {
         position:RELATIVE;
@@ -41,8 +41,8 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 773px; /*773*/
-                left: 20px; /*20*/
+                bottom: 830px; /*773*/
+                left: 10px; /*20*/
                 font-size: 8.5px;
                 color: white;
                 line-height: 1;
