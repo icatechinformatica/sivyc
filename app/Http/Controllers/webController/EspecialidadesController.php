@@ -95,7 +95,7 @@ class EspecialidadesController extends Controller
     public function edit($id)
     {
         $especialidad = Especialidad::where('id', '=', $id)->first();
-        $areas = DB::table('area')->get();
+        $areas = DB::table('area')->where('activo', true)->get();
 
         return view('layouts.pages.frmespecialidadupdate', compact('especialidad', 'areas'));
     }

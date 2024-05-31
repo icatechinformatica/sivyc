@@ -205,7 +205,7 @@
         </div>
         <div class="form-row">
           <div class="form-group col-md-4">
-            <label for="areaCursos" class="control-label">CAMPO</label>
+            <label for="areaCursos" class="control-label">CAMPO DE FORMACIÓN PROFESIONAL</label>
             <select class="form-control" id="areaCursos" name="areaCursos">
                 <option value="">--SELECCIONAR--</option>
                 @foreach ($areas as $itemareas)
