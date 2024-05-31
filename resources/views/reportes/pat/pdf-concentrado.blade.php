@@ -112,20 +112,20 @@
                     <td colspan="{{ (count($data[1])*2)+7}}" style="border: 1px solid #fff;">
                         <table id="tabla_firmantes">
                         <tr>
-                            <td class="celda"><b>ELABORÓ</b></td>
+                            <td><b>ELABORÓ</b></td>
                             <td rowspan="3" style="width:5%; border-top: 1px solid #fff; border-bottom: 1px solid #fff;">&nbsp;</td>
                             <td rowspan="2" style="width:20%; border-left: 2px solid #fff; width:20%; border-right: 1px solid #fff; border-top: 1px solid #fff;">&nbsp;</td>
                             <td rowspan="3" style="width:5%; border-top: 1px solid #fff; border-bottom: 1px solid #fff;">&nbsp;</td>
-                            <td class="celda"><b>Vo. Bo.</b></td>
+                            <td><b>Vo. Bo.</b></td>
                         </tr> 
                         <tr>
-                            <td class="celda" style="height:30px;"> @if($firmante1) {{ $firmante1->titulo }} {{ $firmante1->nombre }}@endif</td>                                                      
-                            <td class="celda" >@if($firmante2) {{ $firmante2->titulo }} {{ $firmante2->nombre }}@endif</td>
+                            <td style="height:30px;"> @if($firmante1) {{ $firmante1->titulo }} {{ $firmante1->nombre }}@endif</td>                                                      
+                            <td>@if($firmante2) {{ $firmante2->titulo }} {{ $firmante2->nombre }}@endif</td>
                         </tr>
                         <tr>
-                            <td class="celda" >@if($firmante1) {{ $firmante1->cargo }}@endif</td>                            
-                            <td class="celda" style="height:20px;"><b>FECHA: {{ date('m/d/Y')}} </b></td>                            
-                            <td class="celda" >@if($firmante2) {{ $firmante2->cargo }}@endif</td>
+                            <td>@if($firmante1) {{ $firmante1->cargo }}@endif</td>                            
+                            <td style="height:20px;"><b>FECHA: {{ date('m/d/Y')}} </b></td>                            
+                            <td>@if($firmante2) {{ $firmante2->cargo }}@endif</td>
                         </tr>            
                     </table>            
                 </td>        
