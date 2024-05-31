@@ -298,6 +298,9 @@
                         @can('financieros.reportecursos')
                             <a class="dropdown-item" href="{{route('financieros-reporte-cursos')}}">Reporte de Cursos</a>
                         @endcan
+                        @can('pat.concentrado')
+                            <a class="dropdown-item" href="{{route('reportes.pat')}}">PAT-Concentrado</a>
+                        @endcan
 
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
