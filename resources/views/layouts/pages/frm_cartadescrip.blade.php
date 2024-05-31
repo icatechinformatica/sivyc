@@ -170,7 +170,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="nombre" class="negrita">Campo de formación profesional:</label>
-                                    <input type="text" class="form-control input-sm" id="form_profesion" name="form_profesion" placeholder="Campo de formación profesional" value="{{ data_get($json_general, 'form_profesion', '')}}">
+                                    <input type="text" class="form-control input-sm" id="form_profesion" name="form_profesion" placeholder="Campo de formación profesional" value="{{$curso->formacion_profesional}}" readonly>
                                 </div>
                             </div>
                         </div>
