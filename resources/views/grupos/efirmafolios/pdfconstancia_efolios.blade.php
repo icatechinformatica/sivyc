@@ -166,7 +166,7 @@
         {{-- footer primera pagina --}}
         @if(!empty($uuid))
             <div style="font-size:11px; text-align:justify; position: absolute; top:96%; margin-right: 40px; margin-left: 40px;">
-                <span style="">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas.</span>
+                <span style="">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha de emisión: {{$fecha_sello}} | Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas.</span>
             </div>
         @endif
 
@@ -180,8 +180,8 @@
             <div style="margin-right: 40px; margin-left: 40px;">
                 <table style="width: 100%; margin-top: 50px; border: 2px solid #000">
                     <thead style="font-size:14px; text-align: center; font-weight:bold; background-color:#000; color: #fff;">
-                        <th style="margin-bottom: 10px;">CONTENIDO TEMATICO</th>
-                        <th style="margin-bottom: 10px;">HORAS</th>
+                        <th style="margin-bottom: 10px; width: 80%;">CONTENIDO TEMATICO</th>
+                        <th style="margin-bottom: 10px; width:20%;">HORAS</th>
                     </thead>
                     <tbody style="">
                         @foreach ($data['cont_tematico'] as $tema)
@@ -195,7 +195,7 @@
                     </tbody>
                     <tr>
                         <td></td>
-                        <td><p style="font-size:12px; padding-bottom: 0px; padding-top: 0px; margin-top: 0px; margin-bottom: 0px; font-weight:bold">TOTAL: {{$data['dura'] }} </p></td>
+                        <td><p style="text-align:center; font-size:12px; padding-bottom: 0px; padding-top: 0px; margin-top: 0px; margin-bottom: 0px; font-weight:bold; margin-left: 0px; margin-right: 0px;">TOTAL: {{$data['dura'] }} </p></td>
                     </tr>
                 </table>
             </div>
@@ -226,7 +226,7 @@
     {{-- footer primera pagina --}}
     @if(!empty($uuid))
         <div style="font-size:11px; text-align:justify; position: absolute; top:85%; margin-right: 40px; margin-left: 40px;">
-            <span style="">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas.</span>
+            <span style="">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha de emisión: {{$fecha_sello}} | Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas.</span>
         </div>
     @endif
 
