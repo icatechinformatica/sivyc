@@ -30,17 +30,22 @@ class ESupreController extends Controller
                 ->Where('tabla_supre.id',$id_supre)
                 ->First();
 
-        $body = $this->create_body($id_supre); //creacion de body
+        $nameFileOriginal = 'solicitud de suficiencia presupuestal '.$info->clave.'.pdf';
+        $numDocs = DocumentosFirmar::Where('tipo_archivo', 'supre')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
+        $numDocs = '0'.($numDocs+1);
+        $numOficioBuilder = explode('/',$info->no_memo);
+        $numOficioBuilder[count($numOficioBuilder) - 2] = $numOficioBuilder[count($numOficioBuilder) - 2].'.'.$numDocs;
+        $numOficio = implode('/',$numOficioBuilder);
+
+
+        $body = $this->create_body($id_supre, $numOficio); //creacion de body
         if(is_null($body))
         {
             $error = ['error' => 1];
             return $error;
         }
 
-        $nameFileOriginal = 'solicitud de suficiencia presupuestal '.$info->clave.'.pdf';
-        $numOficio = $info->no_memo;
         $numFirmantes = '1';
-
         $arrayFirmantes = [];
 
         $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
@@ -149,14 +154,24 @@ class ESupreController extends Controller
 
         //Guardado de cadena unica
         if ($response->json()['cadenaOriginal'] != null) {
-            // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFileOriginal);
-            // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFile);
-            // $datas = explode('*',$urlFile);
+            $sobrescribir = True;
+            // Actualizar  este dataInsert ya que se pondra un consecutivo interno y poder hacer mas documentos por si alguno se cancela
+            $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','supre')->Where('status','EnFirma')->First();
+            if(isset($dataInsert->obj_documento)) {
+                $firmantes = json_decode($dataInsert->obj_documento, true);
+                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                    if(isset($firmante['_attributes']['certificado'])) {
+                        $sobrescribir = False;
+                    }
+                }
+            } else {
+                $sobrescribir = False;
+            }
 
-            $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Solicitud Pago')->First();
-            if(is_null($dataInsert)) {
+            if(!$sobrescribir) {
                 $dataInsert = new DocumentosFirmar();
             }
+
             $dataInsert->obj_documento = json_encode($ArrayXml);
             $dataInsert->obj_documento_interno = json_encode($body);
             $dataInsert->status = 'EnFirma';
@@ -167,7 +182,7 @@ class ESupreController extends Controller
             $dataInsert->nombre_archivo = $nameFileOriginal;
             $dataInsert->documento = $result;
             $dataInsert->documento_interno = $result;
-            // $dataInsert->md5_file = $md5;
+            $dataInsert->num_oficio = $numOficio;
             $dataInsert->save();
 
             return TRUE;
@@ -178,7 +193,8 @@ class ESupreController extends Controller
 
     }
 
-    public function create_body($id) {
+    public function create_body($id, $numOficio = NULL) {
+        // dd($id);
         $body_html = array();
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data_supre = supre::WHERE('id', '=', $id)->FIRST(); //cambiar data2 a data_supre en tabla supre
@@ -242,7 +258,13 @@ class ESupreController extends Controller
 
 
         $body_html['supre'] = '<div align=right> <b>Unidad de Capacitación '. $unidad->ubicacion.'</b> </div>
-        <div align=right> <b>Memorandum No. '. $data_supre->no_memo.'</b></div>
+        <div align=right> <b>Memorandum No. ';
+        if(is_null($numOficio)) {
+            $body_html['supre'] = $body_html['supre'].$data_supre->no_memo;
+        } else {
+            $body_html['supre'] = $body_html['supre'].$numOficio;
+        }
+        $body_html['supre'] = $body_html['supre'].'</b></div>
         <div align=right> <b>'.$data_supre->unidad_capacitacion.', Chiapas '.$D.' de '.$M.' del '.$Y.'.</b></div>
 
         <br><br><b>C. '.$funcionarios['destino'].'.</b>
@@ -282,7 +304,13 @@ class ESupreController extends Controller
             <br>DIRECCIÓN DE PLANEACIÓN
             <br>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO
             <br>FORMATO DE SOLICITUD DE SUFICIENCIA PRESUPUESTAL
-            <br>UNIDAD DE CAPACITACIÓN '.$data_supre->unidad_capacitacion.' ANEXO DE MEMORÁNDUM No. '.$data_supre->no_memo.'</h6></b> </div>
+            <br>UNIDAD DE CAPACITACIÓN '.$data_supre->unidad_capacitacion.' ANEXO DE MEMORÁNDUM No. ';
+            if(is_null($numOficio)) {
+                $body_html['tabla'] = $body_html['tabla'].$data_supre->no_memo;
+            } else {
+                $body_html['tabla'] = $body_html['tabla'].$numOficio;
+            }
+            $body_html['tabla'] = $body_html['tabla'].'</h6></b> </div>
         </div>
         <div class="form-row">
             <table width="700" class="table table-striped" id="table-one">
