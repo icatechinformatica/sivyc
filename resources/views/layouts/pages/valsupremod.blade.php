@@ -30,11 +30,11 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="droparea">Area de Adscripcion</label>
-                        <input name="area" id="area" type="text" disabled value="{{$getremitente->puesto}}" class="form-control">
+                        <input name="area" id="area" type="text" disabled value="{{$funcionarios['directorp']}}" class="form-control">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="dropnombre_dir">Nombre del Director de Unidad</label>
-                        <input name="nombre_dir" id="nombre_dir" type="text" disabled value="{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}" class="form-control">
+                        <input name="nombre_dir" id="nombre_dir" type="text" disabled value="{{$funcionarios['director']}}" class="form-control">
                     </div>
                 </div>
                 <br>
@@ -106,10 +106,10 @@
                 </div>-->
                 <div id="div7" class="form-row ">
                     <div class="form-group col-md-4">
-                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" value="{{$delegado->delegado_administrativo}}" readonly>
+                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" value="{{$funcionarios['delegado']}}" readonly>
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" value="{{$delegado->pdelegado_administrativo}}" readonly>
+                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" value="{{$funcionarios['delegadop']}}" readonly>
                         {{-- <input id="id_ccp4" name="id_ccp4" hidden required> --}}
                     </div>
                 </div>
@@ -119,7 +119,6 @@
                         <div class="pull-right">
                             <button type="submit" class="btn btn-success" >Confirmar Validación</button>
                             <input hidden id="id" name="id" value="{{$data->id}}">
-                            <input hidden id="directorio_id" name="directorio_id" value="{{$directorio->id}}">
                         </div>
                     </div>
                 </div>
