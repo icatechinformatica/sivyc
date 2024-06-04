@@ -196,15 +196,6 @@ class ContratoController extends Controller
         $fechaActual = Carbon::now();
         $fechaActual = $fechaActual->format('d-m-Y');
 
-        $contrato = contratos::WHERE('id_folios',$id)->FIRST();
-        if(isset($contrato))
-        {
-            $dir = contrato_directorio::WHERE('id_contrato',$contrato->id_contrato)->FIRST();
-            $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $dir->contrato_iddirector)->FIRST();
-            $testigo1 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $dir->contrato_idtestigo1)->FIRST();
-            $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $dir->contrato_idtestigo2)->FIRST();
-            $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $dir->contrato_idtestigo3)->FIRST();
-        }
         // dd($contrato);
         $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
                             'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad','tbl_cursos.fecha_apertura',
@@ -1470,6 +1461,7 @@ class ContratoController extends Controller
     }
 
     public function solicitudpago_pdf($id){
+        $objeto = NULL;
         $data = DB::Table('folios')->Select('clave','ubicacion')
             ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
             ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
@@ -1520,11 +1512,11 @@ class ContratoController extends Controller
 
             $pagoController = new EPagoController();
             $body_html = $pagoController->create_body($id);
-            // dd($body_html);
         } else {
             // dd('a');
             $firma_electronica = true;
             $body_html = json_decode($documento->obj_documento_interno);
+
             if(isset($documento->uuid_sellado)){
                 $objeto = json_decode($documento->obj_documento,true);
                 $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
@@ -1558,7 +1550,7 @@ class ContratoController extends Controller
         $direccion = tbl_unidades::WHERE('unidad',$data->ubicacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','director','ccp1','ccp2','ccp3','body_html','distintivo','direccion','objeto','puesto','qrCodeBase64'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','distintivo','direccion','funcionarios','body_html','objeto'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 

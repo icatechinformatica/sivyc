@@ -219,6 +219,12 @@
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
+                                                                @case('valsupre')
+                                                                    @php $ids =  base64_encode($docFirmar->id_supre) @endphp
+                                                                    <a href="{{route('valsupre-pdf', ['id' => $ids])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
                                                                 @default {{-- Contratos --}}
                                                                     <a href="{{route('contrato-pdf', ['id' => $docFirmar->id_contrato])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
@@ -339,6 +345,12 @@
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
+                                                                @case('valsupre')
+                                                                    @php $ids =  base64_encode($docFirmado->id_supre) @endphp
+                                                                    <a href="{{route('valsupre-pdf', ['id' => $ids])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
                                                                 @default {{-- Contratos --}}
                                                                     <a href="{{route('contrato-pdf', ['id' => $docFirmado->id_contrato])}}" target="_blank">
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
@@ -354,7 +366,7 @@
                                                             </small>
                                                         </td>
                                                         <td><small>{{$docFirmado->created_at->format('d-m-Y')}}</small></td>
-                                                        @if($rol->role_id == '30' || $rol->role_id == '2' || $rol->role_id == '8')
+                                                        @if($rol->role_id == '30' || $rol->role_id == '2' || $rol->role_id == '8' || $rol->role_id == '4')
                                                             <td>
                                                                 <button type="button" onclick="cancelarDocumento('{{$docFirmado->id}}', '{{$nameArchivo}}', '{{$docFirmado->tipo_archivo}}', '{{$docFirmado->numero_o_clave}}')" class="btn btn-outline-danger">Cancelar</button>
                                                             </td>
@@ -469,6 +481,18 @@
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
+                                                                @case('supre')
+                                                                    @php $ids =  base64_encode($docValidado->id_supre) @endphp
+                                                                    <a href="{{route('supre-pdf', ['id' => $ids])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
+                                                                @case('valsupre')
+                                                                    @php $ids =  base64_encode($docValidado->id_supre) @endphp
+                                                                    <a href="{{route('valsupre-pdf', ['id' => $ids])}}" target="_blank">
+                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                    </a>
+                                                                @break
                                                                 @default {{-- Contratos --}}
                                                                     @if(!is_null($docValidado->id_contrato))
                                                                         <a href="{{route('contrato-pdf', ['id' => $docValidado->id_contrato])}}" target="_blank">
@@ -488,7 +512,7 @@
                                                         </td>
                                                         <td><small>{{$docValidado->created_at->format('d-m-Y')}}</small></td>
                                                         <td><small>{{$docValidado->fecha_sellado}}</small></td>
-                                                        @if($rol->role_id == '30' || $rol->role_id == '2')
+                                                        @if($rol->role_id == '30' || $rol->role_id == '2' || $rol->role_id == '4' || $rol->role_id == '8')
                                                             <td>
                                                                 <button type="button" onclick="cancelarDocumento('{{$docValidado->id}}', '{{$nameArchivo}}', '{{$docValidado->tipo_archivo}}', '{{$docValidado->numero_o_clave}}')" class="btn btn-outline-danger">Anular</button>
                                                             </td>
