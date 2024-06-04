@@ -94,7 +94,7 @@ class patController extends Controller
     }
     
     private function data(Request $request){
-        if($request->organismo and $request->mes){
+        if($request->organismo and $request->mes and $request->ejercicio){
             $ids_org = [];
             $query_meta = $query_avance = $otro = null;
             switch($request->organismo){
@@ -125,7 +125,7 @@ class patController extends Controller
                     break;
                 }else{
                      $query_meta .= "SUM(($mes->>'meta')::integer)+";
-                     $query_avance .= "SUM(($mes->>'meta')::integer)+";
+                     $query_avance .= "SUM(($mes->>'avance')::integer)+";
                 }
             }
             
@@ -153,7 +153,7 @@ class patController extends Controller
                         }else $query = $query->where('id_parent', 1);
                         
                 })
-                ->where('ma.ejercicio', '2024');
+                ->where('ma.ejercicio', $request->ejercicio);
                 //dd(count($ids_org));
                 if(count($ids_org)){
                     foreach($ids_org as $idorg => $nombre){       
@@ -161,8 +161,8 @@ class patController extends Controller
                         $nombre = str_replace(' ', '_', $nombre);
 
                         $data = $data->addSelect(
-                            DB::raw("(SELECT SUM((enero->>'meta')::integer) FROM funciones_proced, metas_avances_pat WHERE funciones_proced.id = metas_avances_pat.id_proced AND fun_proc = fp.fun_proc AND id_org = ".$idorg." AND ma.ejercicio = '2024') as prog_".$idorg),
-                            DB::raw("(SELECT SUM((enero->>'avance')::integer) FROM funciones_proced, metas_avances_pat WHERE funciones_proced.id = metas_avances_pat.id_proced AND fun_proc = fp.fun_proc AND id_org = ".$idorg." AND ma.ejercicio = '2024') as alc_".$idorg) 
+                            DB::raw("(SELECT ".$query_meta." FROM funciones_proced, metas_avances_pat WHERE funciones_proced.id = metas_avances_pat.id_proced AND fun_proc = fp.fun_proc AND id_org = ".$idorg." AND ma.ejercicio = '".$request->ejercicio."') as prog_".$idorg),
+                            DB::raw("(SELECT ".$query_avance." FROM funciones_proced, metas_avances_pat WHERE funciones_proced.id = metas_avances_pat.id_proced AND fun_proc = fp.fun_proc AND id_org = ".$idorg." AND ma.ejercicio = '".$request->ejercicio."') as alc_".$idorg) 
                         );
                     }
                 }
