@@ -170,7 +170,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="nombre" class="negrita">Campo de formación profesional:</label>
-                                    <input type="text" class="form-control input-sm" id="form_profesion" name="form_profesion" placeholder="Campo de formación profesional" value="{{ data_get($json_general, 'form_profesion', '')}}">
+                                    <input type="text" class="form-control input-sm" id="form_profesion" name="form_profesion" placeholder="Campo de formación profesional" value="{{$curso->formacion_profesional}}" readonly>
                                 </div>
                             </div>
                         </div>
@@ -244,7 +244,7 @@
                             <button class="btn float-right" id="btn_save_uno" onclick="guardarParteUno('{{$curso->id}}', '1')">GUARDAR INFORMACIÓN</button>
                         </div> --}}
                         <div class="col-12">
-                            <button class="btn float-right" id="btn_primera_parte">ENVIAR INFORMACIÓN</button>
+                            <button class="btn float-right" id="btn_primera_parte">GUARDAR INFORMACIÓN</button>
                         </div>
                     </div>
                 </form>
@@ -286,7 +286,7 @@
                     <input type="hidden" name="indice_oculto" id="indice_oculto" value="">
 
                     {{-- <button id="" class="btn-sm btn-primary mt-3" onclick="guardarParteUno('{{$curso->id}}', '2')">GUARDAR CAMBIOS</button> --}}
-                    <button id="btn_segunda_parte" class="btn-sm btn-primary mt-3">ENVIAR INFORMACIÓN</button>
+                    <button id="btn_segunda_parte" class="btn-sm btn-primary mt-3">GUARDAR INFORMACIÓN</button>
                 </form>
 
 
@@ -359,7 +359,7 @@
                         <button class="btn float-right" id="btn_save_uno" onclick="guardarParteUno('{{$curso->id}}', '3')">GUARDAR INFORMACIÓN</button>
                     </div> --}}
                     <div class="col-12">
-                        <button class="btn float-right" id="btn_tercera_parte">ENVIAR INFORMACIÓN</button>
+                        <button class="btn float-right" id="btn_tercera_parte">GUARDAR INFORMACIÓN</button>
                     </div>
                 </form>
 
@@ -444,18 +444,24 @@
             $('#btn_primera_parte').click(function() {
                 if(confirm("Esta seguro de guardar los datos?")==true){
                         $('#frm_primera').attr('action', "{{route('cursos-catalogo.saveparteuno')}}"); $('#frm_primera').submit();
+                }else{
+                    return false;
                 }
             });
 
             $('#btn_segunda_parte').click(function() {
                 if(confirm("Esta seguro de guardar los datos?")==true){
                         $('#frm_segunda').attr('action', "{{route('cursos-catalogo.savepartedos')}}"); $('#frm_segunda').submit();
+                }else{
+                    return false;
                 }
             });
 
             $('#btn_tercera_parte').click(function() {
                 if(confirm("Esta seguro de guardar los datos?")==true){
                         $('#frm_tercera').attr('action', "{{route('cursos-catalogo.savepartetres')}}"); $('#frm_tercera').submit();
+                }else{
+                    return false;
                 }
             });
 
@@ -541,7 +547,7 @@
                             const nuevoInput = document.createElement('input');
                             nuevoInput.type = 'text';
                             nuevoInput.value = value;
-                            nuevoInput.name = key; // Añadir el nombre al input si es necesario
+                            nuevoInput.name = 'input'+conta; // Añadir el nombre al input si es necesario
                             nuevoInput.classList.add('input-text');
                             inputsContainer.appendChild(nuevoInput);
                             conta++;

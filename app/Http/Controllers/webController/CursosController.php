@@ -287,7 +287,8 @@ class CursosController extends Controller
             //consulta sql
             $otrauni = FALSE;
             $area = new Area();
-            $areas = $area->all();
+            $areas = $area->where('activo', true)->get();
+            // $areas = $area->all();
 
             $Especialidad = new especialidad();
             $especialidades = $Especialidad->all();
@@ -829,9 +830,10 @@ class CursosController extends Controller
         $json_general = $json_tematico = $json_didactico = [];
 
         $curso = DB::Table('cursos as cu')->SELECT('cu.id','cu.nombre_curso','cu.modalidad','cu.horas', 'cu.duracion','cu.tipo_curso',
-                    'especialidades.nombre AS especialidad', 'cu.id_especialidad')
+                    'especialidades.nombre AS especialidad', 'cu.id_especialidad', 'area.formacion_profesional')
                     ->WHERE('cu.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cu.id_especialidad')
+                    ->LEFTJOIN('area', 'area.id', '=' , 'cu.area')
                     ->FIRST();
 
         $datos_carta = DB::table('tbl_carta_descriptiva')->select('id', 'datos_generales', 'cont_tematico', 'rec_didacticos')

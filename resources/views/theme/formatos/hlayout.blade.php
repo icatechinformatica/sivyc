@@ -42,6 +42,7 @@
         <p style="margin-top:-55px; padding:0px; font-size: 11px; "><span  style="font-style: italic; display:block; padding-bottom:5px;">@if(isset($distintivo)){{ $distintivo }}@endif</span>@if(isset($titulo)){{ $titulo }}@endif</p>
         @yield("header")
     </header>
+    @if(isset($direccion))
     <footer>
         @yield("footer")
         <div style="position: relative;";>
@@ -50,6 +51,7 @@
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </div>
     </footer>
+    @endif
     <content>
         @yield("content")
     </content>
