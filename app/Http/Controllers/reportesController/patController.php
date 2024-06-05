@@ -117,7 +117,7 @@ class patController extends Controller
                     }
                 break;
             }
-
+            //dd($ids_org);
             foreach($this->meses as $mes => $nombre){
                 if($request->mes == $mes){
                     $query_meta .= "SUM(($mes->>'meta')::integer)";
@@ -161,8 +161,9 @@ class patController extends Controller
                         $nombre = str_replace(' ', '_', $nombre);
 
                         $data = $data->addSelect(
-                            DB::raw("(SELECT ".$query_meta." FROM funciones_proced, metas_avances_pat WHERE funciones_proced.id = metas_avances_pat.id_proced AND fun_proc = fp.fun_proc AND id_org = ".$idorg." AND ma.ejercicio = '".$request->ejercicio."') as prog_".$idorg),
-                            DB::raw("(SELECT ".$query_avance." FROM funciones_proced, metas_avances_pat WHERE funciones_proced.id = metas_avances_pat.id_proced AND fun_proc = fp.fun_proc AND id_org = ".$idorg." AND ma.ejercicio = '".$request->ejercicio."') as alc_".$idorg) 
+                            DB::raw("(SELECT ".$query_meta." FROM funciones_proced, metas_avances_pat WHERE funciones_proced.id = metas_avances_pat.id_proced AND fun_proc = fp.fun_proc AND id_org = ".$idorg." AND ejercicio = '".$request->ejercicio."') as prog_".$idorg),
+                            DB::raw("(SELECT ".$query_avance." FROM funciones_proced, metas_avances_pat WHERE funciones_proced.id = metas_avances_pat.id_proced AND fun_proc = fp.fun_proc AND id_org = ".$idorg." AND ejercicio = '".$request->ejercicio."') as alc_".$idorg),
+                            DB::raw($idorg." as id_org") 
                         );
                     }
                 }
