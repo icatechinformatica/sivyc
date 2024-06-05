@@ -48,7 +48,7 @@
                             <br /><br /><br /><br /><br /><br />
                             {{$curso->academico}}
                             <hr width="80%" />
-                            {{$curso->pacademico}}
+                            {{$curso->pacademico}} DE LA UNIDAD DE CAPACITACIÓN {{$curso->ubicacion}}
                             <br /><br /><br />
                         </td>                        
                     </tr>
