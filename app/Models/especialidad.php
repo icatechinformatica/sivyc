@@ -22,16 +22,16 @@ class especialidad extends Model
             if (!empty(trim($buscar))) {
                 switch ($tipo) {
                     case 'clave':
-                        return $query->where('especialidades.clave', '=', $buscar);
+                        return $query->where('especialidades.clave',  'like', '%' . $buscar . '%');
                         break;
                     case 'nombre':
-                        return $query->where('especialidades.nombre', '=', $buscar);
+                        return $query->where('especialidades.nombre',  'like', '%' . $buscar . '%');
                         break;
                     case 'prefijo':
-                        return $query->where('especialidades.prefijo', '=', $buscar);
+                        return $query->where('especialidades.prefijo',  'like', '%' . $buscar . '%');
                         break;
                     case 'area':
-                        $idArea = DB::table('area')->where('area.formacion_profesional', '=', $buscar)->select('id')->first();
+                        $idArea = DB::table('area')->where('area.formacion_profesional', 'like', '%' . $buscar . '%')->select('id')->first();
                         return $query->where('especialidades.id_areas', '=', $idArea->id);
                         break;
                 }
