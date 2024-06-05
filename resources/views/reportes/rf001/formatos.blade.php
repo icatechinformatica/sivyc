@@ -108,6 +108,7 @@
                                 <th scope="col">UNIDAD</th>
                                 <th scope="col">ESTADO</th>
                                 <th scope="col">PERIODO</th>
+                                <th scope="col">ACCIONES</th>
                                 <th scope="col">DETALLES</th>
                             </tr>
                         </thead>
@@ -118,11 +119,31 @@
                                     <td>{{ $item->unidad }}</td>
                                     <td>{{ $item->estado }}</td>
                                     <td>
-                                        {{ $item->periodo_inicio ." - ". $item->periodo_fin }}
+                                        {{ $item->periodo_inicio . ' - ' . $item->periodo_fin }}
                                     </td>
                                     <td class="text-left">
-                                        <a class="nav-link pt-0" href="{{ route('reporte.rf001.details', ['concentrado' => $item->id]) }}">
-                                            <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true" padding-right: 12px;" title='VER REGISTRO DEL REPORTE ENVIADO.'></i>
+                                        @switch($item->estado)
+                                            @case('GENERADO')
+                                                <a class="nav-link pt-0"
+                                                    href="{{ route('reporte.rf001.details', ['concentrado' => $item->id]) }}">
+                                                    <i class="fa fa-edit  fa-2x fa-lg text-primary" aria-hidden="true"
+                                                        padding-right: 12px;" title='EDITAR REGISTROS'></i>
+                                                </a>
+                                            @break
+
+                                            @case('ENVIADO')
+                                                <a class="nav-link pt-0"
+                                                    href="{{ route('reporte.rf001.details', ['concentrado' => $item->id]) }}">
+                                                    <i class="fa fa-times fa-2x fa-lg text-danger" aria-hidden="true" title='FORMATO RF001 ENVIADO'></i>
+                                                </a>
+                                            @break
+
+                                            @default
+                                        @endswitch
+                                    </td>
+                                    <td class="text-left">
+                                        <a class="nav-link pt-0" href="#">
+                                            <i class="fa fa-eye fa-2x fa-lg text-success" aria-hidden="true" title="MOSTRAR FORMATO RF001"></i>
                                         </a>
                                     </td>
                                 </tr>

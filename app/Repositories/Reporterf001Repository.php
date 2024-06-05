@@ -75,7 +75,7 @@ class Reporterf001Repository implements Reporterf001Interface
 
        return Rf001Model::create([
             'memorandum' => trim($request->get('consecutivo')),
-            'estado' => trim('ENVIADO'),
+            'estado' => trim('GENERADO'),
             'movimientos' => json_encode($dataAdd, JSON_UNESCAPED_UNICODE),
             'id_unidad' => $request->get('id_unidad'),
             'unidad' => $request->get('unidad'),
@@ -88,7 +88,7 @@ class Reporterf001Repository implements Reporterf001Interface
     {
         $rf001Model = new Rf001Model();
 
-        return $rf001Model::where("estado", 'ENVIADO')->latest()->paginate(10 ?? 5);
+        return $rf001Model::latest()->paginate(10 ?? 5);
     }
 
     public function getDetailRF001Format($concentrado)
@@ -96,4 +96,5 @@ class Reporterf001Repository implements Reporterf001Interface
         $rf001Detalle = new Rf001Model();
         return $rf001Detalle::findOrFail($concentrado);
     }
+
 }

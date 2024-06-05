@@ -89,23 +89,28 @@
             </div>
         @endif
         <div class="col-12">
-            {{ Form::open(['route' => 'reporte.rf001.index', 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
+            {{ $getConcentrado }}
+            @if ($getConcentrado)
+                {{ Form::open(['route' => ['reporte.rf001.details', 'concentrado' => $getConcentrado->id], 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
+            @else
+                {{ Form::open(['route' => 'reporte.rf001.index', 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
+            @endif
             <div class="form-row">
                 <div class="form-group col-md-1">
                     <b>AÑO ACTUAL {{ $currentYear }} </b> <br>
                 </div>
                 <div class="form-group col-md-2">
-                    {{ Form::select('unidad', $datos['unidades'], '', ['id' => 'unidad', 'placeholder' => '- UNIDAD -', 'class' => 'form-control  mr-sm-2']) }}
+                    {{ Form::select('unidad', $datos['unidades'], $getConcentrado ? $getConcentrado->unidad : '', ['id' => 'unidad', 'placeholder' => '- UNIDAD -', 'class' => 'form-control  mr-sm-2']) }}
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaInicio', 'Fecha Inicio', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaInicio', $fechaInicio, ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
+                    {{ Form::date('fechaInicio', $getConcentrado ? $getConcentrado->periodo_inicio : $fechaInicio, ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaFin', 'Fecha Fecha Fin', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaFin', $fechaFin, ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
+                    {{ Form::date('fechaFin', $getConcentrado ? $getConcentrado->periodo_fin : $fechaFin, ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('folio_grupo', 'N°. Recibo', ['class' => 'awesome']) }}
@@ -125,42 +130,48 @@
                     <table class="table table-hover" id="tabla">
                         <thead>
                             <tr>
-                                <th scope="col">N°. RECIBO</th>
-                                <th scope="col">UNIDAD</th>
-                                <th scope="col">CUOTA</th>
+                                <th scope="col">N°.</th>
                                 <th scope="col">CONCEPTO</th>
-                                <th scope="col">FECHAS</th>
-                                <th scope="col">ESTATUS</th>
+                                <th scope="col" style="width: 25%;">MOVIMIENTO BANCARIO</th>
+                                <th scope="col">RECIBO</th>
+                                <th scope="col">IMPORTE</th>
+                                <th scope="col">FECHA EXPEDICIÓN</th>
                                 <th scope="col">SELECCIONAR</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($query as $item)
                                 <tr>
-                                    <th scope="row">{{ $item->folio_recibo }}</th>
-                                    <td>{{ $item->unidad }}</td>
+                                    <th scope="row">{{ $item->id }}</th>
+                                    <td>{{ $item->concepto }}</td>
+                                    <td>
+                                        @php
+                                            $depositos = json_decode($item->depositos);
+                                        @endphp
+                                        @foreach ($depositos as $k)
+                                            {{ $k->folio }} &nbsp;
+                                        @endforeach
+                                    </td>
+                                    <td>{{ $item->folio_recibo }} </td>
                                     <td>${{ number_format($item->importe, 2, '.', ',') }}</td>
                                     <td>
-                                        @if ($item->id_curso != null)
-                                        @else
-                                            {{ $item->descripcion }}
-                                        @endif
-                                    </td>
-                                    <td>{{ date('d/m/Y', strtotime($item->fecha_expedicion)) }}</td>
-                                    <td>{{ $item->status_folio }}
-                                        <span @if ($item->status_recibo == 'POR COBRAR') class="text-danger" @endif>
-                                            @if ($item->status_recibo)
-                                                ({{ $item->status_recibo }})
-                                            @endif
-                                        </span>
-
+                                        {{ date('d/m/Y', strtotime($item->fecha_expedicion)) }}
                                     </td>
                                     <td class="text-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox"
-                                                value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
-                                                id="seleccionar_{{ $item->folio_recibo }}" name="seleccionados[]">
-                                        </div>
+                                        @if ($getConcentrado)
+                                            <div class="form-check">
+                                                @foreach (json_decode($getConcentrado->movimientos) as $dato)
+                                                    {{ $item->folio_recibo }}
+
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                    value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
+                                                    id="seleccionar_{{ $item->folio_recibo }}" name="seleccionados[]">
+                                            </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -180,9 +191,11 @@
                             <div class="form-group mb-2">
                                 <label for="consecutivo" class="sr-only">Password</label>
                                 <input type="text" name="consecutivo" class="form-control" id="consecutivo"
-                                    autocomplete="off" placeholder="Memorándum">
+                                    autocomplete="off" placeholder="Memorándum"
+                                    value="{{ $getConcentrado ? $getConcentrado->memorandum : '' }}">
                             </div>
-                            <button type="submit" class="btn mb-2">Generar</button>
+                            <button type="submit"
+                                class="btn mb-2">{{ $getConcentrado ? 'Modificar' : 'Generar' }}</button>
                         </form>
                         {{ Form::hidden('id_unidad', $idUnidad, ['id' => 'id_unidad', 'class' => 'form-control ']) }}
                         {{ Form::hidden('periodoInicio', $fechaInicio, ['class' => 'form-control mr-sm-2', 'id' => 'periodoInicio']) }}

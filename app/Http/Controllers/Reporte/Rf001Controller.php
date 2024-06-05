@@ -29,8 +29,14 @@ class Rf001Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $concentrado = null)
     {
+        if ($concentrado) {
+            $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($concentrado);
+        }
+        else {
+            $getConcentrado = null;
+        }
         $idUnidad = Auth::user()->unidad;
         $obtenerUnidad = \DB::table('tbl_unidades')->where('id', $idUnidad)->first();
         $unidad = $obtenerUnidad->unidad;
@@ -46,10 +52,17 @@ class Rf001Controller extends Controller
         // Formatear la fecha al formato deseado
 
         $periodo = $this->obtenerPrimerYUltimoDiaHabil($fechaActual);
-        $fechaInicio = $periodo[0];
-        $fechaFin = $periodo[4];
-
         $data = $this->rfoo1Repository->getReciboQry($obtenerUnidad->unidad);
+
+        if ($request->has('fechaInicio') || $request->has('fechaFin')) {
+            $fechaInicio = $request->get('fechaInicio');
+            $fechaFin = $request->get('fechaFin');
+
+            $data->whereBetween('tbl_recibos.fecha_expedicion', [$fechaInicio, $fechaFin]);
+        } else {
+            $fechaInicio = $periodo[0];
+            $fechaFin = $periodo[4];
+        }
 
         if ($getUnidad !== '' && isset($getUnidad)) {
             $data->where('tbl_unidades.unidad', $request->get('unidad'));
@@ -60,17 +73,14 @@ class Rf001Controller extends Controller
             $data->where(\DB::raw('CONCAT(tbl_recibos.id,tbl_recibos.folio_recibo,tbl_recibos.folio_grupo)'), 'ILIKE', '%' . $folioGrupo . '%');
         }
 
-        if ($request->has('fechaInicio') || $request->has('fechaFin')) {
-            $data->whereBetween('tbl_recibos.fecha_expedicion', [$request->get('fechaInicio'), $request->get('fechaFin')]);
-        }
 
-        $query = $data->paginate(5);
+        $query = $data->paginate(25);
         $currentYear = date('Y');
         $path_files = $this->path_files;
 
         // return response()->json($query);
         // view rf001
-        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'fechaInicio', 'fechaFin', 'idUnidad', 'unidad', 'path_files'))->render();
+        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'fechaInicio', 'fechaFin', 'idUnidad', 'unidad', 'path_files', 'getConcentrado'))->render();
     }
 
     /**
@@ -182,5 +192,10 @@ class Rf001Controller extends Controller
     {
         $data = $this->rfoo1Repository->sentRF001Format($request);
         return view('reportes.rf001.formatos', compact('data'))->render();
+    }
+
+    public function deatils(Request $request)
+    {
+
     }
 }
