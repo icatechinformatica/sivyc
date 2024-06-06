@@ -33,10 +33,25 @@ class Rf001Controller extends Controller
     {
         if ($concentrado) {
             $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($concentrado);
+
+            // Decodificar el JSON
+            $data = json_decode($getConcentrado, true);
+
+            // Obtener los movimientos como un array PHP
+            $movimientos = json_decode($data['movimientos'], true);
+
+            // Extraer los folios de los movimientos
+            $foliosMovimientos = array_column($movimientos, 'folio');
         }
         else {
             $getConcentrado = null;
+            $foliosMovimientos = null;
         }
+
+        // Recuperar los checkboxes seleccionados de los parámetros de consulta
+        $selectedCheckboxes = $request->input('seleccionados', []);
+        dd($selectedCheckboxes);
+
         $idUnidad = Auth::user()->unidad;
         $obtenerUnidad = \DB::table('tbl_unidades')->where('id', $idUnidad)->first();
         $unidad = $obtenerUnidad->unidad;
@@ -74,13 +89,13 @@ class Rf001Controller extends Controller
         }
 
 
-        $query = $data->paginate(25);
+        $query = $data->orderBy('id')->paginate(25);
         $currentYear = date('Y');
         $path_files = $this->path_files;
 
         // return response()->json($query);
         // view rf001
-        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'fechaInicio', 'fechaFin', 'idUnidad', 'unidad', 'path_files', 'getConcentrado'))->render();
+        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'fechaInicio', 'fechaFin', 'idUnidad', 'unidad', 'path_files', 'getConcentrado', 'foliosMovimientos', 'selectedCheckboxes'))->render();
     }
 
     /**
@@ -155,6 +170,7 @@ class Rf001Controller extends Controller
     public function update(Request $request, $id)
     {
         //
+        dd($request->all());
     }
 
     /**

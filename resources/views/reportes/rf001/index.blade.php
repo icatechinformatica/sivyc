@@ -89,7 +89,6 @@
             </div>
         @endif
         <div class="col-12">
-            {{ $getConcentrado }}
             @if ($getConcentrado)
                 {{ Form::open(['route' => ['reporte.rf001.details', 'concentrado' => $getConcentrado->id], 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
             @else
@@ -106,11 +105,11 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaInicio', 'Fecha Inicio', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaInicio', $getConcentrado ? $getConcentrado->periodo_inicio : $fechaInicio, ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
+                    {{ Form::date('fechaInicio', $fechaInicio, ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaFin', 'Fecha Fecha Fin', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaFin', $getConcentrado ? $getConcentrado->periodo_fin : $fechaFin, ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
+                    {{ Form::date('fechaFin', $fechaFin, ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('folio_grupo', 'N°. Recibo', ['class' => 'awesome']) }}
@@ -126,7 +125,15 @@
         <div class="col-12">
             @if (count($query) > 0)
                 <div class="p-0 m-0">
-                    {{ Form::open(['route' => 'reporte.rf001.store', 'method' => 'POST', 'id' => 'frmString']) }}
+                    @if ($getConcentrado)
+                        {{ Form::open(['route' => ['reporte.rf001.update', 'id' => $getConcentrado->id], 'method' => 'POST', 'id' => 'frmString']) }}
+                        @method('PUT')
+                        @csrf
+                    @else
+                        {{ Form::open(['route' => 'reporte.rf001.store', 'method' => 'POST', 'id' => 'frmString']) }}
+                        @csrf
+                    @endif
+
                     <table class="table table-hover" id="tabla">
                         <thead>
                             <tr>
@@ -160,17 +167,22 @@
                                     <td class="text-center">
                                         @if ($getConcentrado)
                                             <div class="form-check">
-                                                @foreach (json_decode($getConcentrado->movimientos) as $dato)
-                                                    {{ $item->folio_recibo }}
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
+                                                        id="seleccionar_{{ $item->folio_recibo }}"
+                                                        @if (in_array($item->folio_recibo, $foliosMovimientos)) checked @endif
 
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
-                                                    id="seleccionar_{{ $item->folio_recibo }}" name="seleccionados[]">
-                                            </div>
+                                                        name="seleccionados[]">
+                                                </div>
+                                            @else
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
+                                                        id="seleccionar_{{ $item->folio_recibo }}" name="seleccionados[]"
+                                                        @if (in_array($item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id, $selectedCheckboxes)) checked @endif
+                                                        >
+                                                </div>
                                         @endif
                                     </td>
                                 </tr>
@@ -179,7 +191,7 @@
                         <tfoot>
                             <tr>
                                 <td colspan='14'>
-                                    {{ $query->links() }}
+                                    {{ $query->appends(['seleccionados' => $selectedCheckboxes])->links() }}
                                 </td>
                             </tr>
                         </tfoot>
