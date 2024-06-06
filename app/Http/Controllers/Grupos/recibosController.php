@@ -654,6 +654,7 @@ class recibosController extends Controller
                 case "CANCELAR": //CANCELACION POR ARC02                    
                     $result = DB::table('tbl_recibos')->where('id',$data->id)->update(                
                         [  'status_folio'=> 'CANCELADO',
+                           'motivo' => $request->motivo,
                            'fecha_status'=> date('Y-m-d H:i:s'),                           
                            'iduser_updated' => $this->user->id,
                            'updated_at'=> date('Y-m-d H:m:s')                           
