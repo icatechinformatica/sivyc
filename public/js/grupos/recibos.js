@@ -52,7 +52,8 @@ $(document).ready(function(){
                 $("#aceptar").show("slow");
             break;
             case "CANCELAR":
-                $("#aceptar").text("ACEPTAR");                
+                $("#aceptar").text("ACEPTAR");
+                $("#motivo").show("slow");
                 $("#aceptar").show("slow");
             break;
         }
