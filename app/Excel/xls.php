@@ -9,6 +9,11 @@ use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 
 class xls implements FromCollection, WithHeadings, WithStrictNullComparison, WithTitle, WithEvents
 {
@@ -29,6 +34,7 @@ class xls implements FromCollection, WithHeadings, WithStrictNullComparison, Wit
     public function collection()
     {
         //
+        //dd($this->data);
         return $this->data;
     }
 
@@ -47,17 +53,33 @@ class xls implements FromCollection, WithHeadings, WithStrictNullComparison, Wit
         return $this->title;
     }
 
-    /**
-     * @return array
-     */
-    public function registerEvents(): array
-    {
+    public function registerEvents(): array{
         return [
-            AfterSheet::class => function(AfterSheet $event) {
-                $event->getSheet()->autoSize();
-                $event->getSheet()->getDelegate()->getStyle('A1:C11')
-                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            }
-        ];
+                AfterSheet::class => function(AfterSheet $event) {
+                    // Establecer color de fondo y color de texto para el encabezado
+                       
+                    
+                    // Establecer ancho de columnas
+                    $contador = 0;
+                    foreach (range('A', 'Z') as $columnID) {
+                        $contador++;
+                        $event->sheet->getColumnDimension($columnID)->setAutoSize(true);
+                        $col2 = $columnID."1";
+                        if(count($this->head) == $contador) break;
+                    }
+
+                    $event->sheet->getStyle('A1:'.$col2)->applyFromArray([
+                        'font' => [
+                            'bold' => true,
+                            'color' => ['rgb' => 'FFFFFF'], // Color de texto (blanco)
+                        ],
+                        'fill' => [
+                            'fillType' => Fill::FILL_SOLID,
+                            'startColor' => ['rgb' => '621132'], // Color de fondo (azul)
+                        ],
+                    ]); 
+                },
+            ];
     }
+        
 }
