@@ -43,14 +43,15 @@
                             INSTRUCTOR EXTERNO
                             <br /><br /><br />
                         </td>
-                        <td width="30%">&nbsp;</td>
+                        <td width="25%">&nbsp;</td>
                         <td width="35%">
                             <br /><br /><br /><br /><br /><br />
                             {{$curso->academico}}
                             <hr width="80%" />
-                            {{$curso->pacademico}}
+                            {{$curso->pacademico}} DE LA UNIDAD DE CAPACITACIÓN {{$curso->ubicacion}}
                             <br /><br /><br />
-                        </td>                        
+                        </td>    
+                        <td width="5%">&nbsp;</td>                    
                     </tr>
                 </tbody>
            </table>

@@ -51,7 +51,7 @@ class cursosController extends Controller
             DB::raw("to_char(inicio, 'DD/MM/YYYY') as fechaini"),DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),
             'u.plantel',DB::raw('EXTRACT(MONTH FROM inicio)  as mes_inicio'),DB::raw('EXTRACT(YEAR FROM inicio)  as anio_inicio'),
             DB::raw("CONCAT ('C. ',trim(substring(u.academico , position('.' in u.academico)+1,char_length(u.academico)))) as academico"),
-            'u.pacademico' )
+            'u.pacademico', 'u.ubicacion')
             ->where('clave',$clave);
             if($_SESSION['unidades'])$curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
@@ -102,7 +102,7 @@ class cursosController extends Controller
             $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),DB::raw("CONCAT ('C. ',nombre) as nombre"),
             DB::raw("to_char(inicio, 'DD/MM/YYYY') as fechaini"),DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),'u.plantel',
             DB::raw("CONCAT ('C. ',trim(substring(u.academico , position('.' in u.academico)+1,char_length(u.academico)))) as academico"),
-            'u.pacademico')
+            'u.pacademico','u.ubicacion')
             ->where('clave',$clave);
             if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
@@ -137,7 +137,7 @@ class cursosController extends Controller
             DB::raw("trim(substring(u.dunidad , position('.' in u.dunidad)+1,char_length(u.dunidad))) as dunidad"),'u.pdunidad',
             DB::raw("trim(substring(u.dgeneral , position('.' in u.dgeneral)+1,char_length(u.dgeneral))) as dgeneral"),'u.pdgeneral',
             DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),'u.plantel',
-            'u.academico','u.pacademico')
+            'u.academico','u.pacademico','u.ubicacion')
             ->where('clave',$clave);
             if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
@@ -173,7 +173,7 @@ class cursosController extends Controller
             DB::raw("trim(substring(u.dunidad , position('.' in u.dunidad)+1,char_length(u.dunidad))) as dunidad"),'u.pdunidad',
             DB::raw("trim(substring(u.dgeneral , position('.' in u.dgeneral)+1,char_length(u.dgeneral))) as dgeneral"),'u.pdgeneral',
             DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),'u.plantel',
-            'u.academico','u.pacademico')
+            'u.academico','u.pacademico','u.ubicacion')
             ->where('clave',$clave);
             if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
@@ -215,7 +215,7 @@ class cursosController extends Controller
             DB::raw("trim(substring(u.dunidad , position('.' in u.dunidad)+1,char_length(u.dunidad))) as dunidad"),'u.pdunidad',
             DB::raw("trim(substring(u.dgeneral , position('.' in u.dgeneral)+1,char_length(u.dgeneral))) as dgeneral"),'u.pdgeneral',
             DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),'u.plantel',
-            'u.academico','u.pacademico')
+            'u.academico','u.pacademico','u.ubicacion')
             ->where('clave',$clave);
             if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
