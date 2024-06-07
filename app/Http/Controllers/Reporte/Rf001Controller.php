@@ -14,6 +14,8 @@ use App\Filters\FolioFilter;
 use App\Filters\StatusFilter;
 use App\Filters\RangeDateFilter;
 use Carbon\Exceptions\InvalidFormatException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class Rf001Controller extends Controller
 {
@@ -50,7 +52,7 @@ class Rf001Controller extends Controller
 
         // Recuperar los checkboxes seleccionados de los parámetros de consulta
         $selectedCheckboxes = $request->input('seleccionados', []);
-        dd($selectedCheckboxes);
+        // dd($selectedCheckboxes);
 
         $idUnidad = Auth::user()->unidad;
         $obtenerUnidad = \DB::table('tbl_unidades')->where('id', $idUnidad)->first();
@@ -213,5 +215,26 @@ class Rf001Controller extends Controller
     public function deatils(Request $request)
     {
 
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeData(Request $request): JSONResponse
+    {
+        $order = $request->only([
+            'elemento',
+            'details'
+        ]);
+
+        return response()->json(
+            [
+                'data' => $this->rfoo1Repository->storeData($order)
+            ],
+            Response::HTTP_CREATED
+        );
     }
 }

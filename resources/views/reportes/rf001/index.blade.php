@@ -153,10 +153,10 @@
                                     <td>{{ $item->concepto }}</td>
                                     <td>
                                         @php
-                                            $depositos = json_decode($item->depositos);
+                                            $depositos = json_decode($item->depositos, true);
                                         @endphp
                                         @foreach ($depositos as $k)
-                                            {{ $k->folio }} &nbsp;
+                                            {{ $k['folio'] }} &nbsp;
                                         @endforeach
                                     </td>
                                     <td>{{ $item->folio_recibo }} </td>
@@ -167,22 +167,18 @@
                                     <td class="text-center">
                                         @if ($getConcentrado)
                                             <div class="form-check">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
-                                                        id="seleccionar_{{ $item->folio_recibo }}"
-                                                        @if (in_array($item->folio_recibo, $foliosMovimientos)) checked @endif
-
-                                                        name="seleccionados[]">
-                                                </div>
-                                            @else
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
-                                                        id="seleccionar_{{ $item->folio_recibo }}" name="seleccionados[]"
-                                                        @if (in_array($item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id, $selectedCheckboxes)) checked @endif
-                                                        >
-                                                </div>
+                                                <input class="form-check-input inputCurso" type="checkbox"
+                                                    value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id .'_'. $getConcentrado->id }}"
+                                                    id="seleccionar_{{ $item->folio_recibo }}"
+                                                    @if (in_array($item->folio_recibo, $foliosMovimientos)) checked @endif name="seleccionados[]">
+                                            </div>
+                                        @else
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                    value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
+                                                    id="seleccionar_{{ $item->folio_recibo }}" name="seleccionados[]"
+                                                    @if (in_array($item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id, $selectedCheckboxes)) checked @endif>
+                                            </div>
                                         @endif
                                     </td>
                                 </tr>
@@ -224,4 +220,68 @@
             @endif
         </div>
     </div>
+@endsection
+@section('script_content_js')
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+        $(document).ready(function() {
+            async function enviarCurso(parametro1, parametro2) {
+                try {
+                    const resultado = await new Promise((resolve, reject) => {
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('reporte.rf001.jsonStore') }}",
+                            dataType: "json",
+                            data: {
+                                elemento: parametro1,
+                                details: parametro2
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                resolve(response);
+                            }
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                            // Maneja el error aquí
+                            console.log('Error:', jqXHR);
+                            console.log('TextStatus:', textStatus);
+                            console.log('ErrorThrown:', errorThrown);
+                            reject(textStatus);
+
+                            // Si deseas mostrar un mensaje de error más detallado
+                            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                                alert('Error: ' + jqXHR.responseJSON.message);
+                            } else {
+                                alert('Error: ' + textStatus);
+                            }
+                        });
+                    });
+
+                    return resultado;
+                } catch (error) {
+                    if (error.responseJSON && error.responseJSON.message) {
+                        alert('Error: ' + error.responseJSON.message);
+                    } else {
+                        alert('Error: ' + error.statusText);
+                    }
+                }
+            }
+
+            // Manejar el evento onclick del checkbox
+            $('.inputCurso').on('click', async function() {
+                try {
+                    const idConAttr = $(this).attr('id');
+                    // Verificar si el checkbox está marcado o desmarcado
+                    let valor = $('#' + idConAttr).val();
+                    let checked = $(this).is(':checked');
+                    await enviarCurso(valor, checked);
+                } catch (error) {
+                    console.error(`Error después de la llamada Ajax: ${error}`);
+                }
+            });
+        });
+    </script>
 @endsection

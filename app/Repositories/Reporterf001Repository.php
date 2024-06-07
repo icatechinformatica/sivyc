@@ -97,4 +97,57 @@ class Reporterf001Repository implements Reporterf001Interface
         return $rf001Detalle::findOrFail($concentrado);
     }
 
+    public function storeData(array $request)
+    {
+        list($claveContrado, $numeroRecibo, $id, $idConcentrado) = explode("_", $request['elemento']);
+        $rf001Detalle = new Rf001Model();
+
+        $registro = $rf001Detalle->findOrFail($idConcentrado);
+        $insertData = [];
+        $dataAdd = [];
+
+        if ($registro) {
+            if ($request['details'] === true) {
+
+            $qry = \DB::table('tbl_recibos')
+            ->leftjoin('tbl_cursos', 'tbl_recibos.id_curso', '=', 'tbl_cursos.id')
+            ->leftjoin('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
+            ->select('tbl_recibos.folio_recibo', 'tbl_recibos.unidad as unidad', 'tbl_recibos.importe', 'tbl_recibos.status_folio', 'tbl_recibos.status_recibo', 'cat_conceptos.concepto', 'tbl_recibos.depositos', 'tbl_recibos.importe', 'tbl_recibos.importe_letra', 'tbl_cursos.curso', 'tbl_recibos.descripcion', 'tbl_recibos.num_recibo')
+            ->addSelect(\DB::raw("
+                    CASE
+                        WHEN tbl_cursos.comprobante_pago <> 'null' THEN concat('uploadFiles',tbl_cursos.comprobante_pago)
+                        WHEN tbl_recibos.file_pdf <> 'null' THEN tbl_recibos.file_pdf
+                    END as file_pdf"))
+            ->when($numeroRecibo, function ($query, $numeroRecibo) {
+                return $query->where('tbl_recibos.num_recibo', '=', $numeroRecibo);
+            })->first();
+
+                # verdadero
+                // get the actual JSON records
+                 // Obtener el campo JSON y decodificarlo
+                $datosExistentes  = json_decode($registro->folio, true);
+                $JsonObj = [
+                    'descripcion' => $qry->descripcion,
+                    'folio' => $qry->folio_recibo,
+                    'curso' => $qry->curso,
+                    'concepto' => $qry->concepto,
+                    'documento' => $qry->file_pdf,
+                    'importe' => $qry->importe,
+                    'importe_letra' => $qry->importe_letra,
+                ];
+                // Add a new Json Object to existing Array
+                $datosExistentes[] = $JsonObj;
+                $updateData = [
+                    'movimientos' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE)
+                ];
+                return Rf001Model::where('id', $idConcentrado)->update($updateData);
+            } else {
+                # falso
+            }
+
+        }
+
+        return $request['elemento'];
+    }
+
 }
