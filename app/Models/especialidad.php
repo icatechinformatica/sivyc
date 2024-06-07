@@ -14,28 +14,18 @@ class especialidad extends Model
         'id','clave','nombre','campo_formacion', 'id_areas','activo','prefijo'
     ];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['created_at'];
 
     public function scopeBusqueda($query, $tipo, $buscar)
     {
-        if (!empty($tipo)) {
-            if (!empty(trim($buscar))) {
-                switch ($tipo) {
-                    case 'clave':
-                        return $query->where('especialidades.clave',  'like', '%' . $buscar . '%');
-                        break;
-                    case 'nombre':
-                        return $query->where('especialidades.nombre',  'like', '%' . $buscar . '%');
-                        break;
-                    case 'prefijo':
-                        return $query->where('especialidades.prefijo',  'like', '%' . $buscar . '%');
-                        break;
-                    case 'area':
-                        $idArea = DB::table('area')->where('area.formacion_profesional', 'like', '%' . $buscar . '%')->select('id')->first();
-                        return $query->where('especialidades.id_areas', '=', $idArea->id);
-                        break;
-                }
-            }
+        if (!empty(trim($buscar))){
+            $query->where(function ($query) use ($buscar) {
+                $terminoBusqueda = '%' . $buscar . '%';
+                $query->where('especialidades.clave', 'like', $terminoBusqueda)
+                      ->orWhere('especialidades.nombre', 'like', $terminoBusqueda)
+                      ->orWhere('especialidades.prefijo', 'like', $terminoBusqueda);
+            })
+            ->orwhere('area.formacion_profesional', 'like', '%' . $buscar . '%');
         }
     }
 
