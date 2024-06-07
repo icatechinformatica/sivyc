@@ -308,10 +308,7 @@ class ContratoController extends Controller
             $term = FALSE;
         }
 
-        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
-
         // --- APARTADO DE SOLICITUD DE PAGO ---
-        $funcionarios = array();
         $X = new contratos();
         $folio_p = new folio();
         $dataf = $folio_p::where('id_folios', '=', $id)->first();
@@ -323,11 +320,11 @@ class ContratoController extends Controller
                                 ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
                                 ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
 
-        $funcionarios = $this->funcionarios_pagos($uni->ubicacion);
+        $funcionarios = $this->funcionarios($uni->ubicacion);
 
         // dd($uni_contrato);
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada','memoval','regimen','contrato','director','testigo1','testigo2','testigo3','fechaActual','funcionarios'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','uni_contrato','uni', 'especialidad_seleccionada','memoval','regimen','fechaActual','funcionarios'));
     }
 
     public function contrato_save(Request $request)
@@ -341,7 +338,7 @@ class ContratoController extends Controller
         {
             return back()->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE CONTRATO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->numero_contrato));
         }
-        // dd($request->numero_contrato);
+
         $contrato = contratos::WHERE('id_folios',$request->id_folios)->FIRST();
         if(is_null($contrato))
         {
@@ -349,17 +346,15 @@ class ContratoController extends Controller
         }
 
         $contrato->numero_contrato = $request->numero_contrato;
-        // $contrato->instructor_perfilid = $request->perfil_instructor;
         $contrato->cantidad_letras1 = $request->cantidad_letras;
         $contrato->cantidad_numero = $request->cantidad_numero;
         $contrato->municipio = $request->lugar_expedicion;
-        // $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->id_folios = $request->id_folio;
         $contrato->folio_fiscal = $request->folio_fiscal;
         $contrato->id_curso = $id_curso;
         $contrato->fecha_status = carbon::now();
-        // $contrato->tipo_factura = $request->tipo_factura;
+
         $file = $request->file('factura'); # obtenemos el archivo
         if ($file != NULL)
         {
@@ -375,18 +370,6 @@ class ContratoController extends Controller
         $contrato->save();
 
         $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
-
-        // Eliminar el guardado de directorio y reemplazar por la tabla de funcionarios
-        $directorio = new contrato_directorio();
-        $directorio->contrato_iddirector = $request->id_director;
-        $directorio->contrato_idtestigo1 = $request->id_testigo1;
-        // $directorio->contrato_idtestigo2 = $request->id_testigo2;
-        $directorio->contrato_idtestigo3 = $request->id_testigo3;
-        $directorio->id_contrato = $id_contrato->id_contrato;
-        $directorio->save();
-
-        // fin de reemplazo
-
         $idc = $id_contrato->id_contrato;
 
         folio::where('id_folios', '=', $request->id_folio)
@@ -410,12 +393,9 @@ class ContratoController extends Controller
             $urldocs = $urldocs2 = null;
             $created = DB::TABLE('contratos')->WHERE('id_folios','=', $request->id_folio)->VALUE('created_at');
 
-            if($created <= '2023-06-05')
-            {
+            if($created <= '2023-06-05') {
                 $status_recepcion = 'recepcion tradicional';
-            }
-            else
-            {
+            } else {
                 $status_recepcion = null;
             }
 
@@ -425,39 +405,25 @@ class ContratoController extends Controller
                 ->WHERE('contratos.id_contrato', $idc)
                 ->VALUE('tbl_cursos.id_instructor');
 
-            if(isset($check_pago))
-            {
+            if(isset($check_pago)) {
                 return back()->withErrors(sprintf('LO SENTIMOS, EL MEMORANDUM DE PAGO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->no_memo));
             }
 
-            // $pago = new pago();
-            // $pago->no_memo = $request->no_memo;
-            // $pago->id_contrato = $request->id_contrato;
-            // $pago->liquido = $request->liquido;
-            // $pago->solicitud_fecha = $request->solicitud_fecha;
+            if ($request->arch_asistencia != NULL) {
+                $file = $request->file('arch_asistencia'); # obtenemos el archivo
+                $urldocs = $this->pdf_upload($file, $idc, $id_instructor, 'lista_asistencia'); #invocamos el método
+                // guardamos en la base de datos
+                // $pago->arch_asistencia = trim($urldocs);
+            }
 
-                if ($request->arch_asistencia != NULL)
-                {
-                    $file = $request->file('arch_asistencia'); # obtenemos el archivo
-                    $urldocs = $this->pdf_upload($file, $idc, $id_instructor, 'lista_asistencia'); #invocamos el método
-                    // guardamos en la base de datos
-                    // $pago->arch_asistencia = trim($urldocs);
-                }
-
-                if ($request->arch_evidencia != NULL)
-                {
-                    $file = $request->file('arch_evidencia'); # obtenemos el archivo
-                    $urldocs2 = $this->pdf_upload($file, $idc, $id_instructor, 'lista_evidencia'); #invocamos el método
-                    // guardamos en la base de datos
-                    // $pago->arch_evidencia = trim($urldocs);
-                }
-                else
-                {
-                    $urldocs2 = NULL;
-                }
-            // $pago->fecha_status = carbon::now();
-            // $pago->save();
-
+            if ($request->arch_evidencia != NULL) {
+                $file = $request->file('arch_evidencia'); # obtenemos el archivo
+                $urldocs2 = $this->pdf_upload($file, $idc, $id_instructor, 'lista_evidencia'); #invocamos el método
+                // guardamos en la base de datos
+                // $pago->arch_evidencia = trim($urldocs);
+            } else {
+                $urldocs2 = NULL;
+            }
 
             pago::updateOrInsert(
                 ['id_contrato' => $idc],
@@ -476,24 +442,15 @@ class ContratoController extends Controller
                 ]
             );
 
-            contrato_directorio::where('id_contrato', '=', $idc)
-            ->update(['solpa_iddirector' => $request->id_remitente,
-                    'solpa_elaboro' => $request->id_elabora,
-                    'solpa_para' => $request->id_destino,
-                    'solpa_ccp1' => $request->id_ccp1,
-                    'solpa_ccp2' => $request->id_ccp2,
-                    'solpa_ccp3' => $request->id_ccp3]);
-
-            if(isset($request->arch_factura))
-            {
+            if(isset($request->arch_factura)) {
                 $file = $request->file('arch_factura'); # obtenemos el archivo
                 $urldocs = $this->pdf_upload($file, $idc, $id_instructor, 'factura_pdf'); #invocamos el método
                 $contrato = contratos::find($idc);
                 $contrato->arch_factura = trim($urldocs);
                 $contrato->save();
             }
-            if(isset($request->arch_factura_xml))
-            {
+
+            if(isset($request->arch_factura_xml)) {
                 $file_xml = $request->file('arch_factura_xml'); # obtenemos el archivo
                 $urldocs = $this->xml_upload($file_xml, $idc, $id_instructor, 'factura_xml'); #invocamos el método
                 $contrato = contratos::find($idc);
@@ -502,8 +459,7 @@ class ContratoController extends Controller
             }
 
 
-            if ($request->file('arch_bancario') != null)
-            {
+            if ($request->file('arch_bancario') != null) {
                 $banco = $request->file('arch_bancario'); # obtenemos el archivo
                 $urlbanco = $this->pdf_upload_bancario($banco, $request->id_instructor, 'banco'); # invocamos el método
                 $instructor = instructor::find($request->id_instructor);
@@ -549,13 +505,23 @@ class ContratoController extends Controller
         $contrato->fecha_firma = $fechaActual->toDateString();
         $contrato->save();
 
-        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clavecurso)->Where('tipo_archivo','Contrato')->First();
-
-        if(!is_null($status_doc) && $status_doc->status != 'CANCELADO ICTI' && $status_doc->status != 'VALIDADO'){
-            $documento = DB::Table('documentos_firmar')
-                ->Where('numero_o_clave',$request->clavecurso)
-                ->Where('tipo_archivo','Contrato')
-                ->Delete();
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clavecurso)->Where('tipo_archivo','Contrato')->Get();
+        if(!is_null($status_doc)) {
+            foreach($status_doc as $cadwell) {
+                if(!is_null($cadwell) && in_array($cadwell->status, ['VALIDADO', 'EnFirma'])){
+                    if(!is_null($cadwell->uuid_sellado)) {
+                        return redirect()->route('contrato-mod', ['id' => $request->idc])
+                                    ->with('error','Error: El documento ha sido sellado anteriormente (3)');
+                    }
+                    $firmantes = json_decode($cadwell->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            return redirect()->route('contrato-mod', ['id' => $request->idc])
+                                    ->with('error','Error: El documento esta en proceso de firmado (4)');
+                        }
+                    }
+                }
+            }
         }
 
         $contratoController = new EContratoController();
@@ -566,7 +532,6 @@ class ContratoController extends Controller
     }
 
     public function generar_solicitud_pago_efirma(Request $request) {
-        // // Metodo de XML para solicitud de pago
         // dd($request);
         $pago = pago::Where('id',$request->idp)->First();
         $fechaActual = Carbon::now();
@@ -574,6 +539,23 @@ class ContratoController extends Controller
         // $contrato->save();
 
         $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clavecurso)->Where('tipo_archivo','Solicitud Pago')->First();
+        if(!is_null($status_doc)) {
+            foreach($status_doc as $mxs) {
+                if(!is_null($mxs) && in_array($mxs->status, ['VALIDADO', 'EnFirma'])){
+                    if(!is_null($mxs->uuid_sellado)) {
+                        return redirect()->route('contrato-mod', ['id' => $request->idcon])
+                                    ->with('error','Error: El documento ha sido sellado anteriormente (3)');
+                    }
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            return redirect()->route('contrato-mod', ['id' => $request->idcon])
+                                    ->with('error','Error: El documento esta en proceso de firmado (4)');
+                        }
+                    }
+                }
+            }
+        }
 
         $pagoController = new EPagoController();
         $result = $pagoController->generar_xml($pago->id);
@@ -635,12 +617,6 @@ class ContratoController extends Controller
             $memoval = $data->archivo_alta;
         }
 
-        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
-        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
-        $testigo1 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
-        // $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
-        $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
-
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $datacon->unidad_capacitacion)->FIRST();
         $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $datacon->unidad_capacitacion)->GET();
 
@@ -659,19 +635,6 @@ class ContratoController extends Controller
 
         $datap = pago::WHERE('id_contrato', '=', $datac->id_contrato)->FIRST();
         $directorio = contrato_directorio::where('id_contrato', '=', $datac->id_contrato)->FIRST();
-        $elaboro = directorio::WHERE('id', '=', $directorio->solpa_elaboro)->FIRST();
-        if(isset($directorio->solpa_iddirector))
-        {
-            $director = directorio::WHERE('id', '=', $directorio->solpa_iddirector)->FIRST();
-        }
-        else
-        {
-            $director = directorio::WHERE('id', '=', $directorio->contrato_iddirector)->FIRST();
-        }
-        $para = directorio::WHERE('id', '=', $directorio->solpa_para)->FIRST();
-        $ccp1 = directorio::WHERE('id', '=', $directorio->solpa_ccp1)->FIRST();
-        $ccp2 = directorio::WHERE('id', '=', $directorio->solpa_ccp2)->FIRST();
-        $ccp3 = directorio::WHERE('id', '=', $directorio->solpa_ccp3)->FIRST();
 
         if($data->fecha_apertura < '2023-10-12') {
             $pago = round($data->importe_total-$data->iva, 2);
@@ -679,72 +642,69 @@ class ContratoController extends Controller
             $pago = $data->importe_total;
         }
 
-        $funcionarios = $this->funcionarios_pagos($datacon->unidad_capacitacion);
+        $funcionarios = $this->funcionarios($datacon->unidad_capacitacion);
 
         // check para validar si todavia se puede firmar electronicamente el contrato
         $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$data->clave)
             ->Where('tipo_archivo','Contrato')
-            ->First();
-        if($fechaA > $data->termino){
-            $generarEfirmaContrato = FALSE;
-        }
+            ->Get();
+        foreach($status_doc as $mxs) {
+            if($fechaA > $data->termino){
+                $generarEfirmaContrato = FALSE;
+            }
 
-        if(!is_null($status_doc)) {
-            if($status_doc->status != 'CANCELADO' && $status_doc->status != 'CANCELADO ICTI') {
-                $firmantes = json_decode($status_doc->obj_documento, true);
-                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
-                    if(isset($firmante['_attributes']['certificado'])) {
-                        $generarEfirmaContrato = FALSE;
+
+            if(!is_null($mxs)) {
+                if($mxs->status != 'CANCELADO' && $mxs->status != 'CANCELADO ICTI') {
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            $generarEfirmaContrato = FALSE;
+                        }
                     }
                 }
-            }
-            if($status_doc->status == 'VALIDADO') {
-                $generarEfirmaContrato = FALSE;
+                if($mxs->status == 'VALIDADO') {
+                    $generarEfirmaContrato = FALSE;
+                }
             }
         }
         // FINAL del check
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago','fechaActual','generarEfirma','funcionarios'));
-
         // check para validar si todavia se puede firmar electronicamente la solicitud de pago
         $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$data->clave)
             ->Where('tipo_archivo','Solicitud Pago')
-            ->First();
+            ->Get();
 
-        if(!is_null($status_doc)) {
-            if($status_doc->status != 'CANCELADO' && $status_doc->status != 'CANCELADO ICTI') {
-                $firmantes = json_decode($status_doc->obj_documento, true);
-                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
-                    if(isset($firmante['_attributes']['certificado'])) {
-                        $generarEfirmaPago = FALSE;
+        foreach($status_doc as $mxs) {
+            if(!is_null($mxs)) {
+                if($mxs->status != 'CANCELADO' && $mxs->status != 'CANCELADO ICTI') {
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            $generarEfirmaPago = FALSE;
+                        }
                     }
                 }
-            }
-            if($status_doc->status == 'VALIDADO') {
-                $generarEfirmaPago = FALSE;
+                if($mxs->status == 'VALIDADO') {
+                    $generarEfirmaPago = FALSE;
+                }
             }
         }
         // FINAL del check
 
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo3','data_directorio','unidadsel','unidadlist','memoval','datap','elaboro','para','directorio','regimen','datac','ccp1','ccp2','ccp3','pago','fechaActual','generarEfirmaContrato','generarEfirmaPago','funcionarios')); //se quito testigo2
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','unidadsel','unidadlist','memoval','datap','regimen','datac','pago','fechaActual','generarEfirmaContrato','generarEfirmaPago','funcionarios')); //se quito testigo2
     }
 
     public function save_mod(Request $request){
         $id_curso = folio::where('id_folios', '=', $request->id_folio)->value('id_cursos');
         $contrato = contratos::find($request->id_contrato);
         $contrato->numero_contrato = $request->numero_contrato;
-        // if($request->perfilinstructor != NULL)
-        // {
-        //     $contrato->instructor_perfilid = $request->perfilinstructor;
-        // }
         $contrato->cantidad_numero = $request->cantidad_numero;
         $contrato->cantidad_letras1 = $request->cantidad_letras;
         $contrato->municipio = $request->lugar_expedicion;
-        // $contrato->fecha_firma = $contrato->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->folio_fiscal = $request->folio_fiscal;
         $contrato->id_curso = $id_curso;
         $contrato->fecha_status = carbon::now();
-        // $contrato->tipo_facutra = $request->tipo_factura;
 
         if($request->factura != NULL)
         {
@@ -761,65 +721,34 @@ class ContratoController extends Controller
 
         $contrato->save();
 
-
-        // Metodo de XML para contrato AGREGAR BORRADO DE DOCUMENTO CON CADENA UNICA SOLO SI TODAVIA NO ESTA SELLADO
-        // $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
-        //     ->Where('tipo_archivo','Contrato')
-        //     ->Where('status', 'CANCELADO')
-        //     ->First();
-
-        // if(!is_null($status_doc)){
-        //     $clave_curso = DB::Table('tbl_cursos')->Select('clave')->Where('id',$id_curso)->First();
-        //     $documento = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave_curso->clave)
-        //         ->Where('tipo_archivo','Contrato')
-        //         ->Where('status', 'CANCELADO') //poner que evite el status de CANCELADO ICTI
-        //         ->Delete();
-        //     $contratoController = new EContratoController();
-        //     $result = $contratoController->xml($request->id_contrato);
-        // }
-
-
         $folio = folio::find($request->id_folio);
         $folio->status = 'Capturando';
         $folio->save();
-
-
-        $directorio = contrato_directorio::find($request->id_directorio);
-        $directorio->contrato_iddirector = $request->id_director;
-        $directorio->contrato_idtestigo1 = $request->id_testigo1;
-        // $directorio->contrato_idtestigo2 = $request->id_testigo2;
-        $directorio->contrato_idtestigo3 = $request->id_testigo3;
-        $directorio->save();
 
         $idc = $request->id_contrato;
 
         // metodo de solicitud de pagos
         if($this->setsolpa($request) == true) {
             $id_instructor  = DB::TABLE('contratos')
-            ->JOIN('folios','folios.id_folios','contratos.id_folios')
-            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
-            ->WHERE('contratos.id_contrato', $request->id_contrato_agenda)
-            ->VALUE('tbl_cursos.id_instructor');
+                ->JOIN('folios','folios.id_folios','contratos.id_folios')
+                ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+                ->WHERE('contratos.id_contrato', $request->id_contrato_agenda)
+                ->VALUE('tbl_cursos.id_instructor');
 
             $pago = pago::find($request->id_pago);
-            if(is_null($pago))
-            {
+            if(is_null($pago)) {
                 $pago = new pago();
                 $check_pago = pago::SELECT('no_memo')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
                 $urldocs = $urldocs2 = null;
                 $created = DB::TABLE('contratos')->WHERE('id_folios','=', $request->id_folio)->VALUE('created_at');
 
-                if($created <= '2023-06-05')
-                {
+                if($created <= '2023-06-05') {
                     $pago->status_recepcion = 'recepcion tradicional';
-                }
-                else
-                {
+                } else {
                     $pago->status_recepcion = null;
                 }
 
-                if(isset($check_pago))
-                {
+                if(isset($check_pago)) {
                     return back()->withErrors(sprintf('LO SENTIMOS, EL MEMORANDUM DE PAGO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->no_memo));
                 }
             }
@@ -851,15 +780,6 @@ class ContratoController extends Controller
             }
 
             $pago->save();
-            // contrato_directorio::updateOrInsert(
-            //     ['id_contrato' => $request->id_contrato],
-            //     ['solpa_iddirector' => $request->id_remitente,
-            //         'solpa_elaboro' => $request->id_elabora,
-            //         'solpa_para' => $request->id_destino,
-            //         'solpa_ccp1' => $request->id_ccp1,
-            //         'solpa_ccp2' => $request->id_ccp2,
-            //         'solpa_ccp3' => $request->id_ccp3]
-            // );
 
             if(isset($request->arch_factura))
             {
@@ -896,8 +816,8 @@ class ContratoController extends Controller
             }
         }
 
-        return redirect()->route('contrato-inicio')
-                        ->with('success','Solicitud de Pago Modificado');
+        return redirect()->route('contrato-mod', ['id' => $request->id_contrato])
+                            ->with('success','Cambios Guardados Exitosamente');
     }
 
     public function solicitud_pago($id){
@@ -1282,14 +1202,8 @@ class ContratoController extends Controller
 
         $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
 
-        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
-        $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
-        $testigo1 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
-        // $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
-        $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
-
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura',
-                                  'tbl_cursos.tipo_curso','tbl_cursos.espe', 'tbl_cursos.clave','tbl_cursos.inicio','instructores.nombre','instructores.apellidoPaterno',
+                                  'tbl_cursos.tipo_curso','tbl_cursos.unidad','tbl_cursos.espe', 'tbl_cursos.clave','tbl_cursos.inicio','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion',
                                   'instructores.rfc','tbl_cursos.modinstructor','instructores.curp','instructores.domicilio','tabla_supre.fecha_validacion')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
@@ -1298,25 +1212,17 @@ class ContratoController extends Controller
                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                           ->FIRST();
-                          //nomes especialidad
-        $especialidad = especialidad_instructor::SELECT('especialidades.nombre')
-                                                ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
-                                                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
-                                                ->FIRST();
 
-        $fecha_act = new Carbon('23-06-2022');
-        $fecha_fir = new Carbon($data_contrato->fecha_firma);
+        $uni = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
+        $funcionarios = $this->funcionarios($uni->ubicacion);
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-
-        $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
-        $monto = explode(".",strval($data_contrato->cantidad_numero));
-
         // carga de firmas electronicas organismo
 
         $documento = DocumentosFirmar::where('numero_o_clave', $data->clave)
             ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
             ->Where('tipo_archivo','Contrato')
             ->first();
+
         if(is_null($documento)) {
             $firma_electronica = false;
             $date = strtotime($data->inicio);
@@ -1345,10 +1251,6 @@ class ContratoController extends Controller
             $Y = date("Y", $date);
 
             $body_html = json_decode($documento->obj_documento_interno);
-            // Quita el primer carácter
-            // $body_html = substr($body_html, 1);
-            // Quita el último carácter
-            // $body_html = substr($body_html, 0, -1);
         }
         if(isset($documento->uuid_sellado)){
             $objeto = json_decode($documento->obj_documento,true);
@@ -1392,19 +1294,12 @@ class ContratoController extends Controller
                 }
             }
         }
-        // dd(json_decode($documento->obj_documento_interno));
-        // if($data->tipo_curso == 'CURSO')
-        // {
+
             if ($data->modinstructor == 'HONORARIOS') {
                 $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('data_contrato','data','D','M','Y','nomins','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html','funcionarios'));
             }
-        // }
-        // else
-        // {
-        //     $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica'));
-        // }
 
         $pdf->setPaper('LETTER', 'Portrait');
         return $pdf->stream("Contrato-Instructor-$data_contrato->numero_contrato.pdf");
@@ -1461,7 +1356,7 @@ class ContratoController extends Controller
     }
 
     public function solicitudpago_pdf($id){
-        $objeto = NULL;
+        $objeto = $puesto = $qrCodeBase64 = NULL;
         $data = DB::Table('folios')->Select('clave','ubicacion')
             ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
             ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
@@ -1501,7 +1396,7 @@ class ContratoController extends Controller
         // $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
         // $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
         if(!is_null($data->elabora)) {$data->elabora = json_decode($data->elabora);}
-        $funcionarios = $this->funcionarios_pagos($data->ubicacion);
+        $funcionarios = $this->funcionarios($data->ubicacion);
 
         $documento = DocumentosFirmar::where('numero_o_clave', $data->clave)
             ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
@@ -1543,6 +1438,7 @@ class ContratoController extends Controller
                 // Fin de Generacion
                 foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
                     $puesto = DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+                    // dd($puesto);
                 }
             }
         }
@@ -1550,7 +1446,7 @@ class ContratoController extends Controller
         $direccion = tbl_unidades::WHERE('unidad',$data->ubicacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','distintivo','direccion','funcionarios','body_html','objeto'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','distintivo','direccion','funcionarios','body_html','objeto','puesto','qrCodeBase64'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 
@@ -1709,8 +1605,8 @@ class ContratoController extends Controller
         return true;
     }
 
-    public function funcionarios_pagos($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+    public function funcionarios($unidad) {
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true');
 
@@ -1727,6 +1623,11 @@ class ContratoController extends Controller
             ->Where('u.unidad', $unidad)
             ->First();
 
+        $academico = $academico->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('f.cargo','LIKE','%ACADÉMICO%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
         $funcionarios = [
             'director' => $direc->nombre,
             'directorp' => $direc->cargo,
@@ -1738,6 +1639,8 @@ class ContratoController extends Controller
             'ccp2p' => $ccp2->cargo,
             'delegado' => $delegado->nombre,
             'delegadop' => $delegado->cargo,
+            'academico' => $academico->nombre,
+            'academicop' => $academico->cargo,
             'elabora' => strtoupper(Auth::user()->name),
             'elaborap' => strtoupper(Auth::user()->puesto)
         ];

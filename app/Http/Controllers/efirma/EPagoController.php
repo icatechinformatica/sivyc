@@ -19,7 +19,7 @@ use PDF;
 class EPagoController extends Controller
 {
     public function generar_xml($id_pago){
-        // dd($info);
+        // dd($id_pago);
         $info = DB::Table('pagos')->Select('tbl_unidades.*','tbl_cursos.clave','tbl_cursos.nombre','tbl_cursos.curp','instructores.correo',
                     'contratos.numero_contrato','folios.id_folios','pagos.no_memo')
                 ->Join('contratos','contratos.id_contrato','pagos.id_contrato')
@@ -31,21 +31,25 @@ class EPagoController extends Controller
                 ->Where('pagos.id',$id_pago)
                 ->First();
 
-        $body = $this->create_body($info->id_folios); //creacion de body
-
         $nameFileOriginal = 'solicitud de pago '.$info->clave.'.pdf';
-        $numOficio = $info->no_memo;
-        $numFirmantes = '1';
+        $numDocs = DocumentosFirmar::Where('tipo_archivo', 'Solicitud Pago')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
+        $numDocs = '0'.($numDocs+1);
+        $numOficioBuilder = explode('/',$info->no_memo);
+        $numOficioBuilder[count($numOficioBuilder) - 2] = $numOficioBuilder[count($numOficioBuilder) - 2].'.'.$numDocs;
+        $numOficio = implode('/',$numOficioBuilder);
 
+        $body = $this->create_body($info->id_folios, $numOficio); //creacion de body
+
+        $numFirmantes = '1';
         $arrayFirmantes = [];
 
         $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
-                            ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
-                            ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
-                            ->Where('org.id_parent',1)
-                            ->Where('fun.activo', 'true')
-                            ->Where('u.unidad', $info->ubicacion)
-                            ->First();
+            ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
+            ->Where('org.id_parent',1)
+            ->Where('fun.activo', 'true')
+            ->Where('u.unidad', $info->ubicacion)
+            ->First();
 
         // Info de director firmante
         if(isset($dataFirmante->incapacidad)) {
@@ -109,14 +113,14 @@ class EPagoController extends Controller
                 'fecha_creacion' => $dateFormat,
                 'no_oficio' => $numOficio,
                 'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                'asunto_docto' => 'Contrato de Instructor',
-                'tipo_docto' => 'CNT',
+                'asunto_docto' => 'Solicitud de Pago',
+                'tipo_docto' => 'OFC',
                 'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
             ],
         ]);
         //Generacion de cadena unica mediante el ICTI
         $xmlBase64 = base64_encode($result);
-        $getToken = Tokens_icti::all()->last();
+        $getToken = Tokens_icti::Where('sistema', 'sivyc')->First();
         if ($getToken) {
             $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
             if ($response->json() == null) {
@@ -149,6 +153,7 @@ class EPagoController extends Controller
             $dataInsert->nombre_archivo = $nameFileOriginal;
             $dataInsert->documento = $result;
             $dataInsert->documento_interno = $result;
+            $dataInsert->num_oficio = $numOficio;
             // $dataInsert->md5_file = $md5;
             $dataInsert->save();
 
@@ -159,22 +164,22 @@ class EPagoController extends Controller
 
     }
 
-    public function create_body($id_folio) {
+    public function create_body($id_folio, $numOficio = NULL) {
         $body_html = NULL;
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso','tbl_cursos.instructor_mespecialidad',
-                              'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','tbl_unidades.ubicacion','instructores.nombre',
-                              'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
-                              'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
-                              'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido')
-                        ->WHERE('folios.id_folios', '=', $id_folio)
-                        ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                        ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
-                        ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
-                        ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
-                        ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
-                        ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
-                        ->FIRST();
+                'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','tbl_unidades.ubicacion','instructores.nombre',
+                'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
+                'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
+                'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
+                'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido')
+            ->WHERE('folios.id_folios', '=', $id_folio)
+            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+            ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
+            ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+            ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
+            ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
+            ->FIRST();
 
         $para = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
@@ -203,11 +208,22 @@ class EPagoController extends Controller
             $tipo='DEL CURSO';
         }
 
+        $memoContrato = DB::Table('documentos_firmar')->Where('tipo_archivo','Contrato')
+            ->Where('status','VALIDADO')
+            ->Where('numero_o_clave', $data->clave)
+            ->Value('num_oficio');
+
         $body_html = '<div align=right>
             <b>Unidad de Capacitación '.$data->unidad_capacitacion.'.</b>
         </div>
         <div align=right>
-            <b>Memorandum No. '.$data->no_memo.'.</b>
+            <b>Memorandum No. ';
+            if(is_null($numOficio)) {
+                $body_html = $body_html . $data->no_memo;
+            } else {
+                $body_html = $body_html . $numOficio;
+            }
+            $body_html = $body_html . '.</b>
         </div>
         <div align=right>
             <b>'.$data->unidad_capacitacion.', Chiapas '.$D.' de '.$M.' del '.$Y.'.</b>
@@ -243,7 +259,7 @@ class EPagoController extends Controller
             <tbody>
                 <tr>
                     <td><small>Nombre: '.$data->nombre. ' '. $data->apellidoPaterno.' '.$data->apellidoMaterno.'</small></td>
-                    <td><small>Número de Contrato: '.$data->numero_contrato.'</small></td>
+                    <td><small>Número de Contrato: '.$memoContrato.'</small></td>
                 </tr>
                 <tr>
                     <td><small>Registro STPS: NO APLICA</small></td>

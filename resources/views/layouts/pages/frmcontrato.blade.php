@@ -114,32 +114,21 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="lugar_expedicion" class="control-label">Municipio de la Firma</label>
-                    <input type="text" class="form-control" id="lugar_expedicion" name="lugar_expedicion" placeholder="Lugar de Expedición" @if(isset($contrato))value="{{$contrato->municipio}}"@endif>
+                    <input type="text" class="form-control" id="lugar_expedicion" name="lugar_expedicion" placeholder="Lugar de Expedición">
                 </div>
-                {{-- <div class="form-group col-md-3">
-                    <label for="fecha_firma" class="control-label">Fecha de Firma</label>
-                    <input type="date" class="form-control" id="fecha_firma" name="fecha_firma" @if(isset($contrato))value="{{$contrato->fecha_firma}}" @else value="{{$data->inicio}}"@endif readonly>
-                </div> --}}
             </div>
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputnombre_director" class="control-label">Nombre del Director/Encargado de Unidad de Capacitación</label>
-                    <input type="text" class="form-control" id="nombre_director" name="nombre_director" placeholder="Director de Unidad de Capacitación" @if(isset($director))value="{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}"@endif>
-                    <input type="text" class="form-control" id="id_director" name="id_director" @if(isset($director))value="{{$director->id}}"@endif hidden>
+                    <input type="text" class="form-control" id="nombre_director" name="nombre_director" placeholder="Director de Unidad de Capacitación" readonly value="{{$funcionarios['director']}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_testigo1" class="control-label">Puesto del Director/Encargado de Unidad de Capacitación</label>
-                    <input readonly type="text" class="form-control" id="puesto_director" name="puesto_director" @if(isset($director))value="{{$director->puesto}}"@endif>
+                    <input readonly type="text" class="form-control" id="puesto_director" name="puesto_director" value="{{$funcionarios['directorp']}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
-                    <input readonly type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion" @if(isset($contrato))value="{{$contrato->unidad_capacitacion}}" @else value="{{$data->unidad}}" @endif>
-                    {{-- <select name="unidad_capacitacion" class="form-control mr-sm-2" id="unidad_capacitacion">
-                        <option value="">SELECCIONE UNIDAD</option>
-                        @foreach ($unidades as $cadwell)
-                            <option value="{{$cadwell->unidad}}" @if(isset($contrato) && $contrato->unidad_capacitacion == $cadwell->unidad) selected @endif>{{$cadwell->unidad}}</option>
-                        @endforeach
-                    </select> --}}
+                    <input readonly type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion" value="{{$uni->ubicacion}}">
                 </div>
             </div>
             <h2>Testigos</h2>
@@ -147,34 +136,21 @@
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputtestigo1" class="control-label">Nombre de Testigo de Departamento Académico</label>
-                    <input type="text" class="form-control" id="testigo1" name="testigo1" @if(isset($testigo1))value="{{$testigo1->nombre}} {{$testigo1->apellidoPaterno}} {{$testigo1->apellidoMaterno}}"@endif>
+                    <input type="text" class="form-control" id="testigo1" name="testigo1" value="{{$funcionarios['academico']}}" readonly>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_testigo1" class="control-label">Puesto de Testigo</label>
-                    <input readonly type="text" class="form-control" id="puesto_testigo1" name="puesto_testigo1" @if(isset($testigo1))value="{{$testigo1->puesto}}"@endif>
-                    <input type="text" name="id_testigo1" id="id_testigo1" @if(isset($testigo1))value="{{$testigo1->id}}"@endif hidden>
+                    <input readonly type="text" class="form-control" id="puesto_testigo1" name="puesto_testigo1" value="{{$funcionarios['academicop']}}">
                 </div>
             </div>
-            {{-- <div class="form-row">
-                <div class="form-group col-md-5">
-                    <label for="inputtestigo2" class="control-label">Nombre de Testigo del Departamento de Vinculación</label>
-                    <input type="text" class="form-control" id="testigo2" name="testigo2" @if(isset($testigo2))value="{{$testigo2->nombre}} {{$testigo2->apellidoPaterno}} {{$testigo2->apellidoMaterno}}"@endif>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputpuesto_testigo2" class="control-label">Puesto del Testigo</label>
-                    <input readonly type="text" class="form-control" id="puesto_testigo2" name="puesto_testigo2" @if(isset($testigo2))value="{{$testigo2->puesto}}"@endif>
-                    <input type="text" name="id_testigo2" id="id_testigo2" @if(isset($testigo2))value="{{$testigo2->id}}"@endif hidden>
-                </div>
-            </div> --}}
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputtestigo2" class="control-label">Nombre de Testigo de la Delegación Administrativa</label>
-                    <input type="text" class="form-control" id="testigo3" name="testigo3" @if(isset($testigo3))value="{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}"@endif>
+                    <input type="text" class="form-control" id="testigo3" name="testigo3" readonly value="{{$funcionarios['delegado']}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputpuesto_testigo2" class="control-label">Puesto del Testigo</label>
-                    <input readonly type="text" class="form-control" id="puesto_testigo3" name="puesto_testigo3" @if(isset($testigo3))value="{{$testigo3->puesto}}"@endif>
-                    <input type="text" name="id_testigo3" id="id_testigo3" @if(isset($testigo3))value="{{$testigo3->id}}"@endif hidden>
+                    <input readonly type="text" class="form-control" id="puesto_testigo3" name="puesto_testigo3" value="{{$funcionarios['delegadop']}}">
                 </div>
             </div>
             <hr style="border-color:dimgray">
@@ -190,10 +166,6 @@
                     <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
                     <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control">
                 </div>
-                {{-- <div class="form-group col-md-3">
-                    <label for="inputfecha_agenda">Fecha de Entrega Fisica</label>
-                    <input id="fecha_agenda" name="fecha_agenda" type="date" class="form-control">
-                </div> --}}
             </div>
             <div class="form-row">
                     <div class="form-group col-md-4">
@@ -203,7 +175,6 @@
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto de Remitente</label>
                         <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" value="{{$funcionarios['directorp']}}">
-                        {{-- <input id="id_remitente" name="id_remitente" hidden> --}}
                     </div>
             </div>
             <div class="form-row">
@@ -214,7 +185,6 @@
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto de Quien Elabora</label>
                         <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" value="{{$funcionarios['elaborap']}}">
-                        {{-- <input id="id_elabora" name="id_elabora" hidden> --}}
                     </div>
             </div>
             <div class="form-row">
