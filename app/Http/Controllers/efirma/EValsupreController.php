@@ -199,7 +199,7 @@ class EValsupreController extends Controller
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
 
-        $numOficioSupre = DocumentosFirmar::Where('status','VALIDADO')
+        $numOficioSupre = DB::Table('documentos_firmar')->Where('status','VALIDADO')
             ->Where('tipo_archivo','supre')
             ->Where('numero_o_clave',$data[0]->clave)
             ->Value('num_oficio');
@@ -242,6 +242,7 @@ class EValsupreController extends Controller
         $Yv = date("Y",$datev);
 
         $funcionarios = $this->funcionarios_valsupre($data[0]->unidad_capacitacion);
+        // dd($numOficio);
 
         $body_html = '<div>
         <div id="wrappertop">

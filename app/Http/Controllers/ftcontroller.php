@@ -261,7 +261,7 @@ class ftcontroller extends Controller {
                     } else {
                         # si la condición no se cumple se tiene que tomar el envío con fecha del siguiente spring
                         #obtenemos el mes después
-                        dd('a');
+                        // dd('a');
                         $nextMonth = $mesesCalendarizado[($fechaActual->format('n')) + 0];
                         $fechaNextSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $nextMonth)->first();
                         $fechNextSpring = $fechaNextSpring->fecha_entrega."-".$anioActual;

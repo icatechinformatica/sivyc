@@ -84,6 +84,9 @@
                             @can('efirma.index') {{-- Agregar efirma.index a usuarios delegados y academicos --}}
                                 <a class="dropdown-item" href="{{route('firma.inicio')}}">Firma Electronica</a>
                             @endcan
+                            @can('buzon.efirma.constancias')
+                            <a class="dropdown-item" href="{{route('grupo.efirma.index')}}">eFirma Constancias</a>
+                            @endcan
                         </div>
                     </li>
                     @endcanany
@@ -294,6 +297,9 @@
                         @endcan
                         @can('financieros.reportecursos')
                             <a class="dropdown-item" href="{{route('financieros-reporte-cursos')}}">Reporte de Cursos</a>
+                        @endcan
+                        @can('reportes.pat')
+                            <a class="dropdown-item" href="{{route('reportes.pat')}}">PAT-Concentrado</a>
                         @endcan
 
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}

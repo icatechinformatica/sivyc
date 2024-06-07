@@ -131,26 +131,6 @@
                 </div>
             @endif
 
-            {{-- Generar pdf general avance por mes --}}
-            {{-- Comentamos este apartado para luego descargar el zip con los pdfs --}}
-            {{-- <div class="float-right border border-primary p-3 pdfGeneral">
-                <span class="text-center d-block mb-2"><b>Descargar pdf general de avances</b></span>
-                <div class="d-flex flex-row">
-                    <select name="" id="selOpcion" class="form-control-sm mr-2">
-                        <option value="">SELECCIONAR</option>
-                        <option value="centrales">OFICINAS CENTRALES</option>
-                        <option value="unidades">UNIDADES</option>
-                    </select>
-                    <select name="selmes_ava" id="selmes_ava" class="form-control-sm">
-                        <option value="">MES</option>
-                        @for ($i = 0; $i < count($mesGlob); $i++)
-                            <option value="{{$mesGlob[$i]}}">{{$mesGlob[$i]}}</option>
-                        @endfor
-                    </select>
-                    <a class="ml-2" id="btnGenPdf"><i class="fa fa-cloud-download fa-2x" aria-hidden="true"></i></a>
-                </div>
-            </div> --}}
-
             {{-- Tabla y opcion de selección --}}
             <div class="container">
                 <ul class="nav nav-tabs">
@@ -177,7 +157,7 @@
                         </form>
 
                         <h4 class="text-center font-weight-bold"><u>METAS</u></h4>
-                        <table class="table table-responsive-md" id='tableperfiles'>
+                        <table class="table table-hover table-responsive-md" id='tableperfiles'>
                             <thead>
                                 <tr>
                                     <th scope="col">No</th>
@@ -268,7 +248,7 @@
 
                         @if ($mes != 'seleccionar')
                             <h4 class="mt-2 text-center font-weight-bold"><u>AVANCES {{strtoupper($mes)}}</u></h4>
-                            <table class="table table-responsive-md" id='tableperfiles'>
+                            <table class="table table-hover table-responsive-md" id='tableperfiles'>
                                 <thead>
                                     <tr>
                                         <th scope="col">No</th>
@@ -277,7 +257,8 @@
                                         {{-- <th scope="col">MES DE AVANCE</th> --}}
                                         <th scope="col">FECHA DE ENVIO</th>
                                         <th scope="col">STATUS</th>
-                                        <th scope="col">ACCION</th>
+                                        <th scope="col">PDF FIRMADO</th>
+                                        <th scope="col">PDF DIRECCIÓNES</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -309,7 +290,7 @@
                                                         <i class="fa fa-arrow-circle-o-right" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
                                                 </a>
                                             </td>
-                                            <td>
+                                            <td class="text-center">
                                                 {{-- Otra validacion nueva --}}
                                                 @if ($data[$i]->status_avance['proceso'] == '1' && $data[$i]->fechas_avance[$mes]['fecenvioplane_a'] != '' && $data[$i]->fechas_avance[$mes]['statusmes'] == '')
                                                     <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
@@ -330,6 +311,14 @@
                                                     @endif
                                                 @else
 
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                @if ($data[$i]->id_parent == 1)
+                                                    <a class="btn-sm btn-info text-white" data-toggle="tooltip" target="_blank"
+                                                        data-placement="top" title="Descargar PDF" href="{{ route('pat.buzon.pdf.general', ['mes' => $mes, 'opcion' => $data[$i]->id_org]) }}">
+                                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                                    </a>
                                                 @endif
                                             </td>
                                         </tr>
@@ -450,16 +439,16 @@
         });
 
         $("#btnGenPdf").click(function() {
-            let selOpcion = document.getElementById('selOpcion').value;
-            let selMespdf = document.getElementById('selmes_ava').value;
+            // let selOpcion = document.getElementById('selOpcion').value;
+            // let selMespdf = document.getElementById('selmes_ava').value;
 
-            if (selMespdf != "" && selOpcion != "") {
-                let url = "{{ route('pat.buzon.pdf.general', [':mes', ':opcion']) }}";
-                url = url.replace(':mes', selMespdf).replace(':opcion', selOpcion);
-                window.open(url, "_blank");
-            } else {
-                alert("SELECCIONE UNA OPCIÓN")
-            }
+            // if (selMespdf != "" && selOpcion != "") {
+            //     let url = "{{ route('pat.buzon.pdf.general', [':mes', ':opcion']) }}";
+            //     url = url.replace(':mes', selMespdf).replace(':opcion', selOpcion);
+            //     window.open(url, "_blank");
+            // } else {
+            //     alert("SELECCIONE UNA OPCIÓN")
+            // }
         });
 
         </script>

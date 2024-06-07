@@ -108,6 +108,14 @@ class supreController extends Controller
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
+        // $prueba = 'ICATECH/1000/7859/2024';
+        // $numDocs = 2;
+        // $numDocs = '0'.($numDocs+1);
+        // $numOficioBuilder = explode('/',$prueba);dd($numOficioBuilder);
+        // array_splice($numOficioBuilder, count($numOficioBuilder) - 2, 0, $numDocs);
+        // dd($numOficioBuilder);
+        // $numOficio = implode('/',$numOficioBuilder);
+
         return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades','array_ejercicio','año_pointer'));
     }
 
@@ -282,19 +290,21 @@ class supreController extends Controller
         // check para validar si todavia se puede firmar electronicamente el contrato
         $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$getfolios[0]->clave)
             ->Where('tipo_archivo','supre')
-            ->First();
+            ->Get();
 
-        if(!is_null($status_doc)) {
-            if($status_doc->status != 'CANCELADO' && $status_doc->status != 'CANCELADO ICTI') {
-                $firmantes = json_decode($status_doc->obj_documento, true);
-                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
-                    if(isset($firmante['_attributes']['certificado'])) {
-                        $generarEfirmaSupre = FALSE;
+        foreach($status_doc as $mxs) {
+            if(!is_null($mxs)) {
+                if($mxs->status != 'CANCELADO' && $mxs->status != 'CANCELADO ICTI') {
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            $generarEfirmaSupre = FALSE;
+                        }
                     }
                 }
-            }
-            if($status_doc->status == 'VALIDADO') {
-                $generarEfirmaSupre = FALSE;
+                if($mxs->status == 'VALIDADO') {
+                    $generarEfirmaSupre = FALSE;
+                }
             }
         }
         // FINAL del check
@@ -371,17 +381,21 @@ class supreController extends Controller
     public function generar_supre_efirma(request $request) {
         // dd($request);
 
-        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clave_curso)->Where('tipo_archivo','supre')->First();
-        if(!is_null($status_doc) && in_array($status_doc->status, ['VALIDADO', 'EnFirma'])){
-            if(!is_null($status_doc->uuid_sellado)) {
-                return redirect()->route('modificar_supre', ['id' => base64_encode($request->ids)])
-                             ->with('error','Error: El documento ha sido sellado anteriormente (3)');
-            }
-            $firmantes = json_decode($status_doc->obj_documento, true);
-            foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
-                if(isset($firmante['_attributes']['certificado'])) {
-                    return redirect()->route('modificar_supre', ['id' => base64_encode($request->ids)])
-                             ->with('error','Error: El documento esta en proceso de firmado (4)');
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clave_curso)->Where('tipo_archivo','supre')->Get();
+        if(!is_null($status_doc)) {
+            foreach($status_doc as $mxs) {
+                if(!is_null($mxs) && in_array($mxs->status, ['VALIDADO', 'EnFirma'])){
+                    if(!is_null($mxs->uuid_sellado)) {
+                        return redirect()->route('modificar_supre', ['id' => base64_encode($request->ids)])
+                                    ->with('error','Error: El documento ha sido sellado anteriormente (3)');
+                    }
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            return redirect()->route('modificar_supre', ['id' => base64_encode($request->ids)])
+                                    ->with('error','Error: El documento esta en proceso de firmado (4)');
+                        }
+                    }
                 }
             }
         }
@@ -527,19 +541,21 @@ class supreController extends Controller
 
         $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave)
             ->Where('tipo_archivo','valsupre')
-            ->First();
+            ->Get();
 
-        if(!is_null($status_doc)) {
-            if($status_doc->status != 'CANCELADO' && $status_doc->status != 'CANCELADO ICTI') {
-                $firmantes = json_decode($status_doc->obj_documento, true);
-                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
-                    if(isset($firmante['_attributes']['certificado'])) {
-                        $generarEfirmaSupre = FALSE;
+        foreach($status_doc as $mxs) {
+            if(!is_null($mxs)) {
+                if($mxs->status != 'CANCELADO' && $mxs->status != 'CANCELADO ICTI') {
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            $generarEfirmaSupre = FALSE;
+                        }
                     }
                 }
-            }
-            if($status_doc->status == 'VALIDADO') {
-                $generarEfirmaValsupre = FALSE;
+                if($mxs->status == 'VALIDADO') {
+                    $generarEfirmaValsupre = FALSE;
+                }
             }
         }
 
@@ -549,17 +565,21 @@ class supreController extends Controller
     public function generar_valsupre_efirma(request $request) {
         // dd($request);
 
-        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clave_curso)->Where('tipo_archivo','valsupre')->First();
-        if(!is_null($status_doc) && in_array($status_doc->status, ['VALIDADO', 'EnFirma'])){
-            if(!is_null($status_doc->uuid_sellado)) {
-                return redirect()->route('valsupre_mod', ['id' => base64_encode($request->ids)])
-                             ->with('error','Error: El documento ha sido sellado anteriormente (3)');
-            }
-            $firmantes = json_decode($status_doc->obj_documento, true);
-            foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
-                if(isset($firmante['_attributes']['certificado'])) {
-                    return redirect()->route('valsupre_mod', ['id' => base64_encode($request->ids)])
-                             ->with('error','Error: El documento esta en proceso de firmado (4)');
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clave_curso)->Where('tipo_archivo','valsupre')->Get();
+        if(!is_null($status_doc)) {
+            foreach($status_doc as $mxs) {
+                if(!is_null($mxs) && in_array($mxs->status, ['VALIDADO', 'EnFirma'])){
+                    if(!is_null($mxs->uuid_sellado)) {
+                        return redirect()->route('valsupre_mod', ['id' => base64_encode($request->ids)])
+                                    ->with('error','Error: El documento ha sido sellado anteriormente (3)');
+                    }
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            return redirect()->route('valsupre_mod', ['id' => base64_encode($request->ids)])
+                                    ->with('error','Error: El documento esta en proceso de firmado (4)');
+                        }
+                    }
                 }
             }
         }

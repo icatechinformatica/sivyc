@@ -155,7 +155,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($contratos_folios as $itemData)
+                @foreach ($contratos_folios as $key=>$itemData)
                     <tr @can('contratos.create')@if($itemData->alerta == TRUE && (is_null($itemData->status_recepcion) || $itemData->status_recepcion == 'Rechazado')) style='background-color: #621032; color: white;' @endif @endcan @can('contrato.validate')@if($itemData->alerta_financieros == TRUE && $itemData->status_recepcion == 'En Espera') style='background-color: #621032; color: white;' @endif @endcan>
                         <td style="font-size: 13px">{{$itemData->numero_contrato}}</td>
                         <td style="font-size: 13px">
@@ -914,7 +914,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
+                                <td style="vertical-align:middle;" width='10px;'><i id="validacion_supre_icon" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
                                 <td id="td5" style="text-align: left; vertical-align: middley; font-size: 12px;">5.- Suficiencia Presupuestal</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_supre" name="show_validacion_supre">
@@ -1429,6 +1429,13 @@
             respuesta.forEach(element => {
                 console.log(element);
                 switch (element['tipo_archivo']) {
+                    case 'valsupre':
+                        const valsuprevLink = document.getElementById('show_validacion_supre');
+                        const valsuprevUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
+                        valsuprevLink.href = valsuprevUrl;
+                        valsuprevLink.hidden = false;
+                        document.getElementById('td5v').style.color = "black";
+                    break;
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
                         const contratovLink = document.getElementById('show_contratov');
@@ -1602,8 +1609,19 @@
             request.done(( respuesta) =>
         {
             respuesta.forEach(element => {
-                // console.log(element);
+                console.log(element);
                 switch (element['tipo_archivo']) {
+                    case 'valsupre':
+                        const valsupreLink = document.getElementById('show_validacion_supre');
+                        const valsupreUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
+                        valsupreLink.href = valsupreUrl;
+                        console.log(valsupreLink.href);
+                        valsupreLink.hidden = false;
+                        $('#validacion_supre_pdf_label').attr('hidden', true);
+                        $('#validacion_supre_pdf').prop('required', false);
+                        $('#validacion_supre_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td5').style.color = "black";
+                    break;
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
                         const contratoLink = document.getElementById('show_contrato');
@@ -1681,6 +1699,16 @@
             respuesta.forEach(element => {
                 console.log(element);
                 switch (element['tipo_archivo']) {
+                    case 'valsupre':
+                        const valsupreLink = document.getElementById('show_validacion_suprec');
+                        const valsupreUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
+                        valsupreLink.href = valsupreUrl;
+                        valsupreLink.hidden = false;
+                        // $('#validacion_suprec_pdf_label').attr('hidden', true);
+                        // $('#validacion_suprec_pdf').prop('required', false);
+                        $('#validacion_suprec_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td5c').style.color = "black";
+                    break;
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
                         const contratocLink = document.getElementById('show_contratoc');

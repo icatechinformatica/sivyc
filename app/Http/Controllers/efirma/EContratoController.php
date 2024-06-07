@@ -22,6 +22,7 @@ class EContratoController extends Controller
     }
 
     public function xml($id_contrato){
+        // dd($id_contrato);
         $info = DB::Table('contratos')->Select('tbl_unidades.*','tbl_cursos.clave','tbl_cursos.nombre','tbl_cursos.curp','instructores.correo',
                     'contratos.numero_contrato')
                 ->Join('folios','folios.id_folios','contratos.id_folios')
@@ -32,21 +33,22 @@ class EContratoController extends Controller
                 ->Where('contratos.id_contrato',$id_contrato)
                 ->First();
 
-        $body = $this->create_body($id_contrato,$info); //creacion de body
-        // dd($body['body_html']);
-        // $body = str_replace(["\r", "\n", "\f"], ' ', $body);
-        // $body = utf8_encode($body);
-
         $nameFileOriginal = 'contrato '.$info->clave.'.pdf';
-        $numOficio = $info->numero_contrato;
-        $numFirmantes = '4';
+        $numDocs = DocumentosFirmar::Where('tipo_archivo', 'Contrato')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
+        $numDocs = '0'.($numDocs+1);
+        $numOficioBuilder = explode('/',$info->numero_contrato);
+        $numOficioBuilder[count($numOficioBuilder) - 2] = $numOficioBuilder[count($numOficioBuilder) - 2].'.'.$numDocs;
+        $numOficio = implode('/',$numOficioBuilder);
 
+        $body = $this->create_body($id_contrato,$info, $numOficio); //creacion de body
+        // dd($body['body_html']);
+
+        $numFirmantes = '4';
         $arrayFirmantes = [];
 
         $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
                             ->Join('tbl_funcionarios AS fun','fun.id','org.id')
-                            ->Where('org.id', Auth::user()->id_organismo)
-                            ->OrWhere('org.id_parent', Auth::user()->id_organismo)
+                            ->Where('org.id_unidad', $info->id)
                             ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
                             ->Get();
         // Info de director firmante
@@ -197,7 +199,7 @@ class EContratoController extends Controller
         ]);
         //Generacion de cadena unica mediante el ICTI
         $xmlBase64 = base64_encode($result);
-        $getToken = Tokens_icti::all()->last();
+        $getToken = Tokens_icti::Where('sistema', 'sivyc')->First();
         if ($getToken) {
             $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
             if ($response->json() == null) {
@@ -212,14 +214,24 @@ class EContratoController extends Controller
 
         //Guardado de cadena unica
         if ($response->json()['cadenaOriginal'] != null) {
-            // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFileOriginal);
-            // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFile);
-            // $datas = explode('*',$urlFile);
+            $sobrescribir = True;
+            // Actualizar  este dataInsert ya que se pondra un consecutivo interno y poder hacer mas documentos por si alguno se cancela
+            $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Contrato')->Where('status','EnFirma')->First();
+            if(isset($dataInsert->obj_documento)) {
+                $firmantes = json_decode($dataInsert->obj_documento, true);
+                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                    if(isset($firmante['_attributes']['certificado'])) {
+                        $sobrescribir = False;
+                    }
+                }
+            } else {
+                $sobrescribir = False;
+            }
 
-            $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Contrato')->First();
-            if(is_null($dataInsert)) {
+            if(!$sobrescribir) {
                 $dataInsert = new DocumentosFirmar();
             }
+
             $dataInsert->obj_documento = json_encode($ArrayXml);
             $dataInsert->obj_documento_interno = json_encode($body);
             $dataInsert->status = 'EnFirma';
@@ -230,7 +242,7 @@ class EContratoController extends Controller
             $dataInsert->nombre_archivo = $nameFileOriginal;
             $dataInsert->documento = $result;
             $dataInsert->documento_interno = $result;
-            // $dataInsert->md5_file = $md5;
+            $dataInsert->num_oficio = $numOficio;
             $dataInsert->save();
 
             return TRUE;
@@ -240,7 +252,7 @@ class EContratoController extends Controller
 
     }
 
-    public function create_body($id_contrato,$firmantes) {
+    public function create_body($id_contrato,$firmantes, $numOficio = NULL) {
         $body_html = NULL;
         $data_contrato = contratos::WHERE('id_contrato', '=', $id_contrato)->FIRST();
         $data = contratos::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura',
@@ -341,8 +353,13 @@ class EContratoController extends Controller
                 Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legales, son conformes con los términos del mismo y para constancia lo firman y ratifican ante la presencia de los testigos que al final suscriben; en el municipio de ".$data_contrato->municipio.', Chiapas; '. ", el día de la expedición de la suficiencia presupuestal, que se adjunta al presente como si a la letra se insertase, a efecto de garantizar la disponibilidad de la oblicación contractual.\n
                 Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas curso No. ". $data_contrato->numero_contrato.', que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. '.$firmantes->dunidad.', '.$firmantes->pdunidad.' '.$data_contrato->unidad_capacitacion.', y el (la) C. '.$nomins.', en el Municipio de '.$data_contrato->municipio.', a '.$D.' de '.$M.' del año '.$Y.";  el día de la expedición de la suficiencia presupuestal.\n";
         }else {
-            $body_html = '<div align=right> <b>Contrato No.' . $data_contrato->numero_contrato . '.</b> </div>
-            <br><div align="justify"><b>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES MODALIDAD DE '.($data->tipo_curso == 'CURSO' ? 'HORAS CURSO' : 'CERTIFICACION EXTRAORDINARIA').', QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR '. $firmantes->dunidad. ', EN SU CARÁCTER DE '. $firmantes->pdunidad.' '.$data_contrato->unidad_capacitacion.' Y POR LA OTRA LA O EL C. '.$nomins. ', EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “ICATECH” Y “PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>
+            $body_html = '<div align=right> <b>Contrato No. ';
+            if(is_null($numOficio)) {
+                $body_html = $body_html.$data_contrato->numero_contrato . '.</b> </div>';
+             } else {
+                $body_html = $body_html.$numOficio. '.</b> </div>';
+             }
+             $body_html = $body_html.'<br><div align="justify"><b>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES MODALIDAD DE '.($data->tipo_curso == 'CURSO' ? 'HORAS CURSO' : 'CERTIFICACION EXTRAORDINARIA').', QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR '. $firmantes->dunidad. ', EN SU CARÁCTER DE '. $firmantes->pdunidad.' '.$data_contrato->unidad_capacitacion.' Y POR LA OTRA LA O EL C. '.$nomins. ', EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “ICATECH” Y “PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>
             <br><div align="center"> DECLARACIONES</div>
             <div align="justify">
                 <dl>
@@ -460,20 +477,20 @@ class EContratoController extends Controller
     //obtener el token
     public function generarToken() {
 
-        $resToken = Http::withHeaders([
-            'Accept' => 'application/json'
-        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'SISTEM_IVINCAP',
-            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
-        ]);
-
-        // Token Prueba
         // $resToken = Http::withHeaders([
         //     'Accept' => 'application/json'
         // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'FirmaElectronica',
-        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        //     'nombre' => 'SISTEM_IVINCAP',
+        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         // ]);
+
+        // Token Prueba
+        $resToken = Http::withHeaders([
+            'Accept' => 'application/json'
+        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+            'nombre' => 'FirmaElectronica',
+            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        ]);
 
         $token = $resToken->json();
 
@@ -486,20 +503,20 @@ class EContratoController extends Controller
     // obtener la cadena original
     public function getCadenaOriginal($xmlBase64, $token) {
 
-        $response1 = Http::withHeaders([
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer '.$token,
-        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
-            'xml_OriginalBase64' => $xmlBase64
-        ]);
-
-        // api prueba
         // $response1 = Http::withHeaders([
         //     'Accept' => 'application/json',
         //     'Authorization' => 'Bearer '.$token,
-        // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
         //     'xml_OriginalBase64' => $xmlBase64
         // ]);
+
+        // api prueba
+        $response1 = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token,
+        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+            'xml_OriginalBase64' => $xmlBase64
+        ]);
 
         return $response1;
     }
