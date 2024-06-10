@@ -69,7 +69,7 @@ class supreController extends Controller
 
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-                        ->SELECT('tabla_supre.*','folios.permiso_editar')
+                        ->SELECT('tabla_supre.*','folios.permiso_editar','folios.edicion_pago')
                         ->where('tabla_supre.id', '!=', '0')
                         ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
                         ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
