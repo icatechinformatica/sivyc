@@ -89,6 +89,15 @@
                 opacity: 0.5;
                 box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
             }
+            /* mensaje dta retorno */
+            /* .blocked_dta {
+                cursor: not-allowed;
+                border-width: 3px;
+                border-style: solid;
+                border-color: #f0a80b;
+                border-radius: 5px;
+            } */
+
             /* ajustar textarea */
             textarea {
                 height: 40px;
@@ -158,6 +167,22 @@
                 <strong>{{ session('message') }}</strong>
             </div>
         @endif
+
+        {{-- Alerta de retorno --}}
+        @if (isset($array_rol['rol']))
+            @if (($array_rol['rol'] == 1 || $array_rol['rol'] == 2 || $array_rol['rol'] == 3))
+                <div class="col-12 justify-content-center d-flex align-items-start px-0">
+                    @if ($array_rol['status_json'] == 'RETORNADO')
+                        <div class="alert alert-warning" role="alert"><b>El Expediente Unico fue retornado, verifique los mensajes de DTA para mas detalles..</b><br></div>
+                    @endif
+                    @if ($array_rol['status_json'] == 'VALIDADO')
+                        <div class="alert alert-success" role="alert"><b>Expediente Unico validado por DTA</b><br></div>
+                    @endif
+                    {{-- <b>Nota:</b> {{$array_rol['message_return']}} --}}
+                </div>
+            @endif
+        @endif
+
 
         {{-- CAJA DE BUSQUEDA --}}
         <div class="col-12 row d-flex justify-content-between">
@@ -239,6 +264,7 @@
                 $a_class = $isAcad ? '' : 'blocked';
                 $isAdmin = ($array_rol['rol'] == 3) && ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO');
                 $d_class = $isAdmin ? '' : 'blocked';
+                $dta_msg = $array_rol['rol'] == 4 ? '' : 'readonly';
             @endphp
             {{-- tabla vinculacion --}}
             <div class="col-12 px-0 mt-1 table-bordered table-striped" id="vinculacion">
@@ -247,14 +273,15 @@
                     <thead>
                     <tr>
                         <th width = "3%">NO.</th>
-                        <th width = "41%">EVIDENCIAS</th>
+                        <th width = "30%">EVIDENCIAS</th>
                         <th width = "5%">SI</th>
                         <th width = "5%">NO</th>
-                        <th width = "9%">NO APLICA</th>
-                        <th width = "17%">OBSERVACIONES</th>
-                        <th width = "8%">SUBIR PDF</th>
+                        <th width = "8%">NO APLICA</th>
+                        <th width = "15%">OBSERVACIONES</th>
+                        <th width = "7%">SUBIR PDF</th>
                         <th width = "6%">VER PDF</th>
                         <th width = "6%">ELIMINAR</th>
+                        <th width ="15">MENSAJE DTA</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -308,12 +335,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf 1 --}}
                             @if ($json_dptos->vinculacion['doc_1']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion1',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion1',
                                     '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_1']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta1" id="comentario_dta1" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_1'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -348,6 +379,10 @@
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea name="comentario_dta2" id="comentario_dta2" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_2'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>3</td>
@@ -398,12 +433,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf 3--}}
                             @if ($json_dptos->vinculacion['doc_3']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion3',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion3',
                                     '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_3']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta3" id="comentario_dta3" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_3'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -455,12 +494,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf 4--}}
                             @if ($json_dptos->vinculacion['doc_4']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion4',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion4',
                                     '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_4']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta4" id="comentario_dta4" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_4'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -492,6 +535,10 @@
                             </a>
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta5" id="comentario_dta5" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_5'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>6</td>
@@ -522,6 +569,10 @@
                             </a>
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta6" id="comentario_dta6" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_6'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>7</td>
@@ -555,6 +606,10 @@
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta7" id="comentario_dta7" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_7'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -576,14 +631,15 @@
                     <thead>
                     <tr>
                         <th width = "3%">NO.</th>
-                        <th width = "41%">EVIDENCIAS</th>
+                        <th width = "30%">EVIDENCIAS</th>
                         <th width = "5%">SI</th>
                         <th width = "5%">NO</th>
-                        <th width = "9%">NO APLICA</th>
-                        <th width = "17%">OBSERVACIONES</th>
-                        <th width = "8%">SUBIR PDF</th>
+                        <th width = "8%">NO APLICA</th>
+                        <th width = "15%">OBSERVACIONES</th>
+                        <th width = "7%">SUBIR PDF</th>
                         <th width = "6%">VER PDF</th>
                         <th width = "6%">ELIMINAR</th>
+                        <th width ="15">MENSAJE DTA</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -621,6 +677,10 @@
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta8" id="comentario_dta8" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_8'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>2</td>
@@ -654,6 +714,10 @@
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta9" id="comentario_dta9" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_9'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>3</td>
@@ -695,6 +759,10 @@
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta10" id="comentario_dta10" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_10'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>4</td>
@@ -728,6 +796,10 @@
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta11" id="comentario_dta11" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_11'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>5</td>
@@ -779,12 +851,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_12']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion12',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion12',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_12']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta12" id="comentario_dta12" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_12'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -837,12 +913,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_13']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion13',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion13',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_13']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta13" id="comentario_dta13" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_13'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -895,12 +975,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_14']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion14',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion14',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_14']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta14" id="comentario_dta14" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_14'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -953,12 +1037,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_15']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion15',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion15',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_15']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta15" id="comentario_dta15" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_15'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1011,12 +1099,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_16']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion16',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion16',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_16']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta16" id="comentario_dta16" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_16'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1069,12 +1161,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_17']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion17',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion17',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_17']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta17" id="comentario_dta17" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_17'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1127,12 +1223,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_18']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion18',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion18',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_18']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta18" id="comentario_dta18" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_18'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1185,12 +1285,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_19']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion19',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion19',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_19']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta19" id="comentario_dta19" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_19'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     {{-- esto es un extra se formato de entrega de constancias --}}
@@ -1244,12 +1348,16 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_25']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion25',
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion25',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_25'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -1272,12 +1380,13 @@
                     <thead>
                     <tr>
                         <th width = "3%">NO.</th>
-                        <th width = "35%">EVIDENCIAS</th>
+                        <th width = "23%">EVIDENCIAS</th>
                         <th width = "5%">SI</th>
                         <th width = "5%">NO</th>
-                        <th width = "9%">NO APLICA</th>
-                        <th width = "17%">OBSERVACIONES</th>
+                        <th width = "8%">NO APLICA</th>
+                        <th width = "15%">OBSERVACIONES</th>
                         <th width = "6%">VER PDF</th>
+                        <th width = "15%">MENSAJE DTA</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -1311,6 +1420,10 @@
                                 </a>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta20" id="comentario_dta20" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_20'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>2</td>
@@ -1341,6 +1454,10 @@
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta21" id="comentario_dta21" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_21'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1380,6 +1497,10 @@
                                 </a>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta22" id="comentario_dta22" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_22'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>4</td>
@@ -1410,6 +1531,10 @@
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta23" id="comentario_dta23" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_23'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1442,6 +1567,10 @@
                                 </a>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_24'], 'mensaje_dta', '')}}</textarea>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -1471,15 +1600,7 @@
                         </li>
                     </ul>
                 </div>
-                {{-- Delegacion administrativa podra ver el mensaje de retorno --}}
-                @if (($array_rol['rol'] == 1 || $array_rol['rol'] == 2 || $array_rol['rol'] == 3) && $array_rol['status_json'] == 'RETORNADO')
-                    <div class="col-4 d-flex justify-content-center align-items-start">
-                        <div class="alert alert-warning" role="alert">
-                            <b>Motivo del retorno</b><br>
-                            <b>Nota:</b> {{$array_rol['message_return']}}
-                        </div>
-                    </div>
-                @endif
+
                 {{-- Botones de guardar y enviar que podra ver delegacion. --}}
                 <div class="col-5 d-flex justify-content-end align-items-start">
                     {{-- Generar pdf dele admin --}}
@@ -1521,9 +1642,9 @@
                                 <div class="mt-2 text-center d-none" id="divValid">
                                     <button class="btn btn-danger font-weight-bold" onclick="valid_return_dta('validar', {{$array_rol['idcurso']}}, {{$array_rol['rol']}})">ACEPTAR</button>
                                 </div>
-                                <div class="mt-2 ml-2 text-center d-none" id="divArea">
+                                {{-- <div class="mt-2 ml-2 text-center d-none" id="divArea">
                                     <textarea name="" id="area_retorno" cols="30" rows="1" style="height:40px;" placeholder="Motivo del retorno"></textarea>
-                                </div>
+                                </div> --}}
                                 <div class="mt-2 text-center d-none" id="divReturn">
                                     <button class="btn btn-danger font-weight-bold" onclick="valid_return_dta('retornar', {{$array_rol['idcurso']}}, {{$array_rol['rol']}})">ACEPTAR</button>
                                 </div>
@@ -1719,27 +1840,18 @@
 
             //Funcion Await para ejecutar funcion de guardar y validar al mismo tiempo
             async function ejecutarAsync(rol, idcurso) {
-                if (rol == 2) {
+                if (rol == 1 || rol == 2) {
                     try {
                         // Ejecutar subirPdfServidor y esperar a que termine
                         const resultadoSubida = await subirPdfServidor(event, rol, idcurso);
-                        console.log(resultadoSubida);
-                        valores_por_rol(rol, idcurso); // Validar y guardar los radios
+                        if (resultadoSubida ==  'Success') {
+                            valores_por_rol(rol, idcurso); // Validar y guardar los radios
+                        }
                     } catch (error) {
                         console.error("Error:", error);
                     }
                 }else if(rol == 3){
                     valores_por_rol(rol, idcurso);
-
-                }else if(rol == 1){
-                    try {
-                        const resultadoSubida = await subirPdfServidor(event, rol, idcurso);
-                        if (resultadoSubida ==  'Success') {
-                            valores_por_rol(rol, idcurso);
-                        }
-                    } catch (error) {
-                        console.error("Error:", error);
-                    }
                 }
 
             }
@@ -1816,9 +1928,7 @@
                                 console.log(response);
                                 // alert(response.mensaje);
                                 if (response.status == 200) {
-                                    // return response.status == 200;
-                                }else{
-                                    // return response.status;
+                                    resolve("Success");
                                 }
                             },
                             error: function(xhr, status, error) {
@@ -1831,7 +1941,7 @@
                     }
 
                     // Supongamos que al finalizar la subida, llamas a resolve
-                    resolve("Success");
+
                 });
 
             }
@@ -1881,9 +1991,19 @@
 
             //Valida o retorna DTA
             function valid_return_dta(accion, idcurso, rol) {
-                let valor_area = "";
+                //let valor_area = "";
+                let resul_dta = "";
+
                 if (accion == 'retornar') {
-                    valor_area = document.getElementById('area_retorno').value;
+                    //valor_area = document.getElementById('area_retorno').value;
+                    //Obtenemos todos los valores de el textarea mensaje DTA
+                    resul_dta = get_mensaje_dta();
+                    // console.log(resul_dta);
+                    if (resul_dta.conta_texto == 0) {
+                        alert("Los campos 'Mensaje DTA' de las evidencias están vacíos. \nPara continuar, debe haber al menos un campo con el motivo del retorno.");
+                        return false;
+                    }
+                    // console.log(mensajes_dta);
                 }
 
                 if (confirm("¿ESTAS SEGURO DE REALIZAR ESTA ACCIÓN?")) {
@@ -1894,8 +2014,9 @@
                         "_token": $("meta[name='csrf-token']").attr("content"),
                         "rol_user" : rol,
                         'idcurso' : idcurso,
-                        'valor_area' : valor_area,
-                        'accion' : accion
+                        //'valor_area' : valor_area,
+                        'accion' : accion,
+                        'mensajes_dta' : resul_dta.valores_dta
                     }
                     $.ajax({
                         type:"post",
@@ -1924,6 +2045,19 @@
                 let url = "{{ route('expunico.gen.pdfexpe', [':folio']) }}";
                 url = url.replace(':folio', id_curso);
                 window.open(url, "_blank");
+            }
+
+            function get_mensaje_dta() {
+                let valores_dta = {};
+                let conta_texto = 0;
+                for (let i = 1; i <= 25; i++) {
+                    let txtarea = $('#comentario_dta' + i).val();
+                    valores_dta['txtarea' + i] = txtarea;
+                    if (txtarea && txtarea.trim() !== '') {
+                        conta_texto++;
+                    }
+                }
+                return { valores_dta, conta_texto };
             }
 
 

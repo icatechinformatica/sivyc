@@ -10,12 +10,12 @@
             margin-right: 0.5cm;
         }
         body{
-            padding-bottom: 60px;
+            padding-bottom: 70px;
         }
         .bloque_uno{
-            padding-top: 40px;
+            /* padding-top: 40px; */
             font-weight: bold;
-            font-size: 13px;
+            font-size: 14px;
             font: bold;
         }
 
@@ -53,7 +53,7 @@
 @section('content')
     <div class="contenedor">
         <div class="bloque_uno" align="right">
-
+            <p style="text-align: center">Lista de verificación de Expediente Único</p>
         </div>
         <div class="contenido" align="justify">
 
