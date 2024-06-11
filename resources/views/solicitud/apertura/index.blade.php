@@ -201,7 +201,7 @@
             <div class="form-row" >
                 <div class="form-group col-md-2">
                     <label>TIPO DE CAPACITACI&Oacute;N:</label>
-                    {{ Form::select('tcurso', $tcurso, $grupo->tipo_curso, ['id'=>'tcurso','class' => 'form-control mr-sm-2' ,'disabled'=>$disabled] ) }}
+                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->tipo_curso}}" readonly>                    
                 </div>
                 <div class="form-group col-md-2">
                      <label>MEDIO VIRTUAL:</label>

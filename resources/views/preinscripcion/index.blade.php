@@ -21,7 +21,7 @@
         $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable = $servicio = $nombre_curso = $cespe = $fcespe = $nota =
         $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = $efisico = $mvirtual = $lvirtual = $memo = $repre = $tel =
         // $firm_user = $firm_cerss_one = $firm_cerss_two = $url_pdf_conv = "";
-        $costo = null;
+        $costo = $programa = $plantel = null;
         // if ($grupo) {
         //     $firm_user = $grupo->firma_user;
         //     $firm_cerss_one = $grupo->firma_cerss_one;
@@ -33,7 +33,11 @@
         if($curso){
             $id_curso = $curso->id;
             $costo = $curso->costo;
-            $nombre_curso =  $curso->nombre_curso;
+            $nombre_curso =  $curso->nombre_curso;            
+        }
+        if(isset($grupo)){
+            $plantel =  $grupo->plantel;
+            $programa =  $grupo->programa;
         }
         if(count($alumnos)>0){
             $hfin = substr($alumnos[0]->horario, 8, 5);
@@ -304,6 +308,14 @@
                             <div class="form-group col-md-3">
                                 <label for="">MEMORÁNDUM DE SOLICITUD DE APERTURA:</label>
                                 {!! Form::text('mapertura', $memo, ['id'=>'mapertura', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM APERTURA', 'aria-label' => 'No. Memorándum']) !!}
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>PLANTEL:</label>
+                                {{ Form::select('plantel', $planteles, $plantel, ['id'=>'plantel','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>PROGRAMA ESTRAT&Eacute;GICO:</label>
+                                {{ Form::select('programa', $programas, $programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                             </div>
                         </div>
                         <div class="form-row">
