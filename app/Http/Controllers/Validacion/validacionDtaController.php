@@ -1744,7 +1744,7 @@ class validacionDtaController extends Controller {
         $cursos = DB::Table('tbl_cursos')
             ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
             ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
-            ->whereNot('tbl_cursos.turnado', 'UNIDAD')
+            ->where('tbl_cursos.turnado', '!=', 'UNIDAD')
             //->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
             //->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
             ->Where('tbl_cursos.status_curso','AUTORIZADO')
