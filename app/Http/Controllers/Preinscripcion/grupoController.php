@@ -67,7 +67,15 @@ class grupoController extends Controller
                 ELSE CONCAT('19',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
                 END AS fnacimiento"),'ar.id_especialidad','ar.id_instructor','ar.efisico','ar.escolaridad','ar.servicio','ar.medio_virtual','ar.link_virtual','ar.cespecifico',
                 'ar.fcespe','ar.observaciones','ar.mpreapertura','ar.depen_repre','ar.depen_telrepre','tc.clave','tc.status_curso',
-                'tc.solicita','tu.vinculacion','tu.pvinculacion','tu.dunidad')                
+                'tc.solicita','tu.vinculacion','tu.pvinculacion','tu.dunidad',
+                DB::raw("EXTRACT(year from (age(ar.inicio,ap.fecha_nacimiento))) as edad"),                    
+                DB::raw("
+                    CASE 
+                        WHEN ap.id_gvulnerable IS NULL THEN NULL
+                        ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ap.id_gvulnerable) AS bigint)))
+                    END
+                    as grupos "), 'ap.inmigrante','es_cereso','ap.familia_migrante','ap.madre_soltera','ap.lgbt','ap.nacionalidad'
+                )                
             ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)
             ->leftjoin('tbl_cursos as tc', 'tc.folio_grupo', 'ar.folio_grupo')
             ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' )

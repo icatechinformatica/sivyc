@@ -1,15 +1,19 @@
 <!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
 @extends('theme.sivyc.layout')
 @section('title', 'Apertura | SIVyC Icatech')
-@section('content')
+@section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
 
     <link rel="stylesheet" href="{{ asset('fullCalendar/core/main.css') }}">
     <link rel="stylesheet" href="{{ asset('fullCalendar/daygrid/main.css') }}">
     <link rel="stylesheet" href="{{ asset('fullCalendar/list/main.css') }}">
-    <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}"> 
+    <style>
+        table th, table td{font-size: 11px; padding:0px; margin:0px;}
+    </style>
+@endsection
+@section('content')
     <div class="card-header">
         Solicitud / Clave de Apertura
     </div>
@@ -148,7 +152,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label>MEMOR&aacute;NDUM DE APERTURA:</label>
+                    <label>MEMOR&Aacute;NDUM DE APERTURA:</label>
                     <input name='munidad' id='munidad' type="text" class="form-control" aria-required="true" value="@if($munidad){{$munidad}}@else{{old('nombre')}}@endif"/>
                 </div>
                 <div class="form-group col-md-3">
@@ -158,7 +162,7 @@
             </div>
             <div class="form-row" >
                 <div class="form-group col-md-4">
-                    <label>PROGRAMA ESTRAT&eacute;GICO:</label>
+                    <label>PROGRAMA ESTRAT&Eacute;GICO:</label>
                     {{ Form::select('programa', $programa, $grupo->programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                 </div>
                 <div class="form-group col-md-2">

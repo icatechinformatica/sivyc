@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}">
     <style>
         .custom-font-size { font-size: 18px; }
+        #tblAlumnos tr th{ text-align: center; }
     </style>
 @endsection
 @section('content')
@@ -190,12 +191,10 @@
                         {!! Form::text('repre_depen', $repre, ['id'=>'repre_depen', 'class'=>'form-control']) !!}
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="">TELEFONO DEL REPRESENTANTE:</label>
-                        {!! Form::text('repre_tel', $tel, ['id'=>'repre_tel', 'class'=>'form-control']) !!}
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-5">
+                        <label for="">TELEFONO REPRESENT:</label>
+                        {!! Form::text('repre_tel', $tel, ['id'=>'repre_tel', 'class'=>'form-control col-md-10']) !!}
+                    </div>               
+                    <div class="form-group col-md-4">
                         @if ($es_vulnerable == 'true')
                         <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($id_vulnerable){{'checked'}}@endif>&nbsp;&nbsp;GRUPO VULNERABLE</label>
                         @else
@@ -203,17 +202,16 @@
                         @endif
                         {{ Form::select('grupo_vulnerable', $grupo_vulnerable, $id_vulnerable, ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
                     </div>
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-6">
                         <label>DOMICILIO, LUGAR O ESPACIO FÍSICO:</label>
-                        <input type="text" id="efisico" name="efisico" class="form-control" value="{{$efisico}}">
+                        <textarea id="efisico" name="efisico" rows="2" class="form-control">{{$efisico}}</textarea>
+                        
                     </div>
                     <div class="form-group col-md-2">
                         <label>MEDIO VIRTUAL:</label>
                         {{ Form::select('medio_virtual', $medio_virtual, $mvirtual, ['id'=>'medio_virtual','class' => 'form-control mr-sm-2'] ) }}
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
+                    </div>               
+                    <div class="form-group col-md-3">
                         <label>LINK VIRTUAL:</label>
                         <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$lvirtual}}">
                     </div>
@@ -222,10 +220,10 @@
                         <input type="text" name="cespecifico" id="cespecifico" class="form-control" value="{{$cespe}}">
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="">FECHA CONVENIO ESPECIFICO:</label>
+                        <label for="">FECHA CONV. ESPECIFICO:</label>
                         <input type="date" name="fcespe" id="fcespe" class="form-control" value="{{$fcespe}}">
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
                         <label><input type="checkbox" value="cerss" id="cerss_ok" @if($id_cerss){{'checked'}}@endif>&nbsp;&nbsp;CERSS</label>
                         {{ Form::select('cerss', $cerss, $id_cerss, ['id'=>'cerss','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
                     </div>
@@ -246,7 +244,8 @@
                         <input type="text" class="form-control" name="firmatwo" value="{{$firm_cerss_two}}" placeholder="NOMBRE COMPLETO, PUESTO, CARGO">
                     </div>
                     <input type="hidden" name="valid_cerss" value="{{$id_cerss}}"> --}}
-
+                </div>
+                <div class="form-row">
                     <div class="form-group col-md-4">
                         <label>INSTRUCTOR DISPONIBLE:</label>
                         <select name="instructor" id="instructor" class="form-control mr-sm--2">
@@ -452,8 +451,14 @@
         <script src="{{ asset('fullCalendar/list/main.js') }}" defer></script>
         <script src="{{ asset('fullCalendar/timegrid/main.js') }}" defer></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <script language="javascript">
+        <script language="javascript">           
+
             $(document).ready(function(){
+                $('#costoX').on('input', function() {
+                    var text = $(this).val();
+                    $('.costo').val(text); 
+                });
+
                 // BOTONES DE PDF
                 //Temporalmente se comentó hasta que se homologue se libera
                 $("#gen_acta_acuerdo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.acuerdo_pdf')}}",'target':'_blank'}); $('#frm').submit(); });

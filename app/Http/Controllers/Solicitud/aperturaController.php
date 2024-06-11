@@ -106,7 +106,8 @@ class aperturaController extends Controller
                 DB::raw("cast(replace(replace(hfin,'a.m.','am'),'p.m.','pm') as time) as hfin"),
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
                 'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','c.rango_criterio_pago_maximo as cp',
-                'ar.folio_pago','ar.fecha_pago','ar.observaciones as nota_vincu','tc.mexoneracion')
+                'ar.folio_pago','ar.fecha_pago','ar.observaciones as nota_vincu','tc.mexoneracion'
+                )
                 ->join('alumnos_pre as ap','ap.id','ar.id_pre')
                 ->join('cursos as c','ar.id_curso','c.id')
                 ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')
@@ -127,8 +128,18 @@ class aperturaController extends Controller
                 }
                 $muni = DB::table('tbl_municipios')->where('id_estado','7')->where('id',$grupo->id_muni)->orderby('muni')->pluck('muni')->first();
                 $localidad = DB::table('tbl_localidades')->where('clave',$grupo->clave_localidad)->pluck('localidad')->first();
-
-                $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"))->where('i.folio_grupo',$valor)->orderby('alumno','ASC')->get();
+                
+                $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"),                
+                    DB::raw("EXTRACT(year from (age('".$grupo->inicio."',i.fecha_nacimiento))) as edad"),
+                    DB::raw("
+                        CASE 
+                        WHEN i.id_gvulnerable IS NULL THEN NULL
+                        ELSE (SELECT STRING_AGG(grupo, ', ')  FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(i.id_gvulnerable) AS bigint)))
+                        END
+                        as grupos "), 
+                    'i.inmigrante', DB::raw("id_cerss as es_cereso")
+                )
+                ->where('i.folio_grupo',$valor)->orderby('alumno','ASC')->get();
                // var_dump($alumnos);exit;
 
                 if(count($alumnos)==0){
@@ -140,14 +151,21 @@ class aperturaController extends Controller
                     DB::raw("substring(ar.curp,5,2) as anio_nac"),
                     DB::raw("CASE WHEN substring(ar.curp,5,2) <='".$anio_hoy."' THEN CONCAT('20',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
                         ELSE CONCAT('19',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2)) END AS fecha_nacimiento
-                    "),
+                    "),                                    
+                    DB::raw("EXTRACT(year from (age('".$grupo->inicio."',ap.fecha_nacimiento))) as edad"),                    
+                    DB::raw("
+                        CASE 
+                            WHEN ap.id_gvulnerable IS NULL THEN NULL
+                            ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ap.id_gvulnerable) AS bigint)))
+                        END
+                        as grupos "), 'ap.inmigrante','es_cereso',
                     DB::raw("'INSERT' as mov"))
                     ->join('alumnos_pre as ap','ap.id','ar.id_pre')->where('ar.folio_grupo',$valor )
                     ->where('ar.eliminado',false)->orderby('ap.apellido_paterno','ASC')->orderby('ap.apellido_materno','ASC')->orderby('ap.nombre','ASC')->get();
                 }
                 $_SESSION['alumnos'] = $alumnos;
                 $_SESSION['grupo'] = $grupo;
-                //var_dump($alumnos);exit;
+                //dd($alumnos);
 
                 $plantel = $this->plantel();
 
