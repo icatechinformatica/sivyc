@@ -1,20 +1,29 @@
-<table class="table table-striped col-md-12" id='tblAlumnos'>
+<div class="table-responsive ">
+<table class="table table-bordered table-striped" id='tblAlumnos'>
   <thead>
     <tr>
       <th class="h6" scope="col">#</th>
-      <th class="h6" scope="col">Curp</th>
-      <th class="h6" scope="col">Nombre</th>
+      <th class="h6" scope="col">Curp</th>      
       <th class="h6" scope="col">Matricula</th>
+      <th class="h6" scope="col">Nombre</th>
       <th class="h6" scope="col">Sexo</th>
-      <th class="h6" scope="col" width="8%">Fec. Nac.</th>
-      <th class="h6" scope="col">Escolaridad</th>
-      <th scope="col" class="h6">TIPO DE INSCRIPCI&Oacute;N</th>
-      <th scope="col" class="h6 text-center" width="8%">COUTA</th>
-      <th class="h6 text-center" scope="col"> @if($activar){{'Eliminar'}}@endif</th>
-      <th class="h6 text-center" scope="col">SID</th>
-      <th class="h6 text-center" scope="col">CURP</th>
+      <th class="h6" scope="col" width="8%">Fec. Nac.</th>      
+      <th scope="col" class="h6">Edad (años)</th>                
+      <th  scope="col" class="h6">Escolaridad</th>
+      <th scope="col" class="h6" width="15%">Gpo Vulnerable</th>
+      <th scope="col" class="h6">Otro Gpo</th>
+      <th scope="col" class="h6">Nacionalidad</th>
+      <th scope="col" class="h6">Tipo Inscripc&oacute;n</th>
+      <th scope="col" class="h6">        
+        <div style="width: 80px;">
+          {{ Form::number('costoX', null , ['id'=>'costoX', 'maxlength' => '7', 'class' => 'form-control numero', 'placeholder' => 'Cuota']) }}
+        </div>
+      </th>
+       @if($activar)<th class="h6" scope="col">{{'Eliminar'}}</th>@endif
+      <th class="h6" scope="col">SID</th>
+      <th class="h6 " scope="col">CURP</th>
       @if ($edicion)
-        <th class="h6 text-center" scope="col">REMPLAZAR</th>
+        <th class="h6" scope="col">REMPLAZAR</th>
       @endif
       <!--<th class="h6 text-center" scope="col">Subir SID</th>--->
     </tr>
@@ -24,29 +33,42 @@
       @foreach($alumnos as $a)
         @php
           if ($costo < $a->costo) {
-            $class= 'form-control numero bg-danger';
+            $class= 'form-control numero bg-danger costo';
           } else {
-            $class = 'form-control numero';
+            $class = 'form-control numero costo';
           }
+          if($grupo) $id_cerss = $grupo->id_cerss;
+          else $id_cerss = null;
         @endphp
         <tr id="{{$a->id_reg}}">
           <th scope="row"> {{ $consec++ }} </th>
-          <th>{{ $a->curp }}</th>
-          <th>{{ $a->apellido_paterno }} {{$a->apellido_materno}} {{$a->nombre}}</th>
+          <th class="text-left" style="word-wrap: break-word; max-width: 90px;">{{ $a->curp }}</th>
           <th>{{ $a->no_control}}</th>
+          <th class="text-left">{{ $a->apellido_paterno }} {{$a->apellido_materno}} {{$a->nombre}}</th>          
           <th>{{ $a->sex }}</th>
-          <th>{{ $a->fnacimiento }}</th>
-          <th>{{ $a->escolaridad }}</th>
+          <th>{{ date('d/m/Y', strtotime($a->fnacimiento)) }}</th>
+          <th>{{ $a->edad }}</th>
+          <th class="text-left">{{ $a->escolaridad }}</th>
+          <th class="text-left">{{ $a->grupos }}</th>
+          <td class="text-left">
+            @if($a->inmigrante == true) INMIGRANTE <br/> @endif
+            @if($a->familia_migrante == true) FAMILIA_MIGRANTE <br/> @endif
+            @if($a->madre_soltera == true) MADRE_SOLTERA <br/> @endif
+            @if($a->lgbt == true) LGBT <br/> @endif
+            @if($a->es_cereso == true OR $id_cerss) CERSS @endif
+          </td>
+          <th>{{$a->nacionalidad}}</th>
           <th>{{$a->tinscripcion}}</th>
-          <th class="text-center">
-            {{ Form::number('costo['.$a->id_reg.']', $a->costo , ['id'=>'costo['.$a->id_reg.']', 'size' => 1, 'maxlength' => '7', 'class' => $class]) }}
-          </th>
-          <th class="text-center">
+          <th>            
+              {{ Form::number('costo['.$a->id_reg.']', $a->costo , ['id'=>'costo['.$a->id_reg.']', 'size' => 15, 'maxlength' => '7', 'class' => $class]) }}            
+          </th>          
             @if($activar)
+            <th>          
               <a class="nav-link" ><i class="fa fa-remove  fa-2x fa-lg text-danger" onclick="eliminar({{$a->id_reg}},'{{ route('preinscripcion.grupo.eliminar') }}');" title="Eliminar"></i></a>
+            </th>
             @endif
-          </th>
-          <th class="text-center">
+          
+          <th>
             {{-- @if($a->id_cerss)
               <a target="_blank" href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>
             @else --}}
@@ -58,7 +80,7 @@
               <a class="nav-link" ><i class="fa fa-upload  fa-2x fa-lg text-danger" title="Cargar SID"></i></a>
             </th>
           -->
-          <th class="text-center">
+          <th>
             @if (isset($a->requisitos))
               <?php
                 $documento = json_decode($a->requisitos);
@@ -70,7 +92,7 @@
             @endif
           </th>
           @if ($edicion)
-            <th class="text-center">
+            <th>
               <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="rem('{{$a->curp}}');"></i></a>
             </th>
           @endif
@@ -82,7 +104,7 @@
     @endif
   </tbody>
 </table>
-
+</div>
 
 <div class="d-flex flex-lg-row flex-column col-12 col-lg-12 justify-content-end">
     <button type="button" class="btn mt-1" id="nuevo" >NUEVO</button> &nbsp;&nbsp;
