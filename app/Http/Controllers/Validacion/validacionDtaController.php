@@ -1744,8 +1744,10 @@ class validacionDtaController extends Controller {
         $cursos = DB::Table('tbl_cursos')
             ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
             ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
-            ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
-            ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
+            ->whereNot('tbl_cursos.turnado', 'UNIDAD')
+            //->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
+            //->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
+            ->Where('tbl_cursos.status_curso','AUTORIZADO')
             ->Where('fecha_entrega', 'LIKE', '%'.$request->mes_reporte)
             ->Where('tbl_unidades.ubicacion', $request->unidad_reporte)
             ->OrderBy('fecha_envio', 'DESC')
@@ -1778,7 +1780,8 @@ class validacionDtaController extends Controller {
             $cursos_validar = DB::Table('tbl_cursos')->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
                 ->Where('tbl_unidades.ubicacion',$request->unidad_reporte)
                 ->WhereBetween('tbl_cursos.termino',[$mes_inicio,$mes_fin])
-                ->WhereIn('tbl_cursos.status',['NO REPORTADO','RETORNO_UNIDAD'])
+                //->WhereIn('tbl_cursos.status',['NO REPORTADO','RETORNO_UNIDAD'])
+                ->where('tbl_curso.turnado','UNIDAD')
                 ->Where('tbl_cursos.status_curso','AUTORIZADO')
                 ->First();
 
