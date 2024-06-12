@@ -67,7 +67,15 @@ class grupoController extends Controller
                 ELSE CONCAT('19',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
                 END AS fnacimiento"),'ar.id_especialidad','ar.id_instructor','ar.efisico','ar.escolaridad','ar.servicio','ar.medio_virtual','ar.link_virtual','ar.cespecifico',
                 'ar.fcespe','ar.observaciones','ar.mpreapertura','ar.depen_repre','ar.depen_telrepre','tc.clave','tc.status_curso',
-                'tc.solicita','tu.vinculacion','tu.pvinculacion','tu.dunidad')                
+                'tc.solicita','tu.vinculacion','tu.pvinculacion','tu.dunidad',
+                DB::raw("EXTRACT(year from (age(ar.inicio,ap.fecha_nacimiento))) as edad"),                    
+                DB::raw("
+                    CASE 
+                        WHEN ap.id_gvulnerable IS NULL THEN NULL
+                        ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ap.id_gvulnerable) AS bigint)))
+                    END
+                    as grupos "), 'ap.inmigrante','es_cereso','ap.familia_migrante','ap.madre_soltera','ap.lgbt','ap.nacionalidad'
+                )                
             ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)
             ->leftjoin('tbl_cursos as tc', 'tc.folio_grupo', 'ar.folio_grupo')
             ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' )
@@ -185,10 +193,11 @@ class grupoController extends Controller
         $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status_folio','ENVIADO')->first();
         $ubicacion = DB::table('tbl_unidades')->where('id', Auth::user()->unidad)->value('ubicacion');
         $recibo_nulo = DB::table('tbl_recibos')->whereNull('folio_recibo')->where('unidad',$ubicacion)->exists();
-
+        $programas = $this->programa();
+        $planteles = $this->plantel();
         return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'folio_pago', 'fecha_pago',
             'es_vulnerable', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','comprobante','edicion','instructores','instructor',
-            'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo'));
+            'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo','programas','planteles'));
     }
 
 
@@ -623,7 +632,8 @@ class grupoController extends Controller
                                             'id_municipio' => $municipio->id,'clave_localidad' => $request->localidad,'id_gvulnerable' => $request->grupo_vulnerable,
                                             'id_cerss' => $request->cerss,'created_at' => $created_at,'updated_at' => $updated_at,
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,
-                                            'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel,'solicita'=>$request->solicita
+                                            'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel,'solicita'=>$request->solicita,
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel
                                             ]);
 
                                         if($tc_curso->cp == $cp AND $result_curso){
@@ -671,7 +681,8 @@ class grupoController extends Controller
                                             'curp' => $instructor->curp,'rfc' => $instructor->rfc,'modinstructor' => $tipo_honorario,'instructor_escolaridad' => $instructor->escolaridad,
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
-                                            'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp,'solicita'=>$request->solicita
+                                            'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp,'solicita'=>$request->solicita,
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel
                                         ]);
                                       //  dd($instructor);
                                         if ($result_curso) $message = "Operación Exitosa!!";
@@ -711,7 +722,8 @@ class grupoController extends Controller
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
                                             'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>json_encode($soportes_instructor),
-                                            'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null,'solicita'=>$request->solicita
+                                            'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null,'solicita'=>$request->solicita,
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel
                                             //,'programa' => null,'nota' => null,'plantel' => null
                                             ]
                                         );
