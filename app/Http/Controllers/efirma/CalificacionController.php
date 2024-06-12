@@ -253,7 +253,7 @@ class CalificacionController extends Controller
     }
 
     public function calificacion_pdf($id) {
-        $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 = null;
+        $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 = $EFolio = null;
         if($id) {
             $curso = DB::table('tbl_cursos')->select(
                 'tbl_cursos.*',
@@ -335,8 +335,12 @@ class CalificacionController extends Controller
                 // Fin de Generacion
             }
 
+            if(!is_null($documento)){
+                $EFolio = $documento->num_oficio;
+            }
+
                 $consec = 1;
-                $pdf = PDF::loadView('layouts.FirmaElectronica.pdfCalificaciones', compact('curso','alumnos','consec','objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64'));
+                $pdf = PDF::loadView('layouts.FirmaElectronica.pdfCalificaciones', compact('curso','alumnos','consec','objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64','EFolio'));
                 $pdf->setPaper('Letter', 'landscape');
                 $file = "CALIFICACIONES_$curso->clave.PDF";
                 return $pdf->stream($file);

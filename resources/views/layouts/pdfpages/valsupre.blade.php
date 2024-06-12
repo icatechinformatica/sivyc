@@ -20,7 +20,7 @@
                 top: -90px;
                 padding-left: 45px;
                 height: 70px;
-                width: 85%;
+                width: 100%;
                 background-color: white;
                 color: black;
                 text-align: center;

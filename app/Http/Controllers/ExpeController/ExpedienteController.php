@@ -641,14 +641,6 @@ class ExpedienteController extends Controller
         $rol_user = $request->rol_user;
         $idcurso = $request->idcurso;
         $bd_json = ExpeUnico::select('vinculacion', 'academico', 'administrativo')->where('id', '=', $idcurso)->first();
-        // $radio1 = $valores_form['radio1'];
-        // $radio1 = $radio2 = $radio3 = $radio4 = $radio5 = $radio6 = $radio7 = $radio8 = $radio9 =
-        // $radio10 = $radio11 = $radio12 = $radio13 = $radio14 = $radio15 = $radio16 = $radio17 =
-        // $radio18 = $radio19 = $radio20 = $radio21 = $radio22 = $radio23 = $radio24 =
-        // $txtarea1 = $txtarea2 = $txtarea3 = $txtarea4 = $txtarea5 = $txtarea6 = $txtarea7 =
-        // $txtarea8 = $txtarea9 = $txtarea10 = $txtarea11 = $txtarea12 = $txtarea13 = $txtarea14 =
-        // $txtarea15 = $txtarea16 = $txtarea17 = $txtarea18 = $txtarea19 = $txtarea20 = $txtarea21 =
-        // $txtarea22 = $txtarea23 = $txtarea24 = "";
         $txtarea25 = ""; $radio25 = null;
         // $doc_abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K','L', 'M', 'N', 'O', 'P'];
         $doc_numeros= ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'];
@@ -656,21 +648,21 @@ class ExpedienteController extends Controller
         #VINCULACION
         if($rol_user == 1){
             $conta_abced = 0;
+            $docs_true = [];
             for ($i=1; $i <= 7; $i++) {
-
                 if (isset($valores_form['radio'.$i])) {
-                    ${"radio" . $i} = $valores_form['radio'.$i];
-                    ${"txtarea" . $i} = $valores_form['txtarea'.$i];
+                    $radio_v = $valores_form['radio'.$i];
+                    $doc_v = $bd_json->vinculacion['doc_'.$i]['url_documento'];
 
-                    if(empty($bd_json->vinculacion['doc_'.$i]['url_documento']) && ${"radio" . $i} == 'si'){   #si no hay pdf pero el valor es si
-
-                        return response()->json(['mensaje' => "¡EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( SI ) YA QUE EL DOCUMENTO NO EXISTE!"]);
-
-                    }elseif(!empty($bd_json->vinculacion['doc_'.$i]['url_documento']) && (${"radio" . $i} == 'no' || ${"radio" . $i} == 'no_aplica')){
-
-                        return response()->json(['mensaje' => "EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( NO / NO APLICA ) YA QUE EL DOCUMENTO EXISTE"]);
+                    if($radio_v === 'si'){
+                        if(empty($doc_v)){
+                            return response()->json(['mensaje' => "¡EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( SI ) YA QUE EL DOCUMENTO NO EXISTE!"]);
+                        }
+                    }else if($radio_v === 'no' || $radio_v === 'no_aplica') {
+                        if(!empty($doc_v)){
+                            $docs_true[] = $i;
+                        }
                     }
-
                 }else{
                     return response()->json(['mensaje' => 'FALTAN CAMPOS POR SELECCIONAR, ¡VERIFIQUE!']);
                 }
@@ -681,14 +673,16 @@ class ExpedienteController extends Controller
                 $expeUnico = ExpeUnico::find($idcurso);
                 $json = $expeUnico->vinculacion;
                 for ($i=1; $i <= 7; $i++) {
-                    $json['doc_'.$i]['existe_evidencia'] = ${"radio" . $i};
-                    $json['doc_'.$i]['observaciones'] = ${"txtarea" . $i};
+                    if(in_array($i, $docs_true)){$json['doc_'.$i]['existe_evidencia'] = 'si';}
+                    else{$json['doc_'.$i]['existe_evidencia'] = $valores_form['radio'.$i];}
+                    $json['doc_'.$i]['observaciones'] = $valores_form['txtarea'.$i];
                 }
                 $json['status_save'] = true;
                 $json['id_user_save'] = Auth::user()->id;
                 $json['fecha_guardado'] = date('Y-m-d H:i');
                 $expeUnico->vinculacion = $json;
                 $expeUnico->save();
+
             } catch (\Throwable $th) {
                 return response()->json([
                     'status' => 500,
@@ -699,49 +693,37 @@ class ExpedienteController extends Controller
         #ACADEMICO
         }else if($rol_user == 2){
             $conta_abced = 0;
-            for ($i=8; $i <= 19; $i++) {
-                if(isset($valores_form['radio'.$i])){ #Validamos si el radio contiene un valor
-                    ${"radio" . $i} = $valores_form['radio'.$i];
-                    ${"txtarea" . $i} = $valores_form['txtarea'.$i];
+            $docs_true = [];
+            $indice_docs = [8,9,10,11,12,13,14,15,16,17,18,19,25];
+            for ($i=0; $i < count($indice_docs); $i++) {
+                if(isset($valores_form['radio'.$indice_docs[$i]])){ #Validamos si el radio contiene un valor
+                    $radio_a = $valores_form['radio'.$indice_docs[$i]];
+                    $doc_a = $bd_json->academico['doc_'.$indice_docs[$i]]['url_documento'];
 
-                    if(empty($bd_json->academico['doc_'.$i]['url_documento']) && ${"radio" . $i} == 'si'){   #si no hay pdf pero el valor es si
-
-                        return response()->json(['mensaje' => "¡EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( SI ) YA QUE EL DOCUMENTO NO EXISTE!"]);
-
-                    }elseif(!empty($bd_json->academico['doc_'.$i]['url_documento']) && (${"radio" . $i} == 'no' || ${"radio" . $i} == 'no_aplica')){
-
-                        return response()->json(['mensaje' => "EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( NO / NO APLICA ) YA QUE EL DOCUMENTO EXISTE"]);
+                    if($radio_a === 'si'){
+                        if(empty($doc_a)){
+                            return response()->json(['mensaje' => "¡EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( SI ) YA QUE EL DOCUMENTO NO EXISTE!"]);
+                        }
+                    }else if($radio_a === 'no' || $radio_a === 'no_aplica') {
+                        if(!empty($doc_a)){
+                            $docs_true[] = $indice_docs[$i];
+                        }
                     }
                 }else{
                     return response()->json(['mensaje' => 'FALTAN CAMPOS POR SELECCIONAR, ¡VERIFIQUE!']);
                 }
                 $conta_abced ++;
             }
-            if(isset($valores_form['radio25'])){
 
-                $radio25 = $valores_form['radio25']; $txtarea25 = $valores_form['txtarea25'];
-
-                if(empty($bd_json->academico['doc_25']['url_documento']) && $radio25 == 'si'){   #si no hay pdf pero el valor es si
-
-                    return response()->json(['mensaje' => "¡EN EL DOCUMENTO 13 NO PUEDE SELECCIONAR ( SI ) YA QUE EL DOCUMENTO NO EXISTE!"]);
-
-                }elseif(!empty($bd_json->academico['doc_25']['url_documento']) && ($radio25 == 'no' || $radio25 == 'no_aplica')){
-
-                    return response()->json(['mensaje' => "EN EL DOCUMENTO 13 NO PUEDE SELECCIONAR ( NO / NO APLICA ) YA QUE EL DOCUMENTO EXISTE"]);
-                }
-            }else{
-                return response()->json(['mensaje' => 'FALTAN CAMPOS POR SELECCIONAR, ¡VERIFIQUE!']);
-            }
             //Guardamos valores de academico
             try {
                 $expeUnico = ExpeUnico::find($idcurso);
                 $json = $expeUnico->academico;
-                for ($i=8; $i <= 19; $i++) {
-                    $json['doc_'.$i]['existe_evidencia'] = ${"radio" . $i};
-                    $json['doc_'.$i]['observaciones'] = ${"txtarea" . $i};
+                for ($i=0; $i < count($indice_docs); $i++) {
+                    if(in_array($indice_docs[$i], $docs_true)){$json['doc_'.$indice_docs[$i]]['existe_evidencia'] = 'si';}
+                    else{$json['doc_'.$indice_docs[$i]]['existe_evidencia'] = $valores_form['radio'.$indice_docs[$i]];}
+                    $json['doc_'.$indice_docs[$i]]['observaciones'] = $valores_form['txtarea'.$indice_docs[$i]];
                 }
-                $json['doc_25']['existe_evidencia'] = $radio25;
-                $json['doc_25']['observaciones'] = $txtarea25;
                 $json['status_save'] = true;
                 $json['id_user_save'] = Auth::user()->id;
                 $json['fecha_guardado'] = date('Y-m-d H:i');
@@ -760,16 +742,17 @@ class ExpedienteController extends Controller
             $conta_abced = 0;
             for ($i=20; $i <= 24; $i++) {
                 if(isset($valores_form['radio'.$i])){
-                    ${"radio" . $i} = $valores_form['radio'.$i];
-                    ${"txtarea" . $i} = $valores_form['txtarea'.$i];
+                    $radio_d = $valores_form['radio'.$i];
+                    $doc_d = $bd_json->administrativo['doc_'.$i]['url_documento'];
 
-                    if(empty($bd_json->administrativo['doc_'.$i]['url_documento']) && ${"radio" . $i} == 'si'){   #si no hay pdf pero el valor es si
-
-                        return response()->json(['mensaje' => "¡EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( SI ) YA QUE EL DOCUMENTO NO EXISTE!"]);
-
-                    }elseif(!empty($bd_json->administrativo['doc_'.$i]['url_documento']) && (${"radio" . $i} == 'no' || ${"radio" . $i} == 'no_aplica')){
-
-                        return response()->json(['mensaje' => "EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( NO / NO APLICA ) YA QUE EL DOCUMENTO EXISTE"]);
+                    if($radio_d === 'si'){
+                        if(empty($doc_d)){
+                            return response()->json(['mensaje' => "¡EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( SI ) YA QUE EL DOCUMENTO NO EXISTE!"]);
+                        }
+                    }else if($radio_d === 'no' || $radio_d === 'no_aplica') {
+                        if(!empty($doc_d)){
+                            return response()->json(['mensaje' => "EN EL DOCUMENTO $doc_numeros[$conta_abced] NO PUEDE SELECCIONAR ( NO / NO APLICA ) YA QUE EL DOCUMENTO EXISTE"]);
+                        }
                     }
                 }else{
                     return response()->json([
@@ -784,8 +767,8 @@ class ExpedienteController extends Controller
                 $expeUnico = ExpeUnico::find($idcurso);
                 $json = $expeUnico->administrativo;
                 for ($i=20; $i <= 24; $i++) {
-                    $json['doc_'.$i]['existe_evidencia'] = ${"radio" . $i};
-                    $json['doc_'.$i]['observaciones'] = ${"txtarea" . $i};
+                    $json['doc_'.$i]['existe_evidencia'] = $valores_form['radio'.$i];
+                    $json['doc_'.$i]['observaciones'] = $valores_form['txtarea'.$i];
                 }
                 $json['status_save'] = true;
                 $json['id_user_save'] = Auth::user()->id;
@@ -870,6 +853,10 @@ class ExpedienteController extends Controller
                     }
                     $conta ++;
                 }
+                return response()->json([
+                    'status' => 200,
+                    'mensaje' => 'ARCHIVOS CARGADOS CON EXITO',
+                ]);
 
             } catch (\Throwable $th) {
                 return response()->json([
@@ -924,6 +911,10 @@ class ExpedienteController extends Controller
                     }
                     $conta ++;
                 }
+                return response()->json([
+                    'status' => 200,
+                    'mensaje' => 'ARCHIVOS CARGADOS CON EXITO',
+                ]);
 
             } catch (\Throwable $th) {
                 return response()->json([
@@ -934,10 +925,6 @@ class ExpedienteController extends Controller
             }
         }
 
-        return response()->json([
-            'status' => 200,
-            'mensaje' => 'ARCHIVOS CARGADOS CON EXITO',
-        ]);
     }
 
     /**Funcion para eliminar PDF */
@@ -1064,8 +1051,9 @@ class ExpedienteController extends Controller
     public function validar_dta (Request $request){
         $rol = $request->rol;
         $idcurso = $request->idcurso;
-        $txtarea = $request->valor_area;
+        // $txtarea = $request->valor_area;
         $accion = $request->accion;
+        $mensajes_dta = $request->mensajes_dta;
 
         try {
             $expeUnico = ExpeUnico::find($idcurso);
@@ -1076,29 +1064,45 @@ class ExpedienteController extends Controller
                 $json1['status_dpto'] = 'VALIDADO';
                 $json1['fecha_validado'] = date('Y-m-d H:i');
                 $json1['id_user_valid'] = Auth::user()->id;
+                for ($i=1; $i <= 7; $i++) {$json1['doc_'.$i]['mensaje_dta'] = "";}
 
                 $json2['status_dpto'] = 'VALIDADO';
                 $json2['fecha_validado'] = date('Y-m-d H:i');
                 $json2['id_user_valid'] = Auth::user()->id;
+                for ($i=8; $i <= 19; $i++) {$json2['doc_'.$i]['mensaje_dta'] = "";}
+                $json2['doc_25']['mensaje_dta'] = "";
 
                 $json3['status_dpto'] = 'VALIDADO';
                 $json3['fecha_validado'] = date('Y-m-d H:i');
                 $json3['id_user_valid'] = Auth::user()->id;
+                for ($i=20; $i <= 24; $i++) {$json3['doc_'.$i]['mensaje_dta'] = "";}
+
             }else if($accion == 'retornar'){
                 $json1['status_dpto'] = 'RETORNADO';
                 $json1['fecha_retornado'] = date('Y-m-d H:i');
                 $json1['id_user_return'] = Auth::user()->id;
-                $json1['descrip_return'] = $txtarea;
+                // $json1['descrip_return'] = $txtarea;
+                for ($i=1; $i <= 7; $i++) {
+                    $json1['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
+                }
 
                 $json2['status_dpto'] = 'RETORNADO';
                 $json2['fecha_retornado'] = date('Y-m-d H:i');
                 $json2['id_user_return'] = Auth::user()->id;
-                $json2['descrip_return'] = $txtarea;
+                // $json2['descrip_return'] = $txtarea;
+                for ($i=8; $i <= 19; $i++) {
+                    $json2['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
+                }
+                $json2['doc_25']['mensaje_dta'] = (!empty($mensajes_dta['txtarea25'])) ? $mensajes_dta['txtarea25'] : "";
+
 
                 $json3['status_dpto'] = 'RETORNADO';
                 $json3['fecha_retornado'] = date('Y-m-d H:i');
                 $json3['id_user_return'] = Auth::user()->id;
-                $json3['descrip_return'] = $txtarea;
+                // $json3['descrip_return'] = $txtarea;
+                for ($i=20; $i <= 24; $i++) {
+                    $json3['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
+                }
             }
             $expeUnico->vinculacion = $json1;
             $expeUnico->academico = $json2;
@@ -1115,15 +1119,15 @@ class ExpedienteController extends Controller
 
         return response()->json([
             'status' => 200,
-            'mensaje' => '¡INFORMACIÓN '.($accion == 'validar' ? 'VALIDADA' : 'RETORNADA').'!',
-            'area' => $txtarea
+            'arreglo' => $mensajes_dta,
+            'mensaje' => '¡INFORMACIÓN '.($accion == 'validar' ? 'VALIDADA' : 'RETORNADA').'!'
         ]);
     }
 
     //Generar PDF Expedientes Unicos
     public function pdf_expediente($idcurso){
         $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
-        $distintivo = "Lista de verificación de Expediente Único";
+        // $distintivo = "Lista de verificación de Expediente Único";
         $direccion = DB::table('tbl_instituto')->WHERE('id', 1)->VALUE('direccion');
         $json_dptos = ExpeUnico::select('vinculacion', 'academico', 'administrativo')->where('id_curso', $idcurso)->first();
         $st_vinc = $json_dptos->vinculacion['status_save'];

@@ -1430,7 +1430,7 @@
                 console.log(element);
                 switch (element['tipo_archivo']) {
                     case 'valsupre':
-                        const valsuprevLink = document.getElementById('show_validacion_supre');
+                        const valsuprevLink = document.getElementById('show_validacion_suprev');
                         const valsuprevUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
                         valsuprevLink.href = valsuprevUrl;
                         valsuprevLink.hidden = false;
@@ -1527,6 +1527,13 @@
             respuesta.forEach(element => {
                 // console.log(element);
                 switch (element['tipo_archivo']) {
+                    case 'valsupre':
+                        const valsuprevcLink = document.getElementById('show_validacion_suprevc');
+                        const valsuprevcUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
+                        valsuprevcLink.href = valsuprevcUrl;
+                        valsuprevcLink.hidden = false;
+                        document.getElementById('td5vc').style.color = "black";
+                    break;
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
                         const contratovcLink = document.getElementById('show_contratovc');

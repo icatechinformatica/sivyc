@@ -35,7 +35,8 @@ class EValsupreController extends Controller
         $numDocs = DocumentosFirmar::Where('tipo_archivo', 'valsupre')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
         $numDocs = '0'.($numDocs+1);
         $numOficioBuilder = explode('/',$info->folio_validacion);
-        $numOficioBuilder[count($numOficioBuilder) - 2] = $numOficioBuilder[count($numOficioBuilder) - 2].'.'.$numDocs;
+        $position = count($numOficioBuilder) - 2;
+        array_splice($numOficioBuilder, $position, 0, $numDocs);
         $numOficio = implode('/',$numOficioBuilder);
 
         $body = $this->create_body($id_supre, $numOficio); //creacion de body
