@@ -37,7 +37,8 @@ class EContratoController extends Controller
         $numDocs = DocumentosFirmar::Where('tipo_archivo', 'Contrato')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
         $numDocs = '0'.($numDocs+1);
         $numOficioBuilder = explode('/',$info->numero_contrato);
-        $numOficioBuilder[count($numOficioBuilder) - 2] = $numOficioBuilder[count($numOficioBuilder) - 2].'.'.$numDocs;
+        $position = count($numOficioBuilder) - 2;
+        array_splice($numOficioBuilder, $position, 0, $numDocs);
         $numOficio = implode('/',$numOficioBuilder);
 
         $body = $this->create_body($id_contrato,$info, $numOficio); //creacion de body
@@ -213,7 +214,7 @@ class EContratoController extends Controller
         }
 
         //Guardado de cadena unica
-        if ($response->json()['cadenaOriginal'] != null) {
+        if ($response->json()['cadenaOriginal'] != null) { //mejorar por si viene vacio response. con un isset
             $sobrescribir = True;
             // Actualizar  este dataInsert ya que se pondra un consecutivo interno y poder hacer mas documentos por si alguno se cancela
             $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Contrato')->Where('status','EnFirma')->First();

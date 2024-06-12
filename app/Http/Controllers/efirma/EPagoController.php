@@ -35,8 +35,11 @@ class EPagoController extends Controller
         $numDocs = DocumentosFirmar::Where('tipo_archivo', 'Solicitud Pago')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
         $numDocs = '0'.($numDocs+1);
         $numOficioBuilder = explode('/',$info->no_memo);
-        $numOficioBuilder[count($numOficioBuilder) - 2] = $numOficioBuilder[count($numOficioBuilder) - 2].'.'.$numDocs;
+        $position = count($numOficioBuilder) - 2;
+        array_splice($numOficioBuilder, $position, 0, $numDocs);
         $numOficio = implode('/',$numOficioBuilder);
+
+
 
         $body = $this->create_body($info->id_folios, $numOficio); //creacion de body
 
@@ -135,14 +138,24 @@ class EPagoController extends Controller
 
         //Guardado de cadena unica
         if ($response->json()['cadenaOriginal'] != null) {
-            // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFileOriginal);
-            // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFile);
-            // $datas = explode('*',$urlFile);
+            $sobrescribir = True;
+            // Actualizar  este dataInsert ya que se pondra un consecutivo interno y poder hacer mas documentos por si alguno se cancela
+            $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Solicitud Pago')->Where('status','EnFirma')->First();
+            if(isset($dataInsert->obj_documento)) {
+                $firmantes = json_decode($dataInsert->obj_documento, true);
+                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                    if(isset($firmante['_attributes']['certificado'])) {
+                        $sobrescribir = False;
+                    }
+                }
+            } else {
+                $sobrescribir = False;
+            }
 
-            $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Solicitud Pago')->First();
-            if(is_null($dataInsert)) {
+            if(!$sobrescribir) {
                 $dataInsert = new DocumentosFirmar();
             }
+
             $dataInsert->obj_documento = json_encode($ArrayXml);
             $dataInsert->obj_documento_interno = json_encode($body);
             $dataInsert->status = 'EnFirma';

@@ -122,17 +122,19 @@ class supreController extends Controller
     public function frm_formulario() {
         $prueba = '2023-10-17';
         $funcionarios = array();
-        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
-        $unidad = tbl_unidades::SELECT('ubicacion','id')->WHERE('id',Auth::user()->unidad)->FIRST();
+        $unidad = tbl_unidades::SELECT('ubicacion','id','clave_contrato')->WHERE('id',Auth::user()->unidad)->FIRST();
+        $year = Carbon::now()->year;
 
         $funcionarios = $this->funcionarios_supre($unidad->ubicacion);
-        return view('layouts.pages.delegacionadmin', compact('unidades','unidad','funcionarios'));
+        return view('layouts.pages.delegacionadmin', compact('unidad','funcionarios','year'));
     }
 
     public function store(Request $request) {
         // dd($request);
         $generalarr = $arrmov = array();
-        $memo = supre::SELECT('no_memo')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
+        $claveUnidad = tbl_unidades::Where('id',Auth::user()->unidad)->Value('clave_contrato');
+        $memorandum = 'ICATECH/'.$claveUnidad.'/'.preg_replace('/\D/', '', $request->memorandum).'/'.Carbon::now()->year;
+        $memo = supre::SELECT('no_memo')->WHERE('no_memo', '=', $memorandum)->FIRST();
         if (is_null($memo))
         {
             foreach ($request->addmore as $key => $value)
@@ -162,7 +164,7 @@ class supreController extends Controller
 
             //Guarda Solicitud
             $supre->unidad_capacitacion = strtoupper($request->unidad);
-            $supre->no_memo = strtoupper($request->memorandum);
+            $supre->no_memo = strtoupper($memorandum);
             $supre->fecha = strtoupper($request->fecha);
             $supre->status = 'En_Proceso';
             $supre->fecha_status = strtoupper($request->fecha);
@@ -251,7 +253,7 @@ class supreController extends Controller
         else
         {
             return redirect()->route('frm-supre')
-                    ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE MEMORANDUM INGRESADO YA SE ENCUENTRA REGISTRADO', $request->memorandum));
+                    ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE MEMORANDUM INGRESADO YA SE ENCUENTRA REGISTRADO', $memorandum));
         }
     }
 
@@ -261,10 +263,12 @@ class supreController extends Controller
         $supre = new supre();
         $folio = new folio();
         $generarEfirmaSupre = TRUE;
+        $year = Carbon::now()->year;
 
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
+        $getsupre->no_memo = explode('/', $getsupre->no_memo);
 
-        $unidadsel = tbl_unidades::SELECT('id','unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
+        $unidadsel = tbl_unidades::SELECT('id','unidad','clave_contrato')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
 
         $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.comentario',
                                 'folios.importe_total','folios.iva','tbl_cursos.clave',
@@ -324,7 +328,7 @@ class supreController extends Controller
             }
         }
         // FINAL del check
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios','unidadsel','recibo','funcionarios','generarEfirmaSupre'));
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios','unidadsel','recibo','funcionarios','generarEfirmaSupre','year'));
     }
 
     public function solicitud_mod_guardar(Request $request)
@@ -334,13 +338,16 @@ class supreController extends Controller
         $supre = new supre();
         $curso_validado = new tbl_curso();
 
+        $claveUnidad = tbl_unidades::Where('id',Auth::user()->unidad)->Value('clave_contrato');
+        $memorandum = 'ICATECH/'.$claveUnidad.'/'.preg_replace('/\D/', '', $request->no_memo).'/'.Carbon::now()->year;
+
         $elabora = ['nombre' => $request->nombre_elabora,
                     'puesto' => $request->puesto_elabora];
 
         supre::where('id', '=', $request->id_supre)
         ->update(['status' => 'En_Proceso',
                   'unidad_capacitacion' => $request->unidad,
-                  'no_memo' => $request->no_memo,
+                  'no_memo' => $memorandum,
                   'fecha' => $request->fecha,
                   'fecha_status' => carbon::now(),
                   'elabora' => $elabora]);
@@ -349,7 +356,7 @@ class supreController extends Controller
         {
             folio::WHERE('id_supre', '=', $request->id_supre)->DELETE();
         }
-        $id = $supre::SELECT('id')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
+        $id = $supre::SELECT('id')->WHERE('no_memo', '=', $memorandum)->FIRST();
 
         //Guarda Folios
         foreach ($request->addmore as $key => $value){

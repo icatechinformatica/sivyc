@@ -28,13 +28,23 @@
         </div>
         <hr style="border-color:dimgray">
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-2">
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
                 <input type="text" class="form-control" id="unidad" name="unidad" value="{{$unidad->ubicacion}}" readonly>
             </div>
-            <div class="form-group col-md-5">
+            <div class="form-group col-md-3">
                 <label for="mamorandum" class="control-label">Memoramdum No. </label>
-                <input type="text" class="form-control" id="memorandum" name="memorandum" placeholder="ICATECH/0000/000/2020">
+                <div class="form-row">
+                    <div class="form-group col-md-5">
+                        <p class="form-control" style="border: 0px;">ICATECH/{{$unidad->clave_contrato}}/</p>
+                    </div>
+                    <div class="form-group col-md-4" style="margin-right: -10px;">
+                        <input type="text" class="form-control" id="memorandum" name="memorandum" placeholder="No.">
+                    </div>
+                    <div class="form-group col-md-1">
+                        <p class="form-control" style="border: 0px;">/{{$year}}</p>
+                    </div>
+                </div>
             </div>
             <div class="form-group col-md-2">
                 <label for="fecha" class="control-label">Fecha</label>

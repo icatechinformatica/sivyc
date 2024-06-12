@@ -166,8 +166,11 @@
                                 <br />
                                 FECHA INICIO: <span class="tab1"> {{ $curso->fechaini }}</span>
                                 FECHA TERMINO: <span class="tab1"> {{ $curso->fechafin }}</span>
-                                HORARIO: <span class="tab2"> {{ $curso->dia }} DE {{ $curso->hini }} A {{ $curso->hfin }}</span>
-                                CURP: &nbsp;&nbsp;{{ $curso->curp }}
+                                HORARIO: {{ $curso->dia }} DE {{ $curso->hini }} A {{ $curso->hfin }} &nbsp;&nbsp;&nbsp;
+                                CURP: &nbsp;&nbsp;{{ $curso->curp }} &nbsp;&nbsp;&nbsp;
+                                @if(!is_null($EFolio))
+                                    EFOLIO: {{$EFolio}}
+                                @endif
                             </div>
                         </td>
                     </tr>

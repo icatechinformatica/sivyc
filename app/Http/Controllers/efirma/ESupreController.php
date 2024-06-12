@@ -34,7 +34,8 @@ class ESupreController extends Controller
         $numDocs = DocumentosFirmar::Where('tipo_archivo', 'supre')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
         $numDocs = '0'.($numDocs+1);
         $numOficioBuilder = explode('/',$info->no_memo);
-        $numOficioBuilder[count($numOficioBuilder) - 2] = $numOficioBuilder[count($numOficioBuilder) - 2].'.'.$numDocs;
+        $position = count($numOficioBuilder) - 2;
+        array_splice($numOficioBuilder, $position, 0, $numDocs);
         $numOficio = implode('/',$numOficioBuilder);
 
 
@@ -436,7 +437,7 @@ class ESupreController extends Controller
 
         $token = $resToken->json();
 
-        Tokens_icti::create([
+        Tokens_icti::Where('sistema','sivyc')->update([
             'token' => $token
         ]);
         return $token;
