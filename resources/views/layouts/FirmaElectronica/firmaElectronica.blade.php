@@ -484,24 +484,32 @@
                                                         <td>
                                                             @switch($docValidado->tipo_archivo)
                                                                 @case('Lista de asistencia')
-                                                                    <a href="{{route('asistencia-pdf', ['id' => $docValidado->idcursos])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
+                                                                    @if(!is_null($docValidado->idcursos))
+                                                                        <a href="{{route('asistencia-pdf', ['id' => $docValidado->idcursos])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @endif
                                                                 @break
                                                                 @case('Lista de calificaciones')
-                                                                    <a href="{{route('calificacion-pdf', ['id' => $docValidado->idcursos])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
+                                                                    @if(!is_null($docValidado->idcursos))
+                                                                        <a href="{{route('calificacion-pdf', ['id' => $docValidado->idcursos])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @endif
                                                                 @break
                                                                 @case('Reporte fotografico')
-                                                                    <a href="{{route('reportefoto-pdf', ['id' => $docValidado->idcursos])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
+                                                                    @if(!is_null($docValidado->idcursos))
+                                                                        <a href="{{route('reportefoto-pdf', ['id' => $docValidado->idcursos])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @endif
                                                                 @break
                                                                 @default {{-- Contratos --}}
-                                                                    <a href="{{route('contrato-pdf', ['id' => $docValidado->id_contrato])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
+                                                                    @if(!is_null($docValidado->id_contrato))
+                                                                        <a href="{{route('contrato-pdf', ['id' => $docValidado->id_contrato])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @endif
                                                                 @break
                                                             @endswitch
                                                             {{-- <button type="button" onclick="descargarDocumento('{{$docValidado->id}}')" class="btn btn-outline-success">Descargar</button> --}}
