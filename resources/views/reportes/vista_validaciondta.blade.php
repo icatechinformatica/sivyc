@@ -643,7 +643,7 @@
                 </div>
                 <div class="modal-body" style="text-align:center">
                     <div style="text-align:center" class="form-group">
-                        <form method="POST" action="{{ route('resumen.unidad.formatot') }}" id="resumen_formatot_pdf">
+                        <form method="POST" action="{{ route('resumen.unidad.formatot') }}" id="resumen_formatot_pdf" target="_blank">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-2"></div>
