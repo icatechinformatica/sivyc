@@ -23,6 +23,7 @@ use App\Exports\FormatoTReport;
 use App\Excel\xlsCursosMultiple;
 use App\Excel\xlsCursosDV;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class CursosController extends Controller
 {
@@ -829,6 +830,19 @@ class CursosController extends Controller
         $tparte = $parte;
         $json_general = $json_tematico = $json_didactico = [];
 
+        ##Año de ejercicio
+        $bdEjercicio = DB::table('tbl_instituto')->select('fini', 'ffin')->first();
+        $ejercicio = '';
+        if ($bdEjercicio) {
+            $date1 = Carbon::createFromFormat('d-M', $bdEjercicio->fini);
+            $date2 = Carbon::createFromFormat('d-M', $bdEjercicio->ffin);
+            $fActual = Carbon::now();
+            if ($fActual->lessThan($date1)) {$ejercicio = ($fActual->year - 1) . "-" . $fActual->year;
+            }else if($fActual->greaterThan($date2)) {$ejercicio = $fActual->year . "-" . ($fActual->year + 1);}
+        }
+
+
+
         $curso = DB::Table('cursos as cu')->SELECT('cu.id','cu.nombre_curso','cu.modalidad','cu.horas', 'cu.duracion','cu.tipo_curso',
                     'especialidades.nombre AS especialidad', 'cu.id_especialidad', 'area.formacion_profesional')
                     ->WHERE('cu.id', '=', $idCurso)
@@ -842,10 +856,54 @@ class CursosController extends Controller
         if(isset($datos_carta->datos_generales)){$json_general = json_decode($datos_carta->datos_generales, true);}
         if(isset($datos_carta->cont_tematico)){$json_tematico = json_decode($datos_carta->cont_tematico, true);}
         if(isset($datos_carta->rec_didacticos)){$json_didactico = json_decode($datos_carta->rec_didacticos, true);}
-        // dd(is_array($json_tematico));
-        // dd($json_general, count($json_general));
 
-        return view('layouts.pages.frm_cartadescrip', compact('idCurso', 'tparte', 'curso', 'json_general', 'json_tematico', 'json_didactico'));
+        ##Obtenemos datos de la tabla de contenido_tematico
+
+        $modulo_first = DB::table('contenido_tematico')->select('id', 'id_parent', 'id_curso', 'numeracion', 'nombre_modulo', 'nivel', 'duracion',
+        'sincrona', 'asincrona', 'estra_didac', 'process_eval')->where('id_curso', $idCurso)->where('id_parent', 0)->orderBy('id', 'asc')->get();
+
+        //Obtenemos los ids de los modulos padre
+        $ids_modulos = $res_tematico = [];
+        if($modulo_first) $ids_modulos = $modulo_first->pluck('id')->toArray();
+
+        if(count($ids_modulos) > 0){
+            foreach ($ids_modulos as $key => $value) {
+                $data_tematico = DB::select("
+                WITH RECURSIVE cte AS (
+                    SELECT id, id_parent, numeracion, nombre_modulo
+                    FROM contenido_tematico
+                    WHERE id_parent = :parentId
+                    UNION ALL
+                    SELECT t.id, t.id_parent, t.numeracion, t.nombre_modulo
+                    FROM contenido_tematico t
+                    JOIN cte ON t.id_parent = cte.id
+                )
+                SELECT * FROM cte ORDER BY id", ['parentId' => $value]);
+
+                $res_tematico[] = $data_tematico;
+            }
+        }
+
+        ## Obtenemos la sumatoria de horas de los modulos registrados
+        $sumaHorasMod = DB::table('contenido_tematico')
+        ->where('id_curso', $idCurso)->where('id_parent', 0)
+        ->select(DB::raw("
+            SUM(
+                EXTRACT(EPOCH FROM duracion)
+            ) as total_seconds
+        "))
+        ->value('total_seconds');
+        $tFormatHour = '';
+        if($sumaHorasMod){
+            $tHoras = floor($sumaHorasMod / 3600);
+            $tMinutos = floor(($sumaHorasMod % 3600) / 60);
+            $tFormatHour = sprintf('%02d:%02d', $tHoras, $tMinutos). ' ' . ($tHoras > 0 ? 'Horas' : 'Minutos');
+        }
+
+
+
+
+        return view('layouts.pages.frm_cartadescrip', compact('idCurso', 'tparte', 'curso', 'json_general', 'res_tematico', 'modulo_first', 'json_didactico', 'tFormatHour','ejercicio'));
     }
 
 
@@ -859,18 +917,40 @@ class CursosController extends Controller
         $arrayObjetos = json_decode($jsonBActual, true);
 
         if($accion == 'eliminar'){
-            if (isset($arrayObjetos[$indice])) {
-                // Eliminar el objeto usando unset
-                unset($arrayObjetos[$indice]);
-                $nuevoJsonB = json_encode($arrayObjetos);
-                DB::table('tbl_carta_descriptiva')->where('id_curso', $id_curso)->update(['cont_tematico' => $nuevoJsonB]);
-                return response()->json(['status' => 200, 'mensaje' => '¡Registro eliminado!', 'accion' => $accion]);
-            }else{
-                return response()->json(['status' => 500, 'mensaje' => 'No existe el indice']);
+            try {
+                if(!empty($indice)){
+                    DB::table('contenido_tematico')->where('id', $indice)->orWhere('id_parent', $indice)->delete();
+                    return response()->json(['status' => 200, 'mensaje' => '¡Registro eliminado!', 'accion' => $accion]);
+                }
+            } catch (\Throwable $th) {
+                return response()->json(['status' => 500, 'mensaje' => $th->getMessage()]);
             }
 
         }else if($accion == 'editar'){
-            return response()->json(['status' => 200, 'mensaje' => 'Carga de datos del registro', 'accion' => $accion, 'datos' => $arrayObjetos[$indice], 'indice' => $indice]);
+            $name_modulo = DB::table('contenido_tematico')->select('id', 'id_parent', 'id_curso', 'nombre_modulo',
+            DB::raw("EXTRACT(HOUR FROM duracion::time) as hr_dura"),
+            DB::raw("EXTRACT(MINUTE FROM duracion::time) as min_dura"),
+            DB::raw("EXTRACT(HOUR FROM sincrona::time) as hr_sinc"),
+            DB::raw("EXTRACT(MINUTE FROM sincrona::time) as min_sinc"),
+            DB::raw("EXTRACT(HOUR FROM asincrona::time) as hr_asin"),
+            DB::raw("EXTRACT(MINUTE FROM asincrona::time) as min_asin"),
+            'estra_didac', 'process_eval')->where('id_curso', $id_curso)->where('id', $indice)->first();
+
+            $submodulos = DB::select("
+                WITH RECURSIVE cte AS (
+                    SELECT id, id_parent, numeracion, nombre_modulo
+                    FROM contenido_tematico
+                    WHERE id_parent = :parentId
+                    UNION ALL
+                    SELECT t.id, t.id_parent, t.numeracion, t.nombre_modulo
+                    FROM contenido_tematico t
+                    JOIN cte ON t.id_parent = cte.id
+                )
+                SELECT * FROM cte ORDER BY id", ['parentId' => $indice]);
+            if($submodulos === null) $submodulos = ['id' => '1'];
+
+
+            return response()->json(['status' => 200, 'mensaje' => 'Carga de datos del registro', 'accion' => $accion, 'datos_uno' => $name_modulo, 'datos_dos' => $submodulos, 'indice' => $indice]);
         }
 
     }
@@ -885,16 +965,16 @@ class CursosController extends Controller
         if($id_curso == null || $id_curso == '') return "No se encontró el id del curso";
 
         $data = [
-            "entidad" => $request->input('entidad'),
-            "tipocap" => $request->input('tipocap'),
-            "ciclo_esc" => $request->input('ciclo_esc'),
-            "duracion" => $request->input('duracion'),
+            // "entidad" => $request->input('entidad'),
+            // "tipocap" => $request->input('tipocap'),
+            // "ciclo_esc" => $request->input('ciclo_esc'),
+            // "duracion" => $request->input('duracion'),
+            // "form_profesion" => $request->input('form_profesion'),
+            // "modalidad" => $request->input('modalidad'),
+            // "especialidad" => $request->input('especialidad'),
+            // "curso" => $request->input('curso'),
             "pogrm_estra" => $request->input('pogrm_estra'),
-            "form_profesion" => $request->input('form_profesion'),
-            "modalidad" => $request->input('modalidad'),
-            "especialidad" => $request->input('especialidad'),
             "perfil_instruc" => $request->input('perfil_instruc'),
-            "curso" => $request->input('curso'),
             "aprendizaje_esp" => $request->input('aprendizaje_esp'),
             "obj_especificos" => $request->input('obj_especificos'),
             "transversalidad" => $request->input('transversalidad'),
@@ -967,74 +1047,284 @@ class CursosController extends Controller
 
     public function save_parte_dos(Request $request)
     {
-
-        // dd($request->all());
-        $data_req = $request->all();
+        ## Crear array separandolos por los enter
+        $name_modulo = $request->input('name_modulo');
+        $cadena_submodulos = $request->input('submodulos');
+        $curso_hora = $request->input('curso_hora');
+        $curso_min = $request->input('curso_minuto');
+        $sincro_hora = $request->input('hora_sincro');
+        $sincro_min = $request->input('minuto_sincro');
+        $asinc_hora = $request->input('hora_asincro');
+        $asinc_min = $request->input('minuto_asincro');
+        $estra_didac = $request->input('estra_dida');
+        $proces_eval = $request->input('proceso_evalua');
         $id_curso = $request->input('id_curso2');
-        $indice_array = $request->input('indice_oculto');
+        $update = false; $ids_updSub = []; $ids_forDelete = []; $id_modupd = null;
+        //De actualización
+        if(!empty($request->input('ids_subs')) || !empty($request->input('id_modupd'))){
+            $update = true;
+            $ids_updSub = json_decode($request->input('ids_subs'), true);
+            $id_modupd = $request->input('id_modupd');
+        }
 
-        $inputs = array_filter($data_req, function($value, $key) {
-            return preg_match('/^input\d+$/', $key) && !empty($value);
-        }, ARRAY_FILTER_USE_BOTH);
-        // Convierte los valores filtrados a mayúsculas
-        // $inputs = array_map('strtoupper', $inputs);
+        # Separamos textos con los retornos de carro a la cadena de sumbomulos
+        $datosOrganizados = $data_sub = [];
+        if(!empty($cadena_submodulos)){
+            $data_sub = explode("\r\n", $cadena_submodulos);
+            try {
+                foreach ($data_sub as $item) {
+                    // Extraer la parte numérica del título
+                    preg_match('/^(\d+(\.\d+)* )(.+)$/', $item, $matches);
 
-        $nombre_modulo = mb_strtoupper($request->input('name_modulo'), 'UTF-8');
+                    if (!empty($matches)) {
+                        $numericPart = trim($matches[1]);
+                        $textPart = trim($matches[3]);
 
-        $consultaBD = DB::table('tbl_carta_descriptiva')->where('id_curso', $id_curso)->value('cont_tematico');
-        $data = json_decode($consultaBD, true);
+                        // Determinar el nivel basado en la cantidad de puntos
+                        $level = substr_count($numericPart, '.') + 1;
 
-        $sel_hora = "";
-        $cursoHora = (int) $request->input('curso_hora');
-        if ($cursoHora > 1) {$sel_hora = "HORAS"; } else {$sel_hora = "HORA";}
-
-        if(is_null($indice_array)){ ## INSERTAR NUEVO REGISTRO EN EL JSON TEMATICO
-            if (!is_array($data)) {$data = [];}
-
-            $objeto = [
-                "name_modulo" => $nombre_modulo,
-                "estra_dida" => $request->input('estra_dida'),
-                "proceso_evalua" => $request->input('proceso_evalua'),
-                "curso_hora" => $request->input('curso_hora'),
-                "sel_horario" => $sel_hora,
-                "val_inputs" => $inputs
-            ];
-            $data[] = $objeto;
-        }else{ ## ACTUALIZAR EL REGISTRO MEDIANTE EL INDICE
-            if (isset($data[$indice_array])) {
-                $objeto = $data[$indice_array];
-
-                $objeto['name_modulo'] = $nombre_modulo;
-                $objeto['estra_dida'] = $request->input('estra_dida');
-                $objeto['proceso_evalua'] = $request->input('proceso_evalua');
-                $objeto['curso_hora'] = $request->input('curso_hora');
-                $objeto['sel_horario'] = $sel_hora;
-                $objeto['val_inputs'] = $inputs;
-                $data[$indice_array] = $objeto;
+                        // Almacenar el título junto con su nivel
+                        $datosOrganizados[] = [
+                            'numeracion' => $numericPart,
+                            'texto' => $textPart,
+                            'level' => $level,
+                            'id_sub' => null
+                        ];
+                    }
+                }
+            } catch (\Throwable $th) {
+                return 'Error: '.$th->getMessage();
             }
         }
 
-        ##Inertar elementos
-        if(count($data) > 0){
-            try {
-                $result = DB::table('tbl_carta_descriptiva')
-                ->UpdateOrInsert(
-                    ['id_curso'=>$id_curso],
-                    ['id_curso'=>$id_curso, 'cont_tematico' => json_encode($data),'iduser_created'=> Auth::user()->id]);
-
-                if ($result) {
-                    $mensaje = "Datos guardados con exito";
-                    return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', $mensaje);
+        //Validamos si es update para organizar el array
+        if ($update) {
+            //Si el usuario solo cambia texto
+            $new_organizar = [];
+            if(count($datosOrganizados) === count($ids_updSub)){
+                foreach ($datosOrganizados as $key => $dato) {
+                    $new_organizar[] = [
+                        'numeracion' => $dato['numeracion'],
+                        'texto' => $dato['texto'],
+                        'level' => $dato['level'],
+                        'id_sub' => $ids_updSub[$key]
+                    ];
                 }
-            } catch (\Throwable $th) {
-                $mensaje = "Error: ".$th->getMessage();
-                return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', $mensaje);
+            //Si el usuario agrega mas submodulos
+            }else if(count($datosOrganizados) > count($ids_updSub)){
+                foreach ($datosOrganizados as $key => $dato) {
+                    $id_temp = null;
+                    if($key < count($ids_updSub)) $id_temp = $ids_updSub[$key];
+                    $new_organizar[] = [
+                        'numeracion' => $dato['numeracion'],
+                        'texto' => $dato['texto'],
+                        'level' => $dato['level'],
+                        'id_sub' => $id_temp
+                    ];
+                }
+            //Si el usuario quita algunos submodulos
+            }else if(count($ids_updSub) > count($datosOrganizados)){
+                $ids_forDelete = [];
+                foreach ($ids_updSub as $key => $id) {
+                    if($key < count($datosOrganizados)) {
+                        $new_organizar[] = [
+                            'numeracion' => $datosOrganizados[$key]['numeracion'],
+                            'texto' => $datosOrganizados[$key]['texto'],
+                            'level' => $datosOrganizados[$key]['level'],
+                            'id_sub' => $id
+                        ];
+                    }else{
+                        $ids_forDelete [] = $id;
+                    }
+                }
             }
-        }else{
-            $mensaje = "No contiene datos para guardar";
+            $datosOrganizados = $new_organizar;
+        }
+
+        ##Validar si la entrada de datos coincide con el resultado ya procesado de los submodulos
+        if(count($datosOrganizados) !== count($data_sub)){
+            $mensaje = "Verifica que la numeración de los submódulos esté bien escrita.  (Ejemplo: 1.1 Electrónica)";
             return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', $mensaje);
         }
 
+        //Validar nombre del modulo
+        if(empty($name_modulo)){
+            $mensaje = "Para seguir con el proceso, debe ingresar el titulo del modulo.";
+            return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', $mensaje);
+        }
+
+        //Validar duración por modulo
+        $duracion_mod = $sincrona_mod = $asincrona_mod = '00:00';
+        if($curso_hora !== null && $curso_min !== null &&
+        $sincro_hora !== null && $sincro_min !== null &&
+        $asinc_hora !== null && $asinc_min !== null){
+            //Agregamos a las cadenad de horas, min ceros a la izquierda en caso de que se requiera
+            $curso_hora = str_pad($curso_hora, 2, '0', STR_PAD_LEFT);
+            $curso_min = str_pad($curso_min, 2, '0', STR_PAD_LEFT);
+            $sincro_hora = str_pad($sincro_hora, 2, '0', STR_PAD_LEFT);
+            $sincro_min = str_pad($sincro_min, 2, '0', STR_PAD_LEFT);
+            $asinc_hora = str_pad($asinc_hora, 2, '0', STR_PAD_LEFT);
+            $asinc_min = str_pad($asinc_min, 2, '0', STR_PAD_LEFT);
+
+            $duracion_mod = $curso_hora.':'.$curso_min;
+            $sincrona_mod = $sincro_hora.':'.$sincro_min;
+            $asincrona_mod = $asinc_hora.':'.$asinc_min;
+        }else{
+            $mensaje = "Falta datos en los campo de duracion de horas y minutos";
+            return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', $mensaje);
+        }
+
+        ## Datos del modulo
+        $datos_modulo = ['id_parent' => 0, 'id_curso'=> $id_curso, 'nombre_modulo'=>$name_modulo, 'nivel'=> 1, 'duracion'=> $duracion_mod,
+        'sincrona'=> $sincrona_mod, 'asincrona'=> $asincrona_mod, 'estra_didac'=> $estra_didac, 'process_eval' => $proces_eval, 'iduser_created'=> Auth::user()->id];
+
+        //Nuevo codigo de inserción
+        try {
+            ##insertamos el modulo
+            $id_modulo_req = $id_modupd;
+            $id_modulo = $this->insertUpdModulo($id_modulo_req, $datos_modulo);
+
+             if (!empty($id_modulo)){  //Insertamos los submodulos
+                $ids_subs = [];
+                foreach ($datosOrganizados as $key => $dato) {
+                    if($dato['level'] == 2){
+                        $idModOrSub = $this->insertUpdSubModulo($id_modulo, $id_curso, $dato);
+                        $ids_subs[$dato['numeracion']] = $idModOrSub;
+
+                    }else if($dato['level'] == 3){
+                        //Cortamos la numeracion para ubicar su submodulo
+                        $cut_number = $this->foundNumber($dato['numeracion'], 2);
+                        $idModOrSub = $this->insertUpdSubModulo($ids_subs[$cut_number], $id_curso, $dato);
+                        $ids_subs[$dato['numeracion']] = $idModOrSub;
+
+                    }else if($dato['level'] == 4){
+                        //Cortamos la numeracion para ubicar su submodulo
+                        $cut_number = $this->foundNumber($dato['numeracion'], 3);
+                        $idModOrSub = $this->insertUpdSubModulo($ids_subs[$cut_number], $id_curso, $dato);
+                        $ids_subs[$dato['numeracion']] = $idModOrSub;
+                    }
+                }
+                $mensaje = "Datos guardados con exito";
+                //si es actualizacion hacemos la eliminacion en caso de que se requiera
+                if($update){
+                    if(count($ids_forDelete) > 0){
+                        foreach ($ids_forDelete as $key => $id) {
+                            DB::table('contenido_tematico')->where('id', $id)->delete();
+                        }
+                    }
+                    $mensaje = "Datos actualizados con exito";
+                }
+                return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', $mensaje);
+            }
+        } catch (\Throwable $th) {
+            return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', 'Error en la estructura de numeración: '.$th->getMessage());
+        }
+
+    }
+
+
+    function insertUpdSubModulo($id_modOrsub, $id_curso, $datos)
+    {
+        $registro = null;
+        if(!empty($datos['id_sub'])){
+            $registro = DB::table('contenido_tematico')
+            ->select('id')
+            ->where('id_curso', $id_curso)
+            ->where('id', $datos['id_sub'])
+            ->first();
+        }
+
+        if ($registro) {
+            // Actualizar el registro existente
+            DB::table('contenido_tematico')
+            ->where('id', $registro->id)
+            ->update([
+                'id_parent' => $id_modOrsub,
+                'id_curso' => $id_curso,
+                'numeracion' => $datos['numeracion'],
+                'nombre_modulo' => $datos['texto'],
+                'nivel' => $datos['level'],
+                'iduser_updated' => Auth::user()->id
+            ]);
+
+            return $registro->id;
+        } else {
+            // Insertar un nuevo registro
+            $newId = DB::table('contenido_tematico')
+                ->insertGetId([
+                    'id_parent' => $id_modOrsub,
+                    'id_curso' => $id_curso,
+                    'numeracion' => $datos['numeracion'],
+                    'nombre_modulo' => $datos['texto'],
+                    'nivel' => $datos['level'],
+                    'iduser_created' => Auth::user()->id
+                ]);
+            return $newId;
+        }
+    }
+
+
+    function insertUpdModulo($id_modulo, $datos)
+    {
+        $registro = null;
+        if(!empty($id_modulo)){
+            $registro = DB::table('contenido_tematico')
+            ->select('id')
+            ->where('id_curso', $datos['id_curso'])
+            ->where('id', $id_modulo)
+            ->first();
+        }
+
+        if ($registro) {
+            // Actualizar el registro existente
+            DB::table('contenido_tematico')
+            ->where('id', $registro->id)
+            ->update([
+                'id_parent' => 0,
+                'id_curso'=> $datos['id_curso'],
+                'nombre_modulo' => $datos['nombre_modulo'],
+                'nivel' => $datos['nivel'],
+                'duracion'=> $datos['duracion'],
+                'sincrona'=> $datos['sincrona'],
+                'asincrona'=> $datos['asincrona'],
+                'estra_didac'=> $datos['estra_didac'],
+                'process_eval' => $datos['process_eval'],
+                'iduser_updated'=> $datos['iduser_created']
+            ]);
+            return $registro->id;
+        } else {
+            // Insertar un nuevo registro
+            $newId = DB::table('contenido_tematico')
+                    ->insertGetId([
+                        'id_parent' => 0,
+                        'id_curso'=> $datos['id_curso'],
+                        'nombre_modulo' => $datos['nombre_modulo'],
+                        'nivel' => $datos['nivel'],
+                        'duracion'=> $datos['duracion'],
+                        'sincrona'=> $datos['sincrona'],
+                        'asincrona'=> $datos['asincrona'],
+                        'estra_didac'=> $datos['estra_didac'],
+                        'process_eval' => $datos['process_eval'],
+                        'iduser_created'=> $datos['iduser_created']
+                    ]);
+            return $newId;
+        }
+    }
+
+    function foundNumber($numeracion, $level)
+    {
+        // Dividir la cadena en partes usando el punto como separador
+        $parts = explode('.', $numeracion);
+
+        // Verificar si el nivel deseado es válido
+        if ($level > 0 && $level <= count($parts)) {
+            // Unir las partes hasta el nivel deseado para obtener el resultado
+            $result = implode('.', array_slice($parts, 0, $level));
+            return $result;
+        } else {
+            // Nivel no válido, devolver la cadena original
+            return $numeracion;
+        }
     }
 
 }
