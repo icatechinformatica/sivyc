@@ -69,7 +69,7 @@ class supreController extends Controller
 
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-                        ->SELECT('tabla_supre.*','folios.permiso_editar')
+                        ->SELECT('tabla_supre.*','folios.permiso_editar','folios.edicion_pago')
                         ->where('tabla_supre.id', '!=', '0')
                         ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
                         ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
@@ -500,12 +500,12 @@ class supreController extends Controller
         $id = base64_decode($id);
         $data = supre::find($id);
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
-        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
-        $getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
-        $getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
-        $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
-        $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
+        // $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
+        // $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        // $getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
+        // $getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
+        // $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
+        // $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
         $criterio_pago = DB::TABLE('criterio_pago')
             ->SELECT('cp','perfil_profesional')
             ->JOIN('tbl_cursos','tbl_cursos.cp','criterio_pago.id')
@@ -516,9 +516,9 @@ class supreController extends Controller
         if($criterio_pago == null) {
             $criterio_pago = DB::TABLE('criterio_pago')->SELECT('id AS cp','perfil_profesional')->WHERE('id','11')->FIRST();
         }
-        $delegado = DB::TABLE('tbl_unidades')->SELECT('delegado_administrativo','pdelegado_administrativo')->WHERE('unidad',$data->unidad_capacitacion)->FIRST();
+        $funcionarios = $this->funcionarios_supre($data->unidad_capacitacion);
 
-        return view('layouts.pages.valsupremod', compact('data', 'directorio','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','criterio_pago','delegado'));
+        return view('layouts.pages.valsupremod', compact('data', 'directorio','criterio_pago','funcionarios'));
     }
 
     public function delete($id)

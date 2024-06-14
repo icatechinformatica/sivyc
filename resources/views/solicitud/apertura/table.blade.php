@@ -5,11 +5,15 @@
             <tr>
                 <th scope="col" class="text-center">#</th>
                 <th scope="col" class="text-center">CURP</th>
-                <th scope="col" class="text-center">ALUMNO</th>
                 <th scope="col" class="text-center">MATRICULA</th>
-                <th scope="col" class="text-center">FEC. NAC.</th>
+                <th scope="col" class="text-center" width="15%">ALUMNO</th>
                 <th scope="col" class="text-center">SEXO</th>
-                <th scope="col" class="text-center" width="20%">ESCOLARIDAD</th>
+                <th scope="col" class="text-center">FEC. NAC.</th>
+                <th scope="col" class="text-center">EDAD (AÑOS)</th>
+                <th scope="col" class="text-center" width="15%">ESCOLARIDAD</th>
+                <th scope="col" class="text-center" width="15%">GPO VULNERABLE</th>
+                <th scope="col" class="text-center">OTRO GPO</th>
+                <th scope="col" class="text-center">NACIONALIDAD</th>
                 <th scope="col" class="text-center">TIPO DE INSCRIPCI&Oacute;N</th>
                 <th scope="col" class="text-center">COUTA</th>
             </tr>
@@ -23,12 +27,22 @@
                     ?>
                     <tr>
                         <td class="text-center"> {{ $consec++ }} </td>
-                        <td class="text-center"> {{ $a->curp}} </td>
-                        <td> {{ $a->alumno }} </td>
+                        <td class="text-center" style="word-wrap: break-word; max-width: 90px;">{{ $a->curp }}</td>
                         <td class="text-center"> {{ $a->matricula }} </td>
-                        <td class="text-center">{{ $a->fecha_nacimiento }}</td>
+                        <td> {{ $a->alumno }} </td>
                         <td class="text-center">{{ $a->sexo }}</td>
+                        <td class="text-center">{{ date('d/m/Y', strtotime($a->fecha_nacimiento)) }}</td>
+                        <td class="text-center">{{ $a->edad  }} años</td>
                         <td >{{ $a->escolaridad }}</td>
+                        <td >{{ $a->grupos }}</td>
+                        <td >
+                            @if($a->inmigrante == true) INMIGRANTE <br/> @endif
+                            @if($a->familia_migrante == true) FAMILIA_MIGRANTE <br/> @endif
+                            @if($a->madre_soltera == true) MADRE_SOLTERA <br/> @endif
+                            @if($a->lgbt == true) LGBT <br/> @endif
+                            @if($a->es_cereso == true OR $grupo->id_cerss) CERSS @endif
+                        </td>
+                        <td class="text-center">{{ $a->nacionalidad }}</td>
                         <td class="text-center">{{ $a->tinscripcion }}</td>
                         <td class="text-center">{{ $a->costo }}</td>
                     </tr>

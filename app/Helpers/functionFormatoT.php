@@ -969,11 +969,12 @@ function dataFormatoT($unidad, $turnado=null, $fecha=null, $mesSearch=null, $sta
             'c.mexoneracion',
             DB::raw("sum(case when ins.empleado = true then 1 else 0 end) as empleado"),
             DB::raw("sum(case when ins.empleado = false then 1 else 0 end) as desempleado"),
-            DB::raw("sum(case when ins.id_gvulnerable::text like '%18%' or ins.id_gvulnerable #-# '4' or ins.id_gvulnerable::text like '%20%' or ins.id_gvulnerable::text like '%21%' or ins.id_gvulnerable::text like '%22%' then 1 else 0 end) as discapacidad"),
-            DB::raw("0 as madres_solteras"), // debe ir madres solteras
+            // DB::raw("sum(case when ins.id_gvulnerable::text like '%18%' or ins.id_gvulnerable #-# '4' or ins.id_gvulnerable::text like '%20%' or ins.id_gvulnerable::text like '%21%' or ins.id_gvulnerable::text like '%22%' then 1 else 0 end) as discapacidad"),
+            DB::raw("sum(case when jsonb_exists(ins.id_gvulnerable::jsonb, '18') or jsonb_exists(ins.id_gvulnerable::jsonb, '4') or jsonb_exists(ins.id_gvulnerable::jsonb, '20') or jsonb_exists(ins.id_gvulnerable::jsonb, '21') or jsonb_exists(ins.id_gvulnerable::jsonb, '22') then 1 else 0 end) as discapacidad"),
+            DB::raw("sum(case when madre_soltera is true then 1 else 0 end) as madres_solteras"), // debe ir madres solteras
             DB::raw("sum(case when ins.inmigrante = true then 1 else 0 end) as migrante"),
-            DB::raw("sum(CASE WHEN EXTRACT(YEAR FROM (age(c.inicio, ins.fecha_nacimiento))) between 15 and 19 AND ins.id_gvulnerable::text like '%4%'  THEN 1 ELSE 0 END) as adolescente_calle"),
-            DB::raw("SUM(CASE WHEN ins.id_gvulnerable #-# '8' and ins.sexo='M' and ins.lgbt = false or ins.id_gvulnerable #-# '8' and ins.sexo='M' and ins.lgbt is null THEN 1 ELSE 0 END) as jefa_familia"),
+            DB::raw("sum(CASE WHEN EXTRACT(YEAR FROM (age(c.inicio, ins.fecha_nacimiento))) between 15 and 19 AND jsonb_exists(ins.id_gvulnerable::jsonb, '4') THEN 1 ELSE 0 END) as adolescente_calle"),
+            DB::raw("SUM(CASE WHEN jsonb_exists(ins.id_gvulnerable::jsonb, '8') and ins.sexo='M' and ins.lgbt = false or jsonb_exists(ins.id_gvulnerable::jsonb, '8') and ins.sexo='M' and ins.lgbt is null THEN 1 ELSE 0 END) as jefa_familia"),
             DB::raw("sum(case when ins.indigena = true then 1 else 0 end) as indigena"),
             DB::raw("sum(case when ins.etnia <> NULL then 1 else 0 end) as etnia"),
             DB::raw("CONCAT(sum(case when ins.id_cerss IS NOT NULL then 1 else 0 end), ' - (', cerss.nombre, ')' ) as cerss_nombre"),

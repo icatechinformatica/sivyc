@@ -214,6 +214,8 @@
                         </div>
                     </li>
                 @endcan
+                @canany(['alumnos.inscritos.index', 'cursos.index', 'instructor.index', 'organismo.inicio','convenios.index','cerss.inicio','areas.inicio','especialidades.inicio',
+                    'unidades.index','exoneraciones.inicio', 'instituto.inicio','funproc.pat.index','unidades.medida.index'])
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Catálogos
@@ -260,6 +262,10 @@
                         @endcan
                     </div>
                 </li>
+                @endcan
+                @canany(['reportes.cursos', 'planeacion.reporte', 'financieros.reporte', 'vinculacion.reporte', 'reportes.911', 'reportes.rdcd08', 'reportes.rcdod11',
+                    'reportes.rf001','financieros.reportevalrec','financieros.reportecursos','reportes.pat'
+                    ])
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Reportes
@@ -305,6 +311,10 @@
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
+                @endcan
+                @canany(['consultas.folios','consultas.lotes','consultas.cursosaperturados','planeacion.estadisticas','planeacion.grupos.vulnerables','planeacion.ingresos.propios',
+                    'consultas.cursosefisico','consultas.instructor', 'consultas.instructores.disponibles','consultas.poa','show.cursos.validados','consulta.bolsa.trabajo'                
+                    ])
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Consultas
@@ -348,17 +358,19 @@
                         @endcan
                     </div>
                 </li>
-
-                @can('estadisticas.ecursos')
+                @endcan
+                @canany(['estadisticas.ecursos', 'tablero.metas.index'])                
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Estadísticas
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @can('estadisticas.ecursos')
                                 <a class="dropdown-item" href="{{route('estadisticas.ecursos')}}">Cursos Impartidos</a>
-                                @can('tablero.metas.index')
-                                    <a class="dropdown-item" href="{{route('tablero.metas.index')}}">Tablero de Control</a>
-                                @endcan
+                            @endcan
+                            @can('tablero.metas.index')
+                                <a class="dropdown-item" href="{{route('tablero.metas.index')}}">Tablero de Control</a>
+                            @endcan
                         </div>
                     </li>
                 @endcan
