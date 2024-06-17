@@ -286,7 +286,7 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>1</td>
+                        <td>a</td>
                         <td>Convenio Especifico / Acta de acuerdo.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -347,8 +347,48 @@
                             <textarea class="" name="comentario_dta1" id="comentario_dta1" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_1'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
+                    {{-- Soporte para convenio especifico --}}
                     <tr>
-                        <td>2</td>
+                        <td>a.1</td>
+                        <td>Soporte de manifiesto de inscripción
+                        </td>
+                        <td class="{{$a_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcionA1" id="yes_reqA1" value="si">
+                            </div>
+                        </td>
+                        <td class="{{$a_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcionA1" id="no_reqA1" value="no">
+                            </div>
+                        </td>
+                        <td class="{{$a_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcionA1" id="na_reqA1" value="no_aplica"}>
+                            </div>
+                        </td>
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_reqA1" id="comentario_reqA1" rows="1" cols="30"></textarea>
+                        </td>
+                        <td></td>
+                        <td class="text-center">
+                            @if (1 == 1)
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                data-placement="top" title="Pendiente" id="" href="#"
+                                onclick="showModal(event, 'Archivo no encontrado')">
+                                <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                        </a>
+                            @endif
+                        </td>
+                        <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dtaA1" id="comentario_dtaA1" rows="1" cols="30"></textarea>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>b</td>
                         <td>Copia de autorización de Exoneración y/o Reducción de Cuota de Recuperación.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -385,7 +425,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>3</td>
+                        <td>c</td>
                         <td>Original  de la solicitud de apertura de Cursos de Capacitación y/o Certificación al Departamento Académico.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -446,7 +486,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>4</td>
+                        <td>d</td>
                         <td>SID-01 solicitud de Inscripción del interesado.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -507,7 +547,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>5</td>
+                        <td>e</td>
                         <td>CURP actualizada o Copia de Acta de Nacimiento.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -541,7 +581,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>6</td>
+                        <td>f</td>
                         <td>Copia de comprobante de último grado de estudios (en caso de contar con el).</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -575,7 +615,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>7</td>
+                        <td>g</td>
                         <td>Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -597,12 +637,31 @@
                         </td>
                         <td></td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc7'] != '')
+                            {{-- @if ($search_docs['urldoc7'] != '')
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$search_docs['urldoc7'] ?? ''}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
+                            @endif --}}
+                            @if (!empty($search_docs['validRecibo']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id=""
+                                    href="
+                                    @if ($search_docs['validRecibo'] == 'folio')
+                                        {{ route('grupos.recibos.descargar', ['folio_recibo' => $search_docs['urldoc7']]) }}
+                                    @else
+                                        {{$path_files.$search_docs['urldoc7']}}
+                                    @endif
+                                    " target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                            <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                onclick="showModal(event, 'Archivo no encontrado')">
+                                <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                            </a>
                             @endif
                         </td>
                         <td></td>
@@ -644,7 +703,7 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>1</td>
+                        <td>a</td>
                         <td>Original de memorándum ARC-01, solicitud de Apertura de cursos de Capacitación y/o certificación a la
                             Dirección Técnica Académica.
                         </td>
@@ -683,7 +742,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>2</td>
+                        <td>b</td>
                         <td>Copia de memorándum de autorización de ARC-01, emitido por la Dirección Técnica Académica.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -720,7 +779,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>3</td>
+                        <td>c</td>
                         <td>
                             Original de memorándum ARC-02, solicitud de modificación, reprogramación y/o cancelación de curso a la Dirección Técnica Académica, en caso aplicable.
                         </td>
@@ -765,7 +824,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>4</td>
+                        <td>d</td>
                         <td>Copia de memorándum de autorización de ARC-02, emitido por la Dirección Técnica Académica, en caso aplicable.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -802,7 +861,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>5</td>
+                        <td>e</td>
                         <td>Copia de RIACD-02 Inscripción.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -864,7 +923,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>6</td>
+                        <td>f</td>
                         <td>Copia de RIACD-02 Acreditación.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -926,7 +985,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>7</td>
+                        <td>g</td>
                         <td>Copia de RIACD-02 Certificación.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -987,8 +1046,71 @@
                             <textarea class="" name="comentario_dta14" id="comentario_dta14" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_14'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
+                    {{-- esto es un extra se formato de entrega de constancias --}}
                     <tr>
-                        <td>8</td>
+                        <td>g.1</td>
+                        <td>Memorando y/o Oficio de soporte de entrega de constancias.</td>
+                        <td class="{{$a_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcion25" id="yes_req25" value="si" {{($v_radios[1]['doc_25'] == 'si') ? 'checked' : ''}}>
+                            </div>
+                        </td>
+                        <td class="{{$a_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcion25" id="no_req25" value="no" {{($v_radios[1]['doc_25'] == 'no') ? 'checked' : ''}}>
+                            </div>
+                        </td>
+                        <td class="{{$a_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcion25" id="na_req25" value="no_aplica" {{($v_radios[1]['doc_25'] == 'no_aplica') ? 'checked' : ''}}>
+                            </div>
+                        </td>
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
+                        </td>
+                        <td class="text-center">
+                            {{-- Subir Imagen --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc25">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc25" style="display: none;" onchange="checkIcon('iconCheck25', 'pdfInputDoc25')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc25').click();">Archivo
+                                    <div id="iconCheck25" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
+                        </td>
+                        <td class="text-center">
+                            {{-- mostrar pdf --}}
+                            @if ($json_dptos->academico['doc_25']['url_documento'] != '')
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id="verpdf_25"
+                                    href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            {{-- eliminar pdf --}}
+                            @if ($json_dptos->academico['doc_25']['url_documento'] != '')
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion25',
+                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_documento'] : ''}}',
+                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_25'], 'mensaje_dta', '')}}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>h</td>
                         <td>Copia de LAD-04 Lista de Asistencia.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1010,7 +1132,7 @@
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc15">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc15" class="d-none">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc15" style="display: none;" onchange="checkIcon('iconCheck15', 'pdfInputDoc15')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc15').click();">Archivo
@@ -1019,8 +1141,8 @@
                             </form>
                         </td>
                         <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_15']['url_documento'] != '')
+                            {{-- mostrar pdf lista de asistencia --}}
+                            {{-- @if ($json_dptos->academico['doc_15']['url_documento'] != '')
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_15"
                                     href="{{$path_files.$json_dptos->academico['doc_15']['url_documento'] ?? ''}}" target="_blank">
@@ -1032,12 +1154,31 @@
                                     onclick="showModal(event, 'Archivo no encontrado')">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
+                            @endif --}}
+                            @if (!empty($search_docs['urldoc15']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id=""
+                                    href="
+                                    @if (is_numeric($search_docs['urldoc15']))
+                                        {{route('asistencia-pdf', ['id' => $search_docs['urldoc15']])}}
+                                    @else
+                                        {{$search_docs['urldoc15']}}
+                                    @endif
+                                    " target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_15']['url_documento'] != '')
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion15',
+                                <button class="ml-2 bg-transparent border-0 d-none" onclick="delete_pdf(event, 'opcion15',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_15']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
@@ -1050,7 +1191,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>9</td>
+                        <td>i</td>
                         <td>Copia de RESD-05 Registro de Evaluación por Sub - objetivos.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1112,7 +1253,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>10</td>
+                        <td>j</td>
                         <td>Originales o copia de las Evaluaciones y/o Reactivos de aprendizaje del alumno y/o resumen de actividades. </td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1174,7 +1315,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>11</td>
+                        <td>k</td>
                         <td>Original o copia de las Evaluaciones al Docente y Evaluación del Curso y/o resumen de actividades.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1236,7 +1377,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>12</td>
+                        <td>l</td>
                         <td>Reporte fotográfico, como mínimo dos fotografías. </td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1258,7 +1399,7 @@
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="d-none">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc19" style="display: none;" onchange="checkIcon('iconCheck19', 'pdfInputDoc19')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc19').click();">Archivo
@@ -1267,8 +1408,8 @@
                             </form>
                         </td>
                         <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_19']['url_documento'] != '')
+                            {{-- mostrar pdf evidencia fotografica --}}
+                            {{-- @if ($json_dptos->academico['doc_19']['url_documento'] != '')
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_19"
                                     href="{{$path_files.$json_dptos->academico['doc_19']['url_documento'] ?? ''}}" target="_blank">
@@ -1280,12 +1421,31 @@
                                     onclick="showModal(event, 'Archivo no encontrado')">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
+                            @endif --}}
+                            @if (!empty($search_docs['urldoc19']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id=""
+                                    href="
+                                    @if (is_numeric($search_docs['urldoc19']))
+                                        {{route('reportefoto-pdf', ['id' => $search_docs['urldoc19']])}}
+                                    @else
+                                        {{$search_docs['urldoc19']}}
+                                    @endif
+                                    " target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if ($json_dptos->academico['doc_19']['url_documento'] != '')
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion19',
+                                <button class="ml-2 bg-transparent border-0 d-none" onclick="delete_pdf(event, 'opcion19',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_19']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
@@ -1295,69 +1455,6 @@
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_dta19" id="comentario_dta19" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_19'], 'mensaje_dta', '')}}</textarea>
-                        </td>
-                    </tr>
-                    {{-- esto es un extra se formato de entrega de constancias --}}
-                    <tr>
-                        <td>13</td>
-                        <td>Formato de soporte de entrega de constancias</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion25" id="yes_req25" value="si" {{($v_radios[1]['doc_25'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion25" id="no_req25" value="no" {{($v_radios[1]['doc_25'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion25" id="na_req25" value="no_aplica" {{($v_radios[1]['doc_25'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc25">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc25" style="display: none;" onchange="checkIcon('iconCheck25', 'pdfInputDoc25')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc25').click();">Archivo
-                                    <div id="iconCheck25" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
-                                </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_25']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_25"
-                                    href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_25']['url_documento'] != '')
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion25',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_25'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -1391,7 +1488,7 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>1</td>
+                        <td>a</td>
                         <td>Memorandum de solicitud de suficiencia presupuestal.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1426,7 +1523,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>2</td>
+                        <td>b</td>
                         <td>Copia de formato de autorización de suficiencia Presupuestal.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1461,7 +1558,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>3</td>
+                        <td>c</td>
                         <td>Original de Contrato de prestación de curso de Capacitación y/o Certificación del Instructor Externo, con firma autógrafa o firma electrónica.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1482,10 +1579,16 @@
                             <textarea class="" name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc22'] != '')
+                            @if (!empty($search_docs['urldoc22']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc22'] ?? ''}}" target="_blank">
+                                    href="
+                                    @if (is_numeric($search_docs['urldoc22']))
+                                        {{route('contrato-pdf', ['id' => $search_docs['urldoc22']])}}
+                                    @else
+                                        {{$search_docs['urldoc22']}}
+                                    @endif
+                                    " target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
@@ -1503,7 +1606,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>4</td>
+                        <td>d</td>
                         <td>Copia de memorándum de solicitud de pago al Instructor Externo.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1538,7 +1641,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>5</td>
+                        <td>e</td>
                         <td>Comprobante Fiscal Digital por Internet del instructor Externo.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
