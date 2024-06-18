@@ -243,7 +243,7 @@ class EContratoController extends Controller
     public function create_body($id_contrato,$firmantes) {
         $body_html = NULL;
         $data_contrato = contratos::WHERE('id_contrato', '=', $id_contrato)->FIRST();
-        $data = contratos::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura',
+        $data = contratos::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura','tbl_cursos.soportes_instructor',
                                   'tbl_cursos.tipo_curso','tbl_cursos.espe', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion','instructores.rfc','tbl_cursos.modinstructor',
                                   'instructores.curp','instructores.domicilio','tabla_supre.fecha_validacion')
@@ -269,6 +269,16 @@ class EContratoController extends Controller
 
         $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
         $monto = explode(".",strval($data_contrato->cantidad_numero));
+
+        // obtencion de tipo de identificaion y folio dependiendo si esta en el json o en el capo a parte
+        $data->soportes_instructor = json_decode($data->soportes_instructor);
+        if(isset($data->soportes_instructor->tipo_identificacion)) {
+            $tipo_identificacion =$data->soportes_instructor->tipo_identificacion;
+            $folio_identificacion = $data->soportes_instructor->folio_identificacion;
+        } else {
+            $tipo_identificacion = $data->instructor_tipo_identificacion;
+            $folio_identificacion = $data->instructor_folio_identificacion;
+        }
 
         if ($data->modinstructor == 'HONORARIOS') {
             //honorarios
@@ -430,7 +440,7 @@ class EContratoController extends Controller
                     <br><dd>I.8 Para los efectos del presente Contrato señala como su domicilio legal, el ubicado en la 14 poniente norte, número 239, Colonia Moctezuma, C. P. 29030, en la Ciudad de Tuxtla Gutiérrez, Chiapas.</dd>
                 </dl>
                 <dl><dt>II. <b>"PRESTADOR DE SERVICIOS"</b> declara que:</dt>
-                    <br><dd>II.1 Es una persona física, de nacionalidad mexicana, que acredita mediante'. ($data->instructor_tipo_identificacion == 'INE' ? ' credencial para votar' : $data->instructor_tipo_identificacion).' con número de folio '.$data->instructor_folio_identificacion. ', con plena capacidad jurídica y facultades que le otorga la ley, para contratar y obligarse, así como también con los estudios, conocimientos y la experiencia necesaria en la materia de '. $data->espe. ' y conoce plenamente las necesidades de los servicios objeto del presente contrato, así como que ha considerado todos los factores que intervienen para desarrollar eficazmente las actividades que desempeñará.</dd>
+                    <br><dd>II.1 Es una persona física, de nacionalidad mexicana, que acredita mediante '. ($tipo_identificacion == 'INE' ? 'credencial para votar' : $tipo_identificacion).' con número de folio '.$folio_identificacion. ', con plena capacidad jurídica y facultades que le otorga la ley, para contratar y obligarse, así como también con los estudios, conocimientos y la experiencia necesaria en la materia de '. $data->espe. ' y conoce plenamente las necesidades de los servicios objeto del presente contrato, así como que ha considerado todos los factores que intervienen para desarrollar eficazmente las actividades que desempeñará.</dd>
                     <br><dd>II.2 Se encuentra al corriente en el pago de sus impuestos y cuenta con el Registro Federal de Contribuyentes número '. $data->rfc. ', expedido por el Servicio de Administración Tributaria de la Secretaría de Hacienda y Crédito Público, conforme a lo dispuesto por los artículos 27 del Código Fiscal de la Federación y 110 fracción I de la Ley de Impuesto sobre la Renta.</dd>
                     <br><dd>II.3 Es conforme de que <b>“ICATECH”</b>, le retenga los impuestos a que haya lugar por concepto de la Prestación de Servicios Profesionales por <b>SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS</b>.</dd>
                     <br><dd>II.4 Bajo protesta de decir verdad, no se encuentra inhabilitado por autoridad competente alguna, así como a la suscripción del presente documento no ha sido parte en juicios del orden civil, mercantil, penal, administrativo o laboral en contra de <b>“ICATECH”</b> o de alguna otra institución pública o privada; y que no se encuentra en algún otro supuesto o situación que pudiera generar conflicto de intereses para prestar los servicios profesionales objeto del presente contrato.</dd>
