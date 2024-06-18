@@ -1,7 +1,46 @@
 <!-- Creado por Orlando Chávez -->
 @extends('theme.sivyc.layout')
 @section('title', 'Modificación de la Validación de Suficiencia Presupuestal| Sivyc Icatech')
+@section('content_script_css')
+    <style>
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+            z-index: 9999; /* Asegura que esté por encima de otros elementos */
+            display: none;
+        }
+
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+    </style>
+@endsection
 @section('content')
+<div id="loader-overlay">
+    <div id="loader"></div>
+</div>
     <section class="container g-pt-50">
         <div class="text-center">
             <h1>Modificación de la Validación de Suficiencia Presupuestal</h1>
@@ -47,6 +86,12 @@
                     <input name="nombre_dir" id="nombre_dir" type="text" disabled value="{{$funcionarios['director']}}" class="form-control">
                 </div>
             </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    @php $supreIdB64 = base64_encode($data->id); @endphp
+                    <a type="submit" id="btn_generar_supre" class="btn btn-primary" href="{{route('supre-pdf', ['id' => $supreIdB64])}}"  target="_blank">Visualizar Solicitud</a>
+                </div>
+            </div>
             <br>
             <div class="form-row">
                 <div class="form-group col-md-4">
@@ -83,11 +128,14 @@
             </div>
             <br><br>
             <div id="confval" class="form-row ">
-                <div class="form-group col-md-9">
+                <div class="form-group col-md-6">
                     <div class="pull-right">
-                        <button type="submit" class="btn btn-success" >Guardar Cambios</button>
+                        <button type="submit" class="btn" style="background-color: #12322B; color: white;" >Guardar Cambios</button>
                         <input hidden id="id" name="id" value="{{$data->id}}">
                     </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <a type="submit" id="btn_generar_supre" class="btn btn-primary" href="{{route('valsupre-pdf', ['id' => $supreIdB64])}}"  target="_blank">Visualizar Validación PDF</a>
                 </div>
             </form>
             @if($generarEfirmaValsupre)
@@ -96,7 +144,7 @@
                         @csrf
                         <input type="text" name="ids" id="ids" value='{{$data->id}}' hidden>
                         <input type="text" name="clave_curso" id="clave_curso" value='{{$clave}}' hidden>
-                        <button button type="submit" class="btn btn-red" >Generar Validación E.Firma</button>
+                        <button button type="submit" class="btn btn-red" onclick="loader('show')">Generar Validación E.Firma</button>
                     </form>
                 </div>
             @endif
@@ -105,4 +153,11 @@
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script>
+    function loader(make) {
+            if(make == 'hide') make = 'none';
+            if(make == 'show') make = 'block';
+            document.getElementById('loader-overlay').style.display = make;
+        }
+</script>
 @endsection

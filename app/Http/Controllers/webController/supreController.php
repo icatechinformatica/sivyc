@@ -120,13 +120,39 @@ class supreController extends Controller
     }
 
     public function frm_formulario() {
-        $prueba = '2023-10-17';
         $funcionarios = array();
         $unidad = tbl_unidades::SELECT('ubicacion','id','clave_contrato')->WHERE('id',Auth::user()->unidad)->FIRST();
         $year = Carbon::now()->year;
+        $inicio = $year.'-01-01';
+        $final = $year.'-12-30';
+
+        $countCursos = DB::Table('folios')->Where('tabla_supre.unidad_capacitacion',$unidad->ubicacion)
+        ->WhereBetween('tabla_supre.fecha',['2024-01-01','2024-12-30'])
+        ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
+        ->Count('folios.id_folios');
+
+        do {
+            $countCursos++;
+            switch (strlen($countCursos)) {
+                case 1:
+                    $countCursos = '00'.$countCursos;
+                break;
+                case 2:
+                    $countCursos = '0'.$countCursos;
+                break;
+                // case 3:
+                //     $countCursos = '0'.$countCursos;
+                // break;
+                default:
+
+                break;
+            }
+            $folio_validacion = 'DPP-SP-'.substr($unidad->ubicacion, 0, 2).'-'.$countCursos.'-'.$year;
+            $folioExists = DB::Table('folios')->Where('folio_validacion',$folio_validacion)->First();
+        } while (!is_null($folioExists));
 
         $funcionarios = $this->funcionarios_supre($unidad->ubicacion);
-        return view('layouts.pages.delegacionadmin', compact('unidad','funcionarios','year'));
+        return view('layouts.pages.delegacionadmin', compact('unidad','funcionarios','year','folio_validacion'));
     }
 
     public function store(Request $request) {

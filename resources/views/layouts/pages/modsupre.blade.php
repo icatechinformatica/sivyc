@@ -75,7 +75,7 @@
                 </tr>
                 @foreach ( $getfolios as $key=>$data )
                 <tr>
-                    <td><input type="text" id="addmore[{{$key}}][folio]" name="addmore[{{$key}}][folio]" value="{{ $data->folio_validacion }}" placeholder="folio" class="form-control" /></td>
+                    <td><input type="text" id="addmore[{{$key}}][folio]" name="addmore[{{$key}}][folio]" value="{{ $data->folio_validacion }}" placeholder="folio" class="form-control" readonly/></td>
                     <td><input readonly type="text" id="addmore[{{$key}}][numeropresupuesto]" name="addmore[{{$key}}][numeropresupuesto]" value="12101" placeholder="numero presupuesto" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][clavecurso]" name="addmore[{{$key}}][clavecurso]" value="{{ $data->clave}}" placeholder="clave curso" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][importe]" name="addmore[{{$key}}][importe]" value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" readonly /><footer name="addmore[0][aviso]" id="addmore[0][aviso]" style="color: red"></footer></td>
@@ -148,13 +148,17 @@
                     </div>
         </div>
         <br><br><br>
+        @php $supreIdB64 = base64_encode($getsupre->id); @endphp
         <div class="form-row">
             <input hidden id=id_supre name="id_supre" value={{$getsupre->id}}>
-            <div class="form-group col-md-7">
-                <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+            <div class="form-group col-md-5">
+                <a class="btn" style="background-color: #12322B; color: white;" href="{{URL::previous()}}">Regresar</a>
             </div>
             <div class="form-group col-md-2">
-                <button type="submit" id="btn_guardar_supre" class="btn btn-primary" >Guardar</button>
+                <button type="submit" id="btn_guardar_supre" class="btn" style="background-color: #12322B; color: white;" >Guardar</button>
+            </div>
+            <div class="form-group col-md-2">
+                <a type="submit" id="btn_generar_supre" class="btn btn-primary" href="{{route('supre-pdf', ['id' => $supreIdB64])}}"  target="_blank">Visualizar PDF</a>
             </div>
             </form>
             @if($generarEfirmaSupre)

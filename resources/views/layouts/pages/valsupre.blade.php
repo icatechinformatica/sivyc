@@ -42,12 +42,19 @@
                     </div>
                 </div>
                 <br>
+                @php $supreIdB64 = base64_encode($data->id); @endphp
                 <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <a class="btn btn-primary" href="{{URL::previous()}}">Regresar</a>
+                    </div>
                     <div class="form-group col-md-2">
                         <button type="button" id="valsupre_rechazar" name="valsupre_rechazar" class="btn btn-danger">Rechazar</a>
                     </div>
-                    <div class="form-group col-md-2">
-                        <button type="button" id="valsupre_validar" name="valsupre_validar" class="btn btn-success">Validar</a>
+                    <div class="form-group col-md-5">
+                        <button type="button" id="valsupre_validar" name="valsupre_validar" class="btn" style="background-color: #12322B; color: white;">Validar</a>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <a type="submit" id="btn_generar_supre" class="btn btn-primary" href="{{route('supre-pdf', ['id' => $supreIdB64])}}"  target="_blank">Visualizar Solicitud</a>
                     </div>
                 </div>
                 <div id="divrechazar" class="form-row d-none d-print-none">
@@ -60,14 +67,6 @@
                     <div class="form-group col-md-3">
                         <button type="submit" class="btn btn-danger" >Confirmar Rechazo</button>
                         <input hidden id="id" name="id" value="{{$data->id}}">
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-lg-12 margin-tb">
-                        <div class="pull-left">
-                            <a class="btn btn-warning" href="{{URL::previous()}}">Regresar</a>
-                        </div>
                     </div>
                 </div>
                 <br>
@@ -113,7 +112,7 @@
                 <div id="confval" class="row d-none d-print-none">
                     <div class="col-lg-12 margin-tb">
                         <div class="pull-right">
-                            <button type="submit" class="btn btn-success" >Confirmar Validación</button>
+                            <button type="submit" class="btn" style="background-color: #12322B; color: white;">Confirmar Validación</button>
                             <input hidden id="id" name="id" value="{{$data->id}}">
                         </div>
                     </div>
