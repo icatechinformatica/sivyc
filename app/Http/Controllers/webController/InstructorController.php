@@ -4441,7 +4441,7 @@ class InstructorController extends Controller
 
         $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
         ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
-        ->Join('folios','folios.id_cursos','pagos.id_curso')
+        ->Join('folios','folios.id_cursos', 'tbl_cursos.id')
         ->Where('id_instructor',$saveInstructor->id)
         ->where(function ($query) {
             $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
