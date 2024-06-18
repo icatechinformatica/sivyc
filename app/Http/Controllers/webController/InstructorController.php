@@ -4455,17 +4455,7 @@ class InstructorController extends Controller
 
             foreach($data_ins_curso as $prime) {
                 $upd_curso = tbl_curso::Find($prime->id);
-                $upd_curso->soportes_instructor = [
-                    'banco' => $instructor->banco,
-                    'domicilio' => $instructor->domicilio,
-                    'no_cuenta' => $instructor->no_cuenta,
-                    'archivo_ine' => $instructor->archivo_ine,
-                    'archivo_rfc' => $instructor->archivo_rfc,
-                    'interbancaria' => $instructor->interbancaria,
-                    'tipo_honorario' => $instructor->tipo_honorario,
-                    'archivo_bancario' => $instructor->archivo_bancario,
-                    'archivo_domicilio' => $instructor->archivo_domicilio
-                ];
+                $upd_curso->soportes_instructor = $instructor->soportesInstructor();
                 $upd_curso->save();
             }
         }
