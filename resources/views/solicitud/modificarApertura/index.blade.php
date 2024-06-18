@@ -8,7 +8,7 @@
     </div>
     <div class="card card-body" style=" min-height:450px;">       
         <?php
-            $horario = $modalidad = $clave = $munidad = $mov = $disabled = NULL;
+            $horario = $modalidad = $clave = $munidad = $mov = $disabled = $IDE = NULL;
             $activar = true;
             if(isset($grupo)){
                 $clave = $grupo->clave;
@@ -24,10 +24,11 @@
                     $grupo->medio_virtual='';
                     $grupo->link_virtual='';
                 }  
+                $IDE = $grupo->IDE;
             } 
             if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;            
         ?>
-    {{ Form::open(['route' => 'solicitud.apertura.modificar', 'method' => 'post', 'id'=>'frm']) }}
+    {{ Form::open(['method' => 'post', 'id'=>'frm']) }}
          <div class="row">
             <div class="form-group col-md-3">
                     {{ Form::text('clave', $clave, ['id'=>'clave', 'class' => 'form-control', 'placeholder' => 'CLAVE DE APERTURA', 'aria-label' => 'CLAVE DE APERTURA', 'required' => 'required', 'size' => 25]) }}
@@ -181,7 +182,7 @@
             <div class="form-row" >
                 <div class="form-group col-md-3">
                     <label>Memor&aacute;ndum ARC02:</label>
-                    <input name='nmunidad' id='nmunidad' type="text" class="form-control" aria-required="true" @if($grupo->nmunidad!='0') value="{{$grupo->nmunidad}}"  @endif />
+                    <input name='nmunidad' id='nmunidad' type="text" class="form-control" @if($grupo->nmunidad!='0') value="{{$grupo->nmunidad}}"  @endif />
                 </div>            
                 <div class="form-group col-md-5">
                     <label>Motivo:</label>
@@ -202,25 +203,38 @@
             </div>
                  
         @endif
+        {{ Form::hidden('IDE', $IDE) }}
     {!! Form::close() !!}    
-</div>
-    @section('script_content_js')     
-        <script src="{{ asset('js/solicitud/apertura.js') }}"></script>             
-
-        <script language="javascript">
-            $(document).ready(function(){                
-                $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura.modificar')}}"); $('#frm').submit();}); 
-                $("#guardar" ).click(function(){
-                    if ($('#nmunidad').val()==''||$('#opcion').val()==''||$('#observaciones').val()==''||$('#observaciones').val()==' ') {
-                        alert("Todos los campos deben ser llenados!! ");
-                    } else {
-                        if(confirm("Esta seguro de ejecutar la acción?")==true){
-                            $('#frm').attr('action', "{{route('solicitud.apertura.modguardar')}}"); $('#frm').submit();
-                        }
+</div>   
+@endsection
+@section('script_content_js')     
+    <script language="javascript">              
+        $(document).ready(function(){            
+            var validator = null;
+            $("#guardar" ).click(function(){                 
+                $.validator.messages.required = "Dato requerido.";  
+                validator = $('#frm').validate({
+                    rules: {
+                        nmunidad: { required: true},
+                        opcion: { required: true},
+                        observaciones: { required: true}                        
                     }
-                });
-                $("#deshacer" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.moddeshacer')}}"); $('#frm').submit();}});
-            });       
-        </script>  
-    @endsection
+                });   
+                if(validator && $('#frm').valid()) {
+                    if(confirm("Esta seguro de ejecutar la acción?")==true){
+                        $('#frm').attr('action', "{{route('solicitud.apertura.modguardar')}}"); $('#frm').submit();
+                    }
+                }  
+                             
+            });
+            $("#buscar").click(function(event){ 
+                if (validator) {
+                    validator.destroy();
+                    validator = null;
+                }
+                $('#frm').attr('action', "{{route('solicitud.apertura.modificar')}}"); $('#frm').submit();
+            });
+            $("#deshacer" ).click(function(event){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.moddeshacer')}}"); $('#frm').submit();}});
+        });       
+    </script>  
 @endsection

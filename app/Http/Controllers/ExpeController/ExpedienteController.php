@@ -426,30 +426,73 @@ class ExpedienteController extends Controller
         ->join('folios as f', 'f.id_supre', '=', 'sup.id')
         ->join('tbl_cursos as c', 'c.id', '=', 'f.id_cursos')
         ->where('c.folio_grupo', $folio)->first();
-        $bddoc22 = DB::table('contratos as con')->select('con.arch_contrato')->join('tbl_cursos as c', 'c.id', '=', 'con.id_curso')
-        ->where('c.folio_grupo', $folio)->first();
+
+        //Contrato firma electronica y tradicional
+        $bdECont = DB::table('tbl_cursos as tc')
+        ->join('contratos as con', 'con.id_curso', '=', 'tc.id')
+        ->join('documentos_firmar as ef', 'ef.numero_o_clave', '=', 'tc.clave')
+        ->where('tc.folio_grupo', $folio)->where('ef.tipo_archivo', 'Contrato')
+        ->where('ef.status', 'VALIDADO')->value('con.id_contrato');
+
+        $bddoc22 = DB::table('contratos as con')->join('tbl_cursos as c', 'c.id', '=', 'con.id_curso')
+        ->where('c.folio_grupo', $folio)->value('con.arch_contrato');
+
         $bddoc23 = DB::table('pagos as pa')->select('pa.arch_solicitud_pago')->join('tbl_cursos as c', 'c.id', '=', 'pa.id_curso')
         ->where('c.folio_grupo', '2B-231061')->first();
         $bddoc24 = $resultado = DB::table('instructores as i')->select('i.archivo_rfc')->join('tbl_cursos as c', 'c.id_instructor', '=', 'i.id')
         ->where('c.folio_grupo', $folio)->first();
 
+        //Firma lista de asistencia tradicional y electronica
+        $bdEAsis = DB::table('tbl_cursos as tc')
+        ->join('documentos_firmar as ef', 'ef.numero_o_clave', '=', 'tc.clave')
+        ->where('tc.folio_grupo', $folio)->where('ef.tipo_archivo', 'Lista de asistencia')
+        ->where('ef.status', 'VALIDADO')->value('tc.id');
+
+        $bdEFoto = DB::table('tbl_cursos as tc')
+        ->join('documentos_firmar as ef', 'ef.numero_o_clave', '=', 'tc.clave')
+        ->where('tc.folio_grupo', $folio)->where('ef.tipo_archivo', 'Reporte fotografico')
+        ->where('ef.status', 'VALIDADO')->value('tc.id');
+
+        $bdAsisEvid = DB::table('pagos as pag')->select('pag.arch_asistencia', 'pag.arch_evidencia')->join('tbl_cursos as c', 'c.id', '=', 'pag.id_curso')
+        ->where('c.folio_grupo', $folio)->where('pag.status_recepcion', 'VALIDADO')->first();
+
+        //Obtener comprobante de pago ya que se actualizaron rutas
+        $bdReciboP = DB::table('tbl_recibos')->where('folio_grupo', $folio)->value('folio_recibo');
+
 
         $doc2 = $bddoc2;
         $doc5 = $resdoc56; ##Consulta de curp de alumnos
-        $doc7 = $bddoc789->comprobante_pago;
+        //Validar recibo de pago en dos tablas
+        if(!empty($bdReciboP)){$doc7 = $bdReciboP; $validRec = 'folio';}
+        else if(!empty($bddoc789->comprobante_pago)){$doc7 = $bddoc789->comprobante_pago; $validRec = 'link';}
+        else{$doc7 = ''; $validRec = '';}
+
         $doc8 = $bddoc789->file_arc01;
         $doc9 = $bddoc789->pdf_curso;
         $doc10 = $bddoc789->file_arc02;
         $doc11 = $bddoc789->pdf_curso;
         $doc20 = $bddoc2021->doc_supre;
         $doc21 = $bddoc2021->doc_validado;
-        $doc22 = $bddoc22->arch_contrato;
+        //Validamos contrato si no esta entonces enviamos el id del contraro para visualizarlo electronicamente
+        if(!empty($bdECont)){$doc22 = $bdECont;}
+        else if(!empty($bddoc22)){$doc22 = $bddoc22;}
+        else{$doc22 = '';}
+        // Asistencia
+        if(!empty($bdEAsis)){$docAsis = $bdEAsis;}
+        else if(!empty($bdAsisEvid)){$docAsis = $bdAsisEvid->arch_asistencia;}
+        else{$docAsis = '';}
+        //Fotografico
+        if(!empty($bdEFoto)){$docFoto = $bdEFoto;}
+        else if(!empty($bdAsisEvid)){$docFoto = $bdAsisEvid->arch_evidencia;}
+        else{$docFoto = '';}
+
         $doc23 = $bddoc23->arch_solicitud_pago;
         $doc24 = $bddoc24->archivo_rfc;
 
         $url_docs = array(
             "urldoc2" => $doc2,"urldoc5" => $doc5,"urldoc7" => $doc7,"urldoc8" => $doc8,"urldoc9" => $doc9,"urldoc10" => $doc10,"urldoc11" => $doc11,
-            "urldoc20" => $doc20,"urldoc21" => $doc21,"urldoc22" => $doc22,"urldoc23" =>$doc23,"urldoc24"=>$doc24
+            "urldoc20" => $doc20,"urldoc21" => $doc21,"urldoc22" => $doc22,"urldoc23" =>$doc23,"urldoc24"=>$doc24,
+            "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec
         );
         $this->guardarLinks($folio, $url_docs);  #Agregar las url externas a la tabla de expedientes
         $this->proces_documentos($folio);
@@ -465,7 +508,7 @@ class ExpedienteController extends Controller
         $doc_insert_vinc = $doc_insert_aca = $doc_insert_adm = array();
         #Documentos externos
         $n_vinc = [2,7];
-        $n_acad = [8,9,10,11];
+        $n_acad = [8,9,10,11,15,19];
         $n_adm = [20,21,22,23,24];
 
         #Vinculacion
