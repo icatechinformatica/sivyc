@@ -4,7 +4,6 @@ namespace App\Http\Controllers\efirma;
 
 
 // use QrCode;
-use setasign\Fpdi\Fpdi;
 use App\Models\DocumentosFirmar;
 use Illuminate\Http\Request;
 use Spatie\ArrayToXml\ArrayToXml;
@@ -22,7 +21,6 @@ use App\Models\especialidad_instructor;
 use Illuminate\Support\Facades\Http;
 use Vyuldashev\XmlToArray\XmlToArray;
 use Illuminate\Support\Facades\Storage;
-use \setasign\Fpdi\PdfParser\StreamReader;
 use PDF;
 use PHPQRCode\QRcode;
 use Carbon\Carbon;
@@ -336,7 +334,7 @@ class FirmaController extends Controller {
                     'documento' => $decode,
                     'cadena_sello' => $response->json()['cadenaSello']
                 ]);
-            
+
             // dd($tes)
             return redirect()->route('firma.inicio')->with('warning', 'Documento validado exitosamente!');
         } else {
