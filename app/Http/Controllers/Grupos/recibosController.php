@@ -459,7 +459,7 @@ class recibosController extends Controller
                 break;
                 default:
                     $data = DB::table('cat_conceptos as cc')  
-                        ->select('cc.*','tr.id as id_recibo','tu.ubicacion','tu.direccion','tu.delegado_administrativo','tc.clave','tc.curso',
+                        ->select('cc.*','tr.*','tr.id as id_recibo','tu.ubicacion','tu.direccion','tu.delegado_administrativo','tc.clave','tc.curso',
                             'tr.importe as costo','cc.id as id_concepto','cc.importe as precio_unitario', 'tc.id as id_curso','ti.alumno','tc.tipo_curso','ti.calificacion',
                             DB::raw("CASE WHEN tr.importe is null THEN cc.importe ELSE  tr.importe END as importe"),
                             DB::raw("CASE WHEN tr.folio_grupo is null THEN tc.folio_grupo ELSE  tr.folio_grupo END as folio_grupo"),
