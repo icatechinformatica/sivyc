@@ -21,6 +21,7 @@ class recibosController extends Controller
         $this->middleware('auth');
         $this->path = "/expedientes/";
         $this->path_files = env("APP_URL").'/storage/';
+        $this->path_files_cancelled = env("APP_URL").'/grupos/recibo/descargar?folio_recibo=';
         $this->key = "MGSERA";
         //$this->id_recibo = $this->decryptData($request->id_recibo, $this->key);
         
@@ -92,13 +93,19 @@ class recibosController extends Controller
                                 WHEN tr.folio_recibo <> 'null' THEN tr.folio_recibo
                                 ELSE 'NO DISPONIBLE'
                             END as folio_recibo
-                        "),
+                        "),                        
                         DB::raw(" 
+                        CASE
+                            WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)
+                            WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_files."',tc.comprobante_pago)
+                            WHEN tr.file_pdf <> 'null' THEN concat('".$this->path_files."',tr.file_pdf)
+                        END as file_pdf"),
+                       /* DB::raw(" 
                             CASE
                                 WHEN tc.comprobante_pago <> 'null' THEN concat('uploadFiles',tc.comprobante_pago)
                                 WHEN tr.file_pdf <> 'null' THEN tr.file_pdf
                             END as file_pdf
-                        "),                          
+                        "),   */                       
                         DB::raw("(
                             CASE
                                 WHEN tr.status_folio IS NOT NULL AND tr.status_folio<>'ENVIADO' THEN true                                        
@@ -151,7 +158,12 @@ class recibosController extends Controller
                         CASE
                             WHEN tr.status_folio IS NOT NULL AND tr.status_folio<>'ENVIADO' THEN true                                        
                         ELSE false
-                        END) as editar")
+                        END) as editar"),
+                        DB::raw(" 
+                        CASE
+                            WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)                            
+                            WHEN tr.file_pdf <> 'null' THEN concat('".$this->path_files."',tr.file_pdf)
+                        END as file_pdf"),
                     );                                        
                 if($request->folio_grupo){
                     $data = $data->where(DB::raw('CONCAT(tr.id,tr.folio_recibo,tr.folio_grupo)'), 'ILIKE', '%'.$request->folio_grupo.'%');                        
@@ -386,9 +398,11 @@ class recibosController extends Controller
                         DB::raw('1 as id_concepto'),'cc.concepto','tc.costo as precio_unitario', 'tr.depositos', 'tc.munidad',
                         DB::raw(" 
                             CASE
-                                WHEN tc.comprobante_pago <> 'null' THEN concat('uploadFiles',tc.comprobante_pago)
-                                WHEN tr.file_pdf <> 'null' THEN tr.file_pdf
-                            END as file_pdf"),
+                            WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)
+                            WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_files."',tc.comprobante_pago)
+                            WHEN tr.file_pdf <> 'null' THEN concat('".$this->path_files."',tr.file_pdf)
+                        END as file_pdf"
+                        ),
                         DB::raw('UPPER(tc.unidad) as municipio'),
                         DB::raw("
                             CASE 
@@ -451,12 +465,17 @@ class recibosController extends Controller
                 break;
                 default:
                     $data = DB::table('cat_conceptos as cc')  
-                        ->select('cc.*','tr.*',  'tr.id as id_recibo','tu.ubicacion','tu.direccion','tu.delegado_administrativo','tc.clave','tc.curso',
+                        ->select('cc.*','tr.id as id_recibo','tu.ubicacion','tu.direccion','tu.delegado_administrativo','tc.clave','tc.curso',
                             'tr.importe as costo','cc.id as id_concepto','cc.importe as precio_unitario', 'tc.id as id_curso','ti.alumno','tc.tipo_curso','ti.calificacion',
                             DB::raw("CASE WHEN tr.importe is null THEN cc.importe ELSE  tr.importe END as importe"),
                             DB::raw("CASE WHEN tr.folio_grupo is null THEN tc.folio_grupo ELSE  tr.folio_grupo END as folio_grupo"),
                             DB::raw("LEFT(tu.ubicacion,2) as uc"),'cc.concepto',
-                            DB::raw('UPPER(tu.unidad) as municipio'),DB::raw('null as status_curso'),                            
+                            DB::raw('UPPER(tu.unidad) as municipio'),DB::raw('null as status_curso'),
+                            DB::raw(" 
+                                CASE
+                                    WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)                                    
+                                    WHEN tr.file_pdf <> 'null' THEN concat('".$this->path_files."',tr.file_pdf)
+                                END as file_pdf2"),
                             DB::raw("(
                                 CASE                                
                                     WHEN  tr.status_folio is not null THEN tr.num_recibo 
@@ -518,7 +537,7 @@ class recibosController extends Controller
                             //if($request->clave)
                               //  $join->Where(DB::raw('CONCAT(tc.folio_grupo,tc.clave)'), 'ILIKE', '%' . $request->clave . '%');
                         }) 
-                        ->first(); //dd($data);
+                        ->first(); dd($data);
                         if(!$request->folio_grupo) $request->folio_grupo = $data->folio_recibo;
                         
                 break;
@@ -699,8 +718,7 @@ class recibosController extends Controller
     }
 
     
-    public function pdfDescargar(Request $request)
-    {
+    public function pdfDescargar(Request $request){ //PASAN SOLO PDF CANCELADOS
         //$url = $request->input('folio_recibo'); dd($url);
         //dd($request->query());
         $folio_recibo = $file = null;
