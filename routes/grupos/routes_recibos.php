@@ -13,6 +13,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/grupos/recibos/enviar', 'Grupos\recibosController@enviar')->name('grupos.recibos.enviar')->middleware('can:grupos.recibos');
     Route::get('/grupos/recibos/pdf', 'Grupos\recibosController@pdfRecibo')->name('grupos.recibos.pdf');
     Route::post('/grupos/recibos/pdf', 'Grupos\recibosController@pdfRecibo')->name('grupos.recibos.pdf');
+    Route::get('/grupos/recibo/descargar', 'Grupos\recibosController@pdfDescargar')->name('grupos.recibos.descargar');
+    Route::post('/grupos/recibo/descargar', 'Grupos\recibosController@pdfDescargar')->name('grupos.recibo.descargar');
 });
-Route::get('/grupos/recibo/descargar', 'Grupos\recibosController@pdfDescargar')->name('grupos.recibos.descargar');
-Route::post('/grupos/recibo/descargar', 'Grupos\recibosController@pdfDescargar')->name('grupos.recibo.descargar');
+
