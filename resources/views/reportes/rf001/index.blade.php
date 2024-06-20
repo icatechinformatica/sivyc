@@ -74,6 +74,14 @@
     </style>
 @endsection
 @section('title', 'Rf001 | SIVyC Icatech')
+@php
+    $dateInit = \Carbon\Carbon::parse($periodoInicio);
+    $dateEnd = \Carbon\Carbon::parse($periodoFin);
+    $dateInit->locale('es'); // Configurar el idioma a español
+    $dateEnd->locale('es');
+    $monthNameInit = $dateInit->translatedFormat('F');
+    $monthNameEnd = $dateEnd->translatedFormat('F');
+@endphp
 @section('content')
     <div class="card-header">
         Reportes / Reportes RF-001
@@ -96,20 +104,31 @@
             @endif
             <div class="form-row">
                 <div class="form-group col-md-1">
-                    <b>AÑO ACTUAL {{ $currentYear }} </b> <br>
+                    <b>AÑO {{ $currentYear }} </b> <br>
                 </div>
                 <div class="form-group col-md-2">
                     {{ Form::select('unidad', $datos['unidades'], $getConcentrado ? $getConcentrado->unidad : '', ['id' => 'unidad', 'placeholder' => '- UNIDAD -', 'class' => 'form-control  mr-sm-2']) }}
                 </div>
+                <div class="form-group col-md-3">
+                    <b>Periodo Del {{ $dateInit->day }} de {{ $monthNameInit }} al {{ $dateEnd->day }} de
+                        {{ $monthNameEnd }}</b>
+                </div>
+                @if ($getConcentrado)
+                    <div class="col-md-3">
+                        <button id="enviar" class="btn btn-danger" type="button">
+                            FORMATO RF001
+                        </button>
+                    </div>
+                @endif
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaInicio', 'Fecha Inicio', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaInicio', $fechaInicio, ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
+                    {{ Form::date('fechaInicio', '', ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaFin', 'Fecha Fecha Fin', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaFin', $fechaFin, ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
+                    {{ Form::date('fechaFin', '', ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('folio_grupo', 'N°. Recibo', ['class' => 'awesome']) }}
@@ -168,7 +187,7 @@
                                         @if ($getConcentrado)
                                             <div class="form-check">
                                                 <input class="form-check-input inputCurso" type="checkbox"
-                                                    value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id .'_'. $getConcentrado->id }}"
+                                                    value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id . '_' . $getConcentrado->id . '_' . $item->folio_recibo }}"
                                                     id="seleccionar_{{ $item->folio_recibo }}"
                                                     @if (in_array($item->folio_recibo, $foliosMovimientos)) checked @endif name="seleccionados[]">
                                             </div>
@@ -202,13 +221,14 @@
                                     autocomplete="off" placeholder="Memorándum"
                                     value="{{ $getConcentrado ? $getConcentrado->memorandum : '' }}">
                             </div>
-                            <button type="submit"
-                                class="btn mb-2">{{ $getConcentrado ? 'Modificar' : 'Generar' }}</button>
+                            <button type="submit" class="btn mb-2">
+                                {{ $getConcentrado ? 'Modificar' : 'Generar' }}
+                            </button>
                         </form>
                         {{ Form::hidden('id_unidad', $idUnidad, ['id' => 'id_unidad', 'class' => 'form-control ']) }}
-                        {{ Form::hidden('periodoInicio', $fechaInicio, ['class' => 'form-control mr-sm-2', 'id' => 'periodoInicio']) }}
-                        {{ Form::hidden('periodoFIn', $fechaFin, ['class' => 'form-control mr-sm-2', 'id' => 'periodoFIn']) }}
                         {{ Form::Hidden('unidad', $unidad, ['id' => 'unidad', 'class' => 'form-control ']) }}
+                        {{ Form::hidden('periodoInicio', $periodoInicio, ['id' => 'periodoInicio', 'class' => 'form-control']) }}
+                        {{ Form::hidden('periodoFIn', $periodoFin, ['class' => 'form-control mr-sm-2', 'id' => 'periodoFIn']) }}
                     </div>
                     {{-- formulario END --}}
                     {!! Form::close() !!}

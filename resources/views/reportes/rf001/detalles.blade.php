@@ -196,8 +196,8 @@
         }
 
         table thead {
-            background-color: #007bff;
-            color: white;
+            background-color: #f2f2f2;
+            color: black;
         }
 
         table tbody tr:nth-child(even) {
@@ -254,12 +254,108 @@
             }
 
         }
+
+        .comments-container {
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .comments-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .comment-main-level,
+        .reply-list {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .comment-avatar {
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .comment-avatar img {
+            display: block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .comment-box {
+            background: #f9f9f9;
+            border: 1px solid #e1e1e1;
+            padding: 15px;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .comment-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comment-name {
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .comment-name a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .comment-name.by-author a {
+            font-weight: bold;
+        }
+
+        .comment-head span {
+            font-size: 0.85em;
+            color: #777;
+        }
+
+        .comment-content {
+            font-size: 0.95em;
+        }
+
+        .fa-reply,
+        .fa-heart {
+            cursor: pointer;
+            margin-left: 15px;
+            color: #777;
+        }
+
+        .reply-list {
+            list-style-type: none;
+            padding: 0;
+            padding-left: 50px;
+        }
+
+        @media (max-width: 767.98px) {
+            .comment-box {
+                padding: 10px;
+            }
+
+            .comment-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .fa-reply,
+            .fa-heart {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
     </style>
 @endsection
 @section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
 @php
     $movimiento = json_decode($getConcentrado->movimientos, true);
-    $uploadFiles = json_decode($getConcentrado->archivos, true);
     $importeTotal = 0;
 @endphp
 @section('content')
@@ -278,7 +374,22 @@
                 </div>
                 <div class="card-body" style="display:block;">
                     <div class="row">
-                        <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
+                        <div class="col-12 col-md-12 col-lg-12 order-2 order-md-1">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>DETALLES DEL CONCENTRADO DE INGRESOS</h4>
+                                    <div class="post">
+                                        <div class="user-block">
+                                            <span class="username">UNIDAD:</span>
+                                            <span class="description"
+                                                style="font-weight: bold;">{{ $getConcentrado->unidad }}</span>
+                                        </div>
+                                        <div class="user-block">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-12 col-sm-4">
                                     <div class="info-box bg-light">
@@ -315,121 +426,119 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <h4>DETALLES DEL CONCENTRADO DE INGRESOS</h4>
-                                    <div class="post">
-                                        <div class="user-block">
-                                            <span class="username">UNIDAD:</span>
-                                            <span class="description"
-                                                style="font-weight: bold;">{{ $getConcentrado->unidad }}</span>
-                                        </div>
-                                        <div class="user-block">
-                                            <span class="username">ENVIA:</span>
-                                            <span class="description" style="font-weight: bold;">
-                                                {{ $getConcentrado->envia != null ? $getConcentrado->envia : 'NO ESPECIFICADO' }}
-                                            </span>
-                                        </div>
-                                        <div class="user-block">
-                                            <span class="username">DIRIGIDO A:</span>
-                                            <span class="description" style="font-weight: bold;">
-                                                {{ $getConcentrado->dirigido != null ? $getConcentrado->dirigido : 'NO ESPECIFICADO' }}
-                                            </span>
-                                        </div>
-                                        <div class="user-block">
-                                            <ul class="list-unstyled">
-                                                <li>
-                                                    <a href="" class="btn-link text-secondary">
-                                                        <i class="far fa-fw fa-file-pdf"></i>
-                                                        Generar Formato de Concentrados
-                                                    </a>
-                                                </li>
-                                                {{-- <li>
-                                                    <a href="" class="btn-link text-secondary">
-                                                        <i class="far fa-fw fa-file-word"></i>
-                                                        Functional-requirements.docx
-                                                    </a>
-                                                </li> --}}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table>
-                                            <thead>
+
+                                <div class="table-responsive">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>FOLIO</th>
+                                                <th>CURSO</th>
+                                                <th>CONCEPTO</th>
+                                                <th>FOLIOS</th>
+                                                <th>DOCUMENTO</th>
+                                                <th>IMPORTES</th>
+                                                <th>COMENTARIOS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($movimiento as $item)
+                                                @php
+                                                    $depositos = json_decode($item['depositos'], true);
+
+                                                    $observaciones = isset($item['observaciones'])
+                                                        ? json_decode($item['observaciones'], true)
+                                                        : [];
+                                                @endphp
                                                 <tr>
-                                                    <th>FOLIO</th>
-                                                    <th>CURSO</th>
-                                                    <th>CONCEPTO</th>
-                                                    <th>DOCUMENTO</th>
-                                                    <th>IMPORTES</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($movimiento as $item)
-                                                    <tr>
-                                                        <td>{{ $item['folio'] }}</td>
-                                                        <td>
-                                                           @if ($item['curso'] != null)
+                                                    <td>{{ $item['folio'] }}</td>
+                                                    <td>
+                                                        @if ($item['curso'] != null)
                                                             {{ $item['curso'] }}
-                                                           @else
+                                                        @else
                                                             {{ $item['descripcion'] }}
-                                                           @endif
-                                                        </td>
-                                                        <td>{{ $item['concepto'] }}</td>
-                                                        <td>
-                                                            <a class="nav-link pt-0" href="{{$pathFile}}{{ $item['documento'] }}" target="_blank">
-                                                                <i  class="far fa-file-pdf  fa-2x text-danger"  title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
-                                                            </a>
-                                                        </td>
-                                                        <td style="text-align: end;">
-                                                           $ {{ number_format($item['importe'], 2, '.', ',') }}
-                                                        </td>
-                                                    </tr>
-                                                   @php
-                                                    $importeTotal += $item['importe'];
-                                                   @endphp
-                                                @endforeach
-                                                <tr>
-                                                    <td colspan="4" style="text-align: end;"><b>SUBTOTAL</b></td>
-                                                    <td><b>$ {{ number_format($importeTotal, 2, '.', ',') }}</b></td>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $item['concepto'] }}</td>
+                                                    <td>
+                                                        @foreach ($depositos as $k)
+                                                            {{ $k['folio'] }} &nbsp;
+                                                        @endforeach
+                                                    </td>
+                                                    <td>
+                                                        <a class="nav-link pt-0"
+                                                            href="{{ $pathFile }}{{ $item['documento'] }}"
+                                                            target="_blank">
+                                                            <i class="far fa-file-pdf  fa-2x text-danger"
+                                                                title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
+                                                        </a>
+                                                    </td>
+                                                    <td style="text-align: end;">
+                                                        $ {{ number_format($item['importe'], 2, '.', ',') }}
+                                                    </td>
+                                                    <td style="text-align:center">
+                                                        <a href="javascript:;" class="btn btn-success openModal"
+                                                            data-toggle="modal" data-folio="{{ $item['folio'] }}"
+                                                            data-target="#exampleModal"
+                                                            >
+                                                            <i class="fa fa-comment" aria-hidden="true"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                @php
+                                                    $importeTotal += $item['importe'];
+                                                @endphp
+                                            @endforeach
+                                            <tr>
+                                                <td colspan="5" style="text-align: end;"><b>SUBTOTAL</b></td>
+                                                <td style="text-align: end;"><b>$
+                                                        {{ number_format($importeTotal, 2, '.', ',') }}</b></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-                            <h3 class="text-primary">
-                                <i class="fa fa-file-archive-o"></i>
-                                Elementos Adjuntos
-                            </h3>
-                            <h5 class="mt-5 text-muted">Archivos</h5>
-                            <ul class="list-unstyled">
-                                @if (!empty($uploadFiles))
-                                    @foreach ($uploadFiles as $file)
-                                        <li>
-                                            <a href="" class="btn-link text-secondary">
-                                                <i class="far fa-fw fa-file-word"></i>
-                                                Functional-requirements.docx
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                @else
-                                    <li>
-                                        <h4>No hay Elementos Adjutos</h4>
-                                    </li>
-                                @endif
-                            </ul>
-                            <div class="text-left mt-5 mb-3">
-                                <a href="http://" class="btn btn-warning  mt-1">CARGAR DOCUMENTOS</a>
-                                <a href="http://" class="btn mr-3 mt-2">ENVIAR</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {{-- incluir modal de inserción --}}
+            @include('reportes.rf001.modal.showComment')
         </section>
     </div>
+@endsection
+@section('script_content_js')
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- jQuery Validate -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js"></script>
+
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+
+        $(document).ready(function() {
+            let folio = '';
+
+            $('.openModal').on('click', function() {
+                const folio = $(this).data('folio');
+
+                const form = $("#sendComment_" + folio);
+                form.validate({
+                    debug: true,
+                    errorClass: "error",
+                    rules: {
+                       observacion: "required"
+                    },
+                    showErrors: function(errorMap, errorList) {
+                        console.log(errorMap)
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

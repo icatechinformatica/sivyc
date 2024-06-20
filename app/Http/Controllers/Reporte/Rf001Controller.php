@@ -16,6 +16,8 @@ use App\Filters\RangeDateFilter;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use PDF;
+use App\Services\ReportService;
 
 class Rf001Controller extends Controller
 {
@@ -52,7 +54,6 @@ class Rf001Controller extends Controller
 
         // Recuperar los checkboxes seleccionados de los parámetros de consulta
         $selectedCheckboxes = $request->input('seleccionados', []);
-        // dd($selectedCheckboxes);
 
         $idUnidad = Auth::user()->unidad;
         $obtenerUnidad = \DB::table('tbl_unidades')->where('id', $idUnidad)->first();
@@ -70,8 +71,11 @@ class Rf001Controller extends Controller
 
         $periodo = $this->obtenerPrimerYUltimoDiaHabil($fechaActual);
         $data = $this->rfoo1Repository->getReciboQry($obtenerUnidad->unidad);
+        #nuevo fechas del periodo que se obtiene la información
+        $periodoInicio = $periodo[0];
+        $periodoFin = $periodo[4];
 
-        if ($request->has('fechaInicio') || $request->has('fechaFin')) {
+        if ( !empty($request->get('fechaInicio')) || !empty($request->get('fechaFin'))) {
             $fechaInicio = $request->get('fechaInicio');
             $fechaFin = $request->get('fechaFin');
 
@@ -87,17 +91,27 @@ class Rf001Controller extends Controller
 
 
         if (isset($folioGrupo) && $folioGrupo !== '') {
-            $data->where(\DB::raw('CONCAT(tbl_recibos.id,tbl_recibos.folio_recibo,tbl_recibos.folio_grupo)'), 'ILIKE', '%' . $folioGrupo . '%');
+            $data->where('tbl_recibos.folio_recibo', '=', $folioGrupo);
         }
 
 
-        $query = $data->orderBy('id')->paginate(25);
+        $query = $data->orderBy('tbl_recibos.id', 'ASC')->paginate(25);
         $currentYear = date('Y');
         $path_files = $this->path_files;
 
         // return response()->json($query);
         // view rf001
-        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'fechaInicio', 'fechaFin', 'idUnidad', 'unidad', 'path_files', 'getConcentrado', 'foliosMovimientos', 'selectedCheckboxes'))->render();
+        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'idUnidad', 'unidad', 'path_files', 'getConcentrado', 'foliosMovimientos', 'selectedCheckboxes', 'periodoInicio', 'periodoFin', 'fechaInicio', 'fechaFin'))->render();
+    }
+
+    public function dashboard(Request $request)
+    {
+        // obtener unidad
+        $idUnidad = Auth::user()->unidad;
+        $obtenerUnidad = \DB::table('tbl_unidades')->where('id', $idUnidad)->first();
+        $unidad = $obtenerUnidad->unidad;
+
+        return view('reportes.rf001.dashboard', compact('unidad'))->render();
     }
 
     /**
@@ -131,7 +145,7 @@ class Rf001Controller extends Controller
             }
         } catch (\Throwable $th) {
             //lanzar un catch de error ejecución, no sabemos cuál error $th;
-            return back()->withErrors(['sistema' => 'Ocurrió un error interno en el sistema ' +$th])->withInput();
+            return back()->withErrors(['sistema' => 'Ocurrió un error interno en el sistema '. $th])->withInput();
         }
 
     }
@@ -142,12 +156,11 @@ class Rf001Controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($concentrado)
+    public function show($id)
     {
         //
-        $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($concentrado);
+        $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
         $pathFile = $this->path_files;
-        // return response()->json($getConcentrado);
         return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile'))->render();
     }
 
@@ -160,6 +173,7 @@ class Rf001Controller extends Controller
     public function edit($id)
     {
         //
+
     }
 
     /**
@@ -171,8 +185,25 @@ class Rf001Controller extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        dd($request->all());
+        try {
+            $order = $request->only([
+                'consecutivo',
+                'id_unidad',
+                'periodoInicio',
+                'periodoFIn',
+                'unidad'
+            ]);
+            $response = $this->rfoo1Repository->updateFormatoRf001($order, $id);
+            if ($response) {
+                # si la respuesta es satisfactoria
+                return redirect()->route('reporte.rf001.sent')->with('message', 'Formato de concentrado de ingresos '.$request['consecutivo'].' actualizado correctamente!');
+            } else {
+                return back()->withErrors(['sent' => 'Ocurrió un error al actualizar la información.'])->withInput();
+            }
+        } catch (\Throwable $th) {
+            //lanzar un catch de error ejecución, no sabemos cuál error $th;
+            return back()->withErrors(['sistema' => 'Ocurrió un error interno en el sistema '. $th])->withInput();
+        }
     }
 
     /**
@@ -236,5 +267,19 @@ class Rf001Controller extends Controller
             ],
             Response::HTTP_CREATED
         );
+    }
+
+    public function getPdfReport()
+    {
+        $idOrganismo = Auth::user()->id_organismo; # obtener el organismo administrativo id
+        $organismo = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $idOrganismo)->first();
+        $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+        $nombreElaboro = Auth::user()->name;
+        $puestoElaboro = Auth::user()->puesto;
+        $report = (new ReportService())->getReport($distintivo, $organismo, 26, $nombreElaboro, $puestoElaboro);
+        // return response()->json($report);
+        // $pdf = PDF::loadView('reportes.rf001.reporterf001');
+        return $report->stream('Reporte RF001 de ');
+        // return view('reportes.rf001.reporterf001', $data)->render();
     }
 }

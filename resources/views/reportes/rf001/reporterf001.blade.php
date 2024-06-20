@@ -5,59 +5,81 @@
 @section('content_script_css')
     <style>
         /* @page {margin: 0px 15px 15px 15px; } */
-        .contenedor{
+        .contenedor {
             margin-left: 1cm;
             margin-right: 1cm;
         }
-        body{
+
+        body {
             /* margin-top: 70px; */
             /* margin-bottom: -120px; */
             padding-top: 45px;
             padding-bottom: 60px;
             /* background-color: aqua; */
         }
-        .bloque_uno{
+
+        .bloque_uno {
             padding-top: 40px;
             font-weight: bold;
             font-size: 13px;
             font: bold;
         }
-        .bloque_dos{
+
+        .bloque_dos {
             font-weight: bold;
             font-size: 12px;
             font: bold;
         }
-        .contenido{
+
+        .contenido {
             font-size: 13px;
             line-height: 1.5;
         }
-        .delet_space_p{
+
+        .delet_space_p {
             margin-top: 0px;
             margin-bottom: 0px;
         }
-        .textofin{
-            font-size: 11px;
+
+        .textofin {
+            font-size: 10PX;
             font-style: italic;
         }
-        .color_text{color:black;}
-        .tablas{border-collapse: collapse;width: 100%;}
-        .tablas tr{font-size: 9px; border: gray 1px solid; text-align: center; padding: 2px;}
-        .tablas th{font-size: 10px; border: gray 1px solid; text-align: center; padding: 2px;}
-        .colortexto{
+
+        .color_text {
+            color: black;
+        }
+
+        .tablas {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .tablas tr {
+            font-size: 9px;
+            border: gray 1px solid;
+            text-align: center;
+            padding: 2px;
+        }
+
+        .tablas th {
+            font-size: 10px;
+            border: gray 1px solid;
+            text-align: center;
+            padding: 2px;
+        }
+
+        .colortexto {
             color: #0000;
         }
-        .firmau{
+
+        .firmau {
             font-size: 12px;
-            font:normal;
+            font: normal;
         }
-
-
     </style>
 @endsection
 @php
-    // dd($distintivo, $direccion, $data, $unidad, $organismo, $numficio,
-    //     $partes_titu, $municipio, $fecha_comp, $tabla_contenido, $rango_mes, $total_cursos, $total_folios);
-    // dd($municipio);
     $nombre_titular = $cargo_fun = 'DATO REQUERIDO';
     if ($organismo) {
         $nombre_titular = $organismo->nombre_titular;
@@ -65,36 +87,37 @@
     }
 @endphp
 @section('content')
+    @php
+        $datoJson = json_decode($rf001->movimientos, true);
+        $startDate = Carbon\Carbon::parse($rf001->periodo_inicio);
+        $endDate = Carbon\Carbon::parse($rf001->periodo_fin);
+        $formattedStartDate = $startDate->format('d');
+        $formattedEndDate = $endDate->format('d');
+        $mes = $startDate->translatedFormat('F');
+        $anio = $startDate->format('Y');
+    @endphp
     <div class="contenedor">
         <div class="bloque_uno" align="right">
-            <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN {{strtoupper($unidad)}}</p>
-            <p class="delet_space_p color_text">OFICIO NÚM. {{$numficio}}</p>
-            <p class="delet_space_p color_text">{{$municipio}}, CHIAPAS; <span class="color_text">{{strtoupper($fecha_comp)}}</span></p>
+            <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN {{ strtoupper($unidad) }}</p>
+            <p class="delet_space_p color_text">OFICIO NÚM. {{ $rf001->memorandum }}</p>
+            <p class="delet_space_p color_text">{{ $municipio }}, CHIAPAS; <span
+                    class="color_text">{{ strtoupper($fecha_comp) }}</span></p>
         </div>
         <br><br><br>
         <div class="bloque_dos" align="left">
             <p class="delet_space_p color_text">C.
-                @if (count($partes_titu) > 0)
-                    {{$partes_titu[0]}}
-                @else
-                    {{strtoupper($nombre_titular)}}
-                @endif
+                {{ strtoupper($dirigido->titulo) }} {{ strtoupper($dirigido->nombre) }}
             </p>
             <p class="delet_space_p color_text">
-                @if (count($partes_titu) > 1)
-                    {{$partes_titu[1]}}
-                @else
-                    {{$cargo_fun}}
-                @endif
-                {{-- {{$organismo->cargo_fun != null ? $organismo->cargo_fun : 'CARGO REQUERIDO'}} --}}
+                {{ $dirigido->cargo }}
             </p>
             <p class="delet_space_p color_text">PRESENTE.</p>
-            {{-- <p class="delet_space_p color_text">{{$municipio}}, CHIAPAS</p> --}}
         </div>
         <br>
         <div class="contenido" align="justify">
-            Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001), original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad de Capacitación <span class="color_text"> {{$total_cursos}}</span>, con los siguientes números de movimientos
-            bancarios.
+            Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001),
+            original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad
+            de Capacitación <span class="color_text"> {{ $unidad }}</span>, con los siguientes movimientos.
             <br><br>
         </div>
         <br>
@@ -102,53 +125,56 @@
             <table class="tablas" border="1">
                 <thead>
                     <tr>
-                        <th><p width="5px">NÚM</p></th>
-                        <th><p width="20px">CURSO</p></th>
-                        <th><p width="20px">CLAVE DTA</p></th>
-                        <th><p width="20px">INSTRUCTOR</p></th>
-                        <th><p width="20px">FECHA DE INICIO/TERMINO/HORARIO</p></th>
-                        <th><p width="10px">FOLIOS</p></th>
-                        <th><p width="5px">TOTAL</p></th>
+                        <th>
+                            <p width="5px">PROGRESIVO</p>
+                        </th>
+                        <th>
+                            <p width="20px">N° FOLIO</p>
+                        </th>
+                        <th>
+                            <p width="20px">CURSO / MOTIVO</p>
+                        </th>
+                        <th>
+                            <p width="20px">MOVIMIENTO</p>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                @foreach ($tabla_contenido as $key => $curso)
-                    <tr>
-                        <td>{{($key < 9 ? '0' : '') . ($key + 1)}}</td>
-                        <td>{{$curso->curso}}</td>
-                        <td>{{$curso->clave}}</td>
-                        <td>{{$curso->nombre}}</td>
-                        <td>DEL {{ \Carbon\Carbon::createFromFormat('Y-m-d', $curso->inicio)->format('d/m/Y') }}
-                            AL {{ \Carbon\Carbon::createFromFormat('Y-m-d', $curso->termino)->format('d/m/Y') }}
-                            HORARIO: {{date("H:i", strtotime($curso->hini))}} A {{date("H:i", strtotime($curso->hfin))}} HRS.</td>
-                        {{-- <td align="center">{{$curso->primer_folio.' - '.$curso->ultimo_folio}}</td> --}}
-                        <td align="center">
-                            @for ($i = 0; $i < count($rango_folios[$key]); $i++)
-                                @if ($i % 2 == 0)
-                                    {{'A'.$rango_folios[$key][$i].' -'}}
-                                @else
-                                    {{'A'.$rango_folios[$key][$i]}}
-                                @endif
-                            @endfor
-                        </td>
-                        <td>{{$curso->cantidad_folios}}</td>
-                    </tr>
-                @endforeach
+                    @foreach ($datoJson as $key => $value)
+                        @php
+                            $formatDataJson = json_decode($value['depositos'], true);
+                        @endphp
+                        <tr>
+                            <td>{{ ($key < 9 ? '0' : '') . ($key + 1) }}</td>
+                            <td>{{ $value['folio'] }}</td>
+                            <td>{{ $value['curso'] == null ? $value['descripcion'] : $value['curso'] }}</td>
+                            <td>
+                                @foreach ($formatDataJson as $k => $v)
+                                    {{ $v['folio'] }}
+                                @endforeach
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
-            <p style="font-size: 14px">Esperando contar con su apoyo y sin otro particular, quedo de usted.  </p>
+            <p style="font-size: 14px">Correspondientes al periodo comprendido del {{ $formattedStartDate }} al
+                {{ $formattedEndDate }} de {{ $mes }} del {{ $anio }}, lo anterior, para contabilización
+                respectiva.</p>
+            <p style="font-size: 14px">Sin otro particular aprovecho la ocasión para saludarlo. </p>
+            <br><br>
         </div>
         <div class="contenido">
             ATENTAMENTE
             <br><br><br><br>
-            <span class="color_text firmau">{{$data->dunidad}}</span> <br>
-            <span class="color_text firmau">{{$data->pdunidad.' '.$unidad}}</span>
+            <span class="color_text firmau"><b>{{ $data->dunidad }}</b></span> <br>
+            <span class="color_text firmau"><b>{{ $data->pdunidad . ' ' . $unidad }}</b></span>
         </div>
         <br>
         <div class="textofin">
-            <p class="delet_space_p">C.C.P. ARCHIVO</p>
-            <p class="delet_space_p">{{isset($dta_certificacion) ? $dta_certificacion : 'dato requerido'}}
-                TITULAR DEL DEPARTAMENTO DE CERTIFICACIÓN Y CONTROL DE LA DIRECCIÓN TÉCNICA ACADÉMICA.</p>
+            <p class="delet_space_p">C.C.P. {{ $conocimiento->titulo }} {{ $conocimiento->nombre_funcionario }} - {{ $conocimiento->cargo }} - Para su conocimiento.</p>
+            <p class="delet_space_p">ARCHIVO / MINUTARIO</p>
+            <p class="delet_space_p">ELABORÓ: {{ $nombreElaboro }}. - {{ $puestoElaboro }}</p>
+            <p class="delet_space_p">VALIDÓ: {{ $delegado->nombre }}. - {{ $delegado->cargo }}</p>
         </div>
     </div>
 

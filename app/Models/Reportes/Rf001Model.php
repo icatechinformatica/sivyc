@@ -2,7 +2,10 @@
 
 namespace App\Models\Reportes;
 
+// date_default_timezone_set('Etc/GMT+6');
+
 use Illuminate\Database\Eloquent\Model;
+
 
 class Rf001Model extends Model
 {
@@ -24,4 +27,5 @@ class Rf001Model extends Model
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
+
 }

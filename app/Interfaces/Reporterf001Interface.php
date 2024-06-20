@@ -7,4 +7,5 @@ interface Reporterf001Interface {
     public function sentRF001Format($request);
     public function getDetailRF001Format($concentrado);
     public function storeData(array $request);
+    public function updateFormatoRf001($request, $id);
 }
