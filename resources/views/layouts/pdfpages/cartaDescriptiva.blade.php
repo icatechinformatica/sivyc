@@ -103,7 +103,7 @@
                     </tr>
                     <tr>
                         <td rowspan="2"><b>Entidad Federativa: Chiapas</b></td>
-                        <td rowspan="2"><b>Ciclo Escolar: </b>{{$ciclo}}</td>
+                        <td rowspan="2"><b>Ciclo Escolar: </b>{{$ejercicio}}</td>
                         <td rowspan="2"><b>Programa Estratégico (en caso aplicable): {{$carta_descriptiva->datos_generales->pogrm_estra}}</b></td>
                         <td colspan="4" style="text-align: center;"><b>Modalidad</b></td>
                     </tr>
