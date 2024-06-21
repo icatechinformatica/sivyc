@@ -533,7 +533,7 @@
                                                     {!! ($datas->sumaED - $datas->tinscritos) != 0 ? '* LA SUMA  DE EGRESADOS Y DESERTORES NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaEmDe - $datas->tinscritos) != 0 ? '* LA SUMA  DE EMPLEADOS Y DESEMPLEADOS NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaEgresados - $datas->egresado) != 0 ? '* LA SUMA  DE EGRESADOS FEMENINOS, MASCULINOS Y LGBTTTI+ NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!}
-                                                    @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') SOLICITUD DE ARC02 EN PROCESO <br> @endif
+                                                    @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'AUTORIZADO') SOLICITUD DE ARC02 EN PROCESO <br> @endif
                                                     @if($datas->mest < $mesComparador) CURSO REZAGADO<br> @endif
                                                 </div>
                                             </td>
