@@ -325,7 +325,7 @@
                                                     || ($datas->sumaEgresados - $datas->egresado) != 0
                                                     || ($datas->mest < $mesComparador))
                                                     ? '#ff8282' : '' }}
-                                                @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') #ff8282 @endif">
+                                                @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'AUTORIZADO') #ff8282 @endif">
 
                                             <td>{{ $key + 1 }}</td>
                                             <td>
@@ -345,7 +345,7 @@
                                                         value="{{ $datas->id_tbl_cursos }}"
                                                         {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}
                                                         {{ $datas->estadocurso == 'EN_FIRMA' ? 'checked' : '' }}
-                                                        @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') disabled @endif/>
+                                                        @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'AUTORIZADO') disabled @endif/>
                                                 @endif
                                             </td>
                                             <td>{{ $datas->unidad }}</td>
