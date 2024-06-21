@@ -151,3 +151,4 @@ Route::post('/cursos/save/primera', 'webController\CursosController@save_parte_u
 Route::post('/cursos/save/segunda', 'webController\CursosController@save_parte_dos')->name('cursos-catalogo.savepartedos');  //Guardar segunda parte
 Route::post('/cursos/save/tercera', 'webController\CursosController@save_parte_tres')->name('cursos-catalogo.savepartetres');  //Guardar tercera parte
 Route::post('/cursos/edit/carta', 'webController\CursosController@edit_cartadescrip')->name('cursos-catalogo.editcartadecrip'); //Editar y eliminar
+Route::get('/cursos/carta-descriptiva-pdf/{id}', 'webController\CursosController@carta_descriptiva_pdf')->name('carta-descriptiva-pdf'); //Generar PDF de carta descriptiva
