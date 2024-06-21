@@ -367,15 +367,15 @@
                                         $hours_j = $duracion_j->hour; $minutes_j = $duracion_j->minute;
 
                                         $time_1 = $time_2 = $time_3 = '';
-                                        if ($hours_h > 1 && $minutes_h == 0) {$time_1 = $duracion_h->format('H:i') . ' HORAS';}
-                                        elseif ($minutes_h > 1 && $hours_h == 0) {$time_1 = $duracion_h->format('H:i') . ' MINUTOS';}
+                                        if ($hours_h > 0 && $minutes_h == 0) {$time_1 = $duracion_h->format('H:i') . ' HORAS';}
+                                        elseif ($minutes_h > 0 && $hours_h == 0) {$time_1 = $duracion_h->format('H:i') . ' MINUTOS';}
                                         else {$time_1 = $duracion_h->format('H:i') . ' HORAS';}
 
-                                        if ($hours_i > 1) {$time_2 = $duracion_i->format('H:i') . ' HORAS';}
-                                        elseif ($minutes_i > 1) {$time_2 = $duracion_i->format('H:i') . ' MINUTOS';}
+                                        if ($hours_i > 0) {$time_2 = $duracion_i->format('H:i') . ' HORAS';}
+                                        elseif ($minutes_i > 0) {$time_2 = $duracion_i->format('H:i') . ' MINUTOS';}
 
-                                        if ($hours_j > 1) {$time_3 = $duracion_j->format('H:i') . ' HORAS';}
-                                        elseif ($minutes_j > 1) {$time_3 = $duracion_j->format('H:i') . ' MINUTOS';}
+                                        if ($hours_j > 0) {$time_3 = $duracion_j->format('H:i') . ' HORAS';}
+                                        elseif ($minutes_j > 0) {$time_3 = $duracion_j->format('H:i') . ' MINUTOS';}
 
                                     @endphp
                                     {{-- <div class="text-center">{{$valor->duracion}}</div> --}}
