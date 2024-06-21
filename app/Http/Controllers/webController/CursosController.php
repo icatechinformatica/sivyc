@@ -1089,10 +1089,20 @@ class CursosController extends Controller
             ->Where('cursos.id',$id)
             ->First();
 
-        $ciclo = carbon::now()->year . ' - ' . (carbon::now()->year+1);
-        // dd($data_curso);
-        // dd($carta_descriptiva);
-        $pdf = PDF::loadView('layouts.pdfpages.cartaDescriptiva',compact('carta_descriptiva','contenido_tematico','data_curso','ciclo'));
+        $bdEjercicio = DB::Table('tbl_instituto')->Select('fini','ffin')->First();
+        $ejercicio = '';
+        if($bdEjercicio) {
+            $date1 = Carbon::createFromFormat('d-M', $bdEjercicio->fini);
+            $date2 = Carbon::createFromFormat('d-M', $bdEjercicio->ffin);
+            $fActual = Carbon::now();
+            if($fActual->lessThan($date1)) {
+                $ejercicio = ($fActual->year - 1) . "-" . $fActual->year;
+            } else if($fActual->greaterThan($date2)) {
+                $ejercicio - $fActual->year . "-" . ($fActual->year + 1);
+            }
+        }
+
+        $pdf = PDF::loadView('layouts.pdfpages.cartaDescriptiva',compact('carta_descriptiva','contenido_tematico','data_curso','ejercicio'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('medium.pdf');
     }
