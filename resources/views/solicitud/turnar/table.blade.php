@@ -158,7 +158,7 @@
 </div>
 
 <div class="form-row col-md-12 mt-4">
-    @if($activar OR Auth::user()->roles[0]->slug=='admin')
+    @if($activar)
         @if ((($opt=='ARC01')&&($grupos[0]->status_solicitud!='VALIDADO')) OR ($opt=='ARC02' && ($grupos[0]->status_solicitud_arc02 !='VALIDADO')) )
             <div class=" form-group col-md-2"></div>
             <div class="form-group col-md-4"></div>

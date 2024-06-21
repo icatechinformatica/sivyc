@@ -91,12 +91,7 @@ class aperturaController extends Controller
 
                     $url_soporte = ($bddoc_soporte !== null) ? $this->path_files.$bddoc_soporte->url_documento : '';
                 }
-
-
-
-
             }
-
             $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
                 'ar.folio_grupo','ar.tipo_curso as tcapacitacion','c.nombre_curso as curso','ar.mod','ar.horario','c.horas','c.costo as costo_individual','c.id_especialidad','ar.comprobante_pago',
                 DB::raw("SUM(CASE WHEN substring(ar.curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),DB::raw("SUM(CASE WHEN substring(ar.curp,11,1)='M' THEN 1 ELSE 0 END) as mujer"),'c.memo_validacion as mpaqueteria',
@@ -137,7 +132,7 @@ class aperturaController extends Controller
                         ELSE (SELECT STRING_AGG(grupo, ', ')  FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(i.id_gvulnerable) AS bigint)))
                         END
                         as grupos "), 
-                    'i.inmigrante', DB::raw("id_cerss as es_cereso")
+                    'i.inmigrante', DB::raw("id_cerss as es_cereso"),'i.requisitos'
                 )
                 ->where('i.folio_grupo',$valor)->orderby('alumno','ASC')->get();
                // var_dump($alumnos);exit;
@@ -158,7 +153,7 @@ class aperturaController extends Controller
                             WHEN ap.id_gvulnerable IS NULL THEN NULL
                             ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ap.id_gvulnerable) AS bigint)))
                         END
-                        as grupos "), 'ap.inmigrante','es_cereso',
+                        as grupos "), 'ap.inmigrante','es_cereso','ap.requisitos',
                     DB::raw("'INSERT' as mov"))
                     ->join('alumnos_pre as ap','ap.id','ar.id_pre')->where('ar.folio_grupo',$valor )
                     ->where('ar.eliminado',false)->orderby('ap.apellido_paterno','ASC')->orderby('ap.apellido_materno','ASC')->orderby('ap.nombre','ASC')->get();
@@ -300,8 +295,7 @@ class aperturaController extends Controller
     }
 
    public function aperturar(Request $request){///PROCESO DE INSCRIPCION
-        $result =  NULL;
-        $objeto_curp = array('url' => ''); //Para json doc_soporte
+        $result =  NULL;        
         $message = "No hay datos para Aperturar.";
         if($_SESSION['alumnos'] AND $_SESSION['folio'] == $request->valor){
             $grupo = DB::table('tbl_cursos as c')->where('status_curso','AUTORIZADO')->where('status','NO REPORTADO')->where('c.folio_grupo',$_SESSION['folio'])->first();
@@ -318,21 +312,11 @@ class aperturaController extends Controller
                     if(!$matricula AND $a->curp AND $grupo->cct){
                         $matricula = $this->genera_matricula($a->curp, $grupo->cct);
                     }
-
-                    #Consultar url Curp by Jose Luis Moreno Arcos
-                    if($a->curp){
-                        $resul_alumnos = Alumnopre::select('requisitos->documento as url_doc')->where('curp', '=', $a->curp)->first();
-                        if(isset($resul_alumnos->url_doc)){
-                            $objeto_curp = array('url' => $resul_alumnos->url_doc);
-                        }else{
-                            $objeto_curp = array('url' => '');
-                        }
-                    }
-
+                    
                     if($matricula){
-                            DB::table('alumnos_pre')->where('id', $a->id_pre)->where('matricula',null)->update(['matricula'=>$matricula]);
-                            DB::table('alumnos_registro')->where('id_pre', $a->id_pre)->where('no_control',null)->where('folio_grupo',$_SESSION['folio'])->update(['no_control'=>$matricula]);
-
+                        DB::table('alumnos_pre')->where('id', $a->id_pre)->where('matricula',null)->update(['matricula'=>$matricula]);
+                        DB::table('alumnos_registro')->where('id_pre', $a->id_pre)->where('no_control',null)->where('folio_grupo',$_SESSION['folio'])->update(['no_control'=>$matricula]);
+                        
                         $result = Inscripcion::updateOrCreate(
                         ['matricula' =>  $matricula, 'id_curso' =>  $grupo->id, 'folio_grupo' =>  $grupo->folio_grupo],
                         ['unidad' => $grupo->unidad,
@@ -373,7 +357,7 @@ class aperturaController extends Controller
                         'curp'=> $a->curp,
                         'empleado'=>$a->empleado,
                         'id_gvulnerable'=>$a->id_gvulnerable,
-                        'doc_soporte' => $objeto_curp
+                        'requisitos'=>json_decode($a->requisitos)                        
                         ]);
                     }
                 }
