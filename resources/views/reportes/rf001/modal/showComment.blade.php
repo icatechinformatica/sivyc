@@ -1,16 +1,16 @@
-<div class="modal fade" id="exampleModal-{{ $folio }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">OBSERVACIONES SOBRE EL FOLIO N° {{ $folio }}</h5>
+                <h5 class="modal-title" id="exampleModalLabel">OBSERVACIONES SOBRE EL FOLIO N° </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 {{-- @role('Delegado Administrativo') --}}
-                <form method="POST" id="sendComment_{{ $folio }}">
+                <form method="POST" id="sendComment_">
                     @csrf
                     <div class="new-comment-box mb-3">
                         <textarea name="observacion" class="form-control" rows="3" placeholder="Agregar un comentario"></textarea>
@@ -20,8 +20,9 @@
                 {{-- @endrole --}}
 
                 <div class="comments-container">
+                    <div id="observacionesModal"></div>
                     {{-- delegado administrativo --}}
-                    @if (!empty($observaciones))
+                    {{-- @if (!empty($observaciones))
                         @foreach ($observaciones as $item)
                             <ul id="comments-list" class="comments-list">
                                 <li>
@@ -58,7 +59,7 @@
                                 </div>
                             </li>
                         </ul>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
             <div class="modal-footer">

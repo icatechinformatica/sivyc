@@ -448,6 +448,8 @@
                                                     $observaciones = isset($item['observaciones'])
                                                         ? json_decode($item['observaciones'], true)
                                                         : [];
+
+                                                    $jsonString = (string) json_encode($observaciones);
                                                 @endphp
                                                 <tr>
                                                     <td>{{ $item['folio'] }}</td>
@@ -479,7 +481,7 @@
                                                         <a href="javascript:;" class="btn btn-success openModal"
                                                             data-toggle="modal" data-folio="{{ $item['folio'] }}"
                                                             data-target="#exampleModal"
-                                                            >
+                                                            data-observaciones="{{ $jsonString }}">
                                                             <i class="fa fa-comment" aria-hidden="true"></i>
                                                         </a>
                                                     </td>
@@ -526,18 +528,65 @@
 
             $('.openModal').on('click', function() {
                 const folio = $(this).data('folio');
+                const observaciones = $(this).data('observaciones');
+                // Limpiar el contenido anterior del modal
+                $('#observacionesModal').empty();
+                const code = JSON.stringify(observaciones);
+                const comentarios = JSON.parse(code);
+                console.log($.parseJSON(code));
+                return;
+                let observacionHTMl = '';
 
-                const form = $("#sendComment_" + folio);
-                form.validate({
-                    debug: true,
-                    errorClass: "error",
-                    rules: {
-                       observacion: "required"
-                    },
-                    showErrors: function(errorMap, errorList) {
-                        console.log(errorMap)
-                    }
-                });
+                if (comentarios.length > 0) {
+                    $.each(comentarios, function(index, observacion){
+                        observacionHTMl += '<ul id="comments-list" class="comments-list">'+
+                            '<li>'+
+                                '<div class="comment-main-level">'+
+                                    '<div class="comment-box">'+
+                                        '<div class="comment-head">'+
+                                            '<h6 class="comment-name by-author">'+
+                                                '<a>Observación:</a>'+
+                                            '</h6>'+
+                                            '<span>hace 20 minutos</span>'+
+                                            '<i class="fa fa-reply"></i>'+
+                                        '</div>'+
+                                        '<div class="comment-content">'+
+                                            observacion.comentario1 +
+                                        '</div>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</li>'+
+                        '</ul>';
+                    });
+                    $('#observacionesModal').html(observacionHTMl);
+                } else {
+                    $('#observacionesModal').html(
+                        '<ul id="comments-list" class="comments-list">' +
+                        '<li>' +
+                        '<div class="comment-main-level">' +
+                        '<div class="comment-box">' +
+                        '<div class="comment-head">' +
+                        '</div>' +
+                        '<div class="comment-content">' +
+                        ' NO HAY OBSERVACIONES REGISTRADAS.' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</li>' +
+                        '</ul>');
+                }
+
+                // const form = $("#sendComment_" + folio);
+                // form.validate({
+                //     debug: true,
+                //     errorClass: "error",
+                //     rules: {
+                //        observacion: "required"
+                //     },
+                //     showErrors: function(errorMap, errorList) {
+                //         console.log(errorMap)
+                //     }
+                // });
             });
         });
     </script>
