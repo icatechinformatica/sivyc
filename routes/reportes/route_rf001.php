@@ -12,4 +12,6 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/reportes/rf001/store', [Rf001Controller::class, 'storeData'])->name('reporte.rf001.jsonStore');
     Route::get('/reportes/rf001/formato/pdf', [Rf001Controller::class, 'getPdfReport'])->name('reporte.rf001.getpdf');
     Route::get('/reportes/rf001/concentrado/detalle/{id}', [Rf001Controller::class, 'show'])->name('reporte.rf001.set.details');
+    Route::post('/reportes/rf001/add/comment', [Rf001Controller::class, 'show']);
+
 });

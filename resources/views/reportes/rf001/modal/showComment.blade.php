@@ -13,9 +13,11 @@
                 <form method="POST" id="sendComment_">
                     @csrf
                     <div class="new-comment-box mb-3">
-                        <textarea name="observacion" class="form-control" rows="3" placeholder="Agregar un comentario"></textarea>
+                        <label for="observacion">Comentario:</label>
+                        <textarea name="observacion" id="observacion" class="form-control" rows="3" placeholder="Agregar un comentario"></textarea>
                     </div>
                     <input type="submit" class="btn" value="COMENTAR">
+                    <input type="hidden" name="idFolio" id="idFolio">
                 </form>
                 {{-- @endrole --}}
 

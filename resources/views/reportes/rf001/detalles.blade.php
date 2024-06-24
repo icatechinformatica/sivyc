@@ -531,31 +531,50 @@
                 const observaciones = $(this).data('observaciones');
                 // Limpiar el contenido anterior del modal
                 $('#observacionesModal').empty();
+                $('#idFolio').val();
                 const code = JSON.stringify(observaciones);
                 const comentarios = JSON.parse(code);
+                let options = {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                };
                 let observacionHTMl = '';
                 $("#noFolio").html(folio);
+                $("#idFolio").val(folio);
 
                 if (comentarios.length > 0) {
-                    $.each(comentarios, function(index, observacion){
-                        observacionHTMl += '<ul id="comments-list" class="comments-list">'+
-                            '<li>'+
-                                '<div class="comment-main-level">'+
-                                    '<div class="comment-box">'+
-                                        '<div class="comment-head">'+
-                                            '<h6 class="comment-name by-author">'+
-                                                '<a>Observación:</a>'+
-                                            '</h6>'+
-                                            '<span>hace 20 minutos</span>'+
-                                            '<i class="fa fa-reply"></i>'+
-                                        '</div>'+
-                                        '<div class="comment-content">'+
-                                            observacion.comentario +
-                                        '</div>'+
-                                    '</div>'+
-                                '</div>'+
-                            '</li>'+
-                        '</ul>';
+                    $.each(comentarios, function(index, observacion) {
+                        // Dividir la cadena en componentes de año, mes y día
+                        let dateParts = observacion.fecha.split('-');
+                        let year = parseInt(dateParts[0], 10);
+                        let month = parseInt(dateParts[1], 10) - 1; // Meses en JavaScript son 0-11
+                        let day = parseInt(dateParts[2], 10);
+                        let date = new Date(year, month, day);
+                        let options = {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        };
+
+                        observacionHTMl += '<ul id="comments-list" class="comments-list">' +
+                            '<li>' +
+                            '<div class="comment-main-level">' +
+                            '<div class="comment-box">' +
+                            '<div class="comment-head">' +
+                            '<h6 class="comment-name by-author">' +
+                            '<a>Observación:</a>' +
+                            '</h6>' +
+                            '<span>' + new Intl.DateTimeFormat('es-ES', options).format(date) +
+                            '</span>' +
+                            '</div>' +
+                            '<div class="comment-content">' +
+                            observacion.comentario +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</li>' +
+                            '</ul>';
                     });
                     $('#observacionesModal').html(observacionHTMl);
                 } else {
@@ -575,17 +594,26 @@
                         '</ul>');
                 }
 
-                // const form = $("#sendComment_" + folio);
-                // form.validate({
-                //     debug: true,
-                //     errorClass: "error",
-                //     rules: {
-                //        observacion: "required"
-                //     },
-                //     showErrors: function(errorMap, errorList) {
-                //         console.log(errorMap)
-                //     }
-                // });
+                const form = $("#sendComment_");
+                form.validate({
+                    debug: true,
+                    errorClass: "error",
+                    rules: {
+                        observacion: "required"
+                    },
+                    messages: {
+                        observacion: {
+                            required: "Por favor, agregar comentario."
+                        }
+                    },
+                    errorElement: "label",
+                    errorPlacement: function(error, element) {
+                        error.insertAfter(element);
+                    },
+                    showErrors: function(errorMap, errorList) {
+                        console.log(errorMap)
+                    }
+                });
             });
         });
     </script>
