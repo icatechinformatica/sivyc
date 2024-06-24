@@ -418,6 +418,7 @@ class ExpedienteController extends Controller
     public function search_docs($folio){
 
         $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->value('memo_soporte_dependencia');
+        $mod_insctructor = DB::table('tbl_cursos')->where('folio_grupo',$folio)->value('modinstructor');
 
         //Obtenemos la lista de los alumnos con sus campos correspondientes
         $bddocAlumnos = Inscripcion::select(
@@ -450,7 +451,7 @@ class ExpedienteController extends Controller
         ->whereRaw("requisitos->>'documento' IS NOT NULL AND requisitos->>'documento' != ''")
         ->count();
 
-        $bddoc789 = DB::table('tbl_cursos')->select('comprobante_pago', 'file_arc01', 'pdf_curso', 'file_arc02')->where('folio_grupo', '=', $folio)->first();
+        $bddoc789 = DB::table('tbl_cursos')->select('comprobante_pago', 'file_arc01', 'pdf_curso', 'file_arc02', 'arc')->where('folio_grupo', '=', $folio)->first();
         $bddoc2021 = DB::table('tabla_supre as sup')->select('sup.doc_validado', 'sup.doc_supre')
         ->join('folios as f', 'f.id_supre', '=', 'sup.id')
         ->join('tbl_cursos as c', 'c.id', '=', 'f.id_cursos')
@@ -463,8 +464,10 @@ class ExpedienteController extends Controller
         ->where('tc.folio_grupo', $folio)->where('ef.tipo_archivo', 'Contrato')
         ->where('ef.status', 'VALIDADO')->value('con.id_contrato');
 
-        $bddoc22 = DB::table('contratos as con')->join('tbl_cursos as c', 'c.id', '=', 'con.id_curso')
-        ->where('c.folio_grupo', $folio)->value('con.arch_contrato');
+        // $bddoc22 = DB::table('contratos as con')->join('tbl_cursos as c', 'c.id', '=', 'con.id_curso')
+        // ->where('c.folio_grupo', $folio)->value('con.arch_contrato');
+        $bddoc22 = DB::table('contratos as con')->select('con.arch_contrato', 'con.arch_factura')->join('tbl_cursos as c', 'c.id', '=', 'con.id_curso')
+        ->where('c.folio_grupo', $folio)->first();
 
         $bddoc23 = DB::table('pagos as pa')->select('pa.arch_solicitud_pago', 'pa.arch_pago')->join('tbl_cursos as c', 'c.id', '=', 'pa.id_curso')
         ->where('c.folio_grupo', $folio)->first();
@@ -531,16 +534,16 @@ class ExpedienteController extends Controller
         }
 
         //Arc01
-        if(!empty($bddoc789->file_arc01)){$doc8 = $bddoc789->file_arc01;}
-        if(!empty($bddoc789->pdf_curso)){$doc9 = $bddoc789->pdf_curso;}
-        if(!empty($bddoc789->file_arc02)){$doc10 = $bddoc789->file_arc02;}
-        if(!empty($bddoc789->pdf_curso)){$doc11 = $bddoc789->pdf_curso;}
+        if(!empty($bddoc789->file_arc01) && ($bddoc789->arc == '01')){$doc8 = $bddoc789->file_arc01;}
+        if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '01')){$doc9 = $bddoc789->pdf_curso;}
+        if(!empty($bddoc789->file_arc02) && ($bddoc789->arc == '02')){$doc10 = $bddoc789->file_arc02;}
+        if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '02')){$doc11 = $bddoc789->pdf_curso;}
         if(!empty($bddoc2021->doc_supre)){$doc20 = $bddoc2021->doc_supre;}
         if(!empty($bddoc2021->doc_validado)){$doc21 = $bddoc2021->doc_validado;}
 
         //Validamos contrato si no esta entonces enviamos el id del contraro para visualizarlo electronicamente
         if(!empty($bdECont)){$doc22 = $bdECont;}
-        else if(!empty($bddoc22)){$doc22 = $bddoc22;}
+        else if(!empty($bddoc22->arch_contrato)){$doc22 = $bddoc22->arch_contrato;}
         // Asistencia
         if(!empty($bdEAsis)){$docAsis = $bdEAsis;}
         else if(!empty($bdAsisEvid->arch_asistencia)){$docAsis = $bdAsisEvid->arch_asistencia;}
@@ -551,8 +554,24 @@ class ExpedienteController extends Controller
         if(!empty($bdECalif)){$docCalif = $bdECalif;}
         else if(!empty($bdAsisEvid->arch_calificaciones)){$docCalif = $bdAsisEvid->arch_calificaciones;}
 
-        if(!empty($bddoc23->arch_solicitud_pago)){$doc23 = $bddoc23->arch_solicitud_pago;}
-        if(!empty($bddoc23->arch_pago)){$doc24 = $bddoc23->arch_pago;}
+
+        // if(!empty($bddoc23->arch_pago)){$doc24 = $bddoc23->arch_pago;}
+
+        //Validacion d (delegacion)
+        if($mod_insctructor == 'ASIMILADOS A SALARIOS'){
+            if(!empty($bddoc23->arch_solicitud_pago)){$doc23 = $bddoc23->arch_solicitud_pago;}
+
+        }else{
+            if(!empty($bddoc23->arch_pago)){$doc23 = $bddoc23->arch_pago;}
+            else if(!empty($bddoc23->arch_solicitud_pago)){$doc23 = $bddoc23->arch_solicitud_pago;}
+        }
+
+        //Validacion e (delegacion)
+        if($mod_insctructor == 'ASIMILADOS A SALARIOS'){
+            if(!empty($bddoc23->arch_pago)){$doc24 = $bddoc23->arch_pago;}
+        }else{
+            if(!empty($bddoc22->arch_factura)){$doc24 = $bddoc22->arch_factura;}
+        }
 
 
         $url_docs = array(
