@@ -533,9 +533,8 @@
                 $('#observacionesModal').empty();
                 const code = JSON.stringify(observaciones);
                 const comentarios = JSON.parse(code);
-                console.log($.parseJSON(code));
-                return;
                 let observacionHTMl = '';
+                $("#noFolio").html(folio);
 
                 if (comentarios.length > 0) {
                     $.each(comentarios, function(index, observacion){
@@ -551,7 +550,7 @@
                                             '<i class="fa fa-reply"></i>'+
                                         '</div>'+
                                         '<div class="comment-content">'+
-                                            observacion.comentario1 +
+                                            observacion.comentario +
                                         '</div>'+
                                     '</div>'+
                                 '</div>'+

@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">OBSERVACIONES SOBRE EL FOLIO N° </h5>
+                <h5 class="modal-title" id="exampleModalLabel">OBSERVACIONES SOBRE EL FOLIO N° <div id="noFolio"></div></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -15,7 +15,7 @@
                     <div class="new-comment-box mb-3">
                         <textarea name="observacion" class="form-control" rows="3" placeholder="Agregar un comentario"></textarea>
                     </div>
-                    <input type="submit" value="COMENTAR">
+                    <input type="submit" class="btn" value="COMENTAR">
                 </form>
                 {{-- @endrole --}}
 
