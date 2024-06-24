@@ -4441,7 +4441,7 @@ class InstructorController extends Controller
 
         $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
         ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
-        ->Join('folios','folios.id_cursos','pagos.id_curso')
+        ->Join('folios','folios.id_cursos', 'tbl_cursos.id')
         ->Where('id_instructor',$saveInstructor->id)
         ->where(function ($query) {
             $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
@@ -4455,17 +4455,7 @@ class InstructorController extends Controller
 
             foreach($data_ins_curso as $prime) {
                 $upd_curso = tbl_curso::Find($prime->id);
-                $upd_curso->soportes_instructor = [
-                    'banco' => $instructor->banco,
-                    'domicilio' => $instructor->domicilio,
-                    'no_cuenta' => $instructor->no_cuenta,
-                    'archivo_ine' => $instructor->archivo_ine,
-                    'archivo_rfc' => $instructor->archivo_rfc,
-                    'interbancaria' => $instructor->interbancaria,
-                    'tipo_honorario' => $instructor->tipo_honorario,
-                    'archivo_bancario' => $instructor->archivo_bancario,
-                    'archivo_domicilio' => $instructor->archivo_domicilio
-                ];
+                $upd_curso->soportes_instructor = $instructor->soportesInstructor();
                 $upd_curso->save();
             }
         }

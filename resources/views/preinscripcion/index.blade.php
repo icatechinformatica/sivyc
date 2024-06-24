@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}">
     <style>
         .custom-font-size { font-size: 18px; }
-        #tblAlumnos tr th{ text-align: center; }
+        #tblAlumnos tr th{ text-align: center; padding:5px;}        
     </style>
 @endsection
 @section('content')

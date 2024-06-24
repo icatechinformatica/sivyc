@@ -53,7 +53,7 @@
                     $aviso = NULL;                    
                     if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0')) 
                         OR ($g->option =='ARC02'
-                        AND ($g->status_curso!='AUTORIZADO' OR $g->turnado!='UNIDAD' OR $g->status == 'TURNADO_DTA' OR $g->status == 'TURNADO_PLANEACION' OR $g->status == 'REPORTADO'))){
+                        AND ( $g->status_solicitud_arc02 == 'AUTORIZADO' OR $g->status_curso!='AUTORIZADO' OR $g->turnado!='UNIDAD' OR $g->status == 'TURNADO_DTA' OR $g->status == 'TURNADO_PLANEACION' OR $g->status == 'REPORTADO'))){
                         $activar = false;                        
                         $aviso = "Grupo turnado a ".$g->turnado_solicitud.", Clave de Apertura ".$g->status_curso." y Estatus: ".$g->status;
                     }else if( ($g->status_solicitud_arc02 == 'TURNADO' AND $g->option =='ARC02') OR ($g->status_solicitud == 'TURNADO' AND $g->option =='ARC01') ){
@@ -158,7 +158,7 @@
 </div>
 
 <div class="form-row col-md-12 mt-4">
-    @if($activar OR Auth::user()->roles[0]->slug=='admin')
+    @if($activar)
         @if ((($opt=='ARC01')&&($grupos[0]->status_solicitud!='VALIDADO')) OR ($opt=='ARC02' && ($grupos[0]->status_solicitud_arc02 !='VALIDADO')) )
             <div class=" form-group col-md-2"></div>
             <div class="form-group col-md-4"></div>
