@@ -67,7 +67,7 @@
             if($alumnos[0]->solicita) $solicita = $alumnos[0]->solicita;
             else $solicita = $alumnos[0]->vinculacion.",".$alumnos[0]->pvinculacion;
             if($alumnos[0]->vinculacion==$alumnos[0]->dunidad) $editar_solicita=true;
-            else $editar_solicita='false';
+            else $editar_solicita='false';            
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;

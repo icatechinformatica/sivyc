@@ -62,6 +62,6 @@ function fileValidationpdf() {
 
 function rem(id){
     var id = id;
-    $('#curpo').val(id);
+    $('#curp_anterior').val(id);
     $('#exampleModal').modal('show')
 }
