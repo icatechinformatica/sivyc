@@ -766,16 +766,16 @@
                         </td>
                         <td>
                             {{-- Subir recibo--}}
-                            @if ($search_docs['validRecibo'] == 'Provisional')
-                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc7">
-                                    <div class="d-flex row justify-content-center">
-                                        <input type="hidden" name="" id="txt_folio_recibo" value="">
-                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc7" style="display: none;" onchange="checkIcon('iconCheck7', 'pdfInputDoc7')">
-                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc7').click();">Archivo
-                                        <div id="iconCheck7" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
-                                    </div>
-                                </form>
-                            @endif
+                            {{-- @if ($search_docs['validRecibo'] == 'Provisional') --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="{{($search_docs['validRecibo'] == 'Provisional') ? '' : 'd-none' }}">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc7" style="display: none;" onchange="checkIcon('iconCheck7', 'pdfInputDoc7')">
+                                    <input type="hidden" name="" id="txt_folio_recibo" value="">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc7').click();">Archivo
+                                    <div id="iconCheck7" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
+                            {{-- @endif --}}
                         </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc7']))
