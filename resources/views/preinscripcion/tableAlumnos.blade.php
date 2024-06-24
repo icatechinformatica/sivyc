@@ -38,7 +38,7 @@
           else $id_cerss = null;
         @endphp
         <tr id="{{$a->id_reg}}">
-          <th scope="row"> {{ $consec++ }} {{$a->status}}</th>
+          <th scope="row"> {{ $consec++ }}</th>
           <th class="text-left" style="word-wrap: break-word; max-width: 90px;">{{ $a->curp }}</th>
           <th style="word-wrap: break-word; max-width: 60px;">{{ $a->no_control}}</th>
           <th class="text-left">{{ $a->alumno}}</th>          
@@ -69,7 +69,7 @@
           <th>       
               @if ($edicion or $a->status=="EDICION")   
                   <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="rem('{{$a->curp}}');"></i></a>
-              @elseif ($a->status)
+              @elseif($a->status AND $a->status!='INSCRITO')
                   {{ $a->status }}
               @else
                   <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>            
