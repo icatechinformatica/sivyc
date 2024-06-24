@@ -123,15 +123,15 @@ class aperturaController extends Controller
                 }
                 $muni = DB::table('tbl_municipios')->where('id_estado','7')->where('id',$grupo->id_muni)->orderby('muni')->pluck('muni')->first();
                 $localidad = DB::table('tbl_localidades')->where('clave',$grupo->clave_localidad)->pluck('localidad')->first();
-                
-                $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"),                
+
+                $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"),
                     DB::raw("EXTRACT(year from (age('".$grupo->inicio."',i.fecha_nacimiento))) as edad"),
                     DB::raw("
-                        CASE 
+                        CASE
                         WHEN i.id_gvulnerable IS NULL THEN NULL
                         ELSE (SELECT STRING_AGG(grupo, ', ')  FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(i.id_gvulnerable) AS bigint)))
                         END
-                        as grupos "), 
+                        as grupos "),
                     'i.inmigrante', DB::raw("id_cerss as es_cereso"),'i.requisitos'
                 )
                 ->where('i.folio_grupo',$valor)->orderby('alumno','ASC')->get();
@@ -146,10 +146,10 @@ class aperturaController extends Controller
                     DB::raw("substring(ar.curp,5,2) as anio_nac"),
                     DB::raw("CASE WHEN substring(ar.curp,5,2) <='".$anio_hoy."' THEN CONCAT('20',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
                         ELSE CONCAT('19',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2)) END AS fecha_nacimiento
-                    "),                                    
-                    DB::raw("EXTRACT(year from (age('".$grupo->inicio."',ap.fecha_nacimiento))) as edad"),                    
+                    "),
+                    DB::raw("EXTRACT(year from (age('".$grupo->inicio."',ap.fecha_nacimiento))) as edad"),
                     DB::raw("
-                        CASE 
+                        CASE
                             WHEN ap.id_gvulnerable IS NULL THEN NULL
                             ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ap.id_gvulnerable) AS bigint)))
                         END
@@ -295,7 +295,7 @@ class aperturaController extends Controller
     }
 
    public function aperturar(Request $request){///PROCESO DE INSCRIPCION
-        $result =  NULL;        
+        $result =  NULL;
         $message = "No hay datos para Aperturar.";
         if($_SESSION['alumnos'] AND $_SESSION['folio'] == $request->valor){
             $grupo = DB::table('tbl_cursos as c')->where('status_curso','AUTORIZADO')->where('status','NO REPORTADO')->where('c.folio_grupo',$_SESSION['folio'])->first();
@@ -312,11 +312,11 @@ class aperturaController extends Controller
                     if(!$matricula AND $a->curp AND $grupo->cct){
                         $matricula = $this->genera_matricula($a->curp, $grupo->cct);
                     }
-                    
+
                     if($matricula){
                         DB::table('alumnos_pre')->where('id', $a->id_pre)->where('matricula',null)->update(['matricula'=>$matricula]);
                         DB::table('alumnos_registro')->where('id_pre', $a->id_pre)->where('no_control',null)->where('folio_grupo',$_SESSION['folio'])->update(['no_control'=>$matricula]);
-                        
+
                         $result = Inscripcion::updateOrCreate(
                         ['matricula' =>  $matricula, 'id_curso' =>  $grupo->id, 'folio_grupo' =>  $grupo->folio_grupo],
                         ['unidad' => $grupo->unidad,
@@ -357,7 +357,7 @@ class aperturaController extends Controller
                         'curp'=> $a->curp,
                         'empleado'=>$a->empleado,
                         'id_gvulnerable'=>$a->id_gvulnerable,
-                        'requisitos'=>json_decode($a->requisitos)                        
+                        'requisitos'=>json_decode($a->requisitos)
                         ]);
                     }
                 }
@@ -1134,6 +1134,13 @@ class aperturaController extends Controller
             ],
             "doc_7" => [
                 "nom_doc" => "Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_8" => [
+                "nom_doc" => "Soporte de manifiesto de inscripción",
                 "existe_evidencia" => 'VACIO',
                 "observaciones" => "",
                 "url_documento" => "",

@@ -128,7 +128,8 @@
                     @for ($i = 1; $i <= 7; $i++)
                         <tr>
                             <td>{{$abecedario[$i-1]}}</td>
-                            <td>{{$json_dptos->vinculacion['doc_'.$i]['nom_doc']}}</td>
+                            <td>{{$evid_vincu['doc'.$i]}}</td>
+                            {{-- <td>{{$json_dptos->vinculacion['doc_'.$i]['nom_doc']}}</td> --}}
                             @php
                             $exis_evid = $json_dptos->vinculacion['doc_'.$i]['existe_evidencia'];
                             $observ = $json_dptos->vinculacion['doc_'.$i]['observaciones'];
@@ -145,15 +146,15 @@
                         <th colspan="2">DEPARTAMENTO ACADÉMICO</th>
                         <th colspan="4"></th>
                     </tr>
-                    @for ($i = 8; $i <= 20; $i++)
+                    @for ($i = 8; $i <= 19; $i++)
                         <tr>
                             <td>{{$abecedario[$i-8]}}</td>
                             @php
-                                $docIndex = ($i == 20) ? 25 : $i;
-                                $exis_evid = $json_dptos->academico['doc_'.$docIndex]['existe_evidencia'];
-                                $observ = $json_dptos->academico['doc_'.$docIndex]['observaciones'];
+                                // $docIndex = ($i == 20) ? 25 : $i;
+                                $exis_evid = $json_dptos->academico['doc_'.$i]['existe_evidencia'];
+                                $observ = $json_dptos->academico['doc_'.$i]['observaciones'];
                             @endphp
-                            <td>{{$json_dptos->academico['doc_'.$docIndex]['nom_doc']}}</td>
+                            <td>{{$evid_acad['doc'.$i]}}</td>
                             <td align="center">{{($exis_evid == 'si') ? 'X' : ''}}</td>
                             <td align="center">{{($exis_evid == 'no') ? 'X' : ''}}</td>
                             <td align="center">{{($exis_evid == 'no_aplica') ? 'X' : ''}}</td>
@@ -173,7 +174,7 @@
                                 $exis_evid = $json_dptos->administrativo['doc_'.$i]['existe_evidencia'];
                                 $observ = $json_dptos->administrativo['doc_'.$i]['observaciones'];
                             @endphp
-                            <td>{{$json_dptos->administrativo['doc_'.$i]['nom_doc']}}</td>
+                            <td>{{$evid_admin['doc'.$i]}}</td>
                             <td align="center">{{($exis_evid == 'si') ? 'X' : ''}}</td>
                             <td align="center">{{($exis_evid == 'no') ? 'X' : ''}}</td>
                             <td align="center">{{($exis_evid == 'no_aplica') ? 'X' : ''}}</td>

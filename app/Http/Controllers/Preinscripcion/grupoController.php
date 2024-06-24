@@ -1885,6 +1885,13 @@ class grupoController extends Controller
                 "url_documento" => "",
                 "fecha_subida" => ""
             ],
+            "doc_8" => [
+                "nom_doc" => "Soporte de manifiesto de inscripción",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
             "status_dpto" => "CAPTURA",
             "status_save" => false,
             "fecha_guardado" => "",
