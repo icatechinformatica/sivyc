@@ -501,7 +501,6 @@ class ExpedienteController extends Controller
         ->select('comprobante_pago', DB::raw("
             CASE
                 WHEN comprobante_pago IS NOT NULL
-                    AND inicio >= '2023-06-01'
                     AND (folio_pago ILIKE '%PROV%' OR folio_pago ~ '^[0-9]+$')
                 THEN 'Provisional'
                 ELSE 'NoProvisional'
@@ -528,9 +527,7 @@ class ExpedienteController extends Controller
         if(!empty($bdReciboP)){$doc7 = env("APP_URL").'/storage/'.$bdReciboP; $validRec = 'digital';}
         else if(!empty($bdReciboT->comprobante_pago)){
             $doc7 = $bdReciboT->comprobante_pago;
-            if($bdReciboT->es_valido == 'Provisional'){
-                $validRec = 'Provisional';
-            }
+            $validRec = $bdReciboT->es_valido;
         }
 
         //Arc01
