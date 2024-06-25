@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 {{-- @role('Delegado Administrativo') --}}
-                <form method="POST" id="sendComment_">
+                <form id="sendComment_">
                     @csrf
                     <div class="new-comment-box mb-3">
                         <label for="observacion">Comentario:</label>
@@ -18,6 +18,7 @@
                     </div>
                     <input type="submit" class="btn" value="COMENTAR">
                     <input type="hidden" name="idFolio" id="idFolio">
+                    <input type="text" name="memo" id="memo">
                 </form>
                 {{-- @endrole --}}
 

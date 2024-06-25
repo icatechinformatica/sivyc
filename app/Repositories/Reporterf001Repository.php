@@ -179,4 +179,9 @@ class Reporterf001Repository implements Reporterf001Interface
         $updateRecord->unidad = $request['unidad'];
         return $updateRecord->save();
     }
+
+    public function storeComment($request)
+    {
+
+    }
 }

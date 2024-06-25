@@ -18,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use PDF;
 use App\Services\ReportService;
+use App\Http\Requests\rf001ComentariosRequest;
 
 class Rf001Controller extends Controller
 {
@@ -243,8 +244,20 @@ class Rf001Controller extends Controller
         return view('reportes.rf001.formatos', compact('data'))->render();
     }
 
-    public function deatils(Request $request)
+    public function addComment(rf001ComentariosRequest $request): JsonResponse
     {
+         // Obtiene los datos validados automáticamente
+         $validatedData = $request->validated();
+         if ($validatedData->fails()) {
+            # retornar información del error de la validación
+            return response()->json(['errors' => $validatedData->errors()], 422);
+         }
+
+        //  $storeData = $this->rfoo1Repository->storeComment($request);
+
+         return response()->json([
+            'data' => $request
+         ], Response::HTTP_CREATED);
 
     }
 

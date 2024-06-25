@@ -8,4 +8,5 @@ interface Reporterf001Interface {
     public function getDetailRF001Format($concentrado);
     public function storeData(array $request);
     public function updateFormatoRf001($request, $id);
+    public function storeComment($request);
 }

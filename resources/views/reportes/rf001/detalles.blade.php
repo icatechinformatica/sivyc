@@ -532,6 +532,7 @@
                 // Limpiar el contenido anterior del modal
                 $('#observacionesModal').empty();
                 $('#idFolio').val();
+                $('#memo').val();
                 const code = JSON.stringify(observaciones);
                 const comentarios = JSON.parse(code);
                 let options = {
@@ -542,6 +543,7 @@
                 let observacionHTMl = '';
                 $("#noFolio").html(folio);
                 $("#idFolio").val(folio);
+                $("#memo").val({{ $getConcentrado->memorandum }});
 
                 if (comentarios.length > 0) {
                     $.each(comentarios, function(index, observacion) {
@@ -596,7 +598,7 @@
 
                 const form = $("#sendComment_");
                 form.validate({
-                    debug: true,
+                    // debug: true,
                     errorClass: "error",
                     rules: {
                         observacion: "required"
@@ -612,6 +614,37 @@
                     },
                     showErrors: function(errorMap, errorList) {
                         console.log(errorMap)
+                    },
+                    highlight: function(element, errorClass) {
+                        $(element).addClass(errorClass);
+                    },
+                    submitHandler: function(form, event) {
+                        event.preventDefault();
+                        const urlRoute = "{{ route('reporte.rf001.add.comments') }}";
+                        $.ajax({
+                            url: urlRoute,
+                            method: "POST",
+                            dataType: "json",
+                            processData: false,
+                            contentType: false,
+                            data: $(form).serialize(),
+                            beforeSend: function() {
+                                $('#sendComment_').attr('disabled',
+                                    'disabled');
+                            },
+                            success: function(response) {
+
+                            },
+                            error: function(xhr, textStatus, error) {
+                                // manejar errores
+                                console.log(xhr.statusText);
+                                console.log(xhr.responseText);
+                                console.log(xhr.status);
+                                console.log(textStatus);
+                                console.log(error);
+                            }
+                        });
+                        return;
                     }
                 });
             });
