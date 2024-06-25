@@ -411,7 +411,12 @@
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 1--}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc1">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc1"
+                            class="
+                            @if(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']) || !empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
+                            d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc1" style="display: none;" onchange="checkIcon('iconCheck1', 'pdfInputDoc1')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc1').click();">Archivo
@@ -424,6 +429,18 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_documento']}}" target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id=""
+                                    href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_convenio']}}" target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id=""
+                                    href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_acta']}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
