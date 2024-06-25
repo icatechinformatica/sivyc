@@ -451,7 +451,7 @@ class ExpedienteController extends Controller
         ->whereRaw("requisitos->>'documento' IS NOT NULL AND requisitos->>'documento' != ''")
         ->count();
 
-        $bddoc789 = DB::table('tbl_cursos')->select('comprobante_pago', 'file_arc01', 'pdf_curso', 'file_arc02', 'arc')->where('folio_grupo', '=', $folio)->first();
+        $bddoc789 = DB::table('tbl_cursos')->select('comprobante_pago', 'file_arc01', 'pdf_curso', 'file_arc02', 'arc', 'tipo_curso')->where('folio_grupo', '=', $folio)->first();
         $bddoc2021 = DB::table('tabla_supre as sup')->select('sup.doc_validado', 'sup.doc_supre')
         ->join('folios as f', 'f.id_supre', '=', 'sup.id')
         ->join('tbl_cursos as c', 'c.id', '=', 'f.id_cursos')
@@ -466,7 +466,7 @@ class ExpedienteController extends Controller
 
         // $bddoc22 = DB::table('contratos as con')->join('tbl_cursos as c', 'c.id', '=', 'con.id_curso')
         // ->where('c.folio_grupo', $folio)->value('con.arch_contrato');
-        $bddoc22 = DB::table('contratos as con')->select('con.arch_contrato', 'con.arch_factura')->join('tbl_cursos as c', 'c.id', '=', 'con.id_curso')
+        $bddoc22 = DB::table('contratos as con')->select('con.arch_contrato', 'con.arch_factura', 'con.arch_factura_xml')->join('tbl_cursos as c', 'c.id', '=', 'con.id_curso')
         ->where('c.folio_grupo', $folio)->first();
 
         $bddoc23 = DB::table('pagos as pa')->select('pa.arch_solicitud_pago', 'pa.arch_pago')->join('tbl_cursos as c', 'c.id', '=', 'pa.id_curso')
@@ -513,7 +513,7 @@ class ExpedienteController extends Controller
 
         //Variables
         $doc2 = $doc5 = $doc6 = $doc7 = $validRec = $doc8 = $doc9 = $doc10 = $doc11 = $doc20 = $doc21 =
-        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = '';
+        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = '';
         $docAlumnos = []; $reciboProvi =  true;
         //Soporte de constancias
         if(!empty($bddoc2)){$doc2 = $bddoc2;}
@@ -547,6 +547,8 @@ class ExpedienteController extends Controller
         // Asistencia
         if(!empty($bdEAsis)){$docAsis = $bdEAsis;}
         else if(!empty($bdAsisEvid->arch_asistencia)){$docAsis = $bdAsisEvid->arch_asistencia;}
+        // else if($bddoc789->tipo_curso == 'CERTIFICACION'){ $tipoCurso = "CERTIFICACION";}
+
         //Fotografico
         if(!empty($bdEFoto)){$docFoto = $bdEFoto;}
         else if(!empty($bdAsisEvid->arch_evidencia)){$docFoto = $bdAsisEvid->arch_evidencia;}
@@ -570,18 +572,16 @@ class ExpedienteController extends Controller
         if($mod_insctructor == 'ASIMILADOS A SALARIOS'){
             if(!empty($bddoc23->arch_pago)){$doc24 = $bddoc23->arch_pago;}
         }else{
-            if(!empty($bddoc22->arch_factura)){$doc24 = $bddoc22->arch_factura;}
+            if(!empty($bddoc22->arch_factura)){$doc24 = $bddoc22->arch_factura; $docXml = $bddoc22->arch_factura_xml;}
         }
-
 
         $url_docs = array(
             "urldoc2" => $doc2,"urldoc5" => $doc5,"urldoc6" => $doc6,"urldoc7" => $doc7,"urldoc8" => $doc8,"urldoc9" => $doc9,"urldoc10" => $doc10,"urldoc11" => $doc11,
             "urldoc20" => $doc20,"urldoc21" => $doc21,"urldoc22" => $doc22,"urldoc23" =>$doc23,"urldoc24"=>$doc24,
-            "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec, "urldoc16"=>$docCalif, "alumnos_req" => $docAlumnos
+            "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec, "urldoc16"=>$docCalif, "alumnos_req" => $docAlumnos, 'doc_xml' => $docXml
         );
-        $this->guardarLinks($folio, $url_docs);  #Agregar las url externas a la tabla de expedientes
-        $this->proces_documentos($folio);
-
+        //$this->guardarLinks($folio, $url_docs);  #Agregar las url externas a la tabla de expedientes
+        $this->proces_documentos($folio, $url_docs);
         return $url_docs;
     }
 
@@ -593,11 +593,11 @@ class ExpedienteController extends Controller
         $doc_insert_vinc = $doc_insert_aca = $doc_insert_adm = array();
         #Documentos externos
         $n_vinc = [2,5,6,7];
-        $n_acad = [8,9,10,11,15,16,19];
-        $n_adm = [20,21,22,23,24];
+        $n_acad = [8,9,10,11];
+        $n_adm = [20,21,24];
 
         #Vinculacion
-        for ($i=0; $i < count($n_vinc) ; $i++) {
+        for ($i=0; $i < count($n_vinc); $i++) {
             $nuevoArray = [];
             if ($bd_json->vinculacion['doc_'. $n_vinc[$i]]['url_documento'] != $array_links['urldoc' . $n_vinc[$i]]) {
                 $nuevoArray['doc'] = $n_vinc[$i];
@@ -606,7 +606,7 @@ class ExpedienteController extends Controller
             }
         }
         #Academico
-        for ($i=0; $i < count($n_acad) ; $i++) {
+        for ($i=0; $i < count($n_acad); $i++) {
             $nuevoArray = [];
             if ($bd_json->academico['doc_'. $n_acad[$i]]['url_documento'] != $array_links['urldoc' . $n_acad[$i]]) {
                 $nuevoArray['doc'] = $n_acad[$i];
@@ -615,7 +615,7 @@ class ExpedienteController extends Controller
             }
         }
         #Administratiivo
-        for ($i=0; $i < count($n_adm) ; $i++) {
+        for ($i=0; $i < count($n_adm); $i++) {
             $nuevoArray = [];
             if ($bd_json->administrativo['doc_'. $n_adm[$i]]['url_documento'] != $array_links['urldoc' . $n_adm[$i]]) {
                 $nuevoArray['doc'] = $n_adm[$i];
@@ -663,9 +663,12 @@ class ExpedienteController extends Controller
     }
 
     #Agregar si de manera automatica en caso de que los documentos existan.
-    public function proces_documentos($folio){
+    public function proces_documentos($folio, $array_doc){
         $bd_json = ExpeUnico::select('vinculacion', 'academico', 'administrativo', 'id')->where('folio_grupo', '=', $folio)->first();
         $docs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,25,20,21,22,23,24];
+        $docsVincu = [2,5,6,7];
+        $docsAcad = [8,9,10,11,15,16,19];
+        $docsDeleg = [20,21,22,23,24];
 
         $exUnico = ExpeUnico::find($bd_json->id);
         $json1 = $exUnico->vinculacion;
@@ -675,25 +678,53 @@ class ExpedienteController extends Controller
             if($i<=7){
                 if(!empty($bd_json->vinculacion['doc_'.$docs[$i]]['url_documento'])){ #Validamos si hay pdf
                     $json1['doc_'.$docs[$i]]['existe_evidencia'] = 'si';
+
+                }else if($bd_json->vinculacion['doc_'.$docs[$i]]['existe_evidencia'] == 'si'){
+                    $json1['doc_'.$docs[$i]]['existe_evidencia'] = 'no_aplica';
                 }
+
             }else if($i >= 7 && $i <= 19){
                 if(!empty($bd_json->academico['doc_'.$docs[$i]]['url_documento'])){
                     $json2['doc_'.$docs[$i]]['existe_evidencia'] = 'si';
+
+                }else if($bd_json->academico['doc_'.$docs[$i]]['existe_evidencia'] == 'si'){
+                    if($i != 16 && $i != 17){
+                        $json2['doc_'.$docs[$i]]['existe_evidencia'] = 'no_aplica';
+                    }
                 }
 
             }else if($i >= 20){
                 if(!empty($bd_json->administrativo['doc_'.$docs[$i]]['url_documento'])){
                     $json3['doc_'.$docs[$i]]['existe_evidencia'] = 'si';
+
+                }else if($bd_json->administrativo['doc_'.$docs[$i]]['existe_evidencia'] == 'si'){
+                    $json3['doc_'.$docs[$i]]['existe_evidencia'] = 'no_aplica';
                 }
 
             }
         }
+
+        //Recorremos el array de consultas y si tiene archivo colocamos si
+        foreach ($docsVincu as $key => $num) {
+            if(!empty($array_doc['urldoc'.$num])){
+                $json1['doc_'.$num]['existe_evidencia'] = 'si';
+            }
+        }
+        foreach ($docsAcad as $key => $num) {
+            if(!empty($array_doc['urldoc'.$num])){
+                $json2['doc_'.$num]['existe_evidencia'] = 'si';
+            }
+        }
+        foreach ($docsDeleg as $key => $num) {
+            if(!empty($array_doc['urldoc'.$num])){
+                $json3['doc_'.$num]['existe_evidencia'] = 'si';
+            }
+        }
+
         $exUnico->vinculacion = $json1;
         $exUnico->academico = $json2;
         $exUnico->administrativo = $json3;
         $exUnico->save();
-
-
 
     }
 
@@ -719,7 +750,7 @@ class ExpedienteController extends Controller
 
                     if($radio_v === 'si'){
                         if(empty($doc_v)){
-                            return response()->json(['mensaje' => "¡En el documento ( $doc_numeros[$conta_abced] ) no puede seleccionar ( SI ) ya que el documento no existe!"]);
+                            // return response()->json(['mensaje' => "¡En el documento ( $doc_numeros[$conta_abced] ) no puede seleccionar ( SI ) ya que el documento no existe!"]);
                         }
                     }else if($radio_v === 'no' || $radio_v === 'no_aplica') {
                         if(!empty($doc_v)){
@@ -769,10 +800,10 @@ class ExpedienteController extends Controller
                         if(empty($doc_a)){
                             if($indice_docs[$i] == 17 || $indice_docs[$i] == 18){
                                 if(empty($text)){
-                                    return response()->json(['mensaje' => "¡En el documento ( $doc_numeros[$conta_abced] ) debes agregar el link del archivo!"]);
+                                    // return response()->json(['mensaje' => "¡En el documento ( $doc_numeros[$conta_abced] ) debes agregar el link del archivo!"]);
                                 }
                             }else{
-                                return response()->json(['mensaje' => "¡En el documento ( $doc_numeros[$conta_abced] ) no puede seleccionar ( SI ) ya que el documento no existe!"]);
+                                // return response()->json(['mensaje' => "¡En el documento ( $doc_numeros[$conta_abced] ) no puede seleccionar ( SI ) ya que el documento no existe!"]);
                             }
                         }
                     }else if($radio_a === 'no' || $radio_a === 'no_aplica') {
@@ -818,6 +849,7 @@ class ExpedienteController extends Controller
         }else if($rol_user == 3){
             $doc_numeros = ['A', 'B', 'C', 'D', 'E'];
             $conta_abced = 0;
+            $docs_true = [];
             for ($i=20; $i <= 24; $i++) {
                 if(isset($valores_form['radio'.$i])){
                     $radio_d = $valores_form['radio'.$i];
@@ -825,13 +857,14 @@ class ExpedienteController extends Controller
 
                     if($radio_d === 'si'){
                         if(empty($doc_d)){
-                            return response()->json(['mensaje' => "¡En el documento ( $doc_numeros[$conta_abced] ) no puede seleccionar ( SI ) ya que el documento no existe!"]);
+                            // return response()->json(['mensaje' => "¡En el documento ( $doc_numeros[$conta_abced] ) no puede seleccionar ( SI ) ya que el documento no existe!"]);
                         }
                     }else if($radio_d === 'no' || $radio_d === 'no_aplica') {
                         if(!empty($doc_d)){
-                            return response()->json(['mensaje' => "En el documento ( $doc_numeros[$conta_abced] ) no puede seleccionar ( NO / NO APLICA ) ya que el documento existe"]);
+                            $docs_true[] = $i;
                         }
                     }
+
                 }else{
                     return response()->json([
                         'status' => 'VALOR DE RADIOBUTTON INDEFINIDO',
@@ -845,9 +878,11 @@ class ExpedienteController extends Controller
                 $expeUnico = ExpeUnico::find($idcurso);
                 $json = $expeUnico->administrativo;
                 for ($i=20; $i <= 24; $i++) {
-                    $json['doc_'.$i]['existe_evidencia'] = $valores_form['radio'.$i];
+                    if(in_array($i, $docs_true)){$json['doc_'.$i]['existe_evidencia'] = 'si';}
+                    else{$json['doc_'.$i]['existe_evidencia'] = $valores_form['radio'.$i];}
                     $json['doc_'.$i]['observaciones'] = $valores_form['txtarea'.$i];
                 }
+
                 $json['status_save'] = true;
                 $json['id_user_save'] = Auth::user()->id;
                 $json['fecha_guardado'] = date('Y-m-d H:i');
@@ -905,7 +940,6 @@ class ExpedienteController extends Controller
             $nombres_doc = ['acta_acuerdo', 'soli_apertura', 'sid01', 'sop_manifiesto'];
 
             try {
-                $conta = 0;
                 for ($i=0; $i < count($num_docs) ; $i++) {
                     #Validamos si existe el archivo para empezar con el proceso
                     if (${"file" . $num_docs[$i]} == true){
@@ -914,7 +948,7 @@ class ExpedienteController extends Controller
                             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.${"img" . $num_docs[$i]};
                             if (Storage::exists($filePath)) {
                                 Storage::delete($filePath);
-                            } else { return response()->json(['mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
+                            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
                         }
                         #Agregar Registros el doc20 es el doc25  del json
                         $vinc = ExpeUnico::find($idcurso);
@@ -929,7 +963,6 @@ class ExpedienteController extends Controller
                         $vinc->iduser_updated = Auth::user()->id;
                         $vinc->save();
                     }
-                    $conta ++;
                 }
                 return response()->json([
                     'status' => 200,
@@ -968,7 +1001,7 @@ class ExpedienteController extends Controller
                             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.${"img" . $i};
                             if (Storage::exists($filePath)) {
                                 Storage::delete($filePath);
-                            } else { return response()->json(['mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
+                            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
                         }
                         #Agregar Registros el doc20 es el doc25  del json
                         $acad = ExpeUnico::find($idcurso);
@@ -988,6 +1021,54 @@ class ExpedienteController extends Controller
                         $acad->save();
                     }
                     $conta ++;
+                }
+                return response()->json([
+                    'status' => 200,
+                    'mensaje' => 'ARCHIVOS CARGADOS CON EXITO',
+                ]);
+
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => 500,
+                    'mensaje' => 'Error al intentar guardar los archivos',
+                    'error' => $th->getMessage()
+                ]);
+            }
+        }
+
+        #DELEGADO
+        if ($rol == '3') {
+            $num_docs = [22,23]; #Documentos que se requieren obtener
+            for ($i=0; $i < count($num_docs) ; $i++) {
+                ${"file" . $num_docs[$i]} = $request->hasFile('doc_'.$num_docs[$i]);
+                ${"img" . $num_docs[$i]} = basename($bd_json->administrativo['doc_'.$num_docs[$i]]['url_documento']);
+            }
+            $nombres_doc = ['contrato', 'solicitud_pago'];
+
+            try {
+                for ($i=0; $i < count($num_docs) ; $i++) {
+                    #Validamos si existe el archivo para empezar con el proceso
+                    if (${"file" . $num_docs[$i]} == true){
+                        if(${"img" . $num_docs[$i]} != ''){
+                            #Reemplazar
+                            $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.${"img" . $num_docs[$i]};
+                            if (Storage::exists($filePath)) {
+                                Storage::delete($filePath);
+                            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
+                        }
+                        #Agregar Registros el doc20 es el doc25  del json
+                        $deleg = ExpeUnico::find($idcurso);
+                        $doc = $request->file('doc_'.$num_docs[$i]); # obtenemos el archivo
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio); # invocamos el método
+                        $url = $deleg->administrativo;
+
+                        $url['doc_'.$num_docs[$i]]['url_documento'] = $urldoc[1];
+                        $url['doc_'.$num_docs[$i]]['fecha_subida'] = date('Y-m-d');
+
+                        $deleg->administrativo = $url; # guardamos el path
+                        $deleg->iduser_updated = Auth::user()->id;
+                        $deleg->save();
+                    }
                 }
                 return response()->json([
                     'status' => 200,
@@ -1029,7 +1110,7 @@ class ExpedienteController extends Controller
         }
 
 
-        if(($rol == '1' || $rol == '2') && $val_doc == "existe"){
+        if(($rol == '1' || $rol == '2' || $rol == '3') && $val_doc == "existe"){
             if($st_acad == 'CAPTURA' || $st_acad == 'RETORNADO'){
                 $this->proced_del_doc($rol, $idcurso, $partImg, $radio);
             }else{
@@ -1058,7 +1139,7 @@ class ExpedienteController extends Controller
             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.$url;
             if (Storage::exists($filePath)) {
                 Storage::delete($filePath);
-            } else { return response()->json(['mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
+            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
             #Guardamos en la bd
             try {
                 $json = ExpeUnico::find($idcurso);
@@ -1074,7 +1155,7 @@ class ExpedienteController extends Controller
                 $json->save();
             } catch (\Throwable $th) {
                 return response()->json([
-                    'mensaje' => "¡ERROR AL INTENTAR GUARDAR REGISTROS DEL ARCHIVO ELIMINADO!"]);
+                    'mensaje' => "¡ERROR AL INTENTAR ELIMINAR DATOS DEL ARCHIVO!"]);
             }
 
         }
