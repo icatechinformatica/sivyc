@@ -1288,7 +1288,7 @@
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc15" class="d-none">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc15" class="{{(!empty($search_docs['urldoc15'])) ? 'd-none' : ''}}">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc15" style="display: none;" onchange="checkIcon('iconCheck15', 'pdfInputDoc15')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc15').click();">Archivo
@@ -1297,20 +1297,7 @@
                             </form>
                         </td>
                         <td class="text-center">
-                            {{-- mostrar pdf lista de asistencia --}}
-                            {{-- @if ($json_dptos->academico['doc_15']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_15"
-                                    href="{{$path_files.$json_dptos->academico['doc_15']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif --}}
+                            {{-- Mostrar lista de asistencia --}}
                             @if (!empty($search_docs['urldoc15']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
@@ -1321,6 +1308,12 @@
                                         {{$search_docs['urldoc15']}}
                                     @endif
                                     " target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->academico['doc_15']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id="verpdf_15"
+                                    href="{{$path_files.$json_dptos->academico['doc_15']['url_documento']}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
@@ -1334,9 +1327,9 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if (!empty($json_dptos->academico['doc_15']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0 d-none" onclick="delete_pdf(event, 'opcion15',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_15']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion15',
+                                    '{{$json_dptos->academico['doc_15']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
@@ -1369,7 +1362,7 @@
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc16" class="d-none">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc16" class="{{(!empty($search_docs['urldoc16'])) ? 'd-none' : ''}}">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc16" style="display: none;" onchange="checkIcon('iconCheck16', 'pdfInputDoc16')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc16').click();">Archivo
@@ -1379,20 +1372,6 @@
                         </td>
                         <td class="text-center">
                             {{-- mostrar pdf --}}
-                            {{-- @if ($json_dptos->academico['doc_16']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_16"
-                                    href="{{$path_files.$json_dptos->academico['doc_16']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif --}}
-
                             @if (!empty($search_docs['urldoc16']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
@@ -1403,6 +1382,12 @@
                                         {{$search_docs['urldoc16']}}
                                     @endif
                                     " target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->academico['doc_16']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id="verpdf_16"
+                                    href="{{$path_files.$json_dptos->academico['doc_16']['url_documento']}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
@@ -1417,9 +1402,9 @@
                         <td class="text-center">
                             {{-- eliminar pdf --}}
                             @if (!empty($json_dptos->academico['doc_16']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0 d-none" onclick="delete_pdf(event, 'opcion16',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_16']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion16',
+                                    '{{$json_dptos->academico['doc_16']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
@@ -1575,8 +1560,8 @@
                             <textarea class="" name="comentario_req19" id="comentario_req19" rows="1" cols="30">{{ $v_radios[1]['doc_txt19'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="d-none">
+                            {{-- Subir pdf --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="{{(!empty($search_docs['urldoc19'])) ? 'd-none' : ''}}">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc19" style="display: none;" onchange="checkIcon('iconCheck19', 'pdfInputDoc19')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc19').click();">Archivo
@@ -1585,20 +1570,6 @@
                             </form>
                         </td>
                         <td class="text-center">
-                            {{-- mostrar pdf evidencia fotografica --}}
-                            {{-- @if ($json_dptos->academico['doc_19']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_19"
-                                    href="{{$path_files.$json_dptos->academico['doc_19']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif --}}
                             @if (!empty($search_docs['urldoc19']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
@@ -1611,6 +1582,12 @@
                                     " target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
+                            @elseif(!empty($json_dptos->academico['doc_19']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id="verpdf_19"
+                                    href="{{$path_files.$json_dptos->academico['doc_19']['url_documento']}}" target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
@@ -1621,10 +1598,10 @@
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_19']['url_documento'] != '')
-                                <button class="ml-2 bg-transparent border-0 d-none" onclick="delete_pdf(event, 'opcion19',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_19']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                            @if (!empty($json_dptos->academico['doc_19']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion19',
+                                    '{{$json_dptos->academico['doc_19']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
@@ -1654,13 +1631,15 @@
                     <thead>
                     <tr>
                         <th width = "3%">NO.</th>
-                        <th width = "23%">EVIDENCIAS</th>
+                        <th width = "30%">EVIDENCIAS</th>
                         <th width = "5%">SI</th>
                         <th width = "5%">NO</th>
                         <th width = "8%">NO APLICA</th>
                         <th width = "15%">OBSERVACIONES</th>
+                        <th width = "7%">SUBIR PDF</th>
                         <th width = "6%">VER PDF</th>
-                        <th width = "15%">MENSAJE DTA</th>
+                        <th width = "6%">ELIMINAR</th>
+                        <th width ="15">MENSAJE DTA</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -1685,6 +1664,7 @@
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_req20" id="comentario_req20" rows="1" cols="30">{{ $v_radios[2]['doc_txt20'] ?? '' }}</textarea>
                         </td>
+                        <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc20']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
@@ -1700,6 +1680,7 @@
                                 </a>
                             @endif
                         </td>
+                        <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_dta20" id="comentario_dta20" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_20'], 'mensaje_dta', '')}}</textarea>
@@ -1726,6 +1707,7 @@
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_req21" id="comentario_req21" rows="1" cols="30">{{ $v_radios[2]['doc_txt21'] ?? '' }}</textarea>
                         </td>
+                        <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc21']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
@@ -1741,6 +1723,7 @@
                                 </a>
                             @endif
                         </td>
+                        <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_dta21" id="comentario_dta21" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_21'], 'mensaje_dta', '')}}</textarea>
@@ -1767,6 +1750,16 @@
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
                         </td>
+                        <td>
+                            {{-- subir pdf --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc22" class="{{(!empty($search_docs['urldoc22'])) ? 'd-none' : ''}}">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc22" style="display: none;" onchange="checkIcon('iconCheck22', 'pdfInputDoc22')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc22').click();">Archivo
+                                    <div id="iconCheck22" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
+                        </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc22']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
@@ -1780,6 +1773,12 @@
                                     " target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
+                            @elseif(!empty($json_dptos->administrativo['doc_22']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id="verpdf_22"
+                                    href="{{$path_files.$json_dptos->administrativo['doc_22']['url_documento']}}" target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
                             @else
                                 {{-- <button class="btn-circle btn-circle-sm border-0"><i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i></button> --}}
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
@@ -1787,6 +1786,16 @@
                                     onclick="showModal(event, 'Archivo no encontrado')">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
+                            @endif
+                        </td>
+                        <td>
+                            {{-- eliminar pdf --}}
+                            @if (!empty($json_dptos->administrativo['doc_22']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion22',
+                                    '{{$json_dptos->administrativo['doc_22']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
                             @endif
                         </td>
                         {{-- observacion dta --}}
@@ -1815,11 +1824,27 @@
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_req23" id="comentario_req23" rows="1" cols="30">{{ $v_radios[2]['doc_txt23'] ?? '' }}</textarea>
                         </td>
+                        <td>
+                            {{-- subir pdf --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc23" class="{{(!empty($search_docs['urldoc23'])) ? 'd-none' : ''}}">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc23" style="display: none;" onchange="checkIcon('iconCheck23', 'pdfInputDoc23')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc23').click();">Archivo
+                                    <div id="iconCheck23" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
+                        </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc23']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$search_docs['urldoc23']}}" target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->administrativo['doc_23']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver pdf" id="verpdf_23"
+                                    href="{{$path_files.$json_dptos->administrativo['doc_23']['url_documento']}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
@@ -1828,6 +1853,16 @@
                                     onclick="showModal(event, 'Archivo no encontrado')">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
+                            @endif
+                        </td>
+                        <td>
+                            {{-- eliminar pdf --}}
+                            @if (!empty($json_dptos->administrativo['doc_23']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion23',
+                                    '{{$json_dptos->administrativo['doc_23']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
                             @endif
                         </td>
                         {{-- observacion dta --}}
@@ -1856,6 +1891,7 @@
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
                         </td>
+                        <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc24']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
@@ -1870,7 +1906,16 @@
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
+                            @if (!empty($search_docs['doc_xml']))
+                                <a class="btn-circle btn-circle-sm ml-2" data-toggle="tooltip"
+                                    data-placement="top" title="Ver xml" id=""
+                                    href="{{$search_docs['doc_xml']}}" target="_blank">
+                                    <i class="fa fa fa-file-text fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @endif
+
                         </td>
+                        <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_24'], 'mensaje_dta', '')}}</textarea>
@@ -2301,7 +2346,7 @@
 
             //Funcion Await para ejecutar funcion de guardar y validar al mismo tiempo
             async function ejecutarAsync(rol, idcurso) {
-                if (rol == 1 || rol == 2) {
+                if (rol == 1 || rol == 2 || rol == 3) {
                     loader('show');
                     try {
                         // Ejecutar subirPdfServidor y esperar a que termine
@@ -2375,7 +2420,6 @@
                     //ACADEMICO
                     if (rol == 2) {
                         //Obtenemos los campos file
-                        let inputFile;
                         let fileSize;
                         let mb5 = 5 * 1024 * 1024;
                         let mb20 = 20 * 1024 * 1024;
@@ -2403,8 +2447,25 @@
                         // inputFiles['doc_20'] = inputFiles25; //Esto se hace de manera individual
                     }
 
+                    if (rol == 3) { //Academico
+                        for (let i = 22; i <= 23; i++) {
+                            let inputFile = document.getElementById('pdfInputDoc' + i);
+                            inputFiles['doc_'+i] = inputFile;
+
+                            //Validamos el tamaño de los documentos
+                            if (inputFile.files.length > 0) {
+                                let fileSize = inputFile.files[0].size;
+                                if (fileSize > maxSize) {
+                                    alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de 5 megabytes.');
+                                    loader('hide');
+                                    return false; //Detenemos el proceso
+                                }
+                            }
+                        }
+                    }
+
                     //ENVIAMOS LOS DATOS POR AJAX
-                    if (rol == 2 || rol == 1) {
+                    if (rol == 2 || rol == 1 || rol == 3) {
                         // loader('show');
                         let formData = new FormData();
                         formData.append('_token', '{{ csrf_token() }}');
@@ -2425,7 +2486,9 @@
                             processData: false,
                             success: function(response) {
                                 console.log(response);
-                                // alert(response.mensaje);
+                                if (response.status == 500) {
+                                    alert(response.mensaje);
+                                }
                                 if (response.status == 200) {
                                     resolve("Success");
                                 }
