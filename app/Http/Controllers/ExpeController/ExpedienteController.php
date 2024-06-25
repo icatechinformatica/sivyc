@@ -31,7 +31,7 @@ class ExpedienteController extends Controller
         $user = Auth::user();$roles = $user->roles();$resul = $roles->first();
         $slug = $resul->slug;
         if ($slug == 'admin') {$val_rol = 0;}
-        else if($slug == 'direccion_vinculacion' || $slug == 'unidad_vinculacion' || $slug == 'vinculadores_administrativo') {$val_rol = 1;}
+        else if($slug == 'direccion_vinculacion' || $slug == 'unidad_vinculacion' || $slug == 'vinculadores_administrativo' || $slug = 'director_unidad') {$val_rol = 1;}
         else if($slug == 'unidad' || $slug == 'titular_unidad' || $slug == 'auxiliar_unidad') {$val_rol = 2;}
         else if($slug == 'administrativo') {$val_rol = 3;}
         else if($slug == 'titular-innovacion') {$val_rol = 4;}
@@ -676,18 +676,25 @@ class ExpedienteController extends Controller
         $json3 = $exUnico->administrativo;
         for ($i=0; $i < count($docs) ; $i++){
             if($i<=7){
+
                 if(!empty($bd_json->vinculacion['doc_'.$docs[$i]]['url_documento'])){ #Validamos si hay pdf
                     $json1['doc_'.$docs[$i]]['existe_evidencia'] = 'si';
 
-                }else if($bd_json->vinculacion['doc_'.$docs[$i]]['existe_evidencia'] == 'si'){
+                }else if($bd_json->vinculacion['doc_'.$docs[$i]]['existe_evidencia'] == 'si' ||
+                $bd_json->vinculacion['doc_'.$docs[$i]]['existe_evidencia'] == '' ||
+                $bd_json->vinculacion['doc_'.$docs[$i]]['existe_evidencia'] == 'VACIO'){
                     $json1['doc_'.$docs[$i]]['existe_evidencia'] = 'no_aplica';
                 }
+
+
 
             }else if($i >= 7 && $i <= 19){
                 if(!empty($bd_json->academico['doc_'.$docs[$i]]['url_documento'])){
                     $json2['doc_'.$docs[$i]]['existe_evidencia'] = 'si';
 
-                }else if($bd_json->academico['doc_'.$docs[$i]]['existe_evidencia'] == 'si'){
+                }else if($bd_json->academico['doc_'.$docs[$i]]['existe_evidencia'] == 'si' ||
+                $bd_json->academico['doc_'.$docs[$i]]['existe_evidencia'] == '' ||
+                $bd_json->academico['doc_'.$docs[$i]]['existe_evidencia'] == 'VACIO'){
                     if($i != 16 && $i != 17){
                         $json2['doc_'.$docs[$i]]['existe_evidencia'] = 'no_aplica';
                     }
@@ -697,11 +704,22 @@ class ExpedienteController extends Controller
                 if(!empty($bd_json->administrativo['doc_'.$docs[$i]]['url_documento'])){
                     $json3['doc_'.$docs[$i]]['existe_evidencia'] = 'si';
 
-                }else if($bd_json->administrativo['doc_'.$docs[$i]]['existe_evidencia'] == 'si'){
+                }else if($bd_json->administrativo['doc_'.$docs[$i]]['existe_evidencia'] == 'si' ||
+                $bd_json->administrativo['doc_'.$docs[$i]]['existe_evidencia'] == '' ||
+                $bd_json->administrativo['doc_'.$docs[$i]]['existe_evidencia'] == 'VACIO'){
                     $json3['doc_'.$docs[$i]]['existe_evidencia'] = 'no_aplica';
                 }
 
             }
+        }
+
+        //Validamos el convenio especifico debido al campo diferente
+        if(!empty($bd_json->vinculacion['doc_1']['url_pdf_convenio'])
+        || !empty($bd_json->vinculacion['doc_1']['url_pdf_acta'])
+        || !empty($bd_json->vinculacion['doc_1']['url_documento'])){
+            $json1['doc_1']['existe_evidencia'] = 'si';
+        }else{
+            $json1['doc_1']['existe_evidencia'] = 'no_aplica';
         }
 
         //Recorremos el array de consultas y si tiene archivo colocamos si
