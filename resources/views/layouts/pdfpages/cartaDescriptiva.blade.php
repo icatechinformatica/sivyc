@@ -159,7 +159,9 @@
                     @foreach ($contenido_tematico as $key=>$moist)
                         @if($moist->nivel == 1)
                             @php
-                                if($key != 0){ $modulo++;}
+                                // if($key != 0){
+                                    $modulo++;
+                                // }
                                 $id_principal = $moist->id;
                                 $presencial = explode(':',$moist->duracion);
                                 $sincrono = explode(':',$moist->sincrona);
@@ -167,7 +169,7 @@
                             @endphp
                             <tr>
                                 <td>
-                                    @if($key != 0 && $moist->nivel == 1) Módulo {{$modulo}} @endif
+                                    @if($moist->nivel == 1) Módulo {{$modulo}} @endif
                                     <br>
                                     {{$moist->nombre_modulo}}<br>
                                     @if($contenido_tematico[$key+1]->id_parent == $id_principal)
