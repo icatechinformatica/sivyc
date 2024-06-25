@@ -894,6 +894,12 @@
                                     href="{{$path_files.$search_docs['urldoc8']}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                </a>
                             @endif
                         </td>
                         <td></td>
