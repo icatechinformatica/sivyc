@@ -513,7 +513,7 @@ class ExpedienteController extends Controller
 
         //Variables
         $doc2 = $doc5 = $doc6 = $doc7 = $validRec = $doc8 = $doc9 = $doc10 = $doc11 = $doc20 = $doc21 =
-        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = '';
+        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = $anioCurso = '';
         $docAlumnos = []; $reciboProvi =  true;
         //Soporte de constancias
         if(!empty($bddoc2)){$doc2 = $bddoc2;}
