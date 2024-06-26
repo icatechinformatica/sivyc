@@ -428,10 +428,12 @@ class ExpedienteController extends Controller
             DB::raw("requisitos->>'documento' as documento"),
             DB::raw("requisitos->>'chk_curp' as curp"),
             DB::raw("requisitos->>'chk_escolaridad' as estudio"),
+            DB::raw("requisitos->>'chk_acta_nacimiento' as acta_nacimiento"),
             DB::raw("CASE
                         WHEN (requisitos->>'documento' IS NULL OR requisitos->>'documento' = '')
                             AND (requisitos->>'chk_curp' IS NULL OR requisitos->>'chk_curp' = '')
                             AND (requisitos->>'chk_escolaridad' IS NULL OR requisitos->>'chk_escolaridad' = '')
+                            AND (requisitos->>'chk_acta_nacimiento' IS NULL OR requisitos->>'chk_acta_nacimiento' = '')
                         THEN 'VACIO'
                         ELSE NULL
                      END as estado_requisitos")
@@ -498,7 +500,7 @@ class ExpedienteController extends Controller
         $bdReciboP = DB::table('tbl_recibos')->where('folio_grupo', $folio)->where('status_folio', '!=', 'CANCELADO')->whereNotNull('status_folio')->value('file_pdf');
 
         $bdReciboT = DB::table('tbl_cursos')
-        ->select('comprobante_pago', DB::raw("
+        ->select('comprobante_pago', DB::raw("EXTRACT(YEAR FROM termino) as anio_curso"), DB::raw("
             CASE
                 WHEN comprobante_pago IS NOT NULL
                     AND (folio_pago ILIKE '%PROV%' OR folio_pago ~ '^[0-9]+$')
@@ -509,10 +511,9 @@ class ExpedienteController extends Controller
         ->where('folio_grupo', '=', $folio)
         ->first();
 
-
         //Variables
         $doc2 = $doc5 = $doc6 = $doc7 = $validRec = $doc8 = $doc9 = $doc10 = $doc11 = $doc20 = $doc21 =
-        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = '';
+        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = $anioCurso = '';
         $docAlumnos = []; $reciboProvi =  true;
         //Soporte de constancias
         if(!empty($bddoc2)){$doc2 = $bddoc2;}
@@ -528,6 +529,7 @@ class ExpedienteController extends Controller
         else if(!empty($bdReciboT->comprobante_pago)){
             $doc7 = $bdReciboT->comprobante_pago;
             $validRec = $bdReciboT->es_valido;
+            $anioCurso = $bdReciboT->anio_curso;
         }
 
         //Arc01
@@ -575,7 +577,7 @@ class ExpedienteController extends Controller
         $url_docs = array(
             "urldoc2" => $doc2,"urldoc5" => $doc5,"urldoc6" => $doc6,"urldoc7" => $doc7,"urldoc8" => $doc8,"urldoc9" => $doc9,"urldoc10" => $doc10,"urldoc11" => $doc11,
             "urldoc20" => $doc20,"urldoc21" => $doc21,"urldoc22" => $doc22,"urldoc23" =>$doc23,"urldoc24"=>$doc24,
-            "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec, "urldoc16"=>$docCalif, "alumnos_req" => $docAlumnos, 'doc_xml' => $docXml
+            "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec, "urldoc16"=>$docCalif, "alumnos_req" => $docAlumnos, 'doc_xml' => $docXml, 'anio_curso' => $anioCurso
         );
         //$this->guardarLinks($folio, $url_docs);  #Agregar las url externas a la tabla de expedientes
         $this->proces_documentos($folio, $url_docs);
@@ -1379,6 +1381,7 @@ class ExpedienteController extends Controller
         $idsPre = $request->input('identPre', []);
         $CheckboxCurp = json_decode($request->input('checksCurp'));
         $CheckboxEstudios = json_decode($request->input('checksEstudios'));
+        $CheckboxActaNacim = json_decode($request->input('checksActaNacim'));
         $documentos = $request->file('documentos');
 
         // Insertar documento
@@ -1410,6 +1413,9 @@ class ExpedienteController extends Controller
             }
         }
 
+        //HACER CONSULTA POR ALUMNOS PARA TRAER LA CURP SI CHECK ESTUDIOS ES IGUAL A TRUE ENTONCES HACEMOS LA CONSULTA Y ACTUALIZAMOS POR LA CURP
+        //DE LO CONTRARIO HACEMOS LA ACTUALIZACION
+
         //Actualizar curp o estudios
         foreach ($alumnosIds as $key => $id) {
             try {
@@ -1417,6 +1423,7 @@ class ExpedienteController extends Controller
                 $json = $Alumnos->requisitos;
                 $json['chk_curp'] = $CheckboxCurp[$key];
                 $json['chk_escolaridad'] = $CheckboxEstudios[$key];
+                $json['chk_acta_nacimiento'] = $CheckboxActaNacim[$key];
                 // $json['documento'] = "";
                 $Alumnos->requisitos = $json;
                 $Alumnos->save();
@@ -1445,18 +1452,23 @@ class ExpedienteController extends Controller
     public function upload_recibo(Request $request){
 
         $folio_recibo = $request->input('folio_recibo');
+        $fecha_recibo = $request->input('fecha_recibo');
         $rol = $request->input('rol');
         $id_curso = $request->input('id_curso');
 
         $consulta = DB::table('tbl_cursos')->select('comprobante_pago', 'folio_grupo')->where('id', '=', $id_curso)->first();
 
-        if(!empty($consulta) && !empty($folio_recibo) && !empty($id_curso)) {
+        if(!empty($consulta) && !empty($folio_recibo) && !empty($id_curso) && !empty($fecha_recibo)) {
             $namePdf = basename($consulta->comprobante_pago);
             if(empty($namePdf)){ $namePdf = trim("comprobante_pago" . "_". $consulta->folio_grupo . date('YmdHis'). ".pdf");}
 
             //Cargar pdf
             if($request->hasFile('file')){
                 try {
+                    $filePath = 'uploadFiles/UNIDAD/comprobantes_pagos/'.$namePdf;
+                    if (Storage::exists($filePath)) {
+                        Storage::delete($filePath);
+                    }
                     $pdf = $request->file('file');
                     $directorio = '/UNIDAD/comprobantes_pagos/'.$namePdf;
                     $pdf->storeAs('/uploadFiles/UNIDAD/comprobantes_pagos/', $namePdf);
@@ -1468,7 +1480,7 @@ class ExpedienteController extends Controller
                     ->update([
                         'comprobante_pago' => $directorio,
                         'folio_pago' => $folio_recibo,
-                        'fecha_pago' => date('Y-m-d')
+                        'fecha_pago' => $fecha_recibo
                     ]);
                 } catch (\Throwable $th) {
                     return response()->json([

@@ -148,7 +148,7 @@
             position: relative;
             margin: auto;
             padding: 0;
-            width: 40%;
+            width: 60%;
             max-width: 800px;
             height: 80%;
             overflow: hidden;
@@ -783,11 +783,17 @@
                         </td>
                         <td>
                             {{-- Subir recibo--}}
-                            {{-- @if ($search_docs['validRecibo'] == 'Provisional') --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="{{($search_docs['validRecibo'] == 'Provisional') ? '' : 'd-none' }}">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="
+                            @if($search_docs['validRecibo'] == 'Provisional' && $search_docs['anio_curso'] == '2023')
+
+                            @elseif($search_docs['validRecibo'] != 'Provisional' && $search_docs['anio_curso'] != '2023')
+                                d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc7" style="display: none;" onchange="checkIcon('iconCheck7', 'pdfInputDoc7')">
                                     <input type="hidden" name="" id="txt_folio_recibo" value="">
+                                    <input type="hidden" name="" id="txt_folio_fecha" value="">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc7').click();">Archivo
                                     <div id="iconCheck7" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
                                 </div>
@@ -1228,7 +1234,9 @@
                     {{-- esto es un extra se formato de entrega de constancias --}}
                     <tr>
                         <td>g.1</td>
-                        <td>Memorando y/o Oficio de soporte de entrega de constancias.</td>
+                        <td>
+                            Acta de cancelación de constancias por no solicitadas/memorándum de remisión de constancias por medios digitales con anexos.
+                        </td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion25" id="yes_req25" value="si" {{($v_radios[1]['doc_25'] == 'si') ? 'checked' : ''}}>
@@ -2057,13 +2065,14 @@
                                 <input type="hidden" name="folioG" value="{{(!empty($data_cursos->folio_grupo)) ? $data_cursos->folio_grupo : ''}}">
                                 <input type="hidden" name="checksCurp" value="" id="checksCurp">
                                 <input type="hidden" name="checksEstudios" value="" id="checksEstudios">
+                                <input type="hidden" name="checksActaNacim" value="" id="checksActaNacim">
                                 <table class="table-hover">
                                     <thead>
                                         <tr>
                                             <th colspan="1">Documentos</th>
                                             <th>Nombre del Alumno</th>
                                             <th>PDF</th>
-                                            <th colspan="3">Subir PDF</th>
+                                            <th colspan="4">Subir PDF</th>
                                         </tr>
                                         <tr>
                                             <th>Curp</th>
@@ -2071,7 +2080,8 @@
                                             <th></th>
                                             <th></th>
                                             <th>Curp</th>
-                                            <th>C.Estudios</th>
+                                            <th>C.Estudio</th>
+                                            <th>Acta Nacim.</th>
                                             <th>Subir</th>
                                         </tr>
                                     </thead>
@@ -2117,8 +2127,19 @@
                                                             >
                                                         </div>
                                                     </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check mb-4">
+                                                            <input class="form-check-input checkbox-acta" type="checkbox" value="true" id="" name=""
+                                                            @if ($valor['acta_nacimiento'] == 'true' && !empty($valor['documento']))
+                                                                checked
+                                                                disabled
+                                                            @endif
+                                                            >
+                                                        </div>
+                                                    </td>
                                                     <td>
-                                                        @if (($valor['curp'] == 'false' || $valor['estudio'] == 'false') || (empty($valor['curp'] ) || empty($valor['estudio'])))
+                                                        @if (($valor['curp'] == 'false' || $valor['estudio'] == 'false' || $valor['acta_nacimiento'] == 'false') ||
+                                                            (empty($valor['curp'] ) || empty($valor['estudio']) || empty($valor['acta_nacimiento']) ))
                                                             <div class="file-input-wrapper">
                                                                 <i class="fas fa-upload file-icon"></i>
                                                                 <input type="file" class="file-input" name="documentos[{{ $valor['id'] }}]" id="docAlumno{{ $valor['id'] }}">
@@ -2233,18 +2254,25 @@
                     loader('show');
                     let valoresCheckboxCurp = [];
                     $('.checkbox-curp').each(function() {
-                        var valor = $(this).is(':checked') ? $(this).val() : null; // Si está marcado, toma el valor; de lo contrario, establece null
+                        let valor = $(this).is(':checked') ? $(this).val() : null; // Si está marcado, toma el valor; de lo contrario, establece null
                         valoresCheckboxCurp.push(valor);
                     });
 
                     let valoresCheckboxEstu = [];
                     $('.checkbox-estudios').each(function() {
-                        var valor = $(this).is(':checked') ? $(this).val() : null; // Si está marcado, toma el valor; de lo contrario, establece null
+                        let valor = $(this).is(':checked') ? $(this).val() : null; // Si está marcado, toma el valor; de lo contrario, establece null
                         valoresCheckboxEstu.push(valor);
+                    });
+
+                    let valoresCheckboxActaN = [];
+                    $('.checkbox-acta').each(function() {
+                        let valor = $(this).is(':checked') ? $(this).val() : null; // Si está marcado, toma el valor; de lo contrario, establece null
+                        valoresCheckboxActaN.push(valor);
                     });
 
                     $("#checksCurp").val(JSON.stringify(valoresCheckboxCurp));
                     $("#checksEstudios").val(JSON.stringify(valoresCheckboxEstu));
+                    $("#checksActaNacim").val(JSON.stringify(valoresCheckboxActaN));
 
                     $("#frmRequisitos").attr('action', "{{ route('expunico.save.requisitos')}}");
                     $("#frmRequisitos").attr("target", '_self');
@@ -2416,9 +2444,12 @@
                 event.preventDefault();
                 return new Promise((resolve, reject) => {
                     let inputFiles = {};
-                    let maxSize = 5 * 1024 * 1024; // Tamaño máximo en bytes (5 megabytes)
+
                     //VINCULACION
                     if (rol == 1) {
+                        let mb5 = 5 * 1024 * 1024;
+                        let mb20 = 20 * 1024 * 1024;
+                        let maxSize;
                         let arrayDocs = [1,3,4,'_v8']; //Documentos que van a ser obtenidos
                         let docs = [1,3,4,8];
                         for (let i = 0; i < arrayDocs.length; i++) {
@@ -2428,8 +2459,11 @@
                             //Validamos el tamaño de los documentos
                             if (inputFile.files.length > 0) {
                                 let fileSize = inputFile.files[0].size;
+                                maxSize = mb5;
+                                if (i == 0 || i == 2) {maxSize = mb20}
                                 if (fileSize > maxSize) {
-                                    alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de 5 megabytes.');
+                                    // alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de 5 megabytes.');
+                                    alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de '+(maxSize / (1024 * 1024)) +' megabytes.');
                                     loader('hide');
                                     return false; //Detenemos el proceso
                                 }
@@ -2471,6 +2505,7 @@
                     }
 
                     if (rol == 3) { //Academico
+                        let maxSize = 5 * 1024 * 1024;
                         for (let i = 22; i <= 23; i++) {
                             let inputFile = document.getElementById('pdfInputDoc' + i);
                             inputFiles['doc_'+i] = inputFile;
@@ -2538,14 +2573,24 @@
                     iconIndic.style.display = 'inline-block';
 
                     if(idIcon === 'iconCheck7'){ //Solo mostrar cuando es recibo de pago provisional
+                        //Folio de recibo
                         let folio_recibo = prompt("Por favor, ingresa el folio de recibo:");
-                        if (folio_recibo !== null) {
-                            $("#txt_folio_recibo").val(folio_recibo);
-                            // console.log("El valor ingresado es: " + valor);
-                            // Aquí puedes hacer algo con el valor ingresado, como enviarlo con el formulario
+                        if (folio_recibo !== null) {$("#txt_folio_recibo").val(folio_recibo);}
+                        else {alert("Debe ingresar el folio del recibo")}
+
+                        //Fecha de recibo
+                        let fecha_recibo = prompt("Por favor, ingresa la fecha de recibo con formato (YYYY-MM-DD)");
+                        // if (fecha_recibo !== null) {$("#txt_folio_fecha").val(fecha_recibo);}
+                        // else {alert("Debe ingresar una fecha.")}
+
+                        if (fecha_recibo !== null) {
+                            if (esFechaValida(fecha_recibo)) {
+                                $("#txt_folio_fecha").val(fecha_recibo);
+                            } else {
+                                alert("Debe ingresar una fecha válida con el formato (YYYY-MM-DD).");
+                            }
                         } else {
-                            // console.log("El usuario canceló el cuadro de diálogo.");
-                            alert("Debe ingresar el folio del recibo")
+                            alert("Debe ingresar una fecha.");
                         }
                     }
 
@@ -2554,6 +2599,15 @@
                 }
             }
 
+            function esFechaValida(fecha) {
+                const regex = /^\d{4}-\d{2}-\d{2}$/;
+                if (!regex.test(fecha)) {
+                    return false;
+                }
+                const [year, month, day] = fecha.split('-').map(Number);
+                const fechaObjeto = new Date(year, month - 1, day);
+                return fechaObjeto.getFullYear() === year && (fechaObjeto.getMonth() + 1) === month && fechaObjeto.getDate() === day;
+            }
 
             //Ajax para eliminar documento
             function delete_pdf(event, radioP, url_doc, rol, idcurso) {
@@ -2696,6 +2750,7 @@
                 let maxSize = 5 * 1024 * 1024;
                 let inputFileRecibo = document.getElementById('pdfInputDoc7');
                 let folio_recibo = document.getElementById('txt_folio_recibo').value;
+                let fecha_recibo = document.getElementById('txt_folio_fecha').value;
                 //Validamos que pese menos de 5 mb
                 if (inputFileRecibo.files.length > 0) {
                     let fileSize = inputFileRecibo.files[0].size;
@@ -2706,13 +2761,14 @@
                     }
                 }
                 //Envio de recibo
-                if(folio_recibo != "" && inputFileRecibo.files.length > 0){
+                if(folio_recibo != "" && fecha_recibo != "" && inputFileRecibo.files.length > 0){
                     let formData = new FormData();
                     formData.append('_token', '{{ csrf_token() }}');
                     formData.append('file', inputFileRecibo.files[0]);
                     formData.append('rol', rol);
                     formData.append('id_curso', idcurso);
                     formData.append('folio_recibo', folio_recibo);
+                    formData.append('fecha_recibo', fecha_recibo);
 
                     $.ajax({
                         type: "POST",
