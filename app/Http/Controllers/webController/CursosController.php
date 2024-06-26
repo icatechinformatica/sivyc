@@ -24,6 +24,7 @@ use App\Excel\xlsCursosMultiple;
 use App\Excel\xlsCursosDV;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
+use PDF;
 
 class CursosController extends Controller
 {
@@ -332,7 +333,10 @@ class CursosController extends Controller
             // dd($gv);
             $categorias = $this->categorias;
             $perfil = $this->perfil;
-            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv','dependencias','dp','servicios','categorias','perfil'));
+
+            //informacion de carta descriptiva
+            $carta_descriptiva = DB::Table('tbl_carta_descriptiva')->Where('id_curso',$cursos[0]->id)->Value('id');
+            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv','dependencias','dp','servicios','categorias','perfil','carta_descriptiva'));
 
         // } catch (\Throwable $th) {
         //     //throw $th;
@@ -592,156 +596,6 @@ class CursosController extends Controller
                 array_push($unidades, $unidad);
             }
         }
-
-        // if($this->checkComparator($request->chk_tuxtla) == TRUE)
-        // {
-        //     array_push($unidades, 'TUXTLA');
-        // }
-        // if($this->checkComparator($request->chk_tapachula) == TRUE)
-        // {
-        //     array_push($unidades, 'TAPACHULA');
-        // }
-        // if($this->checkComparator($request->chk_comitan) == TRUE)
-        // {
-        //     array_push($unidades, 'COMITAN');
-        // }
-        // if($this->checkComparator($request->chk_reforma) == TRUE)
-        // {
-        //     array_push($unidades, 'REFORMA');
-        // }
-        // if($this->checkComparator($request->chk_tonala) == TRUE)
-        // {
-        //     array_push($unidades, 'TONALA');
-        // }
-        // if($this->checkComparator($request->chk_villaflores) == TRUE)
-        // {
-        //     array_push($unidades, 'VILLAFLORES');
-        // }
-        // if($this->checkComparator($request->chk_jiquipilas) == TRUE)
-        // {
-        //     array_push($unidades, 'JIQUIPILAS');
-        // }
-        // if($this->checkComparator($request->chk_catazaja) == TRUE)
-        // {
-        //     array_push($unidades, 'CATAZAJA');
-        // }
-        // if($this->checkComparator($request->chk_yajalon) == TRUE)
-        // {
-        //     array_push($unidades, 'YAJALON');
-        // }
-        // if($this->checkComparator($request->chk_san_cristobal) == TRUE)
-        // {
-        //     array_push($unidades, 'SAN CRISTOBAL');
-        // }
-        // if($this->checkComparator($request->chk_chiapa_de_corzo) == TRUE)
-        // {
-        //     array_push($unidades, 'CHIAPA DE CORZO');
-        // }
-        // if($this->checkComparator($request->chk_motozintla) == TRUE)
-        // {
-        //     array_push($unidades, 'MOTOZINTLA');
-        // }
-        // if($this->checkComparator($request->chk_berriozabal) == TRUE)
-        // {
-        //     array_push($unidades, 'BERRIOZABAL');
-        // }
-        // if($this->checkComparator($request->chk_pijijiapan) == TRUE)
-        // {
-        //     array_push($unidades, 'PIJIJIAPAN');
-        // }
-        // if($this->checkComparator($request->chk_jitotol) == TRUE)
-        // {
-        //     array_push($unidades, 'JITOTOL');
-        // }
-        // if($this->checkComparator($request->chk_la_concordia) == TRUE)
-        // {
-        //     array_push($unidades, 'LA CONCORDIA');
-        // }
-        // if($this->checkComparator($request->chk_venustiano_carranza) == TRUE)
-        // {
-        //     array_push($unidades, 'VENUSTIANO CARRANZA');
-        // }
-        // if($this->checkComparator($request->chk_tila) == TRUE)
-        // {
-        //     array_push($unidades, 'TILA');
-        // }
-        // if($this->checkComparator($request->chk_teopisca) == TRUE)
-        // {
-        //     array_push($unidades, 'TEOPISCA');
-        // }
-        // if($this->checkComparator($request->chk_ocosingo) == TRUE)
-        // {
-        //     array_push($unidades, 'OCOSINGO');
-        // }
-        // if($this->checkComparator($request->chk_cintalapa) == TRUE)
-        // {
-        //     array_push($unidades, 'CINTALAPA');
-        // }
-        // if($this->checkComparator($request->chk_copainala) == TRUE)
-        // {
-        //     array_push($unidades, 'COPAINALA');
-        // }
-        // if($this->checkComparator($request->chk_soyalo) == TRUE)
-        // {
-        //     array_push($unidades, 'SOYALO');
-        // }
-        // if($this->checkComparator($request->chk_angel_albino_corzo) == TRUE)
-        // {
-        //     array_push($unidades, 'ANGEL ALBINO CORZO');
-        // }
-        // if($this->checkComparator($request->chk_arriaga) == TRUE)
-        // {
-        //     array_push($unidades, 'ARRIAGA');
-        // }
-        // if($this->checkComparator($request->chk_pichucalco) == TRUE)
-        // {
-        //     array_push($unidades, 'PICHUCALCO');
-        // }
-        // if($this->checkComparator($request->chk_juarez) == TRUE)
-        // {
-        //     array_push($unidades, 'JUAREZ');
-        // }
-        // if($this->checkComparator($request->chk_simojovel) == TRUE)
-        // {
-        //     array_push($unidades, 'SIMOJOVEL');
-        // }
-        // if($this->checkComparator($request->chk_mapastepec) == TRUE)
-        // {
-        //     array_push($unidades, 'MAPASTEPEC');
-        // }
-        // if($this->checkComparator($request->chk_villa_corzo) == TRUE)
-        // {
-        //     array_push($unidades, 'VILLA CORZO');
-        // }
-        // if($this->checkComparator($request->chk_cacahoatan) == TRUE)
-        // {
-        //     array_push($unidades, 'CACAHOATAN');
-        // }
-        // if($this->checkComparator($request->chk_once_de_abril) == TRUE)
-        // {
-        //     array_push($unidades, 'ONCE DE ABRIL');
-        // }
-        // if($this->checkComparator($request->chk_tuxtla_chico) == TRUE)
-        // {
-        //     array_push($unidades, 'TUXTLA CHICO');
-        // }
-        // if($this->checkComparator($request->chk_oxchuc) == TRUE)
-        // {
-        //     array_push($unidades, 'OXCHUC');
-        // }
-        // if($this->checkComparator($request->chk_chamula) == TRUE)
-        // {
-        //     array_push($unidades, 'CHAMULA');
-        // }
-        // if($this->checkComparator($request->chk_ostuacan) == TRUE)
-        // {
-        //     array_push($unidades, 'OSTUACAN');
-        // }
-        // if($this->checkComparator($request->chk_palenque) == TRUE)
-        // {
-        //     array_push($unidades, 'PALENQUE');
-        // }
-        // dd($unidades);
         $reform = curso::find($request->id_available);
         $reform->unidades_disponible = $unidades;
         $reform->save();
@@ -1220,6 +1074,37 @@ class CursosController extends Controller
             return redirect()->route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($id_curso), 'parte' => 'tematico'])->with('message', 'Error en la estructura de numeración: '.$th->getMessage());
         }
 
+    }
+
+    public function carta_descriptiva_pdf($id) {
+        $carta_descriptiva = DB::Table('tbl_carta_descriptiva')->Where('id_curso',$id)->First();
+        $carta_descriptiva->datos_generales = json_decode($carta_descriptiva->datos_generales);
+        $carta_descriptiva->rec_didacticos = json_decode($carta_descriptiva->rec_didacticos);
+
+        $contenido_tematico = DB::Table('contenido_tematico')->Where('id_curso',$id)->OrderBy('id','ASC')->Get();
+
+        $data_curso = DB::Table('cursos')->Select('modalidad','tipo_curso','nombre_curso','horas','e.nombre AS especialidad','a.formacion_profesional AS area')
+            ->Join('especialidades AS e','e.id','cursos.id_especialidad')
+            ->Join('area AS a','a.id','cursos.area')
+            ->Where('cursos.id',$id)
+            ->First();
+
+        $bdEjercicio = DB::Table('tbl_instituto')->Select('fini','ffin')->First();
+        $ejercicio = '';
+        if($bdEjercicio) {
+            $date1 = Carbon::createFromFormat('d-M', $bdEjercicio->fini);
+            $date2 = Carbon::createFromFormat('d-M', $bdEjercicio->ffin);
+            $fActual = Carbon::now();
+            if($fActual->lessThan($date1)) {
+                $ejercicio = ($fActual->year - 1) . "-" . $fActual->year;
+            } else if($fActual->greaterThan($date2)) {
+                $ejercicio - $fActual->year . "-" . ($fActual->year + 1);
+            }
+        }
+
+        $pdf = PDF::loadView('layouts.pdfpages.cartaDescriptiva',compact('carta_descriptiva','contenido_tematico','data_curso','ejercicio'));
+        $pdf->setPaper('letter', 'Landscape');
+        return  $pdf->stream('medium.pdf');
     }
 
 

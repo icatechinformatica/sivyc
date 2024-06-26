@@ -120,6 +120,10 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/vista/expedientes/validar', 'ExpeController\ExpedienteController@validar_dta')->name('expunico.valid.dta')->middleware('can:expedientes.unicos.index');
     /**Rutas de buzon para visualizar los expedientes pendientes, enviados, validados */
     Route::get('/vista/buzon/expedientes/', 'ExpeController\BuzonexpController@index')->name('buzon.expunico.index')->middleware('can:expunico.buzon.index');
+    //Subida de pdf recibo de pago
+    Route::post('/vista/expedientes/uploadrecibo', 'ExpeController\ExpedienteController@upload_recibo')->name('expunico.upload.recibo')->middleware('can:expedientes.unicos.index');
+    // Guardar requisitos de alumnos
+    Route::post('/vista/expedientes/requisitos', 'ExpeController\ExpedienteController@requisitos_alumnos')->name('expunico.save.requisitos')->middleware('can:expedientes.unicos.index');
 });
 /**Generar pdf expedientes unicos */
 Route::get('vista/expedientes/genpdf/{folio}', 'ExpeController\ExpedienteController@pdf_expediente')->name('expunico.gen.pdfexpe');
@@ -151,3 +155,4 @@ Route::post('/cursos/save/primera', 'webController\CursosController@save_parte_u
 Route::post('/cursos/save/segunda', 'webController\CursosController@save_parte_dos')->name('cursos-catalogo.savepartedos');  //Guardar segunda parte
 Route::post('/cursos/save/tercera', 'webController\CursosController@save_parte_tres')->name('cursos-catalogo.savepartetres');  //Guardar tercera parte
 Route::post('/cursos/edit/carta', 'webController\CursosController@edit_cartadescrip')->name('cursos-catalogo.editcartadecrip'); //Editar y eliminar
+Route::get('/cursos/carta-descriptiva-pdf/{id}', 'webController\CursosController@carta_descriptiva_pdf')->name('carta-descriptiva-pdf'); //Generar PDF de carta descriptiva

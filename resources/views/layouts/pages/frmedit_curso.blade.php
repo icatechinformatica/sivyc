@@ -159,25 +159,28 @@
         </div>
         <div class="form-row">
             @if ($cursos[0]->documento_solicitud_autorizacion)
-            <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->documento_solicitud_autorizacion}}" target="_blank">
-                MEMORÁNDUM SOLICITUD
-            </a>
+                <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->documento_solicitud_autorizacion}}" target="_blank">
+                    MEMORÁNDUM SOLICITUD
+                </a>
             @endif
             @if ($cursos[0]->documento_memo_validacion)
-            <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->documento_memo_validacion}}" target="_blank">
-                MEMORÁNDUM VALIDACIÓN
-            </a>
+                <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->documento_memo_validacion}}" target="_blank">
+                    MEMORÁNDUM VALIDACIÓN
+                </a>
             @endif
             @if ($cursos[0]->documento_memo_actualizacion)
-            <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->documento_memo_actualizacion}}" target="_blank">
-                MEMORÁNDUM ACTUALIZACIÓN
-            </a>
+                <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->documento_memo_actualizacion}}" target="_blank">
+                    MEMORÁNDUM ACTUALIZACIÓN
+                </a>
             @endif
-
-            @if ($cursos[0]->file_carta_descriptiva)
-            <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->file_carta_descriptiva}}" target="_blank">
-                CARTA DESCRIPTIVA
-            </a>
+            @if ($cursos[0]->file_carta_descriptiva && is_null($carta_descriptiva))
+                <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->file_carta_descriptiva}}" target="_blank">
+                    CARTA DESCRIPTIVA
+                </a>
+            @else
+                <a class="btn btn-warning text-dark" href="{{route('carta-descriptiva-pdf', ['id' => $cursos[0]->id])}}" target="_blank">
+                    CARTA DESCRIPTIVA
+                </a>
             @endif
         </div>
         <hr />
