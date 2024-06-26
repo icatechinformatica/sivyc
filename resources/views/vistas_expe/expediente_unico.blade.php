@@ -2460,7 +2460,7 @@
                             if (inputFile.files.length > 0) {
                                 let fileSize = inputFile.files[0].size;
                                 maxSize = mb5;
-                                if (i == 2) {maxSize = mb20}
+                                if (i == 0 || i == 2) {maxSize = mb20}
                                 if (fileSize > maxSize) {
                                     // alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de 5 megabytes.');
                                     alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de '+(maxSize / (1024 * 1024)) +' megabytes.');
