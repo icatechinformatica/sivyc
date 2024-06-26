@@ -633,7 +633,7 @@
                                     'disabled');
                             },
                             success: function(response) {
-
+                            console.log(response);
                             },
                             error: function(xhr, textStatus, error) {
                                 // manejar errores
