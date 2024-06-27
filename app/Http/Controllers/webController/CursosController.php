@@ -1031,6 +1031,11 @@ class CursosController extends Controller
         ## Datos del modulo
         $datos_modulo = ['id_parent' => 0, 'id_curso'=> $id_curso, 'nombre_modulo'=>$name_modulo, 'nivel'=> 1, 'duracion'=> $duracion_mod,
         'sincrona'=> $sincrona_mod, 'asincrona'=> $asincrona_mod, 'estra_didac'=> $estra_didac, 'process_eval' => $proces_eval, 'iduser_created'=> Auth::user()->id];
+        if($datosOrganizados != [] && $datosOrganizados[0]['numeracion'][0] != 0) {
+            $datos_modulo['numeracion'] = $datosOrganizados[0]['numeracion'][0];
+        } else {
+            $datos_modulo['numeracion'] = 0;
+        }
 
         //Nuevo codigo de inserción
         try {
@@ -1167,6 +1172,7 @@ class CursosController extends Controller
             ->update([
                 'id_parent' => 0,
                 'id_curso'=> $datos['id_curso'],
+                'numeracion'=> $datos['numeracion'],
                 'nombre_modulo' => $datos['nombre_modulo'],
                 'nivel' => $datos['nivel'],
                 'duracion'=> $datos['duracion'],
@@ -1183,6 +1189,7 @@ class CursosController extends Controller
                     ->insertGetId([
                         'id_parent' => 0,
                         'id_curso'=> $datos['id_curso'],
+                        'numeracion'=> $datos['numeracion'],
                         'nombre_modulo' => $datos['nombre_modulo'],
                         'nivel' => $datos['nivel'],
                         'duracion'=> $datos['duracion'],
