@@ -533,8 +533,8 @@ class ExpedienteController extends Controller
         }
 
         //Arc01
-        if(!empty($bddoc789->file_arc01) && ($bddoc789->arc == '01')){$doc8 = $bddoc789->file_arc01;}
-        if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '01')){$doc9 = $bddoc789->pdf_curso;}
+        if(!empty($bddoc789->file_arc01) && ($bddoc789->arc == '01' || $bddoc789->arc == '02')){$doc8 = $bddoc789->file_arc01;}
+        if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '01' || $bddoc789->arc == '02')){$doc9 = $bddoc789->pdf_curso;}
         if(!empty($bddoc789->file_arc02) && ($bddoc789->arc == '02')){$doc10 = $bddoc789->file_arc02;}
         if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '02')){$doc11 = $bddoc789->pdf_curso;}
         if(!empty($bddoc2021->doc_supre)){$doc20 = $bddoc2021->doc_supre;}
@@ -965,7 +965,9 @@ class ExpedienteController extends Controller
                             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.${"img" . $num_docs[$i]};
                             if (Storage::exists($filePath)) {
                                 Storage::delete($filePath);
-                            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
+                            } else {
+                                // return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]);
+                            }
                         }
                         #Agregar Registros el doc20 es el doc25  del json
                         $vinc = ExpeUnico::find($idcurso);
@@ -1018,7 +1020,9 @@ class ExpedienteController extends Controller
                             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.${"img" . $i};
                             if (Storage::exists($filePath)) {
                                 Storage::delete($filePath);
-                            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
+                            } else {
+                                // return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]);
+                            }
                         }
                         #Agregar Registros el doc20 es el doc25  del json
                         $acad = ExpeUnico::find($idcurso);
@@ -1071,7 +1075,9 @@ class ExpedienteController extends Controller
                             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.${"img" . $num_docs[$i]};
                             if (Storage::exists($filePath)) {
                                 Storage::delete($filePath);
-                            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
+                            } else {
+                                // return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]);
+                            }
                         }
                         #Agregar Registros el doc20 es el doc25  del json
                         $deleg = ExpeUnico::find($idcurso);
@@ -1156,7 +1162,9 @@ class ExpedienteController extends Controller
             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.$url;
             if (Storage::exists($filePath)) {
                 Storage::delete($filePath);
-            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
+            } else {
+                // return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]);
+            }
             #Guardamos en la bd
             try {
                 $json = ExpeUnico::find($idcurso);
@@ -1412,9 +1420,6 @@ class ExpedienteController extends Controller
                 }
             }
         }
-
-        //HACER CONSULTA POR ALUMNOS PARA TRAER LA CURP SI CHECK ESTUDIOS ES IGUAL A TRUE ENTONCES HACEMOS LA CONSULTA Y ACTUALIZAMOS POR LA CURP
-        //DE LO CONTRARIO HACEMOS LA ACTUALIZACION
 
         //Actualizar curp o estudios
         foreach ($alumnosIds as $key => $id) {
