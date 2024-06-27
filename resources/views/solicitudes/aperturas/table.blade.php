@@ -60,7 +60,7 @@
                     */
                     switch($opt){
                         case "ARC01":
-                            if(($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') AND $g->status_folio<>'SOPORTE') $activar=false;
+                            if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD' OR $g->status_folio<>'SOPORTE') $activar=false;
                             $mextemporaneo = $g->mextemporaneo;
                             $rextemporaneo = $g->rextemporaneo;
                         break;
