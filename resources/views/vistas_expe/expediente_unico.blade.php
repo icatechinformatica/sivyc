@@ -2105,6 +2105,9 @@
             <div class="modal-content">
                 <div class="modal-header py-2">
                     <h5 class="modal-title font-weight-bold">Alumnos</h5>
+                    <div class="alert alert-danger mt-5 p-2 mb-0" role="alert">
+                        <strong>Nota!</strong> Cargue un solo PDF por alumno, donde contenga los requisitos seleccionados.
+                      </div>
                     <button type="button" class="close" onclick="closeModal('modalAlumnosCurp')" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -2121,13 +2124,13 @@
                                 <table class="table-hover">
                                     <thead>
                                         <tr>
-                                            <th colspan="1">Documentos</th>
+                                            {{-- <th colspan="1">Documentos</th> --}}
                                             <th>Nombre del Alumno</th>
                                             <th>PDF</th>
                                             <th colspan="4">Subir PDF</th>
                                         </tr>
                                         <tr>
-                                            <th>Curp</th>
+                                            {{-- <th>Curp</th> --}}
                                             {{-- <th></th> --}}
                                             <th></th>
                                             <th></th>
@@ -2140,18 +2143,18 @@
                                     <tbody>
                                             @foreach ($search_docs['alumnos_req'] as $key => $valor)
                                                 <tr>
-                                                    <td class="text-center">
-                                                        <input type="hidden" name="alumnosId[]" value="{{$valor['id']}}">
-                                                        <input type="hidden" name="docAlumnos[{{ $valor['id'] }}]" value="{{$valor['documento']}}">
-                                                        <input type="hidden" name="identPre[{{ $valor['id'] }}]" value="{{$valor['id_pre']}}">
-
+                                                    {{-- <td class="text-center">
                                                         @if ($valor['curp'] == 'true' && !empty($valor['documento']))
                                                             <i class="fa fa-check text-success" aria-hidden="true"></i>
                                                         @else
                                                             <i class="fa fa-times text-danger" aria-hidden="true"></i>
                                                         @endif
-                                                    </td>
-                                                    <td class="text-left"><span>{{$valor['alumno']}}</span></td>
+                                                    </td> --}}
+                                                    <td class="text-left">
+                                                        <input type="hidden" name="alumnosId[]" value="{{$valor['id']}}">
+                                                        <input type="hidden" name="docAlumnos[{{ $valor['id'] }}]" value="{{$valor['documento']}}">
+                                                        <input type="hidden" name="identPre[{{ $valor['id'] }}]" value="{{$valor['id_pre']}}">
+                                                        <span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
                                                     <td class="text-center">
                                                         @if (!empty($valor['documento']))
                                                             <a href="{{$valor['documento']}}" target="_blank"><i class="fa fa-file-pdf-o fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
@@ -2164,7 +2167,6 @@
                                                             <input class="form-check-input checkbox-curp" type="checkbox" value="true" id="" name=""
                                                             @if ($valor['curp'] == 'true' && !empty($valor['documento']))
                                                                 checked
-                                                                disabled
                                                             @endif
                                                             >
                                                         </div>
@@ -2174,7 +2176,6 @@
                                                             <input class="form-check-input checkbox-estudios" type="checkbox" value="true" id="" name=""
                                                             @if ($valor['estudio'] == 'true' && !empty($valor['documento']))
                                                                 checked
-                                                                disabled
                                                             @endif
                                                             >
                                                         </div>
@@ -2184,19 +2185,18 @@
                                                             <input class="form-check-input checkbox-acta" type="checkbox" value="true" id="" name=""
                                                             @if ($valor['acta_nacimiento'] == 'true' && !empty($valor['documento']))
                                                                 checked
-                                                                disabled
                                                             @endif
                                                             >
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        @if (($valor['curp'] == 'false' || $valor['estudio'] == 'false' || $valor['acta_nacimiento'] == 'false') ||
-                                                            (empty($valor['curp'] ) || empty($valor['estudio']) || empty($valor['acta_nacimiento']) ))
+                                                        {{-- @if (($valor['curp'] == 'false' || $valor['estudio'] == 'false' || $valor['acta_nacimiento'] == 'false') ||
+                                                            (empty($valor['curp'] ) || empty($valor['estudio']) || empty($valor['acta_nacimiento']) )) --}}
                                                             <div class="file-input-wrapper">
                                                                 <i class="fas fa-upload file-icon"></i>
                                                                 <input type="file" class="file-input" name="documentos[{{ $valor['id'] }}]" id="docAlumno{{ $valor['id'] }}">
                                                             </div>
-                                                        @endif
+                                                        {{-- @endif --}}
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -2253,7 +2253,7 @@
                                                     <i class="fa fa-times text-danger" aria-hidden="true"></i>
                                                 @endif
                                             </td>
-                                            <td class="text-left"><span>{{$valor['alumno']}}</span></td>
+                                            <td class="text-left"><span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
                                             <td class="text-center">
                                                 @if (!empty($valor['documento']))
                                                     <a href="{{$valor['documento']}}" target="_blank"><i class="fa fa-file-pdf-o fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
