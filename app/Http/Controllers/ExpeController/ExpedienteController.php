@@ -417,6 +417,9 @@ class ExpedienteController extends Controller
     #Realizar consultas de diferentes documento pdf en la BD
     public function search_docs($folio){
 
+        ##Obtenemos el año del curso
+        $bdanio_curso = DB::table('tbl_cursos')->select(DB::raw("EXTRACT(YEAR FROM inicio) as anio_curso"))->where('folio_grupo',$folio)->first();
+
         $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->value('memo_soporte_dependencia');
         $mod_insctructor = DB::table('tbl_cursos')->where('folio_grupo',$folio)->value('modinstructor');
 
@@ -493,8 +496,9 @@ class ExpedienteController extends Controller
         ->where('tc.folio_grupo', $folio)->where('ef.tipo_archivo', 'Lista de calificaciones')
         ->where('ef.status', 'VALIDADO')->value('tc.id');
 
-        $bdAsisEvid = DB::table('pagos as pag')->select('pag.arch_asistencia', 'pag.arch_evidencia','arch_calificaciones')->join('tbl_cursos as c', 'c.id', '=', 'pag.id_curso')
-        ->where('c.folio_grupo', $folio)->where('pag.status_recepcion', 'VALIDADO')->first();
+        $bdAsisEvid = DB::table('pagos as pag')->select('pag.arch_asistencia', 'pag.arch_evidencia','arch_calificaciones')
+        ->join('tbl_cursos as c', 'c.id', '=', 'pag.id_curso')
+        ->where('c.folio_grupo', $folio)->first();
 
         //Obtener comprobante de pago ya que se actualizaron rutas
         $bdReciboP = DB::table('tbl_recibos')->where('folio_grupo', $folio)->where('status_folio', '!=', 'CANCELADO')->whereNotNull('status_folio')->value('file_pdf');
@@ -513,8 +517,11 @@ class ExpedienteController extends Controller
 
         //Variables
         $doc2 = $doc5 = $doc6 = $doc7 = $validRec = $doc8 = $doc9 = $doc10 = $doc11 = $doc20 = $doc21 =
-        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = $anioCurso = '';
+        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = $anioCurso ='';
         $docAlumnos = []; $reciboProvi =  true;
+
+        if(!empty($bdanio_curso->anio_curso)){$anioCurso = $bdanio_curso->anio_curso;}
+
         //Soporte de constancias
         if(!empty($bddoc2)){$doc2 = $bddoc2;}
 
@@ -529,7 +536,7 @@ class ExpedienteController extends Controller
         else if(!empty($bdReciboT->comprobante_pago)){
             $doc7 = $bdReciboT->comprobante_pago;
             $validRec = $bdReciboT->es_valido;
-            $anioCurso = $bdReciboT->anio_curso;
+            // $anioCurso = $anio_curso;
         }
 
         //Arc01
@@ -546,17 +553,16 @@ class ExpedienteController extends Controller
         // Asistencia
         if(!empty($bdEAsis)){$docAsis = $bdEAsis;}
         else if(!empty($bdAsisEvid->arch_asistencia)){$docAsis = $bdAsisEvid->arch_asistencia;}
-        // else if($bddoc789->tipo_curso == 'CERTIFICACION'){ $tipoCurso = "CERTIFICACION";}
 
         //Fotografico
         if(!empty($bdEFoto)){$docFoto = $bdEFoto;}
-        else if(!empty($bdAsisEvid->arch_evidencia)){$docFoto = $bdAsisEvid->arch_evidencia;}
+        else if(!empty($bdAsisEvid->arch_evidencia)){
+            $docFoto = $bdAsisEvid->arch_evidencia;
+        }
         //E Calificaciones
         if(!empty($bdECalif)){$docCalif = $bdECalif;}
         else if(!empty($bdAsisEvid->arch_calificaciones)){$docCalif = $bdAsisEvid->arch_calificaciones;}
 
-
-        // if(!empty($bddoc23->arch_pago)){$doc24 = $bddoc23->arch_pago;}
 
         //Validacion d (delegacion)
         if($mod_insctructor == 'ASIMILADOS A SALARIOS'){
@@ -1059,12 +1065,12 @@ class ExpedienteController extends Controller
 
         #DELEGADO
         if ($rol == '3') {
-            $num_docs = [22,23]; #Documentos que se requieren obtener
+            $num_docs = [22,23,24]; #Documentos que se requieren obtener
             for ($i=0; $i < count($num_docs) ; $i++) {
                 ${"file" . $num_docs[$i]} = $request->hasFile('doc_'.$num_docs[$i]);
                 ${"img" . $num_docs[$i]} = basename($bd_json->administrativo['doc_'.$num_docs[$i]]['url_documento']);
             }
-            $nombres_doc = ['contrato', 'solicitud_pago'];
+            $nombres_doc = ['contrato', 'solicitud_pago', 'comp_fiscal'];
 
             try {
                 for ($i=0; $i < count($num_docs) ; $i++) {
@@ -1421,17 +1427,37 @@ class ExpedienteController extends Controller
             }
         }
 
-        //Actualizar curp o estudios
+        //Prueba con folio 10K-230228
+        $resultado_doc = DB::table('tbl_inscripcion')
+        ->select('id_pre', DB::raw("EXTRACT(YEAR FROM termino) as anio"), DB::raw("requisitos->>'documento' as documento"), 'requisitos')
+        ->where('folio_grupo', $folioG)->orderBy('id')->get();
+
+        //Actualizar checks
         foreach ($alumnosIds as $key => $id) {
+
             try {
                 $Alumnos = Inscripcion::find($id);
                 $json = $Alumnos->requisitos;
                 $json['chk_curp'] = $CheckboxCurp[$key];
                 $json['chk_escolaridad'] = $CheckboxEstudios[$key];
                 $json['chk_acta_nacimiento'] = $CheckboxActaNacim[$key];
-                // $json['documento'] = "";
                 $Alumnos->requisitos = $json;
                 $Alumnos->save();
+
+                ##Actualizamos masiva el json del alumno en otros grupos en caso de ser necesario
+                if($CheckboxEstudios[$key] == "true"){
+                    if(isset($resultado_doc[$key]) && !empty($resultado_doc[$key]->documento)){
+                        DB::table('tbl_inscripcion')
+                        ->where('id_pre', $resultado_doc[$key]->id_pre)
+                        ->whereRaw("requisitos->>'chk_escolaridad' IS NULL")
+                        ->orWhereRaw("requisitos->>'chk_escolaridad' = 'false'")
+                        ->whereRaw("EXTRACT(YEAR FROM termino) = ?", [$resultado_doc[$key]->anio])
+                        ->update([
+                            'requisitos' => json_encode($json)
+                        ]);
+                    }
+                }
+
             } catch (\Throwable $th) {
                 return redirect()->route('expunico.principal.mostrar.get', ['folio' => $folioG])->with(['message' => '¡ERROR AL GUARDAR INFORMACIÓN '.$th->getMessage() , 'status' => 'danger']);
             }
