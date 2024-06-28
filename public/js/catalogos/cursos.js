@@ -640,7 +640,7 @@ $(function(){
                   +     '<b> PERFIL: </b> ' + response.perfil
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + (response.riesgo ? 'SI' : 'NO')
+                  +     '<b> AUTORIZACIÓN DE RIESGO: </b> ' + (response.riesgo ? 'SI' : 'NO')
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b>OBJETIVO: </b>' + response.objetivo
