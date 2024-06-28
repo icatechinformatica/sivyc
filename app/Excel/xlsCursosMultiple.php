@@ -18,11 +18,11 @@ class xlsCursosMultiple implements WithMultipleSheets, WithTitle, FromQuery, Wit
     protected $title;
 
     public function __construct( $title)
-    {        
-        /*$this->data = $data;        
-        $this->head = $head;     
+    {
+        /*$this->data = $data;
+        $this->head = $head;
         $this->title = $title;*/
-       
+
         $this->title = $title;
         $this->head = [
             'CAMPO','CATEGORIA','ESPECIALIDAD','CURSO','HORAS','OBJETIVO',
@@ -32,10 +32,10 @@ class xlsCursosMultiple implements WithMultipleSheets, WithTitle, FromQuery, Wit
             'NOMBRE DE CRITERIO MAXIMO','UNIDADES DISPONIBLES'
         ];
     }
-   
+
     public function headings(): array
     {
-        return   $this->head;        
+        return   $this->head;
     }
 
     public function columnWidths(): array
@@ -47,7 +47,7 @@ class xlsCursosMultiple implements WithMultipleSheets, WithTitle, FromQuery, Wit
     public function query()
     {
         $data  = curso::query()->where('cursos.estado', '=', true);
-        switch ($this->title){            
+        switch ($this->title){
             case 1:
                 $data->where( 'cursos.proyecto', false)->where( 'cursos.servicio', 'LIKE', "%CERTIFICACION%");
             break;
@@ -56,18 +56,18 @@ class xlsCursosMultiple implements WithMultipleSheets, WithTitle, FromQuery, Wit
             break;
             default:
                 $data->where( 'cursos.proyecto', false)->where( 'cursos.servicio', 'LIKE', "%CURSO%");
-            break;           
+            break;
         }
-        
+
         $data->join('especialidades','especialidades.id','cursos.id_especialidad')->leftjoin('area', 'area.id', 'especialidades.id_areas')
             ->select('area.formacion_profesional','categoria','especialidades.nombre','nombre_curso','horas','objetivo','perfil',
-            \DB::raw("(case when cursos.solicitud_autorizacion = 'true' then 'SI' else 'NO' end) as etnia"),'tipo_curso','modalidad','clasificacion','costo',
+            \DB::raw("(case when cursos.riesgo = 'true' then 'SI' else 'NO' end) as etnia"),'tipo_curso','modalidad','clasificacion','costo',
             'cursos.rango_criterio_pago_minimo',\DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_minimo) as mini"),
-            'cursos.rango_criterio_pago_maximo',\DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"),            
+            'cursos.rango_criterio_pago_maximo',\DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"),
             \DB::raw("TRANSLATE(cursos.unidades_disponible::TEXT,'[\"\"]','') as unidades_disponibles"));
 
         return  $data;
-        
+
     }
 
     public function registerEvents(): array
@@ -75,9 +75,9 @@ class xlsCursosMultiple implements WithMultipleSheets, WithTitle, FromQuery, Wit
         return [
             AfterSheet::class => function(AfterSheet $event) {
                 $event->sheet->getStyle('A1:Q1')->applyFromArray([
-                    'font'=>['bold'=>true,'color' => ['argb' => 'FFFFFF']],   
+                    'font'=>['bold'=>true,'color' => ['argb' => 'FFFFFF']],
                     'fill' => ['fillType' => 'solid','rotation' => 0, 'color' => ['rgb' => '621132']],
-                    'borders' => [ 
+                    'borders' => [
                         'outline' => [
                             'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
                             'color' => ['argb' => 'FFFFFFF'],
@@ -86,7 +86,7 @@ class xlsCursosMultiple implements WithMultipleSheets, WithTitle, FromQuery, Wit
                     ],
                 ]);
 
-                
+
             },
         ];
     }
@@ -108,7 +108,7 @@ class xlsCursosMultiple implements WithMultipleSheets, WithTitle, FromQuery, Wit
         }
         return $sheets;
         */
-               
+
         return collect(range(0,2))->map(function($hojas){
             return new xlsCursosMultiple ( $hojas);
         })->toArray();

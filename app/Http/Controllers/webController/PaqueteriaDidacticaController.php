@@ -20,7 +20,7 @@ class PaqueteriaDidacticaController extends Controller
         $curso = new curso();
         $curso=$curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
             'cursos.costo','cursos.duracion','cursos.tipo_curso','cursos.documento_memo_validacion','cursos.documento_memo_actualizacion','cursos.documento_solicitud_autorizacion',
-            'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
+            'cursos.objetivo','cursos.perfil','cursos.riesgo','cursos.fecha_validacion','cursos.memo_validacion',
             'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
             'especialidades.nombre AS especialidad', 'cursos.id_especialidad',
             'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria', 'cursos.documento_memo_validacion',
@@ -88,7 +88,7 @@ class PaqueteriaDidacticaController extends Controller
             $evaluacionAlumno = json_decode($paqueteriasDidacticas->eval_alumno);
             $instrucciones = $evaluacionAlumno->instrucciones;
             unset($evaluacionAlumno->instrucciones);
-            
+
         }
         // dd($evaluacionAlumno,isset($evaluacionAlumno), $evaluacionAlumno === '""', $instrucciones);
         return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'area', 'paqueteriasDidacticas', 'cartaDescriptiva', 'contenidoT', 'evaluacionAlumno', 'instrucciones'));
@@ -97,15 +97,15 @@ class PaqueteriaDidacticaController extends Controller
     public function store(Request $request, $idCurso)
     {
 
-        
-        
+
+
         $urlImagenes = [];
         $preguntas = ['instrucciones' => $request->instrucciones];
 
         $curso = new curso();
         $curso=$curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
             'cursos.costo','cursos.duracion','cursos.tipo_curso','cursos.documento_memo_validacion','cursos.documento_memo_actualizacion','cursos.documento_solicitud_autorizacion',
-            'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
+            'cursos.objetivo','cursos.perfil','cursos.riesgo','cursos.fecha_validacion','cursos.memo_validacion',
             'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
             'especialidades.nombre AS especialidad', 'cursos.id_especialidad',
             'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria', 'cursos.documento_memo_validacion',
@@ -143,8 +143,8 @@ class PaqueteriaDidacticaController extends Controller
 
 
         $i = 0;
-        
-        
+
+
 
         if($request->blade === 'evaluacion'){
             foreach($request->toArray() as $key => $value) {
@@ -153,11 +153,11 @@ class PaqueteriaDidacticaController extends Controller
                 $tipoPregunta = 'pregunta' . $i . '-tipo';
                 $opcPregunta = 'pregunta' . $i . '-opc';
                 $respuesta = 'pregunta' . $i . '-opc-answer';
-    
+
                 $contenidoT = 'pregunta' . $i . '-contenidoT';
-    
+
                 if($request->$numPregunta){
-                    
+
                     if ($request->$tipoPregunta == 'multiple') {
                         $tempPregunta = [
                             'descripcion' => $request->$numPregunta ?? 'N/A',
@@ -177,7 +177,7 @@ class PaqueteriaDidacticaController extends Controller
                         ];
                     }
                     array_push($preguntas, $tempPregunta);
-                    
+
                 }
             }
         }
@@ -218,10 +218,10 @@ class PaqueteriaDidacticaController extends Controller
     {
         $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
         if(!isset($paqueteriasDidacticas)){
-            
+
             return redirect()->back()->with('warning','No se puede generar pdf con la informacion actual');
         }
-        // 
+        //
         $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
 
 
@@ -263,23 +263,23 @@ class PaqueteriaDidacticaController extends Controller
         $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
         $carta_descriptiva = (json_decode($paqueteriasDidacticas->carta_descriptiva));
         $contenidos = json_decode($carta_descriptiva->contenidoTematico);
-        
+
         // $info_manual_didactico = $contenidos->contenidoExtra;
         $info_manual_didactico = [];
         $replace = array(request()->getSchemeAndHttpHost().'/', '\\');
         foreach($contenidos as $manual){
            $manual->contenidoExtra = str_replace($replace, '', $manual->contenidoExtra);
         }
-        
+
         $curso = curso::toBase()->where('id', $idCurso)->first();
-        
+
         $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueteriasDidacticas','contenidos', 'carta_descriptiva'));
         return $pdf->stream('manualDidactico');
     }
 
     public function upload(Request $request)
     {
-      
+
         if ($request->hasFile('upload')) {
             $originName = $request->file('upload')->getClientOriginalName();
             $fileName = pathinfo(Str::random(10), PATHINFO_FILENAME);

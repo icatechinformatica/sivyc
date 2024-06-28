@@ -280,20 +280,16 @@
         <hr>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label for="solicitud_autorizacion" class="control-label">SOLICITUD DE AUTORIZACIÓN DE RIESGO</label>
-                <select class="form-control" id="solicitud_autorizacion" name="solicitud_autorizacion">
-                    <option value="">--SELECCIONAR--</option>
-                    <option {{$cursos[0]->solicitud_autorizacion == true ? "selected" : "" }} value="true">SI</option>
-                    <option {{$cursos[0]->solicitud_autorizacion == false ? "selected" : "" }} value="false">NO</option>
-                </select>
-            </div>
-            <div class="form-group col-md-4">
-                <label for="memo_actualizacion" class="control-label">MEMO DE ACTUALIZACIÓN</label>
-                <input type="text" class="form-control" id="memo_actualizacion" name="memo_actualizacion" value="{{$cursos[0]->memo_actualizacion}}">
+                <label for="solicitud_autorizacion" class="control-label">SOLICITUD DE LA UNIDAD</label>
+                <input type="text" class="form-control" id="solicitud_autorizacion" name="solicitud_autorizacion" value="{{$cursos[0]->solicitud_autorizacion}}">
             </div>
             <div class="form-group col-md-4">
                 <label for="memo_validacion" class="control-label">MEMO DE VALIDACIÓN</label>
                 <input type="text" class="form-control" id="memo_validacion" name="memo_validacion" value="{{$cursos[0]->memo_validacion}}">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="memo_actualizacion" class="control-label">MEMO DE ACTUALIZACIÓN</label>
+                <input type="text" class="form-control" id="memo_actualizacion" name="memo_actualizacion" value="{{$cursos[0]->memo_actualizacion}}">
             </div>
         </div>
         <div class="form-row">
@@ -302,20 +298,24 @@
                 <input type="file" class="form-control" id="documento_solicitud_autorizacion" name="documento_solicitud_autorizacion">
             </div>
             <div class="form-group col-md-4">
-                <label for="documento_memo_actualizacion" class="control-label">Documento Memo Actualización</label>
-                <input type="file" class="form-control" id="documento_memo_actualizacion" name="documento_memo_actualizacion">
-            </div>
-            <div class="form-group col-md-4">
                 <label for="documento_memo_validacion" class="control-label">Documento Memo Validación</label>
                 <input type="file" class="form-control" id="documento_memo_validacion" name="documento_memo_validacion">
             </div>
+            <div class="form-group col-md-4">
+                <label for="documento_memo_actualizacion" class="control-label">Documento Memo Actualización</label>
+                <input type="file" class="form-control" id="documento_memo_actualizacion" name="documento_memo_actualizacion">
+            </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
+                <label for="fecha_solicitud" class="control-label">Fecha Solicitud</label>
+                <input type="text" class="form-control" id="fecha_solicitud" name="fecha_solicitud" value="{{$fechaSol}}">
+            </div>
+            <div class="form-group col-md-4">
               <label for="fecha_validacion" class="control-label">Fecha Validación</label>
               <input type="text" class="form-control" id="fecha_validacion" name="fecha_validacion" value="{{$fechaVal}}">
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label for="fecha_actualizacion" class="control-label">Fecha Actualización</label>
                 <input type="text" class="form-control" id="fecha_actualizacion" name="fecha_actualizacion" value="{{$fechaAct}}">
             </div>
@@ -409,17 +409,26 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label for="file_carta_descriptiva" class="control-label">SUBIR CARTA DESCRIPTIVA</label>
                 <input type="file" class="form-control" id="file_carta_descriptiva" name="file_carta_descriptiva">
             </div>
             <div class="form-group col-md-1"></div>
-            <div class="form-group col-md-4  col-md-offset-2">
+            <div class="form-group col-md-2  col-md-offset-2">
                 <label for="documento_solicitud_autorizacion" class="control-label">&nbsp;</label>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="true" name="proyecto" id="proyecto" @if($cursos[0]->proyecto==true){{"checked"}} @endif />
                     <label class="form-check-label H6" for="flexCheckChecked">
                         PROYECTO
+                    </label>
+                </div>
+            </div>
+            <div class="form-group col-md-4  col-md-offset-2">
+                <label for="riesgo" class="control-label">&nbsp;</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="true" name="curso_riesgo" id="curso_riesgo" @if($cursos[0]->riesgo==true){{"checked"}} @endif />
+                    <label class="form-check-label H6" for="flexCheckChecked">
+                        AUTORIZACIÓN DE RIESGO
                     </label>
                 </div>
             </div>
