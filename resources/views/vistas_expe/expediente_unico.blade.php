@@ -1955,18 +1955,20 @@
                                     href="{{$search_docs['urldoc24']}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
-                            @elseif ((empty($search_docs['urldoc24']) || empty($search_docs['doc_xml'])) && !empty($json_dptos->administrativo['doc_24']['url_documento']))
-                                <a class="btn-circle btn-circle-sm ml-2" data-toggle="tooltip"
-                                    data-placement="top" title="Ver Archivo" id=""
-                                    href="{{$path_files.$json_dptos->administrativo['doc_24']['url_documento']}}" target="_blank">
-                                    <i class="fa fa fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
+                            @endif
+
+                            @if ((empty($search_docs['urldoc24']) || empty($search_docs['doc_xml'])) && !empty($json_dptos->administrativo['doc_24']['url_documento']))
+                            <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                data-placement="top" title="Ver Archivo" id=""
+                                href="{{$path_files.$json_dptos->administrativo['doc_24']['url_documento']}}" target="_blank">
+                                <i class="fa fa fa-file-text fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            </a>
                             @endif
 
                             @if (!empty($search_docs['doc_xml']))
@@ -1979,7 +1981,7 @@
                         </td>
                         <td>
                              {{-- eliminar pdf --}}
-                             @if (!empty($json_dptos->administrativo['doc_24']['url_documento']) && empty($search_docs['urldoc24']))
+                             @if (!empty($json_dptos->administrativo['doc_24']['url_documento']) && (empty($search_docs['urldoc24']) || empty($search_docs['urldoc']) ))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion24',
                                     '{{$json_dptos->administrativo['doc_24']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
