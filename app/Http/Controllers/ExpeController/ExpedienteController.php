@@ -929,10 +929,10 @@ class ExpedienteController extends Controller
     /** Funcion para subir pdf al servidor
      * @param string $pdf, $id, $nom
      */
-    protected function pdf_upload($pdf, $id, $nom, $anio)
+    protected function pdf_upload($pdf, $id, $nom, $anio, $ext)
     {
         # nuevo nombre del archivo
-        $pdfFile = trim($nom . "_" . date('YmdHis') . "_" . $id . ".pdf");
+        $pdfFile = trim($nom . "_" . date('YmdHis') . "_" . $id . $ext);
         $directorio = '/' . $anio . '/expedientes/' . $id . '/'.$pdfFile;
         $pdf->storeAs('/uploadFiles/'.$anio.'/expedientes/'.$id, $pdfFile);
         $pdfUrl = Storage::url('/uploadFiles' . $directorio);
@@ -978,7 +978,8 @@ class ExpedienteController extends Controller
                         #Agregar Registros el doc20 es el doc25  del json
                         $vinc = ExpeUnico::find($idcurso);
                         $doc = $request->file('doc_'.$num_docs[$i]); # obtenemos el archivo
-                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio); # invocamos el método
+                        $extension = '.'.$doc->getClientOriginalExtension();
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio, $extension); # invocamos el método
                         $url = $vinc->vinculacion;
 
                         $url['doc_'.$num_docs[$i]]['url_documento'] = $urldoc[1];
@@ -1033,7 +1034,8 @@ class ExpedienteController extends Controller
                         #Agregar Registros el doc20 es el doc25  del json
                         $acad = ExpeUnico::find($idcurso);
                         $doc = $request->file('doc_'.$i); # obtenemos el archivo
-                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$conta], $anio); # invocamos el método
+                        $extension = '.'.$doc->getClientOriginalExtension();
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$conta], $anio, $extension); # invocamos el método
                         $url = $acad->academico;
 
                         if($i == 20){
@@ -1088,7 +1090,8 @@ class ExpedienteController extends Controller
                         #Agregar Registros el doc20 es el doc25  del json
                         $deleg = ExpeUnico::find($idcurso);
                         $doc = $request->file('doc_'.$num_docs[$i]); # obtenemos el archivo
-                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio); # invocamos el método
+                        $extension = '.'.$doc->getClientOriginalExtension();
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio, $extension); # invocamos el método
                         $url = $deleg->administrativo;
 
                         $url['doc_'.$num_docs[$i]]['url_documento'] = $urldoc[1];
