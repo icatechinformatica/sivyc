@@ -1357,7 +1357,7 @@
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_15']['url_documento']))
+                            @if (!empty($json_dptos->academico['doc_15']['url_documento']) && empty($search_docs['urldoc15']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion15',
                                     '{{$json_dptos->academico['doc_15']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1432,7 +1432,7 @@
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_16']['url_documento']))
+                            @if (!empty($json_dptos->academico['doc_16']['url_documento']) && empty($search_docs['urldoc16']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion16',
                                     '{{$json_dptos->academico['doc_16']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1592,7 +1592,13 @@
                         </td>
                         <td class="text-center">
                             {{-- Subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="{{(!empty($search_docs['urldoc19'])) ? 'd-none' : ''}}">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="
+                            {{-- {{(!empty($search_docs['urldoc19']) && $search_docs['anio_curso'] != '2023') ? 'd-none' : ''}} --}}
+                            @if($search_docs['anio_curso'] == '2023' && empty($search_docs['urldoc19']))
+                            @elseif(!empty($search_docs['urldoc19']))
+                                d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc19" style="display: none;" onchange="checkIcon('iconCheck19', 'pdfInputDoc19')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc19').click();">Archivo
@@ -1629,7 +1635,7 @@
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_19']['url_documento']))
+                            @if (!empty($json_dptos->academico['doc_19']['url_documento']) && empty($search_docs['urldoc19']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion19',
                                     '{{$json_dptos->academico['doc_19']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1783,7 +1789,16 @@
                         </td>
                         <td>
                             {{-- subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc22" class="{{(!empty($search_docs['urldoc22'])) ? 'd-none' : ''}}">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc22" class="
+                            {{-- {{(!empty($search_docs['urldoc22'])) ? 'd-none' : ''}} --}}
+                            @if($search_docs['anio_curso'] == '2023')
+                                @if(!empty($search_docs['urldoc22']))
+                                    d-none
+                                @endif
+                            @elseif(!empty($search_docs['urldoc23']))
+                                d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc22" style="display: none;" onchange="checkIcon('iconCheck22', 'pdfInputDoc22')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc22').click();">Archivo
@@ -1821,7 +1836,7 @@
                         </td>
                         <td>
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->administrativo['doc_22']['url_documento']))
+                            @if (!empty($json_dptos->administrativo['doc_22']['url_documento']) && empty($search_docs['urldoc22']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion22',
                                     '{{$json_dptos->administrativo['doc_22']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1857,7 +1872,15 @@
                         </td>
                         <td>
                             {{-- subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc23" class="{{(!empty($search_docs['urldoc23'])) ? 'd-none' : ''}}">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc23" class="
+                            @if($search_docs['anio_curso'] == '2023')
+                                @if(!empty($search_docs['urldoc23']))
+                                    d-none
+                                @endif
+                            @elseif(!empty($search_docs['urldoc23']))
+                                d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc23" style="display: none;" onchange="checkIcon('iconCheck23', 'pdfInputDoc23')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc23').click();">Archivo
@@ -1888,7 +1911,7 @@
                         </td>
                         <td>
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->administrativo['doc_23']['url_documento']))
+                            @if (!empty($json_dptos->administrativo['doc_23']['url_documento']) && empty($search_docs['urldoc23']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion23',
                                     '{{$json_dptos->administrativo['doc_23']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1922,13 +1945,33 @@
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
                         </td>
-                        <td></td>
+                        <td>
+                            {{-- subir pdf --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc24" class="
+                            @if($search_docs['anio_curso'] == '2023' && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
+                            @else
+                                d-none
+                            @endif
+                            ">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc24" style="display: none;" onchange="checkIcon('iconCheck24', 'pdfInputDoc24')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc24').click();">Archivo
+                                    <div id="iconCheck24" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
+                        </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc24']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$search_docs['urldoc24']}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif ((empty($search_docs['urldoc24']) || empty($search_docs['doc_xml'])) && !empty($json_dptos->administrativo['doc_24']['url_documento']))
+                                <a class="btn-circle btn-circle-sm ml-2" data-toggle="tooltip"
+                                    data-placement="top" title="Ver Archivo" id=""
+                                    href="{{$path_files.$json_dptos->administrativo['doc_24']['url_documento']}}" target="_blank">
+                                    <i class="fa fa fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
@@ -1937,6 +1980,7 @@
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
+
                             @if (!empty($search_docs['doc_xml']))
                                 <a class="btn-circle btn-circle-sm ml-2" data-toggle="tooltip"
                                     data-placement="top" title="Ver xml" id=""
@@ -1944,9 +1988,17 @@
                                     <i class="fa fa fa-file-text fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @endif
-
                         </td>
-                        <td></td>
+                        <td>
+                             {{-- eliminar pdf --}}
+                             @if (!empty($json_dptos->administrativo['doc_24']['url_documento']) && empty($search_docs['urldoc24']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion24',
+                                    '{{$json_dptos->administrativo['doc_24']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_24'], 'mensaje_dta', '')}}</textarea>
@@ -2501,12 +2553,11 @@
                                 }
                             }
                         }
-                        // inputFiles['doc_20'] = inputFiles25; //Esto se hace de manera individual
                     }
 
-                    if (rol == 3) { //Academico
+                    if (rol == 3) { //Delegado
                         let maxSize = 5 * 1024 * 1024;
-                        for (let i = 22; i <= 23; i++) {
+                        for (let i = 22; i <= 24; i++) {
                             let inputFile = document.getElementById('pdfInputDoc' + i);
                             inputFiles['doc_'+i] = inputFile;
 
