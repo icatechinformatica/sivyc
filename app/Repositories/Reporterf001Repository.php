@@ -182,6 +182,38 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function storeComment($request)
     {
+        #nuevo comentario agregar
+        $date = Carbon::now();
+        $fecha = $date->format('Y-m-d');
 
+        $newComment = [
+            'comentario' => $request['observacion'],
+            'fecha' => $fecha
+        ];
+
+        $detalleFolio = (new Rf001Model())->where('memorandum', $request['memo'])->first();
+
+        $datosExistentes  = json_decode($detalleFolio->movimientos, true);
+
+        for ($i=0; $i < count($datosExistentes); $i++) {
+            if (isset($datosExistentes[$i]['observaciones']) && $datosExistentes[$i]['folio'] == $request['folio']) {
+                $observaciones = json_decode($datosExistentes[$i]['observaciones'], true);
+                if (is_array($observaciones)) {
+                    $observaciones[] = $newComment;
+                    $datosExistentes[$i]['observaciones'] = json_encode($observaciones);
+                }
+                break;
+            } elseif($datosExistentes[$i]['folio'] == $request['folio']) {
+                # agregar nuevo
+                $observaciones[] = $newComment;
+                $datosExistentes[$i]['observaciones'] = json_encode($observaciones);
+            }
+        }
+
+        // Vuelve a codificar a JSON
+        $updateComment = [
+            'movimientos' => json_encode($datosExistentes)
+        ];
+        return (new Rf001Model())->where('memorandum', $request['memo'])->update($updateComment);
     }
 }

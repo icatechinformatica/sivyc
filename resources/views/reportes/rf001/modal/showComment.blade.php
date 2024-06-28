@@ -9,21 +9,21 @@
                 </button>
             </div>
             <div class="modal-body">
-                {{-- @role('Delegado Administrativo') --}}
-                <form id="sendComment_">
+                @role('administrativo')
+                <form id="sendComment" method="POST">
                     @csrf
                     <div class="new-comment-box mb-3">
                         <label for="observacion">Comentario:</label>
                         <textarea name="observacion" id="observacion" class="form-control" rows="3" placeholder="Agregar un comentario"></textarea>
                     </div>
+                    <input type="hidden" name="folio" id="folio">
+                    <input type="hidden" name="memo" id="memo">
                     <input type="submit" class="btn" value="COMENTAR">
-                    <input type="hidden" name="idFolio" id="idFolio">
-                    <input type="text" name="memo" id="memo">
                 </form>
-                {{-- @endrole --}}
+                @endrole
 
                 <div class="comments-container">
-                    <div id="observacionesModal"></div>
+                    <div id="observacionesModal" class="scroll-vertical"></div>
                     {{-- delegado administrativo --}}
                     {{-- @if (!empty($observaciones))
                         @foreach ($observaciones as $item)
@@ -66,7 +66,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-danger action-close" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

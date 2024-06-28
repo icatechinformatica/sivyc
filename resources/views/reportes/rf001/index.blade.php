@@ -115,9 +115,9 @@
                 </div>
                 @if ($getConcentrado)
                     <div class="col-md-3">
-                        <button id="enviar" class="btn btn-danger" type="button">
+                        <a id="enviar" class="btn btn-danger" href="{{ route('reporte.rf001.xml.format', ['id' => $idRf001]) }}">
                             FORMATO RF001
-                        </button>
+                        </a>
                     </div>
                 @endif
             </div>

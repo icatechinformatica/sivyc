@@ -351,6 +351,47 @@
                 margin-top: 10px;
             }
         }
+
+        .scroll-vertical {
+            width: 100%;
+            /* Ancho del div */
+            height: 200px;
+            /* Altura del div */
+            overflow-y: scroll;
+            /* Activar scroll vertical */
+            overflow-x: hidden;
+            /* Bordes para visualizar mejor el contenedor */
+            padding: 5px;
+            /* Espacio interno */
+            margin-top: 15px;
+        }
+
+        /* Estilo para navegadores basados en WebKit (Chrome, Safari) */
+        .scroll-vertical::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+            background: gray;
+            /* Ancho de la barra de desplazamiento vertical */
+        }
+
+        .scroll-vertical::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            /* Color de fondo del track de la barra */
+        }
+
+        .scroll-vertical::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        .scroll-vertical::-webkit-scrollbar-thumb:hover {
+            background: #555;
+            /* Color de la barra al pasar el ratón */
+        }
+
+        ::-webkit-scrollbar-thumb:vertical {
+            background: #000;
+            border-radius: 8px;
+        }
     </style>
 @endsection
 @section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
@@ -509,12 +550,12 @@
     </div>
 @endsection
 @section('script_content_js')
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
     <!-- jQuery Validate -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+        < script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" >
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js"></script>
 
     <script type="text/javascript">
         $.ajaxSetup({
@@ -531,7 +572,7 @@
                 const observaciones = $(this).data('observaciones');
                 // Limpiar el contenido anterior del modal
                 $('#observacionesModal').empty();
-                $('#idFolio').val();
+                $('#folio').val();
                 $('#memo').val();
                 const code = JSON.stringify(observaciones);
                 const comentarios = JSON.parse(code);
@@ -542,8 +583,8 @@
                 };
                 let observacionHTMl = '';
                 $("#noFolio").html(folio);
-                $("#idFolio").val(folio);
-                $("#memo").val({{ $getConcentrado->memorandum }});
+                $("#folio").val(folio);
+                $("#memo").val('{{ $getConcentrado->memorandum }}');
 
                 if (comentarios.length > 0) {
                     $.each(comentarios, function(index, observacion) {
@@ -596,7 +637,7 @@
                         '</ul>');
                 }
 
-                const form = $("#sendComment_");
+                const form = $("#sendComment");
                 form.validate({
                     // debug: true,
                     errorClass: "error",
@@ -608,38 +649,44 @@
                             required: "Por favor, agregar comentario."
                         }
                     },
-                    errorElement: "label",
-                    errorPlacement: function(error, element) {
-                        error.insertAfter(element);
-                    },
-                    showErrors: function(errorMap, errorList) {
-                        console.log(errorMap)
-                    },
                     highlight: function(element, errorClass) {
                         $(element).addClass(errorClass);
                     },
                     submitHandler: function(form, event) {
                         event.preventDefault();
                         const urlRoute = "{{ route('reporte.rf001.add.comments') }}";
+                        let fD = new FormData();
+                        fD.append('observacion', $('#observacion').val());
+                        fD.append('folio', $('#folio').val());
+                        fD.append('memo', $('#memo').val());
+                        fD.append('_token', $('input[name=_token]')
+                            .val()); // Añadir el token CSRF
                         $.ajax({
                             url: urlRoute,
                             method: "POST",
                             dataType: "json",
                             processData: false,
                             contentType: false,
-                            data: $(form).serialize(),
+                            data: fD,
                             beforeSend: function() {
                                 $('#sendComment_').attr('disabled',
                                     'disabled');
+                                $('#exampleModal').modal('hide');
                             },
                             success: function(response) {
-                            console.log(response);
+                                if (response.data == 1) {
+                                    $('#sendComment')?.trigger("reset");
+                                    $(".action-close").trigger(
+                                        "click"); // ocultar modal
+                                    window.location.href =
+                                        "{{ route('reporte.rf001.set.details', ['id' => $id]) }}"; // redirect
+                                }
                             },
                             error: function(xhr, textStatus, error) {
                                 // manejar errores
-                                console.log(xhr.statusText);
-                                console.log(xhr.responseText);
-                                console.log(xhr.status);
+                                console.log('DATOS1' + xhr.statusText);
+                                console.log('DATOS2' + xhr.responseText);
+                                console.log('DATOS3' + xhr.status);
                                 console.log(textStatus);
                                 console.log(error);
                             }

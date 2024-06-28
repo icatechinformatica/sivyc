@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Reporte\Rf001Controller;
+use App\Http\Controllers\Reporte\Rf001ReporteController;
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/reportes/rf001/indice', [Rf001Controller::class, 'dashboard'])->name('reporte.rf001.index');
@@ -13,5 +14,6 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/reportes/rf001/formato/pdf', [Rf001Controller::class, 'getPdfReport'])->name('reporte.rf001.getpdf');
     Route::get('/reportes/rf001/concentrado/detalle/{id}', [Rf001Controller::class, 'show'])->name('reporte.rf001.set.details');
     Route::post('/reportes/rf001/add/comment', [Rf001Controller::class, 'addComment'])->name('reporte.rf001.add.comments');
+    Route::get('/reportes/rf001/create/xmlFormat/{id}', [Rf001ReporteController::class, 'show'])->name('reporte.rf001.xml.format');
 
 });

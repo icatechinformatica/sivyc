@@ -38,6 +38,7 @@ class Rf001Controller extends Controller
     {
         if ($concentrado) {
             $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($concentrado);
+            $idRf001 = $concentrado;
 
             // Decodificar el JSON
             $data = json_decode($getConcentrado, true);
@@ -51,6 +52,7 @@ class Rf001Controller extends Controller
         else {
             $getConcentrado = null;
             $foliosMovimientos = null;
+            $idRf001 = 0;
         }
 
         // Recuperar los checkboxes seleccionados de los parámetros de consulta
@@ -100,9 +102,7 @@ class Rf001Controller extends Controller
         $currentYear = date('Y');
         $path_files = $this->path_files;
 
-        // return response()->json($query);
-        // view rf001
-        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'idUnidad', 'unidad', 'path_files', 'getConcentrado', 'foliosMovimientos', 'selectedCheckboxes', 'periodoInicio', 'periodoFin', 'fechaInicio', 'fechaFin'))->render();
+        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'idUnidad', 'unidad', 'path_files', 'getConcentrado', 'foliosMovimientos', 'selectedCheckboxes', 'periodoInicio', 'periodoFin', 'fechaInicio', 'fechaFin', 'idRf001'))->render();
     }
 
     public function dashboard(Request $request)
@@ -162,7 +162,7 @@ class Rf001Controller extends Controller
         //
         $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
         $pathFile = $this->path_files;
-        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile'))->render();
+        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id'))->render();
     }
 
     /**
@@ -248,15 +248,15 @@ class Rf001Controller extends Controller
     {
          // Obtiene los datos validados automáticamente
          $validatedData = $request->validated();
-         if ($validatedData->fails()) {
+         if (!$validatedData) {
             # retornar información del error de la validación
             return response()->json(['errors' => $validatedData->errors()], 422);
          }
 
-        //  $storeData = $this->rfoo1Repository->storeComment($request);
+        $storeData = $this->rfoo1Repository->storeComment($request);
 
          return response()->json([
-            'data' => $request
+            'data' => $storeData
          ], Response::HTTP_CREATED);
 
     }
