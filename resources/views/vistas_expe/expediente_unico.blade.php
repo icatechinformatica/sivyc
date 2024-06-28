@@ -1981,7 +1981,7 @@
                         </td>
                         <td>
                              {{-- eliminar pdf --}}
-                             @if (!empty($json_dptos->administrativo['doc_24']['url_documento']) && (empty($search_docs['urldoc24']) || empty($search_docs['urldoc']) ))
+                             @if (!empty($json_dptos->administrativo['doc_24']['url_documento']) && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion24',
                                     '{{$json_dptos->administrativo['doc_24']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
