@@ -167,18 +167,6 @@
             margin-top: 10%;
             height: 18%;
         }
-        /* Modal subir documento curp y comprobante de alumnos */
-        .modal-content3 {
-            background-color: #fff;
-            margin: 15% auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 30%;
-            /* padding-left: 10px;
-            padding-top: 7px;
-            margin-top: 10%; */
-            height: 20%;
-        }
 
         .modal-body {
             height: 60%;
@@ -2104,15 +2092,15 @@
         <div id="modalAlumnosCurp" class="modal_al">
             <div class="modal-content">
                 <div class="modal-header py-2">
-                    <h5 class="modal-title font-weight-bold">Alumnos</h5>
-                    <div class="alert alert-danger mt-5 p-2 mb-0" role="alert">
+                    <div class="alert alert-danger mt-1 p-2 mb-0" role="alert">
                         <strong>Nota!</strong> Cargue un solo PDF por alumno, donde contenga los requisitos seleccionados.
-                      </div>
+                    </div>
                     <button type="button" class="close" onclick="closeModal('modalAlumnosCurp')" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body px-0">
+                    <p class="font-weight-bold text-center mb-1" style="font-size: 16px;">Alumnos</p>
                     <div class="scrollable-list">
                         @if (isset($search_docs['alumnos_req']) && count($search_docs['alumnos_req']) > 0)
                             <form action="" method="post" enctype="multipart/form-data" id="frmRequisitos">
@@ -2210,7 +2198,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer mt-4">
                     @if ($data_cursos != null)
                         @if ($array_rol['rol'] == 1 && ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO'))
                             <button class="btn py-1" id="btnSaveAlumnos">GUARDAR</button>
@@ -2227,12 +2215,13 @@
         <div id="modalAlumnosEstudios" class="modal_al">
             <div class="modal-content">
                 <div class="modal-header py-2">
-                    <h5 class="modal-title font-weight-bold">Alumnos</h5>
+                    {{-- <h5 class="modal-title font-weight-bold">Alumnos</h5> --}}
                     <button type="button" class="close" onclick="closeModal('modalAlumnosEstudios')" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body px-0">
+                    <p class="font-weight-bold text-center mb-1" style="font-size: 16px;">Alumnos</p>
                     <div class="scrollable-list">
                         @if (isset($search_docs['alumnos_req']) && count($search_docs['alumnos_req']) > 0)
                             <table class="table-hover">
@@ -2270,7 +2259,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer mt-4">
                     <button class="btn btn-info py-1" onclick="closeModal('modalAlumnosEstudios')">Cerrar</button>
                 </div>
             </div>
