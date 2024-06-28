@@ -19,11 +19,8 @@
           {{ Form::number('costoX', null , ['id'=>'costoX', 'maxlength' => '7', 'class' => 'form-control numero', 'placeholder' => 'Cuota']) }}
         </div>
       </th>
-       @if($activar)<th class="h6" scope="col">{{'Eliminar'}}</th>@endif
-       @if ($edicion)
-        <th class="h6" scope="col">REMPLAZAR</th>
-      @endif
-      <th class="h6" scope="col">SID</th>
+       @if($activar)<th class="h6" scope="col">{{'Eliminar'}}</th>@endif       
+      <th class="h6" scope="col">@if($edicion) REMPLAZAR @else SID @endif</th>
       <th class="h6 " scope="col">CURP</th>      
       <!--<th class="h6 text-center" scope="col">Subir SID</th>--->
     </tr>
@@ -41,10 +38,10 @@
           else $id_cerss = null;
         @endphp
         <tr id="{{$a->id_reg}}">
-          <th scope="row"> {{ $consec++ }} </th>
+          <th scope="row"> {{ $consec++ }}</th>
           <th class="text-left" style="word-wrap: break-word; max-width: 90px;">{{ $a->curp }}</th>
           <th style="word-wrap: break-word; max-width: 60px;">{{ $a->no_control}}</th>
-          <th class="text-left">{{ $a->apellido_paterno }} {{$a->apellido_materno}} {{$a->nombre}}</th>          
+          <th class="text-left">{{ $a->alumno}}</th>          
           <th>{{ $a->sex }}</th>
           <th>{{ date('d/m/Y', strtotime($a->fnacimiento)) }}</th>
           <th>{{ $a->edad }} AÑOS</th>
@@ -68,14 +65,15 @@
             <th>          
               <a class="nav-link" ><i class="fa fa-remove  fa-2x fa-lg text-danger" onclick="eliminar({{$a->id_reg}},'{{ route('preinscripcion.grupo.eliminar') }}');" title="Eliminar"></i></a>
             </th>
-            @endif
-          @if ($edicion)
-            <th>
-              <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="rem('{{$a->curp}}');"></i></a>
-            </th>
-          @endif          
-          <th>            
-              <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>            
+            @endif               
+          <th>       
+              @if ($edicion or $a->status=="EDICION")   
+                  <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="rem('{{$a->curp}}');"></i></a>
+              @elseif($a->status AND $a->status!='INSCRITO')
+                  {{ $a->status }}
+              @else
+                  <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>            
+              @endif
           </th>
           <!--
             <th class="text-center">
@@ -172,19 +170,19 @@
         <div class="modal-body">
           <div class="row d-flex align-items-center">
               <div class="col-12">
-                  <form id="modal">
+                  {{--<form id="modal">--}}
                       <div class="row">
                           <div class="col">
                               <label for="">CURP ANTERIOR:</label>
-                              <input type="text" id="curpo" name="curpo" class="form-control" readonly>
+                              <input type="text" id="curp_anterior" name="curp_anterior" class="form-control" readonly>
                           </div>
                           <div class="col">
                               <label for="">CURP NUEVA:</label>
-                              <input name='busqueda1' id='busqueda1' oninput="validarRemplazo(this)" type="text" class="form-control" value="{{old('curp')}}"/>
+                              <input name='curp_nueva' id='curp_nueva' oninput="validarRemplazo(this)" type="text" class="form-control"/>
                               <pre id="resultado1"></pre>
                           </div>
                       </div>
-                  </form>
+                  {{--</form>--}}
               </div>
           </div>
         </div>
