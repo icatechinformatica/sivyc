@@ -200,8 +200,8 @@ class grupoController extends Controller
                             WHEN ap.id_gvulnerable IS NULL THEN NULL
                             ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ap.id_gvulnerable) AS bigint)))
                         END
-                        as grupos "), 'ap.inmigrante','es_cereso','ap.familia_migrante','ap.madre_soltera','ap.lgbt','ap.nacionalidad','ti.id',
-                        DB::raw(" CASE WHEN  id_folio is null THEN ti.status ELSE 'CANCELAR FOLIO' END status")                        
+                        as grupos "), 'ap.inmigrante','es_cereso','ap.familia_migrante','ap.madre_soltera','ap.lgbt','ap.nacionalidad','ti.id',                        
+                        DB::raw(" CASE WHEN  id_folio is not null and ti.status='EDICION' THEN  'CANCELAR FOLIO' ELSE ti.status END status")                        
                     )                
                 ->where('ar.folio_grupo', $folio_grupo)->where('ar.eliminado', false)     
                 ->leftJoin('tbl_inscripcion as ti', function ($join) {
