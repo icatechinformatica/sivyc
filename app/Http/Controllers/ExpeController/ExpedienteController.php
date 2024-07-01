@@ -1408,16 +1408,18 @@ class ExpedienteController extends Controller
                     $link = $docAlumnos[$idAlumno]; //Link del documento
                     $id_pre = $idsPre[$idAlumno];
                     $namePdf = basename($link);
+                    $nombre = $idAlumno.'_'.$namePdf;
+
                     if(empty($namePdf)){$namePdf = '';}
                     else{
-                        $filePath = 'uploadFiles/alumnos/'.$id_pre.'/'.$namePdf;
+                        $filePath = 'uploadFiles/alumnos/'.$id_pre.'/'.$nombre;
                         if (Storage::exists($filePath)) { Storage::delete($filePath);} //Eliminamos el archivo
                     }
                     #Guardamos url del archivo
                     try {
                         $Alumnos = Inscripcion::find($idAlumno);
                         $doc = $file; # obtenemos el archivo
-                        $urldoc = $this->pdf_upload_alumnos($doc, $id_pre, $namePdf); # invocamos el método
+                        $urldoc = $this->pdf_upload_alumnos($doc, $id_pre, $nombre); # invocamos el método
                         $url = $Alumnos->requisitos;
                         $url['documento'] = $urldoc[0];
                         $Alumnos->requisitos = $url; # guardamos el path
