@@ -161,13 +161,13 @@
                                             </button>
                                         @endcan
                                     @else
-                                        @if($itemData->edicion_pago || is_null($itemData->edicion_pago))
+                                        @if($itemData->edicion_pago || is_null($itemData->status_recepcion) || $itemData->status_recepcion == 'Rechazado')
                                             @can('supre.upload_valsupre')
                                                 <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                                     data-toggle="modal" data-placement="top"
                                                     data-target="#DocModal2"
                                                     data-id='{{$itemData->id}}'
-                                                    title="Reemplazar Validación de Suficiencia Presupuestal Firmada">
+                                                    title="Reemplazar Validación de Suficiencia Presupuestal Firmada {{$itemData->status_recepcion}}">
                                                     <i class="fa fa-upload"></i>
                                                 </button>
                                             @endcan
@@ -328,7 +328,7 @@
                                             </button>
                                         @endcan
                                     @else
-                                        @if($itemData->edicion_pago || is_null($itemData->edicion_pago))
+                                        @if($itemData->edicion_pago || is_null($itemData->status_recepcion) || $itemData->status_recepcion == 'Rechazado')
                                             @can('supre.upload_valsupre')
                                                 <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                                     data-toggle="modal" data-placement="top"
