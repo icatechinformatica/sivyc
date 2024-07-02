@@ -177,6 +177,9 @@ class CursosController extends Controller
                 if($request->proyecto==true) $proyecto = true;
                 else $proyecto =false;
 
+                if($request->curso_riesgo==true) $riesgo = true;
+                else $riesgo =false;
+
                 if($request->estado==1) $estado = true;
                 elseif($request->estado==2) $estado = false;
                 else $estado = null;
@@ -189,6 +192,7 @@ class CursosController extends Controller
                 $cursos->horas = trim($request->duracion);
                 $cursos->objetivo = trim($request->objetivo);
                 $cursos->perfil = trim($request->perfil);
+                $cursos->fecha_solicitud = $cursos->setFechaAttribute($request->fecha_solicitud);
                 $cursos->fecha_validacion = $cursos->setFechaAttribute($request->fecha_validacion);
                 $cursos->fecha_actualizacion = $cursos->setFechaAttribute($request->fecha_actualizacion);
                 $cursos->descripcion = trim($request->descripcionCurso);
@@ -219,6 +223,7 @@ class CursosController extends Controller
                 $cursos->created_at = date('Y-m-d h:m:s');
 
                 $cursos->proyecto = $proyecto;
+                $cursos->riesgo = $riesgo;
                 $cursos->estado = $estado;
                 $cursos->servicio = json_encode($request->servicio);
                 $cursos->motivo = trim($request->motivo);
@@ -310,13 +315,14 @@ class CursosController extends Controller
                     'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
                     'cursos.rango_criterio_pago_minimo', 'rango_criterio_pago_maximo','cursos.observacion',
                     'cursos.grupo_vulnerable', 'cursos.dependencia','cursos.proyecto','cursos.motivo',
-                    'cursos.servicio','cursos.file_carta_descriptiva')
+                    'cursos.servicio','cursos.file_carta_descriptiva','cursos.riesgo')
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')->ORDERBY ('cursos.updated_at','DESC')
                     ->GET();
 
                    //dd($cursos[0]);
 
+            $fechaSol = $curso->getMyDateFormat($cursos[0]->fecha_solicitud);
             $fechaVal = $curso->getMyDateFormat($cursos[0]->fecha_validacion);
             $fechaAct = $curso->getMyDateFormat($cursos[0]->fecha_actualizacion);
             $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->ORDERBY('grupo','ASC')->GET();
@@ -336,7 +342,7 @@ class CursosController extends Controller
 
             //informacion de carta descriptiva
             $carta_descriptiva = DB::Table('tbl_carta_descriptiva')->Where('id_curso',$cursos[0]->id)->Value('id');
-            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv','dependencias','dp','servicios','categorias','perfil','carta_descriptiva'));
+            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades','fechaSol', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv','dependencias','dp','servicios','categorias','perfil','carta_descriptiva'));
 
         // } catch (\Throwable $th) {
         //     //throw $th;
@@ -379,7 +385,7 @@ class CursosController extends Controller
             # code...
             $cursos = new curso();
             $curso = $cursos::SELECT('cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
-                    'cursos.costo','cursos.duracion',
+                    'cursos.costo','cursos.duracion','cursos.riesgo',
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
                     'especialidades.nombre AS especialidad','cursos.tipo_curso' ,
@@ -507,6 +513,7 @@ class CursosController extends Controller
                 'costo' => trim($request->costo),
                 'objetivo' => trim($request->objetivo),
                 'perfil' => trim($request->perfil),
+                'fecha_solicitud' => $cursos->setFechaAttribute($request->fecha_solicitud),
                 'fecha_validacion' => $cursos->setFechaAttribute($request->fecha_validacion),
                 'fecha_actualizacion' => $cursos->setFechaAttribute($request->fecha_actualizacion),
                 'descripcion' => trim($request->descripcionCurso),
@@ -514,7 +521,7 @@ class CursosController extends Controller
                 'id_especialidad' => trim($request->especialidadCurso),
                 'unidad_amovil' => $uniamov,
                 'area' => $request->areaCursos,
-                'solicitud_autorizacion' => (isset($request->solicitud_autorizacion)) ? $request->solicitud_autorizacion : false,
+                'solicitud_autorizacion' => trim($request->solicitud_autorizacion),
                 'memo_actualizacion' => trim($request->memo_actualizacion),
                 'memo_validacion' => trim($request->memo_validacion),
                 'cambios_especialidad' => trim($request->cambios_especialidad),
@@ -525,6 +532,7 @@ class CursosController extends Controller
                 'grupo_vulnerable' => $gv,
                 'dependencia' => $dp,
                 'proyecto' => $proyecto,
+                'riesgo' => (isset($request->curso_riesgo)) ? $request->curso_riesgo : false,
                 'estado' => $estado,
                 'servicio' => json_encode($request->servicio),
                 'motivo' => trim($request->motivo),
@@ -645,7 +653,7 @@ class CursosController extends Controller
         $data = curso::SELECT('cursos.id','area.formacion_profesional','cursos.categoria','dependencia',
                         'grupo_vulnerable', 'especialidades.nombre as especialidad','cursos.nombre_curso',
                         'cursos.horas','cursos.objetivo','cursos.perfil',
-                        DB::raw("(case when cursos.solicitud_autorizacion = 'true' then 'SI' else 'NO' end) as etnia"),
+                        DB::raw("(case when cursos.riesgo = 'true' then 'SI' else 'NO' end) as etnia"),
                         'cursos.fecha_validacion','cursos.memo_validacion','cursos.unidad_amovil',
                         'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.tipo_curso',
                         'cursos.modalidad','cursos.clasificacion','observacion','cursos.costo',
@@ -1031,6 +1039,11 @@ class CursosController extends Controller
         ## Datos del modulo
         $datos_modulo = ['id_parent' => 0, 'id_curso'=> $id_curso, 'nombre_modulo'=>$name_modulo, 'nivel'=> 1, 'duracion'=> $duracion_mod,
         'sincrona'=> $sincrona_mod, 'asincrona'=> $asincrona_mod, 'estra_didac'=> $estra_didac, 'process_eval' => $proces_eval, 'iduser_created'=> Auth::user()->id];
+        if($datosOrganizados != [] && $datosOrganizados[0]['numeracion'][0] != 0) {
+            $datos_modulo['numeracion'] = $datosOrganizados[0]['numeracion'][0];
+        } else {
+            $datos_modulo['numeracion'] = 0;
+        }
 
         //Nuevo codigo de inserción
         try {
@@ -1089,10 +1102,20 @@ class CursosController extends Controller
             ->Where('cursos.id',$id)
             ->First();
 
-        $ciclo = carbon::now()->year . ' - ' . (carbon::now()->year+1);
-        // dd($data_curso);
-        // dd($carta_descriptiva);
-        $pdf = PDF::loadView('layouts.pdfpages.cartaDescriptiva',compact('carta_descriptiva','contenido_tematico','data_curso','ciclo'));
+        $bdEjercicio = DB::Table('tbl_instituto')->Select('fini','ffin')->First();
+        $ejercicio = '';
+        if($bdEjercicio) {
+            $date1 = Carbon::createFromFormat('d-M', $bdEjercicio->fini);
+            $date2 = Carbon::createFromFormat('d-M', $bdEjercicio->ffin);
+            $fActual = Carbon::now();
+            if($fActual->lessThan($date1)) {
+                $ejercicio = ($fActual->year - 1) . "-" . $fActual->year;
+            } else if($fActual->greaterThan($date2)) {
+                $ejercicio - $fActual->year . "-" . ($fActual->year + 1);
+            }
+        }
+
+        $pdf = PDF::loadView('layouts.pdfpages.cartaDescriptiva',compact('carta_descriptiva','contenido_tematico','data_curso','ejercicio'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('medium.pdf');
     }
@@ -1157,6 +1180,7 @@ class CursosController extends Controller
             ->update([
                 'id_parent' => 0,
                 'id_curso'=> $datos['id_curso'],
+                'numeracion'=> $datos['numeracion'],
                 'nombre_modulo' => $datos['nombre_modulo'],
                 'nivel' => $datos['nivel'],
                 'duracion'=> $datos['duracion'],
@@ -1173,6 +1197,7 @@ class CursosController extends Controller
                     ->insertGetId([
                         'id_parent' => 0,
                         'id_curso'=> $datos['id_curso'],
+                        'numeracion'=> $datos['numeracion'],
                         'nombre_modulo' => $datos['nombre_modulo'],
                         'nivel' => $datos['nivel'],
                         'duracion'=> $datos['duracion'],

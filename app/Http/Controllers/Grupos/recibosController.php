@@ -97,7 +97,7 @@ class recibosController extends Controller
                         DB::raw(" 
                         CASE
                             WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)
-                            WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_files."',tc.comprobante_pago)
+                            WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_files."uploadFiles',tc.comprobante_pago)
                             WHEN tr.file_pdf <> 'null' THEN concat('".$this->path_files."',tr.file_pdf)
                         END as file_pdf"),                                            
                         DB::raw("(
@@ -393,7 +393,7 @@ class recibosController extends Controller
                         DB::raw(" 
                             CASE
                             WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)
-                            WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_files."',tc.comprobante_pago)
+                            WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_files."uploadFiles',tc.comprobante_pago)
                             WHEN tr.file_pdf <> 'null' THEN concat('".$this->path_files."',tr.file_pdf)
                         END as file_pdf"
                         ),

@@ -18,6 +18,17 @@ $(function(){
       }
     });
 
+    $("#fecha_solicitud").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }).attr('readonly', 'true').
+      keypress(function(event){
+        if(event.keyCode == 8){
+            event.preventDefault();
+        }
+      });
+
     $("#fecha_validacion").datepicker({
         changeMonth: true,
         changeYear: true,
@@ -615,10 +626,10 @@ $(function(){
                     '<ul class="list-group z-depth-0">'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> CATEGORÍA: </b> '+ response.categoria
-                  +   '</li>'                  
+                  +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> UNIDAD MÓVIL: </b> '+ response.unidad_amovil
-                  +   '</li>'                  
+                  +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> FECHA ACTUALIZACIÓN: </b> ' + response.fecha_actualizacion
                   +   '</li>'
@@ -627,9 +638,9 @@ $(function(){
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> PERFIL: </b> ' + response.perfil
-                  +   '</li>'                  
+                  +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + (response.solicitud_autorizacion ? 'SI' : 'NO')
+                  +     '<b> AUTORIZACIÓN DE RIESGO: </b> ' + (response.riesgo ? 'SI' : 'NO')
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b>OBJETIVO: </b>' + response.objetivo
@@ -645,10 +656,10 @@ $(function(){
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b>DEPENDENCIAS: </b>' + response.dependencia
-                  +   '</li>'                 
+                  +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b>UNIDADES DISPONIBLES: </b>' + response.unidades_disponible
-                  +   '</li>'                  
+                  +   '</li>'
                   + '</ul>'
               );
             },

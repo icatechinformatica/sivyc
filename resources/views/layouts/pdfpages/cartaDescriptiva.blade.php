@@ -10,7 +10,7 @@
                 font-family: sans-serif;
             }
             @page {
-                margin: 100px 20px 80px;
+                margin: 100px 20px 85px;
                 color: black;
             }
             header { position: fixed;
@@ -103,7 +103,7 @@
                     </tr>
                     <tr>
                         <td rowspan="2"><b>Entidad Federativa: Chiapas</b></td>
-                        <td rowspan="2"><b>Ciclo Escolar: </b>{{$ciclo}}</td>
+                        <td rowspan="2"><b>Ciclo Escolar: </b>{{$ejercicio}}</td>
                         <td rowspan="2"><b>Programa Estratégico (en caso aplicable): {{$carta_descriptiva->datos_generales->pogrm_estra}}</b></td>
                         <td colspan="4" style="text-align: center;"><b>Modalidad</b></td>
                     </tr>
@@ -155,11 +155,16 @@
                         <td><b>Proceso de Evaluación</b></td>
                         <td width='12%'><b>Duración (EN HORAS)</b></td>
                     </tr>
-                    @php $modulo = 0; @endphp
+                    @php
+                        $modulo = 0;
+                        $conteo_array = count($contenido_tematico)-1;
+                    @endphp
                     @foreach ($contenido_tematico as $key=>$moist)
                         @if($moist->nivel == 1)
                             @php
-                                if($key != 0){ $modulo++;}
+                                if($key != 0){
+                                    $modulo++;
+                                }
                                 $id_principal = $moist->id;
                                 $presencial = explode(':',$moist->duracion);
                                 $sincrono = explode(':',$moist->sincrona);
@@ -167,14 +172,14 @@
                             @endphp
                             <tr>
                                 <td>
-                                    @if($key != 0 && $moist->nivel == 1) Módulo {{$modulo}} @endif
+                                    @if($moist->nivel == 1 && !is_null($moist->numeracion) && $moist->numeracion[0] != '0') Módulo  {{$moist->numeracion[0]}} @endif
                                     <br>
                                     {{$moist->nombre_modulo}}<br>
-                                    @if($contenido_tematico[$key+1]->id_parent == $id_principal)
-                                        Submódulos  <br>
+                                    @if(isset($contenido_tematico[$key+1]) && $contenido_tematico[$key+1]->id_parent == $id_principal)
+                                        @if($contenido_tematico[$key+1]->numeracion[0] != '0')Submódulos  <br>@endif
                                         @foreach ($contenido_tematico as $data)
                                             @if ($id_principal == $data->id_parent)
-                                                {{$data->numeracion}} {{$data->nombre_modulo}}<br>
+                                                @if($data->numeracion[0] != '0'){{$data->numeracion}} @endif{{$data->nombre_modulo}}<br>
                                             @endif
                                         @endforeach
                                     @endif

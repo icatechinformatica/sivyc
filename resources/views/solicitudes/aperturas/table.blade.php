@@ -53,14 +53,11 @@
                 @foreach($grupos as $g)
                     <?php 
                     $rojo=null;
-                    /*
-                    if( $g->turnado_solicitud != 'DTA' ) $activar = false;                      
-                    if( $g->turnado_solicitud == 'VINCULACION'  )$rojo = true; 
-                    else $rojo = false;
-                    */
+                    if(!isset($soporte) AND $g->status_folio=="SOPORTE") $soporte = true;
+                   
                     switch($opt){
                         case "ARC01":
-                            if(($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') AND $g->status_folio<>'SOPORTE') $activar=false;
+                            if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
                             $mextemporaneo = $g->mextemporaneo;
                             $rextemporaneo = $g->rextemporaneo;
                         break;
@@ -168,7 +165,7 @@
     </div>
 </div>
 <div class="row justify-content-end">
-    @if($activar==true)
+    @if($activar==true OR isset($soporte))
         @if($status_curso == "EN FIRMA")
             <div class="form-group col-md-3">
                 
