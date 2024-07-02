@@ -1223,7 +1223,7 @@
                     <tr>
                         <td>g.1</td>
                         <td>
-                            Acta de cancelación de constancias por no solicitadas/memorándum de remisión de constancias por medios digitales con anexos.
+                            Soportes de entrega de constancias de capacitación (si es el caso).
                         </td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
