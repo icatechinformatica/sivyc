@@ -1039,7 +1039,7 @@ class ExpedienteController extends Controller
                         $url = $acad->academico;
 
                         if($i == 20){
-                            $url['doc_25']['url_documento'] = $urldoc[1];
+                            $url['doc_25']['url_soporte'] = $urldoc[1];
                             $url['doc_25']['fecha_subida'] = date('Y-m-d');
                         }else{
                             $url['doc_'.$i]['url_documento'] = $urldoc[1];
@@ -1180,8 +1180,13 @@ class ExpedienteController extends Controller
                 if($rol == '1') $url = $json->vinculacion;
                 else if($rol == '2') $url = $json->academico;
                 else if($rol == '3') $url = $json->administrativo;
-                $url['doc_'.$radio]['url_documento'] = '';
-                $url['doc_'.$radio]['existe_evidencia'] = '';
+                if($radio == '25'){
+                    $url['doc_25']['url_soporte'] = '';
+                    // $url['doc_'.$radio]['existe_evidencia'] = '';
+                }else{
+                    $url['doc_'.$radio]['url_documento'] = '';
+                    $url['doc_'.$radio]['existe_evidencia'] = '';
+                }
                 if($rol == '1') $url = $json->vinculacion = $url;
                 else if($rol == '2') $json->academico = $url;
                 else if($rol == '3') $json->administrativo = $url;
