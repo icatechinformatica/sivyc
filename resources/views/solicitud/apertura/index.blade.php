@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('fullCalendar/core/main.css') }}">
     <link rel="stylesheet" href="{{ asset('fullCalendar/daygrid/main.css') }}">
     <link rel="stylesheet" href="{{ asset('fullCalendar/list/main.css') }}">
-    <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}"> 
+    <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}">
     <style>
         table th, table td{font-size: 11px; padding:0px; margin:0px;}
     </style>
@@ -201,7 +201,7 @@
             <div class="form-row" >
                 <div class="form-group col-md-2">
                     <label>TIPO DE CAPACITACI&Oacute;N:</label>
-                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->tipo_curso}}" readonly>                    
+                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->tipo_curso}}" readonly>
                 </div>
                 <div class="form-group col-md-2">
                      <label>MEDIO VIRTUAL:</label>
@@ -746,10 +746,10 @@
                 let partes = valSelect.split('?');
 
                 if (partes[0] == '0'){ alert('SELECCIONA UNA OPCIÓN'); return;}
-                if (partes[1] !== '') {
-                    alert('YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE');
-                    return;
-                }
+                // if (partes[1] !== '') {
+                //     alert('YA HAS REALIZADO ESTA ACCIÓN ANTERIORMENTE');
+                //     return;
+                // }
 
                 if (inputFile.files.length === 0) { //Realizamos la validacion si esta el archivo
                     alert("POR FAVOR, SELECCIONA UN ARCHIVO PDF.");
