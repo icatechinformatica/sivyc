@@ -50,7 +50,8 @@ class Rf001ReporteController extends Controller
     {
         // datos de información!!!
         $organismo = Auth::user()->id_organismo;
-        return (new ReportService())->xmlFormat($id, $organismo);
+        $unidad = Auth::user()->unidad;
+        return (new ReportService())->xmlFormat($id, $organismo, $unidad, Auth::user());
     }
 
     /**
