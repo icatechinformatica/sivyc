@@ -54,7 +54,7 @@
     </table>
 </div>
 @if (isset($grupo))
-    @if($grupo->depen <> 'CAPACITACION ABIERTA')
+    {{-- @if($grupo->depen <> 'CAPACITACION ABIERTA') --}}
         <h5><b>DEL OFICIO DE ENTREGA DE CONSTANCIAS</b></h5>
         <div class="row col-md-12 col-lg-12  bg-light p-4 mb-5 ">
             {{-- Formulario pdf generar soporte by Jose Luis Moreno Arcos  --}}
@@ -100,7 +100,7 @@
             </div>
 
         </div>
-    @endif
+    {{-- @endif --}}
 @endif
 
 
