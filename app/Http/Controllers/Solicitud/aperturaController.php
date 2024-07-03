@@ -979,7 +979,23 @@ class aperturaController extends Controller
 
         #Obtenemos el numero de oficio
         $sop_expediente = ExpeUnico::select('sop_constancias')->where('folio_grupo', '=', $folio_grupo)->first();
+
         $num_oficio_sop = $sop_expediente->sop_constancias['num_oficio'];
+
+        ##COLOCAMOS LA ESTRUCTURA JSON A LOS CAMPOS NULOS
+        $camposNulos = ExpeUnico::where('sop_constancias->num_oficio', $num_oficio_sop)->whereNull('vinculacion')
+        ->whereNull('academico')->whereNull('administrativo')->get();
+        if($camposNulos->isNotEmpty()){
+            //Hacemos la actualización
+            $json_vacios = $this->llenar_json_exp();
+                DB::table('tbl_cursos_expedientes')->where('sop_constancias->num_oficio', $num_oficio_sop)
+                ->whereNull('vinculacion')->whereNull('academico')->whereNull('administrativo')
+                ->update([
+                    'vinculacion' => $json_vacios[0],
+                    'academico' => $json_vacios[1],
+                    'administrativo' => $json_vacios[2]
+                ]);
+        }
 
         $anio = $cursoInfo->anio;
         $idcurso = $cursoInfo->idcurso;
@@ -988,12 +1004,6 @@ class aperturaController extends Controller
         $opcion = $request->opcion;
         $partImg = basename($request->urlImg);
 
-        #Validamos si no esta el registro en expedientes unicos.
-        $validJson = $this->validar_exp_json($folio_grupo, $idcurso);
-        if($validJson != 'ok'){
-            return response()->json(['status' => "500",'mensaje' => "¡INTENTE DE NUEVO POR FAVOR!"]);
-        }
-
         #Condicion para asignar nombre a los docs
         if ($archivo) {
             if($partImg != ''){
@@ -1001,7 +1011,8 @@ class aperturaController extends Controller
                 $filePath = 'uploadFiles/'.$anio.'/soporteconst/'.$partImg;
                 if (Storage::exists($filePath)) {
                     Storage::delete($filePath);
-                } else { return response()->json(['mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
+                }
+                // else { return response()->json(['mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
             }
             #Guardamos en la bd
             try {
@@ -1035,50 +1046,6 @@ class aperturaController extends Controller
             'status' => 200,
             'mensaje' => 'EL ARCHIVO SE HA SUBIDO DE MANERA EXITOSA'
         ]);
-    }
-
-    #Validar si el registro en expedientes ya existe
-    public function validar_exp_json($folio_grupo, $idcurso){
-        $existsExpediente = DB::table('tbl_cursos_expedientes')->where('folio_grupo', $folio_grupo)->exists();
-        if (!$existsExpediente){
-            #FALSE crear todo desde cero
-            $json_vacios = $this->llenar_json_exp(); #llamamos los arrays para mandarlos como json
-            try {
-                $reg_expedientes = new ExpeUnico;
-                $reg_expedientes['id'] = $idcurso;
-                $reg_expedientes['id_curso'] = $idcurso;
-                $reg_expedientes['folio_grupo'] = $folio_grupo;
-                $reg_expedientes['vinculacion'] = $json_vacios[0];
-                $reg_expedientes['academico'] = $json_vacios[1];
-                $reg_expedientes['administrativo'] = $json_vacios[2];
-                $reg_expedientes['created_at'] = date('Y-m-d');
-                $reg_expedientes['updated_at'] = date('Y-m-d');
-                $reg_expedientes['iduser_created'] = Auth::user()->id;
-                $reg_expedientes->save();
-            } catch (\Throwable $th) {
-                //throw $th;
-                return 'error';
-            }
-
-        }else{
-            #TRUE buscar si los json estan llenos si no deberiamos agregar
-            $foundJson = ExpeUnico::where('folio_grupo', $folio_grupo)->whereNotNull('vinculacion')
-            ->whereNotNull('academico')->whereNotNull('administrativo')->first();
-
-            if ($foundJson == null) {
-                #Actualizamos los campos JSON por que null significa que no estan llenos
-                #Mandamos a llamar los arrays asociativos para los JSON
-                $json_vacios = $this->llenar_json_exp(); #llamamos los arrays para mandarlos como json
-                DB::table('tbl_cursos_expedientes')->where('folio_grupo', $folio_grupo)
-                ->update(['id_curso' => $idcurso, 'folio_grupo' => $folio_grupo,
-                'vinculacion' => $json_vacios[0], 'academico' => $json_vacios[1], 'administrativo' => $json_vacios[2],
-                'created_at' => date('Y-m-d'), 'updated_at' => date('Y-m-d'), 'iduser_updated' => Auth::user()->id]);
-            }else{
-                #No hacer nada todo esta correcto.
-                return 'ok';
-            }
-
-        }
     }
 
     #Llenar array para anexar al json de expedientes
