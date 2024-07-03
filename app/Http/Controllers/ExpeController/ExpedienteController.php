@@ -1387,7 +1387,8 @@ class ExpedienteController extends Controller
             WHEN tipo = 'PINS' THEN 'CUOTA ORDINARIA'
             WHEN tipo = 'EPAR' THEN 'REDUCCIÓN DE CUOTA'
         END as tpago"))->where('id', $idcurso)->first();
-        $abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+        $abecedario = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'];
+
         $pdf = PDF::loadView('vistas_expe.genpdfexpedientes',compact('direccion','distintivo','json_dptos','abecedario','curso','marca',
         'evid_vincu','evid_acad','evid_admin'));
         return $pdf->stream('Expediente_Unico');
