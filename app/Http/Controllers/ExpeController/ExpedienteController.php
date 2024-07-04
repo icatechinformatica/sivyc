@@ -33,7 +33,7 @@ class ExpedienteController extends Controller
         if ($slug == 'admin') {$val_rol = 0;}
         else if($slug == 'direccion_vinculacion' || $slug == 'unidad_vinculacion' || $slug == 'vinculadores_administrativo' || $slug == 'director_unidad') {$val_rol = 1;}
         else if($slug == 'unidad' || $slug == 'titular_unidad' || $slug == 'auxiliar_unidad') {$val_rol = 2;}
-        else if($slug == 'administrativo') {$val_rol = 3;}
+        else if($slug == 'administrativo' || $slug == 'pagos_contratos') {$val_rol = 3;}
         else if($slug == 'titular-innovacion') {$val_rol = 4;}
 
         #REALIZAMOS LA BUSQUEDA
@@ -929,10 +929,10 @@ class ExpedienteController extends Controller
     /** Funcion para subir pdf al servidor
      * @param string $pdf, $id, $nom
      */
-    protected function pdf_upload($pdf, $id, $nom, $anio)
+    protected function pdf_upload($pdf, $id, $nom, $anio, $ext)
     {
         # nuevo nombre del archivo
-        $pdfFile = trim($nom . "_" . date('YmdHis') . "_" . $id . ".pdf");
+        $pdfFile = trim($nom . "_" . date('YmdHis') . "_" . $id . $ext);
         $directorio = '/' . $anio . '/expedientes/' . $id . '/'.$pdfFile;
         $pdf->storeAs('/uploadFiles/'.$anio.'/expedientes/'.$id, $pdfFile);
         $pdfUrl = Storage::url('/uploadFiles' . $directorio);
@@ -978,7 +978,8 @@ class ExpedienteController extends Controller
                         #Agregar Registros el doc20 es el doc25  del json
                         $vinc = ExpeUnico::find($idcurso);
                         $doc = $request->file('doc_'.$num_docs[$i]); # obtenemos el archivo
-                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio); # invocamos el método
+                        $extension = '.'.$doc->getClientOriginalExtension();
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio, $extension); # invocamos el método
                         $url = $vinc->vinculacion;
 
                         $url['doc_'.$num_docs[$i]]['url_documento'] = $urldoc[1];
@@ -1033,11 +1034,12 @@ class ExpedienteController extends Controller
                         #Agregar Registros el doc20 es el doc25  del json
                         $acad = ExpeUnico::find($idcurso);
                         $doc = $request->file('doc_'.$i); # obtenemos el archivo
-                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$conta], $anio); # invocamos el método
+                        $extension = '.'.$doc->getClientOriginalExtension();
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$conta], $anio, $extension); # invocamos el método
                         $url = $acad->academico;
 
                         if($i == 20){
-                            $url['doc_25']['url_documento'] = $urldoc[1];
+                            $url['doc_25']['url_soporte'] = $urldoc[1];
                             $url['doc_25']['fecha_subida'] = date('Y-m-d');
                         }else{
                             $url['doc_'.$i]['url_documento'] = $urldoc[1];
@@ -1088,7 +1090,8 @@ class ExpedienteController extends Controller
                         #Agregar Registros el doc20 es el doc25  del json
                         $deleg = ExpeUnico::find($idcurso);
                         $doc = $request->file('doc_'.$num_docs[$i]); # obtenemos el archivo
-                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio); # invocamos el método
+                        $extension = '.'.$doc->getClientOriginalExtension();
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio, $extension); # invocamos el método
                         $url = $deleg->administrativo;
 
                         $url['doc_'.$num_docs[$i]]['url_documento'] = $urldoc[1];
@@ -1177,8 +1180,13 @@ class ExpedienteController extends Controller
                 if($rol == '1') $url = $json->vinculacion;
                 else if($rol == '2') $url = $json->academico;
                 else if($rol == '3') $url = $json->administrativo;
-                $url['doc_'.$radio]['url_documento'] = '';
-                $url['doc_'.$radio]['existe_evidencia'] = '';
+                if($radio == '25'){
+                    $url['doc_25']['url_soporte'] = '';
+                    // $url['doc_'.$radio]['existe_evidencia'] = '';
+                }else{
+                    $url['doc_'.$radio]['url_documento'] = '';
+                    $url['doc_'.$radio]['existe_evidencia'] = '';
+                }
                 if($rol == '1') $url = $json->vinculacion = $url;
                 else if($rol == '2') $json->academico = $url;
                 else if($rol == '3') $json->administrativo = $url;
@@ -1379,7 +1387,8 @@ class ExpedienteController extends Controller
             WHEN tipo = 'PINS' THEN 'CUOTA ORDINARIA'
             WHEN tipo = 'EPAR' THEN 'REDUCCIÓN DE CUOTA'
         END as tpago"))->where('id', $idcurso)->first();
-        $abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+        $abecedario = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'];
+
         $pdf = PDF::loadView('vistas_expe.genpdfexpedientes',compact('direccion','distintivo','json_dptos','abecedario','curso','marca',
         'evid_vincu','evid_acad','evid_admin'));
         return $pdf->stream('Expediente_Unico');
@@ -1405,16 +1414,18 @@ class ExpedienteController extends Controller
                     $link = $docAlumnos[$idAlumno]; //Link del documento
                     $id_pre = $idsPre[$idAlumno];
                     $namePdf = basename($link);
+                    $nombre = $idAlumno.'_'.$namePdf;
+
                     if(empty($namePdf)){$namePdf = '';}
                     else{
-                        $filePath = 'uploadFiles/alumnos/'.$id_pre.'/'.$namePdf;
+                        $filePath = 'uploadFiles/alumnos/'.$id_pre.'/'.$nombre;
                         if (Storage::exists($filePath)) { Storage::delete($filePath);} //Eliminamos el archivo
                     }
                     #Guardamos url del archivo
                     try {
                         $Alumnos = Inscripcion::find($idAlumno);
                         $doc = $file; # obtenemos el archivo
-                        $urldoc = $this->pdf_upload_alumnos($doc, $id_pre, $namePdf); # invocamos el método
+                        $urldoc = $this->pdf_upload_alumnos($doc, $id_pre, $nombre); # invocamos el método
                         $url = $Alumnos->requisitos;
                         $url['documento'] = $urldoc[0];
                         $Alumnos->requisitos = $url; # guardamos el path

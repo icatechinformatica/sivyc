@@ -1223,7 +1223,7 @@
                     <tr>
                         <td>g.1</td>
                         <td>
-                            Acta de cancelación de constancias por no solicitadas/memorándum de remisión de constancias por medios digitales con anexos.
+                            Soportes de entrega de constancias de capacitación (si es el caso).
                         </td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1257,13 +1257,27 @@
                             {{-- mostrar pdf --}}
                             @if (!empty($json_dptos->academico['doc_25']['url_documento']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_25"
+                                    data-placement="top" title="Oficio de entrega de constancias" id="verpdf_25"
                                     href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                    data-placement="top" title="No se encuentra el oficio de entrega de constancias" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                            {{-- Otro soportes --}}
+                            @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver PDF" id="verpdf_25"
+                                    href="{{$path_files.$json_dptos->academico['doc_25']['url_soporte'] ?? ''}}" target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Archivo no encontrado" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
@@ -1271,9 +1285,9 @@
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_25']['url_documento']))
+                            @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion25',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_documento'] : ''}}',
+                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_soporte'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>

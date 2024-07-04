@@ -44,8 +44,9 @@ class BuzonexpController extends Controller
         $val_rol = null;
         $user = Auth::user();$roles = $user->roles();$resul = $roles->first();
         $slug = $resul->slug;
-        if($slug == 'titular-innovacion') $val_rol = 4;
-        else if($slug == 'administrativo' || $slug == 'admin' || $slug == 'titular_unidad' || $slug == 'unidad_vinculacion') $val_rol = 3;
+        if($slug == 'titular-innovacion' || $slug == 'auxiliar-innovacion') $val_rol = 4;
+        else if($slug == 'administrativo' || $slug == 'admin' || $slug == 'titular_unidad' || $slug == 'unidad_vinculacion'
+                || $slug == 'pagos_contratos' || $slug == 'director_unidad') $val_rol = 3;
         //Esto linea es solo para hacer pruebas
         // $val_rol = 3;
 
