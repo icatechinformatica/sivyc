@@ -1111,7 +1111,7 @@ class CursosController extends Controller
             if($fActual->lessThan($date1)) {
                 $ejercicio = ($fActual->year - 1) . "-" . $fActual->year;
             } else if($fActual->greaterThan($date2)) {
-                $ejercicio - $fActual->year . "-" . ($fActual->year + 1);
+                $ejercicio = $fActual->year . "-" . ($fActual->year + 1);
             }
         }
 
