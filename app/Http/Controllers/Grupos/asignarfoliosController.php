@@ -229,27 +229,37 @@ class asignarfoliosController extends Controller
         if (is_null($curso)) {return back()->with('msn', 'Error en la clave de curso');}
 
         ## Buscamos el contenido tematico del curso
-        $cadena_tematico = $submodulo = '';
+        $cadena_tematico = '';
         $array_tematico = [];
-        $carta_descriptiva = DB::table('tbl_carta_descriptiva')->where('id_curso', $curso->id_curso)->value('cont_tematico');
-        // $carta_descriptiva = DB::table('tbl_carta_descriptiva')->where('id_curso', 1404)->value('cont_tematico');
 
-        if(!empty($carta_descriptiva)){
-            $cont_tema = json_decode($carta_descriptiva, true);
-            foreach ($cont_tema as $item) {
-                // $submodulo = '';
-                $tempo = ['nombre_modulo' => $item['name_modulo'], 'submodulos' => $item['val_inputs'], 'hora' => $item['curso_hora'].' '.$item['sel_horario']];
-                // foreach ($item['val_inputs'] as $subitem) {
-                //     if($subitem != '.') $submodulo .= $subitem.', ';
-                // }
-                $cadena_tematico .= $item['name_modulo'].'( '. $item['curso_hora'].' '.$item['sel_horario'].' )'."\n";
-                $array_tematico [] = $tempo;
+        ##VALIDACIÓN DE CARTA DESCRIPTIVA
+        $carta_descrip = DB::table('contenido_tematico')->select('nombre_modulo', 'duracion')
+        ->where('id_curso', $curso->id_curso)->where('id_parent', 0)->orderBy('id', 'asc')->get();
+
+        $duraCurso = DB::table('contenido_tematico')
+        ->where('id_curso', $curso->id_curso)
+        ->where('id_parent', 0)
+        ->select(DB::raw('SUM(EXTRACT(EPOCH FROM duracion::interval)) as total_seconds'))
+        ->first();
+        $totalDura = (int)($duraCurso->total_seconds / 3600);
+
+        if(!empty($carta_descrip) && !empty($duraCurso) && !empty($totalDura)){
+            if($totalDura == $curso->dura){
+                foreach ($carta_descrip as $item) {
+                    $tempo = ['nombre_modulo' => $item->nombre_modulo, 'hora' => $item->duracion];
+                    $cadena_tematico .= $item->nombre_modulo.' ('. $item->duracion.') '."\n";
+                    $array_tematico [] = $tempo;
+                }
+            }else{
+                return back()->with(['msn' => "El número de horas capturadas en la carta descriptiva (".$totalDura." hr) no coincide con el total de horas del curso (".$curso->dura. " hr), comuníquese con la DTA para mas detalles",
+                'clave' => $clave, 'matricula' => $matricula, 'efirma' => $efirma]);
             }
         }else{
-            return back()->with(['msn' => "No es posible generar el xml debido a que no se encuentra el contenido tematico del curso\n comuníquese con la DTA para la captura de la carta descriptiva",
-            'clave' => $clave, 'matricula' => $matricula, 'efirma' => $efirma]);
+            return back()->with(['msn' => "No es posible enviar la información debido a que no se encuentra capturada la carta descriptiva,\n comuníquese con la DTA para mas detalles.",
+                'clave' => $clave, 'matricula' => $matricula, 'efirma' => $efirma]);
         }
 
+        //Validar que la duracion del curso concuerde con la suma total de horas del contenido tematico
         try {
             ##Obtenemos fecha del termino de curso para la constancia
             $fecha_termino = Carbon::createFromFormat('Y-m-d', $curso->termino);
