@@ -772,9 +772,9 @@
                         <td>
                             {{-- Subir recibo--}}
                             <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="
-                            @if($search_docs['validRecibo'] == 'Provisional' && $search_docs['anio_curso'] == '2023')
+                            @if($search_docs['anio_curso'] == '2023' && $search_docs['validRecibo'] != 'digital')
 
-                            @elseif($search_docs['validRecibo'] != 'Provisional' && $search_docs['anio_curso'] != '2023')
+                            @elseif($search_docs['validRecibo'] == 'digital')
                                 d-none
                             @endif
                             ">

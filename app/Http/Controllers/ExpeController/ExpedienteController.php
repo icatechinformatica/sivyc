@@ -1501,29 +1501,39 @@ class ExpedienteController extends Controller
         $consulta = DB::table('tbl_cursos')->select('comprobante_pago', 'folio_grupo')->where('id', '=', $id_curso)->first();
 
         if(!empty($consulta) && !empty($folio_recibo) && !empty($id_curso) && !empty($fecha_recibo)) {
-            $namePdf = basename($consulta->comprobante_pago);
-            if(empty($namePdf)){ $namePdf = trim("comprobante_pago" . "_". $consulta->folio_grupo . date('YmdHis'). ".pdf");}
 
             //Cargar pdf
             if($request->hasFile('file')){
                 try {
-                    $filePath = 'uploadFiles/UNIDAD/comprobantes_pagos/'.$namePdf;
-                    if (Storage::exists($filePath)) {
-                        Storage::delete($filePath);
-                    }
+                    //Cargamos el archivo pdf
+                    $namePdf = trim("comprobante_pago" . "_". $consulta->folio_grupo ."_". date('YmdHis'). ".pdf");
                     $pdf = $request->file('file');
                     $directorio = '/UNIDAD/comprobantes_pagos/'.$namePdf;
                     $pdf->storeAs('/uploadFiles/UNIDAD/comprobantes_pagos/', $namePdf);
                     $pdfUrl = Storage::url('/uploadFiles' . $directorio);
 
                     //Guardamos datos en la bd
-                    DB::table('tbl_cursos')
+                    $updated =DB::table('tbl_cursos')
                     ->where('id', $id_curso)
                     ->update([
                         'comprobante_pago' => $directorio,
                         'folio_pago' => $folio_recibo,
                         'fecha_pago' => $fecha_recibo
                     ]);
+                    //Eliminamos el archivo anterior para sustituir con el nuevo
+                    if($updated > 0 && !empty($consulta->comprobante_pago)){
+                        $fileOld = basename($consulta->comprobante_pago);
+                        $filePath = 'uploadFiles/UNIDAD/comprobantes_pagos/'.$fileOld;
+                        if (Storage::exists($filePath)) {
+                            Storage::delete($filePath);
+                        }
+                    }
+
+                    return response()->json([
+                        'status' => 200,
+                        'mensaje' => 'Archivo cargado con exito'
+                    ]);
+
                 } catch (\Throwable $th) {
                     return response()->json([
                         'status' => 500,
@@ -1534,8 +1544,8 @@ class ExpedienteController extends Controller
 
         }
         return response()->json([
-            'status' => 200,
-            'mensaje' => 'pdf de recibo cargado con exito'
+            'status' => 500,
+            'mensaje' => 'Archivo no encontrado'
         ]);
     }
 
