@@ -33,7 +33,7 @@ class ExpedienteController extends Controller
         if ($slug == 'admin') {$val_rol = 0;}
         else if($slug == 'direccion_vinculacion' || $slug == 'unidad_vinculacion' || $slug == 'vinculadores_administrativo' || $slug == 'director_unidad') {$val_rol = 1;}
         else if($slug == 'unidad' || $slug == 'titular_unidad' || $slug == 'auxiliar_unidad') {$val_rol = 2;}
-        else if($slug == 'administrativo') {$val_rol = 3;}
+        else if($slug == 'administrativo' || $slug == 'pagos_contratos') {$val_rol = 3;}
         else if($slug == 'titular-innovacion') {$val_rol = 4;}
 
         #REALIZAMOS LA BUSQUEDA
@@ -417,6 +417,9 @@ class ExpedienteController extends Controller
     #Realizar consultas de diferentes documento pdf en la BD
     public function search_docs($folio){
 
+        ##Obtenemos el año del curso
+        $bdanio_curso = DB::table('tbl_cursos')->select(DB::raw("EXTRACT(YEAR FROM inicio) as anio_curso"))->where('folio_grupo',$folio)->first();
+
         $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->value('memo_soporte_dependencia');
         $mod_insctructor = DB::table('tbl_cursos')->where('folio_grupo',$folio)->value('modinstructor');
 
@@ -493,8 +496,9 @@ class ExpedienteController extends Controller
         ->where('tc.folio_grupo', $folio)->where('ef.tipo_archivo', 'Lista de calificaciones')
         ->where('ef.status', 'VALIDADO')->value('tc.id');
 
-        $bdAsisEvid = DB::table('pagos as pag')->select('pag.arch_asistencia', 'pag.arch_evidencia','arch_calificaciones')->join('tbl_cursos as c', 'c.id', '=', 'pag.id_curso')
-        ->where('c.folio_grupo', $folio)->where('pag.status_recepcion', 'VALIDADO')->first();
+        $bdAsisEvid = DB::table('pagos as pag')->select('pag.arch_asistencia', 'pag.arch_evidencia','arch_calificaciones')
+        ->join('tbl_cursos as c', 'c.id', '=', 'pag.id_curso')
+        ->where('c.folio_grupo', $folio)->first();
 
         //Obtener comprobante de pago ya que se actualizaron rutas
         $bdReciboP = DB::table('tbl_recibos')->where('folio_grupo', $folio)->where('status_folio', '!=', 'CANCELADO')->whereNotNull('status_folio')->value('file_pdf');
@@ -513,8 +517,11 @@ class ExpedienteController extends Controller
 
         //Variables
         $doc2 = $doc5 = $doc6 = $doc7 = $validRec = $doc8 = $doc9 = $doc10 = $doc11 = $doc20 = $doc21 =
-        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = $anioCurso = '';
+        $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = $anioCurso ='';
         $docAlumnos = []; $reciboProvi =  true;
+
+        if(!empty($bdanio_curso->anio_curso)){$anioCurso = $bdanio_curso->anio_curso;}
+
         //Soporte de constancias
         if(!empty($bddoc2)){$doc2 = $bddoc2;}
 
@@ -529,12 +536,12 @@ class ExpedienteController extends Controller
         else if(!empty($bdReciboT->comprobante_pago)){
             $doc7 = $bdReciboT->comprobante_pago;
             $validRec = $bdReciboT->es_valido;
-            $anioCurso = $bdReciboT->anio_curso;
+            // $anioCurso = $anio_curso;
         }
 
         //Arc01
-        if(!empty($bddoc789->file_arc01) && ($bddoc789->arc == '01')){$doc8 = $bddoc789->file_arc01;}
-        if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '01')){$doc9 = $bddoc789->pdf_curso;}
+        if(!empty($bddoc789->file_arc01) && ($bddoc789->arc == '01' || $bddoc789->arc == '02')){$doc8 = $bddoc789->file_arc01;}
+        if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '01' || $bddoc789->arc == '02')){$doc9 = $bddoc789->pdf_curso;}
         if(!empty($bddoc789->file_arc02) && ($bddoc789->arc == '02')){$doc10 = $bddoc789->file_arc02;}
         if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '02')){$doc11 = $bddoc789->pdf_curso;}
         if(!empty($bddoc2021->doc_supre)){$doc20 = $bddoc2021->doc_supre;}
@@ -546,17 +553,16 @@ class ExpedienteController extends Controller
         // Asistencia
         if(!empty($bdEAsis)){$docAsis = $bdEAsis;}
         else if(!empty($bdAsisEvid->arch_asistencia)){$docAsis = $bdAsisEvid->arch_asistencia;}
-        // else if($bddoc789->tipo_curso == 'CERTIFICACION'){ $tipoCurso = "CERTIFICACION";}
 
         //Fotografico
         if(!empty($bdEFoto)){$docFoto = $bdEFoto;}
-        else if(!empty($bdAsisEvid->arch_evidencia)){$docFoto = $bdAsisEvid->arch_evidencia;}
+        else if(!empty($bdAsisEvid->arch_evidencia)){
+            $docFoto = $bdAsisEvid->arch_evidencia;
+        }
         //E Calificaciones
         if(!empty($bdECalif)){$docCalif = $bdECalif;}
         else if(!empty($bdAsisEvid->arch_calificaciones)){$docCalif = $bdAsisEvid->arch_calificaciones;}
 
-
-        // if(!empty($bddoc23->arch_pago)){$doc24 = $bddoc23->arch_pago;}
 
         //Validacion d (delegacion)
         if($mod_insctructor == 'ASIMILADOS A SALARIOS'){
@@ -923,10 +929,10 @@ class ExpedienteController extends Controller
     /** Funcion para subir pdf al servidor
      * @param string $pdf, $id, $nom
      */
-    protected function pdf_upload($pdf, $id, $nom, $anio)
+    protected function pdf_upload($pdf, $id, $nom, $anio, $ext)
     {
         # nuevo nombre del archivo
-        $pdfFile = trim($nom . "_" . date('YmdHis') . "_" . $id . ".pdf");
+        $pdfFile = trim($nom . "_" . date('YmdHis') . "_" . $id . $ext);
         $directorio = '/' . $anio . '/expedientes/' . $id . '/'.$pdfFile;
         $pdf->storeAs('/uploadFiles/'.$anio.'/expedientes/'.$id, $pdfFile);
         $pdfUrl = Storage::url('/uploadFiles' . $directorio);
@@ -965,12 +971,15 @@ class ExpedienteController extends Controller
                             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.${"img" . $num_docs[$i]};
                             if (Storage::exists($filePath)) {
                                 Storage::delete($filePath);
-                            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
+                            } else {
+                                // return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]);
+                            }
                         }
                         #Agregar Registros el doc20 es el doc25  del json
                         $vinc = ExpeUnico::find($idcurso);
                         $doc = $request->file('doc_'.$num_docs[$i]); # obtenemos el archivo
-                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio); # invocamos el método
+                        $extension = '.'.$doc->getClientOriginalExtension();
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio, $extension); # invocamos el método
                         $url = $vinc->vinculacion;
 
                         $url['doc_'.$num_docs[$i]]['url_documento'] = $urldoc[1];
@@ -1018,16 +1027,19 @@ class ExpedienteController extends Controller
                             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.${"img" . $i};
                             if (Storage::exists($filePath)) {
                                 Storage::delete($filePath);
-                            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
+                            } else {
+                                // return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]);
+                            }
                         }
                         #Agregar Registros el doc20 es el doc25  del json
                         $acad = ExpeUnico::find($idcurso);
                         $doc = $request->file('doc_'.$i); # obtenemos el archivo
-                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$conta], $anio); # invocamos el método
+                        $extension = '.'.$doc->getClientOriginalExtension();
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$conta], $anio, $extension); # invocamos el método
                         $url = $acad->academico;
 
                         if($i == 20){
-                            $url['doc_25']['url_documento'] = $urldoc[1];
+                            $url['doc_25']['url_soporte'] = $urldoc[1];
                             $url['doc_25']['fecha_subida'] = date('Y-m-d');
                         }else{
                             $url['doc_'.$i]['url_documento'] = $urldoc[1];
@@ -1055,12 +1067,12 @@ class ExpedienteController extends Controller
 
         #DELEGADO
         if ($rol == '3') {
-            $num_docs = [22,23]; #Documentos que se requieren obtener
+            $num_docs = [22,23,24]; #Documentos que se requieren obtener
             for ($i=0; $i < count($num_docs) ; $i++) {
                 ${"file" . $num_docs[$i]} = $request->hasFile('doc_'.$num_docs[$i]);
                 ${"img" . $num_docs[$i]} = basename($bd_json->administrativo['doc_'.$num_docs[$i]]['url_documento']);
             }
-            $nombres_doc = ['contrato', 'solicitud_pago'];
+            $nombres_doc = ['contrato', 'solicitud_pago', 'comp_fiscal'];
 
             try {
                 for ($i=0; $i < count($num_docs) ; $i++) {
@@ -1071,12 +1083,15 @@ class ExpedienteController extends Controller
                             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.${"img" . $num_docs[$i]};
                             if (Storage::exists($filePath)) {
                                 Storage::delete($filePath);
-                            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]); }
+                            } else {
+                                // return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO ->".$filePath]);
+                            }
                         }
                         #Agregar Registros el doc20 es el doc25  del json
                         $deleg = ExpeUnico::find($idcurso);
                         $doc = $request->file('doc_'.$num_docs[$i]); # obtenemos el archivo
-                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio); # invocamos el método
+                        $extension = '.'.$doc->getClientOriginalExtension();
+                        $urldoc = $this->pdf_upload($doc, $idcurso, $nombres_doc[$i], $anio, $extension); # invocamos el método
                         $url = $deleg->administrativo;
 
                         $url['doc_'.$num_docs[$i]]['url_documento'] = $urldoc[1];
@@ -1156,15 +1171,22 @@ class ExpedienteController extends Controller
             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.$url;
             if (Storage::exists($filePath)) {
                 Storage::delete($filePath);
-            } else { return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
+            } else {
+                // return response()->json(['status' => 500, 'mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]);
+            }
             #Guardamos en la bd
             try {
                 $json = ExpeUnico::find($idcurso);
                 if($rol == '1') $url = $json->vinculacion;
                 else if($rol == '2') $url = $json->academico;
                 else if($rol == '3') $url = $json->administrativo;
-                $url['doc_'.$radio]['url_documento'] = '';
-                $url['doc_'.$radio]['existe_evidencia'] = '';
+                if($radio == '25'){
+                    $url['doc_25']['url_soporte'] = '';
+                    // $url['doc_'.$radio]['existe_evidencia'] = '';
+                }else{
+                    $url['doc_'.$radio]['url_documento'] = '';
+                    $url['doc_'.$radio]['existe_evidencia'] = '';
+                }
                 if($rol == '1') $url = $json->vinculacion = $url;
                 else if($rol == '2') $json->academico = $url;
                 else if($rol == '3') $json->administrativo = $url;
@@ -1365,7 +1387,8 @@ class ExpedienteController extends Controller
             WHEN tipo = 'PINS' THEN 'CUOTA ORDINARIA'
             WHEN tipo = 'EPAR' THEN 'REDUCCIÓN DE CUOTA'
         END as tpago"))->where('id', $idcurso)->first();
-        $abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+        $abecedario = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'];
+
         $pdf = PDF::loadView('vistas_expe.genpdfexpedientes',compact('direccion','distintivo','json_dptos','abecedario','curso','marca',
         'evid_vincu','evid_acad','evid_admin'));
         return $pdf->stream('Expediente_Unico');
@@ -1391,16 +1414,18 @@ class ExpedienteController extends Controller
                     $link = $docAlumnos[$idAlumno]; //Link del documento
                     $id_pre = $idsPre[$idAlumno];
                     $namePdf = basename($link);
+                    $nombre = $idAlumno.'_'.$namePdf;
+
                     if(empty($namePdf)){$namePdf = '';}
                     else{
-                        $filePath = 'uploadFiles/alumnos/'.$id_pre.'/'.$namePdf;
+                        $filePath = 'uploadFiles/alumnos/'.$id_pre.'/'.$nombre;
                         if (Storage::exists($filePath)) { Storage::delete($filePath);} //Eliminamos el archivo
                     }
                     #Guardamos url del archivo
                     try {
                         $Alumnos = Inscripcion::find($idAlumno);
                         $doc = $file; # obtenemos el archivo
-                        $urldoc = $this->pdf_upload_alumnos($doc, $id_pre, $namePdf); # invocamos el método
+                        $urldoc = $this->pdf_upload_alumnos($doc, $id_pre, $nombre); # invocamos el método
                         $url = $Alumnos->requisitos;
                         $url['documento'] = $urldoc[0];
                         $Alumnos->requisitos = $url; # guardamos el path
@@ -1413,20 +1438,37 @@ class ExpedienteController extends Controller
             }
         }
 
-        //HACER CONSULTA POR ALUMNOS PARA TRAER LA CURP SI CHECK ESTUDIOS ES IGUAL A TRUE ENTONCES HACEMOS LA CONSULTA Y ACTUALIZAMOS POR LA CURP
-        //DE LO CONTRARIO HACEMOS LA ACTUALIZACION
+        //Prueba con folio 10K-230228
+        // $resultado_doc = DB::table('tbl_inscripcion')
+        // ->select('id_pre', DB::raw("EXTRACT(YEAR FROM termino) as anio"), DB::raw("requisitos->>'documento' as documento"), 'requisitos')
+        // ->where('folio_grupo', $folioG)->orderBy('id')->get();
 
-        //Actualizar curp o estudios
+        //Actualizar checks
         foreach ($alumnosIds as $key => $id) {
+
             try {
                 $Alumnos = Inscripcion::find($id);
                 $json = $Alumnos->requisitos;
                 $json['chk_curp'] = $CheckboxCurp[$key];
                 $json['chk_escolaridad'] = $CheckboxEstudios[$key];
                 $json['chk_acta_nacimiento'] = $CheckboxActaNacim[$key];
-                // $json['documento'] = "";
                 $Alumnos->requisitos = $json;
                 $Alumnos->save();
+
+                ##Actualizamos masiva el json del alumno en otros grupos en caso de ser necesario
+                // if($CheckboxEstudios[$key] == "true"){
+                //     if(isset($resultado_doc[$key]) && !empty($resultado_doc[$key]->documento)){
+                //         DB::table('tbl_inscripcion')
+                //         ->where('id_pre', $resultado_doc[$key]->id_pre)
+                //         ->whereRaw("requisitos->>'chk_escolaridad' IS NULL")
+                //         ->orWhereRaw("requisitos->>'chk_escolaridad' = 'false'")
+                //         ->whereRaw("EXTRACT(YEAR FROM termino) = ?", [$resultado_doc[$key]->anio])
+                //         ->update([
+                //             'requisitos' => json_encode($json)
+                //         ]);
+                //     }
+                // }
+
             } catch (\Throwable $th) {
                 return redirect()->route('expunico.principal.mostrar.get', ['folio' => $folioG])->with(['message' => '¡ERROR AL GUARDAR INFORMACIÓN '.$th->getMessage() , 'status' => 'danger']);
             }
@@ -1459,29 +1501,39 @@ class ExpedienteController extends Controller
         $consulta = DB::table('tbl_cursos')->select('comprobante_pago', 'folio_grupo')->where('id', '=', $id_curso)->first();
 
         if(!empty($consulta) && !empty($folio_recibo) && !empty($id_curso) && !empty($fecha_recibo)) {
-            $namePdf = basename($consulta->comprobante_pago);
-            if(empty($namePdf)){ $namePdf = trim("comprobante_pago" . "_". $consulta->folio_grupo . date('YmdHis'). ".pdf");}
 
             //Cargar pdf
             if($request->hasFile('file')){
                 try {
-                    $filePath = 'uploadFiles/UNIDAD/comprobantes_pagos/'.$namePdf;
-                    if (Storage::exists($filePath)) {
-                        Storage::delete($filePath);
-                    }
+                    //Cargamos el archivo pdf
+                    $namePdf = trim("comprobante_pago" . "_". $consulta->folio_grupo ."_". date('YmdHis'). ".pdf");
                     $pdf = $request->file('file');
                     $directorio = '/UNIDAD/comprobantes_pagos/'.$namePdf;
                     $pdf->storeAs('/uploadFiles/UNIDAD/comprobantes_pagos/', $namePdf);
                     $pdfUrl = Storage::url('/uploadFiles' . $directorio);
 
                     //Guardamos datos en la bd
-                    DB::table('tbl_cursos')
+                    $updated =DB::table('tbl_cursos')
                     ->where('id', $id_curso)
                     ->update([
                         'comprobante_pago' => $directorio,
                         'folio_pago' => $folio_recibo,
                         'fecha_pago' => $fecha_recibo
                     ]);
+                    //Eliminamos el archivo anterior para sustituir con el nuevo
+                    if($updated > 0 && !empty($consulta->comprobante_pago)){
+                        $fileOld = basename($consulta->comprobante_pago);
+                        $filePath = 'uploadFiles/UNIDAD/comprobantes_pagos/'.$fileOld;
+                        if (Storage::exists($filePath)) {
+                            Storage::delete($filePath);
+                        }
+                    }
+
+                    return response()->json([
+                        'status' => 200,
+                        'mensaje' => 'Archivo cargado con exito'
+                    ]);
+
                 } catch (\Throwable $th) {
                     return response()->json([
                         'status' => 500,
@@ -1492,8 +1544,8 @@ class ExpedienteController extends Controller
 
         }
         return response()->json([
-            'status' => 200,
-            'mensaje' => 'pdf de recibo cargado con exito'
+            'status' => 500,
+            'mensaje' => 'Archivo no encontrado'
         ]);
     }
 

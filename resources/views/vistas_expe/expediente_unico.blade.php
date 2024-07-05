@@ -167,18 +167,6 @@
             margin-top: 10%;
             height: 18%;
         }
-        /* Modal subir documento curp y comprobante de alumnos */
-        .modal-content3 {
-            background-color: #fff;
-            margin: 15% auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 30%;
-            /* padding-left: 10px;
-            padding-top: 7px;
-            margin-top: 10%; */
-            height: 20%;
-        }
 
         .modal-body {
             height: 60%;
@@ -784,9 +772,9 @@
                         <td>
                             {{-- Subir recibo--}}
                             <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="
-                            @if($search_docs['validRecibo'] == 'Provisional' && $search_docs['anio_curso'] == '2023')
+                            @if($search_docs['anio_curso'] == '2023' && $search_docs['validRecibo'] != 'digital')
 
-                            @elseif($search_docs['validRecibo'] != 'Provisional' && $search_docs['anio_curso'] != '2023')
+                            @elseif($search_docs['validRecibo'] == 'digital')
                                 d-none
                             @endif
                             ">
@@ -985,7 +973,7 @@
                             @if (!empty($search_docs['urldoc10']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc10']}}" target="_blank">
+                                    href="{{$path_files.$search_docs['urldoc10']}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
@@ -1235,7 +1223,7 @@
                     <tr>
                         <td>g.1</td>
                         <td>
-                            Acta de cancelación de constancias por no solicitadas/memorándum de remisión de constancias por medios digitales con anexos.
+                            Soportes de entrega de constancias de capacitación (si es el caso).
                         </td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1269,13 +1257,27 @@
                             {{-- mostrar pdf --}}
                             @if (!empty($json_dptos->academico['doc_25']['url_documento']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_25"
+                                    data-placement="top" title="Oficio de entrega de constancias" id="verpdf_25"
                                     href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                    data-placement="top" title="No se encuentra el oficio de entrega de constancias" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                            {{-- Otro soportes --}}
+                            @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver PDF" id="verpdf_25"
+                                    href="{{$path_files.$json_dptos->academico['doc_25']['url_soporte'] ?? ''}}" target="_blank">
+                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Archivo no encontrado" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
@@ -1283,9 +1285,9 @@
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_25']['url_documento']))
+                            @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion25',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_documento'] : ''}}',
+                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_soporte'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
@@ -1357,7 +1359,7 @@
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_15']['url_documento']))
+                            @if (!empty($json_dptos->academico['doc_15']['url_documento']) && empty($search_docs['urldoc15']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion15',
                                     '{{$json_dptos->academico['doc_15']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1432,7 +1434,7 @@
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_16']['url_documento']))
+                            @if (!empty($json_dptos->academico['doc_16']['url_documento']) && empty($search_docs['urldoc16']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion16',
                                     '{{$json_dptos->academico['doc_16']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1592,7 +1594,13 @@
                         </td>
                         <td class="text-center">
                             {{-- Subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="{{(!empty($search_docs['urldoc19'])) ? 'd-none' : ''}}">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="
+                            {{-- {{(!empty($search_docs['urldoc19']) && $search_docs['anio_curso'] != '2023') ? 'd-none' : ''}} --}}
+                            @if($search_docs['anio_curso'] == '2023' && empty($search_docs['urldoc19']))
+                            @elseif(!empty($search_docs['urldoc19']))
+                                d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc19" style="display: none;" onchange="checkIcon('iconCheck19', 'pdfInputDoc19')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc19').click();">Archivo
@@ -1629,7 +1637,7 @@
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_19']['url_documento']))
+                            @if (!empty($json_dptos->academico['doc_19']['url_documento']) && empty($search_docs['urldoc19']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion19',
                                     '{{$json_dptos->academico['doc_19']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1783,7 +1791,16 @@
                         </td>
                         <td>
                             {{-- subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc22" class="{{(!empty($search_docs['urldoc22'])) ? 'd-none' : ''}}">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc22" class="
+                            {{-- {{(!empty($search_docs['urldoc22'])) ? 'd-none' : ''}} --}}
+                            @if($search_docs['anio_curso'] == '2023')
+                                @if(!empty($search_docs['urldoc22']))
+                                    d-none
+                                @endif
+                            @elseif(!empty($search_docs['urldoc23']))
+                                d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc22" style="display: none;" onchange="checkIcon('iconCheck22', 'pdfInputDoc22')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc22').click();">Archivo
@@ -1821,7 +1838,7 @@
                         </td>
                         <td>
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->administrativo['doc_22']['url_documento']))
+                            @if (!empty($json_dptos->administrativo['doc_22']['url_documento']) && empty($search_docs['urldoc22']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion22',
                                     '{{$json_dptos->administrativo['doc_22']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1857,7 +1874,15 @@
                         </td>
                         <td>
                             {{-- subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc23" class="{{(!empty($search_docs['urldoc23'])) ? 'd-none' : ''}}">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc23" class="
+                            @if($search_docs['anio_curso'] == '2023')
+                                @if(!empty($search_docs['urldoc23']))
+                                    d-none
+                                @endif
+                            @elseif(!empty($search_docs['urldoc23']))
+                                d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc23" style="display: none;" onchange="checkIcon('iconCheck23', 'pdfInputDoc23')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc23').click();">Archivo
@@ -1888,7 +1913,7 @@
                         </td>
                         <td>
                             {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->administrativo['doc_23']['url_documento']))
+                            @if (!empty($json_dptos->administrativo['doc_23']['url_documento']) && empty($search_docs['urldoc23']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion23',
                                     '{{$json_dptos->administrativo['doc_23']['url_documento']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
@@ -1922,7 +1947,21 @@
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
                         </td>
-                        <td></td>
+                        <td>
+                            {{-- subir pdf --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc24" class="
+                            @if($search_docs['anio_curso'] == '2023' && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
+                            @else
+                                d-none
+                            @endif
+                            ">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc24" style="display: none;" onchange="checkIcon('iconCheck24', 'pdfInputDoc24')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc24').click();">Archivo
+                                    <div id="iconCheck24" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
+                        </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc24']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
@@ -1937,6 +1976,15 @@
                                     <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
+
+                            @if ((empty($search_docs['urldoc24']) || empty($search_docs['doc_xml'])) && !empty($json_dptos->administrativo['doc_24']['url_documento']))
+                            <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                data-placement="top" title="Ver Archivo" id=""
+                                href="{{$path_files.$json_dptos->administrativo['doc_24']['url_documento']}}" target="_blank">
+                                <i class="fa fa fa-file-text fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            </a>
+                            @endif
+
                             @if (!empty($search_docs['doc_xml']))
                                 <a class="btn-circle btn-circle-sm ml-2" data-toggle="tooltip"
                                     data-placement="top" title="Ver xml" id=""
@@ -1944,9 +1992,17 @@
                                     <i class="fa fa fa-file-text fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @endif
-
                         </td>
-                        <td></td>
+                        <td>
+                             {{-- eliminar pdf --}}
+                             @if (!empty($json_dptos->administrativo['doc_24']['url_documento']) && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion24',
+                                    '{{$json_dptos->administrativo['doc_24']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
                             <textarea class="" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_24'], 'mensaje_dta', '')}}</textarea>
@@ -2052,12 +2108,15 @@
         <div id="modalAlumnosCurp" class="modal_al">
             <div class="modal-content">
                 <div class="modal-header py-2">
-                    <h5 class="modal-title font-weight-bold">Alumnos</h5>
+                    <div class="alert alert-danger mt-1 p-2 mb-0" role="alert">
+                        <strong>Nota!</strong> Cargue un solo PDF por alumno, donde contenga los requisitos seleccionados.
+                    </div>
                     <button type="button" class="close" onclick="closeModal('modalAlumnosCurp')" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body px-0">
+                    <p class="font-weight-bold text-center mb-1" style="font-size: 16px;">Alumnos</p>
                     <div class="scrollable-list">
                         @if (isset($search_docs['alumnos_req']) && count($search_docs['alumnos_req']) > 0)
                             <form action="" method="post" enctype="multipart/form-data" id="frmRequisitos">
@@ -2069,13 +2128,13 @@
                                 <table class="table-hover">
                                     <thead>
                                         <tr>
-                                            <th colspan="1">Documentos</th>
+                                            {{-- <th colspan="1">Documentos</th> --}}
                                             <th>Nombre del Alumno</th>
                                             <th>PDF</th>
                                             <th colspan="4">Subir PDF</th>
                                         </tr>
                                         <tr>
-                                            <th>Curp</th>
+                                            {{-- <th>Curp</th> --}}
                                             {{-- <th></th> --}}
                                             <th></th>
                                             <th></th>
@@ -2088,18 +2147,18 @@
                                     <tbody>
                                             @foreach ($search_docs['alumnos_req'] as $key => $valor)
                                                 <tr>
-                                                    <td class="text-center">
-                                                        <input type="hidden" name="alumnosId[]" value="{{$valor['id']}}">
-                                                        <input type="hidden" name="docAlumnos[{{ $valor['id'] }}]" value="{{$valor['documento']}}">
-                                                        <input type="hidden" name="identPre[{{ $valor['id'] }}]" value="{{$valor['id_pre']}}">
-
+                                                    {{-- <td class="text-center">
                                                         @if ($valor['curp'] == 'true' && !empty($valor['documento']))
                                                             <i class="fa fa-check text-success" aria-hidden="true"></i>
                                                         @else
                                                             <i class="fa fa-times text-danger" aria-hidden="true"></i>
                                                         @endif
-                                                    </td>
-                                                    <td class="text-left"><span>{{$valor['alumno']}}</span></td>
+                                                    </td> --}}
+                                                    <td class="text-left">
+                                                        <input type="hidden" name="alumnosId[]" value="{{$valor['id']}}">
+                                                        <input type="hidden" name="docAlumnos[{{ $valor['id'] }}]" value="{{$valor['documento']}}">
+                                                        <input type="hidden" name="identPre[{{ $valor['id'] }}]" value="{{$valor['id_pre']}}">
+                                                        <span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
                                                     <td class="text-center">
                                                         @if (!empty($valor['documento']))
                                                             <a href="{{$valor['documento']}}" target="_blank"><i class="fa fa-file-pdf-o fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
@@ -2112,7 +2171,6 @@
                                                             <input class="form-check-input checkbox-curp" type="checkbox" value="true" id="" name=""
                                                             @if ($valor['curp'] == 'true' && !empty($valor['documento']))
                                                                 checked
-                                                                disabled
                                                             @endif
                                                             >
                                                         </div>
@@ -2122,7 +2180,6 @@
                                                             <input class="form-check-input checkbox-estudios" type="checkbox" value="true" id="" name=""
                                                             @if ($valor['estudio'] == 'true' && !empty($valor['documento']))
                                                                 checked
-                                                                disabled
                                                             @endif
                                                             >
                                                         </div>
@@ -2132,19 +2189,18 @@
                                                             <input class="form-check-input checkbox-acta" type="checkbox" value="true" id="" name=""
                                                             @if ($valor['acta_nacimiento'] == 'true' && !empty($valor['documento']))
                                                                 checked
-                                                                disabled
                                                             @endif
                                                             >
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        @if (($valor['curp'] == 'false' || $valor['estudio'] == 'false' || $valor['acta_nacimiento'] == 'false') ||
-                                                            (empty($valor['curp'] ) || empty($valor['estudio']) || empty($valor['acta_nacimiento']) ))
+                                                        {{-- @if (($valor['curp'] == 'false' || $valor['estudio'] == 'false' || $valor['acta_nacimiento'] == 'false') ||
+                                                            (empty($valor['curp'] ) || empty($valor['estudio']) || empty($valor['acta_nacimiento']) )) --}}
                                                             <div class="file-input-wrapper">
                                                                 <i class="fas fa-upload file-icon"></i>
                                                                 <input type="file" class="file-input" name="documentos[{{ $valor['id'] }}]" id="docAlumno{{ $valor['id'] }}">
                                                             </div>
-                                                        @endif
+                                                        {{-- @endif --}}
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -2158,7 +2214,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer mt-4">
                     @if ($data_cursos != null)
                         @if ($array_rol['rol'] == 1 && ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO'))
                             <button class="btn py-1" id="btnSaveAlumnos">GUARDAR</button>
@@ -2175,12 +2231,13 @@
         <div id="modalAlumnosEstudios" class="modal_al">
             <div class="modal-content">
                 <div class="modal-header py-2">
-                    <h5 class="modal-title font-weight-bold">Alumnos</h5>
+                    {{-- <h5 class="modal-title font-weight-bold">Alumnos</h5> --}}
                     <button type="button" class="close" onclick="closeModal('modalAlumnosEstudios')" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body px-0">
+                    <p class="font-weight-bold text-center mb-1" style="font-size: 16px;">Alumnos</p>
                     <div class="scrollable-list">
                         @if (isset($search_docs['alumnos_req']) && count($search_docs['alumnos_req']) > 0)
                             <table class="table-hover">
@@ -2201,7 +2258,7 @@
                                                     <i class="fa fa-times text-danger" aria-hidden="true"></i>
                                                 @endif
                                             </td>
-                                            <td class="text-left"><span>{{$valor['alumno']}}</span></td>
+                                            <td class="text-left"><span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
                                             <td class="text-center">
                                                 @if (!empty($valor['documento']))
                                                     <a href="{{$valor['documento']}}" target="_blank"><i class="fa fa-file-pdf-o fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
@@ -2218,7 +2275,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer mt-4">
                     <button class="btn btn-info py-1" onclick="closeModal('modalAlumnosEstudios')">Cerrar</button>
                 </div>
             </div>
@@ -2501,12 +2558,11 @@
                                 }
                             }
                         }
-                        // inputFiles['doc_20'] = inputFiles25; //Esto se hace de manera individual
                     }
 
-                    if (rol == 3) { //Academico
+                    if (rol == 3) { //Delegado
                         let maxSize = 5 * 1024 * 1024;
-                        for (let i = 22; i <= 23; i++) {
+                        for (let i = 22; i <= 24; i++) {
                             let inputFile = document.getElementById('pdfInputDoc' + i);
                             inputFiles['doc_'+i] = inputFile;
 
@@ -2553,7 +2609,7 @@
                             },
                             error: function(xhr, status, error) {
                                 console.log(xhr.responseText);
-                                alert("Error al enviar el archivo.");
+                                alert("Error al enviar el archivo. Revise su conexión a Internet");
                             }
                         });
                     }else{

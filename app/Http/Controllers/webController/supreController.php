@@ -69,7 +69,7 @@ class supreController extends Controller
 
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-                        ->SELECT('tabla_supre.*','folios.permiso_editar','folios.edicion_pago')
+                        ->SELECT('tabla_supre.*','folios.permiso_editar','folios.edicion_pago','pagos.status_recepcion')
                         ->where('tabla_supre.id', '!=', '0')
                         ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
                         ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
@@ -80,6 +80,7 @@ class supreController extends Controller
         }
         $data = $data->RIGHTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                         ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                        ->LeftJoin('pagos','pagos.id_curso','folios.id_cursos')
                         ->OrderBy('tabla_supre.status','ASC')
                         ->OrderBy('tabla_supre.updated_at','DESC')
                         ->paginate(25, ['tabla_supre.*']);

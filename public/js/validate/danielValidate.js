@@ -627,7 +627,7 @@ $(function(){
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> Unidad Móvil: </b> '+ response[0].unidad_amovil
-                  +   '</li>'                 
+                  +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> COSTO: </b> ' + response[0].costo
                   +   '</li>'
@@ -647,7 +647,7 @@ $(function(){
                   +     '<b> Curso Tipo: </b> ' + response[0].tipo_curso
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + (response[0].solicitud_autorizacion ? 'SI' : 'NO')
+                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + (response[0].riesgo ? 'SI' : 'NO')
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b>OBJETIVOS DEL CURSO: </b>' + response[0].objetivo
