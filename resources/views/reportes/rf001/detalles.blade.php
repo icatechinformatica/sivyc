@@ -484,7 +484,10 @@
                                         <tbody>
                                             @foreach ($movimiento as $item)
                                                 @php
-                                                    $depositos = json_decode($item['depositos'], true);
+
+                                                    $depositos = isset($item['depositos'])
+                                                        ? json_decode($item['depositos'], true)
+                                                        : [];
 
                                                     $observaciones = isset($item['observaciones'])
                                                         ? json_decode($item['observaciones'], true)

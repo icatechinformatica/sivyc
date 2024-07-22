@@ -142,7 +142,7 @@
                 <tbody>
                     @foreach ($datoJson as $key => $value)
                         @php
-                            $formatDataJson = json_decode($value['depositos'], true);
+                            $formatDataJson = isset($item['depositos']) ? json_decode($value['depositos'], true) : [];
                         @endphp
                         <tr>
                             <td>{{ ($key < 9 ? '0' : '') . ($key + 1) }}</td>

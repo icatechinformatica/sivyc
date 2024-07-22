@@ -161,6 +161,7 @@ class Rf001Controller extends Controller
     {
         //
         $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
+        // dd($getConcentrado);
         $pathFile = $this->path_files;
         return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id'))->render();
     }
