@@ -920,7 +920,7 @@ class grupoController extends Controller
                                     $conteo += 1;
                                 }
                             }
-                            $instructor_valido = $this->valida_instructor($grupo->id_instructor);
+                            $instructor_valido = $this->valida_instructor($g->id_instructor);
                             if($instructor_valido['valido']){
                                 if($g->status_curso=="EDICION"){
                                     $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['status_curso' => 'AUTORIZADO']);
@@ -928,7 +928,7 @@ class grupoController extends Controller
 
                                 }else{
                                     $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
-                                    if($result) DB::table('instructores')->where('id',$grupo->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
+                                    if($result) DB::table('instructores')->where('id',$g->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
                                     else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
                                 }
                             }else return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
