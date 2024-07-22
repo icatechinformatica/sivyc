@@ -748,13 +748,13 @@ class CursosController extends Controller
 
         ## Obtenemos la sumatoria de horas de los modulos registrados
         $sumaHorasMod = DB::table('contenido_tematico')
-        ->where('id_curso', $idCurso)->where('id_parent', 0)
-        ->select(DB::raw("
-            SUM(
-                EXTRACT(EPOCH FROM duracion)
-            ) as total_seconds
-        "))
-        ->value('total_seconds');
+            ->where('id_curso', $idCurso)->where('id_parent', 0)
+            ->select(DB::raw("
+                SUM(
+                    EXTRACT(EPOCH FROM CAST(duracion AS time))
+                ) as total_seconds
+            "))
+            ->value('total_seconds');
         $tFormatHour = '';
         if($sumaHorasMod){
             $tHoras = floor($sumaHorasMod / 3600);
@@ -1111,7 +1111,7 @@ class CursosController extends Controller
             if($fActual->lessThan($date1)) {
                 $ejercicio = ($fActual->year - 1) . "-" . $fActual->year;
             } else if($fActual->greaterThan($date2)) {
-                $ejercicio - $fActual->year . "-" . ($fActual->year + 1);
+                $ejercicio = $fActual->year . "-" . ($fActual->year + 1);
             }
         }
 
