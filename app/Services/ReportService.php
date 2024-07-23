@@ -6,6 +6,8 @@ use App\Models\Reportes\Rf001Model;
 use App\Models\Unidad;
 use Carbon\Carbon;
 use Spatie\ArrayToXml\ArrayToXml;
+use App\Models\Tokens_icti;
+use Illuminate\Support\Facades\Http;
 
 class ReportService
 {
@@ -52,8 +54,6 @@ class ReportService
     {
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
 
-        // dd($rf001);
-        // creación del cuerpo
         $body = $this->createBody($id, $rf001);
 
         $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
@@ -68,7 +68,8 @@ class ReportService
 
         $body = $this->createBody($id, $dataFirmantes);
         $nameFileOriginal = 'contrato '.$rf001->memorandum.'.pdf';
-        $numFirmantes = '1';
+        $numOficio = "Contrato-".$rf001->memorandum;
+        $numFirmantes = '1'; // 1 o 2
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
@@ -107,6 +108,32 @@ class ReportService
         $second = $date->second < 10 ? '0'.$date->second : $date->second;
         $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
 
+        $resultado = ArrayToXml::convert($ArrayXml, [
+            'rootElementName' => 'DocumentoChis',
+            '_attributes' => [
+                'version' => '2.0',
+                'fecha_creacion' => $dateFormat,
+                'no_oficio' => $numOficio,
+                'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                'asunto_docto' => 'Concentrado de Ingresos Propios',
+                'tipo_docto' => 'OFC',
+                'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
+            ],
+        ]);
+
+        //generación de la cadena única mediante el ICTI
+        $xmlBase64 = base64_encode($resultado);
+        $getToken = Tokens_icti::all()->last();
+        if ($getToken) {
+            # registros
+            $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
+            if ($response->json() == null) {
+                # token
+            }
+        } else {
+            # no hay registros
+        }
+
         return $body;
     }
 
@@ -121,22 +148,39 @@ class ReportService
         $municipio = mb_strtoupper($data->municipio, 'UTF-8');
 
         #OBTENEMOS LA FECHA ACTUAL
-        $fechaActual = getdate();
-        $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
-        $dia = ($dia < 10) ? '0'.$dia : $dia;
+        $fechaActual = \Carbon::now();
+        $dia = $fechaActual->day;
+        $mes = $fechaActual->month;
+        $anio = $fechaActual->year;
 
-        $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
+        $dia = ($dia) <= 9 ? '0'.$dia : $dia;
+        $fecha_comp = $dia.' DE '.$meses[$mes-1].' DE '.$anio;
 
-        $bodyHtml = null;
+        $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
+
+        $datoJson = json_decode($rf001->movimientos, true);
+
+        $bodyXml = null;
 
         #fecha del envio de documento
         $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
 
-        $bodyHtml = $distintivo. "\n".
-        "\n REPORTE FOTOGRÁFICO DE INSTRUCTOR EXTERNO\n".
+        $bodyXml = $distintivo. "\n".
         "\n UNIDAD DE CAPACITACIÓN ".$unidad.
-        "\n ".$municipio.", CHIAPAS. A ".$fecha_gen.".\n";
+        "\n OFICIO NÚM. ". $rf001->memorandum .
+        "\n ".$municipio.", CHIAPAS. A ".$fecha_comp.".\n";
 
+        $bodyXml .= "\n ". strtoupper($dirigido->titulo) . " " . strtoupper($dirigido->nombre) .
+        "\n ". $dirigido->cargo .
+        "\n PRESENTE \n";
+
+        $bodyXml .= "\n Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001), original, \n".
+        "\n copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad de \n".
+        "\n Capacitación TUXTLA, con los siguientes movimientos. \n";
+
+        $bodyXml .= "";
+
+        return $bodyXml; // retorno del cuerpo del xml
     }
 
     private function incapacidad($incapacidad, $incapacitado)
@@ -171,5 +215,15 @@ class ReportService
             }
         }
         return false;
+    }
+
+    protected function getCadenaOriginal($xmlBase64, $token)
+    {
+        return Http::withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token,
+        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+            'xml_OriginalBase64' => $xmlBase64
+        ]);
     }
 }

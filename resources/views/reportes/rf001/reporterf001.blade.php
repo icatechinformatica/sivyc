@@ -142,15 +142,17 @@
                 <tbody>
                     @foreach ($datoJson as $key => $value)
                         @php
-                            $formatDataJson = isset($item['depositos']) ? json_decode($value['depositos'], true) : [];
+                            $depositos = isset($value['depositos'])
+                                        ? json_decode($value['depositos'], true)
+                                        : [];
                         @endphp
                         <tr>
                             <td>{{ ($key < 9 ? '0' : '') . ($key + 1) }}</td>
                             <td>{{ $value['folio'] }}</td>
                             <td>{{ $value['curso'] == null ? $value['descripcion'] : $value['curso'] }}</td>
                             <td>
-                                @foreach ($formatDataJson as $k => $v)
-                                    {{ $v['folio'] }}
+                                @foreach ($depositos as $k)
+                                    {{ $k['folio'] }} &nbsp;
                                 @endforeach
                             </td>
                         </tr>
