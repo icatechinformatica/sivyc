@@ -54,7 +54,7 @@
                         <button type="button" id="valsupre_validar" name="valsupre_validar" class="btn" style="background-color: #12322B; color: white;">Validar</a>
                     </div>
                     <div class="form-group col-md-3">
-                        <a type="submit" id="btn_generar_supre" class="btn btn-primary" href="{{route('supre-pdf', ['id' => $supreIdB64])}}"  target="_blank">Visualizar Solicitud</a>
+                        <a type="submit" id="btn_generar_supre" class="btn btn-primary" @if(is_null($data->doc_supre)) href="{{route('supre-pdf', ['id' => $supreIdB64])}}" @else href="{{$data->doc_supre}}" @endif target="_blank">Visualizar Solicitud</a>
                     </div>
                 </div>
                 <div id="divrechazar" class="form-row d-none d-print-none">

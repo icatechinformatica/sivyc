@@ -39,7 +39,7 @@ class EValsupreController extends Controller
         array_splice($numOficioBuilder, $position, 0, $numDocs);
         $numOficio = implode('/',$numOficioBuilder);
 
-        $body = $this->create_body($id_supre, $numOficio); //creacion de body
+        $body = $this->create_body($id_supre, $info->folio_validacion); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
         if(is_null($body))
         {
             $error = ['error' => 1];

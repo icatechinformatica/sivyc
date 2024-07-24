@@ -39,7 +39,7 @@ class ESupreController extends Controller
         $numOficio = implode('/',$numOficioBuilder);
 
 
-        $body = $this->create_body($id_supre, $numOficio); //creacion de body
+        $body = $this->create_body($id_supre, $info->no_memo); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
         if(is_null($body))
         {
             $error = ['error' => 1];
