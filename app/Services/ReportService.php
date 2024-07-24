@@ -88,7 +88,7 @@ class ReportService
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
                 // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body)]
+                'cuerpo' => [$body]
             ],
             'firmantes' => [
                 '_attributes' => [
@@ -129,12 +129,37 @@ class ReportService
             $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
             if ($response->json() == null) {
                 # token
+                $token = $this->generarToken();
+                $response = $this->getCadenaOriginal($xmlBase64, $token);
             }
         } else {
             # no hay registros
+            $token = $this->generarToken();
+            $response = $this->getCadenaOriginal($xmlBase64, $token);
         }
 
-        return $body;
+        // guardando cadena única
+        if ($response->json()['cadenaOriginal'] != null) {
+
+            $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->Where('tipo_archivo','Reporte fotografico')->First();
+            if (is_null($dataInsert)) {
+                $dataInsert = new DocumentosFirmar();
+            }
+            $dataInsert->obj_documento_interno = json_encode($ArrayXml);
+            $dataInsert->obj_documento = json_encode($body);
+            $dataInsert->status = 'EnFirma';
+            $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
+            $dataInsert->tipo_archivo = 'Concentrado de Ingresos Propios';
+            $dataInsert->numero_o_clave = $rf001->memorandum;
+            $dataInsert->nombre_archivo = $nameFileOriginal;
+            $dataInsert->documento = $resultado;
+            $dataInsert->documento_interno = $resultado;
+            $dataInsert->save();
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+
     }
 
     protected function createBody($id, $firmante)
@@ -225,5 +250,22 @@ class ReportService
         ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
             'xml_OriginalBase64' => $xmlBase64
         ]);
+    }
+
+    // obtener el token
+    public function generarToken(){
+        $resToken = Http::withHeaders([
+            'Accept' => 'application/json'
+        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+            'nombre' => 'SISTEM_IVINCAP',
+            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
+        ]);
+
+        $token = $resToken->json();
+
+        Tokens_icti::create([
+            'token' => $token
+        ]);
+        return $token;
     }
 }
