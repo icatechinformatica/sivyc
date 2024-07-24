@@ -20,30 +20,34 @@
         </div>
       </th>
        @if($activar)<th class="h6" scope="col">{{'Eliminar'}}</th>@endif       
-      <th class="h6" scope="col">@if($edicion) REMPLAZAR @else SID @endif</th>
+      <th class="h6" scope="col">@if($edicion_exo) REMPLAZAR @else SID @endif</th>
       <th class="h6 " scope="col">CURP</th>      
       <!--<th class="h6 text-center" scope="col">Subir SID</th>--->
     </tr>
   </thead>
   <tbody>
     @if(count($alumnos)>0)
+      @php
+        if($grupo) $id_cerss = $grupo->id_cerss;
+        else $id_cerss = null;
+      @endphp
+
       @foreach($alumnos as $a)
         @php
-          if ($costo < $a->costo) {
-            $class= 'form-control numero bg-danger costo';
-          } else {
-            $class = 'form-control numero costo';
-          }
-          if($grupo) $id_cerss = $grupo->id_cerss;
-          else $id_cerss = null;
+            if ($curso->costo < $a->costo) {
+              $class= 'form-control numero bg-danger costo';
+            } else {
+              $class = 'form-control numero costo';
+            }
+          
         @endphp
         <tr id="{{$a->id_reg}}">
           <th scope="row"> {{ $consec++ }}</th>
           <th class="text-left" style="word-wrap: break-word; max-width: 90px;">{{ $a->curp }}</th>
-          <th style="word-wrap: break-word; max-width: 60px;">{{ $a->no_control}}</th>
+          <th style="word-wrap: break-word; max-width: 60px;">{{ $a->matricula}}</th>
           <th class="text-left">{{ $a->alumno}}</th>          
-          <th>{{ $a->sex }}</th>
-          <th>{{ date('d/m/Y', strtotime($a->fnacimiento)) }}</th>
+          <th>{{ $a->sexo }}</th>
+          <th>{{ date('d/m/Y', strtotime($a->fecha_nacimiento)) }}</th>
           <th>{{ $a->edad }} AÑOS</th>
           <th class="text-left">{{ $a->escolaridad }}</th>
           <th class="text-left">{{ $a->grupos }}</th>
@@ -58,7 +62,7 @@
           <th  style="word-wrap: break-word; max-width: 60px;">{{$a->tinscripcion}}</th>
           <th> 
             <div style="width: 80px;">           
-              {{ Form::number('costo['.$a->id_reg.']', $a->costo , ['id'=>'costo['.$a->id_reg.']', 'size' => '7', 'maxlength' => '7', 'class' => $class]) }}            
+              {{ Form::number('costo['.$a->id_reg.']', $a->costo ?? '0' , ['id'=>'costo['.$a->id_reg.']', 'size' => '7', 'maxlength' => '7', 'class' => $class]) }}            
             </div>
           </th>          
             @if($activar)
@@ -67,7 +71,7 @@
             </th>
             @endif               
           <th>       
-              @if ($edicion or $a->status=="EDICION")   
+              @if ($edicion_exo or $a->status=="EDICION")   
                   <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="rem('{{$a->curp}}');"></i></a>
               @elseif($a->status AND $a->status!='INSCRITO')
                   {{ $a->status }}
@@ -81,14 +85,11 @@
             </th>
           -->
           <th>
-            @if (isset($a->requisitos))
-              <?php
-                $documento = json_decode($a->requisitos);
-                $documento = $documento->documento;
-              ?>
-              <a target="_blank" href="{{$documento}}" class="nav-link"><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir CURP"></i></a>
-            @else
-              <a target="_blank" href="{{$a->documento_curp}}" class="nav-link"><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir CURP"></i></a>
+            @if(isset($a->doc_requisitos))
+              @php
+                  $requisitos = str_replace('"', '', $a->doc_requisitos);               
+              @endphp
+              <a target="_blank" href="{{$requisitos}}" class="nav-link"><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir CURP"></i></a>
             @endif
           </th>          
         </tr>

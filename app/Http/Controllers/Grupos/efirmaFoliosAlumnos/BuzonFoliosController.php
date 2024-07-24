@@ -95,7 +95,7 @@ class BuzonFoliosController extends Controller
                     });
                 }
 
-                $data = $data->whereRaw("CONCAT(tc.clave, ' ', tc.folio_grupo) LIKE ?", ['%'.$clave_e.'%'])->get();
+                $data = $data->whereRaw("CONCAT(tc.clave, ' ', tc.folio_grupo) LIKE ?", ['%'.$clave_e.'%'])->orderBy('ef.id', 'asc')->get();
 
                 if($data == null || count($data) == 0){
                     return back()->with(['message' => 'No se encontraron registros', 'clave_e' => $clave_e, 'matricula' => $matricula]);
@@ -225,8 +225,27 @@ class BuzonFoliosController extends Controller
 
                 }
 
+                // dd($data['cont_tematico']);
+                $cont_tematico = [];
+                foreach ($data['cont_tematico'] as $key => $value) {
+                    $time = Carbon::createFromFormat('H:i', $value['hora']);
+                    $horas = $time->format('H');
+                    $minutos = $time->format('i');
+                    $tipo = '';
+                    if ($horas == '00' && $minutos != '00') {
+                        $tipo = 'MINUTOS';
+                    } elseif ($horas != '00' && $minutos == '00') {
+                        if($horas == '01'){$tipo = 'HORA';}
+                        else{$tipo = 'HORAS';}
+                    }else{
+                        $tipo = 'HORAS';
+                    }
+                    $result = ['nombre_modulo' => $value['nombre_modulo'], 'hora' => $value['hora'], 'tipo' => $tipo];
+                    $cont_tematico[] = $result;
+                }
+                // dd($cont_tematico);
 
-                $pdf = PDF::loadView('grupos.efirmafolios.pdfconstancia_efolios',compact('data', 'uuid', 'cadena_sello', 'fecha_sello', 'no_oficio', 'qrCodeBase64', 'firmantes'));
+                $pdf = PDF::loadView('grupos.efirmafolios.pdfconstancia_efolios',compact('data', 'uuid', 'cadena_sello', 'fecha_sello', 'no_oficio', 'qrCodeBase64', 'firmantes', 'cont_tematico'));
                 return $pdf->stream('Constancia alumno');
             }else{
                 return "Error al realizar la consulta a la base de datos";

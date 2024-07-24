@@ -176,7 +176,7 @@
 
     <div id="fondo2">
         {{-- contenido tematico --}}
-        @if (isset($data['cont_tematico']) && count($data['cont_tematico']) > 0)
+        @if (isset($cont_tematico) && count($cont_tematico) > 0)
             <div style="margin-right: 40px; margin-left: 40px;">
                 <table style="width: 100%; margin-top: 50px; border: 2px solid #000">
                     <thead style="font-size:14px; text-align: center; font-weight:bold; background-color:#000; color: #fff;">
@@ -184,12 +184,12 @@
                         <th style="margin-bottom: 10px; width:20%;">HORAS</th>
                     </thead>
                     <tbody style="">
-                        @foreach ($data['cont_tematico'] as $tema)
+                        @foreach ($cont_tematico as $tema)
                             <tr>
                                 <td>
                                     <p style="font-size:12px; padding-bottom: 0px; padding-top: 0px; margin-top: 0px; margin-bottom: 0px;">{{$tema['nombre_modulo']}}</p>
                                 </td>
-                                <td style="text-align: center;"><p style="font-size:12px; padding-bottom: 0px; padding-top: 0px; margin-top: 0px; margin-bottom: 0px;">{{strtoupper($tema['hora'])}}</p></td>
+                                <td style="text-align: center;"><p style="font-size:12px; padding-bottom: 0px; padding-top: 0px; margin-top: 0px; margin-bottom: 0px;">{{strtoupper($tema['hora']).' '.$tema['tipo']}}</p></td>
                             </tr>
                         @endforeach
                     </tbody>
