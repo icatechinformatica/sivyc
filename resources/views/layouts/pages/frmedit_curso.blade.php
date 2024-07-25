@@ -472,6 +472,7 @@
                 <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'tematico']) }}" class="btn-sm btn-primary mx-3">CONTENIDO TEMÁTICO</a>
                 <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'didactico']) }}" class="btn-sm btn-primary">RECURSOS DIDÁCTICOS</a>
             </div>
+            <p class="font-weight-bold">HORAS CAPTURADAS DE CONTENIDO TEMATICO: <span class="{{$horas_tematico == $cursos[0]->horas ? 'text-success' : 'text-danger'}}">{{$horas_tematico}} HRS de {{$cursos[0]->horas}} HRS (duración del curso)</span></p>
         @endcan
         <hr style="border-color:dimgray">
         <div class="row">

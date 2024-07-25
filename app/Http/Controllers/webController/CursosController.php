@@ -342,7 +342,11 @@ class CursosController extends Controller
 
             //informacion de carta descriptiva
             $carta_descriptiva = DB::Table('tbl_carta_descriptiva')->Where('id_curso',$cursos[0]->id)->Value('id');
-            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades','fechaSol', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv','dependencias','dp','servicios','categorias','perfil','carta_descriptiva'));
+            //Obtener la cantidad de horas capturadas del contenido tematico
+            $duraCurso = DB::table('contenido_tematico')->where('id_curso', $cursos[0]->id)->where('id_parent', 0)
+            ->select(DB::raw('SUM(EXTRACT(EPOCH FROM duracion::interval)) as total_seconds'))->first();
+            $horas_tematico = (int)($duraCurso->total_seconds / 3600);
+            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades','fechaSol', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv','dependencias','dp','servicios','categorias','perfil','carta_descriptiva', 'horas_tematico'));
 
         // } catch (\Throwable $th) {
         //     //throw $th;
