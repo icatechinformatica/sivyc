@@ -45,7 +45,6 @@ class ReportService
             ->Where('o.nombre','LIKE','DELEG%')
             ->Where('u.unidad', $rf001->unidad)
             ->First();
-        // return $data;
 
         return PDF::loadView('reportes.rf001.reporterf001', compact('distintivo', 'organismo', 'data', 'unidad', 'rf001', 'municipio', 'fecha_comp', 'dirigido', 'direccion', 'conocimiento', 'nombreElaboro', 'puestoElaboro', 'delegado'));
     }
@@ -55,6 +54,8 @@ class ReportService
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
 
         $body = $this->createBody($id, $rf001);
+
+
 
         $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
 
@@ -66,9 +67,9 @@ class ReportService
             ->Where('u.unidad', $ubicacion)
             ->First();
 
-        $body = $this->createBody($id, $dataFirmantes);
+        // $body = $this->createBody($id, $dataFirmantes);
         $nameFileOriginal = 'contrato '.$rf001->memorandum.'.pdf';
-        $numOficio = "Contrato-".$rf001->memorandum;
+        $numOficio = "Contrato-";
         $numFirmantes = '1'; // 1 o 2
 
         //Creacion de array para pasarlo a XML
@@ -99,6 +100,7 @@ class ReportService
                 ]
             ],
         ];
+
         //Creacion de estampa de hora exacta de creacion
         $date = Carbon::now();
         $month = $date->month < 10 ? '0'.$date->month : $date->month;
@@ -173,7 +175,10 @@ class ReportService
         $municipio = mb_strtoupper($data->municipio, 'UTF-8');
 
         #OBTENEMOS LA FECHA ACTUAL
-        $fechaActual = \Carbon::now();
+
+        $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+
+        $fechaActual = Carbon::now();
         $dia = $fechaActual->day;
         $mes = $fechaActual->month;
         $anio = $fechaActual->year;
@@ -244,21 +249,37 @@ class ReportService
 
     protected function getCadenaOriginal($xmlBase64, $token)
     {
+        // return Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token,
+        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        //     'xml_OriginalBase64' => $xmlBase64
+        // ]);
+
+        // api prueba
         return Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token,
-        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
             'xml_OriginalBase64' => $xmlBase64
         ]);
     }
 
     // obtener el token
     public function generarToken(){
+        // $resToken = Http::withHeaders([
+        //     'Accept' => 'application/json'
+        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+        //     'nombre' => 'SISTEM_IVINCAP',
+        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
+        // ]);
+
+        // Token Prueba
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'SISTEM_IVINCAP',
-            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
+            'nombre' => 'FirmaElectronica',
+            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
         ]);
 
         $token = $resToken->json();

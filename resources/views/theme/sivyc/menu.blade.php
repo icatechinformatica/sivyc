@@ -296,6 +296,7 @@
                             <a class="dropdown-item" href="{{route('financieros-reporte-cursos')}}">Reporte de Cursos</a>
                         @endcan
 
+                            <a class="dropdown-item" href="{{ route('reporte.rf001.index') }}">Validación Ingresos Propios RF-001</a>
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
