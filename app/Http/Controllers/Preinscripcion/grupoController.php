@@ -222,13 +222,14 @@ class grupoController extends Controller
                 DB::raw('COALESCE(tc.depen_telrepre, ar.depen_telrepre) as depen_telrepre'),                
                 DB::raw('COALESCE(tc.tcapacitacion, ar.tipo_curso) as tcapacitacion'),
                 DB::raw("COALESCE( 
-                    CASE WHEN tc.hini LIKE '%a.%' THEN SUBSTRING(tc.hini, 1, 5)
-                         ELSE (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
-                    END, SUBSTRING(ar.horario, 1, 5)) as hini"),
+                    CASE WHEN tc.hini LIKE '%p%' and SUBSTRING(tc.hini, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
+                         ELSE SUBSTRING(tc.hini, 1, 5) 
+                    END, SUBSTRING(ar.horario, 1, 5)) as hini"),                    
                 DB::raw("COALESCE(
-                    CASE WHEN tc.hfin LIKE '%a.%' THEN SUBSTRING(tc.hfin, 1, 5)
-                         ELSE (SUBSTRING(tc.hfin, 1, 5)::time+'12:00')::text
-                    END,  SUBSTRING(ar.horario, 9, 5)) as hfin"),                
+                    CASE WHEN tc.hfin LIKE '%p%' and SUBSTRING(tc.hfin, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hfin, 1, 5)::time+'12:00')::text
+                         ELSE SUBSTRING(tc.hfin, 1, 5)
+                    END,  SUBSTRING(ar.horario, 9, 5)) as hfin"), 
+
                 DB::raw('COALESCE(tc.id_municipio, ar.id_muni) as id_municipio'),
                 DB::raw('COALESCE(tc.depen, ar.organismo_publico) as depen'),
                 DB::raw('COALESCE(tc.depen_telrepre, ar.depen_telrepre) as depen_telrepre'),
