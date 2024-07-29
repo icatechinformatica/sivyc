@@ -16,4 +16,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/reportes/rf001/add/comment', [Rf001Controller::class, 'addComment'])->name('reporte.rf001.add.comments');
     Route::get('/reportes/rf001/create/xmlFormat/{id}', [Rf001ReporteController::class, 'show'])->name('reporte.rf001.xml.format');
 
+    Route::post('/reportes/rf001/xml/generar', [Rf001ReporteController::class, 'generate_report'])->name('reportes.rf001.xml.generar');
+
+
 });

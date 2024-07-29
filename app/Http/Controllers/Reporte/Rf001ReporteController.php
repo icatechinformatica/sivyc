@@ -87,4 +87,9 @@ class Rf001ReporteController extends Controller
     {
         //
     }
+
+    public function generate_report()
+    {
+
+    }
 }

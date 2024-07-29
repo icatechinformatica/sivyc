@@ -73,8 +73,8 @@
         }
     </style>
     {{-- links de prueba y de produccion --}}
-    <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" />
+    {{-- <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" /> --}}
 @endsection
 @section('title', 'Rf001 | SIVyC Icatech')
 @php
@@ -122,8 +122,12 @@
                 </div>
                 @if ($getConcentrado)
                     <div class="col-md-3">
-                        <a id="enviar" class="btn btn-danger" href="{{ route('reporte.rf001.xml.format', ['id' => $idRf001]) }}">
-                            FORMATO RF001
+                        {{-- <a id="enviar" class="btn btn-danger"
+                            href="{{ route('reporte.rf001.xml.format', ['id' => $idRf001]) }}">
+                            ENVIAR PARA EFIRMA
+                        </a> --}}
+                        <a id="enviar" class="btn btn-danger">
+                            ENVIAR PARA EFIRMA
                         </a>
                     </div>
                 @endif
@@ -247,11 +251,27 @@
             @endif
         </div>
     </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h3>
+                        <p>¿Está seguro de ejecutar la acción para efirma?</p>
+                    </h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn" id="corfirmarEfirma">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script_content_js')
 
     {{-- Todos estos links se ocupan en prueba y en producción --}}
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/js/jasny-bootstrap.min.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/js/bootstrap.min.js"></script>
 
@@ -298,10 +318,10 @@
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/validate.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/access.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataSign.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataTransportSign.js"></script>
+    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataTransportSign.js"></script> --}}
 
-    {{-- link de prueba signature-spv021_doctos-prueba--}}
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script>
+    {{-- link de prueba signature-spv021_doctos-prueba --}}
+    {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script> --}}
 
 
     <script type="text/javascript">
@@ -368,6 +388,31 @@
             });
         });
 
+        $("#enviar").click(function() {
+            $('#exampleModal').modal('show');
+            // if (confirm("Esta seguro de ejecutar la acción para efirma?") == true) {
+            //     loader('show');
+            // }
+        });
+
+        $("#corfirmarEfirma").click(function() {
+            let URL = "{{ route('reportes.rf001.xml.generar') }}";
+            let form = $(document.createElement('form'));
+            $(form).attr("action", URL);
+            $(form).attr("method", "POST");
+
+            // Añadir el token CSRF como un campo oculto dentro del formulario
+            let csrfToken = "{{ csrf_token() }}";
+            let input = $(document.createElement('input'));
+            $(input).attr("type", "hidden");
+            $(input).attr("name", "_token");
+            $(input).attr("value", csrfToken);
+            $(form).append(input);
+
+            $('body').append(form);
+            $(form).submit();
+        });
+
         function generarToken() {
             return new Promise((resolve, reject) => {
                 $.ajax({
@@ -411,8 +456,7 @@
             }
         }
 
-        function firmar()
-        {
+        function firmar() {
             let response = firmarDocumento($('#token').val());
             if (response.codeResponse == '401') {
                 generarToken().then((value) => {
