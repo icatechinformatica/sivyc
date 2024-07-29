@@ -162,7 +162,7 @@
                 <a type="submit" id="btn_generar_supre" class="btn btn-primary" href="{{route('supre-pdf', ['id' => $supreIdB64])}}"  target="_blank">Visualizar PDF</a>
             </div>
             </form>
-            @if($generarEfirmaSupre)
+            {{-- @if($generarEfirmaSupre)
             <div class="form-group col-md-3">
                 <form action="{{ route('supre-efirma') }}" method="post" id="registersolicitudpago">
                     @csrf
@@ -171,7 +171,7 @@
                     <button button type="submit" class="btn btn-red" >Generar Suficiencia E.Firma</button>
                 </form>
             </div>
-            @endif
+            @endif --}}
         </div>
         <br>
     </form>

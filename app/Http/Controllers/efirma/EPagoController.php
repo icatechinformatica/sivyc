@@ -41,7 +41,7 @@ class EPagoController extends Controller
 
 
 
-        $body = $this->create_body($info->id_folios, $numOficio); //creacion de body
+        $body = $this->create_body($info->id_folios, $info->no_memo); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
 
         $numFirmantes = '1';
         $arrayFirmantes = [];
