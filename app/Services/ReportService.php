@@ -89,7 +89,7 @@ class ReportService
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
                 // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [$body]
+                'cuerpo' => ['']
             ],
             'firmantes' => [
                 '_attributes' => [

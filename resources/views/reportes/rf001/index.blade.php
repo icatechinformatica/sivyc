@@ -87,8 +87,8 @@
 @endphp
 @section('content')
 
-    <div class="d-none" id="vHTMLSignature"></div>
-    <input class="d-none" id="token" name="token" type="text" value="{{$token}}">
+    {{-- <div class="d-none" id="vHTMLSignature"></div> --}}
+    {{-- <input class="d-none" id="token" name="token" type="text" value="{{$token}}"> --}}
     <!-- cabecera -->
     <div class="card-header">
         Reportes / Reportes RF-001
