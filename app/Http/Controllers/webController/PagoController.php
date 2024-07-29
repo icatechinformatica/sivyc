@@ -26,9 +26,116 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportExcel;
 use ZipArchive;
 use File;
+use setasign\Fpdi\Fpdi;
+use App\Http\Controllers\efirma\AsistenciaController;
+use App\Http\Controllers\efirma\ReporteFotController;
+use App\Http\Controllers\webController\ContratoController;
 
 class PagoController extends Controller
 {
+    public function prueba()
+    {
+        $asistencia_pdf = $reporte_pdf = NULL;
+        $start = microtime(true);
+        $archivos = DB::Table('tbl_cursos')->Select('tbl_cursos.id','tbl_cursos.clave','id_instructor','instructor_mespecialidad',
+            'contratos.id_contrato','arch_solicitud_pago', DB::raw("soportes_instructor->>'archivo_bancario' as archivo_bancario"),
+            'tbl_cursos.pdf_curso','tabla_supre.doc_validado','pagos.arch_asistencia','pagos.arch_evidencia','contratos.arch_contrato',
+            DB::raw("soportes_instructor->>'archivo_ine' as archivo_ine"))
+            ->Join('pagos','pagos.id_curso','tbl_cursos.id')
+            ->Join('folios','folios.id_cursos','tbl_cursos.id')
+            ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
+            ->Join('contratos','contratos.id_contrato','pagos.id_contrato')
+            ->Where('pagos.id_curso', '242260258')
+            ->First();
+
+        // foreach($contratos_folios as $pointer => $ari)
+        // {
+            $memoval = especialidad_instructor::WHERE('id_instructor',$archivos->id_instructor) // obtiene la validacion del instructor
+                ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+                if(isset($memoval)) {
+                    foreach($memoval as $me) {
+                        if(isset($me['memo_val']) && $me['memo_val'] == $archivos->instructor_mespecialidad) {
+                            $validacion_ins = $me['arch_val'];
+                            break;
+                        }
+                    }
+                }
+
+        // }
+
+        $asistenciaController = new AsistenciaController();
+        $asistencia_pdf = $asistenciaController->asistencia_pdf($archivos->id,true);
+        $reporteController = new ReporteFotController();
+        $reporte_pdf = $reporteController->repofotoPdf($archivos->id,true);
+        $contratoController = new ContratoController();
+        $contrato_pdf = $contratoController->contrato_pdf($archivos->id_contrato,true);
+
+        if(is_null($asistencia_pdf)) {
+            $asistencia_pdf = $archivos->arch_asistencia;
+        }
+        if(is_null($reporte_pdf)) {
+            $reporte_pdf = $archivos->arch_evidencia;
+        }
+        if(is_null($contrato_pdf)) {
+            $contrato_pdf = $archivos->arch_contrato;
+        }
+
+            $pdf = new FPDI();
+
+            $fileUrls = [
+                $archivos->arch_solicitud_pago,
+                $archivos->archivo_bancario,
+                $validacion_ins,
+                $archivos->pdf_curso,
+                $archivos->doc_validado,
+                $asistencia_pdf,
+                $reporte_pdf,
+                $contrato_pdf,
+                $archivos->archivo_ine
+            ];
+
+            $localFiles = [];
+
+            // Descargar los archivos PDF y guardarlos en archivos temporales
+            foreach ($fileUrls as $key=>$url) {
+                $tempFile = tempnam(sys_get_temp_dir(), 'pdf');
+                if (filter_var($url, FILTER_VALIDATE_URL)) {
+                    $contents = file_get_contents($url);
+                } else {
+                    $contents = $url;
+                }
+                file_put_contents($tempFile, $contents);
+                $localFiles[] = $tempFile;
+            }
+
+            // Añadir cada página de los PDFs al nuevo documento
+            foreach ($localFiles as $file) {
+                $pageCount = $pdf->setSourceFile($file);
+                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                    $templateId = $pdf->importPage($pageNo);
+                    $size = $pdf->getTemplateSize($templateId);
+
+                    // Detectar la orientación de la página
+                    $orientation = ($size['width'] > $size['height']) ? 'L' : 'P';
+
+                    // Añadir la página con la orientación correcta
+                    $pdf->addPage($orientation, [$size['width'], $size['height']]);
+                    $pdf->useTemplate($templateId);
+                }
+            }
+
+            // Guarda el PDF combinado
+            $outputPath = storage_path('app/public/temporal/combined.pdf');
+            $pdf->Output($outputPath, 'F');
+
+            foreach ($localFiles as $file) {
+                unlink($file);
+            }
+
+            $time_elapsed_secs = microtime(true) - $start;
+            printf($time_elapsed_secs);
+    }
+
     public function fill(Request $request)
     {
         $instructor = new instructor();

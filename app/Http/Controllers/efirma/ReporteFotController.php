@@ -37,7 +37,7 @@ class ReporteFotController extends Controller
     }
 
     ##Generacion de PDF en caso de que haya firma, mostralas.
-    public function repofotoPdf($id){
+    public function repofotoPdf($id, $output = null){
         // $path_files = $this->path_files;
         $path_files = 'https://www.sivyc.icatech.gob.mx/storage/uploadFiles';
         $array_fotos = [];
@@ -103,6 +103,7 @@ class ReporteFotController extends Controller
             ->first();
 
             if(isset($documento->uuid_sellado)){
+                $sellado = TRUE;
                 $objeto = json_decode($documento->obj_documento,true);
                 $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
                 // dd($no_oficio);
@@ -159,7 +160,16 @@ class ReporteFotController extends Controller
         'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos'));
         $pdf->setPaper('Letter', 'portrait');
         $file = "REPORTE_FOTOGRAFICO_$id_curso.PDF";
-        return $pdf->stream($file);
+
+        if($output == TRUE) {
+            if($sellado) {
+                return $pdf->output($file);
+            } else {
+                return null;
+            }
+        } else {
+            return $pdf->stream($file);
+        }
     }
 
     ##By Jose Luis Moreno/ Consulta de evidencias fotograficas

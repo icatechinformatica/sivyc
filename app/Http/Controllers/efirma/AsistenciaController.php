@@ -245,7 +245,7 @@ class AsistenciaController extends Controller
         return redirect()->route('firma.inicio')->with('success', 'Documento Rechazado Exitosamente!');
     }
 
-    public function asistencia_pdf($id) {
+    public function asistencia_pdf($id, $output = null) {
         $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 = null;
         if ($id) {
             // $curso = tbl_cursos::where('clave', '=', $clave)->first();
@@ -296,6 +296,7 @@ class AsistenciaController extends Controller
                         ->Where('status','VALIDADO')
                         ->first();
                     if(isset($documento->uuid_sellado)){
+                        $sellado = TRUE;
                         $objeto = json_decode($documento->obj_documento,true);
                         $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
                         // dd($no_oficio);
@@ -348,7 +349,16 @@ class AsistenciaController extends Controller
                     $pdf = PDF::loadView('layouts.FirmaElectronica.reporteAsistencia', compact('curso', 'alumnos', 'mes', 'consec', 'meses','objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64'));
                     $pdf->setPaper('Letter', 'landscape');
                     $file = "ASISTENCIA_$id.PDF";
-                    return $pdf->stream($file);
+
+                    if($output == TRUE) {
+                        if($sellado) {
+                            return $pdf->output($file);
+                        } else {
+                            return null;
+                        }
+                    } else {
+                        return $pdf->stream($file);
+                    }
 
                     // if ($fecha_valida < 0) $message = "No prodece el registro de calificaciones, la fecha de termino del curso es el $curso->termino.";
                 } // else $message = "El Curso fué $curso->status y turnado a $curso->turnado.";

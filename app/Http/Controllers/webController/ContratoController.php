@@ -1244,7 +1244,7 @@ class ContratoController extends Controller
         return $pdf->stream("Precontrato-Instructor-$data_contrato->numero_contrato.pdf");
     }
 
-    public function contrato_pdf($id)
+    public function contrato_pdf($id, $output = null)
     {
         $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = $body_html = null;
         $contrato = new contratos();
@@ -1321,6 +1321,7 @@ class ContratoController extends Controller
             // $body_html = substr($body_html, 0, -1);
         }
         if(isset($documento->uuid_sellado)){
+            $sellado = TRUE;
             $objeto = json_decode($documento->obj_documento,true);
             $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
             $no_oficio = $no_oficio->{'@attributes'}->no_oficio;
@@ -1378,7 +1379,15 @@ class ContratoController extends Controller
         // }
 
         $pdf->setPaper('LETTER', 'Portrait');
-        return $pdf->stream("Contrato-Instructor-$data_contrato->numero_contrato.pdf");
+        if($output == TRUE) {
+            if($sellado) {
+                return $pdf->output("Contrato-Instructor-$data_contrato->numero_contrato.pdf");
+            } else {
+                return null;
+            }
+        } else {
+            return $pdf->stream("Contrato-Instructor-$data_contrato->numero_contrato.pdf");
+        }
     }
 
     public function contrato_web($id)
