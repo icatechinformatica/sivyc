@@ -86,6 +86,10 @@
     $monthNameEnd = $dateEnd->translatedFormat('F');
 @endphp
 @section('content')
+
+    <div class="d-none" id="vHTMLSignature"></div>
+    <input class="d-none" id="token" name="token" type="text" value="{{$token}}">
+    <!-- cabecera -->
     <div class="card-header">
         Reportes / Reportes RF-001
     </div>
@@ -296,6 +300,9 @@
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataSign.js"></script>
     <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataTransportSign.js"></script>
 
+    {{-- link de prueba signature-spv021_doctos-prueba--}}
+    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script>
+
 
     <script type="text/javascript">
         $.ajaxSetup({
@@ -304,6 +311,8 @@
             }
         });
         $(document).ready(function() {
+            $('#btnsignature').attr('onclick', 'firmar();');
+
             async function enviarCurso(parametro1, parametro2) {
                 try {
                     const resultado = await new Promise((resolve, reject) => {
@@ -358,5 +367,63 @@
                 }
             });
         });
+
+        function generarToken() {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url('/firma/token') }}",
+                    data: {
+                        'nombre': '',
+                        'key': '',
+                        '_token': $("meta[name='csrf-token']").attr("content"),
+                    },
+                    success: function(result) {
+                        resolve(result);
+
+                    },
+                    error: function(jqXHR, textStatus) {
+                        reject('error');
+                    }
+                });
+            })
+        }
+
+        function firmarDocumento(token) {
+            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '87', token);
+            // el sistema 87 es el de produccion 30 es de pruebas
+            console.log(curp)
+            return vresponseSignature;
+        }
+
+        function continueProcess(response) {
+            if (response.statusResponse) {
+                $('#fechaFirmado').val(response.date);
+                $('#serieFirmante').val(response.certifiedSeries)
+                $('#firma').val(response.sign);
+                $('#curp').val(curp);
+                $('#certificado').val(response.certificated)
+                $('#idFile').val(idFile);
+                $('#formUpdate').submit();
+            } else {
+                confirm(response.messageResponse + ' ' + response.descriptionResponse)
+                location.reload;
+            }
+        }
+
+        function firmar()
+        {
+            let response = firmarDocumento($('#token').val());
+            if (response.codeResponse == '401') {
+                generarToken().then((value) => {
+                    response = firmarDocumento(value);
+                    continueProcess(response);
+                }).catch((error) => {
+                    continueProcess(response);
+                });
+            } else {
+                continueProcess(response);
+            }
+        }
     </script>
 @endsection
