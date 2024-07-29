@@ -41,7 +41,7 @@ class EContratoController extends Controller
         array_splice($numOficioBuilder, $position, 0, $numDocs);
         $numOficio = implode('/',$numOficioBuilder);
 
-        $body = $this->create_body($id_contrato,$info, $numOficio); //creacion de body
+        $body = $this->create_body($id_contrato,$info, $info->numero_contrato); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
         // dd($body['body_html']);
 
         $numFirmantes = '4';

@@ -262,7 +262,7 @@
                             <button   button type="submit" class="btn btn-red" >Generar Contrato E.Firma</button>
                     </div>
                 @endif
-                @if($generarEfirmaPago && isset($datap->id))
+                {{-- @if($generarEfirmaPago && isset($datap->id))
                 <div class="form-group col-md-2">
                     <form action="{{ route('solicitud-pago-efirma') }}" method="post" id="registersolicitudpago">
                         @csrf
@@ -272,7 +272,7 @@
                         <button   button type="submit" class="btn btn-red" >Generar Solicitud de Pago E.Firma</button>
                     </form>
                 </div>
-            @endif
+            @endif --}}
             </div>
         </form>
         <br>
