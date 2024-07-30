@@ -159,7 +159,9 @@ class supreController extends Controller
         // dd($request);
         $generalarr = $arrmov = array();
         $claveUnidad = tbl_unidades::Where('id',Auth::user()->unidad)->Value('clave_contrato');
-        $memorandum = 'ICATECH/'.$claveUnidad.'/'.preg_replace('/\D/', '', $request->memorandum).'/'.Carbon::now()->year;
+        $fecha = Carbon::parse($request->input('fecha'));
+        $year = $fecha->year;
+        $memorandum = 'ICATECH/'.$claveUnidad.'/'.preg_replace('/\D/', '', $request->memorandum).'/'.$year;
         $memo = supre::SELECT('no_memo')->WHERE('no_memo', '=', $memorandum)->FIRST();
         if (is_null($memo))
         {
@@ -289,7 +291,6 @@ class supreController extends Controller
         $supre = new supre();
         $folio = new folio();
         $generarEfirmaSupre = TRUE;
-        $year = Carbon::now()->year;
 
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
         $getsupre->no_memo = explode('/', $getsupre->no_memo);
@@ -338,7 +339,7 @@ class supreController extends Controller
             }
         }
         // FINAL del check
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios','unidadsel','recibo','funcionarios','generarEfirmaSupre','year'));
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios','unidadsel','recibo','funcionarios','generarEfirmaSupre'));
     }
 
     public function solicitud_mod_guardar(Request $request)
@@ -349,7 +350,9 @@ class supreController extends Controller
         $curso_validado = new tbl_curso();
 
         $claveUnidad = tbl_unidades::Where('id',Auth::user()->unidad)->Value('clave_contrato');
-        $memorandum = 'ICATECH/'.$claveUnidad.'/'.preg_replace('/\D/', '', $request->no_memo).'/'.Carbon::now()->year;
+        $fecha = Carbon::parse($request->input('fecha'));
+        $year = $fecha->year;
+        $memorandum = 'ICATECH/'.$claveUnidad.'/'.preg_replace('/\D/', '', $request->no_memo).'/'.$year;
 
         $elabora = ['nombre' => $request->nombre_elabora,
                     'puesto' => $request->puesto_elabora];
@@ -450,6 +453,7 @@ class supreController extends Controller
     }
 
     public function validacion($id){
+        $year = Carbon::now()->year;
         $id = base64_decode($id);
         $supre = new supre();
         $data =  $supre::WHERE('id', '=', $id)->FIRST();
@@ -476,7 +480,7 @@ class supreController extends Controller
         //                 ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
         // dd($notification);
 
-        return view('layouts.pages.valsupre',compact('data','criterio_pago','fecha_apertura','funcionarios'));
+        return view('layouts.pages.valsupre',compact('data','criterio_pago','fecha_apertura','funcionarios','year'));
     }
 
     public function supre_rechazo(Request $request){
@@ -505,9 +509,12 @@ class supreController extends Controller
 
     public function supre_validado(Request $request){
         // dd($request);
+        $fecha = Carbon::parse($request->input('fecha_val'));
+        $year = $fecha->year;
+        $folio_validacion= 'ICATECH/500.1/H/'.preg_replace('/\D/', '', $request->folio_validacion).'/'.$year;
         $supre = supre::find($request->id);
         $supre->status = 'Validado';
-        $supre->folio_validacion = $request->folio_validacion;
+        $supre->folio_validacion = $folio_validacion;
         $supre->fecha_validacion = $request->fecha_val;
         $supre->financiamiento = $request->financiamiento;
         switch($request->financiamiento) {
@@ -551,6 +558,7 @@ class supreController extends Controller
         $id = base64_decode($id);
         $data = supre::find($id);
         $generarEfirmaValsupre = TRUE;
+        $data->folio_validacion = explode('/', $data->folio_validacion);
 
         $clave = DB::Table('tabla_supre')
             ->Join('folios','folios.id_supre','tabla_supre.id')

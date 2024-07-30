@@ -76,8 +76,22 @@
                 <div id="div1" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
                         <label for="inputfolio_validacion">Folio de Validación</label>
-                        <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" required>
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <p class="form-control" style="border: 0px;">ICATECH/500.1/H/</p>
+                            </div>
+                            <div class="form-group col-md-4" style="margin-right: -10px;">
+                                <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <p id='ejercicio' name ='ejercicio' class="form-control" style="border: 0px;">/{{$year}}</p>
+                            </div>
+                        </div>
                     </div>
+                    {{-- <div class="form-group col-md-4">
+                        <label for="inputfolio_validacion">Folio de Validación</label>
+                        <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" required>
+                    </div> --}}
                     <div class="form-group col-md-3">
                         <label for="inputfecha_validacion">Fecha de Validación</label>
                         <input name="fecha_val" id="fecha_val" type="date" class="form-control" required>
@@ -124,4 +138,25 @@
 @section('script_content_js')
 <script src="{{ asset("js/validate/autocomplete.js") }}"></script>
 <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+<script>
+    // Obtener el elemento de input de fecha
+    var inputFecha = document.getElementById('fecha_val');
+    // Obtener la fecha actual en el formato 'YYYY-MM-DD'
+    var fechaActual = new Date().toISOString().split('T')[0];
+    // Establecer la fecha actual como valor inicial del campo de fecha
+    inputFecha.value = fechaActual;
+
+    const fechaInput = document.getElementById('fecha_val');
+    const ejercicioP = document.getElementById('ejercicio');
+    let previousYear = new Date(fechaInput.value).getFullYear();
+
+    fechaInput.addEventListener('change', function() {
+        const currentYear = new Date(fechaInput.value).getFullYear();
+        if (currentYear !== previousYear) {
+            // console.log('El año ha cambiado');
+            ejercicioP.textContent = '/'+currentYear;
+            previousYear = currentYear;
+        }
+    });
+</script>
 @endsection
