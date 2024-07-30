@@ -53,7 +53,7 @@
                         <input type="text" class="form-control" id="no_memo" name="no_memo" aria-required="true" value="{{ $getsupre->no_memo[2] }}" placeholder="ICATECH/0000/000/2020">
                     </div>
                     <div class="form-group col-md-1">
-                        <p class="form-control" style="border: 0px;">/{{$year}}</p>
+                        <p id="ejercicio" name="ejercicio" class="form-control" style="border: 0px;">/{{$getsupre->no_memo[3]}}</p>
                     </div>
                 </div>
             </div>
@@ -234,6 +234,19 @@
                document.getElementById("miInput").value = '';
        }
    }
+
+    const fechaInput = document.getElementById('fecha');
+    const ejercicioP = document.getElementById('ejercicio');
+    let previousYear = new Date(fechaInput.value).getFullYear();
+
+    fechaInput.addEventListener('change', function() {
+        const currentYear = new Date(fechaInput.value).getFullYear();
+        if (currentYear !== previousYear) {
+            // console.log('El año ha cambiado');
+            ejercicioP.textContent = '/'+currentYear;
+            previousYear = currentYear;
+        }
+    });
  </script>
 
 @endsection

@@ -42,13 +42,13 @@
                         <input type="text" class="form-control" id="memorandum" name="memorandum" placeholder="No.">
                     </div>
                     <div class="form-group col-md-1">
-                        <p class="form-control" style="border: 0px;">/{{$year}}</p>
+                        <p id='ejercicio' name ='ejercicio' class="form-control" style="border: 0px;">/{{$year}}</p>
                     </div>
                 </div>
             </div>
             <div class="form-group col-md-2">
                 <label for="fecha" class="control-label">Fecha</label>
-                <input class="form-control" name="fecha" type="date" value="2020-01-01" id="fecha">
+                <input class="form-control" name="fecha" type="date"  id="fecha">
             </div>
         </div>
         <div class="field_wrapper">
@@ -144,14 +144,12 @@
 <script type="text/javascript">
     let fieldCounter = 1;
 
-     // Obtener el elemento de input de fecha
-     var inputFecha = document.getElementById('fecha');
+    // Obtener el elemento de input de fecha
+    var inputFecha = document.getElementById('fecha');
     // Obtener la fecha actual en el formato 'YYYY-MM-DD'
     var fechaActual = new Date().toISOString().split('T')[0];
     // Establecer la fecha actual como valor inicial del campo de fecha
     inputFecha.value = fechaActual;
-    // Establecer la fecha mínima en el elemento de input (la fecha actual)
-    inputFecha.min = fechaActual;
 
 function addField() {
     const fieldsContainer = document.getElementById("fieldsContainer");
@@ -322,6 +320,19 @@ function textLabel(text) {
 
             }
         });
+    });
+
+    const fechaInput = document.getElementById('fecha');
+    const ejercicioP = document.getElementById('ejercicio');
+    let previousYear = new Date(fechaInput.value).getFullYear();
+
+    fechaInput.addEventListener('change', function() {
+        const currentYear = new Date(fechaInput.value).getFullYear();
+        if (currentYear !== previousYear) {
+            console.log('El año ha cambiado');
+            ejercicioP.textContent = '/'+currentYear;
+            previousYear = currentYear;
+        }
     });
 
 
