@@ -246,7 +246,7 @@
                                             </button>
                                         @endcan
                                     @endif
-                                    @if($itemData->recepcion == NULL)
+                                    {{-- @if($itemData->recepcion == NULL)
                                         @can('contrato.recepcion')
                                             <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                                 data-toggle="modal" data-placement="top"
@@ -256,7 +256,7 @@
                                                 <i class="fa fa-book"></i>
                                             </button>
                                         @endcan
-                                    @endif
+                                    @endif --}}
 
                                 @endif
                                 @if ($itemData->status == 'Pago_Verificado' || ($itemData->status_recepcion == null && $itemData->id_contrato != null))
@@ -266,7 +266,7 @@
                                     {{-- <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a> --}}
-                                    @if($itemData->recepcion == NULL)
+                                    {{-- @if($itemData->recepcion == NULL)
                                         @can('contrato.recepcion')
                                             <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                                 data-toggle="modal" data-placement="top"
@@ -276,7 +276,7 @@
                                                 <i class="fa fa-book"></i>
                                             </button>
                                         @endcan
-                                    @endif
+                                    @endif --}}
                                     @can('folio.cancel')
                                         <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
