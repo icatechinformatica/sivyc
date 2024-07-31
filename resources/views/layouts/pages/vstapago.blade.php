@@ -155,7 +155,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($contratos_folios as $itemData)
+                @foreach ($contratos_folios as $key=>$itemData)
                     <tr @can('contratos.create')@if($itemData->alerta == TRUE && (is_null($itemData->status_recepcion) || $itemData->status_recepcion == 'Rechazado')) style='background-color: #621032; color: white;' @endif @endcan @can('contrato.validate')@if($itemData->alerta_financieros == TRUE && $itemData->status_recepcion == 'En Espera') style='background-color: #621032; color: white;' @endif @endcan>
                         <td style="font-size: 13px">{{$itemData->numero_contrato}}</td>
                         <td style="font-size: 13px">
@@ -821,7 +821,7 @@
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdf" name="solpa_pdf" hidden>
-                                        <label for="solpa_pdf">
+                                        <label for="solpa_pdf" id="solpa_pdf_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
@@ -921,7 +921,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
+                                <td style="vertical-align:middle;" width='10px;'><i id="validacion_supre_icon" class="fas fa-check text-success" style="vertical-align:middle;"></i></td>
                                 <td id="td5" style="text-align: left; vertical-align: middley; font-size: 12px;">5.- Suficiencia Presupuestal</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_supre" name="show_validacion_supre">
@@ -1006,7 +1006,7 @@
                                     </div>
                                     <div style="display: inline-block;">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdfc" name="solpa_pdfc" hidden>
-                                        <label for="solpa_pdfc">
+                                        <label for="solpa_pdfc" id="solpa_pdfc_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
                                                 &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
                                             </a>
@@ -1381,7 +1381,7 @@
     });
 
     $('#validarRecepcionModalOrdinaria').on('show.bs.modal', function(event){
-        // console.log($);
+        // console.log('test');
         var button = $(event.relatedTarget);
         var attrid = button.attr('data-id');
         var id = JSON.parse(attrid)
@@ -1436,6 +1436,13 @@
             respuesta.forEach(element => {
                 console.log(element);
                 switch (element['tipo_archivo']) {
+                    case 'valsupre':
+                        const valsuprevLink = document.getElementById('show_validacion_suprev');
+                        const valsuprevUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
+                        valsuprevLink.href = valsuprevUrl;
+                        valsuprevLink.hidden = false;
+                        document.getElementById('td5v').style.color = "black";
+                    break;
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
                         const contratovLink = document.getElementById('show_contratov');
@@ -1459,6 +1466,13 @@
                         reportevLink.href = reportevUrl;
                         reportevLink.hidden = false;
                         document.getElementById('td11v').style.color = "black";
+                    break;
+                    case 'Solicitud Pago':
+                        const solpavLink = document.getElementById('show_solpav');
+                        const solpavUrl = "/contrato/solicitud-pago/pdf/" + element['id_folios'];
+                        solpavLink.href = solpavUrl;
+                        solpavLink.hidden = false;
+                        document.getElementById('td1v').style.color = "black";
                     break;
                     default:
                     break;
@@ -1520,6 +1534,13 @@
             respuesta.forEach(element => {
                 // console.log(element);
                 switch (element['tipo_archivo']) {
+                    case 'valsupre':
+                        const valsuprevcLink = document.getElementById('show_validacion_suprevc');
+                        const valsuprevcUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
+                        valsuprevcLink.href = valsuprevcUrl;
+                        valsuprevcLink.hidden = false;
+                        document.getElementById('td5vc').style.color = "black";
+                    break;
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
                         const contratovcLink = document.getElementById('show_contratovc');
@@ -1536,6 +1557,13 @@
                         calificacionesvcLink.href = calificacionevcsUrl;
                         calificacionesvcLink.hidden = false;
                         document.getElementById('td10vc').style.color = "black";
+                    break;
+                    case 'Solicitud Pago':
+                        const solpavcLink = document.getElementById('show_solpavc');
+                        const solpavcUrl = "/contrato/solicitud-pago/pdf/" + element['id_folios'];
+                        solpavcLink.href = solpavcUrl;
+                        solpavcLink.hidden = false;
+                        document.getElementById('td1vc').style.color = "black";
                     break;
                     default:
                     break;
@@ -1595,8 +1623,19 @@
             request.done(( respuesta) =>
         {
             respuesta.forEach(element => {
-                // console.log(element);
+                console.log(element);
                 switch (element['tipo_archivo']) {
+                    case 'valsupre':
+                        const valsupreLink = document.getElementById('show_validacion_supre');
+                        const valsupreUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
+                        valsupreLink.href = valsupreUrl;
+                        console.log(valsupreLink.href);
+                        valsupreLink.hidden = false;
+                        $('#validacion_supre_pdf_label').attr('hidden', true);
+                        $('#validacion_supre_pdf').prop('required', false);
+                        $('#validacion_supre_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td5').style.color = "black";
+                    break;
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
                         const contratoLink = document.getElementById('show_contrato');
@@ -1629,6 +1668,17 @@
                         $('#evidencia_fotografica_pdf').prop('required', false);
                         $('#evidencia_fotografica_icon').attr('class', "fas fa-check text-success");
                         document.getElementById('td11').style.color = "black";
+                    break;
+                    case 'Solicitud Pago':
+                        // console.log('aaa');
+                        const solpaLink = document.getElementById('show_solpa');
+                        const solpaUrl = "/contrato/solicitud-pago/pdf/" + element['id_folios'];
+                        solpaLink.href = solpaUrl;
+                        solpaLink.hidden = false;
+                        $('#solpa_pdf_label').attr('hidden', true);
+                        $('#solpa_pdf').prop('required', false);
+                        $('#solpa_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td1').style.color = "black";
                     break;
                     default:
                     break;
@@ -1663,6 +1713,16 @@
             respuesta.forEach(element => {
                 console.log(element);
                 switch (element['tipo_archivo']) {
+                    case 'valsupre':
+                        const valsupreLink = document.getElementById('show_validacion_suprec');
+                        const valsupreUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
+                        valsupreLink.href = valsupreUrl;
+                        valsupreLink.hidden = false;
+                        // $('#validacion_suprec_pdf_label').attr('hidden', true);
+                        // $('#validacion_suprec_pdf').prop('required', false);
+                        $('#validacion_suprec_icon').attr('class', "fas fa-check text-success");
+                        document.getElementById('td5c').style.color = "black";
+                    break;
                     case 'Contrato':
                         // Obtener el elemento <a> por su id
                         const contratocLink = document.getElementById('show_contratoc');
@@ -1685,6 +1745,16 @@
                         $('#asistencias_pdfc').prop('required', false);
                         $('#calificaciones_iconc').attr('class', "fas fa-check text-success");
                         document.getElementById('td10c').style.color = "black";
+                    break;
+                    case 'Solicitud Pago':
+                        const solpacLink = document.getElementById('show_solpac');
+                        const solpacUrl = "/contrato/solicitud-pago/pdf/" + element['id_folios'];
+                        solpacLink.href = solpacUrl;
+                        solpacLink.hidden = false;
+                        $('#solpa_pdfc_label').attr('hidden', true);
+                        $('#solpa_pdfc').prop('required', false);
+                        $('#solpa_iconc').attr('class', "fas fa-check text-success");
+                        document.getElementById('td1c').style.color = "black";
                     break;
                     default:
                     break;

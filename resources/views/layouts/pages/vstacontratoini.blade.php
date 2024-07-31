@@ -246,37 +246,11 @@
                                             </button>
                                         @endcan
                                     @endif
-                                    @if($itemData->recepcion == NULL)
-                                        @can('contrato.recepcion')
-                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
-                                                data-toggle="modal" data-placement="top"
-                                                data-target="#recepcionModal"
-                                                data-id='{{$itemData->id_folios}}'
-                                                title="Recepción de documentos">
-                                                <i class="fa fa-book"></i>
-                                            </button>
-                                        @endcan
-                                    @endif
-
                                 @endif
                                 @if ($itemData->status == 'Pago_Verificado' || ($itemData->status_recepcion == null && $itemData->id_contrato != null))
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                    {{-- <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
-                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </a> --}}
-                                    @if($itemData->recepcion == NULL)
-                                        @can('contrato.recepcion')
-                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
-                                                data-toggle="modal" data-placement="top"
-                                                data-target="#recepcionModal"
-                                                data-id='{{$itemData->id_folios}}'
-                                                title="Recepción de documentos">
-                                                <i class="fa fa-book"></i>
-                                            </button>
-                                        @endcan
-                                    @endif
                                     @can('folio.cancel')
                                         <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
