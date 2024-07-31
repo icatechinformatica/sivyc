@@ -179,9 +179,9 @@
             UNIDAD DE CAPACITACIÓN {{$cursopdf->ubicacion}}.
             @endif
             </p>
-            @if(!is_null($EFolio))
+            {{-- @if(!is_null($EFolio))
                 <p>EFOLIO: {{$EFolio}}</p>
-            @endif
+            @endif --}}
             <p style="font-size: 14px; margin-top: 0px; margin-bottom: 25px;">{{mb_strtoupper($cursopdf->municipio, 'UTF-8')}}, CHIAPAS. A {{$fechapdf}}.</p>
         </div>
 
