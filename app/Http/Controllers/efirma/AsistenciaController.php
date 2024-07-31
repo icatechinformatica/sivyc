@@ -128,7 +128,7 @@ class AsistenciaController extends Controller
         ]);
         //Generacion de cadena unica mediante el ICTI
         $xmlBase64 = base64_encode($result);
-        $getToken = Tokens_icti::all()->last();
+        $getToken = Tokens_icti::Where('sistema', 'sivyc')->First();
         if ($getToken) {
             $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
             if ($response->json() == null) {
@@ -496,7 +496,7 @@ class AsistenciaController extends Controller
 
         $token = $resToken->json();
 
-        Tokens_icti::create([
+        Tokens_icti::Where('sistema','sivyc')->update([
             'token' => $token
         ]);
         return $token;
