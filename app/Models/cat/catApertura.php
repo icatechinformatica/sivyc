@@ -123,15 +123,15 @@ trait catApertura
     }
 
     protected function instructores($grupo){
-        $id_muni = $grupo->id_muni;    //dd($grupo);
+        $id_muni = $grupo->id_municipio;    //dd($grupo);
         $tipo_curso = $grupo->tcapacitacion;
         $unidad = $grupo->unidad;
         $id_especialidad = $grupo->id_especialidad;
         $id_curso = $grupo->id;
         $fhini = $grupo->inicio;    //$fhini = '2021-09-01 16:00:00';
         $ffinal = $grupo->termino;    //$ffinal = '2021-09-30 18:00:00';
-        $hini = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 0, 5))));
-        $hfin = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 8, 5))));
+        $hini = $grupo->hini;// date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 0, 5))));
+        $hfin = $grupo->hfin; //date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 8, 5))));
         $hinimes = Carbon::parse($fhini)->firstOfMonth();
         $finmes = Carbon::parse($fhini)->endOfMonth();
         $es_lunes= Carbon::parse($fhini)->is('monday');
