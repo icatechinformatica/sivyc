@@ -275,6 +275,11 @@
                                     @endif
                                 @else
                                     <br>En Layout de Pago
+                                    @can('contrato.validate')
+                                        <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
+                                            Retorno o Edición
+                                        </a>
+                                    @endcan
                                 @endif
                             @else
                                 @switch($itemData->status_recepcion)
