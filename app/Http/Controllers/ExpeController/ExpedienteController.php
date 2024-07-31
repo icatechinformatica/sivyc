@@ -504,7 +504,7 @@ class ExpedienteController extends Controller
         $bdReciboP = DB::table('tbl_recibos')->where('folio_grupo', $folio)->where('status_folio', '!=', 'CANCELADO')->whereNotNull('status_folio')->value('file_pdf');
 
         $bdReciboT = DB::table('tbl_cursos')
-        ->select('comprobante_pago', DB::raw("EXTRACT(YEAR FROM termino) as anio_curso"), DB::raw("
+        ->select('comprobante_pago', 'tipo', DB::raw("EXTRACT(YEAR FROM termino) as anio_curso"), DB::raw("
             CASE
                 WHEN comprobante_pago IS NOT NULL
                     AND (folio_pago ILIKE '%PROV%' OR folio_pago ~ '^[0-9]+$')
@@ -532,10 +532,13 @@ class ExpedienteController extends Controller
         if(!empty($bddocAlumnos)){$docAlumnos = $bddocAlumnos;}
 
         //Validar recibo de pago en dos tablas
+        if($bdReciboT){
+            $validRec = $bdReciboT->es_valido;
+            $tipoCurso = $bdReciboT->tipo;
+        }
         if(!empty($bdReciboP)){$doc7 = env("APP_URL").'/storage/'.$bdReciboP; $validRec = 'digital';}
         else if(!empty($bdReciboT->comprobante_pago)){
             $doc7 = $bdReciboT->comprobante_pago;
-            $validRec = $bdReciboT->es_valido;
             // $anioCurso = $anio_curso;
         }
 
@@ -583,7 +586,8 @@ class ExpedienteController extends Controller
         $url_docs = array(
             "urldoc2" => $doc2,"urldoc5" => $doc5,"urldoc6" => $doc6,"urldoc7" => $doc7,"urldoc8" => $doc8,"urldoc9" => $doc9,"urldoc10" => $doc10,"urldoc11" => $doc11,
             "urldoc20" => $doc20,"urldoc21" => $doc21,"urldoc22" => $doc22,"urldoc23" =>$doc23,"urldoc24"=>$doc24,
-            "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec, "urldoc16"=>$docCalif, "alumnos_req" => $docAlumnos, 'doc_xml' => $docXml, 'anio_curso' => $anioCurso
+            "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec, "urldoc16"=>$docCalif, "alumnos_req" => $docAlumnos, 'doc_xml' => $docXml, 'anio_curso' => $anioCurso,
+            "tipo_curso" => $tipoCurso
         );
         //$this->guardarLinks($folio, $url_docs);  #Agregar las url externas a la tabla de expedientes
         $this->proces_documentos($folio, $url_docs);

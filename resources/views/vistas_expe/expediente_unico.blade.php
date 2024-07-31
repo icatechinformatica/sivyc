@@ -773,8 +773,10 @@
                             {{-- Subir recibo--}}
                             <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="
                             @if($search_docs['anio_curso'] == '2023' && $search_docs['validRecibo'] != 'digital')
-
-                            @elseif($search_docs['validRecibo'] == 'digital')
+                                @if($search_docs['tipo_curso'] == 'EXO')
+                                    d-none
+                                @endif
+                            @else
                                 d-none
                             @endif
                             ">
