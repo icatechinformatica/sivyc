@@ -14,8 +14,8 @@ class Inscripcion extends Model
         'instructor', 'inicio', 'termino', 'hinicio', 'hfin', 'tinscripcion', 'abrinscri', 'munidad', 'costo'
         ,'motivo', 'status', 'realizo','folio_grupo','id_pre','id_cerss','fecha_nacimiento','estado_civil','discapacidad',
         'escolaridad','nacionalidad','etnia','indigena','inmigrante','madre_soltera','familia_migrante','calificacion',
-        'iduser_created','iduser_updated','activo','id_folio','reexpedicion','sexo','curp', 'empleado', 'asistencias','lgbt','id_gvulnerable', 'doc_soporte'
+        'iduser_created','iduser_updated','activo','id_folio','reexpedicion','sexo','curp', 'empleado', 'asistencias','lgbt','id_gvulnerable', 'requisitos'
     ];
     protected $hidden = ['created_at', 'updated_at'];
-    protected $casts = ['doc_soporte' => 'json'];
+    protected $casts = ['requisitos' => 'array'];
 }

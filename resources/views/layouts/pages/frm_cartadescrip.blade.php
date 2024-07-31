@@ -154,7 +154,7 @@
                             <div class="col-12 px-0">
                                 <div class="form-group">
                                     <label for="nombre" class="negrita">Ciclo Escolar:</label>
-                                    <input type="text" class="form-control input-sm" id="ciclo_esc" name="ciclo_esc" placeholder="2023-2024" value="{{ data_get($json_general, 'ciclo_esc', '')}}">
+                                    <input type="text" class="form-control input-sm" id="ciclo_esc" name="ciclo_esc" placeholder="2023-2024" value="{{ $ejercicio }}" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="nombre" class="negrita">Duración en horas:</label>
@@ -254,22 +254,55 @@
                     @csrf
                     <div class="col-9 px-0 justify-content-start" id="frm_tematico">
                         <div class="form-group">
-                            <label for="name_modulo">Titulo / Nombre del modulo</label>
-                            <input type="text" class="form-control" name="name_modulo" id="name_modulo" placeholder="Introducción / Modulo 1. Generalidades de facturacion electronica">
+                            <label for="name_modulo">Nombre del modulo</label>
+                            <input type="text" class="form-control" name="name_modulo" id="name_modulo" placeholder="1. Generalidades de facturacion electronica">
+                            <input type="hidden" name="id_modupd" id="id_modupd">
                         </div>
                     </div>
 
                     <div class="col-12 row">
                         <div class="col-8" style="border: 2px solid black">
-                            <button id="agregarInput" class="btn-sm btn-outline-primary mt-1 position-absolute"><i class="fa fa-plus" aria-hidden="true"></i></button>
                             <p class="text-center font-weight-bold">Submodulos</p>
-                            <div id="inputsContainer">
-                                <!-- Aquí se agregarán dinámicamente los inputs -->
-                            </div>
+                            <textarea name="submodulos" id="submodulos" rows="7" class="tam_area" placeholder="1.1 Conceptos básicos de la facturación electrónica."></textarea>
+                            <input type="hidden" name="ids_subs" id="ids_subs" value="0">
                         </div>
                         <div class="col-3 ml-2" style="border: 2px solid black">
-                            <p class="text-center font-weight-bold position-absolute">Duración (En Horas)</p>
-                            <input type="number" class="mt-4" name="curso_hora" id="curso_hora" placeholder="Numero">
+                            <p class="text-center font-weight-bold">Duración</p>
+                            <div class="d-flex d-row justify-content-center">
+                                <div class="form-group">
+                                    {{-- <span class="d-block text-center">Duración</span> --}}
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <label for="curso_hora">Horas</label>
+                                            <input type="number" class="form-control form-control-sm" name="curso_hora" id="curso_hora" placeholder="Hrs" min="0">
+                                        </div>
+                                        <div class="col">
+                                            <label for="curso_minuto">Minutos</label>
+                                            <input type="number" class="form-control form-control-sm" name="curso_minuto" id="curso_minuto" placeholder="Min" min="0" max="59">
+                                        </div>
+                                    </div>
+                                    {{-- a distancia --}}
+                                    <span class="d-block text-center font-weight-bold mt-2">A Distancia</span>
+                                    <span class="d-block text-center">(Sincronas)</span>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input type="number" class="form-control form-control-sm mb-1" name="hora_sincro" id="hora_sincro" placeholder="Hrs" min="0">
+                                        </div>
+                                        <div class="col">
+                                            <input type="number" class="form-control form-control-sm mb-1" name="minuto_sincro" id="minuto_sincro" placeholder="Min" min="0" max="59">
+                                        </div>
+                                    </div>
+                                    <span class="d-block text-center">(Asincronas)</span>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input type="number" class="form-control form-control-sm mb-1" name="hora_asincro" id="hora_asincro" placeholder="Hrs" min="0">
+                                        </div>
+                                        <div class="col">
+                                            <input type="number" class="form-control form-control-sm mb-1" name="minuto_asincro" id="minuto_asincro" placeholder="Min" min="0" max="59">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 row mt-2">
@@ -283,53 +316,82 @@
                         </div>
                     </div>
                     <input type="hidden" name="id_curso2" value="{{ $curso->id }}">
-                    <input type="hidden" name="indice_oculto" id="indice_oculto" value="">
-
-                    {{-- <button id="" class="btn-sm btn-primary mt-3" onclick="guardarParteUno('{{$curso->id}}', '2')">GUARDAR CAMBIOS</button> --}}
-                    <button id="btn_segunda_parte" class="btn-sm btn-primary mt-3">GUARDAR INFORMACIÓN</button>
+                    <button id="btn_segunda_parte" class="btn mt-3">GUARDAR INFORMACIÓN</button>
                 </form>
 
 
 
                 <hr style="border-color:dimgray">
+                <span style="position:absolute; right: 8%; font-size: 18px; font-weight:bold; color:#621132">{{$tFormatHour != '' ? 'Horas capturadas: '.$tFormatHour : ''}} </span>
                 <p class="font-weight-bold text-center" style="font-size:20px;">ELEMENTOS GUARDADOS</p>
                 {{-- Imprimir datos del contenido tematico --}}
-
                 <div class="col-12">
-                    @if (count($json_tematico) > 0)
-                        @foreach ($json_tematico as $key => $item)
+                    @if (count($modulo_first) > 0)
+                        @foreach ($modulo_first as $key => $valor)
                             <div class="col-9 px-0 mt-3 justify-content-start">
-                                <p><b>Titulo / Nombre del modulo:</b> {{$item['name_modulo']}}</p>
-
+                                <p><b>Titulo / Nombre del modulo:</b> {{$valor->nombre_modulo}}</p>
                             </div>
 
                             <div class="col-12 row justify-content-between">
                                 <div class="d-flex flex-column">
-                                    <button class="btn-sm btn-outline-danger" onclick="edit_delete('{{$key}}', '{{$curso->id}}', 'eliminar')"><i class="fa fa-times fa-2x" aria-hidden="true"></i></button>
-                                    <button class="btn-sm btn-outline-warning mt-2" onclick="edit_delete('{{$key}}', '{{$curso->id}}', 'editar')"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></button>
+                                    <button class="btn-sm btn-outline-danger" onclick="edit_delete('{{$valor->id}}', '{{$valor->id_curso}}', 'eliminar')"><i class="fa fa-times fa-2x" aria-hidden="true"></i></button>
+                                    <button class="btn-sm btn-outline-warning mt-2" onclick="edit_delete('{{$valor->id}}', '{{$valor->id_curso}}', 'editar')"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></button>
                                 </div>
-                                <div class="col-3" style="border: 2px solid black">
-                                    <p class="text-center font-weight-bold">Submodulos</p>
-                                    @foreach ($item['val_inputs'] as $sub)
-                                        <p class="my-0 mt-2 font-italic font-weight-bold">* {{$sub}}</p>
-                                    @endforeach
+                                <div class="col-3 px-0" style="border: 2px solid black">
+                                    <p class="text-center font-weight-bold" style="background-color: #999; color:#fff;">Contenido Tematico</p>
+                                    <div class="px-2">
+                                        @if (count($res_tematico[$key]) > 0)
+                                            @foreach ($res_tematico[$key] as $subs)
+                                                <p class="my-0 mt-2 font-italic font-weight-bold">* {{$subs->numeracion.' '.$subs->nombre_modulo}}</p>
+                                            @endforeach
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="col-3 px-1" style="border: 2px solid black">
-                                    <p class="text-center font-weight-bold">Estrategias Didácticas</p>
-                                    <p>{!! $item['estra_dida'] !!}</p>
+                                <div class="col-3 px-0" style="border: 2px solid black">
+                                    <p class="text-center font-weight-bold" style="background-color: #999; color:#fff;">Estrategias Didácticas</p>
+                                    <div class="px-1">{!! $valor->estra_didac !!}</div>
                                 </div>
-                                <div class="col-3 px-1" style="border: 2px solid black">
-                                    <p class="text-center font-weight-bold">Proceso de Evaluación</p>
-                                    <p>{!! $item['proceso_evalua'] !!}</p>
+                                <div class="col-3 px-0" style="border: 2px solid black">
+                                    <p class="text-center font-weight-bold" style="background-color: #999; color:#fff;">Proceso de Evaluación</p>
+                                    <div class="px-1">{!! $valor->process_eval !!}</div>
                                 </div>
-                                <div class="col-2" style="border: 2px solid black">
-                                    <p class="text-center font-weight-bold">Duración (En Horas)</p>
-                                    <p class="text-center">{{$item['curso_hora'].' '.$item['sel_horario']}}</p>
+                                <div class="col-2 px-0" style="border: 2px solid black">
+                                    <p class="text-center font-weight-bold" style="background-color: #999; color:#fff;">Duración (En Horas)</p>
+                                    @php
+                                        $duracion_h = \Carbon\Carbon::parse($valor->duracion);
+                                        $duracion_i = \Carbon\Carbon::parse($valor->sincrona);
+                                        $duracion_j = \Carbon\Carbon::parse($valor->asincrona);
+
+                                        $hours_h = $duracion_h->hour; $minutes_h = $duracion_h->minute;
+                                        $hours_i = $duracion_i->hour; $minutes_i = $duracion_i->minute;
+                                        $hours_j = $duracion_j->hour; $minutes_j = $duracion_j->minute;
+
+                                        $time_1 = $time_2 = $time_3 = '';
+                                        if ($hours_h > 0 && $minutes_h == 0) {$time_1 = $duracion_h->format('H:i') . ' HORAS';}
+                                        elseif ($minutes_h > 0 && $hours_h == 0) {$time_1 = $duracion_h->format('H:i') . ' MINUTOS';}
+                                        else {$time_1 = $duracion_h->format('H:i') . ' HORAS';}
+
+                                        if ($hours_i > 0) {$time_2 = $duracion_i->format('H:i') . ' HORAS';}
+                                        elseif ($minutes_i > 0) {$time_2 = $duracion_i->format('H:i') . ' MINUTOS';}
+
+                                        if ($hours_j > 0) {$time_3 = $duracion_j->format('H:i') . ' HORAS';}
+                                        elseif ($minutes_j > 0) {$time_3 = $duracion_j->format('H:i') . ' MINUTOS';}
+
+                                    @endphp
+                                    {{-- <div class="text-center">{{$valor->duracion}}</div> --}}
+                                    <div class="text-center">{{$time_1}}</div>
+                                    @if ($valor->sincrona != '00:00:00' && $valor->asincrona != '00:00:00')
+                                        <p class="text-center font-weight-bold mt-2 mb-0">A distancia</p>
+                                        <p class="text-center mb-0">(Sincrona)</p>
+                                        <p class="text-center">{{$time_2}}</p>
+                                        <p class="text-center mb-0">(Asincrona)</p>
+                                        <p class="text-center">{{$time_3}}</p>
+                                        {{-- <div class="text-center">{{$valor->duracion}}</div> --}}
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
                     @endif
-
                 </div>
 
             @elseif($tparte == 'didactico')
@@ -368,8 +430,6 @@
                     <h5> <b>¡ERROR AL INTENTAR CARGAR LOS DATOS DEL FORMULARIO!</b></h5>
                 </div>
             @endif
-
-
             {{-- <hr style="border-color: #ddd; border-width: 2px; margin: 10px 0;"> --}}
 
         </div>
@@ -404,36 +464,66 @@
             loader('hide');
         });
 
-        //Parte 1
-        ClassicEditor.create(document.querySelector('#obj_especificos'));
-        ClassicEditor.create(document.querySelector('#aprendizaje_esp'));
-        ClassicEditor.create(document.querySelector('#transversalidad'));
-        ClassicEditor.create(document.querySelector('#dirigido'));
-        ClassicEditor.create(document.querySelector('#proces_evalua'));
-        ClassicEditor.create(document.querySelector('#observaciones'));
-
-        //Parte 2
+        //Iniciamos los objetos para el estilo de textos
         let estraDidaEditor, procesoEvaluaEditor;
-        ClassicEditor.create(document.querySelector('#estra_dida'))
-            .then(editor => {
-                estraDidaEditor = editor;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        function objetos_ckeditor(parte) {
+            switch (parte) {
+                case "general": //Parte 1
+                    ClassicEditor.create(document.querySelector('#obj_especificos'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    });
+                    ClassicEditor.create(document.querySelector('#aprendizaje_esp'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    });
+                    ClassicEditor.create(document.querySelector('#transversalidad'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    });
+                    ClassicEditor.create(document.querySelector('#dirigido'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    });
+                    ClassicEditor.create(document.querySelector('#proces_evalua'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    });
+                    ClassicEditor.create(document.querySelector('#observaciones'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    });
+                    break;
+                case "tematico": //Parte 2
+                    ClassicEditor
+                    .create(document.querySelector('#estra_dida'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    })
+                    .then(editor => {estraDidaEditor = editor;})
+                    .catch(error => {console.error(error);});
 
-        ClassicEditor.create(document.querySelector('#proceso_evalua'))
-            .then(editor => {
-                procesoEvaluaEditor = editor;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+                    ClassicEditor.create(document.querySelector('#proceso_evalua'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    })
+                    .then(editor => {procesoEvaluaEditor = editor;})
+                    .catch(error => {console.error(error);});
+                    break;
+                case "didactico": //Parte 3
+                    ClassicEditor.create(document.querySelector('#elem_apoyo'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    });
+                    ClassicEditor.create(document.querySelector('#auxiliares_ense'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    });
+                    ClassicEditor.create(document.querySelector('#referencias'),{
+                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
 
-        //Parte 3
-        ClassicEditor.create(document.querySelector('#elem_apoyo'));
-        ClassicEditor.create(document.querySelector('#auxiliares_ense'));
-        ClassicEditor.create(document.querySelector('#referencias'));
+        // Ejecutar la función automáticamente cuando la página haya cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            let parte = @json($tparte); // Pasamos el valor de Laravel a JavaScript
+            objetos_ckeditor(parte);
+        });
+
 
         $(document).ready(function(){
 
@@ -450,6 +540,36 @@
             });
 
             $('#btn_segunda_parte').click(function() {
+                // Verificar y asignar valor a los campos directamente
+                if (isEmpty($("#curso_hora").val())) {$("#curso_hora").val('0');} if (isEmpty($("#curso_minuto").val())) {$("#curso_minuto").val('0');}
+                if (isEmpty($("#hora_sincro").val())) {$("#hora_sincro").val('0');} if (isEmpty($("#minuto_sincro").val())) {$("#minuto_sincro").val('0');}
+                if (isEmpty($("#hora_asincro").val())) {$("#hora_asincro").val('0');} if (isEmpty($("#minuto_asincro").val())) {$("#minuto_asincro").val('0');}
+
+                //Valido los campos de fechas que coincidan
+                let dura_hora = $("#curso_hora").val(); let dura_minuto = $("#curso_minuto").val();
+                let sinc_hora = $("#hora_sincro").val(); let sinc_minuto = $("#minuto_sincro").val();
+                let asinc_hora = $("#hora_asincro").val(); let asinc_minuto = $("#minuto_asincro").val();
+
+                // Concatenar los valores en formato "hora:minuto"
+                let dura_total = dura_hora + ":" + dura_minuto;
+                let sinc_total = sinc_hora + ":" + sinc_minuto;
+                let asinc_total = asinc_hora + ":" + asinc_minuto;
+
+                // Convertir los valores a minutos
+                let minutosVal1 = convertirAMinutos(dura_total);
+                let minutosVal2 = convertirAMinutos(sinc_total);
+                let minutosVal3 = convertirAMinutos(asinc_total);
+
+                // Sumar los minutos de val2 y val3
+                let sumaMinutos = minutosVal2 + minutosVal3;
+
+                if (minutosVal1 === 0) {alert("El campo duración esta vacia");return false;}
+
+                // Validar si la suma coincide con val1
+                if ((minutosVal1 === sumaMinutos)) {console.log("Es valido, continua el proceso");}
+                else if(sumaMinutos === 0){console.log("Es valido, continua el proceso");}
+                else {alert("Verifica que la suma de fechas Sincronas y Asincronas coincidan con la duracion asignada."); return false;}
+
                 if(confirm("Esta seguro de guardar los datos?")==true){
                         $('#frm_segunda').attr('action', "{{route('cursos-catalogo.savepartedos')}}"); $('#frm_segunda').submit();
                 }else{
@@ -465,25 +585,6 @@
                 }
             });
 
-        });
-        var inputCounter = 1;
-        document.addEventListener('DOMContentLoaded', function () {
-            const inputsContainer = document.getElementById('inputsContainer');
-            const agregarInputBtn = document.getElementById('agregarInput');
-            // const guardarTextosBtn = document.getElementById('guardarTextos');
-            let textos = [];
-
-            // let inputCounter = 1;
-            agregarInputBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                const nuevoInput = document.createElement('input');
-                nuevoInput.type = 'text';
-                nuevoInput.placeholder = 'Ingrese el submódulo';
-                nuevoInput.classList.add('input-text');
-                nuevoInput.name = `input${inputCounter}`;
-                inputsContainer.appendChild(nuevoInput);
-                inputCounter++;
-            });
         });
 
 
@@ -519,48 +620,69 @@
                 data: data,
                 dataType: "json",
                 success: function (response) {
-                    // console.log(response);
+                    //Accion Eliminar
                     if(response.status == 200 && response.accion == "eliminar"){
                         alert("¡Registro eliminado!")
                         location.reload();
                     }
+
+                    //Accion Editar
                     if (response.accion == 'editar') {
-                        // console.log(response);
-                        //limpiamos campos
+                        console.log(response);
+                        $("#submodulos").val('');
                         $("#name_modulo").val('');
+                        $("#curso_hora").val('');
+                        $("#curso_minuto").val('');
+                        $("#hora_sincro").val('');
+                        $("#minuto_sincro").val('');
+                        $("#hora_asincro").val('');
+                        $("#minuto_asincro").val('');
                         $("#estra_dida").val('');
                         $("#proceso_evalua").val('');
-                        $("#curso_hora").val('');
-                        inputsContainer.innerHTML = '';
 
-                        $("#name_modulo").val(response.datos.name_modulo);
-                        // $("#estra_dida").val(response.datos.estra_dida);
-                        estraDidaEditor.setData(response.datos.estra_dida);
-                        procesoEvaluaEditor.setData(response.datos.proceso_evalua);
-                        // $("#proceso_evalua").val(response.datos.proceso_evalua);
-                        $("#curso_hora").val(response.datos.curso_hora);
-                        $("#indice_oculto").val(response.indice);
-                        loader('hide');
+                        //Agregamos valores a los campos
+                        $("#name_modulo").val(response.datos_uno.nombre_modulo);
+                        $("#curso_hora").val(response.datos_uno.hr_dura);
+                        $("#curso_minuto").val(response.datos_uno.min_dura);
+                        $("#hora_sincro").val(response.datos_uno.hr_sinc);
+                        $("#minuto_sincro").val(response.datos_uno.min_sinc);
+                        $("#hora_asincro").val(response.datos_uno.hr_asin);
+                        $("#minuto_asincro").val(response.datos_uno.min_asin);
+                        $("#id_modupd").val(response.datos_uno.id);
+                        if (response.datos_uno.estra_didac != null) {estraDidaEditor.setData(response.datos_uno.estra_didac);}
+                        if (response.datos_uno.process_eval != null) {procesoEvaluaEditor.setData(response.datos_uno.process_eval);}
 
-                        let conta = 1;
-                        Object.entries(response.datos.val_inputs).forEach(([key, value]) => {
-                            const nuevoInput = document.createElement('input');
-                            nuevoInput.type = 'text';
-                            nuevoInput.value = value;
-                            nuevoInput.name = 'input'+conta; // Añadir el nombre al input si es necesario
-                            nuevoInput.classList.add('input-text');
-                            inputsContainer.appendChild(nuevoInput);
-                            conta++;
-                        });
-                        inputCounter = conta;
-
+                        let idObject = {};
+                        if (response.datos_dos.length != 0) {
+                            Object.entries(response.datos_dos).forEach(([key, value]) => {
+                                idObject[key] = value.id;
+                                $("#submodulos").val(function(index, val) {
+                                    return val + value.numeracion +' '+ value.nombre_modulo + "\r\n";  // Añade una nueva línea después de cada valor
+                                });
+                            });
+                        }
+                        $("#ids_subs").val(JSON.stringify(idObject));
                         // Hacer enfoque o scroll hacia el elemento div principal
                         $("#frm_tematico")[0].scrollIntoView({ behavior: "smooth" });
+                        loader('hide');
+
                     }
                 }
             });
 
         }
+
+        // Función para convertir una hora en formato "HH:MM" a minutos totales
+        function convertirAMinutos(hora) {
+            let [horas, minutos] = hora.split(':').map(Number);
+            return horas * 60 + minutos;
+        }
+
+        //Funcion para validar campos
+        function isEmpty(value) {
+            return value == null || value === '';
+        }
+
 
 
     </script>

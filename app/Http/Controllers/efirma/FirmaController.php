@@ -4,7 +4,6 @@ namespace App\Http\Controllers\efirma;
 
 
 // use QrCode;
-use setasign\Fpdi\Fpdi;
 use App\Models\DocumentosFirmar;
 use Illuminate\Http\Request;
 use Spatie\ArrayToXml\ArrayToXml;
@@ -22,7 +21,6 @@ use App\Models\especialidad_instructor;
 use Illuminate\Support\Facades\Http;
 use Vyuldashev\XmlToArray\XmlToArray;
 use Illuminate\Support\Facades\Storage;
-use \setasign\Fpdi\PdfParser\StreamReader;
 use PDF;
 use PHPQRCode\QRcode;
 use Carbon\Carbon;
@@ -402,21 +400,21 @@ class FirmaController extends Controller {
 
     public function sellarFile($xml, $token) {
         //Sellado de producción
-        // $response1 = Http::withHeaders([
-        //     'Accept' => 'application/json',
-        //     'Authorization' => 'Bearer '.$token
-        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
-        //     'xml_Firmado' => $xml
-        // ]);
-
-        // Sellado de prueba
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token
-        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
             'xml_Firmado' => $xml
         ]);
-        return $response1;
+
+        // Sellado de prueba
+        // $response1 = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token
+        // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+        //     'xml_Firmado' => $xml
+        // ]);
+        // return $response1;
     }
 
     public function obtener_xml($uuid)

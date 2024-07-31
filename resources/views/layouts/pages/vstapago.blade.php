@@ -325,6 +325,13 @@
                                                 </a>
                                             @endcan
                                         @endif
+                                        @if($itemData->edicion_pago == TRUE)
+                                            @can('contratos.create')
+                                                <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}","{{$itemData->edicion_pago}}"]'>
+                                                    EDITAR ENTREGA
+                                                </a>
+                                            @endcan
+                                        @endif
                                     @break
                                     @default
                                         @can('contratos.create')

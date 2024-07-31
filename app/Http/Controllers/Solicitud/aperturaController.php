@@ -91,12 +91,7 @@ class aperturaController extends Controller
 
                     $url_soporte = ($bddoc_soporte !== null) ? $this->path_files.$bddoc_soporte->url_documento : '';
                 }
-
-
-
-
             }
-
             $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
                 'ar.folio_grupo','ar.tipo_curso as tcapacitacion','c.nombre_curso as curso','ar.mod','ar.horario','c.horas','c.costo as costo_individual','c.id_especialidad','ar.comprobante_pago',
                 DB::raw("SUM(CASE WHEN substring(ar.curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),DB::raw("SUM(CASE WHEN substring(ar.curp,11,1)='M' THEN 1 ELSE 0 END) as mujer"),'c.memo_validacion as mpaqueteria',
@@ -128,16 +123,16 @@ class aperturaController extends Controller
                 }
                 $muni = DB::table('tbl_municipios')->where('id_estado','7')->where('id',$grupo->id_muni)->orderby('muni')->pluck('muni')->first();
                 $localidad = DB::table('tbl_localidades')->where('clave',$grupo->clave_localidad)->pluck('localidad')->first();
-                
-                $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"),                
+
+                $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"),
                     DB::raw("EXTRACT(year from (age('".$grupo->inicio."',i.fecha_nacimiento))) as edad"),
                     DB::raw("
-                        CASE 
+                        CASE
                         WHEN i.id_gvulnerable IS NULL THEN NULL
                         ELSE (SELECT STRING_AGG(grupo, ', ')  FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(i.id_gvulnerable) AS bigint)))
                         END
-                        as grupos "), 
-                    'i.inmigrante', DB::raw("id_cerss as es_cereso")
+                        as grupos "),
+                    'i.inmigrante', DB::raw("id_cerss as es_cereso"),'i.requisitos'
                 )
                 ->where('i.folio_grupo',$valor)->orderby('alumno','ASC')->get();
                // var_dump($alumnos);exit;
@@ -151,14 +146,14 @@ class aperturaController extends Controller
                     DB::raw("substring(ar.curp,5,2) as anio_nac"),
                     DB::raw("CASE WHEN substring(ar.curp,5,2) <='".$anio_hoy."' THEN CONCAT('20',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
                         ELSE CONCAT('19',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2)) END AS fecha_nacimiento
-                    "),                                    
-                    DB::raw("EXTRACT(year from (age('".$grupo->inicio."',ap.fecha_nacimiento))) as edad"),                    
+                    "),
+                    DB::raw("EXTRACT(year from (age('".$grupo->inicio."',ap.fecha_nacimiento))) as edad"),
                     DB::raw("
-                        CASE 
+                        CASE
                             WHEN ap.id_gvulnerable IS NULL THEN NULL
                             ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ap.id_gvulnerable) AS bigint)))
                         END
-                        as grupos "), 'ap.inmigrante','es_cereso',
+                        as grupos "), 'ap.inmigrante','es_cereso','ap.requisitos',
                     DB::raw("'INSERT' as mov"))
                     ->join('alumnos_pre as ap','ap.id','ar.id_pre')->where('ar.folio_grupo',$valor )
                     ->where('ar.eliminado',false)->orderby('ap.apellido_paterno','ASC')->orderby('ap.apellido_materno','ASC')->orderby('ap.nombre','ASC')->get();
@@ -301,7 +296,6 @@ class aperturaController extends Controller
 
    public function aperturar(Request $request){///PROCESO DE INSCRIPCION
         $result =  NULL;
-        $objeto_curp = array('url' => ''); //Para json doc_soporte
         $message = "No hay datos para Aperturar.";
         if($_SESSION['alumnos'] AND $_SESSION['folio'] == $request->valor){
             $grupo = DB::table('tbl_cursos as c')->where('status_curso','AUTORIZADO')->where('status','NO REPORTADO')->where('c.folio_grupo',$_SESSION['folio'])->first();
@@ -319,19 +313,9 @@ class aperturaController extends Controller
                         $matricula = $this->genera_matricula($a->curp, $grupo->cct);
                     }
 
-                    #Consultar url Curp by Jose Luis Moreno Arcos
-                    if($a->curp){
-                        $resul_alumnos = Alumnopre::select('requisitos->documento as url_doc')->where('curp', '=', $a->curp)->first();
-                        if(isset($resul_alumnos->url_doc)){
-                            $objeto_curp = array('url' => $resul_alumnos->url_doc);
-                        }else{
-                            $objeto_curp = array('url' => '');
-                        }
-                    }
-
                     if($matricula){
-                            DB::table('alumnos_pre')->where('id', $a->id_pre)->where('matricula',null)->update(['matricula'=>$matricula]);
-                            DB::table('alumnos_registro')->where('id_pre', $a->id_pre)->where('no_control',null)->where('folio_grupo',$_SESSION['folio'])->update(['no_control'=>$matricula]);
+                        DB::table('alumnos_pre')->where('id', $a->id_pre)->where('matricula',null)->update(['matricula'=>$matricula]);
+                        DB::table('alumnos_registro')->where('id_pre', $a->id_pre)->where('no_control',null)->where('folio_grupo',$_SESSION['folio'])->update(['no_control'=>$matricula]);
 
                         $result = Inscripcion::updateOrCreate(
                         ['matricula' =>  $matricula, 'id_curso' =>  $grupo->id, 'folio_grupo' =>  $grupo->folio_grupo],
@@ -373,7 +357,7 @@ class aperturaController extends Controller
                         'curp'=> $a->curp,
                         'empleado'=>$a->empleado,
                         'id_gvulnerable'=>$a->id_gvulnerable,
-                        'doc_soporte' => $objeto_curp
+                        'requisitos'=>json_decode($a->requisitos)
                         ]);
                     }
                 }
@@ -995,7 +979,23 @@ class aperturaController extends Controller
 
         #Obtenemos el numero de oficio
         $sop_expediente = ExpeUnico::select('sop_constancias')->where('folio_grupo', '=', $folio_grupo)->first();
+
         $num_oficio_sop = $sop_expediente->sop_constancias['num_oficio'];
+
+        ##COLOCAMOS LA ESTRUCTURA JSON A LOS CAMPOS NULOS
+        $camposNulos = ExpeUnico::where('sop_constancias->num_oficio', $num_oficio_sop)->whereNull('vinculacion')
+        ->whereNull('academico')->whereNull('administrativo')->get();
+        if($camposNulos->isNotEmpty()){
+            //Hacemos la actualización
+            $json_vacios = $this->llenar_json_exp();
+                DB::table('tbl_cursos_expedientes')->where('sop_constancias->num_oficio', $num_oficio_sop)
+                ->whereNull('vinculacion')->whereNull('academico')->whereNull('administrativo')
+                ->update([
+                    'vinculacion' => $json_vacios[0],
+                    'academico' => $json_vacios[1],
+                    'administrativo' => $json_vacios[2]
+                ]);
+        }
 
         $anio = $cursoInfo->anio;
         $idcurso = $cursoInfo->idcurso;
@@ -1004,12 +1004,6 @@ class aperturaController extends Controller
         $opcion = $request->opcion;
         $partImg = basename($request->urlImg);
 
-        #Validamos si no esta el registro en expedientes unicos.
-        $validJson = $this->validar_exp_json($folio_grupo, $idcurso);
-        if($validJson != 'ok'){
-            return response()->json(['status' => "500",'mensaje' => "¡INTENTE DE NUEVO POR FAVOR!"]);
-        }
-
         #Condicion para asignar nombre a los docs
         if ($archivo) {
             if($partImg != ''){
@@ -1017,7 +1011,8 @@ class aperturaController extends Controller
                 $filePath = 'uploadFiles/'.$anio.'/soporteconst/'.$partImg;
                 if (Storage::exists($filePath)) {
                     Storage::delete($filePath);
-                } else { return response()->json(['mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
+                }
+                // else { return response()->json(['mensaje' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
             }
             #Guardamos en la bd
             try {
@@ -1051,50 +1046,6 @@ class aperturaController extends Controller
             'status' => 200,
             'mensaje' => 'EL ARCHIVO SE HA SUBIDO DE MANERA EXITOSA'
         ]);
-    }
-
-    #Validar si el registro en expedientes ya existe
-    public function validar_exp_json($folio_grupo, $idcurso){
-        $existsExpediente = DB::table('tbl_cursos_expedientes')->where('folio_grupo', $folio_grupo)->exists();
-        if (!$existsExpediente){
-            #FALSE crear todo desde cero
-            $json_vacios = $this->llenar_json_exp(); #llamamos los arrays para mandarlos como json
-            try {
-                $reg_expedientes = new ExpeUnico;
-                $reg_expedientes['id'] = $idcurso;
-                $reg_expedientes['id_curso'] = $idcurso;
-                $reg_expedientes['folio_grupo'] = $folio_grupo;
-                $reg_expedientes['vinculacion'] = $json_vacios[0];
-                $reg_expedientes['academico'] = $json_vacios[1];
-                $reg_expedientes['administrativo'] = $json_vacios[2];
-                $reg_expedientes['created_at'] = date('Y-m-d');
-                $reg_expedientes['updated_at'] = date('Y-m-d');
-                $reg_expedientes['iduser_created'] = Auth::user()->id;
-                $reg_expedientes->save();
-            } catch (\Throwable $th) {
-                //throw $th;
-                return 'error';
-            }
-
-        }else{
-            #TRUE buscar si los json estan llenos si no deberiamos agregar
-            $foundJson = ExpeUnico::where('folio_grupo', $folio_grupo)->whereNotNull('vinculacion')
-            ->whereNotNull('academico')->whereNotNull('administrativo')->first();
-
-            if ($foundJson == null) {
-                #Actualizamos los campos JSON por que null significa que no estan llenos
-                #Mandamos a llamar los arrays asociativos para los JSON
-                $json_vacios = $this->llenar_json_exp(); #llamamos los arrays para mandarlos como json
-                DB::table('tbl_cursos_expedientes')->where('folio_grupo', $folio_grupo)
-                ->update(['id_curso' => $idcurso, 'folio_grupo' => $folio_grupo,
-                'vinculacion' => $json_vacios[0], 'academico' => $json_vacios[1], 'administrativo' => $json_vacios[2],
-                'created_at' => date('Y-m-d'), 'updated_at' => date('Y-m-d'), 'iduser_updated' => Auth::user()->id]);
-            }else{
-                #No hacer nada todo esta correcto.
-                return 'ok';
-            }
-
-        }
     }
 
     #Llenar array para anexar al json de expedientes
@@ -1150,6 +1101,13 @@ class aperturaController extends Controller
             ],
             "doc_7" => [
                 "nom_doc" => "Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.",
+                "existe_evidencia" => 'VACIO',
+                "observaciones" => "",
+                "url_documento" => "",
+                "fecha_subida" => ""
+            ],
+            "doc_8" => [
+                "nom_doc" => "Soporte de manifiesto de inscripción",
                 "existe_evidencia" => 'VACIO',
                 "observaciones" => "",
                 "url_documento" => "",

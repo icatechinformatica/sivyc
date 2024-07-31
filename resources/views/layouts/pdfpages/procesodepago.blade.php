@@ -97,10 +97,10 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td><div align="center">{{$funcionarios['director']}}</td></div>
+                        <td><div align="center">{{$director->nombre}}</td></div>
                     </tr>
                     <tr>
-                        <td><div align="center">{{$funcionarios['directorp']}}</td></div>
+                        <td><div align="center">{{$director->cargo}}</td></div>
                     </tr>
                 </table>
                 @if(!is_null($objeto))
@@ -136,12 +136,12 @@
                     </div>
                 @endif
                 <p style="line-height:0.8em;">
-                    <b><small>C.c.p.{{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Para su conocimiento.</small></b><br/>
-                    <b><small>C.c.p.{{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo fin.</small></b><br/>
-                    <b><small>C.c.p.{{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.-Mismo fin.</small></b><br/>
-                    <b><small>Archivo<small></b><br/>
-                    <b><small>Validó: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.</small></b><br/>
-                    <b><small>Elaboró: @if(!is_null($data->elabora)){{strtoupper($data->elabora->nombre)}}.- {{strtoupper($data->elabora->puesto)}}@else{{$funcionarios['elabora']}}.- {{$funcionarios['elaborap']}}@endif.</small></b>
+                    <b><small>C.c.p.{{$ccp1->nombre}}.- {{$ccp1->cargo}}.-Para su conocimiento.</small></b><br/>
+                    <b><small>C.c.p.{{$ccp2->nombre}}.- {{$ccp2->cargo}}.-Mismo fin.</small></b><br/>
+                    <b><small>C.c.p.{{$ccp3->nombre}}.- {{$ccp3->cargo}}.-Mismo fin.</small></b><br/>
+                    <b><small>Archivo/ Minutario<small></b><br/>
+                    <b><small>Validó: {{$ccp3->nombre}}.- {{$ccp3->cargo}}.</small></b><br/>
+                    <b><small>Elaboró: {{$ccp3->nombre}}.- {{$ccp3->cargo}}.</small></b>
                 </p>
             </div>
         </div>

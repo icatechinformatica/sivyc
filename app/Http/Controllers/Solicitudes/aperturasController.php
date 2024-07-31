@@ -205,7 +205,7 @@ class aperturasController extends Controller
                                 ->where('turnado','UNIDAD')
                                 ->where('status_curso','EN FIRMA')
                                 ->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
-                                ->update(['status_curso' => 'AUTORIZADO', 'arc'=>'02','updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
+                                ->update(['status_curso' => 'AUTORIZADO', 'arc'=>'02','status_solicitud_arc02'=>'AUTORIZADO','updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
                             }
                         break;
                     }

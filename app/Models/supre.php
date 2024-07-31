@@ -64,7 +64,7 @@ class supre extends Model
                 switch ($tipo) {
                     case 'no_memorandum':
                         # el tipo
-                        return $query->WHERE('no_memo', '=', $buscar);
+                        return $query->WHERE('tabla_supre.no_memo', '=', $buscar);
                         break;
                     case 'fecha':
                         # fecha
