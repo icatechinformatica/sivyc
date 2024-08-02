@@ -391,8 +391,8 @@ class aperturasController extends Controller
                                     jsonb_build_object(
                                         'fecha', '".date('Y-m-d H:i:s')."',
                                         'usuario', '".Auth::user()->name."',
-                                        'operacion', $motivo,
-                                        'motivo solicitado', motivo_mov
+                                        'operacion', '".$motivo."',
+                                        'motivo solicitud', motivo_mov
                                     )
                                 )
                             ")
