@@ -420,7 +420,7 @@ class ExpedienteController extends Controller
         ##Obtenemos el año del curso
         $bdanio_curso = DB::table('tbl_cursos')->select(DB::raw("EXTRACT(YEAR FROM inicio) as anio_curso"))->where('folio_grupo',$folio)->first();
 
-        $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->value('memo_soporte_dependencia');
+        $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->where('status', 'AUTORIZADO')->value('memo_soporte_dependencia');
         $mod_insctructor = DB::table('tbl_cursos')->where('folio_grupo',$folio)->value('modinstructor');
 
         //Obtenemos la lista de los alumnos con sus campos correspondientes
