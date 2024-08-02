@@ -275,6 +275,19 @@
                                     @endif
                                 @else
                                     <br>En Layout de Pago
+                                    @if($itemData->edicion_pago == TRUE)
+                                        @can('contratos.create')
+                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}","{{$itemData->edicion_pago}}"]'>
+                                                EDITAR ENTREGA
+                                            </a>
+                                        @endcan
+                                    @else
+                                        @can('contrato.validate')
+                                            <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
+                                                Retorno o Edición
+                                            </a>
+                                        @endcan
+                                    @endif
                                 @endif
                             @else
                                 @switch($itemData->status_recepcion)
