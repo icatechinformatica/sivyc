@@ -138,8 +138,11 @@
             FECHA TERMINO: &nbsp;&nbsp; {{ $curso->fechafin }}
             <br />
             GRUPO: <span class="tab2">{{ $curso->grupo }}</span>
-            HORARIO: <span class="tab2"> {{ $curso->dia }} DE {{ $curso->hini }} A {{ $curso->hfin }}</span>
-            CURP: &nbsp;&nbsp;{{ $curso->curp }}
+            HORARIO: {{ $curso->dia }} DE {{ $curso->hini }} A {{ $curso->hfin }} &nbsp;&nbsp;&nbsp;
+            CURP: &nbsp;&nbsp;{{ $curso->curp }} &nbsp;&nbsp;&nbsp;
+            {{-- @if(!is_null($EFolio))
+                EFOLIO: {{$EFolio}}
+            @endif --}}
         </div>
     </header>
     @if(!is_null($uuid))

@@ -2,29 +2,35 @@
 // Creado Por Orlando Chavez
 namespace App\Http\Controllers\webController;
 
-use App\Models\instructor;
-use App\Models\supre;
-use App\Models\folio;
-use App\Models\tbl_curso;
+use App\Http\Controllers\efirma\EValsupreController;
+use App\Http\Controllers\efirma\ESupreController;
+use \setasign\Fpdi\PdfParser\StreamReader;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
-use App\Models\supre_directorio;
-use App\Models\directorio;
-use App\Models\criterio_pago;
-use App\Models\tbl_unidades;
-use App\Models\contratos;
-use App\Models\contrato_directorio;
-use App\Models\ISR;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use PDF;
-use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
-use App\Models\pago;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
+use App\Models\contrato_directorio;
+use Illuminate\Support\Facades\DB;
 use App\Events\NotificationEvent;
+use App\Models\DocumentosFirmar;
+use App\Models\supre_directorio;
+use App\Exports\FormatoTReport;
+use App\Models\criterio_pago;
+use Illuminate\Http\Request;
+use App\Models\tbl_unidades;
+use App\Models\directorio;
+use App\Models\instructor;
+use App\Models\tbl_curso;
+use App\Models\contratos;
+use setasign\Fpdi\Fpdi;
+use App\Models\supre;
+use PHPQRCode\QRcode;
+use App\Models\folio;
+use App\Models\pago;
+use App\Models\ISR;
+use Carbon\Carbon;
 use App\User;
+use PDF;
 
 class supreController extends Controller
 {
@@ -34,7 +40,7 @@ class supreController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function solicitud_supre_inicio(Request $request) {
-        $array_ejercicio =[];
+        $array_ejercicio = $status_doc = array();
         $año_pointer = CARBON::now()->format('Y');
         $unidaduser = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
         $roles = DB::table('role_user')
@@ -69,40 +75,94 @@ class supreController extends Controller
 
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-                        ->SELECT('tabla_supre.*','folios.permiso_editar','folios.edicion_pago','pagos.status_recepcion')
-                        ->where('tabla_supre.id', '!=', '0')
-                        ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
-                        ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
-                        ->WHERE('tabla_supre.status', '!=', 'Cancelado');
+            ->SELECT('tabla_supre.*','folios.permiso_editar')
+            ->selectSub(function($query) {
+                $query->from('documentos_firmar')
+                    ->selectRaw('CASE WHEN COUNT(*) > 0 THEN true ELSE false END')
+                    ->whereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
+                    ->where('documentos_firmar.tipo_archivo', 'supre')
+                    ->where('documentos_firmar.status', ['VALIDADO','EnFirma']);
+            }, 'supre_sellado')
+            ->selectSub(function($query) {
+                $query->from('documentos_firmar')
+                    ->selectRaw('CASE WHEN COUNT(*) > 0 THEN true ELSE false END')
+                    ->whereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
+                    ->where('documentos_firmar.tipo_archivo', 'valsupre')
+                    ->whereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
+            }, 'valsupre_sellado')
+            ->where('tabla_supre.id', '!=', '0')
+            ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+            ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
+            ->WHERE('tabla_supre.status', '!=', 'Cancelado');
         if($roles->role_name != 'admin' && $roles->role_name != 'planeacion')
         {
             $data = $data->WHERE('unidad_capacitacion', $unidaduser->ubicacion);
         }
         $data = $data->RIGHTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
-                        ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                        ->LeftJoin('pagos','pagos.id_curso','folios.id_cursos')
-                        ->OrderBy('tabla_supre.status','ASC')
-                        ->OrderBy('tabla_supre.updated_at','DESC')
-                        ->paginate(25, ['tabla_supre.*']);
+            ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+            ->LeftJoin('documentos_firmar','documentos_firmar.numero_o_clave','=', 'tbl_cursos.clave')
+            ->OrderBy('tabla_supre.status','ASC')
+            ->OrderBy('tabla_supre.updated_at','DESC')
+            ->GroupBy('tabla_supre.id','folios.permiso_editar','clave')
+            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado')]);
+
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
+        // $prueba = 'ICATECH/1000/7859/2024';
+        // $numDocs = 2;
+        // $numDocs = '0'.($numDocs+1);
+        // $numOficioBuilder = explode('/',$prueba);dd($numOficioBuilder);
+        // array_splice($numOficioBuilder, count($numOficioBuilder) - 2, 0, $numDocs);
+        // dd($numOficioBuilder);
+        // $numOficio = implode('/',$numOficioBuilder);
 
         return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades','array_ejercicio','año_pointer'));
     }
 
     public function frm_formulario() {
-        $prueba = '2023-10-17';
-        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
-        $unidad = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
+        $funcionarios = array();
+        $unidad = tbl_unidades::SELECT('ubicacion','id','clave_contrato')->WHERE('id',Auth::user()->unidad)->FIRST();
+        $year = Carbon::now()->year;
+        $inicio = $year.'-01-01';
+        $final = $year.'-12-30';
+
+        $countCursos = DB::Table('folios')->Where('tabla_supre.unidad_capacitacion',$unidad->ubicacion)
+        ->WhereBetween('tabla_supre.fecha',['2024-01-01','2024-12-30'])
+        ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
+        ->Count('folios.id_folios');
+
+        do {
+            $countCursos++;
+            switch (strlen($countCursos)) {
+                case 1:
+                    $countCursos = '00'.$countCursos;
+                break;
+                case 2:
+                    $countCursos = '0'.$countCursos;
+                break;
+                // case 3:
+                //     $countCursos = '0'.$countCursos;
+                // break;
+                default:
+
+                break;
+            }
+            $folio_validacion = 'DPP-SP-'.substr($unidad->ubicacion, 0, 2).'-'.$countCursos.'-'.$year;
+            $folioExists = DB::Table('folios')->Where('folio_validacion',$folio_validacion)->First();
+        } while (!is_null($folioExists));
 
         $funcionarios = $this->funcionarios_supre($unidad->ubicacion);
-
-        return view('layouts.pages.delegacionadmin', compact('unidades','unidad','funcionarios'));
+        return view('layouts.pages.delegacionadmin', compact('unidad','funcionarios','year','folio_validacion'));
     }
 
     public function store(Request $request) {
         // dd($request);
         $generalarr = $arrmov = array();
-        $memo = supre::SELECT('no_memo')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
+        $claveUnidad = tbl_unidades::Where('id',Auth::user()->unidad)->Value('clave_contrato');
+        $fecha = Carbon::parse($request->input('fecha'));
+        $year = $fecha->year;
+        $memorandum = 'ICATECH/'.$claveUnidad.'/'.preg_replace('/\D/', '', $request->memorandum).'/'.$year;
+        $memo = supre::SELECT('no_memo')->WHERE('no_memo', '=', $memorandum)->FIRST();
         if (is_null($memo))
         {
             foreach ($request->addmore as $key => $value)
@@ -129,11 +189,10 @@ class supreController extends Controller
             }
             $supre = new supre();
             $curso_validado = new tbl_curso();
-            // $directorio = new supre_directorio();
 
             //Guarda Solicitud
             $supre->unidad_capacitacion = strtoupper($request->unidad);
-            $supre->no_memo = strtoupper($request->memorandum);
+            $supre->no_memo = strtoupper($memorandum);
             $supre->fecha = strtoupper($request->fecha);
             $supre->status = 'En_Proceso';
             $supre->fecha_status = strtoupper($request->fecha);
@@ -144,15 +203,6 @@ class supreController extends Controller
             // auth()->user()->notify(new SupreNotification($supre));
 
             $id = $supre->id;
-            // $directorio->supre_dest = $request->id_destino;
-            // $directorio->supre_rem = $request->id_remitente;
-            // $directorio->supre_valida = $request->id_valida;
-            // $directorio->supre_elabora = $request->id_elabora;
-            // $directorio->supre_ccp1 = $request->id_ccp1;
-            // $directorio->supre_ccp2 = $request->id_ccp2;
-            // $directorio->id_supre = $id;
-            // $directorio->save();
-            // $id_directorio = $directorio->id;
 
             //Guarda Folios
             foreach ($request->addmore as $key => $value)
@@ -204,21 +254,10 @@ class supreController extends Controller
                     }
 
                     $folio->save();
-
-                    // $mvtobanc = tbl_curso::find($hora->id); //
-                    // foreach($request->movimiento_bancario_ as $movkey => $ari)
-                    // {
-                    //     $arrmov['movimiento_bancario'] = $ari;
-                    //     $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
-                    //     array_push($generalarr, $arrmov);
-                    // }
-                    // $mvtobanc->mov_bancario = $generalarr;
-                    // $mvtobanc->save();
                 }
                 else
                 {
                     supre::WHERE('id', '=', $id)->DELETE();
-                    supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
                     return redirect()->route('supre-inicio')
                             ->with('success','Error Interno. Intentelo mas tarde.');
                 }
@@ -235,14 +274,14 @@ class supreController extends Controller
             // dd($users);
             //event((new NotificationEvent($users, $letter)));
 
-            // return redirect()->route('supre-inicio')
-            //     ->with('success','Solicitud de Suficiencia Presupuestal agregado');
-            return view('layouts.pages.suprecheck',compact('id'));
+            $id = base64_encode($id);
+            return redirect()->route('modificar_supre', ['id' => $id])
+                             ->with('success','Solicitud de Suficiencia Presupuestal Guardado');
         }
         else
         {
             return redirect()->route('frm-supre')
-                    ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE MEMORANDUM INGRESADO YA SE ENCUENTRA REGISTRADO', $request->memorandum));
+                    ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE MEMORANDUM INGRESADO YA SE ENCUENTRA REGISTRADO', $memorandum));
         }
     }
 
@@ -251,18 +290,12 @@ class supreController extends Controller
         $id = base64_decode($id);
         $supre = new supre();
         $folio = new folio();
-        $getdestino = null;
-        $getremitente = null;
-        $getvalida = null;
-        $getelabora = null;
-        $getccp1 = null;
-        $getccp2 = null;
+        $generarEfirmaSupre = TRUE;
 
-        // $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
+        $getsupre->no_memo = explode('/', $getsupre->no_memo);
 
-        $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
-        $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $getsupre->unidad_capacitacion)->GET();
+        $unidadsel = tbl_unidades::SELECT('id','unidad','clave_contrato')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
 
         $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.comentario',
                                 'folios.importe_total','folios.iva','tbl_cursos.clave',
@@ -270,20 +303,24 @@ class supreController extends Controller
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                             ->GET();
-        // if($directorio->supre_rem != NULL)
-        // {
-        //     $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
-        // }
-        // if($directorio->supre_valida != NULL)
-        // {
-        //     $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
-        // }
-        // if($directorio->supre_elabora != NULL)
-        // {
-        //     $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
-        // }
 
-        $funcionarios = $this->funcionarios_supre($getsupre->unidad_capacitacion);
+        $agenda = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','o.id_parent')
+            ->Join('tbl_funcionarios AS f', 'f.id_org','o.id')
+            ->Where('o.id_unidad',$unidadsel->id)
+            ->Get();
+
+        Foreach($agenda as $moist) {
+            if($moist->id_parent == 1){
+                $funcionarios['director'] = $moist->nombre;
+                $funcionarios['directorp'] = $moist->cargo;
+            }
+            if(str_contains($moist->cargo, 'ADMINISTRATIVO')) {
+                $funcionarios['delegado'] = $moist->nombre;
+                $funcionarios['delegadop'] = $moist->cargo;
+            }
+
+        }
+
         $getfolios[0]->mov_bancario = json_decode($getfolios[0]->mov_bancario);
 
         $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
@@ -296,7 +333,29 @@ class supreController extends Controller
                 ->Where('id',$getfolios[0]->id)
                 ->First();
         }
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios', 'unidadsel','unidadlist','recibo','funcionarios'));
+
+        // check para validar si todavia se puede firmar electronicamente el contrato
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$getfolios[0]->clave)
+            ->Where('tipo_archivo','supre')
+            ->Get();
+
+        foreach($status_doc as $mxs) {
+            if(!is_null($mxs)) {
+                if($mxs->status != 'CANCELADO' && $mxs->status != 'CANCELADO ICTI') {
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            $generarEfirmaSupre = FALSE;
+                        }
+                    }
+                }
+                if($mxs->status == 'VALIDADO') {
+                    $generarEfirmaSupre = FALSE;
+                }
+            }
+        }
+        // FINAL del check
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios','unidadsel','recibo','funcionarios','generarEfirmaSupre'));
     }
 
     public function solicitud_mod_guardar(Request $request)
@@ -305,7 +364,11 @@ class supreController extends Controller
         $generalarr = $arrmov = array();
         $supre = new supre();
         $curso_validado = new tbl_curso();
-        $id_directorio = $request->id_directorio;
+
+        $claveUnidad = tbl_unidades::Where('id',Auth::user()->unidad)->Value('clave_contrato');
+        $fecha = Carbon::parse($request->input('fecha'));
+        $year = $fecha->year;
+        $memorandum = 'ICATECH/'.$claveUnidad.'/'.preg_replace('/\D/', '', $request->no_memo).'/'.$year;
 
         $elabora = ['nombre' => $request->nombre_elabora,
                     'puesto' => $request->puesto_elabora];
@@ -313,24 +376,17 @@ class supreController extends Controller
         supre::where('id', '=', $request->id_supre)
         ->update(['status' => 'En_Proceso',
                   'unidad_capacitacion' => $request->unidad,
-                  'no_memo' => $request->no_memo,
+                  'no_memo' => $memorandum,
                   'fecha' => $request->fecha,
                   'fecha_status' => carbon::now(),
                   'elabora' => $elabora]);
 
-        // supre_directorio::where('id', '=', $request->id_directorio)
-        // ->update(['supre_dest' => $request->id_destino,
-        //           'supre_rem' => $request->id_remitente,
-        //           'supre_valida' => $request->id_valida,
-        //           'supre_elabora' => $request->id_elabora,
-        //           'supre_ccp1' => $request->id_ccp1,
-        //           'supre_ccp2' => $request->id_ccp2,]);
+        if($request->id_supre != NULL)
+        {
+            folio::WHERE('id_supre', '=', $request->id_supre)->DELETE();
+        }
+        $id = $supre::SELECT('id')->WHERE('no_memo', '=', $memorandum)->FIRST();
 
-            if($request->id_supre != NULL)
-            {
-                folio::WHERE('id_supre', '=', $request->id_supre)->DELETE();
-            }
-            $id = $supre::SELECT('id')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
         //Guarda Folios
         foreach ($request->addmore as $key => $value){
             $folio = new folio();
@@ -366,20 +422,46 @@ class supreController extends Controller
             }
 
             $folio->save();
+        }
 
-            // $mvtobanc = tbl_curso::find($hora->id);
-            // foreach($request->movimiento_bancario_ as $movkey => $ari)
-            // {
-            //     $arrmov['movimiento_bancario'] = $ari;
-            //     $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
-            //     array_push($generalarr, $arrmov);
-            // }
-            // $mvtobanc->mov_bancario = $generalarr;
-            // $mvtobanc->save();
-}
-        // return redirect()->route('supre-inicio')
-        // ->with('success','Solicitud de Suficiencia Presupuestal agregado');
-        return view('layouts.pages.suprecheck',compact('id','id_directorio'));
+        $ids = base64_encode($id->id);
+        return redirect()->route('modificar_supre', ['id' => $ids])
+            ->with('success','Solicitud de Suficiencia Presupuestal Modificada');
+
+    }
+
+    public function generar_supre_efirma(request $request) {
+        // dd($request);
+
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clave_curso)->Where('tipo_archivo','supre')->Get();
+        if(!is_null($status_doc)) {
+            foreach($status_doc as $mxs) {
+                if(!is_null($mxs) && in_array($mxs->status, ['VALIDADO', 'EnFirma'])){
+                    if(!is_null($mxs->uuid_sellado)) {
+                        return redirect()->route('modificar_supre', ['id' => base64_encode($request->ids)])
+                                    ->with('error','Error: El documento ha sido sellado anteriormente (3)');
+                    }
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            return redirect()->route('modificar_supre', ['id' => base64_encode($request->ids)])
+                                    ->with('error','Error: El documento esta en proceso de firmado (4)');
+                        }
+                    }
+                }
+            }
+        }
+
+        $supreController = new ESupreController();
+        $result = $supreController->generar_xml($request->ids);
+
+        if(isset($result['error'])) {
+            return redirect()->route('modificar_supre', ['id' => base64_encode($request->ids)])
+                             ->with('error','Hubo un error al generar el documento electronico, favor de avisar en el grupo de soporte técnico. ('.$result['error'].')');
+        }
+
+        return redirect()->route('modificar_supre', ['id' => base64_encode($request->ids)])
+                             ->with('success','Solicitud de Suficiencia Presupuestal Electronico Generado Exitosamente');
     }
 
     public function validacion_supre_inicio(){
@@ -387,6 +469,7 @@ class supreController extends Controller
     }
 
     public function validacion($id){
+        $year = Carbon::now()->year;
         $id = base64_decode($id);
         $supre = new supre();
         $data =  $supre::WHERE('id', '=', $id)->FIRST();
@@ -413,7 +496,7 @@ class supreController extends Controller
         //                 ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
         // dd($notification);
 
-        return view('layouts.pages.valsupre',compact('data','criterio_pago','fecha_apertura','funcionarios'));
+        return view('layouts.pages.valsupre',compact('data','criterio_pago','fecha_apertura','funcionarios','year'));
     }
 
     public function supre_rechazo(Request $request){
@@ -442,9 +525,12 @@ class supreController extends Controller
 
     public function supre_validado(Request $request){
         // dd($request);
+        $fecha = Carbon::parse($request->input('fecha_val'));
+        $year = $fecha->year;
+        $folio_validacion= 'ICATECH/500.1/H/'.preg_replace('/\D/', '', $request->folio_validacion).'/'.$year;
         $supre = supre::find($request->id);
         $supre->status = 'Validado';
-        $supre->folio_validacion = $request->folio_validacion;
+        $supre->folio_validacion = $folio_validacion;
         $supre->fecha_validacion = $request->fecha_val;
         $supre->financiamiento = $request->financiamiento;
         switch($request->financiamiento) {
@@ -478,35 +564,24 @@ class supreController extends Controller
             'unidad' => $supre->unidad_capacitacion,
             'url' => '/supre/validacion/pdf/' . $supre->id,
         ];
-        //$users = User::where('id', 1)->get();
-        // dd($users);
-        //event((new NotificationEvent($users, $letter)));
-        return view('layouts.pages.valsuprecheck', compact('id', 'directorio_id','idb64'));
-    }
 
-    public function valsupre_checkmod(Request $request){
-        $data = supre::find($request->id);
-        $directorio = supre_directorio::find($request->directorio_id);
-        $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
-        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
-        $getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
-        $getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
-        $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
-        $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
-
-        return view('layouts.pages.valsupremod', compact('data', 'directorio','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
+        return redirect()->route('valsupre-mod', ['id' => base64_encode($id)])
+                             ->with('success', 'Validación de Suficiencia Presupuestal Guardada Exitosamente');
+        // return view('layouts.pages.valsuprecheck', compact('id', 'directorio_id','idb64'));
     }
 
     public function valsupre_mod($id){
         $id = base64_decode($id);
         $data = supre::find($id);
-        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        // $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
-        // $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
-        // $getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
-        // $getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
-        // $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
-        // $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
+        $generarEfirmaValsupre = TRUE;
+        $data->folio_validacion = explode('/', $data->folio_validacion);
+
+        $clave = DB::Table('tabla_supre')
+            ->Join('folios','folios.id_supre','tabla_supre.id')
+            ->join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->Where('tabla_supre.id',$id)
+            ->Value('tbl_cursos.clave');
+
         $criterio_pago = DB::TABLE('criterio_pago')
             ->SELECT('cp','perfil_profesional')
             ->JOIN('tbl_cursos','tbl_cursos.cp','criterio_pago.id')
@@ -517,9 +592,65 @@ class supreController extends Controller
         if($criterio_pago == null) {
             $criterio_pago = DB::TABLE('criterio_pago')->SELECT('id AS cp','perfil_profesional')->WHERE('id','11')->FIRST();
         }
-        $funcionarios = $this->funcionarios_supre($data->unidad_capacitacion);
 
-        return view('layouts.pages.valsupremod', compact('data', 'directorio','criterio_pago','funcionarios'));
+        // $delegado = DB::TABLE('tbl_unidades')->SELECT('delegado_administrativo','pdelegado_administrativo')->WHERE('unidad',$data->unidad_capacitacion)->FIRST();
+        $funcionarios = $this->funcionarios_valsupre($data->unidad_capacitacion);
+
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$clave)
+            ->Where('tipo_archivo','valsupre')
+            ->Get();
+
+        foreach($status_doc as $mxs) {
+            if(!is_null($mxs)) {
+                if($mxs->status != 'CANCELADO' && $mxs->status != 'CANCELADO ICTI') {
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            $generarEfirmaSupre = FALSE;
+                        }
+                    }
+                }
+                if($mxs->status == 'VALIDADO') {
+                    $generarEfirmaValsupre = FALSE;
+                }
+            }
+        }
+
+        return view('layouts.pages.valsupremod', compact('data','criterio_pago','funcionarios','generarEfirmaValsupre','clave'));
+    }
+
+    public function generar_valsupre_efirma(request $request) {
+        // dd($request);
+
+        $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$request->clave_curso)->Where('tipo_archivo','valsupre')->Get();
+        if(!is_null($status_doc)) {
+            foreach($status_doc as $mxs) {
+                if(!is_null($mxs) && in_array($mxs->status, ['VALIDADO', 'EnFirma'])){
+                    if(!is_null($mxs->uuid_sellado)) {
+                        return redirect()->route('valsupre_mod', ['id' => base64_encode($request->ids)])
+                                    ->with('error','Error: El documento ha sido sellado anteriormente (3)');
+                    }
+                    $firmantes = json_decode($mxs->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            return redirect()->route('valsupre_mod', ['id' => base64_encode($request->ids)])
+                                    ->with('error','Error: El documento esta en proceso de firmado (4)');
+                        }
+                    }
+                }
+            }
+        }
+
+        $valsupreController = new EValsupreController();
+        $result = $valsupreController->generar_xml($request->ids);
+
+        if(isset($result['error'])) {
+            return redirect()->route('valsupre-mod', ['id' => base64_encode($request->ids)])
+                             ->with('error','Hubo un error al generar el documento electronico, favor de avisar en el grupo de soporte técnico. ('.$result['error'].')');
+        }
+
+        return redirect()->route('valsupre-mod', ['id' => base64_encode($request->ids)])
+                             ->with('success','Solicitud de Suficiencia Presupuestal Electronico Generado Exitosamente');
     }
 
     public function delete($id)
@@ -540,19 +671,10 @@ class supreController extends Controller
 
     public function restartSupre($id)
     {
-        $list = folio::SELECT('id_folios')->WHERE('id_supre', '=', $id)->GET();
-        foreach($list as $item)
-        {
-            $idcontrato = contratos::SELECT('id_contrato')->WHERE('id_folios', '=', $item->id_folios)->FIRST();
-            if($idcontrato != NULL)
-            {
-                pago::WHERE('id_contrato', $idcontrato->id_contrato)->DELETE();
-                contrato_directorio::WHERE('id_contrato', '=', $idcontrato->id_contrato)->DELETE();
-                contratos::where('id_folios', '=', $item->id_folios)->DELETE();
-            }
-            $affecttbl_inscripcion = DB::table("folios")->WHERE('id_folios', $item->id_folios)->update(['status' => 'Rechazado']);
-        }
 
+        $item = folio::SELECT('id_folios')->WHERE('id_supre', '=', $id)->First();
+
+        DB::table("folios")->WHERE('id_folios', $item->id_folios)->update(['status' => 'Rechazado']);
         DB::table('tabla_supre')->WHERE('id', $id)->UPDATE(['status' => 'Rechazado', 'doc_validado' => '']);
 
         return redirect()->route('supre-inicio')
@@ -745,20 +867,12 @@ class supreController extends Controller
     public function cancelFolio(Request $request)
     {
         $userName = Auth::user()->name;
-//a
         $folio = folio::find($request->idf);
         $folio->observacion_cancelacion = $request->observaciones;
         $folio->cancelo = $userName;
         $folio->status = 'Cancelado';
         $folio->save();
 
-        $idcontrato = contratos::SELECT('id_contrato')->WHERE('id_folios', '=', $request->idf)->FIRST();
-        if($idcontrato != NULL)
-            {
-                contrato_directorio::WHERE('id_contrato', '=', $idcontrato->id_contrato)->DELETE();
-                pago::WHERE('id_contrato', '=', $request->idf)->DELETE();
-                contratos::where('id_folios', '=', $request->idf)->DELETE();
-            }
         return redirect()->route('supre-inicio')
                     ->with('success','Folio de Suficiencia Presupuestal Cancelada');
     }
@@ -1147,62 +1261,115 @@ class supreController extends Controller
         return view('layouts.pages.vstareporteplaneacion', compact('unidades', 'filtrotipo','idcurso','unidad','idInstructor','fecha1','fecha2'));
 
         // dd($data);
-
-        // $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva','cantidad','iva'));
-        // $pdf->setPaper('legal', 'Landscape');
-        // return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
-
-        // /**
-        //  * Aquí se genera el documento en excel
-        //  */
-        // $cabecera = [
-        //     'SEC. DE SOLIC.', 'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA',
-        //     'FECHA', 'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'CURSO', 'CLAVE DEL GRUPO',
-        //     'Z.E.', 'HSM', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
-        //     'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
-        //     'FECHA REGISTRO', 'OBSERVACIONES'
-        // ];
-
-        // $nombreLayout = "formato de control".$request->fecha1 . ' - '. $request->fecha2.".xlsx";
-        // $titulo = "formato de control ".$request->fecha1 . ' - '. $request->fecha2;
-        // if(count($data)>0){
-        //     return Excel::download(new FormatoTReport($data,$head, $titulo), $nombreLayout);
-        // }
-
     }
 
     public function supre_pdf($id){
         $id = base64_decode($id);
+        $uuid = $objeto = $qrCodeBase64 = null;
         $supre = new supre();
-        $folio = new folio();
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
-        $data_supre = $supre::WHERE('id', '=', $id)->FIRST();
-        $uj= supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
-                        'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso',
-                        'tbl_cursos.modinstructor','tbl_cursos.fecha_apertura')
-                    ->WHERE('id_supre', '=', $id )
-                    ->WHERE('folios.status', '!=', 'Cancelado')
-                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
-                    ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                    ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
-                    ->GET();
-        $data_folio = $folio::WHERE('id_supre', '=', $id)->WHERE('status', '!=', 'Cancelado')->GET();   //dd($data_supre);
-        $date = strtotime($data_supre->fecha);
-        $D = date('d', $date);
-        $MO = date('m',$date);
-        $M = $this->monthToString(date('m',$date));//A
-        $Y = date("Y",$date);
+        $data_supre = $supre::WHERE('id', '=', $id)->FIRST(); //cambiar data2 a data_supre en tabla supre
         $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
-                                ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
-                                ->FIRST();
+            ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
+            ->FIRST();
         $unidad->cct = substr($unidad->cct, 0, 4);
-        $direccion = explode("*", $unidad->direccion);
-
         $funcionarios = $this->funcionarios_supre($data_supre->unidad_capacitacion);
+        $direccion = explode("*", $unidad->direccion);
+        $puestos = array();
 
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','unidad','distintivo','uj','direccion','funcionarios'));
-        return  $pdf->stream('medium.pdf');
+        //body en firma electronica
+        $clave = DB::table('folios')->Where('folios.id_supre',$id)
+            ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->Value('tbl_cursos.clave');
+        $documento = DocumentosFirmar::where('numero_o_clave', $clave)
+            ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
+            ->Where('tipo_archivo','supre')
+            ->first();
+
+        if(is_null($documento)) {
+            $firma_electronica = false;
+            $supreController = new ESupreController();
+            $body_html = $supreController->create_body($id);
+            $bodySupre = $body_html['supre'];
+            $bodyTabla = $body_html['tabla'];
+        } else {
+            $firma_electronica = true;
+            $body_html = json_decode($documento->obj_documento_interno);
+            $bodySupre = $body_html->supre;
+            $bodyTabla = $body_html->tabla;
+        }
+
+
+
+        if(isset($documento->uuid_sellado)){
+            $objeto = json_decode($documento->obj_documento,true);
+            $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
+            $no_oficio = $no_oficio->{'@attributes'}->no_oficio;
+            $uuid = $documento->uuid_sellado;
+            $cadena_sello = $documento->cadena_sello;
+            $fecha_sello = $documento->fecha_sellado;
+            $folio = $documento->nombre_archivo;
+            $tipo_archivo = $documento->tipo_archivo;
+
+            $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
+            //Verifica si existe link de verificiacion, de lo contrario lo crea y lo guarda
+            if(isset($documento->link_verificacion)) {
+                $verificacion = $documento->link_verificacion;
+            } else {
+                $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                $documento->save();
+            }
+            ob_start();
+            QRcode::png($verificacion);
+            $qrCodeData = ob_get_contents();
+            ob_end_clean();
+            $qrCodeBase64 = base64_encode($qrCodeData);
+            // Fin de Generacion
+            foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
+                $puesto = DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+                if(!is_null($puesto)) {
+                    array_push($puestos,$puesto->cargo);
+                    // <td height="25px;">{{$search_puesto->cargo}}</td>
+                } else {
+                    array_push($puestos,'INSTRUCTOR');
+                }
+            }
+        }
+        // $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','distintivo','direccion','firma_electronica','uuid'));
+        // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','distintivo','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
+        // return $pdf2->stream("prueba.pdf");
+
+        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','distintivo','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))->output();
+        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','distintivo','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))
+            ->setPaper('a4', 'landscape')  // Configurar tamaño y orientación
+            ->output();
+
+        // Combinar los PDFs usando FPDI
+        // Crear un archivo temporal para cada PDF
+        $file1 = tempnam(sys_get_temp_dir(), 'pdf1');
+        $file2 = tempnam(sys_get_temp_dir(), 'pdf2');
+
+        // Escribir los datos del PDF en los archivos temporales
+        file_put_contents($file1, $pdf1);
+        file_put_contents($file2, $pdf2);
+
+        // Combinar los PDFs usando FPDI
+        $pdf = new Fpdi();
+        $pdf->AddPage();
+        $pageCount1 = $pdf->setSourceFile($file1);
+        $tplIdx1 = $pdf->importPage(1);
+        $pdf->useTemplate($tplIdx1);
+
+        $pdf->AddPage('L');
+        $pageCount2 = $pdf->setSourceFile($file2);
+        $tplIdx2 = $pdf->importPage(1);
+        $pdf->useTemplate($tplIdx2);
+
+        // Eliminar los archivos temporales
+        unlink($file1);
+        unlink($file2);
+
+        return $pdf->Output('medium.pdf', 'I');
     }
 
     protected function planeacion_reporte_canceladospdf(Request $request){
@@ -1250,180 +1417,73 @@ class supreController extends Controller
         return view('layouts.pdfpages.reportefolioscancelados', compact('data'));
     }
 
-    public function tablasupre_pdf($id){
-        $id = base64_decode($id);
-        $supre = new supre;
-        $curso = new tbl_curso;
-        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
-        $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
-                        'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso',
-                        'tbl_cursos.modinstructor','tbl_cursos.fecha_apertura', 'tbl_cursos.cp')
-                    ->WHERE('id_supre', '=', $id )
-                    ->WHERE('folios.status', '!=', 'Cancelado')
-                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
-                    ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                    ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
-                    ->GET();
-
-        $inicio = date('Y-m-d', strtotime($data[0]->fecha_apertura));
-        $Curso = $data[0];
-        if($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp > 5) {
-            $Curso->cp = $Curso->cp - 1;
-        } else if ($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp == 5) {
-            $Curso->cp = 55; // este id es del antiguo C.P. 5
-        }
-
-        if ($Curso->ze == 'II')
-        {
-            $queryraw = "jsonb_array_elements(ze2->'vigencias') AS vigencia";
-        }
-        else
-        {
-            $queryraw = "jsonb_array_elements(ze3->'vigencias') AS vigencia";
-        }
-
-        $criterio = DB::table('criterio_pago')->select('fecha', 'monto')
-            ->fromSub(function ($query) use ($Curso, $inicio, $queryraw) {
-                $query->selectRaw("(vigencia->>'fecha')::date AS fecha, (vigencia->>'monto')::numeric AS monto")
-                    ->from('criterio_pago')
-                    ->crossJoin(DB::raw($queryraw))
-                    ->where('id', $Curso->cp)
-                    ->whereRaw("(vigencia->>'fecha')::date <= ?", [$inicio]);
-            }, 'sub')
-            ->orderBy('fecha', 'DESC')
-            ->limit(1)
-            ->first();
-
-        $tipop = $data[0]['modinstructor'];
-        $data2 = supre::WHERE('id', '=', $id)->FIRST();
-        $direccion = tbl_unidades::WHERE('unidad',$data2->unidad_capacitacion)->VALUE('direccion');
-        $direccion = explode("*", $direccion);
-
-        $funcionarios = $this->funcionarios_supre($data2->unidad_capacitacion);
-
-        $date = strtotime($data2->fecha);
-        $D = date('d', $date);
-        $M = $this->monthToString(date('m',$date));
-        $Y = date("Y",$date);
-
-        $datev = strtotime($data2->fecha_validacion);
-        $Dv = date('d', $datev);
-        $Mv = $this->monthToString(date('m',$datev));
-        $Yv = date("Y",$datev);
-
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','funcionarios','distintivo','direccion','criterio'));
-        $pdf->setPaper('A4', 'Landscape');
-
-        return $pdf->stream('download.pdf');
-
-        return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));
-    }
-
     public function valsupre_pdf($id){
+        // dd($id);
+        $puestos = array();
+        $uuid = $objeto = $qrCodeBase64 = NULL;
+        $firma_electronica = True;
         $id = base64_decode($id);
-        $notification = DB::table('notifications')
-                        ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
-                        ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
-
-        $supre = new supre;
-        $curso = new tbl_curso;
-        $recursos = array();
-        $i = 0;
-        $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
-                        'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                        'tbl_cursos.unidad','tbl_cursos.modinstructor','tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze',
-                        'tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso','tbl_cursos.modinstructor',
-                        'tbl_cursos.cp','tbl_cursos.fecha_apertura')
-                    ->WHERE('id_supre', '=', $id )
-                    ->WHERE('folios.status', '!=', 'Cancelado')
-                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
-                    ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                    ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
-                    ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
-                    ->GET();
-
-        $inicio = date('Y-m-d', strtotime($data[0]->fecha_apertura));
-        $Curso = $data[0];
-        if($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp > 5) {
-            $Curso->cp = $Curso->cp - 1;
-        } else if ($inicio < date('Y-m-d', strtotime('12-10-2023')) && $Curso->cp == 5) {
-            $Curso->cp = 55; // este id es del antiguo C.P. 5
-        }
-
-        if ($Curso->ze == 'II')
-        {
-            $queryraw = "jsonb_array_elements(ze2->'vigencias') AS vigencia";
-        }
-        else
-        {
-            $queryraw = "jsonb_array_elements(ze3->'vigencias') AS vigencia";
-        }
-
-        $criterio = DB::table('criterio_pago')->select('fecha', 'monto')
-            ->fromSub(function ($query) use ($Curso, $inicio, $queryraw) {
-                $query->selectRaw("(vigencia->>'fecha')::date AS fecha, (vigencia->>'monto')::numeric AS monto")
-                    ->from('criterio_pago')
-                    ->crossJoin(DB::raw($queryraw))
-                    ->where('id', $Curso->cp)
-                    ->whereRaw("(vigencia->>'fecha')::date <= ?", [$inicio]);
-            }, 'sub')
-            ->orderBy('fecha', 'DESC')
-            ->limit(1)
-            ->first();
-
-        $data2 = supre::WHERE('id', '=', $id)->FIRST(); //dd($data[0]->tipo_curso);
-        $direccion = tbl_unidades::WHERE('unidad',$data2->unidad_capacitacion)->VALUE('direccion');
-        $direccion = explode("*", $direccion);
-
-        $cadwell = folio::SELECT('id_cursos')->WHERE('id_supre', '=', $id)
-            ->WHERE('folios.status', '!=', 'Cancelado')
-            ->GET();
-        foreach ($cadwell as $item)
-        {
-            $h = tbl_curso::SELECT('hombre')->WHERE('id', '=', $item->id_cursos)->FIRST();
-            $m = tbl_curso::SELECT('mujer')->WHERE('id', '=', $item->id_cursos)->FIRST();
-            $hm = $h->hombre+$m->mujer;
-            $tipop = tbl_curso::SELECT('modinstructor')->WHERE('id', '=', $item->id_cursos)->FIRST();
-            //printf($item->id_cursos  . $h . ' + ' . $m . '=' . $hm . ' // ');
-            if($data2->financiamiento == NULL)
-            {
-                // if ($hm < 10)
-                // {
-                //     $recursos[$i] = "Estatal";
-                // }
-                // else
-                // {
-                    $recursos[$i] = "Federal";
-                // }
-            }
-            $i++;
-        }
-
-       // dd($recursos);
-
-
-        $date = strtotime($data2->fecha);
-        $D = date('d', $date);
-        $M = $this->monthToString(date('m',$date));
-        $Y = date("Y",$date);
-
-        $datev = strtotime($data2->fecha_validacion);
-        $Dv = date('d', $datev);
-        $Mv = $this->monthToString(date('m',$datev));
-        $Yv = date("Y",$datev);
+        $data2 = supre::WHERE('id', '=', $id)->FIRST();
 
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
-
-        //mejorar los querys hacerlos en uno y solo agregarles el id_parent a parte
-
         $funcionarios = $this->funcionarios_valsupre($data2->unidad_capacitacion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','recursos','distintivo','direccion','criterio','funcionarios'));
+         //body en firma electronica
+        $clave = DB::table('folios')->Where('folios.id_supre',$id)
+            ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->Value('tbl_cursos.clave');
+        $documento = DocumentosFirmar::where('numero_o_clave', $clave)
+            ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
+            ->Where('tipo_archivo','valsupre')
+            ->first();
+
+        if(is_null($documento)) { //cambiarlo al final de pruebas
+            $firma_electronica = false;
+            $supreController = new EValsupreController();
+            $body_html = $supreController->create_body($id);
+        } else {
+            $firma_electronica = true;
+            $body_html = json_decode($documento->obj_documento_interno);
+        }
+
+        if(isset($documento->uuid_sellado)){
+            $objeto = json_decode($documento->obj_documento,true);
+            $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
+            $no_oficio = $no_oficio->{'@attributes'}->no_oficio;
+            $uuid = $documento->uuid_sellado;
+            $cadena_sello = $documento->cadena_sello;
+            $fecha_sello = $documento->fecha_sellado;
+            $folio = $documento->nombre_archivo;
+            $tipo_archivo = $documento->tipo_archivo;
+
+            $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
+            //Verifica si existe link de verificiacion, de lo contrario lo crea y lo guarda
+            if(isset($documento->link_verificacion)) {
+                $verificacion = $documento->link_verificacion;
+            } else {
+                $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                $documento->save();
+            }
+            ob_start();
+            QRcode::png($verificacion);
+            $qrCodeData = ob_get_contents();
+            ob_end_clean();
+            $qrCodeBase64 = base64_encode($qrCodeData);
+            // Fin de Generacion
+            foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
+                $puesto = DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+                if(!is_null($puesto)) {
+                    array_push($puestos,$puesto->cargo);
+                    // <td height="25px;">{{$search_puesto->cargo}}</td>
+                } else {
+                    array_push($puestos,'INSTRUCTOR');
+                }
+            }
+        }
+
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('distintivo','funcionarios','body_html','uuid','objeto','puestos','qrCodeBase64'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
-
-        return view('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','para','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
     }
 
     protected function monthToString($month)

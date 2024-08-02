@@ -222,13 +222,14 @@ class grupoController extends Controller
                 DB::raw('COALESCE(tc.depen_telrepre, ar.depen_telrepre) as depen_telrepre'),
                 DB::raw('COALESCE(tc.tcapacitacion, ar.tipo_curso) as tcapacitacion'),
                 DB::raw("COALESCE(
-                    CASE WHEN tc.hini LIKE '%a.%' THEN SUBSTRING(tc.hini, 1, 5)
-                         ELSE (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
+                    CASE WHEN tc.hini LIKE '%p%' and SUBSTRING(tc.hini, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
+                         ELSE SUBSTRING(tc.hini, 1, 5)
                     END, SUBSTRING(ar.horario, 1, 5)) as hini"),
                 DB::raw("COALESCE(
-                    CASE WHEN tc.hfin LIKE '%a.%' THEN SUBSTRING(tc.hfin, 1, 5)
-                         ELSE (SUBSTRING(tc.hfin, 1, 5)::time+'12:00')::text
+                    CASE WHEN tc.hfin LIKE '%p%' and SUBSTRING(tc.hfin, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hfin, 1, 5)::time+'12:00')::text
+                         ELSE SUBSTRING(tc.hfin, 1, 5)
                     END,  SUBSTRING(ar.horario, 9, 5)) as hfin"),
+
                 DB::raw('COALESCE(tc.id_municipio, ar.id_muni) as id_municipio'),
                 DB::raw('COALESCE(tc.depen, ar.organismo_publico) as depen'),
                 DB::raw('COALESCE(tc.depen_telrepre, ar.depen_telrepre) as depen_telrepre'),
@@ -742,6 +743,7 @@ class grupoController extends Controller
 
                                         $result_curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
                                             ['inicio' => $request->inicio,'termino' => $termino,'hini' => $hini,'hfin' => $hfin,'horas' => $horas,
+                                            'id_organismo' => $id_organismo,
                                             'depen' => $request->dependencia,'muni' => $municipio->muni,'sector' => $sector,
                                             'efisico' => str_replace('ñ','Ñ',strtoupper($request->efisico)),'cespecifico' => $request->cespecifico,
                                             'hombre' => $sx->hombre, 'mujer' => $sx->mujer,'tipo' => $tipo_pago,'fcespe' => $request->fcespe,
@@ -794,6 +796,7 @@ class grupoController extends Controller
                                         $result_curso = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('id',$ID)
                                             ->update(['comprobante_pago' => $url_comprobante,
                                             'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago, 'updated_at' => date('Y-m-d H:i:s'),
+                                            'id_organismo' => $id_organismo,
                                             'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'cespecifico' => $request->cespecifico,'fcespe' => $request->fcespe,
                                             'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,
                                             'id_instructor' => $instructor->id,'nombre' => $instructor->instructor,'modinstructor' => $tipo_honorario,
@@ -826,7 +829,7 @@ class grupoController extends Controller
                                             ['id' => $ID, 'cct' => $unidad->cct,'unidad' => $request->unidad,'nombre' => $instructor->instructor,'curp' => $instructor->curp,
                                             'rfc' => $instructor->rfc,'clave' => '0','mvalida' => '0','mod' => $request->modalidad,'area' => $curso->area,'espe' => $curso->espe,'curso' => $curso->nombre_curso,
                                             'inicio' => $request->inicio,'termino' => $termino,'dura' => $dura,'hini' => $hini,'hfin' => $hfin,'horas' => $horas,'ciclo' => $ciclo,
-                                            'depen' => $request->dependencia,'muni' => $municipio->muni,'sector' => $sector,
+                                            'id_organismo' => $id_organismo,'depen' => $request->dependencia,'muni' => $municipio->muni,'sector' => $sector,
                                             'efisico' => str_replace('ñ','Ñ',strtoupper($request->efisico)),'cespecifico' => $request->cespecifico,'mpaqueteria' => $curso->mpaqueteria,'mexoneracion' => null,'hombre' => $sx->hombre,
                                             'mujer' => $sx->mujer,'tipo' => $tipo_pago,'fcespe' => $request->fcespe,'cgeneral' => $convenio['no_convenio'],'fcgen' => $convenio['fecha_firma'],'opcion' => 'NINGUNO','motivo' => 'NINGUNO',
                                             'cp' => $cp,'ze' => $municipio->ze,'id_curso' => $curso->id,'id_instructor' => $instructor->id,'modinstructor' => $tipo_honorario,
@@ -920,7 +923,7 @@ class grupoController extends Controller
                                     $conteo += 1;
                                 }
                             }
-                            $instructor_valido = $this->valida_instructor($grupo->id_instructor);
+                            $instructor_valido = $this->valida_instructor($g->id_instructor);
                             if($instructor_valido['valido']){
                                 if($g->status_curso=="EDICION"){
                                     $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['status_curso' => 'AUTORIZADO']);
@@ -928,7 +931,7 @@ class grupoController extends Controller
 
                                 }else{
                                     $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
-                                    if($result) DB::table('instructores')->where('id',$grupo->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
+                                    if($result) DB::table('instructores')->where('id',$g->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
                                     else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
                                 }
                             }else return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);

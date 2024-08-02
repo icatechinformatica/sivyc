@@ -99,7 +99,7 @@
                             <td class="text-center">{{$rextemporaneo}}</td>
                         @endif                        
                         @if($motivo_soporte)
-                            <td class="text-center text-danger">{{$g->motivo}}</td>
+                            <td class="text-center text-danger">{{$g->motivo ?? $motivo_soporte}}</td>
                         @endif
                         <td class="text-center"> {{$g->fecha_arc01}}</td>
                         <td class="text-center">
@@ -165,7 +165,7 @@
     </div>
 </div>
 <div class="row justify-content-end">
-    @if($activar==true OR isset($soporte))
+    @if($activar==true OR isset($soporte) OR $status_curso == 'SOPORTE')
         @if($status_curso == "EN FIRMA")
             <div class="form-group col-md-3">
                 
@@ -197,7 +197,7 @@
         <div class="form-group col-md-1 "> 
             {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger']) }} 
         </div>
-    @elseif ($status_solicitud == 'TURNADO')
+    @elseif ($status_solicitud == 'TURNADO' OR $status_curso=='SOPORTE')
         <div class="form-group col-md-1  my-2">
             <label>MOVIMIENTO:</label>
         </div>
@@ -206,6 +206,6 @@
         </div>
         <div class="form-group col-md-1">
             {{ Form::button(' ACEPTAR ', ['id'=>'aceptar_preliminar','class' => 'btn  bg-danger ']) }} 
-        </div>
+        </div>    
     @endif 
 </div>
