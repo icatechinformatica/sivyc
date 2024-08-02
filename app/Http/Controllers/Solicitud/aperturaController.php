@@ -222,8 +222,18 @@ class aperturaController extends Controller
 //dd($grupo);
 
         $alumnos = DB::table('alumnos_registro as ar')
-            ->select('ar.id as id_reg', 'ar.id_vulnerable as id_gvulnerable', 'ar.abrinscri',
+            ->select('ar.id as id_reg', 'ar.id_vulnerable as id_gvulnerable',
                 //DATOS DE LOS ALUMNOS 
+                DB::raw('COALESCE(ti.id_pre, ar.id_pre) as id_pre'),
+                DB::raw('COALESCE(ti.id_cerss, ar.id_cerss) as id_cerss'),
+                DB::raw('COALESCE(ti.abrinscri, ar.abrinscri) as abrinscri'),
+                DB::raw('COALESCE(ti.estado_civil, ap.estado_civil) as estado_civil'),
+                DB::raw('COALESCE(ti.discapacidad, ap.discapacidad) as discapacidad'),
+                DB::raw('COALESCE(ti.etnia, ap.etnia) as etnia'),
+                DB::raw('COALESCE(ti.indigena, ap.indigena) as indigena'),
+                DB::raw("'0' as calificacion"),
+                
+
                 DB::raw('COALESCE(ti.curp, ar.curp) as curp'),
                 DB::raw('COALESCE(ti.matricula, ar.no_control) as matricula'),
                 DB::raw("COALESCE(ti.alumno, concat(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre)) as alumno"),
