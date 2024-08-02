@@ -127,14 +127,14 @@ class aperturasController extends Controller
                         }
                     break;
                 }
+                if($grupos[0]->status_folio == 'SOPORTE'){  /// SOLICITUD DE CAMBIO DE RECIBO DE PAGO
+                    if(!$movimientos) $movimientos []='- SELECCIONAR -';
+                     $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
+                     $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
+                }
             }else $message = "No se encuentran registros que mostrar.";
-
         }
-        if($grupos[0]->status_folio == 'SOPORTE'){  /// SOLICITUD DE CAMBIO DE RECIBO DE PAGO
-            if(!$movimientos) $movimientos []='- SELECCIONAR -';
-             $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
-             $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
-        }
+       
         if(session('message')) $message = session('message');
         //var_dump($grupos);exit;
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
