@@ -222,7 +222,7 @@ class aperturaController extends Controller
 //dd($grupo);
 
         $alumnos = DB::table('alumnos_registro as ar')
-            ->select('ar.id as id_reg', 'ar.id_vulnerable as id_gvulnerable',
+            ->select('ar.id as id_reg', 'ar.id_vulnerable as id_gvulnerable', 'ar.abrinscri',
                 //DATOS DE LOS ALUMNOS 
                 DB::raw('COALESCE(ti.curp, ar.curp) as curp'),
                 DB::raw('COALESCE(ti.matricula, ar.no_control) as matricula'),
