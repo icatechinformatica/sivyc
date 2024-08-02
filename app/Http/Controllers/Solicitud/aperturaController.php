@@ -231,6 +231,7 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(ti.discapacidad, ap.discapacidad) as discapacidad'),
                 DB::raw('COALESCE(ti.etnia, ap.etnia) as etnia'),
                 DB::raw('COALESCE(ti.indigena, ap.indigena) as indigena'),
+                DB::raw('COALESCE(ti.empleado, ap.empleado) as empleado'),
                 DB::raw("'0' as calificacion"),
                 
 
