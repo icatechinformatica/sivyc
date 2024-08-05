@@ -420,7 +420,7 @@ class ExpedienteController extends Controller
         ##Obtenemos el año del curso
         $bdanio_curso = DB::table('tbl_cursos')->select(DB::raw("EXTRACT(YEAR FROM inicio) as anio_curso"))->where('folio_grupo',$folio)->first();
 
-        $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->value('memo_soporte_dependencia');
+        $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->where('status', 'AUTORIZADO')->value('memo_soporte_dependencia');
         $mod_insctructor = DB::table('tbl_cursos')->where('folio_grupo',$folio)->value('modinstructor');
 
         //Obtenemos la lista de los alumnos con sus campos correspondientes
@@ -1277,18 +1277,18 @@ class ExpedienteController extends Controller
                 $json1['status_dpto'] = 'VALIDADO';
                 $json1['fecha_validado'] = date('Y-m-d H:i');
                 $json1['id_user_valid'] = Auth::user()->id;
-                for ($i=1; $i <= 8; $i++) {$json1['doc_'.$i]['mensaje_dta'] = "";}
+                // for ($i=1; $i <= 8; $i++) {$json1['doc_'.$i]['mensaje_dta'] = "";}
 
                 $json2['status_dpto'] = 'VALIDADO';
                 $json2['fecha_validado'] = date('Y-m-d H:i');
                 $json2['id_user_valid'] = Auth::user()->id;
-                for ($i=8; $i <= 19; $i++) {$json2['doc_'.$i]['mensaje_dta'] = "";}
-                $json2['doc_25']['mensaje_dta'] = "";
+                // for ($i=8; $i <= 19; $i++) {$json2['doc_'.$i]['mensaje_dta'] = "";}
+                // $json2['doc_25']['mensaje_dta'] = "";
 
                 $json3['status_dpto'] = 'VALIDADO';
                 $json3['fecha_validado'] = date('Y-m-d H:i');
                 $json3['id_user_valid'] = Auth::user()->id;
-                for ($i=20; $i <= 24; $i++) {$json3['doc_'.$i]['mensaje_dta'] = "";}
+                // for ($i=20; $i <= 24; $i++) {$json3['doc_'.$i]['mensaje_dta'] = "";}
 
             }else if($accion == 'retornar'){
                 $json1['status_dpto'] = 'RETORNADO';
