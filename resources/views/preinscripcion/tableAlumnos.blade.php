@@ -71,10 +71,11 @@
             </th>
             @endif               
           <th>       
-              @if ($edicion_exo or $a->status=="EDICION")   
+              @if ($edicion_exo or $a->status=="EDICION" OR $a->status=="FOLIO")   
                   <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="rem('{{$a->curp}}');"></i></a>
-              @elseif($a->status AND $a->status!='INSCRITO')
-                  {{ $a->status }}
+                @if($a->status=='FOLIO')
+                  FOLIO ASIGNADO
+                @endif
               @else
                   <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>            
               @endif
