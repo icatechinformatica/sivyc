@@ -80,10 +80,10 @@ class aperturaController extends Controller
         $url_soporte = '';
         if($request->folio_grupo)  $folio_grupo = $request->folio_grupo;
         elseif(isset($_SESSION['folio_grupo'])) $folio_grupo = $_SESSION['folio_grupo'];
-        $_SESSION['alumnos'] = NULL;
+        //$_SESSION['alumnos'] = NULL;
 
         //NUEVO
-        if($folio_grupo) list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);         
+        if($folio_grupo) list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);       // dd($grupo); 
         if($grupo){
             #consultamos registros para generar pdf soporte de constancias
             $sop_expediente = DB::table('tbl_cursos_expedientes')->select('sop_constancias')->where('folio_grupo', '=', $folio_grupo)->first();
@@ -220,6 +220,7 @@ class aperturaController extends Controller
             ->orderby('ar.id_vulnerable','DESC') 
             ->first();          
 //dd($grupo);
+    if($grupo){
 
         $alumnos = DB::table('alumnos_registro as ar')
             ->select('ar.id as id_reg', 'ar.id_vulnerable as id_gvulnerable',
@@ -274,10 +275,12 @@ class aperturaController extends Controller
                         ->on('ti.curp','ar.curp'); 
                 })
                 ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')             
-                ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' )   
+                ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' ) 
+                ->orderBy('alumno','ASC')  
                 ->get();
-        
-//dd($alumnos);        
+    }
+//dd($umnos);        
+            
         if($grupo and $alumnos )  return [$grupo, $alumnos];
         else return $message = "OPERACION NO VALIDA.";
     }
