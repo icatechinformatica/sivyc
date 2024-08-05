@@ -282,7 +282,7 @@
             <div class="row col-6 mb-3">
                 <form action="" method="post" id="frmBuscarGrupo">
                     @csrf
-                    <input type="text" class="form-control" name="txtbuscar" id="txtbuscar" placeholder="FOLIO DE GRUPO" value="{{(!empty($data_cursos->folio_grupo)) ? $data_cursos->folio_grupo : ''}}">
+                    <input type="text" class="form-control" name="txtbuscar" id="txtbuscar" placeholder="FOLIO O CLAVE" value="{{(!empty($data_cursos->folio_grupo)) ? $data_cursos->folio_grupo : ''}}">
                 </form>
                 <button class="btn" id="btnBuscarGrupo">BUSCAR</button>
             </div>
