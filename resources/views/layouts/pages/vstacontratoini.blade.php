@@ -4,6 +4,7 @@
 @section('title', 'Contratos | SIVyC Icatech')
 <!--seccion-->
 @section('content')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         * {
         box-sizing: border-box;
@@ -26,7 +27,10 @@
             line-height:50px;
         }
     </style>
-    <div class="container g-pt-50">
+    <div class="card-header">
+        Modulo de Contratos
+    </div>
+    <div class="card card-body" style=" min-height:450px;">
         @if ($message =  Session::get('info'))
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>

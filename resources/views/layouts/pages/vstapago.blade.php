@@ -3,15 +3,16 @@
 @section('title', 'Pagos | SIVyC Icatech')
 <!--seccion-->
 @section('content')
-    <link rel="stylesheet" href="{{asset("vendor/bootstrap/bootstrapcustomizer.css") }}">
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    {{-- <link rel="stylesheet" href="{{asset("vendor/bootstrap/bootstrapcustomizer.css") }}">
     <link href="{{ asset("vendor/toggle/bootstrap-toggle.css") }}" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> --}}
     <style>
         * {
         box-sizing: border-box;
-        font-size: 14px !important;
+        /* font-size: 14px !important; */
         }
         .btn i.fa-cloud-upload {
             font-size: 1.4em !important; /* Ajusta el tamaño como desees */
@@ -58,7 +59,10 @@
         }
 
     </style>
-    <div class="container g-pt-50">
+    <div class="card-header">
+        Solicitudes de Pagos
+    </div>
+    <div class="card card-body" style=" min-height:450px;">
         @if ($message =  Session::get('info'))
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
