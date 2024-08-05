@@ -4,6 +4,7 @@
 @section('title', 'SUPRE | SIVyC Icatech')
 <!--seccion-->
 @section('content')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         * {
         box-sizing: border-box;
@@ -21,7 +22,10 @@
         margin-bottom: 12px;
         }
     </style>
-    <div class="container g-pt-50">
+    <div class="card-header">
+        Suficiencia Presupuestal
+    </div>
+    <div class="card card-body" style=" min-height:450px;">
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
