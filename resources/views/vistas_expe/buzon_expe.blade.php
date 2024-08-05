@@ -128,7 +128,7 @@
                         <tbody>
                             @foreach($data_admin as $key => $item)
                                 <tr>
-                                    <td class="fila-especial">{{$key+1}}</td>
+                                    <td class="fila-especial">{{($data_admin->currentPage() - 1) * $data_admin->perPage() + $key + 1 }}</td>
                                     <td class="fila-especial">{{$item->unidad}}</td>
                                     <td class="fila-especial">{{$item->folio_grupo}}</td>
                                     <td class="fila-especial">{{$item->clave}}</td>
@@ -219,7 +219,7 @@
                         <tbody>
                             @foreach($data_admin as $key => $item)
                                 <tr>
-                                    <td>{{$key+1}}</td>
+                                    <td>{{($data_admin->currentPage() - 1) * $data_admin->perPage() + $key + 1 }}</td>
                                     <td>{{$item->unidad}}</td>
                                     <td>{{$item->folio_grupo}}</td>
                                     <td>{{$item->clave}}</td>

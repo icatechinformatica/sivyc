@@ -237,6 +237,14 @@
         .file-icon.loaded {
             color: #28a745;
         }
+
+        .readonly-area {
+            background-color: #f0f0f0; /* Gris suave */
+            border: 1px solid #ccc;    /* Borde sutil */
+            color: #333;               /* Color del texto */
+            cursor: not-allowed;       /* Cursor para indicar que no es editable */
+        }
+
     </style>
 
     <div class="card-header py-2">
@@ -330,6 +338,13 @@
                             <p><span class="negrita">FECHA TERMINO:</span> {{ \Carbon\Carbon::createFromFormat('Y-m-d', $data_cursos->termino)->format('d/m/Y') }}</p>
                             <p><span class="negrita">HORARIO:</span> {{date("H:i", strtotime($data_cursos->hini))}} -  {{date("H:i", strtotime($data_cursos->hfin))}} HRS</p>
                             <p><span class="negrita">CUOTA GENERAL:</span> {{$data_cursos->costo}}</p>
+                            @if($ubic_unidad == $data_cursos->unidad)
+                                <p><span class="negrita">UNIDAD: </span>{{$data_cursos->unidad}}</p>
+                            @else
+                                <p><span class="negrita">UNIDAD: </span>{{$ubic_unidad}}</p>
+                                <p><span class="negrita">ACCIÓN MOVIL: </span>{{$data_cursos->unidad}}</p>
+                            @endif
+                            {{-- <p><span class="negrita">{{($ubic_unidad == $data_cursos->unidad) ? 'UNIDAD: ' : 'ACCIÓN MOVIL: '}}</span>{{$data_cursos->unidad}}</p> --}}
                         </div>
                     </div>
                 </div>
@@ -355,6 +370,9 @@
                 $isAdmin = ($array_rol['rol'] == 3) && ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO');
                 $d_class = $isAdmin ? '' : 'blocked';
                 $dta_msg = $array_rol['rol'] == 4 ? '' : 'readonly';
+                $readonly_dta = $array_rol['rol'] == 4 ? '' : 'readonly-area';
+                $readonly_u = $array_rol['rol'] != 4 ? '' : 'readonly-area';
+                $msg_uni = $array_rol['rol'] != 4 ? '' : 'readonly';
             @endphp
             {{-- tabla vinculacion --}}
             <div class="col-12 px-0 mt-1" id="vinculacion">
@@ -395,7 +413,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req1" id="comentario_req1" rows="1" cols="30">{{ $v_radios[0]['doc_txt1'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req1" id="comentario_req1" rows="1" cols="30">{{ $v_radios[0]['doc_txt1'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 1--}}
@@ -451,7 +469,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta1" id="comentario_dta1" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_1'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta1" id="comentario_dta1" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_1'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     {{-- Soporte para convenio especifico --}}
@@ -474,7 +492,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req_v8" id="comentario_req_v8" rows="1" cols="30">{{ $v_radios[0]['doc_txt8'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req_v8" id="comentario_req_v8" rows="1" cols="30" {{$msg_uni}}>{{ $v_radios[0]['doc_txt8'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             <form method="POST" enctype="multipart/form-data" action="" id="form_doc_v8">
@@ -511,7 +529,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta26" id="comentario_dta26" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_8'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta26" id="comentario_dta26" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_8'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
 
@@ -534,7 +552,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req2" id="comentario_req2" rows="1" cols="30">{{ $v_radios[0]['doc_txt2'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req2" id="comentario_req2" rows="1" cols="30">{{ $v_radios[0]['doc_txt2'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -555,7 +573,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea name="comentario_dta2" id="comentario_dta2" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_2'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta2" id="comentario_dta2" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_2'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -577,7 +595,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req3" id="comentario_req3" rows="1" cols="30">{{ $v_radios[0]['doc_txt3'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req3" id="comentario_req3" rows="1" cols="30">{{ $v_radios[0]['doc_txt3'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 3--}}
@@ -616,7 +634,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta3" id="comentario_dta3" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_3'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta3" id="comentario_dta3" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_3'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -638,7 +656,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req4" id="comentario_req4" rows="1" cols="30">{{ $v_radios[0]['doc_txt4'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req4" id="comentario_req4" rows="1" cols="30">{{ $v_radios[0]['doc_txt4'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 4--}}
@@ -677,7 +695,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta4" id="comentario_dta4" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_4'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta4" id="comentario_dta4" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_4'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -699,7 +717,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req5" id="comentario_req5" rows="1" cols="30">{{ $v_radios[0]['doc_txt5'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req5" id="comentario_req5" rows="1" cols="30">{{ $v_radios[0]['doc_txt5'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -711,7 +729,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta5" id="comentario_dta5" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_5'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta5" id="comentario_dta5" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_5'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -733,7 +751,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req6" id="comentario_req6" rows="1" cols="30">{{ $v_radios[0]['doc_txt6'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req6" id="comentario_req6" rows="1" cols="30">{{ $v_radios[0]['doc_txt6'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -745,7 +763,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta6" id="comentario_dta6" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_6'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta6" id="comentario_dta6" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_6'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -767,7 +785,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req7" id="comentario_req7" rows="1" cols="30">{{ $v_radios[0]['doc_txt7'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req7" id="comentario_req7" rows="1" cols="30">{{ $v_radios[0]['doc_txt7'] ?? '' }}</textarea>
                         </td>
                         <td>
                             {{-- Subir recibo--}}
@@ -824,7 +842,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta7" id="comentario_dta7" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_7'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta7" id="comentario_dta7" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_7'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -880,7 +898,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req8" id="comentario_req8" rows="1" cols="30">{{ $v_radios[1]['doc_txt8'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req8" id="comentario_req8" rows="1" cols="30">{{ $v_radios[1]['doc_txt8'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -901,7 +919,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta8" id="comentario_dta8" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_8'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta8" id="comentario_dta8" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_8'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -923,7 +941,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req9" id="comentario_req9" rows="1" cols="30">{{ $v_radios[1]['doc_txt9'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req9" id="comentario_req9" rows="1" cols="30">{{ $v_radios[1]['doc_txt9'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -944,7 +962,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta9" id="comentario_dta9" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_9'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta9" id="comentario_dta9" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_9'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -968,7 +986,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req10" id="comentario_req10" rows="1" cols="30">{{ $v_radios[1]['doc_txt10'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req10" id="comentario_req10" rows="1" cols="30">{{ $v_radios[1]['doc_txt10'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -989,7 +1007,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta10" id="comentario_dta10" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_10'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta10" id="comentario_dta10" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_10'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1011,7 +1029,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req11" id="comentario_req11" rows="1" cols="30">{{ $v_radios[1]['doc_txt11'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req11" id="comentario_req11" rows="1" cols="30">{{ $v_radios[1]['doc_txt11'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -1032,7 +1050,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta11" id="comentario_dta11" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_11'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta11" id="comentario_dta11" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_11'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1054,7 +1072,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req12" id="comentario_req12" rows="1" cols="30">{{ $v_radios[1]['doc_txt12'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req12" id="comentario_req12" rows="1" cols="30">{{ $v_radios[1]['doc_txt12'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1094,7 +1112,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta12" id="comentario_dta12" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_12'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta12" id="comentario_dta12" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_12'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1116,7 +1134,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req13" id="comentario_req13" rows="1" cols="30">{{ $v_radios[1]['doc_txt13'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req13" id="comentario_req13" rows="1" cols="30">{{ $v_radios[1]['doc_txt13'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1156,7 +1174,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta13" id="comentario_dta13" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_13'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta13" id="comentario_dta13" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_13'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1178,7 +1196,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req14" id="comentario_req14" rows="1" cols="30">{{ $v_radios[1]['doc_txt14'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req14" id="comentario_req14" rows="1" cols="30">{{ $v_radios[1]['doc_txt14'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1218,7 +1236,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta14" id="comentario_dta14" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_14'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta14" id="comentario_dta14" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_14'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     {{-- esto es un extra se formato de entrega de constancias --}}
@@ -1243,7 +1261,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1297,7 +1315,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_25'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_25'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1319,7 +1337,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req15" id="comentario_req15" rows="1" cols="30">{{ $v_radios[1]['doc_txt15'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req15" id="comentario_req15" rows="1" cols="30">{{ $v_radios[1]['doc_txt15'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1371,7 +1389,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta15" id="comentario_dta15" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_15'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta15" id="comentario_dta15" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_15'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1393,7 +1411,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req16" id="comentario_req16" rows="1" cols="30">{{ $v_radios[1]['doc_txt16'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req16" id="comentario_req16" rows="1" cols="30">{{ $v_radios[1]['doc_txt16'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1446,7 +1464,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta16" id="comentario_dta16" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_16'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta16" id="comentario_dta16" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_16'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1468,7 +1486,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req17" id="comentario_req17" rows="1" cols="30">{{ $v_radios[1]['doc_txt17'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req17" id="comentario_req17" rows="1" cols="30">{{ $v_radios[1]['doc_txt17'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1508,7 +1526,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta17" id="comentario_dta17" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_17'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta17" id="comentario_dta17" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_17'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1530,7 +1548,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req18" id="comentario_req18" rows="1" cols="30">{{ $v_radios[1]['doc_txt18'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req18" id="comentario_req18" rows="1" cols="30">{{ $v_radios[1]['doc_txt18'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1570,7 +1588,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta18" id="comentario_dta18" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_18'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta18" id="comentario_dta18" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_18'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1592,7 +1610,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req19" id="comentario_req19" rows="1" cols="30">{{ $v_radios[1]['doc_txt19'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req19" id="comentario_req19" rows="1" cols="30">{{ $v_radios[1]['doc_txt19'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir pdf --}}
@@ -1649,7 +1667,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta19" id="comentario_dta19" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_19'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta19" id="comentario_dta19" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_19'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -1703,7 +1721,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req20" id="comentario_req20" rows="1" cols="30">{{ $v_radios[2]['doc_txt20'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req20" id="comentario_req20" rows="1" cols="30">{{ $v_radios[2]['doc_txt20'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -1724,7 +1742,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta20" id="comentario_dta20" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_20'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta20" id="comentario_dta20" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_20'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1746,7 +1764,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req21" id="comentario_req21" rows="1" cols="30">{{ $v_radios[2]['doc_txt21'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req21" id="comentario_req21" rows="1" cols="30">{{ $v_radios[2]['doc_txt21'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -1767,7 +1785,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta21" id="comentario_dta21" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_21'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta21" id="comentario_dta21" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_21'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1789,7 +1807,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
                         </td>
                         <td>
                             {{-- subir pdf --}}
@@ -1850,7 +1868,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta22" id="comentario_dta22" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_22'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta22" id="comentario_dta22" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_22'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1872,7 +1890,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req23" id="comentario_req23" rows="1" cols="30">{{ $v_radios[2]['doc_txt23'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req23" id="comentario_req23" rows="1" cols="30">{{ $v_radios[2]['doc_txt23'] ?? '' }}</textarea>
                         </td>
                         <td>
                             {{-- subir pdf --}}
@@ -1925,7 +1943,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta23" id="comentario_dta23" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_23'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta23" id="comentario_dta23" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_23'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1947,7 +1965,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
                         </td>
                         <td>
                             {{-- subir pdf --}}
@@ -2007,7 +2025,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_24'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_24'], 'mensaje_dta', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
