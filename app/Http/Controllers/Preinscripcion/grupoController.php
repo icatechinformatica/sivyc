@@ -312,7 +312,8 @@ class grupoController extends Controller
                      ->on('ti.curp','ar.curp'); 
             })
             ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')             
-            ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' )   
+            ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')   
+            ->orderBy('alumno','ASC')
             ->get();
 //dd($alumnos);        
         if($grupo and $alumnos )  return [$grupo, $alumnos];
