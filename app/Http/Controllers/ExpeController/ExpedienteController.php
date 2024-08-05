@@ -34,7 +34,7 @@ class ExpedienteController extends Controller
         else if($slug == 'direccion_vinculacion' || $slug == 'unidad_vinculacion' || $slug == 'vinculadores_administrativo' || $slug == 'director_unidad') {$val_rol = 1;}
         else if($slug == 'unidad' || $slug == 'titular_unidad' || $slug == 'auxiliar_unidad') {$val_rol = 2;}
         else if($slug == 'administrativo' || $slug == 'pagos_contratos') {$val_rol = 3;}
-        else if($slug == 'titular-innovacion') {$val_rol = 4;}
+        else if($slug == 'titular-innovacion' || $slug == 'auxiliar-innovacion') {$val_rol = 4;}
 
         #REALIZAMOS LA BUSQUEDA
         $valor_select_true = $array_rol = [];
@@ -50,8 +50,13 @@ class ExpedienteController extends Controller
         $search_docs = null;
         $st_general = null;
         $path_files = $this->path_files;
-        if($req_foliogrupo != ''){
-            // $data_cursos = DB::table('tbl_cursos')->select('id', 'folio_grupo')->where('folio_grupo', $req_foliogrupo)->first();
+
+        //Agregarmos validacion que si es clave hacer que busque el folio;
+        $val_folio = DB::table('tbl_cursos')->where('folio_grupo', '=', $req_foliogrupo)->value('folio_grupo');
+        if(empty($val_folio)){$req_foliogrupo = DB::table('tbl_cursos')->where('clave', '=', $req_foliogrupo)->value('folio_grupo');}
+
+        if(!empty($req_foliogrupo)){
+
             $data_cursos = DB::table('tbl_cursos as tc')
             ->join('alumnos_registro as ar', 'tc.folio_grupo', '=', 'ar.folio_grupo')
             ->select('tc.id','tc.folio_grupo','tc.curso','tc.area','tc.tcapacitacion','tc.clave','tc.nombre', 'tc.tipo_curso',
@@ -142,7 +147,7 @@ class ExpedienteController extends Controller
                 }
             }else{
                 #Mensaje de no encontrado
-                return redirect()->route('expunico.principal.mostrar.get')->with('message', '¡FOLIO NO ENCONTRADO!')->with('status', 'danger');
+                return redirect()->route('expunico.principal.mostrar.get')->with('message', '¡FOLIO O CLAVE NO ENCONTRADO!')->with('status', 'danger');
             }
         }
 
@@ -420,7 +425,7 @@ class ExpedienteController extends Controller
         ##Obtenemos el año del curso
         $bdanio_curso = DB::table('tbl_cursos')->select(DB::raw("EXTRACT(YEAR FROM inicio) as anio_curso"))->where('folio_grupo',$folio)->first();
 
-        $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->value('memo_soporte_dependencia');
+        $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->where('status', 'AUTORIZADO')->value('memo_soporte_dependencia');
         $mod_insctructor = DB::table('tbl_cursos')->where('folio_grupo',$folio)->value('modinstructor');
 
         //Obtenemos la lista de los alumnos con sus campos correspondientes
@@ -1277,18 +1282,18 @@ class ExpedienteController extends Controller
                 $json1['status_dpto'] = 'VALIDADO';
                 $json1['fecha_validado'] = date('Y-m-d H:i');
                 $json1['id_user_valid'] = Auth::user()->id;
-                for ($i=1; $i <= 8; $i++) {$json1['doc_'.$i]['mensaje_dta'] = "";}
+                // for ($i=1; $i <= 8; $i++) {$json1['doc_'.$i]['mensaje_dta'] = "";}
 
                 $json2['status_dpto'] = 'VALIDADO';
                 $json2['fecha_validado'] = date('Y-m-d H:i');
                 $json2['id_user_valid'] = Auth::user()->id;
-                for ($i=8; $i <= 19; $i++) {$json2['doc_'.$i]['mensaje_dta'] = "";}
-                $json2['doc_25']['mensaje_dta'] = "";
+                // for ($i=8; $i <= 19; $i++) {$json2['doc_'.$i]['mensaje_dta'] = "";}
+                // $json2['doc_25']['mensaje_dta'] = "";
 
                 $json3['status_dpto'] = 'VALIDADO';
                 $json3['fecha_validado'] = date('Y-m-d H:i');
                 $json3['id_user_valid'] = Auth::user()->id;
-                for ($i=20; $i <= 24; $i++) {$json3['doc_'.$i]['mensaje_dta'] = "";}
+                // for ($i=20; $i <= 24; $i++) {$json3['doc_'.$i]['mensaje_dta'] = "";}
 
             }else if($accion == 'retornar'){
                 $json1['status_dpto'] = 'RETORNADO';

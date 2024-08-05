@@ -81,7 +81,22 @@
                         $('#frm').attr('target', '_blank').submit();
                     }
                 });
-                
+
+                $("#movimiento").change(function(){
+                    $("#enviar").hide(); 
+                    $("#motivo").hide(); 
+                    $("#inputFile").hide();                            
+                    switch($("#movimiento" ).val()){
+                        case "SOPORTE":
+                            $("#motivo").show("slow");                            
+                            $("#enviar").show("slow");
+                        break;
+                        case "SUBIR":
+                            $("#inputFile").show("slow");
+                            $("#enviar").show("slow");
+                        break;
+                    }
+                });
             });        
         </script>
     @endsection 

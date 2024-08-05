@@ -38,6 +38,7 @@ class turnarAperturaController extends Controller
     
     public function index(Request $request){
         $opt = $memo = $message = $file = $extemporaneo = $status_solicitud = $num_revision = NULL;
+        $movimientos = [];
         if($request->memo)  $memo = $request->memo; 
         elseif(isset($_SESSION['memo'])) $memo = $_SESSION['memo'];
 
@@ -87,6 +88,16 @@ class turnarAperturaController extends Controller
                              'ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO','SOLICITUD DE LA DEPENDENCIA'=>'SOLICITUD DE LA DEPENDENCIA',
                              'ACTUALIZACION DE PAQUETERIA DIDACTICA'=>'ACTUALIZACION DE PAQUETERIA DIDACTICA'];
                     }
+                    
+                    ///MOVIMIENTO ADICIONALES DESPUES DE AUTORIZADO
+                    switch($grupos[0]->status_curso){
+                        case 'AUTORIZADO':
+                            $movimientos = [ 'SOPORTE' => 'SOLICITUD DE CAMBIO DE SOPORTE'];
+                        break;
+                        case 'ACEPTADO'://PARA SUBIR ARCHIVO
+                            $movimientos = [ 'SUBIR' => 'SUBIR SOPORTE'];
+                        break;
+                    }
                      
                 } elseif ($opt == 'ARC02') {
                     if($grupos[0]->file_arc02) $file =  $this->path_files.$grupos[0]->file_arc02;
@@ -114,7 +125,7 @@ class turnarAperturaController extends Controller
         }else $message = "Ingrese el número de revisión o número de memorándum.";
 
         if(session('message')) $message = session('message');
-        return view('solicitud.turnar.index', compact('message','grupos','memo', 'file','opt','extemporaneo','mextemporaneo','status_solicitud','num_revision','ids_extemp'));
+        return view('solicitud.turnar.index', compact('message','grupos','memo', 'file','opt','extemporaneo','mextemporaneo','status_solicitud','num_revision','ids_extemp','movimientos'));
     }  
    
     public function regresar(Request $request){
@@ -132,12 +143,48 @@ class turnarAperturaController extends Controller
         return redirect('solicitud/apertura')->with('message',$message);
    }
        
-    public function enviar(Request $request){
+    public function enviar(Request $request){ 
         $result = $extemporaneo = NULL;
         $titulo = ''; $cuerpo = '';
         $message = 'Operación fallida, vuelva a intentar..';
 
-        if($_SESSION['memo']==$request->nmemo){
+        if(isset($request->movimiento) ){ 
+            switch($request->movimiento){
+                case 'SOPORTE': //CAMBIO DE SOPORTE
+                    $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','AUTORIZADO')
+                    ->update(['status_curso' => 'SOPORTE', 'motivo_mov' => $request->motivo]); 
+                    if($result) $message = "Operación exitosa!";
+                break;
+                case 'SUBIR': //CAMBIO DE SOPORTE
+                    if ($request->hasFile('file_autorizacion')) { 
+                        $name_file = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','ACEPTADO')->value(DB::raw("split_part(file_arc01, '/', array_length(string_to_array(file_arc01, '/'), 1))"));
+                        $name_file = str_replace('.pdf', '', $name_file);
+
+                        $file = $request->file('file_autorizacion'); //dd($name_file);
+                        $file_result = $this->upload_file($file,$name_file);                
+                        $url_file = $file_result["url_file"]; 
+                        if($file_result['up']){
+                            $movimientos = 
+                            $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','ACEPTADO')
+                            ->update(['status_curso' => 'AUTORIZADO',
+                                'movimientos' => DB::raw("
+                                    COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                                        jsonb_build_object(
+                                            'fecha', '".Carbon::now()->format('Y-m-d H:i:s')."',
+                                            'usuario', '".Auth::user()->name."',
+                                            'operacion', 'CAMBIO DE SOPORTE ARC01',
+                                            'motivo', motivo_mov
+                                        )
+                                    )
+                                "),
+                                'motivo_mov' => null
+                            ]); 
+                            if($result) $message = "Operación exitosa!";
+                        }else $message = "Error al subir el archivo, volver a intentar.";
+                    }
+                break;
+            }
+        }elseif($_SESSION['memo']==$request->nmemo ){
             if ($request->hasFile('file_autorizacion')) {               
                 $name_file = $this->id_unidad."_".str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;                                
                 $file = $request->file('file_autorizacion');
@@ -146,7 +193,7 @@ class turnarAperturaController extends Controller
                 if($file_result['up']){                    
                     switch($_SESSION['opt']){
                         case "ARC01":
-                            //VALIDACION DE EXTEMPORANEIDAD*/
+                            //VALIDACION DE EXTEMPORANEIDAD
                             $ids_extemp = $this->ids_extemp($_SESSION['memo']);
 
                             foreach($ids_extemp as $t){ //GUARDANDO EL VALIDANDO MOTIVO DE LA EXONERACION                                 

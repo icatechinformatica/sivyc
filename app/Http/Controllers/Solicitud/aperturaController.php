@@ -80,10 +80,10 @@ class aperturaController extends Controller
         $url_soporte = '';
         if($request->folio_grupo)  $folio_grupo = $request->folio_grupo;
         elseif(isset($_SESSION['folio_grupo'])) $folio_grupo = $_SESSION['folio_grupo'];
-        $_SESSION['alumnos'] = NULL;
+        //$_SESSION['alumnos'] = NULL;
 
         //NUEVO
-        if($folio_grupo) list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);         
+        if($folio_grupo) list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);       // dd($grupo); 
         if($grupo){
             #consultamos registros para generar pdf soporte de constancias
             $sop_expediente = DB::table('tbl_cursos_expedientes')->select('sop_constancias')->where('folio_grupo', '=', $folio_grupo)->first();
@@ -220,10 +220,22 @@ class aperturaController extends Controller
             ->orderby('ar.id_vulnerable','DESC') 
             ->first();          
 //dd($grupo);
+    if($grupo){
 
         $alumnos = DB::table('alumnos_registro as ar')
             ->select('ar.id as id_reg', 'ar.id_vulnerable as id_gvulnerable',
                 //DATOS DE LOS ALUMNOS 
+                DB::raw('COALESCE(ti.id_pre, ar.id_pre) as id_pre'),
+                DB::raw('COALESCE(ti.id_cerss, ar.id_cerss) as id_cerss'),
+                DB::raw('COALESCE(ti.abrinscri, ar.abrinscri) as abrinscri'),
+                DB::raw('COALESCE(ti.estado_civil, ap.estado_civil) as estado_civil'),
+                DB::raw('COALESCE(ti.discapacidad, ap.discapacidad) as discapacidad'),
+                DB::raw('COALESCE(ti.etnia, ap.etnia) as etnia'),
+                DB::raw('COALESCE(ti.indigena, ap.indigena) as indigena'),
+                DB::raw('COALESCE(ti.empleado, ap.empleado) as empleado'),
+                DB::raw("'0' as calificacion"),
+                
+
                 DB::raw('COALESCE(ti.curp, ar.curp) as curp'),
                 DB::raw('COALESCE(ti.matricula, ar.no_control) as matricula'),
                 DB::raw("COALESCE(ti.alumno, concat(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre)) as alumno"),
@@ -252,7 +264,7 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(ti.nacionalidad, ap.nacionalidad) as nacionalidad'),
                 DB::raw('COALESCE(ti.tinscripcion, ar.tinscripcion) as tinscripcion'),
                 DB::raw('COALESCE(ti.costo, ar.costo) as costo'),
-                DB::raw("COALESCE(ti.requisitos::jsonb->'documento', COALESCE(ar.requisitos::jsonb->'documento', ap.requisitos::jsonb->'documento')) as doc_requisitos"), 
+                DB::raw("COALESCE(ti.requisitos::jsonb->'documento', COALESCE(ar.requisitos::jsonb->'documento', ap.requisitos::jsonb->'documento')) as requisitos"), 
                 DB::raw("CASE WHEN  id_folio is not null and ti.status='EDICION' THEN  'CANCELAR FOLIO' ELSE ti.status END status"),
                 DB::raw("CASE WHEN ti.id IS NULL AND '$grupo->clave' !='0' AND '$grupo->status_curso' ='AUTORIZADO' AND '$grupo->status' = 'NO REPORTADO' THEN 'INSERT'
                             ELSE  'VIEW ' END as mov")                
@@ -263,10 +275,12 @@ class aperturaController extends Controller
                         ->on('ti.curp','ar.curp'); 
                 })
                 ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')             
-                ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' )   
+                ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' ) 
+                ->orderBy('alumno','ASC')  
                 ->get();
-        
-//dd($alumnos);        
+    }
+//dd($umnos);        
+            
         if($grupo and $alumnos )  return [$grupo, $alumnos];
         else return $message = "OPERACION NO VALIDA.";
     }
