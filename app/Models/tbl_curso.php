@@ -153,30 +153,32 @@ class tbl_curso extends Model
 
     #Expedientes Unicos Busqueda
     protected function scopeBusquedaExpediente($query, $sel_status){
-        if(empty($sel_status) || $sel_status == 'PENDIENTE POR ENVIAR') { //Esta vacio traer pendientes por default
-            $query->whereRaw("ex.administrativo->>'status_dpto' = 'CAPTURA'")->whereRaw("ex.vinculacion->>'status_save' = 'true'")
-            ->whereRaw("ex.academico->>'status_save' = 'true'")->whereRaw("ex.administrativo->>'status_save' = 'true'");
-            return $query;
-
-        }else if($sel_status == 'EN CAPTURA'){
+        if($sel_status == 'EN CAPTURA'){
             $query->orWhereRaw("ex.vinculacion->>'status_save' = 'false'")
             ->orWhereRaw("ex.academico->>'status_save' = 'false'")->orWhereRaw("ex.administrativo->>'status_save' = 'false'");
             return $query;
+        
+        }else if(empty($sel_status) || $sel_status == 'PENDIENTE POR ENVIAR') { //Esta vacio traer pendientes por default
+            $query->whereRaw("ex.administrativo->>'status_dpto' = 'CAPTURA'")->whereRaw("ex.vinculacion->>'status_save' = 'true'")
+            ->whereRaw("ex.academico->>'status_save' = 'true'")->whereRaw("ex.administrativo->>'status_save' = 'true'");            
+            return $query;
 
         }else if($sel_status == 'ENVIADO A DTA'  || $sel_status == 'PENDIENTE'){  //dele : enviado a dta / dta: pendientes
-            $query->whereRaw("ex.vinculacion->>'status_dpto' = 'ENVIADO'")->whereRaw("ex.academico->>'status_dpto' = 'ENVIADO'")
-            ->whereRaw("ex.administrativo->>'status_dpto' = 'ENVIADO'")->whereRaw("ex.vinculacion->>'status_save' = 'true'")
-            ->whereRaw("ex.academico->>'status_save' = 'true'")->whereRaw("ex.administrativo->>'status_save' = 'true'");
+            //$query->whereRaw("ex.vinculacion->>'status_dpto' = 'ENVIADO'")->whereRaw("ex.academico->>'status_dpto' = 'ENVIADO'")
+            //->whereRaw("ex.administrativo->>'status_dpto' = 'ENVIADO'")->whereRaw("ex.vinculacion->>'status_save' = 'true'")  
+            //->whereRaw("ex.academico->>'status_save' = 'true'")->whereRaw("ex.administrativo->>'status_save' = 'true'");
+
+            $query->whereRaw("ex.administrativo->>'status_dpto' = 'ENVIADO'");
             return $query;
 
         }else if($sel_status == 'RETORNADO'){
-            $query->whereRaw("ex.vinculacion->>'status_dpto' = 'RETORNADO'")->whereRaw("ex.academico->>'status_dpto' = 'RETORNADO'")
+            $query//->whereRaw("ex.vinculacion->>'status_dpto' = 'RETORNADO'")->whereRaw("ex.academico->>'status_dpto' = 'RETORNADO'")
             ->whereRaw("ex.administrativo->>'status_dpto' = 'RETORNADO'");
             return $query;
 
         }else if($sel_status == 'VALIDADO'){
-            $query->whereRaw("ex.vinculacion->>'status_dpto' = 'VALIDADO'")->whereRaw("ex.academico->>'status_dpto' = 'VALIDADO'")
-            ->whereRaw("ex.administrativo->>'status_dpto' = 'VALIDADO'");
+            //$query->whereRaw("ex.vinculacion->>'status_dpto' = 'VALIDADO'")->whereRaw("ex.academico->>'status_dpto' = 'VALIDADO'")
+            $query->whereRaw("ex.administrativo->>'status_dpto' = 'VALIDADO'");
             return $query;
         }
     }

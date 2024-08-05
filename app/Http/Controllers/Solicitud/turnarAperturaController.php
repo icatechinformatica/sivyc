@@ -158,6 +158,8 @@ class turnarAperturaController extends Controller
                 case 'SUBIR': //CAMBIO DE SOPORTE
                     if ($request->hasFile('file_autorizacion')) { 
                         $name_file = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','ACEPTADO')->value(DB::raw("split_part(file_arc01, '/', array_length(string_to_array(file_arc01, '/'), 1))"));
+                        $name_file = str_replace('.pdf', '', $name_file);
+
                         $file = $request->file('file_autorizacion'); //dd($name_file);
                         $file_result = $this->upload_file($file,$name_file);                
                         $url_file = $file_result["url_file"]; 
