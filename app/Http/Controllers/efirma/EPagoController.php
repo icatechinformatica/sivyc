@@ -226,6 +226,10 @@ class EPagoController extends Controller
             ->Where('numero_o_clave', $data->clave)
             ->Value('num_oficio');
 
+        if(is_null($memoContrato)) {
+            $memoContrato = $data->numero_contrato;
+        }
+
         $body_html = '<div align=right>
             <b>Unidad de Capacitación '.$data->unidad_capacitacion.'.</b>
         </div>
@@ -251,7 +255,7 @@ class EPagoController extends Controller
         <table>
             <tbody>
                 <tr>
-                    <td><small>'.$data->curso.'</small></td>
+                    <td><small>Curso: '.$data->curso.'</small></td>
                     <td><small>Clave: '.$data->clave.'</small></td>
                 </tr>
                 <tr>
