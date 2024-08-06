@@ -44,6 +44,7 @@ class ExpedienteController extends Controller
         }else{
             $req_foliogrupo = $folio;
         }
+        $ubic_unidad = null;
         $data_cursos = null;
         $v_radios = null; //Variable que obtiene los valores de cada json
         $json_dptos = null;
@@ -60,7 +61,7 @@ class ExpedienteController extends Controller
             $data_cursos = DB::table('tbl_cursos as tc')
             ->join('alumnos_registro as ar', 'tc.folio_grupo', '=', 'ar.folio_grupo')
             ->select('tc.id','tc.folio_grupo','tc.curso','tc.area','tc.tcapacitacion','tc.clave','tc.nombre', 'tc.tipo_curso',
-                'tc.espe','tc.mexoneracion','tc.inicio','tc.termino','tc.hini','tc.hfin','tc.costo','ar.costo as costo_alumnos',
+                'tc.espe','tc.mexoneracion','tc.inicio','tc.termino','tc.hini','tc.hfin','tc.costo','tc.unidad','tc.id_unidad','ar.costo as costo_alumnos',
                 DB::raw("CASE
                             WHEN tc.tipo = 'EXO' THEN 'EXONERACIÓN DE CUOTA'
                             WHEN tc.tipo = 'PINS' THEN 'CUOTA ORDINARIA'
@@ -68,6 +69,9 @@ class ExpedienteController extends Controller
                         END as tpago"))
             ->where('tc.folio_grupo', '=', $req_foliogrupo)
             ->first();
+
+            ##Buscamos la unidad /accion movil
+            $ubic_unidad = DB::table('tbl_unidades')->where('id', '=', $data_cursos->id_unidad)->value('unidad');
 
             if ($data_cursos != null) {
                 #Hacemos la consulta en expedientes unicos
@@ -151,7 +155,7 @@ class ExpedienteController extends Controller
             }
         }
 
-        return view('vistas_expe.expediente_unico', compact('val_rol', 'data_cursos', 'array_rol', 'st_general', 'v_radios', 'json_dptos', 'search_docs', 'path_files'));
+        return view('vistas_expe.expediente_unico', compact('val_rol', 'data_cursos', 'array_rol', 'st_general', 'v_radios', 'json_dptos', 'search_docs', 'path_files','ubic_unidad'));
     }
 
     #Llenar array para anexar al json de expedientes
