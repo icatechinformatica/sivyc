@@ -757,6 +757,11 @@ class ExpedienteController extends Controller
             }
         }
 
+        //Validacion de solo g.1 url_soporte y url_documento
+        if(!empty($bd_json->academico['doc_25']['url_soporte']) || !empty($bd_json->academico['doc_25']['url_documento'])){
+            $json2['doc_25']['existe_evidencia'] = 'si';
+        }
+
         $exUnico->vinculacion = $json1;
         $exUnico->academico = $json2;
         $exUnico->administrativo = $json3;
