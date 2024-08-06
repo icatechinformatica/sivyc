@@ -60,10 +60,10 @@ class tbl_inscripcion extends Model
     }
 
 
-    protected function inscribir($folio_grupo, $curp_anterior = null, $curp_nueva = null ){// dd($curp_nueva);
-        $return = false;
+    protected function inscribir($folio_grupo, $curp_anterior = null, $curp_nueva = null ){ //dd($curp_nueva);
+        $result = false;
         if($folio_grupo){
-            $grupo = DB::table('tbl_cursos')->where('status_curso','AUTORIZADO')->where('status','NO REPORTADO')->where('folio_grupo',$folio_grupo)->first();
+            $grupo = DB::table('tbl_cursos')->where('status_curso','AUTORIZADO')->where('folio_grupo',$folio_grupo)->first();
             if($grupo){
                 $abrinscri = $this->abrinscri();
                 $anio_hoy = date('y');          
