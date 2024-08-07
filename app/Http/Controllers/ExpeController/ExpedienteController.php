@@ -1456,11 +1456,6 @@ class ExpedienteController extends Controller
             }
         }
 
-        //Prueba con folio 10K-230228
-        // $resultado_doc = DB::table('tbl_inscripcion')
-        // ->select('id_pre', DB::raw("EXTRACT(YEAR FROM termino) as anio"), DB::raw("requisitos->>'documento' as documento"), 'requisitos')
-        // ->where('folio_grupo', $folioG)->orderBy('id')->get();
-
         //Actualizar checks
         foreach ($alumnosIds as $key => $id) {
 
@@ -1470,22 +1465,24 @@ class ExpedienteController extends Controller
                 $json['chk_curp'] = $CheckboxCurp[$key];
                 $json['chk_escolaridad'] = $CheckboxEstudios[$key];
                 $json['chk_acta_nacimiento'] = $CheckboxActaNacim[$key];
+
+                // Verificamos si los campos no estan definidos o estan nulos
+                if (!isset($json['fecha_expedicion_curp']) || $json['fecha_expedicion_curp'] === null) {
+                    $json['fecha_expedicion_curp'] = null;
+                }
+                if(!isset($json['chk_comprobante_migracion']) || $json['chk_comprobante_migracion'] === null){
+                    $json['chk_comprobante_migracion'] = null;
+                }
+                if(!isset($json['fecha_vigencia_migratorio']) || $json['fecha_vigencia_migratorio'] === null){
+                    $json['fecha_vigencia_migratorio'] = null;
+                }
+                if(!isset($json['fecha_expedicion_acta_nacimiento']) || $json['fecha_expedicion_acta_nacimiento'] === null){
+                    $json['fecha_expedicion_acta_nacimiento'] = null;
+                }
+
                 $Alumnos->requisitos = $json;
                 $Alumnos->save();
 
-                ##Actualizamos masiva el json del alumno en otros grupos en caso de ser necesario
-                // if($CheckboxEstudios[$key] == "true"){
-                //     if(isset($resultado_doc[$key]) && !empty($resultado_doc[$key]->documento)){
-                //         DB::table('tbl_inscripcion')
-                //         ->where('id_pre', $resultado_doc[$key]->id_pre)
-                //         ->whereRaw("requisitos->>'chk_escolaridad' IS NULL")
-                //         ->orWhereRaw("requisitos->>'chk_escolaridad' = 'false'")
-                //         ->whereRaw("EXTRACT(YEAR FROM termino) = ?", [$resultado_doc[$key]->anio])
-                //         ->update([
-                //             'requisitos' => json_encode($json)
-                //         ]);
-                //     }
-                // }
 
             } catch (\Throwable $th) {
                 return redirect()->route('expunico.principal.mostrar.get', ['folio' => $folioG])->with(['message' => '¡ERROR AL GUARDAR INFORMACIÓN '.$th->getMessage() , 'status' => 'danger']);
