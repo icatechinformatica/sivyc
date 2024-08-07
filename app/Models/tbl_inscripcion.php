@@ -60,10 +60,10 @@ class tbl_inscripcion extends Model
     }
 
 
-    protected function inscribir($folio_grupo, $curp_anterior = null, $curp_nueva = null ){// dd($curp_nueva);
-        $return = false;
+    protected function inscribir($folio_grupo, $curp_anterior = null, $curp_nueva = null ){ //dd($curp_nueva);
+        $result = false;
         if($folio_grupo){
-            $grupo = DB::table('tbl_cursos')->where('status_curso','AUTORIZADO')->where('status','NO REPORTADO')->where('folio_grupo',$folio_grupo)->first();
+            $grupo = DB::table('tbl_cursos')->where('status_curso','AUTORIZADO')->where('folio_grupo',$folio_grupo)->first();
             if($grupo){
                 $abrinscri = $this->abrinscri();
                 $anio_hoy = date('y');          
@@ -123,7 +123,7 @@ class tbl_inscripcion extends Model
                         'costo' =>  $a->costo,
                         'motivo' =>  null,
                         'status' =>  'INSCRITO',
-                        'realizo' =>  $this->realizo,
+                        //'realizo' =>  $this->realizo,
                         'id_pre' =>  $a->id_pre,
                         'id_cerss' =>  $a->id_cerss,
                         'fecha_nacimiento' =>  $a->fecha_nacimiento,
@@ -136,11 +136,11 @@ class tbl_inscripcion extends Model
                         'inmigrante' =>  $a->inmigrante,
                         'madre_soltera' =>  $a->madre_soltera,
                         'familia_migrante' =>  $a->familia_migrante,
-                        'calificacion' =>  $a->calificacion,
-                        'iduser_created' =>  $this->id_user,
+                        //'calificacion' =>  $a->calificacion,
+                        //'iduser_created' =>  $this->id_user,
                         'iduser_updated' =>  $this->id_user,
                         'activo' =>  true,
-                        'id_folio' =>  null,
+                        //'id_folio' =>  null,
                         'reexpedicion' =>  false,
                         'sexo'=> $a->sexo,
                         'lgbt' => $a->lgbt,                        
