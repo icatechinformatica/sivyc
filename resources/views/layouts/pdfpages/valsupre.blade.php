@@ -12,7 +12,7 @@
             }
 
             @page {
-                margin: 100px 10px 60px;
+                margin: 100px 60px 60px -5px;
             }
             header {
                 position: fixed;
@@ -120,23 +120,27 @@
                 text-align: justify;
             }
             header .distintivo {
+                border: 1px solid transparent;
                 position: absolute;
-                top: 0;
-                left: -90%;
+                top: 100%;
+                left: 2%;
                 width: 100%;
                 height: 100%;
-                display: flex;
+                /* display: flex; */
+                vertical-align: top;
                 align-items: center;
                 justify-content: center;
                 font-size: 1rem;
-                background-color: rgba(255, 255, 255, 0.5); /* Opcional: para agregar un fondo semi-transparente */
+                /* background-color: rgba(255, 255, 255, 0.5); Opcional: para agregar un fondo semi-transparente */
             }
         </style>
     </head>
     <body>
         <header>
             <img class="izquierda" style="margin-bottom: 0px;" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-            <div class="distintivo">{{$distintivo}}</div>
+            {{-- <div class="distintivo"> --}}
+                <p class="distintivo">{{$distintivo}}</p>
+            {{-- </div><br> <br> <br> <br>  --}}
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
