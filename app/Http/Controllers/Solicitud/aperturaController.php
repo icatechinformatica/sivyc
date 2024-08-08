@@ -264,8 +264,8 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(ti.nacionalidad, ap.nacionalidad) as nacionalidad'),
                 DB::raw('COALESCE(ti.tinscripcion, ar.tinscripcion) as tinscripcion'),
                 DB::raw('COALESCE(ti.costo, ar.costo) as costo'),
+                DB::raw("COALESCE(ti.requisitos::jsonb, COALESCE(ar.requisitos::jsonb, ap.requisitos::jsonb)) as requisitos"), //Obtener requisitos
                 // DB::raw("COALESCE(ti.requisitos::jsonb->'documento', COALESCE(ar.requisitos::jsonb->'documento', ap.requisitos::jsonb->'documento')) as requisitos"),
-                'ar.requisitos',
                 DB::raw("CASE WHEN  id_folio is not null and ti.status='EDICION' THEN  'CANCELAR FOLIO' ELSE ti.status END status"),
                 DB::raw("CASE WHEN ti.id IS NULL AND '$grupo->clave' !='0' AND '$grupo->status_curso' ='AUTORIZADO' AND '$grupo->status' = 'NO REPORTADO' THEN 'INSERT'
                             ELSE  'VIEW ' END as mov")
@@ -417,7 +417,7 @@ class aperturaController extends Controller
                         'curp'=> $a->curp,
                         'empleado'=>$a->empleado,
                         'id_gvulnerable'=>$a->id_gvulnerable,
-                        'requisitos'=>$a->requisitos
+                        'requisitos'=>json_decode($a->requisitos)
                         ]);
                     }
                 }
