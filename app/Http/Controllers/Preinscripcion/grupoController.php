@@ -221,14 +221,14 @@ class grupoController extends Controller
                 DB::raw('COALESCE(tc.depen_representante, ar.depen_repre) as depen_repre'),
                 DB::raw('COALESCE(tc.depen_telrepre, ar.depen_telrepre) as depen_telrepre'),
                 DB::raw('COALESCE(tc.tcapacitacion, ar.tipo_curso) as tcapacitacion'),
-                DB::raw("COALESCE(
+                DB::raw("SUBSTRING( COALESCE(
                     CASE WHEN tc.hini LIKE '%p%' and SUBSTRING(tc.hini, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
                          ELSE SUBSTRING(tc.hini, 1, 5)
-                    END, SUBSTRING(ar.horario, 1, 5)) as hini"),
-                DB::raw("COALESCE(
+                    END, SUBSTRING(ar.horario, 1, 5)),1,5) as hini"),
+                DB::raw("SUBSTRING(COALESCE(
                     CASE WHEN tc.hfin LIKE '%p%' and SUBSTRING(tc.hfin, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hfin, 1, 5)::time+'12:00')::text
                          ELSE SUBSTRING(tc.hfin, 1, 5)
-                    END,  SUBSTRING(ar.horario, 9, 5)) as hfin"),
+                    END,  SUBSTRING(ar.horario, 9, 5)),1,5) as hfin"),
 
                 DB::raw('COALESCE(tc.id_municipio, ar.id_muni) as id_municipio'),
                 DB::raw('COALESCE(tc.depen, ar.organismo_publico) as depen'),
@@ -304,7 +304,7 @@ class grupoController extends Controller
             DB::raw('COALESCE(ti.tinscripcion, ar.tinscripcion) as tinscripcion'),
             DB::raw('COALESCE(ti.costo, ar.costo) as costo'),
             DB::raw("COALESCE(ti.requisitos::jsonb->'documento', COALESCE(ar.requisitos::jsonb->'documento', ap.requisitos::jsonb->'documento')) as doc_requisitos"),
-            DB::raw(" CASE WHEN  id_folio is not null and ti.status='EDICION' THEN  'CANCELAR FOLIO' ELSE ti.status END status")
+            DB::raw(" CASE WHEN  id_folio is not null and ti.status='EDICION' THEN  'FOLIO' ELSE ti.status END status")
             )
             ->where('ar.folio_grupo',$folio_grupo)
             ->leftJoin('tbl_inscripcion as ti', function ($join) {
@@ -312,7 +312,8 @@ class grupoController extends Controller
                      ->on('ti.curp','ar.curp');
             })
             ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')
-            ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' )
+            ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')
+            ->orderBy('alumno','ASC')
             ->get();
 //dd($alumnos);
         if($grupo and $alumnos )  return [$grupo, $alumnos];
@@ -738,6 +739,7 @@ class grupoController extends Controller
                                 'banco'=>$instructor->banco,'no_cuenta'=>$instructor->no_cuenta,'interbancaria'=>$instructor->interbancaria,'tipo_honorario'=>$instructor->tipo_honorario];
 
                                 $alus = DB::table('alumnos_registro')->where('folio_grupo',$folio)->first();
+
                                 $result_curso = $result_alumnos = null;
                                 if($tc_curso->status_curso=='EDICION'){
 
