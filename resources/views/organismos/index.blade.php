@@ -47,7 +47,7 @@
                     <th scope="col">Status</th>
                     @can('organismo.agregar')
                         <th scope="col">Modificar</th>
-                    @endcan 
+                    @endcan
                 </tr>
             </thead>
             <tbody>
@@ -62,14 +62,14 @@
                         @if ($og->activo=='true')
                         <td>ACTIVO</td>
                         @else
-                          <td>INACTIVO</td>  
+                          <td>INACTIVO</td>
                         @endif
                         @can('organismo.agregar')
                             <td>
                                 <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
                                         data-placement="top" title="EDITAR ORGANISMOS"
                                         href="{{ route('organismos.agregar', ['id' => base64_encode($og->id)]) }}">
-                                        <i class="fa fa-pencil-square-o fa-2x mt-2" aria-hidden="true"></i>
+                                        <i class="fas fa-pencil-alt fa-2x mt-2" aria-hidden="true"></i>
                                     </a>
                             </td>
                         @endcan

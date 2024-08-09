@@ -68,7 +68,7 @@
                         <td>
                             <a class="col d-flex justify-content-center align-items-center btn btn-warning btn-circle m-1 btn-circle-sm"
                                 title="Editar" href="{{ route('areas.modificar', ['id' => $area->id]) }}">
-                                <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
+                                <i class="fas fa-pencil-alt fa-2x" aria-hidden="true"></i>
                             </a>
                             {{-- <div class="col"> --}}
 

@@ -143,7 +143,7 @@
                                     <td class="text-center">
                                         <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                             data-placement="top" title="EDITAR" onclick="editRegistro({{$itemData->id}})">
-                                            <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
+                                            <i class="fas fa-pencil-alt fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                     <td class="text-center">
