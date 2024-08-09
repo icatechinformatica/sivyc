@@ -116,7 +116,7 @@
                         <label for="file_upload " class="control-label">FICHA IDENTIFICACIÓN CERSS</label>: &nbsp;&nbsp;
                         @if ($alumnoPre_show->chk_ficha_cerss)
                             <a href="{{ asset( $alumnoPre_show->ficha_cerss )}}" download="ficha_identificacion_cerss_{{ $id_prealumno }}.pdf" class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blank" data-toggle="tooltip" data-placement="top" title="FICHA IDENTIFICACIÓN CERSS">
-                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                <i class="far fa-file-pdf" aria-hidden="true"></i>
                             </a>
                         @endif
                     </div>

@@ -55,13 +55,13 @@
                         <tr>
                             <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
                             <td>{{$itemData->curp}}</td>
-                            
+
                                 <td>
                                     <a href="{{route('alumnos.valid', ['busqueda' => $itemData->curp])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">
-                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                                     </a>
                                 </td>
-                            
+
                             @can('permiso.alu.exo')
                                 <td>
                                     @if ($itemData->permiso_exoneracion)
@@ -124,7 +124,7 @@
                 </form>
             </div>
         </div>
-    </div>  
+    </div>
     <!-- Modal 2 -->
     <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -155,23 +155,23 @@
             </div>
         </div>
         </div>
-    </div>  
-    @section('script_content_js') 
-        <script language="javascript">  
-            $(document).ready(function(){    
+    </div>
+    @section('script_content_js')
+        <script language="javascript">
+            $(document).ready(function(){
                 // $("#btnactivar").click(function(){ $('#modal').attr('action', "{{route('activar.permiso.exo')}}",'multipart/form-data'); $('#modal').submit(); });
                 $("#btnquitar").click(function(){ $('#modal2').attr('action', "{{route('quitar.permiso.exo')}}"); $('#modal2').submit(); });
-            });    
+            });
             function activar(id){
                 var id = id;
                 $('#curpo').val(id);
                 $('#exampleModal').modal('show')
-            } 
+            }
             function desactivar(id){
                 var id = id;
                 $('#curpa').val(id);
                 $('#exampleModal2').modal('show')
-            }      
+            }
         </script>
-    @endsection 
+    @endsection
 @endsection

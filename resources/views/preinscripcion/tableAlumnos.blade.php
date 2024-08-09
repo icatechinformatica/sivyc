@@ -3,25 +3,25 @@
   <thead>
     <tr>
       <th class="h6" scope="col">#</th>
-      <th class="h6" scope="col">Curp</th>      
+      <th class="h6" scope="col">Curp</th>
       <th class="h6" scope="col">Matricula</th>
       <th class="h6" scope="col">Nombre</th>
       <th class="h6" scope="col">Sexo</th>
-      <th class="h6" scope="col" width="7%">Fec. Nac.</th>      
-      <th class="h6" scope="col">Edad</th>                
+      <th class="h6" scope="col" width="7%">Fec. Nac.</th>
+      <th class="h6" scope="col">Edad</th>
       <th class="h6" scope="col"  width="7%">Escolaridad</th>
       <th class="h6" scope="col">Gpo.<br/>Vulnerable</th>
       <th class="h6" scope="col">Otro. Gpo.</th>
       <th class="h6" scope="col">Nac.</th>
       <th class="h6" scope="col">Tipo Inscrip.</th>
-      <th class="h6" scope="col">        
+      <th class="h6" scope="col">
         <div style="width: 80px;">
           {{ Form::number('costoX', null , ['id'=>'costoX', 'maxlength' => '7', 'class' => 'form-control numero', 'placeholder' => 'Cuota']) }}
         </div>
       </th>
-       @if($activar)<th class="h6" scope="col">{{'Eliminar'}}</th>@endif       
+       @if($activar)<th class="h6" scope="col">{{'Eliminar'}}</th>@endif
       <th class="h6" scope="col">@if($edicion_exo) REMPLAZAR @else SID @endif</th>
-      <th class="h6 " scope="col">CURP</th>      
+      <th class="h6 " scope="col">CURP</th>
       <!--<th class="h6 text-center" scope="col">Subir SID</th>--->
     </tr>
   </thead>
@@ -39,13 +39,13 @@
             } else {
               $class = 'form-control numero costo';
             }
-          
+
         @endphp
         <tr id="{{$a->id_reg}}">
           <th scope="row"> {{ $consec++ }}</th>
           <th class="text-left" style="word-wrap: break-word; max-width: 90px;">{{ $a->curp }}</th>
           <th style="word-wrap: break-word; max-width: 60px;">{{ $a->matricula}}</th>
-          <th class="text-left">{{ $a->alumno}}</th>          
+          <th class="text-left">{{ $a->alumno}}</th>
           <th>{{ $a->sexo }}</th>
           <th>{{ date('d/m/Y', strtotime($a->fecha_nacimiento)) }}</th>
           <th>{{ $a->edad }} AÑOS</th>
@@ -60,24 +60,24 @@
           </td>
           <th>{{$a->nacionalidad}}</th>
           <th  style="word-wrap: break-word; max-width: 60px;">{{$a->tinscripcion}}</th>
-          <th> 
-            <div style="width: 80px;">           
-              {{ Form::number('costo['.$a->id_reg.']', $a->costo ?? '0' , ['id'=>'costo['.$a->id_reg.']', 'size' => '7', 'maxlength' => '7', 'class' => $class]) }}            
+          <th>
+            <div style="width: 80px;">
+              {{ Form::number('costo['.$a->id_reg.']', $a->costo ?? '0' , ['id'=>'costo['.$a->id_reg.']', 'size' => '7', 'maxlength' => '7', 'class' => $class]) }}
             </div>
-          </th>          
+          </th>
             @if($activar)
-            <th>          
+            <th>
               <a class="nav-link" ><i class="fa fa-remove  fa-2x fa-lg text-danger" onclick="eliminar({{$a->id_reg}},'{{ route('preinscripcion.grupo.eliminar') }}');" title="Eliminar"></i></a>
             </th>
-            @endif               
-          <th>       
-              @if ($edicion_exo or $a->status=="EDICION" OR $a->status=="FOLIO")   
+            @endif
+          <th>
+              @if ($edicion_exo or $a->status=="EDICION" OR $a->status=="FOLIO")
                   <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="rem('{{$a->curp}}');"></i></a>
                 @if($a->status=='FOLIO')
                   FOLIO ASIGNADO
                 @endif
               @else
-                  <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>            
+                  <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>
               @endif
           </th>
           <!--
@@ -88,11 +88,11 @@
           <th>
             @if(isset($a->doc_requisitos))
               @php
-                  $requisitos = str_replace('"', '', $a->doc_requisitos);               
+                  $requisitos = str_replace('"', '', $a->doc_requisitos);
               @endphp
               <a target="_blank" href="{{$requisitos}}" class="nav-link"><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir CURP"></i></a>
             @endif
-          </th>          
+          </th>
         </tr>
         <?php
           if(!$a->tinscripcion) $turnar=false;
@@ -104,8 +104,8 @@
 </div>
 
 <div class="d-flex flex-lg-row flex-column col-12 col-lg-4 justify-content-left mb-2 mt-3">
-    {{-- Agregamos el apartado de subir PDF Jose Luis Moreno Arcos--}}  
-    @can('agenda.vinculacion')        
+    {{-- Agregamos el apartado de subir PDF Jose Luis Moreno Arcos--}}
+    @can('agenda.vinculacion')
             <div class="d-flex">
                 <select name="subirPDF" id="subirPDF" class="form-control" onchange="selUploadPDF()">
                     <option value="0">SUBIR DOCUMENTOS FIRMADOS</option>
@@ -113,7 +113,7 @@
                     <option value="2?{{$linkPDF['convenio']}}">Convenio Especifico</option>
                     <option value="3?{{$linkPDF['soli_ape']}}">Solicitud de Apertura</option>
                     <option value="4?{{$linkPDF['sid']}}">SID-01 Solicitud de Inscripcion</option>
-                </select>            
+                </select>
                 <form class="form-inline" method="POST" enctype="multipart/form-data" action="" id="form_doc12">
                     <div class="d-flex justify-content-center" id="formUpPdf">
                         <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc" style="display: none;" onchange="checkIcon('iconCheck', 'pdfInputDoc')">
@@ -121,21 +121,21 @@
                         <div id="iconCheck" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
 
                         <button class="ml-1 bg-transparent border-0 mt-1" onclick="UploadPDF(event, '{{$linkPDF['status_dpto']}}')">
-                        <i class="fa fa-cloud-upload fa-2x text-primary" aria-hidden="true"></i></button>
+                        <i class="fas fa-cloud-upload-alt fa-2x text-primary" aria-hidden="true"></i></button>
                     </div>
                     <a class="ml-1 pt-1 btn-circle btn-circle-sm d-none" data-toggle="tooltip"
                         data-placement="top" title="Ver pdf" id="verPdfLink"
                         href="" target="_blank">
-                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                     </a>
                 </form>
             </div>
-        
+
     @endcan
     {{-- Termina subir archivo --}}
   </div>
-  <div class="d-flex flex-lg-row flex-column col-12 col-lg-8 justify-content-end">    
-    
+  <div class="d-flex flex-lg-row flex-column col-12 col-lg-8 justify-content-end">
+
     @can('agenda.vinculacion')
         {{-- @dd($grupo) --}}
         @if(isset($grupo->cespecifico) && $organismo != null)
@@ -188,7 +188,7 @@
               </div>
           </div>
         </div>
-        <div class="modal-footer">          
+        <div class="modal-footer">
           <button type="button" class="btn btn-danger" id="btnremplazo">REMPLAZAR</button>
           <button type="button" class="btn" data-dismiss="modal">CERRAR</button>
         </div>

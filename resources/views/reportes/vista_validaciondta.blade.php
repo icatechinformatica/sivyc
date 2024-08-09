@@ -149,16 +149,16 @@
                     @if (isset($mesSearch))
                         <div>
                             <a class="btn btn-danger" id="resumen_unidad" name="resumen_unidad" data-toggle="modal" data-placement="top" data-target="#resumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
-                                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                                 &nbsp;MEMORANDUM RESPUESTA A UNIDAD
                             </a>
                             <a class="btn btn-danger" id="subir_resumen_unidad" name="subir_resumen_unidad" data-toggle="modal" data-placement="top" data-target="#subirResumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
-                                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                                 &nbsp;CARGAR RESPUESTA A UNIDAD
                             </a>
                             @if(isset($formato_respuesta->resumen_formatot_unidad))
                                 <a class="btn btn-danger" id="pdf_resumen" name="pdf_resumen" target="_blank" href="{{$formato_respuesta->resumen_formatot_unidad}}">
-                                    <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                                     &nbsp; VER PDF CARGADO
                                 </a>
                             @endif
@@ -182,7 +182,7 @@
                             <a href="{{ $memorandum->memorandum }}" target="_blank"
                                 class="btn btn-info btn-circle m-1 btn-circle-sm"
                                 title="DESCARGAR MEMORANDUM N° {{ $memorandum->num_memo }}">
-                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>&nbsp;
+                                <i class="far fa-file-pdf" aria-hidden="true"></i>&nbsp;
                                 MEMORANDUM {{ $memorandum->num_memo }}
                             </a>
                         @endif
@@ -205,7 +205,7 @@
                         <div class="form-group mb-2">
                             <button input type="submit" id="validarEnDta" name="validarEnDta" value="GenerarMemorandum"
                                 class="btn btn-danger">
-                                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp;
+                                <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>&nbsp;
                                 GENERAR MEMORANDUM DE DEVOLUCIÓN
                             </button>
                         </div>
@@ -576,16 +576,16 @@
             @if (isset($mesSearch))
                 <div>
                     <a class="btn btn-danger" id="resumen_unidad" name="resumen_unidad" data-toggle="modal" data-placement="top" data-target="#resumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
-                        <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                        <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                         &nbsp;MEMORANDUM RESPUESTA A UNIDAD
                     </a>
                     <a class="btn btn-danger" id="subir_resumen_unidad" name="subir_resumen_unidad" data-toggle="modal" data-placement="top" data-target="#subirResumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidad}}"]'>
-                        <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                        <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                         &nbsp;CARGAR RESPUESTA A UNIDAD
                     </a>
                     @if(isset($formato_respuesta->resumen_formatot_unidad))
                         <a class="btn btn-danger" id="pdf_resumen" name="pdf_resumen" target="_blank" href="{{$formato_respuesta->resumen_formatot_unidad}}">
-                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                            <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                             &nbsp; VER PDF CARGADO
                         </a>
                     @endif

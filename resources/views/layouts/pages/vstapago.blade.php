@@ -184,7 +184,7 @@
                                     @endcan --}}
                                     @can('verificar_pago.create')
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Verificar Pago" href="{{route('pago.verificarpago', ['id' => $itemData->id_contrato])}}">
-                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
                                         </a>
                                     @endcan
                                     @if($itemData->permiso_editar == TRUE)
@@ -201,7 +201,7 @@
                                     </a>
                                     @can('pagos.create')
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Confirmar Pago" href="{{route('pago-crear', ['id' => $itemData->id_contrato])}}">
-                                            <i class="fa fa-money" aria-hidden="true"></i>
+                                            <i class="fas fa-money-bill-alt" aria-hidden="true"></i>
                                         </a>
                                     @endcan
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Formulario" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
@@ -237,7 +237,7 @@
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Resumen de Pago" href="{{route('mostrar-pago', ['id' => $itemData->id_contrato])}}" target="_blank">
-                                        <i class="fa fa-money" aria-hidden="true"></i>
+                                        <i class="fas fa-money-bill-alt" aria-hidden="true"></i>
                                     </a>
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
@@ -558,32 +558,32 @@
                                 <td style="vertical-align:middle;" width='10px;'><i id="solpa_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
                                 <td id="td1v" style="text-align: left; vertical-align: left; font-size: 12px;">1.- Solicitud de Pago</td>
                                 <td><a class="nav-link" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpav" name="show_solpav">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
                                 <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                 <td id="td5v" style="text-align: left; vertical-align: left; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
                                 <td><a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprev" name="show_validacion_suprev">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
                                 <td style="vertical-align:middle; background-color:white;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                 <td id="td9v" style="text-align: left; vertical-align: left; font-size: 12px;">9.- Identificación de Instructor</td>
                                 <td><a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacionv" name="show_identificacionv">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
                             </tr>
                             <tr>
                                 <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                 <td id="td2v" style="text-align: left; vertical-align: left; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
                                 <td><a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariav" name="show_cuenta_bancariav">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
                                 <td style="vertical-align:middle;" width='10px;'><i id="asistencias_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
                                 <td id="td10v" style="text-align: left; vertical-align: left; font-size: 12px;">6.- Lista de Asistencias</td>
                                 <td><a class="nav-link" target="_blanks" title="Lista de Asistencias" id="show_asistenciasv" name="show_asistenciasv">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
                                 <td style="vertical-align:middle;" width='10px;' class="fac_pdf_ord">
@@ -594,7 +594,7 @@
                                 </td>
                                 <td class="fac_pdf_ord">
                                     <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfv" name="show_fact_pdfv">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -602,13 +602,13 @@
                                 <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                 <td id="td3v" style="text-align: left; vertical-align: left; font-size: 12px;">3.- Validación de Instructor</td>
                                 <td><a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorv" name="show_validacion_instructorv">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
                                 <td style="vertical-align:middle;" width='10px;'><i id="evidencia_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
                                 <td id="td11v" style="text-align: left; vertical-align: left; font-size: 12px;">7.- Reporte de Evidencias Fotográficas</td>
                                 <td><a class="nav-link" target="_blanks" title="Reporte de Evidencias Fotográficas" id="show_evidencia_fotograficav" name="show_evidencia_fotograficav">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
                                 <td style="vertical-align:middle;" width='10px;' class="fac_xml_ord">
@@ -619,7 +619,7 @@
                                 </td>
                                 <td class="fac_xml_ord">
                                     <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlv" name="show_fact_xmlv">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -627,13 +627,13 @@
                                 <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                 <td id="td4v" style="text-align: left; vertical-align: left; font-size: 12px;">4.- ARC-01/02</td>
                                 <td><a class="nav-link" target="_blanks" title="ARC-01" id="show_arc01v" name="show_arc01v">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
 
                                 <td style="vertical-align:middle;" width='10px;'><i id="contrato_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
                                 <td id="td8v" style="text-align: left; vertical-align: left; font-size: 12px;">8.- Contrato</td>
                                 <td><a class="nav-link" target="_blanks" title="Contrato Firmada" id="show_contratov" name="show_contratov">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a></td>
                             </tr>
                         </tbody>
@@ -680,11 +680,11 @@
                                     <tr>
                                         <td id="td1vc" style="text-align: left; vertical-align: left; font-size: 12px;">1.- Solicitud de Pago</td>
                                         <td><a class="nav-link" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpavc" name="show_solpavc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td5vc" style="text-align: left; vertical-align: left; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
                                         <td><a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprevc" name="show_validacion_suprevc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
 
                                         <td id="td7vc" style="text-align: left; vertical-align: left; font-size: 12px;" class="fac_xml_cer">
@@ -692,47 +692,47 @@
                                         </td>
                                         <td class="fac_xml_cer">
                                             <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlvc" name="show_fact_xmlvc">
-                                                <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                                <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td id="td2vc" style="text-align: left; vertical-align: left; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
                                         <td><a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariavc" name="show_cuenta_bancariavc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id='td10vc' style="text-align: left; vertical-align: left; font-size: 12px;">6.- Lista de Calificaciones</td>
                                         <td><a class="nav-link" target="_blanks" title="Lista de Calificaciones" id="show_calificacionesvc" name="show_calificacionesvc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td6vc" style="text-align: left; vertical-align: left; font-size: 12px;" class="fac_pdf_cer">
                                             10.- Factura PDF
                                         </td>
                                         <td class="fac_pdf_cer">
                                             <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfvc" name="show_fact_pdfvc">
-                                                <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                                <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td id="td3vc" style="text-align: left; vertical-align: left; font-size: 12px;">3.- Validación de Instructor</td>
                                         <td><a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorvc" name="show_validacion_instructorvc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
 
                                         <td id="td9vc" style="text-align: left; vertical-align: left; font-size: 12px;">7.- Identificación de Instructor</td>
                                         <td><a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacionvc" name="show_identificacionvc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                     <tr>
                                         <td id="td4vc" style="text-align: left; vertical-align: left; font-size: 12px;">4.- ARC-01/02</td>
                                         <td><a class="nav-link" target="_blanks" title="ARC-01" id="show_arc01vc" name="show_arc01vc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td8vc" style="text-align: left; vertical-align: left; font-size: 12px;">8.- Contrato</td>
                                         <td><a class="nav-link" target="_blanks" title="Contrato Firmada" id="show_contratovc" name="show_contratovc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                 </tbody>
@@ -833,14 +833,14 @@
                                 <td style="width: 15%; text-align: left;">
                                     <div style="display: inline-block">
                                         <a class="nav-link" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpa" name="show_solpa">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" style="margin: 0px !important;" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" style="margin: 0px !important;" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdf" name="solpa_pdf" hidden>
                                         <label for="solpa_pdf" id="solpa_pdf_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                                &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                                &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                             </a>
                                             <span id="solpa_name">Subir</span>
                                         </label>
@@ -853,14 +853,14 @@
                                 <td style="width: 15%; text-align: left;">
                                     <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdf" name="show_fact_pdf">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                     <div style="display: inline-block;">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_pdf" name="factura_pdf" hidden>
                                         <label for="factura_pdf">
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                            &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                            &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                         </a>
                                         <span id="factura_name">Subir</span>
                                     </div>
@@ -871,7 +871,7 @@
                                 <td id="td2" style="text-align: left; vertical-align: middley; font-size: 12px;">2.- Cuenta Bancaria</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancaria" name="show_cuenta_bancaria">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
 
@@ -880,14 +880,14 @@
                                 <td style="text-align: left;">
                                     <div style="display: inline-block">
                                         <a class="nav-link" target="_blanks" title="Contrato Firmada" id="show_contrato" name="show_contrato">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="contratof_pdf" name="contratof_pdf" hidden>
                                         <label for="contratof_pdf" id=contratof_pdf_label>
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                            &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                            &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                         </a>
                                         <span id="contratof_name">Subir</span>
                                     </div>
@@ -898,7 +898,7 @@
                                 <td id="td3" style="text-align: left; vertical-align: middley; font-size: 12px;">3.- Validación de Instructor</td>
                                 <td style="text-align: left;">
                                         <a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructor" name="show_validacion_instructor">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
 
@@ -906,7 +906,7 @@
                                 <td id="td9" style="text-align: left; vertical-align: middley; font-size: 12px;">9.- Identificación Oficial</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacion" name="show_identificacion">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -915,7 +915,7 @@
                                 <td id="td4" style="text-align: left; vertical-align: middley; font-size: 12px;">4.- ARC-01/02</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="ARC-01" id="show_arc01" name="show_arc01">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
 
@@ -924,14 +924,14 @@
                                 <td style="text-align: left;">
                                     <div style="display: inline-block">
                                         <a class="nav-link" target="_blanks" title="Lista de Asistencias" id="show_asistencias" name="show_asistencias">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="asistencias_pdf" name="asistencias_pdf" hidden>
                                         <label for="asistencias_pdf" id="asistencias_pdf_label">
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                            &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                            &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                         </a>
                                         <span id="asistencias_name">Subir</span>
                                     </div>
@@ -942,7 +942,7 @@
                                 <td id="td5" style="text-align: left; vertical-align: middley; font-size: 12px;">5.- Suficiencia Presupuestal</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_supre" name="show_validacion_supre">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
 
@@ -951,14 +951,14 @@
                                 <td style="text-align: left;">
                                     <div style="display: inline-block">
                                         <a class="nav-link" target="_blanks" title="Reporte de Evidencias Fotográficas" id="show_evidencia_fotografica" name="show_evidencia_fotografica">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="evidencia_fotografica_pdf" name="evidencia_fotografica_pdf" hidden>
                                         <label for="evidencia_fotografica_pdf" id="evidencia_fotografica_pdf_label">
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                            &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                            &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                         </a>
                                         <span id="evidencia_fotografica_name">Subir</span>
                                     </div>
@@ -972,14 +972,14 @@
                                 <td style="text-align: left;">
                                     <div style="display: inline-block">
                                         <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xml" name="show_fact_xml">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/xml" id="factura_xml" name="factura_xml" hidden>
                                         <label for="factura_xml">
                                         <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                            &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                            &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                         </a>
                                         <span id="factura_xml_name">Subir</span>
                                     </div>
@@ -1018,14 +1018,14 @@
                                 <td style="text-align: left;">
                                     <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpac" name="show_solpac">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                     <div style="display: inline-block;">
                                         <input style='display:none;' type="file" accept="application/pdf" id="solpa_pdfc" name="solpa_pdfc" hidden>
                                         <label for="solpa_pdfc" id="solpa_pdfc_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                                &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                                &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                             </a>
                                             <span id="solpa_namec">Subir</span>
                                         </label>
@@ -1041,14 +1041,14 @@
                                 <td style="text-align: left;">
                                     <div style="display: inline-block;">
                                         {{-- <a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfc" name="show_fact_pdfc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a> --}}
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_pdfc" name="factura_pdfc" hidden>
                                         <label for="factura_pdfc">
                                             {{-- <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                                &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                                &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                             </a> --}}
                                             {{-- <span id="factura_namec">Subir</span> --}}
                                         </label>
@@ -1060,7 +1060,7 @@
                                 <td id='td2c' style="text-align: left; vertical-align: middle; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariac" name="show_cuenta_bancariac">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
 
@@ -1073,14 +1073,14 @@
                                 <td style="text-align: left;">
                                     <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlc" name="show_fact_xmlc">
-                                            {{-- <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
+                                            {{-- <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i> --}}
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="factura_xmlc" name="factura_xmlc" hidden>
                                         <label for="factura_xmlc">
                                             {{-- <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                                &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                                &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                             </a> --}}
                                             {{-- <span id="factura_xml_namec">Subir</span> --}}
                                         </label>
@@ -1092,7 +1092,7 @@
                                 <td id='td3c' style="text-align: left; vertical-align: middle; font-size: 12px;">3.- Validación de Instructor</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorc" name="show_validacion_instructorc">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
 
@@ -1101,14 +1101,14 @@
                                 <td style="text-align: left;">
                                     <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Contrato Firmada" id="show_contratoc" name="show_contratoc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="contratof_pdfc" name="contratof_pdfc" hidden>
                                         <label for="contratof_pdfc" id="contratof_pdfc_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                                &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                                &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                             </a>
                                             <span id="contratof_namec">Subir</span>
                                         </label>
@@ -1120,7 +1120,7 @@
                                 <td id='td4c' style="text-align: left; vertical-align: middle; font-size: 12px;">4.- ARC-01/02</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="ARC-01" id="show_arc01c" name="show_arc01c">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
 
@@ -1128,7 +1128,7 @@
                                 <td id='td9c' style="text-align: left; vertical-align: middle; font-size: 12px;">9.- Identificación de Instructor</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacionc" name="show_identificacionc">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -1137,7 +1137,7 @@
                                 <td id='td5c' style="text-align: left; vertical-align: middle; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
                                 <td style="text-align: left;">
                                     <a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprec" name="show_validacion_suprec">
-                                        <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                     </a>
                                 </td>
 
@@ -1146,14 +1146,14 @@
                                 <td style="text-align: left;">
                                     <div style="display: inline-block;">
                                         <a class="nav-link" target="_blanks" title="Lista de Calificaciones" id="show_calificacionesc" name="show_calificacionesc">
-                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                     <div style="display: inline-block">
                                         <input style='display:none;' type="file" accept="application/pdf" id="calificaciones_pdfc" name="calificaciones_pdfc" hidden>
                                         <label for="calificaciones_pdfc" id="calififcaciones_pdfc_label">
                                             <a class="btn px-1 py-1 mr-0" style="background-color: #12322B; color: white;">
-                                                &nbsp; <i class="fa fa-cloud-upload fa-3x"></i> &nbsp;
+                                                &nbsp; <i class="fas fa-cloud-upload-alt f-xs"></i> &nbsp;
                                             </a>
                                             <span id="calificaciones_namec">Subir</span>
                                         </label>

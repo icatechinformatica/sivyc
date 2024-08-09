@@ -112,7 +112,7 @@
                                 @if ($itemData->doc_supre != NULL || $itemData->supre_sellado)
                                     @can('supre.validar')
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar" href="{{route('supre-validacion', ['id' => $idh])}}">
-                                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                                            <i class="fas fa-file-alt" aria-hidden="true"></i>
                                         </a>
                                     @endcan
                                     @if ($itemData->doc_supre != NULL)
@@ -216,7 +216,7 @@
                                         data-target="#cancelModal"
                                         data-id='{{$itemData->id}}'
                                         title="Cancelar Suficiencia Presupuestal">
-                                        <i class="fa fa-close"></i>
+                                        <i class="fas fa-times"></i>
                                     </button>
                                 @endcan
                             @endif

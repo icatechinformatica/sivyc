@@ -49,7 +49,7 @@
                     <div class="form-group col-md-3">
                         <label class="control_label" for="forshow_banco">Archivo</label>
                         <a class="nav-link form-control" style="border: none !important;" target="_blank" title="Archivo de Banco" id="show_banco" name="show_banco" @if(isset($data->soportes_instructor)) href="{{$data->soportes_instructor->archivo_bancario}}" @else href={{"$data->archivo_bancario"}} @endif>
-                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" style="margin: 0; padding: 0;" aria-hidden="true"></i>
+                            <i class="far fa-file-pdf fa-2x fa-lg text-danger" style="margin: 0; padding: 0;" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>

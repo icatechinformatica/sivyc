@@ -181,7 +181,7 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                         data-placement="top" title="EDITAR" id=""
                                         href="#" onclick="ModalUpdate({{$data[$i]['id']}}, '{{$mes_avance_get != null ? 'avance' : 'meta'}}' , '{{$mes_avance_get}}')">
-                                        <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
+                                        <i class="fas fa-pencil-alt fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
                                 </a>
                             </td>
                         </tr>

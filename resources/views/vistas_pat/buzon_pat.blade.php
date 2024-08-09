@@ -208,7 +208,7 @@
                                                     <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                                         data-placement="top" title="Ver pdf firmado" id=""
                                                         href="{{$data[$i]->fecha_meta['urldoc_firm']}}" target="_blank">
-                                                        <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                                        <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                                     </a>
                                                 @else
                                                     <span class="">Pendiente PDF</span>
@@ -304,7 +304,7 @@
                                                     <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                                         data-placement="top" title="Ver pdf firmado" id=""
                                                         href="{{$data[$i]->fechas_avance[$mes]['urldoc_firmav']}}" target="_blank">
-                                                        <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                                        <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                                     </a>
                                                     @else
                                                         <span class="">Pendiente PDF</span>

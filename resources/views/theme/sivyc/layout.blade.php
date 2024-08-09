@@ -8,7 +8,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.css">
+        {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.css"> --}}
+        <link rel="stylesheet" href="{{asset('css/font-awesome/all.css') }}">
         <!-- Google Fonts Roboto -->
         <link rel="stylesheet" href="{{asset('css/roboto.css') }}">
 
@@ -16,7 +17,7 @@
         <link rel="stylesheet" href="{{asset('vendor/bootstrap/bootstrap.min.css') }}">
         <link rel="stylesheet" href="https://mail.cdn.wpchile.com/assets/vendor/icon-hs/style.css">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+        {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> --}}
         {{--EN DEPURACION
         <link rel="stylesheet" href="{{asset('vendor/bootstrap/offcanvas.css') }}">
         <link rel="stylesheet" href="{{asset('vendor/icon-line-pro/style.css') }}">

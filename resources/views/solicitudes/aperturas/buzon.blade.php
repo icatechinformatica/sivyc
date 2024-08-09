@@ -4,11 +4,11 @@
 @section('content')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
-    
+
     <div class="card-header">
         Busqueda / Solicitud Clave de Apertura
     </div>
-    <div class="card card-body" style=" min-height:450px;">              
+    <div class="card card-body" style=" min-height:450px;">
     {{ Form::open(['route' => 'solicitudes.aperturas.search', 'method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data']) }}
         @csrf
         <div class="row">
@@ -17,13 +17,13 @@
             </div>
             <div class="form-group col-md-2">
                     {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-            </div> 
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th class="text-center">UNIDAD DE CAPACITACIÓN</th> 
+                        <th class="text-center">UNIDAD DE CAPACITACIÓN</th>
                         <th class="text-center">No. REVISIÓN</th>
                         <th class="text-center">No. MEMORÁNDUM</th>
                         <th class="text-center">STATUS</th>
@@ -52,10 +52,10 @@
                             <td class="text-center">{{$item->status}}</td>
                             <td class="text-center"> @if($item->status_curso) {{$item->status_curso}} @else {{"PREVALIDACION" }} @endif </td>
                             <td class="text-center">
-                                @if ($item->pdf_curso OR $item->file_arc01)                                
+                                @if ($item->pdf_curso OR $item->file_arc01)
                                     <a  class="nav-link"   title="PDF"  href="{{$pdf}}">
-                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
-                                    </a>  
+                                        <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
+                                    </a>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -77,12 +77,12 @@
         <div>
             {{ $aperturas->links() }}
         </div>
-    {!! Form::close() !!}    
+    {!! Form::close() !!}
     </div>
-    @section('script_content_js') 
-        <script language="javascript">      
+    @section('script_content_js')
+        <script language="javascript">
             $(document).ready(function(){
             });
         </script>
-    @endsection 
+    @endsection
 @endsection
