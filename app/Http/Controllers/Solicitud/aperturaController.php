@@ -56,11 +56,11 @@ class aperturaController extends Controller
         $this->middleware('auth');
         $this->path_pdf = "/DTA/solicitud_folios/";
         //$this->path_files = env("APP_URL").'/storage/uploadFiles';
-        
+
         $this->path_uploadFiles = env("APP_URL").'/storage/uploadFiles';
         $this->path_files = env("APP_URL").'/storage/';
         $this->path_files_cancelled = env("APP_URL").'/grupos/recibo/descargar?folio_recibo=';
-        
+
         $this->middleware(function ($request, $next) {
             $this->id_user = Auth::user()->id;
             $this->realizo = Auth::user()->name;
@@ -74,7 +74,7 @@ class aperturaController extends Controller
 
     public function index(Request $request){
         $folio_grupo =  $grupo = $alumnos = $message = $medio_virtual = $exoneracion = $instructor = $plantel = $programa = $tcurso = $tcuota =
-        //$muni = 
+        //$muni =
         $instructores = $convenio = $localidad = $exonerado = $num_oficio_sop = $titular_sop = $ValidaInstructorPDF = NULL;
         $recibo =[];
         $url_soporte = '';
@@ -83,7 +83,7 @@ class aperturaController extends Controller
         //$_SESSION['alumnos'] = NULL;
 
         //NUEVO
-        if($folio_grupo) list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);       // dd($grupo); 
+        if($folio_grupo) list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);       // dd($grupo);
         if($grupo){
             #consultamos registros para generar pdf soporte de constancias
             $sop_expediente = DB::table('tbl_cursos_expedientes')->select('sop_constancias')->where('folio_grupo', '=', $folio_grupo)->first();
@@ -101,10 +101,10 @@ class aperturaController extends Controller
                     $url_soporte = ($bddoc_soporte !== null) ? $this->path_files.$bddoc_soporte->url_documento : '';
                 }
             }
-           
-            
+
+
             $_SESSION['folio_grupo'] = $grupo->folio_grupo;
-            $anio_hoy = date('y');                
+            $anio_hoy = date('y');
             $localidad = DB::table('tbl_localidades')->where('clave',$grupo->clave_localidad)->pluck('localidad')->first();
 
             $_SESSION['alumnos'] = $alumnos;
@@ -163,7 +163,7 @@ class aperturaController extends Controller
                 })
                 ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$grupo_mespecialidad') as pdfvalida"));
 
-            
+
         }else $message = "Grupo número ".$folio_grupo .", no disponible para este usuario.";
         $tinscripcion = $this->tinscripcion();
 
@@ -181,50 +181,50 @@ class aperturaController extends Controller
 
     //NUEVO
     private function grupo_alumnos($folio_grupo){
-        $grupo =  DB::table('tbl_cursos as tc')->where('tc.folio_grupo', $folio_grupo)  
+        $grupo =  DB::table('tbl_cursos as tc')->where('tc.folio_grupo', $folio_grupo)
             ->select(//DE LA APERTURA
                 'tc.*',
                 'c.costo as costo_individual',
                 DB::raw('ar.observaciones as obs_vincula'),
-                DB::raw("COALESCE( 
+                DB::raw("COALESCE(
                     CASE WHEN tc.hini LIKE '%p%' and SUBSTRING(tc.hini, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
-                         ELSE SUBSTRING(tc.hini, 1, 5) 
-                    END, SUBSTRING(ar.horario, 1, 5)) as hini"),                    
+                         ELSE SUBSTRING(tc.hini, 1, 5)
+                    END, SUBSTRING(ar.horario, 1, 5)) as hini"),
                 DB::raw("COALESCE(
                     CASE WHEN tc.hfin LIKE '%p%' and SUBSTRING(tc.hfin, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hfin, 1, 5)::time+'12:00')::text
                          ELSE SUBSTRING(tc.hfin, 1, 5)
-                    END,  SUBSTRING(ar.horario, 9, 5)) as hfin"), 
+                    END,  SUBSTRING(ar.horario, 9, 5)) as hfin"),
 
                 DB::raw("CASE
                            WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)
                             WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_uploadFiles."',tc.comprobante_pago)
                             WHEN tr.file_pdf <> 'null' THEN concat('".$this->path_files."',tr.file_pdf)
                         END as comprobante_pago"
-                        ),                
+                        ),
                 DB::raw('COALESCE(tr.folio_recibo, COALESCE(tc.folio_pago, ar.folio_pago)) as folio_pago'),
-                DB::raw('COALESCE(tr.fecha_expedicion, COALESCE(tc.fecha_pago, ar.fecha_pago)) as fecha_pago'),                
+                DB::raw('COALESCE(tr.fecha_expedicion, COALESCE(tc.fecha_pago, ar.fecha_pago)) as fecha_pago'),
                 DB::raw("COALESCE(tc.solicita, CONCAT(tu.vinculacion,', ',pvinculacion)) as solicita"),
                 DB::raw('COALESCE(tc.tdias, null) as tdias'),
                 DB::raw('ar.turnado as  turnado_grupo'),
-                DB::raw('ar.observaciones as obs_vincula'),                            
+                DB::raw('ar.observaciones as obs_vincula'),
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
                 DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital")
             )
             ->leftjoin('alumnos_registro as ar','tc.folio_grupo','ar.folio_grupo')
             ->leftJoin('tbl_recibos as tr', function ($join) {
-                $join->on('tr.folio_grupo', '=', 'ar.folio_grupo')                        
-                     ->where('tr.status_folio','ENVIADO'); 
-            })            
+                $join->on('tr.folio_grupo', '=', 'ar.folio_grupo')
+                     ->where('tr.status_folio','ENVIADO');
+            })
             ->leftjoin('cursos as c','c.id','ar.id_curso')
-            ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')                     
-            ->orderby('ar.id_vulnerable','DESC') 
-            ->first();          
+            ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')
+            ->orderby('ar.id_vulnerable','DESC')
+            ->first();
 //dd($grupo);
     if($grupo){
 
         $alumnos = DB::table('alumnos_registro as ar')
             ->select('ar.id as id_reg', 'ar.id_vulnerable as id_gvulnerable',
-                //DATOS DE LOS ALUMNOS 
+                //DATOS DE LOS ALUMNOS
                 DB::raw('COALESCE(ti.id_pre, ar.id_pre) as id_pre'),
                 DB::raw('COALESCE(ti.id_cerss, ar.id_cerss) as id_cerss'),
                 DB::raw('COALESCE(ti.abrinscri, ar.abrinscri) as abrinscri'),
@@ -234,14 +234,14 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(ti.indigena, ap.indigena) as indigena'),
                 DB::raw('COALESCE(ti.empleado, ap.empleado) as empleado'),
                 DB::raw("'0' as calificacion"),
-                
+
 
                 DB::raw('COALESCE(ti.curp, ar.curp) as curp'),
                 DB::raw('COALESCE(ti.matricula, ar.no_control) as matricula'),
                 DB::raw("COALESCE(ti.alumno, concat(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre)) as alumno"),
                 DB::raw('COALESCE(substring(ti.curp,11,1), substring(ar.curp,11,1)) as sexo'),
                 DB::raw("(CONCAT(
-                            CASE 
+                            CASE
                                 WHEN SUBSTRING( COALESCE(ti.curp, ar.curp), 5, 2) > TO_CHAR(NOW(), 'YY') THEN CONCAT('19', SUBSTRING(COALESCE(ti.curp, ar.curp), 5, 2))
                                 ELSE CONCAT('20', SUBSTRING(COALESCE(ti.curp, ar.curp), 5, 2))
                             END,'-', SUBSTRING(COALESCE(ti.curp, ar.curp), 7, 2), '-', SUBSTRING(COALESCE(ti.curp, ar.curp), 9, 2) )
@@ -255,7 +255,7 @@ class aperturaController extends Controller
                     END,
                     CASE WHEN ap.id_gvulnerable IS NULL THEN NULL
                         ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ap.id_gvulnerable) AS bigint)))
-                    END) as grupos"),            
+                    END) as grupos"),
                 DB::raw('COALESCE(ti.inmigrante, ap.inmigrante) as inmigrante'),
                 DB::raw('ap.es_cereso'),
                 DB::raw('COALESCE(ti.familia_migrante, ap.familia_migrante) as familia_migrante'),
@@ -264,23 +264,24 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(ti.nacionalidad, ap.nacionalidad) as nacionalidad'),
                 DB::raw('COALESCE(ti.tinscripcion, ar.tinscripcion) as tinscripcion'),
                 DB::raw('COALESCE(ti.costo, ar.costo) as costo'),
-                DB::raw("COALESCE(ti.requisitos::jsonb->'documento', COALESCE(ar.requisitos::jsonb->'documento', ap.requisitos::jsonb->'documento')) as requisitos"), 
+                DB::raw("COALESCE(ti.requisitos::jsonb, COALESCE(ar.requisitos::jsonb, ap.requisitos::jsonb)) as requisitos"), //Obtener requisitos
+                // DB::raw("COALESCE(ti.requisitos::jsonb->'documento', COALESCE(ar.requisitos::jsonb->'documento', ap.requisitos::jsonb->'documento')) as requisitos"),
                 DB::raw("CASE WHEN  id_folio is not null and ti.status='EDICION' THEN  'CANCELAR FOLIO' ELSE ti.status END status"),
                 DB::raw("CASE WHEN ti.id IS NULL AND '$grupo->clave' !='0' AND '$grupo->status_curso' ='AUTORIZADO' AND '$grupo->status' = 'NO REPORTADO' THEN 'INSERT'
-                            ELSE  'VIEW ' END as mov")                
+                            ELSE  'VIEW ' END as mov")
                 )
                 ->where('ar.folio_grupo',$folio_grupo)
                 ->leftJoin('tbl_inscripcion as ti', function ($join) {
-                    $join->on('ti.folio_grupo', '=', 'ar.folio_grupo')                        
-                        ->on('ti.curp','ar.curp'); 
+                    $join->on('ti.folio_grupo', '=', 'ar.folio_grupo')
+                        ->on('ti.curp','ar.curp');
                 })
-                ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')             
-                ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' ) 
-                ->orderBy('alumno','ASC')  
+                ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')
+                ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad' )
+                ->orderBy('alumno','ASC')
                 ->get();
     }
-//dd($umnos);        
-            
+//dd($umnos);
+
         if($grupo and $alumnos )  return [$grupo, $alumnos];
         else return $message = "OPERACION NO VALIDA.";
     }
