@@ -34,7 +34,7 @@ class ExpedienteController extends Controller
         else if($slug == 'direccion_vinculacion' || $slug == 'unidad_vinculacion' || $slug == 'vinculadores_administrativo' || $slug == 'director_unidad') {$val_rol = 1;}
         else if($slug == 'unidad' || $slug == 'titular_unidad' || $slug == 'auxiliar_unidad') {$val_rol = 2;}
         else if($slug == 'administrativo' || $slug == 'pagos_contratos') {$val_rol = 3;}
-        else if($slug == 'titular-innovacion' || $slug == 'auxiliar-innovacion') {$val_rol = 4;}
+        else if($slug == 'titular-innovacion' || $slug == 'auxiliar-innovacion' || $slug == 'dta') {$val_rol = 4;}
 
         #REALIZAMOS LA BUSQUEDA
         $valor_select_true = $array_rol = [];

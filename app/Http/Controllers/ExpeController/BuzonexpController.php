@@ -44,7 +44,7 @@ class BuzonexpController extends Controller
         $val_rol = null;
         $user = Auth::user();$roles = $user->roles();$resul = $roles->first();
         $slug = $resul->slug;
-        if($slug == 'titular-innovacion' || $slug == 'auxiliar-innovacion') $val_rol = 4;
+        if($slug == 'titular-innovacion' || $slug == 'auxiliar-innovacion' || $slug == 'dta') $val_rol = 4;
         else if($slug == 'administrativo' || $slug == 'admin' || $slug == 'titular_unidad' || $slug == 'unidad_vinculacion'
                 || $slug == 'pagos_contratos' || $slug == 'director_unidad') $val_rol = 3;
         //Esto linea es solo para hacer pruebas
@@ -98,21 +98,21 @@ class BuzonexpController extends Controller
         try {
             if ($this->rol==4) $unidades_env = Unidad::wherein('ubicacion', $unidades_env)->orderby('unidad')->pluck('unidad');
 
-            $data = tbl_curso::query()->join('tbl_cursos_expedientes as ex', 'ex.folio_grupo', '=', 'tbl_cursos.folio_grupo');            
+            $data = tbl_curso::query()->join('tbl_cursos_expedientes as ex', 'ex.folio_grupo', '=', 'tbl_cursos.folio_grupo');
             if (!empty($txtbuscar)) {
-                $data = $data->whereRaw("CONCAT(tbl_cursos.clave, ' ', tbl_cursos.folio_grupo) LIKE ?", ['%' .$txtbuscar. '%']);                
-            }elseif (!empty($sel_eje)){                
+                $data = $data->whereRaw("CONCAT(tbl_cursos.clave, ' ', tbl_cursos.folio_grupo) LIKE ?", ['%' .$txtbuscar. '%']);
+            }elseif (!empty($sel_eje)){
                 if(!empty($sel_eje)) $data = $data->where(DB::raw("date_part('year' , tbl_cursos.inicio)"), '=', $sel_eje); //Anio
                 if(!empty($unidades_env)) $data = $data->whereIn('tbl_cursos.unidad', $unidades_env); //Unidad(es)
                 if (!empty($sel_status)) {
-                    $data = $data->where(function ($query) use ($sel_status) {                    
+                    $data = $data->where(function ($query) use ($sel_status) {
                         $query->BusquedaExpediente($sel_status);
-                    });  
+                    });
                 }
 
 
             } else return redirect()->route('buzon.expunico.index')->with('message', '¡ERROR AL REALIZAR LA BUSQUEDA!')->with('status', 'danger');
-            
+
             $data = $data->select('tbl_cursos.unidad', 'tbl_cursos.folio_grupo', 'tbl_cursos.clave', 'tbl_cursos.curso', 'tbl_cursos.nombre',
             'tbl_cursos.inicio', 'tbl_cursos.termino', 'tbl_cursos.hini', 'tbl_cursos.hfin',
                     DB::raw("ex.administrativo->>'fecha_envio_dta' as fec_envio"),
