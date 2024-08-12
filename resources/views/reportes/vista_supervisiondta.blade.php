@@ -111,16 +111,16 @@
                     @if (isset($mesSearch))
                         <div>
                             <a class="btn btn-danger" id="resumen_unidad" name="resumen_unidad" data-toggle="modal" data-placement="top" data-target="#resumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidades_busqueda}}"]'>
-                                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                                 &nbsp;MEMORANDUM RESPUESTA A UNIDAD
                             </a>
                             <a class="btn btn-danger" id="subir_resumen_unidad" name="subir_resumen_unidad" data-toggle="modal" data-placement="top" data-target="#subirResumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidades_busqueda}}"]'>
-                                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                                 &nbsp;CARGAR RESPUESTA A UNIDAD
                             </a>
                             @if(isset($formato_respuesta->resumen_formatot_unidad))
                                 <a class="btn btn-danger" id="pdf_resumen" name="pdf_resumen" target="_blank" href="{{$formato_respuesta->resumen_formatot_unidad}}">
-                                    <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                                     &nbsp; VER PDF CARGADO
                                 </a>
                             @endif
@@ -136,7 +136,7 @@
         </div>
         {{-- <div>
             <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#resumenUnidadModal" data-id='{{$mesSearch}}'>
-                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                 &nbsp;MEMORANDUM REPORTE A UNIDAD
             </a>
         </div> --}}
@@ -164,7 +164,7 @@
                             <a href="{{ $key->memorandum }}" target="_blank"
                                 class="btn btn-danger btn-circle m-1 btn-circle-sm"
                                 title="DESCARGAR MEMORANDUM N° {{ $key->num_memo }}">
-                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>&nbsp;
+                                <i class="far fa-file-pdf" aria-hidden="true"></i>&nbsp;
                                 MEMORANDUM {{ $key->num_memo }}
                             </a>
                             <small>{{$key->unidad}}</small>
@@ -200,7 +200,7 @@
                     <div class="form-group mb-2">
                         <button type="submit" class="btn btn-danger my-2 my-sm-0 waves-effect waves-light"
                             id="validarDireccionDta" name="validarDireccionDta" value="generarMemoPlaneacion">
-                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                            <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                             MEMORANDUM PLANEACIÓN
                         </button>
                     </div>

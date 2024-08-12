@@ -41,7 +41,7 @@
                       <th></th>
                       <th class="text-center">
                            <a id="botonASIST" class="nav-link" >
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                            </a>
                       </th>
                     </tr>
@@ -50,7 +50,7 @@
                       <th></th>
                       <th class="text-center">
                            <a id="botonCALIF" class="nav-link" >
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                            </a>
                     </tr>
                      <tr>
@@ -58,7 +58,7 @@
                       <th></th>
                       <th class="text-center">
                            <a id="botonRIAC-INS" class="nav-link" >
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                            </a>
                     </tr>
                      <tr>
@@ -66,7 +66,7 @@
                       <th></th>
                       <th class="text-center">
                            <a id="botonRIAC-ACRED" class="nav-link" >
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                            </a>
                     </tr>
 
@@ -75,7 +75,7 @@
                       <th></th>
                       <th class="text-center">
                            <a id="botonRIAC-CERT" class="nav-link" >
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                            </a>
                     </tr>
                     <tr>

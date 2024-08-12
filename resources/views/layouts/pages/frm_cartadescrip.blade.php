@@ -335,7 +335,7 @@
                             <div class="col-12 row justify-content-between">
                                 <div class="d-flex flex-column">
                                     <button class="btn-sm btn-outline-danger" onclick="edit_delete('{{$valor->id}}', '{{$valor->id_curso}}', 'eliminar')"><i class="fa fa-times fa-2x" aria-hidden="true"></i></button>
-                                    <button class="btn-sm btn-outline-warning mt-2" onclick="edit_delete('{{$valor->id}}', '{{$valor->id_curso}}', 'editar')"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></button>
+                                    <button class="btn-sm btn-outline-warning mt-2" onclick="edit_delete('{{$valor->id}}', '{{$valor->id_curso}}', 'editar')"><i class="fas fa-pencil-alt fa-2x" aria-hidden="true"></i></button>
                                 </div>
                                 <div class="col-3 px-0" style="border: 2px solid black">
                                     <p class="text-center font-weight-bold" style="background-color: #999; color:#fff;">Contenido Tematico</p>

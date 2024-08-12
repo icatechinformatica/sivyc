@@ -435,25 +435,25 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_convenio']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_acta']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -508,13 +508,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_8']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -560,13 +560,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$search_docs['urldoc2'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -612,13 +612,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_3']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -673,13 +673,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_4']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -820,13 +820,13 @@
                                         {{$path_files.$search_docs['urldoc7']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -906,13 +906,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$search_docs['urldoc8']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -949,13 +949,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$search_docs['urldoc9']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -994,13 +994,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$path_files.$search_docs['urldoc10']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1037,13 +1037,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$search_docs['urldoc11']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1090,13 +1090,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_12"
                                     href="{{$path_files.$json_dptos->academico['doc_12']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1152,13 +1152,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_13"
                                     href="{{$path_files.$json_dptos->academico['doc_13']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1214,13 +1214,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_14"
                                     href="{{$path_files.$json_dptos->academico['doc_14']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1279,13 +1279,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Oficio de entrega de constancias" id="verpdf_25"
                                     href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encuentra el oficio de entrega de constancias" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                             {{-- Otro soportes --}}
@@ -1293,13 +1293,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver PDF" id="verpdf_25"
                                     href="{{$path_files.$json_dptos->academico['doc_25']['url_soporte'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Archivo no encontrado" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1361,19 +1361,19 @@
                                         {{$search_docs['urldoc15']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->academico['doc_15']['url_documento']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_15"
                                     href="{{$path_files.$json_dptos->academico['doc_15']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1435,19 +1435,19 @@
                                         {{$search_docs['urldoc16']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->academico['doc_16']['url_documento']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_16"
                                     href="{{$path_files.$json_dptos->academico['doc_16']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
 
@@ -1504,13 +1504,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_17"
                                     href="{{$path_files.$json_dptos->academico['doc_17']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1566,13 +1566,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_18"
                                     href="{{$path_files.$json_dptos->academico['doc_18']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1639,19 +1639,19 @@
                                         {{$search_docs['urldoc19']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->academico['doc_19']['url_documento']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_19"
                                     href="{{$path_files.$json_dptos->academico['doc_19']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1729,13 +1729,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$search_docs['urldoc20'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado.')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1772,13 +1772,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$search_docs['urldoc21'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1839,20 +1839,20 @@
                                         {{$search_docs['urldoc22']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->administrativo['doc_22']['url_documento']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_22"
                                     href="{{$path_files.$json_dptos->administrativo['doc_22']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                {{-- <button class="btn-circle btn-circle-sm border-0"><i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i></button> --}}
+                                {{-- <button class="btn-circle btn-circle-sm border-0"><i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i></button> --}}
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1915,19 +1915,19 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$search_docs['urldoc23']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->administrativo['doc_23']['url_documento']))
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id="verpdf_23"
                                     href="{{$path_files.$json_dptos->administrativo['doc_23']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1987,13 +1987,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver pdf" id=""
                                     href="{{$search_docs['urldoc24']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encontro el archivo" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
 
@@ -2001,7 +2001,7 @@
                             <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                 data-placement="top" title="Ver Archivo" id=""
                                 href="{{$path_files.$json_dptos->administrativo['doc_24']['url_documento']}}" target="_blank">
-                                <i class="fa fa fa-file-text fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                <i class="fa fas fa-file-alt fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                             </a>
                             @endif
 
@@ -2009,7 +2009,7 @@
                                 <a class="btn-circle btn-circle-sm ml-2" data-toggle="tooltip"
                                     data-placement="top" title="Ver xml" id=""
                                     href="{{$search_docs['doc_xml']}}" target="_blank">
-                                    <i class="fa fa fa-file-text fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="fa fas fa-file-alt fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -2181,9 +2181,9 @@
                                                         <span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
                                                     <td class="text-center">
                                                         @if (!empty($valor['documento']))
-                                                            <a href="{{$valor['documento']}}" target="_blank"><i class="fa fa-file-pdf-o fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
+                                                            <a href="{{$valor['documento']}}" target="_blank"><i class="far fa-file-pdf fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
                                                         @else
-                                                            <i class="fa fa-file-pdf-o fa-1x fa-lg text-light" aria-hidden="true"></i>
+                                                            <i class="far fa-file-pdf fa-1x fa-lg text-light" aria-hidden="true"></i>
                                                         @endif
                                                     </td>
                                                     <td class="text-center">
@@ -2281,9 +2281,9 @@
                                             <td class="text-left"><span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
                                             <td class="text-center">
                                                 @if (!empty($valor['documento']))
-                                                    <a href="{{$valor['documento']}}" target="_blank"><i class="fa fa-file-pdf-o fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
+                                                    <a href="{{$valor['documento']}}" target="_blank"><i class="far fa-file-pdf fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
                                                 @else
-                                                    <i class="fa fa-file-pdf-o fa-1x fa-lg text-light" aria-hidden="true"></i>
+                                                    <i class="far fa-file-pdf fa-1x fa-lg text-light" aria-hidden="true"></i>
                                                 @endif
                                             </td>
                                         </tr>

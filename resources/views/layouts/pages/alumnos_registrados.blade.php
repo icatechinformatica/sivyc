@@ -60,7 +60,7 @@
                             @can('alumno.inscrito.edit')
                                 <td>
                                     <a href="{{route('alumnos.update.registro', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             @endcan
@@ -71,7 +71,7 @@
                                     </a>
                                 @else --}}
                                     <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID" target="_blank">
-                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf" aria-hidden="true"></i>
                                     </a>
                                 {{-- @endif --}}
                             </td>

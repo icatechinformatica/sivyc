@@ -73,15 +73,15 @@
                                             rel="{{ '/storage/uploadFiles'.$exoneracion->memo_soporte_dependencia }}">
                                             <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
                                                 height="50px">
-                                        </a> 
+                                        </a>
                                     @else
                                        <a href="{{ $exoneracion->memo_soporte_dependencia }}" target="_blank"
                                             rel="{{ $exoneracion->memo_soporte_dependencia }}">
                                             <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
                                                 height="50px">
-                                        </a> 
+                                        </a>
                                     @endif
-                                    
+
                                 @else
                                     NO ADJUNTADO
                                 @endif
@@ -93,7 +93,7 @@
                                 <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="EDITAR EXONERACIÓN"
                                     href="{{ route('exoneraciones.edit', ['id' => base64_encode($exoneracion->id)]) }}">
-                                    <i class="fa fa-pencil-square-o fa-2x mt-2" aria-hidden="true"></i>
+                                    <i class="fas fa-pencil-alt fa-2x mt-2" aria-hidden="true"></i>
                                 </a>
                             </td>
                         @endcan

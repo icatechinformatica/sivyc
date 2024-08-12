@@ -2340,7 +2340,7 @@ class InstructorController extends Controller
         data-target="#modperprofModal"
         data-id=' . "'" . '["' . $request->grado_prof . '","' . $request->area_carrera . '","' . $request->carrera . '","'. $request->estatus . '",
                 "' . $request->pais_institucion . '",
-                "' . $request->id . '","' . $request->idInstructor . '","' . $request->row . '"]' . "'" . '> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>';
+                "' . $request->id . '","' . $request->idInstructor . '","' . $request->row . '"]' . "'" . '> <i class="fas fa-pencil-alt" aria-hidden="true"></i> </button>';
         $paw = '<button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
             data-toggle="modal"
             data-placement="top"
@@ -2447,7 +2447,7 @@ class InstructorController extends Controller
                 "' . $request->institucion_nombre . '","' . $request->fecha_documento . '","' . $request->folio_documento . '",
                 "' . $request->cursos_recibidos . '","' . $request->capacitador_icatech . '","' . $request->recibidos_icatech . '",
                 "' . $request->cursos_impartidos . '","' . $request->experiencia_laboral . '","' . $request->experiencia_docente . '",
-                "' . $request->idperfprof . '","' . $request->numero_control . '","' . $request->pos . '"]' . "'" . '> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>';
+                "' . $request->idperfprof . '","' . $request->numero_control . '","' . $request->pos . '"]' . "'" . '> <i class="fas fa-pencil-alt" aria-hidden="true"></i> </button>';
 
         $paw = '<button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
             data-toggle="modal"
