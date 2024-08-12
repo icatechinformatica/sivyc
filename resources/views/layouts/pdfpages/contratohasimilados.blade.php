@@ -203,11 +203,11 @@
                             <td colspan="2"><div align="center"><br><br></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['director']}}</b></td></div>
                             <td colspan="2"><div align="center"><b>C. {{$nomins}}</b></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['directorp']}}</b></td></div>
                             <td colspan="2"><div align="center"></td></div>
                         </tr>
                     </table>
@@ -219,12 +219,12 @@
                             <td colspan="2"><p align="center"></p></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$testigo1->nombre}} {{$testigo1->apellidoPaterno}} {{$testigo1->apellidoMaterno}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['academico']}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['delegado']}}</b></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$testigo1->puesto}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$testigo3->puesto}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['academicop']}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['delegadop']}}</b></td></div>
                         </tr>
                     </table>
                     {{-- <div align=center>
