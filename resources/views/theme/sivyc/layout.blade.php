@@ -8,8 +8,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
         <!-- Font Awesome -->
-        {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.css"> --}}
-        <link rel="stylesheet" href="{{asset('css/font-awesome/all.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.css">
+        {{-- <link rel="stylesheet" href="{{asset('css/font-awesome/all.css') }}"> --}}
         <!-- Google Fonts Roboto -->
         <link rel="stylesheet" href="{{asset('css/roboto.css') }}">
 
