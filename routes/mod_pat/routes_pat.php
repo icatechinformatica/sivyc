@@ -124,6 +124,8 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/vista/expedientes/uploadrecibo', 'ExpeController\ExpedienteController@upload_recibo')->name('expunico.upload.recibo')->middleware('can:expedientes.unicos.index');
     // Guardar requisitos de alumnos
     Route::post('/vista/expedientes/requisitos', 'ExpeController\ExpedienteController@requisitos_alumnos')->name('expunico.save.requisitos')->middleware('can:expedientes.unicos.index');
+    //Guardar mensajes retorno dta automaticamente
+    Route::post('/vista/expedientes/msmretorno', 'ExpeController\ExpedienteController@guardar_mensajes')->name('expunico.guardar.mensajes')->middleware('can:expedientes.unicos.index');
 });
 /**Generar pdf expedientes unicos */
 Route::get('vista/expedientes/genpdf/{folio}', 'ExpeController\ExpedienteController@pdf_expediente')->name('expunico.gen.pdfexpe');
