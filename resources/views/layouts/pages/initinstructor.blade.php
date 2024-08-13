@@ -116,26 +116,26 @@
                                 @endcan --}}
                                 @if($itemData->numero_control == 'Pendiente')
                                     @can('instructor.create')
-                                        <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                        <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                     @endcan
                                 @else
-                                    <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                 @endif
                             @endif
                             @if($itemData->status == 'PREVALIDACION')
-                                <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                             @endif
                             @if ($itemData->status == 'RETORNO')
                                 @if($itemData->numero_control == 'Pendiente')
                                     @can('instructor.create')
-                                        <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                        <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                     @endcan
                                 @else
-                                    <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                 @endif
                             @endif
                             @if ($itemData->status == 'EN FIRMA')
-                                <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                             @endif
                             @if ($itemData->status == 'Aprobado' || $itemData->status == 'BAJA')
                                     <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
@@ -148,9 +148,9 @@
                         <td class="text-center">
                             @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')
                                     @if($itemData->archivo_alta == NULL)
-                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                        <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                                     @else
-                                        <a href="{{$itemData->archivo_alta}}" target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                        <a href="{{$itemData->archivo_alta}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                     @endif
 
                             @endif

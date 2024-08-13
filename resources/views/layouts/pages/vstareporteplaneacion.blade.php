@@ -112,7 +112,7 @@
                 <div class="row">
                     <div class="col-md-9">
                         <a class="btn btn-danger" href="{{ route('planeacion.generar.reporte.supre.pdf', [$filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2]) }}">
-                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp; Reporte Pdf
+                            <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>&nbsp; Reporte Pdf
                         </a>
                     </div>
                     <div class="col-md-3">

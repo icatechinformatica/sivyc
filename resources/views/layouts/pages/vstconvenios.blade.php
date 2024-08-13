@@ -108,7 +108,7 @@
                                 <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="EDITAR CONVENIO"
                                     href="{{ route('convenios.edit', ['id' => base64_encode($itemData->id)]) }}">
-                                    <i class="fa fa-pencil-square-o fa-2x mt-2" aria-hidden="true"></i>
+                                    <i class="fas fa-pencil-alt fa-2x mt-2" aria-hidden="true"></i>
                                 </a>
                             </td>
                         @endcan

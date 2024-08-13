@@ -4,11 +4,11 @@
 @section('content')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
-    
+
     <div class="card-header">
         Busqueda / Exoneración y/o Reducción de Cuota
     </div>
-    <div class="card card-body" style=" min-height:450px;">              
+    <div class="card card-body" style=" min-height:450px;">
     {{ Form::open(['route' => 'solicitudes.exoneracion.search', 'method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data']) }}
         @csrf
         <div class="row">
@@ -17,13 +17,13 @@
             </div>
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-            </div> 
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th style="padding: 1px;" class="text-center">UNIDAD DE CAPACITACIÓN</th> 
+                        <th style="padding: 1px;" class="text-center">UNIDAD DE CAPACITACIÓN</th>
                         <th style="padding: 1px;" class="text-center">No. REVISIÓN</th>
                         <th style="padding: 1px;" class="text-center">No. MEMORÁNDUM</th>
                         <th style="padding: 1px;" class="text-center">TURNADO</th>
@@ -41,7 +41,7 @@
                             } else {
                                 $pdf = $item->memo_soporte_dependencia;
                             }
-                            if (($item->status=='SOLICITADO') OR ($item->status=='PREVALIDACION') OR ($item->status=='SOLICITUD EDITAR') OR 
+                            if (($item->status=='SOLICITADO') OR ($item->status=='PREVALIDACION') OR ($item->status=='SOLICITUD EDITAR') OR
                                 ($item->status=='SOPORTES ACTUALIZACION') OR ($item->status=='SOLICITUD CANCELAR')) {
                                 $rojo = true;
                             }
@@ -55,7 +55,7 @@
                             <td class="text-center">
                                 @if ($pdf)
                                 <a href="{{$pdf}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="PDF">
-                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf" aria-hidden="true"></i>
                                 </a>
                                 @endif
                             </td>
@@ -78,13 +78,13 @@
         <div>
             {{ $exoneraciones->links() }}
         </div>
-    {!! Form::close() !!}    
+    {!! Form::close() !!}
     </div>
-    @section('script_content_js') 
-        <script language="javascript">      
+    @section('script_content_js')
+        <script language="javascript">
             $(document).ready(function(){
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitudes.exoneracion.search')}}"); $('#frm').attr('target', '_self').submit();});
             });
         </script>
-    @endsection 
+    @endsection
 @endsection

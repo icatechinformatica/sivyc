@@ -88,12 +88,12 @@
                             <div id="iconCheck25" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
 
                             <button class="ml-1 bg-transparent border-0 mt-1" onclick="UploadPDF(event)">
-                            <i class="fa fa-cloud-upload fa-2x text-primary" aria-hidden="true"></i></button>
+                            <i class="fas fa-cloud-upload-alt fa-2x text-primary" aria-hidden="true"></i></button>
                         </div>
                         <a class="ml-1 pt-1 btn-circle btn-circle-sm d-none" data-toggle="tooltip"
                             data-placement="top" title="Ver pdf" id="verPdfLink25"
                             href="" target="_blank">
-                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                         </a>
                     </form>
                 </div>
