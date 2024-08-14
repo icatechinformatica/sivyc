@@ -50,6 +50,7 @@ class ExpedienteController extends Controller
         $json_dptos = null;
         $search_docs = null;
         $st_general = null;
+        $mensajes_dta = [];
         $path_files = $this->path_files;
 
         //Agregarmos validacion que si es clave hacer que busque el folio;
@@ -146,6 +147,8 @@ class ExpedienteController extends Controller
                             $array_rol = ['rol' => $val_rol, 'status_json' => $foundJson->administrativo['status_dpto'], 'btn_envio_dta' => false, 'idcurso' => $data_cursos->id, 'message_return' => $foundJson->administrativo['descrip_return']];
                         }
 
+                        ##Consultas mensaje DTA
+                        $mensajes_dta = $this->get_mensaje_return($json_dptos, $array_rol['rol'], $array_rol['status_json']);
                     }
 
                 }
@@ -155,7 +158,7 @@ class ExpedienteController extends Controller
             }
         }
 
-        return view('vistas_expe.expediente_unico', compact('val_rol', 'data_cursos', 'array_rol', 'st_general', 'v_radios', 'json_dptos', 'search_docs', 'path_files','ubic_unidad'));
+        return view('vistas_expe.expediente_unico', compact('val_rol', 'data_cursos', 'array_rol', 'st_general', 'v_radios', 'json_dptos', 'search_docs', 'path_files','ubic_unidad','mensajes_dta'));
     }
 
     #Llenar array para anexar al json de expedientes
@@ -769,6 +772,30 @@ class ExpedienteController extends Controller
 
     }
 
+    ## Obtener mensajes de retorno de la dta
+    public function get_mensaje_return($json, $rol, $status){
+        $mensajes_dta = array();
+        $vincu = [1,2,3,4,5,6,7,8];
+        $acad = [8,9,10,11,12,13,14,15,16,17,18,19,25];
+        $deleg = [20,21,22,23,24];
+
+        $iteracion_msn = function ($array, $nombre_dpto, $nom_corto) use ($json){
+            $msn_dta = array();
+            foreach($array as $i){
+                $msn_dta['msn_'.$nom_corto.$i] = data_get($json->{$nombre_dpto}['doc_' . $i], 'mensaje_dta', '');
+            }
+            return $msn_dta;
+        };
+
+        if($rol == 4 || ($rol != 4 && $status == 'RETORNADO')){
+            $msn_vincu = $iteracion_msn($vincu, 'vinculacion', 'vincu');
+            $msn_acad = $iteracion_msn($acad, 'academico', 'acad');
+            $msn_admin = $iteracion_msn($deleg, 'administrativo', 'admin');
+            $mensajes_dta = array_merge($msn_vincu, $msn_acad, $msn_admin);
+        }
+        return $mensajes_dta;
+    }
+
     #Guardar el formulario en la base de datos
     public function guardar(Request $request) {
         $valores_form = $request->valor_form;
@@ -1309,28 +1336,28 @@ class ExpedienteController extends Controller
                 $json1['fecha_retornado'] = date('Y-m-d H:i');
                 $json1['id_user_return'] = Auth::user()->id;
                 // $json1['descrip_return'] = $txtarea;
-                for ($i=1; $i <= 8; $i++) {
-                    $index = ($i == 8) ? 26 : $i;
-                    $json1['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$index])) ? $mensajes_dta['txtarea'.$index] : "";
-                }
+                // for ($i=1; $i <= 8; $i++) {
+                //     $index = ($i == 8) ? 26 : $i;
+                //     $json1['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$index])) ? $mensajes_dta['txtarea'.$index] : "";
+                // }
 
                 $json2['status_dpto'] = 'RETORNADO';
                 $json2['fecha_retornado'] = date('Y-m-d H:i');
                 $json2['id_user_return'] = Auth::user()->id;
                 // $json2['descrip_return'] = $txtarea;
-                for ($i=8; $i <= 19; $i++) {
-                    $json2['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
-                }
-                $json2['doc_25']['mensaje_dta'] = (!empty($mensajes_dta['txtarea25'])) ? $mensajes_dta['txtarea25'] : "";
+                // for ($i=8; $i <= 19; $i++) {
+                //     $json2['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
+                // }
+                // $json2['doc_25']['mensaje_dta'] = (!empty($mensajes_dta['txtarea25'])) ? $mensajes_dta['txtarea25'] : "";
 
 
                 $json3['status_dpto'] = 'RETORNADO';
                 $json3['fecha_retornado'] = date('Y-m-d H:i');
                 $json3['id_user_return'] = Auth::user()->id;
                 // $json3['descrip_return'] = $txtarea;
-                for ($i=20; $i <= 24; $i++) {
-                    $json3['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
-                }
+                // for ($i=20; $i <= 24; $i++) {
+                //     $json3['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
+                // }
             }
             $expeUnico->vinculacion = $json1;
             $expeUnico->academico = $json2;
@@ -1492,7 +1519,7 @@ class ExpedienteController extends Controller
 
     }
 
-        /** Funcion para subir pdf de alumnos
+    /** Funcion para subir pdf de alumnos
      * @param string $pdf, $id, $nom
      */
     protected function pdf_upload_alumnos($pdf, $id_pre, $pdfname)
@@ -1562,6 +1589,48 @@ class ExpedienteController extends Controller
             'status' => 500,
             'mensaje' => 'Archivo no encontrado'
         ]);
+    }
+
+    ##Guardar mensajes de retorno DTA
+    public function guardar_mensajes(Request $request){
+        $mensaje = $request->input('mensaje');
+        $dpto = $request->input('dpto');
+        $idcurso = $request->input('idcurso');
+        $doc = $request->input('documento');
+        $rol = $request->input('rol');
+
+        if(empty($idcurso) || empty($dpto) || empty($doc)){
+            return response()->json(['status' => 500, 'mensaje' => 'Los campos requeridos estan vacios']);
+        }
+
+        if($rol == '4'){
+            try {
+                $expeUnico = ExpeUnico::find($idcurso);
+                if($dpto == 'vinc'){
+                    $json1 = $expeUnico->vinculacion;
+                    $json1[$doc]['mensaje_dta'] = (!empty($mensaje)) ? $mensaje : "";
+                    $expeUnico->vinculacion = $json1;
+
+                }else if($dpto == 'acad'){
+                    $json2 = $expeUnico->academico;
+                    $json2[$doc]['mensaje_dta'] = (!empty($mensaje)) ? $mensaje : "";
+                    $expeUnico->academico = $json2;
+
+                }else if($dpto == 'admin'){
+                    $json3 = $expeUnico->administrativo;
+                    $json3[$doc]['mensaje_dta'] = (!empty($mensaje)) ? $mensaje : "";
+                    $expeUnico->administrativo = $json3;
+                }
+                $expeUnico->save();
+
+                return response()->json(['status' => 200, 'mensaje' => 'Mensaje guardado con exito']);
+
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => 500, 'mensaje' => 'error '.$th->getMessage()]);
+            }
+        }
+
     }
 
 }
