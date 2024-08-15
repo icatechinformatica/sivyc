@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\ReportService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class Rf001ReporteController extends Controller
 {
@@ -90,6 +92,8 @@ class Rf001ReporteController extends Controller
 
     public function generate_report()
     {
-
+        return response()->json([
+            'data' => 'hola'
+         ], Response::HTTP_CREATED);
     }
 }

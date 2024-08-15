@@ -483,18 +483,33 @@
             event.preventDefault(); // prevenir envío tradicional de formulario
             let URL = "{{ route('reportes.rf001.xml.generar') }}";
             try {
-                document.getElementById('loader-overlay').style.display = 'none';
+                document.getElementById('loader-overlay').style.display = 'block';
                 await $.ajax({
                     url: URL,
                     type: 'POST',
-                    data: $(this).serialize(),
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
+                    dataType: "json",
                     success: function(response) {
-                        document.getElementById('loader-overlay').style.display = 'block';
+                        setTimeout(function() {
+                            // Ocultar el loader y mostrar el contenido después de la carga
+                            document.getElementById('loader-overlay').style.display = 'none';
+                            console.log('Datos recibidos:', response.data);
+                        }, 2000); // 2 segundos de tiempo simulado
+
                     },
-                });
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // Maneja el error aquí
+                    console.error('Error:', jqXHR);
+                    console.warning('TextStatus:', textStatus);
+                    console.error('ErrorThrown:', errorThrown);
+                    reject(textStatus);
+
+                    // Si deseas mostrar un mensaje de error más detallado
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                        alert('Error: ' + jqXHR.responseJSON.message);
+                    } else {
+                        alert('Error: ' + textStatus);
+                    }
+                });;
             } catch (error) {
                 console.error(error.statusText);
                 document.getElementById('loader-overlay').style.display = 'none';
