@@ -1,7 +1,9 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
 @section('title', 'Formulario de Contrato | Sivyc Icatech')
+@section('content')
 <!--seccion-->
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <style>
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
@@ -14,8 +16,10 @@
         -moz-appearance:textfield; /* Firefox */
     }
 </style>
-@section('content')
-    <div class="container g-pt-50">
+    <div class="card-header">
+        <h1>Formulario de Contrato y Solicitud de Pago</h1>
+    </div>
+    <div class="card card-body" style=" min-height:450px;">
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -27,9 +31,6 @@
         @endif
         <form action="{{ route('contrato-save') }}" method="post" id="registercontrato" enctype="multipart/form-data">
             @csrf
-            <div style="text-align: right;width:80%">
-                <label for="titulocontrato"><h1>Formulario de Contrato y Solicitud de Pago</h1></label>
-            </div>
             <hr style="border-color:dimgray">
             <div class="form-container">
                 <label for="titulocontrato"><h2>Apartado de Instructor</h2></label>

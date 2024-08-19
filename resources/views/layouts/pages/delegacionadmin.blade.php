@@ -1,6 +1,7 @@
 @extends("theme.sivyc.layout")
 <!--llamar la plantilla -->
 @section('content')
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <style>
     a.add_button, a.remove_button {
         position: absolute;
@@ -11,7 +12,10 @@
         width: 34px;
       }
 </style>
- <div class="container g-pt-50">
+<div class="card-header">
+    Suficiencia Presupuestal
+</div>
+<div class="card card-body" style=" min-height:450px;">
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -32,16 +36,16 @@
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
                 <input type="text" class="form-control" id="unidad" name="unidad" value="{{$unidad->ubicacion}}" readonly>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label for="mamorandum" class="control-label">Memoramdum No. </label>
                 <div class="form-row">
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-4">
                         <p class="form-control" style="border: 0px;">ICATECH/{{$unidad->clave_contrato}}/</p>
                     </div>
                     <div class="form-group col-md-4" style="margin-right: -10px;">
                         <input type="text" class="form-control" id="memorandum" name="memorandum" placeholder="No.">
                     </div>
-                    <div class="form-group col-md-1">
+                    <div class="form-group col-md-2">
                         <p id='ejercicio' name ='ejercicio' class="form-control" style="border: 0px;">/{{$year}}</p>
                     </div>
                 </div>
@@ -124,12 +128,12 @@
         </div>
         <br><br><br>
         <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+            <div class="col-lg-12 d-flex justify-content-between align-items-center">
+                <div>
+                    <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
                 </div>
-                <div class="pull-right">
-                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                <div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>

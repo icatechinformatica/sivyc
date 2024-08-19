@@ -1,6 +1,7 @@
 @extends("theme.sivyc.layout")
 <!--llamar la plantilla -->
 @section('content')
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <style>
     a.add_button, a.remove_button {
         position: absolute;
@@ -11,7 +12,10 @@
         width: 34px;
       }
 </style>
- <div class="container g-pt-50">
+<div class="card-header">
+    Modificación de Solicitud para Suficiencia Presupuestal
+</div>
+<div class="card card-body" style=" min-height:450px;">
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -24,10 +28,6 @@
     @endif
    <form action="{{ route('supre-mod-save') }}" id="regsupre" method="POST">
        @csrf
-       <div style="text-align: right;width:82%">
-           <label for="tituloSupre1"><h2>Modificación de Solicitud para Suficiencia Presupuestal</h2></label>
-        </div>
-        <br><br>
         @if(!is_null($getsupre->observacion))
             <div class="form-row">
                 <div class="form-group col-md-6">
@@ -43,16 +43,16 @@
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
                 <input type="text" class="form-control" id="unidad" name="unidad" value="{{$unidadsel->unidad}}" readonly>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label for="mamorandum" class="control-label">Memoramdum No. </label>
                 <div class="form-row">
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-4">
                         <p class="form-control" style="border: 0px;">ICATECH/{{$unidadsel->clave_contrato}}/</p>
                     </div>
-                    <div class="form-group col-md-4" style="margin-right: -10px;">
+                    <div class="form-group col-md-2" style="margin-right: -10px;">
                         <input type="text" class="form-control" id="no_memo" name="no_memo" aria-required="true" value="{{ $getsupre->no_memo[2] }}" placeholder="ICATECH/0000/000/2020">
                     </div>
-                    <div class="form-group col-md-1">
+                    <div class="form-group col-md-2">
                         <p id="ejercicio" name="ejercicio" class="form-control" style="border: 0px;">/{{$getsupre->no_memo[3]}}</p>
                     </div>
                 </div>
@@ -151,7 +151,7 @@
         @php $supreIdB64 = base64_encode($getsupre->id); @endphp
         <div class="form-row">
             <input hidden id=id_supre name="id_supre" value={{$getsupre->id}}>
-            <div class="form-group col-md-5">
+            <div class="form-group col-md-8">
                 <a class="btn" style="background-color: #12322B; color: white;" href="{{URL::previous()}}">Regresar</a>
             </div>
             <div class="form-group col-md-2">

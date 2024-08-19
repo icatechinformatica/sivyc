@@ -2,6 +2,7 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Modificación de la Validación de Suficiencia Presupuestal| Sivyc Icatech')
 @section('content_script_css')
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         #loader-overlay {
             position: fixed;
@@ -41,11 +42,10 @@
 <div id="loader-overlay">
     <div id="loader"></div>
 </div>
-    <section class="container g-pt-50">
-        <div class="text-center">
-            <h1>Modificación de la Validación de Suficiencia Presupuestal</h1>
-        </div>
-        <br>
+<div class="card-header">
+    <h1>Modificación de la Validación de Suficiencia Presupuestal</h1>
+</div>
+    <div class="card card-body" style=" min-height:450px;">
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -94,25 +94,25 @@
             </div>
             <br>
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-5">
                     <label for="inputfolio_validacion">Folio de Validación</label>
                     <div class="form-row">
-                        <div class="form-group col-md-5">
+                        <div class="form-group col-md-4">
                             <p class="form-control" style="border: 0px;">ICATECH/500.1/H/</p>
                         </div>
-                        <div class="form-group col-md-4" style="margin-right: -10px;">
+                        <div class="form-group col-md-2" style="margin-right: -10px;">
                             <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" value="{{$data->folio_validacion[3]}}">
                         </div>
-                        <div class="form-group col-md-1">
+                        <div class="form-group col-md-2">
                             <p id='ejercicio' name ='ejercicio' class="form-control" style="border: 0px;">/{{$data->folio_validacion[4]}}</p>
                         </div>
                     </div>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="inputfecha_validacion">Fecha de Validación</label>
                     <input name="fecha_val" id="fecha_val" type="date" class="form-control" value="{{$data->fecha_validacion}}">
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="inputfinanciamiento">Fuente de Financiamiento</label>
                     <select class="form-control" name="financiamiento" id="financiamiento" required>
                         <option value="">SELECCIONE</option>
@@ -137,16 +137,17 @@
                 </div>
             </div>
             <br><br>
-            <div id="confval" class="form-row ">
-                <div class="form-group col-md-6">
-                    <div class="pull-right">
+            <div class="row">
+                <div class="col-lg-12 d-flex justify-content-between align-items-center">
+                    <div>
                         <button type="submit" class="btn" style="background-color: #12322B; color: white;" >Guardar Cambios</button>
                         <input hidden id="id" name="id" value="{{$data->id}}">
                     </div>
+                    <div>
+                        <a type="submit" id="btn_generar_supre" class="btn btn-primary" href="{{route('valsupre-pdf', ['id' => $supreIdB64])}}"  target="_blank">Visualizar Validación PDF</a>
+                    </div>
                 </div>
-                <div class="form-group col-md-3">
-                    <a type="submit" id="btn_generar_supre" class="btn btn-primary" href="{{route('valsupre-pdf', ['id' => $supreIdB64])}}"  target="_blank">Visualizar Validación PDF</a>
-                </div>
+            </div>
             </form>
             {{-- @if($generarEfirmaValsupre)
                 <div class="form-group col-md-3">
@@ -158,7 +159,6 @@
                     </form>
                 </div>
             @endif --}}
-        </div>
     </section>
 @endsection
 @section('script_content_js')
