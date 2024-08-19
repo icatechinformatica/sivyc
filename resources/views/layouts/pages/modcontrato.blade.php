@@ -2,6 +2,8 @@
 <!--llamar a la plantilla -->
 @section('title', 'Modificación de Contrato | Sivyc Icatech')
 <!--seccion-->
+@section('content')
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <style>
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
@@ -14,19 +16,17 @@
         -moz-appearance:textfield; /* Firefox */
     }
 </style>
-@section('content')
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
-    <div class="container g-pt-50">
+    <div class="card-header">
+        <h1>Modificación de Contrato y Solicitud de Pago</h1>
+    </div>
+    <div class="card card-body" style=" min-height:450px;">
         <form action="{{ route('contrato-savemod') }}" method="post" id="registercontrato"  enctype="multipart/form-data">
             @csrf
-            <div style="text-align: right;width:80%">
-                <label for="titulocontrato"><h1>Modificación de Contrato y Solicitud de Pago</h1></label>
-            </div>
-            <br><br>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputobservacion" class="control-label"><b>Observaciones de Rechazo</b></label>

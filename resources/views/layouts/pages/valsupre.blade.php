@@ -2,13 +2,13 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Validación de Suficiencia Presupuestal| Sivyc Icatech')
 @section('content')
-    <section class="container g-pt-50">
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    <div class="card-header">
+        <h1>Validacion de Suficiencia Presupuestal</h1>
+    </div>
+    <div class="card card-body" style=" min-height:450px;">
         <form method="POST" action="{{ route('supre-rechazo') }}" id="rechazosupre">
             @csrf
-                <div class="text-center">
-                    <h1>Validacion de Suficiencia Presupuestal</h1>
-                </div>
-                <br>
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label for="dropfecha_apertura">Fecha de Apertura ARC-01</label>
@@ -78,12 +78,12 @@
                         <label for="inputfolio_validacion">Folio de Validación</label>
                         <div class="form-row">
                             <div class="form-group col-md-5">
-                                <p class="form-control" style="border: 0px;">ICATECH/500.1/H/</p>
+                                <p class="form-control" style="border: 0px; align-text:right;">ICATECH/500.1/H/</p>
                             </div>
-                            <div class="form-group col-md-4" style="margin-right: -10px;">
+                            <div class="form-group col-md-3" style="margin-right: -10px;">
                                 <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" required>
                             </div>
-                            <div class="form-group col-md-1">
+                            <div class="form-group col-md-2">
                                 <p id='ejercicio' name ='ejercicio' class="form-control" style="border: 0px;">/{{$year}}</p>
                             </div>
                         </div>
@@ -92,11 +92,11 @@
                         <label for="inputfolio_validacion">Folio de Validación</label>
                         <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" required>
                     </div> --}}
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="inputfecha_validacion">Fecha de Validación</label>
                         <input name="fecha_val" id="fecha_val" type="date" class="form-control" required>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="inputfinanciamiento">Fuente de Financiamiento</label>
                         <select class="form-control" name="financiamiento" id="financiamiento" required>
                             {{-- <option value="">SELECCIONE</option> --}}

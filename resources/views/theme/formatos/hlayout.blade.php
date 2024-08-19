@@ -16,10 +16,10 @@
         @if ($marca)
             <style>
                 header:after {
-                content: "BORRADOR"; 
-                font-size: 19em;  
+                content: "BORRADOR";
+                font-size: 19em;
                 color: rgba(40, 40, 43, 0.35);
-                z-index: 9999;                
+                z-index: 9999;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -27,10 +27,10 @@
                 top: 35%;
                 right: 0;
                 bottom: 0;
-                left: 10%;           
+                left: 10%;
                 transform: rotate(-25deg);
                 }
-            </style>        
+            </style>
             @endif
     @endif
 
@@ -55,7 +55,7 @@
     <content>
         @yield("content")
     </content>
-    
+
     @yield("body")
     @yield("js")
 </body>
