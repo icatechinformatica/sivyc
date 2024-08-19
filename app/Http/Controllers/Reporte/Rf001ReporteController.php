@@ -92,8 +92,11 @@ class Rf001ReporteController extends Controller
 
     public function generate_report()
     {
+        $organismo = Auth::user()->id_organismo;
+        $unidad = Auth::user()->unidad;
+        $data = (new ReportService())->xmlFormat($id, $organismo, $unidad, Auth::user());
         return response()->json([
-            'data' => 'hola'
+            'data' => $data
          ], Response::HTTP_CREATED);
     }
 }

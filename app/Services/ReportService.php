@@ -289,4 +289,75 @@ class ReportService
         ]);
         return $token;
     }
+
+    protected function validar_incapacidad($dataFirmante)
+    {
+        $result = null;
+        $status_campos = false;
+        if ($dataFirmante->incapacidad != null) {
+            # se genera un campo json
+            $dataArray = json_decode($dataFirmante->incapacidad, true);
+            #validamos los campos json
+            if (isset($dataArray['fecha_inicio']) && isset($dataArray['fecha_termino'])
+                && isset($dataArray['id_firmante']) && isset($dataArray['historial'])) {
+                # checar datos y mostrar información
+                if ($dataArray['fecha_inicio'] != '' && $dataArray['fecha_termino'] != '' && $dataArray['id_firmante'] != '')
+                {
+                    # code...
+                    $fecha_ini = $dataArray['fecha_inicio'];
+                    $fecha_fin = $dataArray['fecha_termino'];
+                    $id_firmante = $dataArray['id_firmante'];
+                    $historial = $dataArray['historial'];
+                    $status_campos = true;
+                } else {
+                    return "LA ESTRUCTURA DEL JSON DE LA INCAPACIDAD NO ES VALIDA!";
+                }
+
+                #validar si está vacio
+                if ($status_campos == true) {
+                    # validar fechas
+                    $fechaActual = date('Y-m-d');
+                    $fecha_nowObj = new DateTime($fechaActual);
+                    $fecha_iniObj = new DateTime($fecha_ini);
+                    $fecha_finObj = new DateTime($fecha_fin);
+
+                    if ($fecha_nowObj >= $fecha_iniObj && $fecha_nowObj <= $fecha_finObj)
+                    {
+                        # realizar la consulta del nuevo firmante
+                        $dataIncapacidad = \DB::Table('tbl_organismos AS org')
+                        ->SELECT('org.id', 'fun.nombre AS funcionario','fun.curp', 'us.name',
+                        'fun.cargo','fun.correo', 'us.puesto', 'fun.incapacidad')
+                        ->JOIN('tbl_funcionarios AS fun', 'fun.id','org.id')
+                        ->JOIN('users AS us', 'us.email', 'fun.correo')
+                        ->WHERE('fun.id', $id_firmante)
+                        ->FIRST();
+
+                        if ($dataIncapacidad != null) {
+                            $result  = $dataIncapacidad;
+                        } else {
+                            return "NO SE ENCONTRON DATOS DE LA PERSONA QUE TOMARÁ EL LUGAR DEL ACADEMICO!";
+                        }
+                    } else {
+                        # Historial
+                        $fechaBusqueda = 'Ini:'. $fecha_ini .'/Fin:'. $fecha_fin .'/IdFun:'. $id_firmante;
+                        $claveAr = array_search($fechaBusqueda, $historial);
+
+                        if ($claveAr === false) {
+                            # si no se encuentra en el historial procedemos a gurdar el registro
+                            $historial[] = $fechaBusqueda;
+                            # guardar en la bd el nuevo array en el campo historial del json
+                            try {
+                                $jsonHistorial = json_encode($historial);
+                                \DB::update('UPDATE tbl_funcionarios SET incapacidad = jsonb_set(incapacidad, \'{historial}\', ?) WHERE id = ?', [$jsonHistorial, $dataFirmante->id_fun]);
+                            } catch (\Throwable $th) {
+                                return "Error: " . $th->getMessage();
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return $result;
+    }
 }
