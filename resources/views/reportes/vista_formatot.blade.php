@@ -105,7 +105,7 @@
                 <div class="form-row">
                     <div class="form-group mb-2 mb-2">
                         <button input type="submit" class="btn btn-success my-2 my-sm-0 waves-effect waves-light">
-                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            <i class="far fa-file-excel fa-2x" aria-hidden="true"></i>&nbsp;
                             EXPORTAR FORMATO T
                         </button>
                     </div>

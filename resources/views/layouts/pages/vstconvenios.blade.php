@@ -56,7 +56,7 @@
                 {{ Form::date('fecha2', $request->fecha2, ['id'=>'fecha2', 'class' => 'form-control datepicker  mr-sm-3 d-none', 'placeholder' => 'FECHA TERMINO', 'title' => 'FECHA TERMINO']) }}
                 {{ Form::button('BUSCAR', ['id' => 'botonBUSCAR', 'name'=> 'boton', 'value' => 'BUSCAR', 'class' => 'btn btn-outline-primary']) }}
                 @can('convenios.edit')
-                {{ Form::button('EXPORTAR REGISTROS <i class="fa fa-file-excel-o fa-2x fa-lg text-dark ml-1"></i>', ['id' => 'botonGENEXCEL', 'value' => 'EXPORTAR REGISTROS2', 'class' => 'btn btn-warning text-dark']) }}
+                {{ Form::button('EXPORTAR REGISTROS <i class="far fa-file-excel fa-2x fa-lg text-dark ml-1"></i>', ['id' => 'botonGENEXCEL', 'value' => 'EXPORTAR REGISTROS2', 'class' => 'btn btn-warning text-dark']) }}
                 @endcan
                 {!! Form::close() !!}
             </div>

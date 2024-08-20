@@ -30,7 +30,7 @@
 
         {{-- información sobre la entrega del formato t para unidades --}}
         <div class="alert alert-info" role="alert">
-            <b>LA FECHA LÍMITE DEL MES DE PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL 
+            <b>LA FECHA LÍMITE DEL MES DE PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL
                 <strong>{{$fechaEntregaFormatoT}}</strong> FALTAN
                 <strong>{{ $diasParaEntrega }}</strong> DÍAS.
             </b>
@@ -61,7 +61,7 @@
                         <div class="form-group col-md-4">
                             <button input type="submit"
                                 class="btn btn-outline-success my-2 my-sm-0 waves-effect waves-light">
-                                <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                                <i class="far fa-file-excel fa-2x" aria-hidden="true"></i>&nbsp;
                                 GENERAR REPORTE
                             </button>
                         </div>
