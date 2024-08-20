@@ -16,7 +16,7 @@
         Catálogos / Cursos
     </div>
 
-    <div class="card card-body" style=" min-height:450px;"> 
+    <div class="card card-body" style=" min-height:450px;">
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
@@ -34,10 +34,10 @@
                             <option value="clasificacion">CLASIFICACIÓN</option>
                             <option value="anio">AÑO</option>
                         </select>
-                        {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}                       
+                        {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
                         {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
                     {!! Form::close() !!}
-            </div>       
+            </div>
             <div class="form-group col-md-3">
                 <div class="dropdown show">
                     <a class="btn btn-warning dropdown-toggle text-dark" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -46,40 +46,40 @@
                     <div class="dropdown-menu bg-warning" aria-labelledby="dropdownMenuLink">
                         @can('exportar.cursosdv')
                             <a class="dropdown-item border-bottom text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'CURSOS'])}}" target="_blank">
-                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> CURSOS
-                            </a>                            
+                                <i  class="far fa-file-excel fa-1x fa-sm"></i> CURSOS
+                            </a>
                             <a class="dropdown-item border-bottom text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'CERTIFICACION'])}}" target="_blank">
-                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> CERTIFICIÓN EXTRAORDINARIA 
+                                <i  class="far fa-file-excel fa-1x fa-sm"></i> CERTIFICIÓN EXTRAORDINARIA
                             </a>
                             <a class="dropdown-item border-bottom  text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'PROGRAMA'])}}" target="_blank">
-                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> PROGRAMA ESTRATÉGICO
+                                <i  class="far fa-file-excel fa-1x fa-sm"></i> PROGRAMA ESTRATÉGICO
                             </a>
-                        @endcan  
-                        @can('academico.catalogo.cursos') 
+                        @endcan
+                        @can('academico.catalogo.cursos')
                             <a class="dropdown-item border-bottom text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'ACTIVOS'])}}" target="_blank">
-                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> CURSOS ACTIVOS
+                                <i  class="far fa-file-excel fa-1x fa-sm"></i> CURSOS ACTIVOS
                             </a>
                         @endcan
                         @can('academico.catalogo.cursosall')
                             <a class="dropdown-item text-dark"  href="{{route('academico.exportar.cursosall')}}" target="_blank">
-                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> TODO LOS CURSOS
+                                <i  class="far fa-file-excel fa-1x fa-sm"></i> TODO LOS CURSOS
                             </a>
                         @endcan
                     </div>
-                </div>           
-            </div>   
+                </div>
+            </div>
             @can('cursos.create')
                 <div class="form-group col-md-3">
                     <a class="btn" href="{{route('frm-cursos')}}">NUEVO CURSO</a>
                 </div>
-            @endcan                   
-                
-        </div>                
-           
+            @endcan
+
+        </div>
+
         <table  id="table-instructor" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>ESPECIALIDAD</th>                    
+                    <th>ESPECIALIDAD</th>
                     <th>CURSO</th>
                     <th >CAPACITACIÓN</th>
                     <th >DURA CiÓN</th>
@@ -101,13 +101,13 @@
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
-                @php 
+                @php
                     $servicio = str_replace(array('["','"]'),'',$itemData->servicio);
                     if($itemData->proyecto) $prog = 'SI';
                     else $prog = 'NO';
                 @endphp
                     <tr>
-                        <th scope="row">{{$itemData->nombre}}</th>                       
+                        <th scope="row">{{$itemData->nombre}}</th>
                         <td class="text-left pl-2"> {{$itemData->nombre_curso}}</td>
                         <td>{{$itemData->tipo_curso}}</td>
                         <td>{{$itemData->horas}}</td>
@@ -132,13 +132,13 @@
                         </td>
                         <td>
                             @if($itemData->file_carta_descriptiva)
-                            
+
                                 <a class="nav-link"  alt="Descargar PDF" href="{{env('APP_URL').'/'.'storage'.$itemData->file_carta_descriptiva}}" target="_blank">
                                     <i  class="fa fa-file-pdf  fa-2x fa-lg text-danger"></i>
                                 </a>
-                                 
+
                             @endif
-                        </td>                   
+                        </td>
                         @can('paqueteriasdidacticas')
                         <td>
                             <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="nav-link" title="Paquetes">
@@ -158,7 +158,7 @@
         </table>
         <br>
         <!-- Full Height Modal Right -->
-        <div class="modal fade right" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">            
+        <div class="modal fade right" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-full-height modal-right" role="document">
                 <div class="modal-content">
                     <div class="modal-header">

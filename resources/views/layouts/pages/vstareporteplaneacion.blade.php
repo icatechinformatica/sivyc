@@ -117,7 +117,7 @@
                     </div>
                     <div class="col-md-3">
                         <a href="{{ route('planeacion.generar.reporte.supre.xls', [$filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2]) }}" class="btn btn-success" style="background-color:transparent;">
-                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp; reporte Excel
+                            <i class="far fa-file-excel fa-2x" aria-hidden="true"></i>&nbsp; reporte Excel
                         </a>
                     </div>
                 </div>

@@ -132,7 +132,7 @@
                 <div class="form-row my-2">
                     <div class="form-group mb-2">
                         <button input type="submit" id="generarReporteT" name="generarReporteT" class="btn btn-success">
-                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            <i class="far fa-file-excel fa-2x" aria-hidden="true"></i>&nbsp;
                             EXPORTAR FORMATO T
                         </button>
                     </div>
