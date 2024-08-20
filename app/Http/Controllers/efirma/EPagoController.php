@@ -221,14 +221,14 @@ class EPagoController extends Controller
             $tipo='DEL CURSO';
         }
 
-        $memoContrato = DB::Table('documentos_firmar')->Where('tipo_archivo','Contrato')
-            ->Where('status','VALIDADO')
-            ->Where('numero_o_clave', $data->clave)
-            ->Value('num_oficio');
+        // $memoContrato = DB::Table('documentos_firmar')->Where('tipo_archivo','Contrato')
+        //     ->Where('status','VALIDADO')
+        //     ->Where('numero_o_clave', $data->clave)
+        //     ->Value('num_oficio');
 
-        if(is_null($memoContrato)) {
+        // if(is_null($memoContrato)) {
             $memoContrato = $data->numero_contrato;
-        }
+        // }
 
         $body_html = '<div align=right>
             <b>Unidad de Capacitación '.$data->unidad_capacitacion.'.</b>
