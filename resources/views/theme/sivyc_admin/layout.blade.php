@@ -11,9 +11,11 @@
 
         <link rel="shortcut icon" href="{{ URL::asset('favicon.ico') }}">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+        <link rel="stylesheet" href="{{asset('css/all.css') }}">
+        {{-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"> --}}
         <!-- Google Fonts Roboto -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+        <link rel="stylesheet" href="{{asset('css/google-fonts/family-open-sans.css') }}">
+        {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"> --}}
 
 
         <!-- CSS Implementing Plugins -->
@@ -50,7 +52,8 @@
         <script src="{{asset("vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js") }}"></script>
         <script src="{{asset("js/scripts/argon.js?v=1.2.0") }}"></script>
         <script src="{{ asset("js/mdb.min.js") }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
+        <script src="{{ asset("js/jquery.validate.js") }}"></script>
+        {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script> --}}
         @yield("scripts_content")
     </body>
 

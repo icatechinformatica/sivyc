@@ -140,7 +140,7 @@
                 <div class="form-row">
                     <div class="form-group mb-2">
                         <button type="submit" class="btn btn-success">
-                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            <i class="far fa-file-excel fa-2x" aria-hidden="true"></i>&nbsp;
                             FORMATO T DE LA UNIDAD DE {{ $unidad }}
                         </button>
                     </div>
