@@ -648,12 +648,10 @@ class ContratoController extends Controller
         $status_doc = DB::Table('documentos_firmar')->Where('numero_o_clave',$data->clave)
             ->Where('tipo_archivo','Contrato')
             ->Get();
+        if($fechaA > $data->termino){
+            $generarEfirmaContrato = FALSE;
+        }
         foreach($status_doc as $mxs) {
-            if($fechaA > $data->termino){
-                $generarEfirmaContrato = FALSE;
-            }
-
-
             if(!is_null($mxs)) {
                 if($mxs->status != 'CANCELADO' && $mxs->status != 'CANCELADO ICTI') {
                     $firmantes = json_decode($mxs->obj_documento, true);
