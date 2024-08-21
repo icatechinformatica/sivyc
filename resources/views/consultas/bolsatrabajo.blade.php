@@ -133,7 +133,7 @@
 
                     <button class="btn btn-info" id="btnLimpiar">LIMPIAR</button>
 
-                    <button class="btn btn-warning text-dark" id="btnReporte"> <i class="fa fa-file-excel-o fa-lg text-dark ml-1"></i> EXPORTAR REGISTROS</button>
+                    <button class="btn btn-warning text-dark" id="btnReporte"> <i class="far fa-file-excel fa-lg text-dark ml-1"></i> EXPORTAR REGISTROS</button>
                 </div>
             </form>
 

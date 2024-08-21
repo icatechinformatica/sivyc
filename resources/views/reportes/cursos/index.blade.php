@@ -83,7 +83,7 @@
                       <th></th>
                       <th class="text-center">
                            <a id="botonXLS-CONST" class="nav-link" >
-                                <i  class="fa fa-file-excel-o fa-2x fa-lg text-success"></i>
+                                <i  class="far fa-file-excel fa-2x fa-lg text-success"></i>
                            </a>
                     </tr>
                     <tr><th colspan="3"></th></tr>
