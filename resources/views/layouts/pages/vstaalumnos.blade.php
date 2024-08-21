@@ -1,71 +1,81 @@
+
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
+    <style>   
+        table tr td, table tr th{ font-size: 12px; width: 10%;}
+        table tr th{ text-align: center;}
+
+    </style>
+@endsection
 @extends('theme.sivyc.layout')
-<!--llamar a la plantilla -->
-@section('title', 'Alumnos | SIVyC Icatech')
-<!--seccion-->
-@section('content')
-    <div class="container g-pt-50">
+@section('title', 'Preinscripción - Aspirantes | SIVyC Icatech')
+@section('content') 
+    <div class="card-header">
+        Presincripción / Aspirantes
+    </div>
+    <div class="card card-body  p-5" style=" min-height:450px;">
         @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
-            </div>
-        @endif
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>CATÁLOGO ASPIRANTES</h2>
-                    <label for="">Ingrese nombre, matricula o curp</label>
-                    {!! Form::open(['route' => 'alumnos.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                        @csrf
-                        {{--<select name="busqueda_aspirante" class="form-control mr-sm-2" id="busqueda_aspirante">
-                            <option value="">BUSCAR POR TIPO</option>
-                            <option value="curp_aspirante">CURP</option>
-                            <option value="nombre_aspirante">NOMBRE</option>
-                            <option value="matricula_aspirante">MATRICULA</option>
-                        </select>--}}
-                        <div>
-                            {!! Form::text('busqueda_aspirantepor', null, ['class' => 'form-control mr-sm-4', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
-                        </div>
-                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
-                    {!! Form::close() !!}
+            <div class="row ">
+                <div class="col-md-12 alert alert-success">
+                    <p>{{ $message }}</p>
                 </div>
-                @can('alumnos.inscripcion-paso2')
-                    <div class="pull-right">
-                        <a class="btn btn-success btn-lg" href="{{route('alumnos.valid')}}" >Agregar Nuevo</a>
-                    </div>
+            </div>
+        @endif    
+        <div class="row">
+            <div class="col-lg-12 margin-tb form-inline">                
+                {!! Form::open(['route' => 'alumnos.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                    @csrf                                               
+                    {!! Form::text('busqueda_aspirantepor', $buscar_aspirante, ['class' => 'form-control mr-sm-4 mb-2', 'size' => '50', 'placeholder' => 'NOMBRE/CURP/MATRICULA', 'aria-label' => 'BUSCAR']) !!}                                            
+                    {{ Form::button("<i class='fa fa-search mr-1'></i> BUSCAR", ['type' => 'submit', 'id' => 'buscar','name' => 'BUSCAR', 'class' => 'form-control btn mb-2']) }}
+                {!! Form::close() !!}                
+                @can('alumnos.inscripcion-paso2')                
+                    <a class="form-control btn mb-2" href="{{route('alumnos.valid')}}" ><i class='fa fa-plus mr-1'></i> Nuevo</a>                
                 @endcan
             </div>
-        </div>
-        <hr style="border-color:dimgray">
+        </div>        
         @if ($contador > 0)
-            <table  id="table-instructor" class="table table-bordered table-responsive-md Datatables">
+        <div class="p-0 m-0 w-100" >          
+            <table class="table table-hover table-responsive w-100"  style="table-layout: fixed; width: 100%;" >
                 <thead>
                     <tr>
-                        <th scope="col">NOMBRE</th>
-                        <th scope="col">CURP</th>
+                        <th scope="col" class="w-40 text-left" >NOMBRE DEL ASPIRANTE</th>
+                        <th scope="col">CURP</th>                                     
+                        <th scope="col">FECHA ACT.</th>
+                        <th scope="col">ACTUALIZADO POR</th>
+                        <th scope="col">CURP/ESTUDIOS/..</th>
                         @can('alumnos.inscripcion-paso2')
-                            <th scope="col">MODIFICAR</th>
+                            <th scope="col">EDITAR</th>
                         @endcan
                         @can('permiso.alu.exo')
-                            <th>PERMISO EXONERACION</th>
+                            <th>AUTORIZA EXO</th>
                         @endcan
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($retrieveAlumnos as $itemData)
                         <tr>
-                            <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
+                            <td scope="row" style="width: 25%">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
                             <td>{{$itemData->curp}}</td>
-
-                                <td>
-                                    <a href="{{route('alumnos.valid', ['busqueda' => $itemData->curp])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">
-                                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                            <td  class="text-center">{{date('d/m/Y', strtotime($itemData->updated_at))}}</td>
+                            <td class="text-center small" style="width: 20%">{{$itemData->name}}</td>
+                            <td class="text-center">                       
+                                @if($itemData->documento)
+                                    <a class="nav-link pt-0"  href="{{$itemData->documento}}" target="_blank">
+                                          <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
                                     </a>
-                                </td>
-
+                                @else
+                                    <i  class="far fa-file-pdf  fa-3x text-muted pt-0"  title='ARCHIVO NO DISPONIBLE.'></i>
+                                @endif
+                            </td>
+                            <td  class="text-center">
+                                <a href="{{route('alumnos.valid', ['busqueda' => $itemData->curp])}}">
+                                    <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
+                                </a>
+                            </td>
                             @can('permiso.alu.exo')
-                                <td>
+                                <td  class="text-center">
                                     @if ($itemData->permiso_exoneracion)
-                                        <i class="btn btn-success" id="descper" onclick="desactivar('{{$itemData->curp}}');">ACTIVO</i>
+                                        <i class="btn btn-success" id="descper" onclick="desactivar('{{$itemData->curp}}');">&nbsp;&nbsp;ACTIVO&nbsp;&nbsp;</i>
                                     @else
                                         <i class="btn btn-danger" onclick="activar('{{$itemData->curp}}');">INACTIVO</i>
                                     @endif
@@ -82,6 +92,7 @@
                     </tr>
                 </tfoot>
             </table>
+    </div>
         @else
             <div class="alert alert-warning" role="alert">
                 <h2>NO HAY ALUMNOS REGISTRADOS!</h2>
@@ -95,7 +106,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">ASIGNAR PERMISO DE EXONERACION</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">AUTORIZAR PERMISO DE EXONERACIÓN</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -117,9 +128,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
-                        <button type="submit" class="btn btn-primary">ACTIVAR</button>
+                    <div class="modal-footer">                        
+                        <button type="submit" class="btn btn-danger">ACTIVAR</button>
+                        <button type="button" class="btn" data-dismiss="modal">CERRAR</button>
                     </div>
                 </form>
             </div>
@@ -130,7 +141,7 @@
         <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">QUITAR PERMISO DE EXONERACION</h5>
+            <h5 class="modal-title" id="exampleModalLabel">QUITAR PERMISO DE EXONERACIÓN</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -149,9 +160,9 @@
                 </div>
             </div>
             </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
-            <button type="button" class="btn btn-primary" id="btnquitar">QUITAR</button>
+            <div class="modal-footer">            
+            <button type="button" class="btn btn-danger" id="btnquitar">QUITAR</button>
+            <button type="button" class="btn" data-dismiss="modal">CERRAR</button>
             </div>
         </div>
         </div>
