@@ -67,10 +67,20 @@ class ReportService
             ->Where('u.unidad', $ubicacion)
             ->First();
 
-        // $body = $this->createBody($id, $dataFirmantes);
+        $body = $this->createBody($id, $dataFirmantes);
+        $arrayFirmantes = [];
+        $temp = ['_attributes' =>
+            [
+                'curp_firmante' => $dataFirmantes->curp,
+                'nombre_firmante' => $dataFirmantes->funcionario,
+                'email_firmante' => $dataFirmantes->correo,
+                'tipo_firmante' => 'FM',
+            ]
+        ];
         $nameFileOriginal = 'contrato '.$rf001->memorandum.'.pdf';
         $numOficio = "Contrato-";
         $numFirmantes = '1'; // 1 o 2
+        array_push($arrayFirmantes, $temp);
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
@@ -78,26 +88,22 @@ class ReportService
                 '_attributes' => [
                     'nombre_emisor' => $usuario->name,
                     'cargo_emisor' => $usuario->puesto,
-                    'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
-                    // 'curp_emisor' => $dataEmisor->curp
+                    'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
                 ],
             ],
             'archivo' => [
                 '_attributes' => [
-                    'nombre_archivo' => $nameFileOriginal
-                    // 'md5_archivo' => $md5
-                    // 'checksum_archivo' => utf8_encode($text)
+                    'nombre_archivo' => $nameFileOriginal,
                 ],
-                // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => ['']
+                'cuerpo' => [$body],
             ],
             'firmantes' => [
                 '_attributes' => [
                     'num_firmantes' => $numFirmantes
                 ],
                 'firmante' => [
-                    $dataFirmantes
-                ]
+                    $arrayFirmantes
+                ],
             ],
         ];
 
@@ -122,6 +128,9 @@ class ReportService
                 'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
             ],
         ]);
+
+        return $resultado;
+        exit;
 
         //generación de la cadena única mediante el ICTI
         $xmlBase64 = base64_encode($resultado);
@@ -195,7 +204,9 @@ class ReportService
         #fecha del envio de documento
         $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
 
-        $bodyXml = $distintivo. "\n".
+        $bodyXml = "INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN".
+        "\n TECNOLÓGICA DEL ESTADO DE CHIAPAS \n".
+        "\n". $distintivo. "\n".
         "\n UNIDAD DE CAPACITACIÓN ".$unidad.
         "\n OFICIO NÚM. ". $rf001->memorandum .
         "\n ".$municipio.", CHIAPAS. A ".$fecha_comp.".\n";
@@ -210,6 +221,20 @@ class ReportService
 
         $bodyXml .= "";
 
+
+        $bodyHtml = '<div align=center><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS</b></div>
+        <div>
+            <b>'.$distintivo.'</b>
+        </div> <br>
+        <div align=right>
+            <b>UNIDAD DE CAPACITACIÓN '.$unidad.'</b> <br>
+            <b>OFICIO NÚM. '. $rf001->memorandum . '</b> <br>
+            <b>'. $municipio .', CHIAPAS. A '. $fecha_comp. '</b>
+        </div> <br>';
+
+        $bodyHtml .= '<div align=right>
+            '. strtoupper($dirigido->titulo) .' '. strtoupper($dirigido->nombre) .'
+        </div>';
         return $bodyXml; // retorno del cuerpo del xml
     }
 

@@ -481,7 +481,7 @@
 
         $("#corfirmarEfirma").click(async function(event) {
             event.preventDefault(); // prevenir envío tradicional de formulario
-            let URL = "{{ route('reportes.rf001.xml.generar') }}";
+            let URL = "{{ route('reportes.rf001.xml.generar', ['id' => $idRf001]) }}";
             try {
                 document.getElementById('loader-overlay').style.display = 'block';
                 await $.ajax({
@@ -492,7 +492,7 @@
                         setTimeout(function() {
                             // Ocultar el loader y mostrar el contenido después de la carga
                             document.getElementById('loader-overlay').style.display = 'none';
-                            console.log('Datos recibidos:', response.data);
+                            console.log('Datos recibidos:', response);
                         }, 2000); // 2 segundos de tiempo simulado
 
                     },
