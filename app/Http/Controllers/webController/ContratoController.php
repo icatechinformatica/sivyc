@@ -1292,9 +1292,16 @@ class ContratoController extends Controller
                 }
             }
         }
+        $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
+        $monto = explode(".",strval($data_contrato->cantidad_numero));
+
+        $especialidad = especialidad_instructor::SELECT('especialidades.nombre')
+                                                ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
+                                                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+                                                ->FIRST();
 
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html','funcionarios'));
             }else {
                 $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('data_contrato','data','D','M','Y','nomins','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html','funcionarios'));
             }
@@ -1604,7 +1611,7 @@ class ContratoController extends Controller
     }
 
     public function funcionarios($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true');
 
@@ -1623,6 +1630,11 @@ class ContratoController extends Controller
 
         $academico = $academico->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('f.cargo','LIKE','%ACADÉMICO%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $vinculacion = $vinculacion->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('f.cargo','LIKE','%VINCULACIÓN%')
             ->Where('u.unidad', $unidad)
             ->First();
 
