@@ -22,7 +22,7 @@ use App\Http\Requests\rf001ComentariosRequest;
 
 class Rf001Controller extends Controller
 {
-    private $path;
+    private $path_files;
     private Reporterf001Interface $rfoo1Repository;
     public function __construct(Reporterf001Interface $rfoo1Repository)
     {
