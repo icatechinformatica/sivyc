@@ -36,40 +36,41 @@
             <table class="tb">
                 <thead>
                     <tr>
-                        <th colspan="8">DATOS GENERALES DEL CURSO DE CAPACITACIÓN O CERTIFICACIÓN</th>
+                        <th colspan="9" style="font-size:10.5px;">DATOS GENERALES DEL CURSO DE CAPACITACIÓN O CERTIFICACIÓN</th>
                     </tr>
                     <tr>
-                        <th>NOMBRE DEL CURSO</th>
-                        <th colspan="3">{{$nombre_curso}}</th>
-                        <th colspan="3">MODALIDAD</th>
+                        <th colspan="2">NOMBRE DEL CURSO</th>
+                        <th colspan="5">{{$nombre_curso}}</th>
+                        <th colspan="1">MODALIDAD</th>
                         <th>{{$mod}}</th>
                     </tr>
                     <tr>
-                        <th>DURACIÓN EN HORAS</th>
+                        <th colspan="2">DURACIÓN EN HORAS</th>
                         <th>{{$dura}}</th>
-                        <th colspan="3">HORARIO</th>
-                        <th colspan="3">{{$horario}} hrs.</th>
+                        <th colspan="4">HORARIO</th>
+                        <th colspan="2">{{$horario}} hrs.</th>
                     </tr>
                     <tr>
-                        <th>FECHA DE INICIO</th>
+                        <th colspan="2">FECHA DE INICIO</th>
                         <th>{{$inicio}}</th>
-                        <th colspan="3">FECHA DE TERMINO</th>
-                        <th colspan="3">{{$termino}}</th>
+                        <th colspan="4">FECHA DE TERMINO</th>
+                        <th colspan="2">{{$termino}}</th>
                     </tr>
                     <tr>
-                        <th>TIPO DE CURSO</th>
+                        <th colspan="2">TIPO DE CURSO</th>
                         <th>{{$tipo}}</th>
-                        <th colspan="3">INSTITUCIÓN O DEPENDENCIA</th>
-                        <th colspan="3">{{$depen}}</th>
+                        <th colspan="4">INSTITUCIÓN O DEPENDENCIA</th>
+                        <th colspan="2">{{$depen}}</th>
                     </tr>
                     <tr>
-                        <th colspan="8">LISTA DE ALUMNOS</th>
+                        <th colspan="9" style="font-size:10.5px;">LISTA DE ALUMNOS</th>
                     </tr>
                     <tr>
                         <th>N°</th>
                         <th>APELLIDO PATERNO</th>
                         <th>APELLIDO MATERNO</th>
                         <th>NOMBRE(S)</th>
+                        <th>CURP</th>
                         <th>SEXO</th>
                         <th>EDAD</th>
                         <th>CORREO</th>
@@ -83,6 +84,7 @@
                             <td>{{$item->apellido_paterno}}</td>
                             <td>{{$item->apellido_materno}}</td>
                             <td>{{$item->nombre}}</td>
+                            <td>{{$item->curp}}</td>
                             <td>@if ($item->sexo=='MASCULINO') {{"M"}} @else {{"F"}} @endif</td>
                             <td>{{$item->edad}}</td>
                             <td>{{$item->correo}}</td>
