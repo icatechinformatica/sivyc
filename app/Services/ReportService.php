@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Spatie\ArrayToXml\ArrayToXml;
 use App\Models\Tokens_icti;
 use Illuminate\Support\Facades\Http;
+use App\Models\DocumentosFirmar;
 
 class ReportService
 {
@@ -95,7 +96,7 @@ class ReportService
                 '_attributes' => [
                     'nombre_archivo' => $nameFileOriginal,
                 ],
-                'cuerpo' => [$body],
+                'cuerpo' => [strip_tags($body)],
             ],
             'firmantes' => [
                 '_attributes' => [
@@ -129,9 +130,6 @@ class ReportService
             ],
         ]);
 
-        return $resultado;
-        exit;
-
         //generación de la cadena única mediante el ICTI
         $xmlBase64 = base64_encode($resultado);
         $getToken = Tokens_icti::all()->last();
@@ -156,8 +154,8 @@ class ReportService
             if (is_null($dataInsert)) {
                 $dataInsert = new DocumentosFirmar();
             }
-            $dataInsert->obj_documento_interno = json_encode($ArrayXml);
-            $dataInsert->obj_documento = json_encode($body);
+            $dataInsert->obj_documento_interno = json_encode($body);
+            $dataInsert->obj_documento = json_encode($ArrayXml);
             $dataInsert->status = 'EnFirma';
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
             $dataInsert->tipo_archivo = 'Concentrado de Ingresos Propios';
@@ -166,6 +164,11 @@ class ReportService
             $dataInsert->documento = $resultado;
             $dataInsert->documento_interno = $resultado;
             $dataInsert->save();
+
+            (new Rf001Model())->where('id', $id)->update([
+                'estado' => 'ENFIRMA'
+            ]);
+
             return TRUE;
         } else {
             return FALSE;
@@ -198,28 +201,36 @@ class ReportService
         $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
 
         $datoJson = json_decode($rf001->movimientos, true);
+        $startDate = Carbon::parse($rf001->periodo_inicio);
+        $endDate = Carbon::parse($rf001->periodo_fin);
+        $formattedStartDate = $startDate->format('d');
+        $formattedEndDate = $endDate->format('d');
+        $mes = $startDate->translatedFormat('F');
+        $anio = $startDate->format('Y');
 
-        $bodyXml = null;
+        $bodyHtml = null;
 
-        #fecha del envio de documento
-        $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+        // $bodyXml = null;
 
-        $bodyXml = "INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN".
-        "\n TECNOLÓGICA DEL ESTADO DE CHIAPAS \n".
-        "\n". $distintivo. "\n".
-        "\n UNIDAD DE CAPACITACIÓN ".$unidad.
-        "\n OFICIO NÚM. ". $rf001->memorandum .
-        "\n ".$municipio.", CHIAPAS. A ".$fecha_comp.".\n";
+        // #fecha del envio de documento
+        // $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
 
-        $bodyXml .= "\n ". strtoupper($dirigido->titulo) . " " . strtoupper($dirigido->nombre) .
-        "\n ". $dirigido->cargo .
-        "\n PRESENTE \n";
+        // $bodyXml = "INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN".
+        // "\n TECNOLÓGICA DEL ESTADO DE CHIAPAS \n".
+        // "\n". $distintivo. "\n".
+        // "\n UNIDAD DE CAPACITACIÓN ".$unidad.
+        // "\n OFICIO NÚM. ". $rf001->memorandum .
+        // "\n ".$municipio.", CHIAPAS. A ".$fecha_comp.".\n";
 
-        $bodyXml .= "\n Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001), original, \n".
-        "\n copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad de \n".
-        "\n Capacitación TUXTLA, con los siguientes movimientos. \n";
+        // $bodyXml .= "\n ". strtoupper($dirigido->titulo) . " " . strtoupper($dirigido->nombre) .
+        // "\n ". $dirigido->cargo .
+        // "\n PRESENTE \n";
 
-        $bodyXml .= "";
+        // $bodyXml .= "\n Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001), original, \n".
+        // "\n copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad de \n".
+        // "\n Capacitación , con los siguientes movimientos. \n";
+
+        // $bodyXml .= "";
 
 
         $bodyHtml = '<div align=center><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS</b></div>
@@ -233,9 +244,64 @@ class ReportService
         </div> <br>';
 
         $bodyHtml .= '<div align=right>
-            '. strtoupper($dirigido->titulo) .' '. strtoupper($dirigido->nombre) .'
+            '. strtoupper($dirigido->titulo) .' '. strtoupper($dirigido->nombre) .' <br>
+            '.$dirigido->cargo.' <br>
+            PRESENTE
+        </div><br>';
+
+        $bodyHtml .= '
+        <div align=left>
+            <p>
+            Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001), original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad de Capacitación '.$unidad.', con los siguientes movimientos:
+            </p>
+        </div><br><br>';
+
+        $bodyHtml .= '
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <p>PROGRESIVO</p>
+                            </th>
+                            <th>
+                                <p>N° FOLIO</p>
+                            </th>
+                            <th>
+                                <p>CURSO / MOTIVO</p>
+                            </th>
+                            <th>
+                                <p>MOVIMIENTO</p>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+            foreach ($datoJson as $key => $value)
+            {
+                $depositos = isset($value['depositos'])
+                ? json_decode($value['depositos'], true)
+                : [];
+
+                $bodyHtml .= '<tr>';
+                $bodyHtml .= '<td>' . ($key < 9 ? '0' : '') . ($key + 1) . '</td>'; // Aquí suponemos que $key es el PROGRESIVO
+                $bodyHtml .= '<td>' . $value['folio'] . '</td>'; // Aquí accedes al número de folio
+                $bodyHtml .= '<td>' . $value['curso'] == null ? $value['descripcion'] : $value['curso'] . '</td>'; // Aquí accedes al curso/motivo
+                $bodyHtml .= '<td>';
+                foreach ($depositos as $k) {
+                    $bodyHtml.=  $k['folio']; // Aquí accedes al movimiento
+                }
+                $bodyHtml .= '</td>';
+                $bodyHtml .= '</tr>';
+            }
+
+        $bodyHtml.='</tbody>
+                </table>';
+
+        $bodyHtml .= '<div align=justify>
+            <p>Correspondientes al periodo comprendido del '.$formattedStartDate.' al '.$formattedEndDate.' de '.$mes.' del '.$anio.', lo anterior, para contabilización
+            respectiva.</p>
+            <p>Sin otro particular aprovecho la ocasión para saludarlo.</p>
         </div>';
-        return $bodyXml; // retorno del cuerpo del xml
+        return $bodyHtml; // retorno del cuerpo del xml
     }
 
     private function incapacidad($incapacidad, $incapacitado)

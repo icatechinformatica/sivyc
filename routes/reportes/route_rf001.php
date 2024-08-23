@@ -18,5 +18,8 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('/reportes/rf001/xml/generar/{id}', [Rf001ReporteController::class, 'generate_report'])->name('reportes.rf001.xml.generar');
 
+    Route::get('/reportes/fr001/firma/{id}', [Rf001ReporteController::class, 'edit'])->name('reporte.generar.firma');
+
+
 
 });

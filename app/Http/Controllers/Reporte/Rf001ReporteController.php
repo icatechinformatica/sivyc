@@ -8,9 +8,15 @@ use App\Services\ReportService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use App\Interfaces\Reporterf001Interface;
 
 class Rf001ReporteController extends Controller
 {
+    private Reporterf001Interface $rfoo1Repository;
+    public function __construct(Reporterf001Interface $rfoo1Repository)
+    {
+        $this->rfoo1Repository = $rfoo1Repository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -64,7 +70,8 @@ class Rf001ReporteController extends Controller
      */
     public function edit($id)
     {
-        //
+        $idFormato = $id;
+        return view('reportes.rf001.formatofirma', compact('idFormato'))->render();
     }
 
     /**

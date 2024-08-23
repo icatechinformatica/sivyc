@@ -131,10 +131,10 @@
                                                 </a>
                                             @break
 
-                                            @case('ENVIADO')
+                                            @case('ENFIRMA')
                                                 <a class="nav-link pt-0"
-                                                    href="{{ route('reporte.rf001.details', ['concentrado' => $item->id]) }}">
-                                                    <i class="fa fa-times fa-2x fa-lg text-danger" aria-hidden="true" title='FORMATO RF001 ENVIADO'></i>
+                                                    href="{{ route('reporte.generar.firma', ['id' => $item->id]) }}">
+                                                    <i class="fas fa-pen fa-2x fa-lg text-danger" aria-hidden="true" title='EN FIRMA'></i>
                                                 </a>
                                             @break
 
