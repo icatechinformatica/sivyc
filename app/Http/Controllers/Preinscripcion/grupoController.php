@@ -547,7 +547,7 @@ class grupoController extends Controller
 
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
-                if ((((explode('-',$request->inicio))[0]) == date('Y')) AND ((explode('-',$request->termino))[0]) == date('Y')) {
+               // if ((((explode('-',$request->inicio))[0]) == date('Y')) AND ((explode('-',$request->termino))[0]) == date('Y')) {
                     if ($request->inicio <= $request->termino) {
                         $folio = $_SESSION['folio_grupo'];
                         $mapertura = $request->mapertura;
@@ -870,9 +870,9 @@ class grupoController extends Controller
                     } else {
                         $message = 'La fecha de termino no puede ser menor a la de inicio';
                     }
-                } else {
-                    $message = 'El año de la fecha de inicio o de termino no coincide con el actual';
-                }
+                //} else {
+                    //$message = 'El año de la fecha de inicio o de termino no coincide con el actual';
+                //}
             } else {
                 $message  = "Si es una CERTIFICACIÓN, corrobore que cubra 10 horas.";
             }
