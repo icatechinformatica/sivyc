@@ -39,7 +39,7 @@
 <body>
     <header>
         <img src='img/formatos/bannerhorizontal.jpeg' width="100%">
-        <p style="margin-top:-55px; padding:0px; font-size: 11px; "><span  style="font-style: italic; display:block; padding-bottom:5px;">@if(isset($distintivo)){{ $distintivo }}@endif</span>@if(isset($titulo)){{ $titulo }}@endif</p>
+        <p style="margin-top:-65px; padding:0px; font-size: 11px; "><span  style="font-style: italic; display:block; padding-bottom:5px;">@if(isset($distintivo)){{ $distintivo }}@endif</span>@if(isset($titulo)){{ $titulo }}@endif</p>
         @yield("header")
     </header>
     @if(isset($direccion))
