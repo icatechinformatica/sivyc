@@ -84,6 +84,7 @@
                             @can('efirma.index') {{-- Agregar efirma.index a usuarios delegados y academicos --}}
                                 <a class="dropdown-item" href="{{route('firma.inicio')}}">Firma Electronica</a>
                             @endcan
+                            <a class="dropdown-item" href="{{route('reporte.rf001.sent')}}">Solicitud RF001</a>
                         </div>
                     </li>
                     @endcanany
