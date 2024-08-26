@@ -101,8 +101,11 @@ class grupoController extends Controller
                 $cursos = DB::table('cursos')->where('tipo_curso','like',"%$tipo%");
                     if($grupo->status_curso!='AUTORIZADO') $cursos = $cursos->where('cursos.estado', true);
                     $cursos = $cursos->where('modalidad','like',"%$mod%")
-                            ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
-                //dd($localidad);
+                    ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
+
+                if($grupo->status_curso =='AUTORIZADO')$cursos->put($grupo->id_curso, $grupo->nombre_curso);
+
+                //dd($cursos);
                 $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
                     ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
                     ->rightJoin('instructores','t.id_instructor','=','instructores.id')
