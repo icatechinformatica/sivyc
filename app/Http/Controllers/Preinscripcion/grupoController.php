@@ -101,8 +101,11 @@ class grupoController extends Controller
                 $cursos = DB::table('cursos')->where('tipo_curso','like',"%$tipo%");
                     if($grupo->status_curso!='AUTORIZADO') $cursos = $cursos->where('cursos.estado', true);
                     $cursos = $cursos->where('modalidad','like',"%$mod%")
-                            ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
-                //dd($localidad);
+                    ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
+
+                if($grupo->status_curso =='AUTORIZADO')$cursos->put($grupo->id_curso, $grupo->nombre_curso);
+
+                //dd($cursos);
                 $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
                     ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
                     ->rightJoin('instructores','t.id_instructor','=','instructores.id')
@@ -547,7 +550,7 @@ class grupoController extends Controller
 
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
-                if ((((explode('-',$request->inicio))[0]) == date('Y')) AND ((explode('-',$request->termino))[0]) == date('Y')) {
+               // if ((((explode('-',$request->inicio))[0]) == date('Y')) AND ((explode('-',$request->termino))[0]) == date('Y')) {
                     if ($request->inicio <= $request->termino) {
                         $folio = $_SESSION['folio_grupo'];
                         $mapertura = $request->mapertura;
@@ -870,9 +873,9 @@ class grupoController extends Controller
                     } else {
                         $message = 'La fecha de termino no puede ser menor a la de inicio';
                     }
-                } else {
-                    $message = 'El año de la fecha de inicio o de termino no coincide con el actual';
-                }
+                //} else {
+                    //$message = 'El año de la fecha de inicio o de termino no coincide con el actual';
+                //}
             } else {
                 $message  = "Si es una CERTIFICACIÓN, corrobore que cubra 10 horas.";
             }
@@ -1085,14 +1088,27 @@ class grupoController extends Controller
         if ($_SESSION['folio_grupo']) {
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
             $alumnos = DB::table('alumnos_registro as ar')
-                ->select('ar.apellido_paterno','ar.apellido_materno','ar.nombre','ap.sexo', 'ap.correo',
-                        DB::raw("CONCAT(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre) as alumno"),
-                        DB::raw("extract(year from (age(ar.inicio,ap.fecha_nacimiento))) as edad"),'c.nombre_curso','c.horas',
-                        DB::raw("to_char(DATE (ar.inicio)::date, 'DD-MM-YYYY') as inicio"),
-                        DB::raw("to_char(DATE (ar.termino)::date, 'DD-MM-YYYY') as termino"),
-                        'ar.horario', 'ar.mod', 'ar.costo','ar.tipo_curso','ar.organismo_publico as depe')
+                ->select(                        
+                        DB::raw('ar.apellido_paterno'),
+                        DB::raw('ar.apellido_materno'),
+                        DB::raw('ar.nombre'),
+                        DB::raw('COALESCE(ti.sexo, ap.sexo) as sexo'),                        
+                        DB::raw("extract(year from (age(ar.inicio,COALESCE(ti.fecha_nacimiento, ap.fecha_nacimiento)))) as edad"),
+                        'ap.correo',                        
+                        DB::raw('COALESCE(ti.curp, ar.curp) as curp'),
+                        DB::raw('COALESCE(tc.curso, c.nombre_curso) as nombre_curso'),
+                        DB::raw('COALESCE(tc.dura, c.horas) as horas'),                        
+                        DB::raw("to_char(DATE (ar.inicio)::date, 'dd/mm/YYYY') as inicio"),
+                        DB::raw("to_char(DATE (ar.termino)::date, 'dd/mm/YYYY') as termino"),                        
+                        'ar.horario',                        
+                        'ar.mod', 'ar.costo','ar.tipo_curso','ar.organismo_publico as depe')
                 ->leftJoin('alumnos_pre as ap','ar.id_pre','ap.id')
                 ->leftJoin('cursos as c','ar.id_curso','c.id')
+                ->leftJoin('tbl_cursos as tc','tc.folio_grupo','ar.folio_grupo')
+                ->leftJoin('tbl_inscripcion as ti', function($join) {
+                    $join->on('ti.folio_grupo', '=', 'ar.folio_grupo')
+                         ->on('ti.curp', '=', 'ar.curp');
+                })
                 ->where('ar.folio_grupo',$_SESSION['folio_grupo'])
                 ->orderBy('alumno')
                 ->get();//dd($alumnos);
@@ -1110,6 +1126,7 @@ class grupoController extends Controller
         }else{
             return "ACCIÓN INVÁlIDA";exit;
         }
+        
     }
 
     public function generarApertura(Request $request){

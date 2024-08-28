@@ -1,26 +1,27 @@
+
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
+    <style>   
+        table tr td, table tr th { font-size: 12px; width: 10%; }
+        table tr th{ text-align: center; }
+        #resultado { background-color: red; color: white; font-weight: bold; }
+        #resultado.ok { background-color: green; }
+        #resultado.white { background-color: white; }
+        .check-input {transform: scale(1.5); }
+
+        .img-preview { width: 150px; height: auto; display: none; }
+        #foto{ border: 2px solid #808080; padding: 10px; border-radius: 4px; height: 250px;}      
+        h5 { margin-top:30px; }
+        hr { margin-top:10px; } 
+        .icon-size {
+            font-size: 2.5rem;
+        }
+    </style>
+@endsection
 @extends('theme.sivyc.layout')
 @section('title', 'Solicitud de Inscripción | SIVyC Icatech')
 @section('content')
-    <style>
-        #resultado {
-            background-color: red;
-            color: white;
-            font-weight: bold;
-        }
-
-        #resultado.ok {
-            background-color: green;
-        }
-
-        #resultado.white {
-            background-color: white;
-        }
-
-        .form-check-input {
-            width: 22px;
-            height: 22px;
-        }
-    </style>
+    
     <?php
         $nombre = $apaterno = $amaterno = $nacionalidad = $telefono_casa = $telefono_cel = $email = $face = $twitter = $instagram = $tiktok =
         $ecivil = $domicilio = $colonia = $estado = $muni = $localidad = $cp = $etnia = $gvulnerable = $escolaridad = $medio_entero =
@@ -70,7 +71,10 @@
             if ($alumno->check_bolsa) {$check_bolsa = true;}
         }
     ?>
-    <div class="card card-body">
+     <div class="card-header">
+        Presincripción / Editar Aspirante
+    </div>
+    <div class="card card-body  p-5" style=" min-height:450px;">    
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -80,107 +84,129 @@
                 </ul>
             </div> <br>
         @endif
-        @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
+        @if ($message = Session::get('success'))        
+            <div class="row ">
+                <div class="col-md-12 alert alert-danger">
+                    <p>{{ $message ?? '' }}</p>
+                </div>
             </div>
         @endif
         <form method="POST" id="frm2">
             @csrf
-            <div class="row justify-content-center">
-                <div class="for row">
-                    <div class="form-group col-md-6">
-                        <input type="text" oninput="validarInput(this)" name="busqueda" class="form-control" id="busqueda" placeholder="CURP" autocomplete="off">
-                        <br>
-                        <pre id="resultado" name='resultado'></pre>
-                    </div>
-                    @can('alumnos.inscripcion-paso2')
+            <div class="form-row justify-content-end bg-light">
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-success" id="nuevo" name="nuevo">NUEVO</button>
+                        <br />
+                        <input name='busqueda' id='busqueda' oninput="validarInput(this)" type="text" class="form-control" placeholder="CURP" value="{{old('curp')}}"/>
+                        <pre id="resultado"></pre>
                     </div>
-                    @endcan
-                    <div class="form-group col-md-3">
-                        <div class="pull-left">
-                            <a class="btn btn-danger" href="{{ route('alumnos.index') }}">Regresar</a>
+                    @can('alumnos.inscripcion-paso2')    
+                        <div class="col-md-2"><br />
+                            <button type="button" id="nuevo" class="btn">NUEVO ASPIRANTE</button>
                         </div>
+                    @endcan    
+                    <div class="col-md-2"><br />
+                        <a class="btn" href="{{ route('alumnos.index') }}"> REGRESAR </a> 
                     </div>
-                </div>
             </div>
         </form>
         <form method="POST" id="frm" enctype="multipart/form-data" style="width: 100%;">
             @csrf
             @if ($curp)
-                <div class="col-lg-12 margin-tb">
-                    <hr style="border-color:dimgray">
-                    @if (isset($alumno))
-                        <h3><strong>Modificación de Inscripción (SID)</strong></h3>
-                    @else
-                        <h3><strong>Solicitud de Inscripción (SID)</strong></h3>
-                    @endif
-                    <hr style="border-color:dimgray">
-                    <div align="center">
-                        <h4><b>DATOS PERSONALES</b></h4>
-                    </div> <br><br>
+                <div class="col-lg-12 margin-tb">     
+                    <h5><b>DEL ASPIRANTE</b></h5>
+                    <hr/>
+                    <div class="form-row">                        
+                        <div class="form-group col-md-3 form-inline mr-5" id="foto">       
+                            <div id="image-preview" class="mt-2 text-center">
+                                <i id="camera-icon" class="fa fa-camera-retro fa-3x" style="vertical-align: center"></i>                                
+                                <img id="selected-image" class="img-preview" src="{{$fotografia}}" alt="Vista previa">                                
+                            </div>    
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="fotografia" name="fotografia" onchange="fileValidation()">
+                                <label class="custom-file-label" for="fotografia">Fotografía</label>
+                            </div>                           
+                        </div>
+                        <div class="form-group col-md-8">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="curp" class="control-label">CURP</label>
+                                    {!! Form::text('curp', $curp, ['id' => 'curp', 'class' => 'form-control', 'placeholder' => 'CURP', 'readonly' => 'true', 'style' => 'width: 300px;']) !!}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="nombre " class="control-label">Nombre del Aspirante</label>
+                                    {!! Form::text('nombre', $nombre, ['id'=>'nombre', 'class'=>'form-control']) !!}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="apellido_paterno" class="control-label">Apellido Paterno</label>
+                                    {!! Form::text('apellido_paterno', $apaterno, ['id'=>'apellido_paterno', 'class'=>'form-control']) !!}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="apellido_materno" class="control-label">Apellido Materno</label>
+                                    <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{{$amaterno}}">
+                                </div>
+                            </div>
+                            <div class="form-row">                       
+                                <div class="form-group col-md-3">
+                                    <label for="">Fecha de nacimiento</label>
+                                    <input type="date" name="fecha" id="fecha" class="form-control" value="{{$fnacimiento}}" readonly>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="sexo" class="control-label">Genero:</label>
+                                    <input type="text" name="sexo" id="sexo" class="form-control" readonly value="{{$sexo}}">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Nacionalidad:</label>
+                                    <input id="nacionalidad" name="nacionalidad" class="form-control" type="text" value="{{$nacionalidad}}">
+                                </div>
+                                <div class="form-group col-md-3">
+                                <label>Estado civil:</label>
+                                    {!! Form::select('estado_civil', $estado_civil, $ecivil, ['id'=>'estado_civil', 'class'=>'form-control mr-sm--2', 'placeholder' => '- SELECCIONAR -']) !!}
+                                </div>
+                            </div>
+                        </div>             
+                    </div>
                     <div class="form-row">
+                        
+                        <div class="form-group col-md-5">
+                            <label for="domicilio" class="control-label">Domicilio</label>
+                            <input type="text" class="form-control" id="domicilio" name="domicilio" autocomplete="off" value="{{$domicilio}}">
+                        </div>
                         <div class="form-group col-md-4">
-                            <table class="table table-striped">
-                                <tr>
-                                    <td>
-                                        <span><i class="fa fa-camera-retro fa-3x" style="vertical-align: middle"></i></span>
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="fotografia" name="fotografia" onchange="fileValidation()">
-                                            <label class="custom-file-label" for="fotografia">Fotografía</label>
-                                        </div>
-                                        @if ($fotografia)
-                                            <br><br>
-                                            <a name="fotografia_url" id="fotografia_url" href="{{$fotografia}}" target="blank" class="btn btn-primary">IMAGEN PRECARGADA</a>
-                                        @endif
-                                    </td>
-                                </tr>
-                            </table>
+                            <label for="colonia" class="control-label">Colonia</label>
+                            <input type="text" class="form-control" id="colonia" name="colonia" autocomplete="off" value="{{$colonia}}">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="cp" class="control-label">Código Postal</label>
+                            <input type="text" class="form-control" id="cp" name="cp" value="{{$cp}}">
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="curp" class="control-label">Curp Aspirante</label>
-                            {{ Form::text('curp', $curp, ['id' => 'curp', 'class' => 'form-control', 'placeholder' => 'CURP', 'readonly' => 'true']) }}
+                        <div class="form-group col-md-3">
+                            <label for="estado" class="control-label">Estado</label>
+                            {!! Form::select('estado', $estados, $estado, ['id'=>'estado', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
                         </div>
+                        <div class="form-group col-md-4">
+                            <label for="municipio" class="control-label">Municipio</label>
+                            {!! Form::select('municipio', $municipios, $muni, ['id'=>'municipio', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="localidad" class="control-label">Localidad</label>
+                            {!! Form::select('localidad', $localidades, $localidad, ['id'=>'localidad', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
+                        </div>
+                        
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="nombre " class="control-label">Nombre del Aspirante</label>
-                            {!! Form::text('nombre', $nombre, ['id'=>'nombre', 'class'=>'form-control']) !!}
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="apellido_paterno" class="control-label">Apellido Paterno</label>
-                            {!! Form::text('apellido_paterno', $apaterno, ['id'=>'apellido_paterno', 'class'=>'form-control']) !!}
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="apellido_materno" class="control-label">Apellido Materno</label>
-                            <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{{$amaterno}}">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="">Fecha de nacimiento</label>
-                            <input type="date" name="fecha" id="fecha" class="form-control" value="{{$fnacimiento}}" readonly>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="sexo" class="control-label">Genero:</label>
-                            <input type="text" name="sexo" id="sexo" class="form-control" readonly value="{{$sexo}}">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label>Nacionalidad:</label>
-                            <input id="nacionalidad" name="nacionalidad" class="form-control" type="text" value="{{$nacionalidad}}">
-                        </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <label>Tel&eacute;fono Casa:</label>
                             <input id="telefono_casa" name="telefono_casa" class="form-control" type="text" value="{{$telefono_casa}}">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <label>Tel&eacute;fono Celular:</label>
                             <input id="telefono_cel" name="telefono_cel" class="form-control" type="text" value="{{$telefono_cel}}">
                         </div>
-                    </div>
-                    <div class="form-row">
+                   
                         <div class="form-group col-md-3">
                             <label>Correo Electr&oacute;nico:</label>
                             <input type="email" id="correo" name="correo" class="form-control" placeholder="usuario@gmail.com" type="text" value="{{$email}}">
@@ -189,7 +215,7 @@
                             <label>Facebook:</label>
                             <input id="facebook" name="facebook" class="form-control" type="text" value="{{$face}}">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <label>Twitter:</label>
                             <input id="twitter" name="twitter" class="form-control" type="text" value="{{$twitter}}">
                         </div>
@@ -197,89 +223,46 @@
                             <label>Instagram:</label>
                             <input id="instagram" name="instagram" class="form-control" type="text" value="{{$instagram}}">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-3 mr-4">
                             <label>TikTok:</label>
                             <input id="tiktok" name="tiktok" class="form-control" type="text" value="{{$tiktok}}">
                         </div>
-                        <div class="form-group col-md-3">
-                            <br />
-                            <label><input id="ninguna_redsocial" name="ninguna_redsocial" type="checkbox" value="true" @if ($redes) { checked } @endif>&nbsp;&nbsp;No tiene redes sociales</label>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <br />
+                        <div class="form-group col-md-5 pt-sm-2  pb-sm-3 pt-md-5">                            
+                            <label class="mr-4"><input id="ninguna_redsocial" name="ninguna_redsocial" type="checkbox" value="true" @if ($redes) { checked } @endif>&nbsp;&nbsp;No tiene redes sociales</label>                                                  
                             <label><input id="recibir_publicaciones" name="recibir_publicaciones" type="checkbox" value="true"  @if ($publicaciones) { checked } @endif>&nbsp;&nbsp;¿Recibir publicaciones?</label>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label>Estado civil:</label>
-                            {!! Form::select('estado_civil', $estado_civil, $ecivil, ['id'=>'estado_civil', 'class'=>'form-control mr-sm--2', 'placeholder' => '- SELECCIONAR -']) !!}
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="domicilio" class="control-label">Domicilio</label>
-                            <input type="text" class="form-control" id="domicilio" name="domicilio" autocomplete="off" value="{{$domicilio}}">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="colonia" class="control-label">Colonia</label>
-                            <input type="text" class="form-control" id="colonia" name="colonia" autocomplete="off" value="{{$colonia}}">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="estado" class="control-label">Estado</label>
-                            {!! Form::select('estado', $estados, $estado, ['id'=>'estado', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="municipio" class="control-label">Municipio</label>
-                            {!! Form::select('municipio', $municipios, $muni, ['id'=>'municipio', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="localidad" class="control-label">Localidad</label>
-                            {!! Form::select('localidad', $localidades, $localidad, ['id'=>'localidad', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="cp" class="control-label">Código Postal</label>
-                            <input type="text" class="form-control" id="cp" name="cp" value="{{$cp}}">
-                        </div>
-                    </div>
+                   
                     {{-- Agregar ckeck bolsa de trabajo  --}}
-                    <div class="w-100 p-3 form-inline" style="background-color: #f7d351;">
-                        <span class="font-weight-bold mr-3">¿Usted autoriza dar su número de celular para alguna oportunidad en la Bolsa de Trabajo?</span>
-                        <div class="col-auto">
-                            <div class="form-check">
-                                <label class="form-check-label mr-2 font-weight-bold" for="checkPhone">SI</label>
-                                <input class="form-check-input" id="chk_bolsa" name="chk_bolsa" type="checkbox" value="true" @isset($check_bolsa) @if ($check_bolsa) { checked } @endif @endisset/>&nbsp;&nbsp;</label>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
+                    <div class="d-inline-flex p-3 w-100 pl-5 mb-4" style="background-color: #f7d351;">
+                        <b>
+                            ¿Usted autoriza dar su número de celular para alguna oportunidad en la Bolsa de Trabajo? &nbsp;&nbsp; 
+                            <input class="check-input" id="chk_bolsa" name="chk_bolsa" type="checkbox" value="true" @isset($check_bolsa) @if ($check_bolsa) { checked } @endif @endisset />
+                            &nbsp; SI
+                        </b>
+                    </div>                    
 
                     <div class="form-row">
-                        <div class="form-group col">
-                            <div class="custom-control custom-checkbox">
-                                <input value="true" type="checkbox" class="custom-control-input" id="lgbt" name="lgbt" @if ($lgbt) { checked } @endif>
-                                <label class="custom-control-label" for="lgbt">LGBTTTI+</label>
-                            </div>
+                        <div class="form-group col-md-2 col-sm-3">
+                            <label><input id="lgbt" name="lgbt" type="checkbox" value="true" @if ($madre_soltera) { checked } @endif />&nbsp;&nbsp;LGBTTTI+</label>
                         </div>
-                        <div class="form-group col">
+                        <div class="form-group col-md-3 col-sm-5">
                             <label><input id="madre_soltera" name="madre_soltera" type="checkbox" value="true" @if ($madre_soltera) { checked } @endif />&nbsp;&nbsp;¿Es Madre Soltera?</label>
                         </div>
-                        <div class="form-group col">
-                            <label><input id="familia_migrante" name="familia_migrante" type="checkbox" value="true" @if ($faminmigra) { checked } @endif />&nbsp;&nbsp;¿Tiene Familia Migrante?</label>
-                        </div>
-                        <div class="form-group col">
+                        <div class="form-group col-md-2 col-sm-4">
                             <label><input id="inmigrante" name="inmigrante" type="checkbox" value="true" @if ($inmigra) { checked } @endif>&nbsp;&nbsp;¿Es Inmigrante?</label>
                         </div>
-                        <div class="form-group col">
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label><input id="familia_migrante" name="familia_migrante" type="checkbox" value="true" @if ($faminmigra) { checked } @endif />&nbsp;&nbsp;¿Tiene Familia Migrante?</label>
+                        </div>                        
+                        <div class="form-group col-md-2 col-sm-6">
                             {{ Form::select('etnia', $etnias, $etnia, ['id' => 'etnia', 'class' => 'form-control mr-sm-2', 'placeholder' => '--ETNIA--']) }}
                         </div>
-                    </div>
-                    <br>
+                    </div>                    
                     <div>
-                        <div class="form-row">
-                            <label>&nbsp;&nbsp;¿El aspirante pertenece a algún Grupo Vulnerable?</label>
-                        </div>
-                        <br>
+                        <div class="form-row mb-5">
+                            <h5><b>Seleccionar si pertenece a algún Grupo Vulnerable:</b></h5>                            
+                        </div>                        
                         <div class="form-row">
                                 @foreach ($gvulnerables as $item)
                                 <div class="form-group col-md-4">
@@ -292,14 +275,16 @@
                                 @endforeach
                         </div>
                     </div>
-                    <hr style="border-color:dimgray">
-                    <div style="text-align: center;">
-                        <h4><strong>DATOS GENERALES DE CAPACITACIÓN</strong></h4>
-                    </div>
+                    <h5><b>DE LA CAPACITACIÓN</b></h5>
+                    <hr/>                    
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="ultimo_grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS:</label>
                             {!! Form::select('ultimo_grado_estudios', $grado_estudio, $escolaridad, ['id'=>'ultimo_grado_estudios', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="ultimo_grado_estudios" class="control-label">MEDIO DE CONFIRMACIÓN:</label>
+                            {!! Form::select('medio_confirmacion', $medio_confirmacion, $confirmacion, ['id'=>'medio_confirmacion', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
                         </div>
                     </div>
                     <div class="form-row">
@@ -362,26 +347,90 @@
                                 <input type="text" class="form-control" name="motivo_sistema_capacitacion_especificar" id="motivo_sistema_capacitacion_especificar" value="{{ $motivo_eleccion }}">
                             </div>
                         </div>
-                    </div>
+                    </div>                    
+                                      
+                    <div class="form-row p-0">                        
+                            <table class="table table-striped" style="width: 100%;">
+                                <thead>
+                                    <tr>                                        
+                                        <th scope="col" class="text-left" style="width: 1%;"><h5><b>REQUISITOS</b></h5>  </th>
+                                        <th scope="col" class="text-left" style="width: 350px;">Seleccionar documento</th>
+                                        <th scope="col" class="text-left" style="width: 30%;">Fecha de Expedición o Vigencia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-right"><input id="chk_curp" name="chk_curp" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_curp) { checked } @endif @endisset/></td>
+                                        <td><b>1. </b> CURP</td>                                   
+                                        <td><input type="date" name="fecha_expedicion_curp" id="fecha_expedicion_curp" style="width: 150px;"  class="form-control" @isset($requisitos) value="{{$requisitos->fecha_expedicion_curp}}" @endisset></td>
+                                    </tr>
+                                    <tr>
+                                        
+                                        <td class="text-right"><input id="chk_acta" name="chk_acta" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_acta_nacimiento) { checked } @endif @endisset/></td>   
+                                        <td><label><b>2. </b> ACTA DE NACIMIENTO</label></td>
+                                        <td><input type="date" name="fecha_expedicion_acta_nacimiento" class="form-control" style="width: 150px;" id="fecha_expedicion_acta_nacimiento" @isset($requisitos) value="{{$requisitos->fecha_expedicion_acta_nacimiento}}" @endisset></td>
+                                    </tr>                                
+                                    <tr>
+                                        <td class="text-right"><input id="chk_escolaridad" name="chk_escolaridad" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_escolaridad) { checked } @endif @endisset/></td>
+                                        <td><b>3. </b> &Uacute;LTIMO GRADO DE ESTUDIOS</td>
+                                        <td> </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right"><input id="chk_comprobante_migratorio" name="chk_comprobante_migratorio" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_comprobante_migracion) { checked } @endif @endisset/></td>
+                                        <td><b>4. </b> COMPROBANTE MIGRATORIO</td>
+                                        <td><input type="date" name="fecha_vigencia_migratorio" id="fecha_vigencia_migratorio" style="width: 150px;"  class="form-control" @isset($requisitos) value="{{$requisitos->fecha_vigencia_migratorio}}" @endisset></td>
+                                    </tr>
+                                <tr>
+                                    <td class="text-right"><input id="chk_ficha_cerss" name="chk_ficha_cerss" type="checkbox" value="true" @if ($ficha_cerss) { checked } @endif/></td>
+                                    <td><b>5. </b> FICHA CERSS</td>
+                                    <td></td>
+                                </tr>
+                                <tbody>
+                            </table>
+                        </div>                    
+                        <div class="form-row p-2 bg-light justify-content-center align-items-center">                                                                                  
+                            <div class="col-md-9">
+                                <label for="customFile" class="form-label mt-2 align-items-end mr-2">
+                                    Adjuntar un solo PDF los requisitos en el orden especificado:
+                                </label>
+                                <div class="col-md-6 d-inline-flex p-0">
+                                    <div class="custom-file col-md-11">
+                                        <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()">
+                                        <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                                    </div>                                                        
+                                    @isset($requisitos)
+                                        @if($requisitos->documento)                            
+                                            <a class="nav-link pt-0 col-md-1"  href="{{ $requisitos->documento }}" target="_blank">
+                                                <i class="far fa-file-pdf text-danger icon-size" title="DESCARGAR PDF DE REQUISITOS."></i>
+                                            </a>                                
+                                        @endif 
+                                    @else
+                                        <i  class="far fa-file-pdf text-muted col-md-1 icon-size"  title='ARCHIVO NO DISPONIBLE.'></i>                            
+                                    @endisset  
+                                </div>        
+                            </div>
+                            <div class="col-md-2 p-0">             
+                                <a href="https://www.ilovepdf.com/es/unir_pdf" class="btn btn-white text-primary" target="_blank" >
+                                    Fusionar PDFs<i class="fas fa-external-link-alt ml-2"></i>
+                                </a>                                
+                            </div>
+                        </div>
+                        
+                    </div>   
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="ultimo_grado_estudios" class="control-label">MEDIO DE CONFIRMACIÓN:</label>
-                            {!! Form::select('medio_confirmacion', $medio_confirmacion, $confirmacion, ['id'=>'medio_confirmacion', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
-                        </div>
-                    </div>
-                    <hr style="border-color: dimgray">
-                    <div style="text-align: center;">
-                        <h4><strong>DATOS DE EMPLEO</strong></h4>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label><input type="checkbox" id="trabajo" name="trabajo" value="true" @if ($empleado) { checked } @endif>&nbsp;&nbsp;¿El aspirante está empleado?</label>
+                            <h5><b>                            
+                            ¿Está empleado el Aspirante?  &nbsp;
+                            <input type="checkbox" id="trabajo" name="trabajo" value="true" @if ($empleado) { checked } @endif>
+                            SI
+                            </b></h5>                            
                         </div>
                         {{-- <div class="form-group col-md-4">
                             <label><input type="checkbox" id="funcionario" name="funcionario" value="true">&nbsp;&nbsp;¿El aspirante es un servidor público?</label>
                         </div> --}}
                     </div>
-                    <div id="content">
+                    <hr/> 
+                    <div id="content" style="display:none">
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="empresa" class="control-label">EMPRESA DONDE TRABAJA:</label>
@@ -402,103 +451,24 @@
                                 <input type="text" name="direccion_empresa" id="direccion_empresa" class="form-control" autocomplete="off" value="{{$direccion_empresa}}">
                             </div>
                         </div>
-                    </div>
-                    <hr style="border-color: dimgray">
-                    <h5><strong>REQUISITOS</strong></h5>
-                    <hr />
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <table class="table table-striped" style="width: 100%; text-align: left; border-collapse: collapse;">
-                                <tr>
-                                    <td style="width: 50%;">
-                                        <label><input id="chk_acta" name="chk_acta" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_acta_nacimiento) { checked } @endif @endisset/>&nbsp;&nbsp;ACTA DE NACIMIENTO</label>
-                                    </td>
-                                    <td>
-                                        FECHA EXPEDICIÓN
-                                    </td>
-                                    <td style="width: 30%;">
-                                        <input type="date" name="fecha_expedicion_acta_nacimiento" class="form-control" id="fecha_expedicion_acta_nacimiento" @isset($requisitos) value="{{$requisitos->fecha_expedicion_acta_nacimiento}}" @endisset>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label><input id="chk_curp" name="chk_curp" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_curp) { checked } @endif @endisset/>&nbsp;&nbsp;CURP</label>
-                                    </td>
-                                    <td>
-                                        FECHA EXPEDICIÓN
-                                    </td>
-                                    <td>
-                                        <input type="date" name="fecha_expedicion_curp" id="fecha_expedicion_curp" class="form-control" @isset($requisitos) value="{{$requisitos->fecha_expedicion_curp}}" @endisset>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">
-                                        <label><input id="chk_escolaridad" name="chk_escolaridad" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_escolaridad) { checked } @endif @endisset/>&nbsp;&nbsp;&Uacute;LTIMO GRADO DE ESTUDIOS</label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label><input id="chk_comprobante_migratorio" name="chk_comprobante_migratorio" type="checkbox" value="true" @isset($requisitos) @if ($requisitos->chk_comprobante_migracion) { checked } @endif @endisset/>&nbsp;&nbsp;COMPROBANTE MIGRATORIO</label>
-                                    </td>
-                                    <td>
-                                       FECHA VIGENCIA
-                                    </td>
-                                    <td>
-                                        <input type="date" name="fecha_vigencia_migratorio" id="fecha_vigencia_migratorio" class="form-control" @isset($requisitos) value="{{$requisitos->fecha_vigencia_migratorio}}" @endisset>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">
-                                        <label><input id="chk_ficha_cerss" name="chk_ficha_cerss" type="checkbox" value="true" @if ($ficha_cerss) { checked } @endif/>&nbsp;&nbsp;FICHA CERSS</label>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <table class="table table-striped" style="width: 100%; text-align: left; border-collapse: collapse;">
-                                <th>
-                                    <td>
-                                        <label for="">Carga de PDF con documentos</label><br>
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()">
-                                            <label class="custom-file-label" for="customFile">SELECCIONAR DOCUMENTO</label>
-                                        </div>
-                                        @isset($requisitos) @if($requisitos->documento)
-                                            <br><br>
-                                            <a name="doc_url" id="doc_url" href="{{ $requisitos->documento }}" target="blank" class="btn btn-danger">PDF</a>
-                                        @endif @endisset
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf" target="blank">UNIR PDF´s</a>
-                                    </td>
-                                </th>
-                            </table>
-                        </div>
-                    </div>
-                    <hr style="border-color: dimgray">
-                    <h5><strong>DATOS CERSS</strong></h5>
+                    </div>                    
                     <div>
                         <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label><input type="checkbox" id="cerss_chk" name="cerss_chk" value="true" @if ($cerss) { checked } @endif>&nbsp;&nbsp;¿El aspirante pertenece a algún cereso?</label>
+                            <div class="form-group col-md-12 form-inline">
+                                <h5><b>
+                                ¿El Aspirante pertenece a algún CERSS? &nbsp;
+                                <input type="checkbox" id="cerss_chk" name="cerss_chk" value="true" @if ($cerss) { checked } @endif> 
+                                SI                                 
+                                {{ Form::text('num_expediente_cerss', $nexpediente_cerss, ['id' => 'datos_cerss', 'class' => 'form-control ml-3','size' => '50', 'placeholder' => 'NÚMERO DE EXPEDIENTE',  'style' => 'display: none;']) }}                        
+                                </b></h5>
                             </div>
                         </div>
-                        <div id="datos_cerss">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    {{ Form::text('num_expediente_cerss', $nexpediente_cerss, ['id' => 'num_expediente_cerss', 'class' => 'form-control', 'placeholder' => 'NÚMERO DE EXPEDIENTE']) }}
-                                </div>
-                            </div>
-                        </div>
+                        <hr/>
+                        
                     </div>
-                    @can('alumnos.inscripcion-paso2')
-                        <hr style="border-color: dimgray">
-                        <div class="row">
-                            <div class="col-lg-12 margin-tb">
-                                <div class="pull-right">
-                                    <button type="submit" class="btn btn-primary" id="update" >GUARDAR CAMBIOS</button>
-                                </div>
-                            </div>
+                    @can('alumnos.inscripcion-paso2')                        
+                        <div class="form-row justify-content-end ">                           
+                            <button type="submit" class="btn" id="update" >GUARDAR CAMBIOS</button>                                
                         </div>
                     @endcan
                 </div>
@@ -792,6 +762,47 @@
                     }
                 }
             }
+
+
+            function fileValidation() {
+                const fileInput = document.getElementById('fotografia');
+                const file = fileInput.files[0];
+                const imagePreview = document.getElementById('selected-image');
+                const cameraIcon = document.getElementById('camera-icon');
+                
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';            
+                        cameraIcon.style.display = 'none'; // Ocultar el ícono
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.style.display = 'none';
+                    cameraIcon.style.display = 'block';
+                }
+            }
+/* SOLO SI SE AUTORIZA LA CARGA Y VISUALIZACIÓN DE FOTOGRAFÍA
+            document.addEventListener('DOMContentLoaded', function () {
+                const imagePreview = document.getElementById('selected-image');
+                const cameraIcon = document.getElementById('camera-icon');
+                
+                // Verifica si la imagen tiene una URL definida (esto cubre el caso de imagen precargada)
+                if (imagePreview.src) {
+                    imagePreview.style.display = 'block'; // Mostrar la imagen
+                    cameraIcon.style.display = 'none'; // Ocultar el ícono
+                } else {
+                    imagePreview.style.display = 'none'; // Ocultar la imagen
+                    cameraIcon.style.display = 'block'; // Mostrar el ícono
+                }
+            });
+*/
+
+
+
+
+/* EVALUANDO PARA SER SE LIMINADO
             function fileValidation() {
                 var fileInput = document.getElementById('fotografia');
                 var filePath = fileInput.value;
@@ -816,7 +827,7 @@
                         reader.readAsDataURL(fileInput.files[0]);
                     }
                 }
-            }
+            }*/
         </script>
     @endsection
 @endsection
