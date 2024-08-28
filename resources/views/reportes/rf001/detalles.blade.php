@@ -510,7 +510,7 @@
                                                             {{ $k['folio'] }} &nbsp;
                                                         @endforeach
                                                     </td>
-                                                    <td>
+                                                    <td style="text-align: center;">
                                                         <a class="nav-link pt-0"
                                                             href="{{ $pathFile }}{{ $item['documento'] }}"
                                                             target="_blank">
