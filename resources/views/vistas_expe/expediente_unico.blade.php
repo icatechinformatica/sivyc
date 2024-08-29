@@ -371,8 +371,8 @@
                 $a_class = $isAcad ? '' : 'blocked';
                 $isAdmin = ($array_rol['rol'] == 3) && ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO');
                 $d_class = $isAdmin ? '' : 'blocked';
-                $dta_msg = $array_rol['rol'] == 4 ? '' : 'readonly';
-                $readonly_dta = $array_rol['rol'] == 4 ? '' : 'readonly-area';
+                $dta_msg = ($array_rol['rol'] == 4 && $array_rol['status_json'] == 'ENVIADO') ? '' : 'readonly';
+                $readonly_dta = ($array_rol['rol'] == 4 && $array_rol['status_json'] == 'ENVIADO') ? '' : 'readonly-area';
                 $readonly_u = $array_rol['rol'] != 4 ? '' : 'readonly-area';
                 $msg_uni = $array_rol['rol'] != 4 ? '' : 'readonly';
             @endphp
@@ -2002,6 +2002,11 @@
                         </li>
                     </ul>
                 </div>
+                {{-- Nota de motivo de deshacer validación --}}
+                <div class="col-4 d-flex justify-content-end">
+                    <textarea class="d-none mt-2" name="" id="nota_deshacer" rows="5" cols="40" placeholder="Motivo de la accion"></textarea>
+                </div>
+
 
                 {{-- Botones de guardar y enviar que podra ver delegacion. --}}
                 <div class="col-5 d-flex justify-content-end align-items-start">
@@ -2039,6 +2044,7 @@
                                     <option value="0">-- MOVIMIENTOS --</option>
                                     <option {{($array_rol['status_json'] == 'ENVIADO') ? '' : 'disabled'}} value="1">VALIDAR</option>
                                     <option {{($array_rol['status_json'] == 'ENVIADO') ? '' : 'disabled'}} value="2">RETORNAR</option>
+                                    <option {{($array_rol['status_json'] == 'VALIDADO') ? '' : 'disabled'}} value="3">DESHACER VALIDACIÓN</option>
                                     {{-- <option value="3">GENERAR PDF</option> --}}
                                 </select>
                                 <div class="mt-2 text-center d-none" id="divValid">
@@ -2048,10 +2054,13 @@
                                 <div class="mt-2 text-center d-none" id="divReturn">
                                     <button class="btn btn-danger font-weight-bold" onclick="valid_return_dta('retornar', {{$array_rol['idcurso']}}, {{$array_rol['rol']}})">ACEPTAR</button>
                                 </div>
+
+                                <div class="mt-2 text-center d-none" id="divDeshacerValid">
+                                    <button class="btn btn-danger font-weight-bold" onclick="valid_return_dta('deshacer_valid', {{$array_rol['idcurso']}}, {{$array_rol['rol']}})">ACEPTAR</button>
+                                </div>
                             </div>
                         @endif
                     </div>
-
                 </div>
             </div>
         @else
@@ -2322,22 +2331,26 @@
                 switch (select_mov) {
                     case "0":
                         $("#divValid").addClass("d-none");
-                        $("#divArea").addClass("d-none");
                         $("#divReturn").addClass("d-none");
+                        $("#divDeshacerValid").addClass("d-none");
+                        $("#nota_deshacer").addClass("d-none");
                         break;
-                    case "1":
+                    case "1": //Validar
                         $("#divValid").removeClass("d-none");
-                        $("#divArea").addClass("d-none");
                         $("#divReturn").addClass("d-none");
+                        $("#divDeshacerValid").addClass("d-none");
+                        $("#nota_deshacer").addClass("d-none");
                         break;
-                    case "2":
-                        $("#divArea").removeClass("d-none");
+                    case "2": //Retornar
                         $("#divReturn").removeClass("d-none");
                         $("#divValid").addClass("d-none");
+                        $("#divDeshacerValid").addClass("d-none");
+                        $("#nota_deshacer").addClass("d-none");
                         break;
-                    case "3":;
+                    case "3": //Deshacer validación
+                        $("#divDeshacerValid").removeClass("d-none");
+                        $("#nota_deshacer").removeClass("d-none");
                         $("#divValid").addClass("d-none");
-                        $("#divArea").addClass("d-none");
                         $("#divReturn").addClass("d-none");
                         break;
                     default:
@@ -2452,7 +2465,7 @@
                         data: data,
                         dataType: "json",
                         success: function (response) {
-                            //console.log(response);
+                            // console.log(response);
                             loader('hide');
                             alert(response.mensaje);
                             if (response.status === 200) {
@@ -2667,18 +2680,22 @@
 
             //Valida o retorna DTA
             function valid_return_dta(accion, idcurso, rol) {
-                //let valor_area = "";
-                let resul_dta = "";
+                let resul_dta = "", nota_dta = "";
                 if (accion == 'retornar') {
-                    //valor_area = document.getElementById('area_retorno').value;
                     //Obtenemos todos los valores de el textarea mensaje DTA
                     resul_dta = get_mensaje_dta();
-                    // console.log(resul_dta);
                     if (resul_dta.conta_texto == 0) {
                         alert("Los campos 'Mensaje DTA' de las evidencias están vacíos. \nPara continuar, debe haber al menos un campo con el motivo del retorno.");
                         return false;
                     }
-                    // console.log(mensajes_dta);
+                }
+
+                if(accion == 'deshacer_valid'){
+                    nota_dta = $('#nota_deshacer').val().trim();
+                    if(nota_dta == '' || nota_dta == undefined || nota_dta == null){
+                        alert("POR FAVOR INGRESE EL MOTIVO DE LA ACCIÓN QUE DESEA REALIZAR.");
+                        return false;
+                    }
                 }
 
                 if (confirm("¿ESTAS SEGURO DE REALIZAR ESTA ACCIÓN?")) {
@@ -2690,9 +2707,10 @@
                         "_token": $("meta[name='csrf-token']").attr("content"),
                         "rol_user" : rol,
                         'idcurso' : idcurso,
-                        //'valor_area' : valor_area,
                         'accion' : accion,
-                        'mensajes_dta' : resul_dta.valores_dta
+                        'nota_dta' : nota_dta
+                        //'valor_area' : valor_area,
+                        // 'mensajes_dta' : resul_dta.valores_dta,
                     }
                     $.ajax({
                         type:"post",
@@ -2700,7 +2718,7 @@
                         data: data,
                         dataType: "json",
                         success: function (response) {
-                            // console.log(response);
+                            console.log(response);
                             loader('hide');
                             alert(response.mensaje);
                             if(response.status === 200) location.reload();
