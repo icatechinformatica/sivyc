@@ -35,22 +35,25 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport;
 use ZipArchive;
 use PDF;
+use App\User;
 
 class InstructorController extends Controller
 {
     public function prueba()
     {
-        $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
-        ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
-        ->Join('folios','folios.id_cursos','pagos.id_curso')
-        ->Where('id_instructor','528')
-        ->where(function ($query) {
-            $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
-                ->orWhereNull('pagos.status_recepcion')
-                ->orWhere('folios.edicion_pago','TRUE');
-        })
-        ->Get();
-        dd($data_ins_curso);
+        $data = User::Select('id')->Get();
+        foreach($data as $item)
+        {
+            $user = User::find($item->id);
+            if(str_contains($user->password,'BAJA') || str_contains($user->email,'BAJA')) {
+                $user->activo = FALSE;
+            } else {
+                $user->activo = TRUE;
+            }
+
+            $user->save();
+        }
+        dd('complete');
 
     }
 

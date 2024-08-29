@@ -348,11 +348,15 @@
         </div>
     @endif
     @if(isset($databuzon))
-        <div class="container">
+        {{-- <div class="container"> --}}
             <h2>Buzon de actividad</h2>
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#home">Solicitudes</a></li>
-                <li><a data-toggle="tab" href="#menu1">Atendidos</a></li>
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#home">Solicitudes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#menu1">Atendidos</a>
+                </li>
             </ul>
             <div class="tab-content">
                 <div id="home" class="tab-pane fade in active">
@@ -418,7 +422,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        {{-- </div> --}}
     @endif
 </div>
 <!-- Modal Enviar a DTA -->

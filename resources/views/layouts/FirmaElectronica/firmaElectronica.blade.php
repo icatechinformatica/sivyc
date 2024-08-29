@@ -2,6 +2,7 @@
 @section('title', 'FIRMAR ELECTRONICAMENTE | Sivyc Icatech')
 
 @section('content_script_css')
+
     <style>
         .colorTop {
             background-color: #541533;
