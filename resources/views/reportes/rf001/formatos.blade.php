@@ -114,12 +114,18 @@
                         </thead>
                         <tbody>
                             @foreach ($data as $item)
+                           @php
+                            $periodoInicio = Carbon\Carbon::parse($item->periodo_inicio);
+                            $periodoFin = Carbon\Carbon::parse($item->periodo_fin);
+                            $formatoInicio = $periodoInicio->format('d/m/Y');
+                            $formatoFin = $periodoFin->format('d/m/Y');
+                           @endphp
                                 <tr>
                                     <th scope="row">{{ $item->memorandum }}</th>
                                     <td>{{ $item->unidad }}</td>
                                     <td>{{ $item->estado }}</td>
                                     <td>
-                                        {{ $item->periodo_inicio . ' - ' . $item->periodo_fin }}
+                                        {{ $formatoInicio . ' - ' . $formatoFin }}
                                     </td>
                                     <td class="text-left">
                                         @switch($item->estado)

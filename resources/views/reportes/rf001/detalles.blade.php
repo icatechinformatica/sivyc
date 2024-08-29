@@ -450,8 +450,12 @@
                                             <span class="info-box-text text-center text-muted">
                                                 Periodo del concentrado
                                             </span>
+                                            @php
+                                                $periodoInicio = Carbon\Carbon::parse($getConcentrado->periodo_inicio);
+                                                $periodoFin = Carbon\Carbon::parse($getConcentrado->periodo_fin);
+                                            @endphp
                                             <span
-                                                class="info-box-number text-center text-muted mb-0">{{ $getConcentrado->periodo_inicio . ' - ' . $getConcentrado->periodo_fin }}</span>
+                                                class="info-box-number text-center text-muted mb-0">{{ $periodoInicio->format('d/m/Y') . ' - ' . $periodoFin->format('d/m/Y') }}</span>
                                         </div>
                                     </div>
                                 </div>

@@ -204,17 +204,6 @@
                     <b>Periodo Del {{ $dateInit->day }} de {{ $monthNameInit }} al {{ $dateEnd->day }} de
                         {{ $monthNameEnd }}</b>
                 </div>
-                @if ($getConcentrado)
-                    <div class="col-md-3">
-                        {{-- <a id="enviar" class="btn btn-danger"
-                            href="{{ route('reporte.rf001.xml.format', ['id' => $idRf001]) }}">
-                            ENVIAR PARA EFIRMA
-                        </a> --}}
-                        <a id="enviar" class="btn btn-danger">
-                            ENVIAR PARA EFIRMA
-                        </a>
-                    </div>
-                @endif
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
@@ -306,27 +295,41 @@
                             </tr>
                         </tfoot>
                     </table>
+                    {{-- utilizaremos flex-box --}}
 
-                    {{-- formulario  --}}
-                    <div class="col-4 mt-4">
+                    <div class="form-row" style="display: flex; margin-left: 29em;">
+                        {{-- formulario --}}
                         <form class="form-inline">
-                            <div class="form-group mb-2">
-                                <label for="consecutivo" class="sr-only">Password</label>
-                                <input type="text" name="consecutivo" class="form-control" id="consecutivo"
-                                    autocomplete="off" placeholder="Memorándum"
-                                    value="{{ $getConcentrado ? $getConcentrado->memorandum : '' }}">
+                            <div class="col-4 mt-4">
+                                <div class="form-group mb-2">
+                                    <label for="consecutivo" class="sr-only">Memorándum</label>
+                                    <input type="text" name="consecutivo" class="form-control" id="consecutivo"
+                                        autocomplete="off" placeholder="Memorándum"
+                                        value="{{ $getConcentrado ? $getConcentrado->memorandum : '' }}">
+                                </div>
+
+                                {{ Form::hidden('id_unidad', $idUnidad, ['id' => 'id_unidad', 'class' => 'form-control ']) }}
+                                {{ Form::Hidden('unidad', $unidad, ['id' => 'unidad', 'class' => 'form-control ']) }}
+                                {{ Form::hidden('periodoInicio', $periodoInicio, ['id' => 'periodoInicio', 'class' => 'form-control']) }}
+                                {{ Form::hidden('periodoFIn', $periodoFin, ['class' => 'form-control mr-sm-2', 'id' => 'periodoFIn']) }}
                             </div>
+                        </form>
+                        {{-- formulario END --}}
+                        {!! Form::close() !!}
+                        <div class="col-auto mt-4">
                             <button type="submit" class="btn mb-2">
                                 {{ $getConcentrado ? 'Modificar' : 'Generar' }}
                             </button>
-                        </form>
-                        {{ Form::hidden('id_unidad', $idUnidad, ['id' => 'id_unidad', 'class' => 'form-control ']) }}
-                        {{ Form::Hidden('unidad', $unidad, ['id' => 'unidad', 'class' => 'form-control ']) }}
-                        {{ Form::hidden('periodoInicio', $periodoInicio, ['id' => 'periodoInicio', 'class' => 'form-control']) }}
-                        {{ Form::hidden('periodoFIn', $periodoFin, ['class' => 'form-control mr-sm-2', 'id' => 'periodoFIn']) }}
+                        </div>
+                        <div class="col-4 mt-4">
+                            @if ($getConcentrado)
+                                <a id="enviar" class="btn btn-danger">
+                                    ENVIAR EFIRMA
+                                </a>
+                            @endif
+                        </div>
                     </div>
-                    {{-- formulario END --}}
-                    {!! Form::close() !!}
+
                 </div>
             @else
                 <div class="text-center p-5 bg-light">
@@ -492,9 +495,10 @@
                     success: function(response) {
                         setTimeout(function() {
                             // Ocultar el loader y mostrar el contenido después de la carga
-                            document.getElementById('loader-overlay').style.display = 'none';
+                            document.getElementById('loader-overlay').style.display =
+                                'none';
                             if (response.resp) {
-                                window.location.href = '{{ route("reporte.rf001.sent") }}';
+                                window.location.href = '{{ route('reporte.rf001.sent') }}';
                             }
                         }, 2000); // 2 segundos de tiempo simulado
 

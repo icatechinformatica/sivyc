@@ -209,6 +209,7 @@
                             @can('solicitudes.transferencia')
                                 <a class="dropdown-item" href="{{route('solicitudes.transferencia.index')}}">Transferencia BANCARIA</a>
                             @endcan
+                            <a href="" class="dropdown-item">Solicitudes de validación RF001</a>
                         </div>
                     </li>
                 @endcan
@@ -296,8 +297,6 @@
                         @can('financieros.reportecursos')
                             <a class="dropdown-item" href="{{route('financieros-reporte-cursos')}}">Reporte de Cursos</a>
                         @endcan
-
-                            <a class="dropdown-item" href="{{ route('reporte.rf001.index') }}">Validación Ingresos Propios RF-001</a>
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
