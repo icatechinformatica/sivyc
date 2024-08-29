@@ -875,15 +875,15 @@ class ExpedienteController extends Controller
                             }
                         }
                     }else if($radio_a === 'no' || $radio_a === 'no_aplica') {
-                        if($indice_docs[$i] == 17 || $indice_docs[$i] == 18){
-                            if(!empty($doc_a) || !empty($text)){
-                                $docs_true[] = $indice_docs[$i];
-                            }
-                        }else{
-                            if(!empty($doc_a)){
-                                $docs_true[] = $indice_docs[$i];
-                            }
+                        // if($indice_docs[$i] == 17 || $indice_docs[$i] == 18){
+                        //     if(!empty($doc_a) || !empty($text)){
+                        //         $docs_true[] = $indice_docs[$i];
+                        //     }
+                        // }else{
+                        if(!empty($doc_a)){
+                            $docs_true[] = $indice_docs[$i];
                         }
+                        // }
                     }
                 }else{
                     return response()->json(['mensaje' => 'FALTAN CAMPOS POR SELECCIONAR, ¡VERIFIQUE!']);
