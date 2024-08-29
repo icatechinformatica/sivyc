@@ -1110,7 +1110,9 @@ class grupoController extends Controller
                          ->on('ti.curp', '=', 'ar.curp');
                 })
                 ->where('ar.folio_grupo',$_SESSION['folio_grupo'])
-                ->orderBy('apellido_paterno')
+                ->orderBy('apellido_paterno','asc')
+                ->orderBy('apellido_materno','asc')
+                ->orderBy('nombre','asc')
                 ->get();//dd($alumnos);
             if (count($alumnos)>0) {
                 $folio_grupo = $_SESSION['folio_grupo'];
