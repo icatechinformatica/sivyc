@@ -187,6 +187,26 @@
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
                                 @endcan
+                                @can('folio.modificar')
+                                    <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                        data-toggle="modal" data-placement="top"
+                                        data-target="#modfolioModal"
+                                        data-id='{{$itemData->id}}'
+                                        title="Otorgar Permiso de Modificacion a Folio Validado">
+                                        <i class="fa fa-history"></i>
+                                    </button>
+                                @endcan
+                                @if ($itemData->permiso_editar)
+                                    @can('supre.upload_supre')
+                                        <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#DocSupreModal2"
+                                            data-id='{{$itemData->id}}'
+                                            title="Reemplazar Suficiencia Presupuestal Firmada">
+                                            <i class="fa fa-upload"></i>
+                                        </button>
+                                    @endcan
+                                @endif
                             @endif
                             @if ($itemData->status == 'Rechazado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$idh}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
