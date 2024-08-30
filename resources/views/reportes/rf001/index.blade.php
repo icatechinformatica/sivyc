@@ -54,6 +54,20 @@
             padding: 10px 20px;
         }
 
+        a {
+            color: inherit;
+            /* Hereda el color del elemento padre */
+            text-decoration: none;
+            /* Elimina el subrayado */
+        }
+
+        a:hover {
+            color: #f2f2f2;
+            /* Cambia el color al pasar el ratón por encima */
+            text-decoration: underline;
+            /* Subraya el enlace al pasar el ratón por encima */
+        }
+
         @media (max-width: 768px) {
 
             .filter-form,
@@ -173,9 +187,14 @@
     </div>
     {{-- <div class="d-none" id="vHTMLSignature"></div> --}}
     {{-- <input class="d-none" id="token" name="token" type="text" value="{{$token}}"> --}}
+    @php
+        $bandera = Crypt::encrypt('solicitud');
+        $encrypted = base64_encode($bandera);
+        $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
+    @endphp
     <!-- cabecera -->
     <div class="card-header">
-        Reportes / Reportes RF-001
+        <a href="{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}"> Reportes </a> / Reportes RF-001
     </div>
     <div class="card card-body  p-5" style=" min-height:450px;">
         @if ($errors->any())

@@ -241,6 +241,9 @@ class Rf001Controller extends Controller
 
     public function getSentFormat(Request $request)
     {
+        $encrypted = str_replace(['-', '_'], ['+', '/'], $request->get('generado'));
+        $encrypted = base64_decode($encrypted);
+        $dato = Crypt::decrypt($encrypted);
         $data = $this->rfoo1Repository->sentRF001Format($request);
         return view('reportes.rf001.formatos', compact('data'))->render();
     }

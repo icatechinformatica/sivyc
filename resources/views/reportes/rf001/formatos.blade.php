@@ -114,12 +114,12 @@
                         </thead>
                         <tbody>
                             @foreach ($data as $item)
-                           @php
-                            $periodoInicio = Carbon\Carbon::parse($item->periodo_inicio);
-                            $periodoFin = Carbon\Carbon::parse($item->periodo_fin);
-                            $formatoInicio = $periodoInicio->format('d/m/Y');
-                            $formatoFin = $periodoFin->format('d/m/Y');
-                           @endphp
+                                @php
+                                    $periodoInicio = Carbon\Carbon::parse($item->periodo_inicio);
+                                    $periodoFin = Carbon\Carbon::parse($item->periodo_fin);
+                                    $formatoInicio = $periodoInicio->format('d/m/Y');
+                                    $formatoFin = $periodoFin->format('d/m/Y');
+                                @endphp
                                 <tr>
                                     <th scope="row">{{ $item->memorandum }}</th>
                                     <td>{{ $item->unidad }}</td>
@@ -140,7 +140,8 @@
                                             @case('ENFIRMA')
                                                 <a class="nav-link pt-0"
                                                     href="{{ route('reporte.generar.firma', ['id' => $item->id]) }}">
-                                                    <i class="fas fa-pen fa-2x fa-lg text-danger" aria-hidden="true" title='EN FIRMA'></i>
+                                                    <i class="fas fa-pen fa-2x fa-lg text-danger" aria-hidden="true"
+                                                        title='EN FIRMA'></i>
                                                 </a>
                                             @break
 
@@ -148,8 +149,10 @@
                                         @endswitch
                                     </td>
                                     <td class="text-left">
-                                        <a class="nav-link pt-0" href="{{ route('reporte.rf001.set.details', ['id' => $item->id]) }}">
-                                            <i class="fa fa-eye fa-2x fa-lg text-grey" aria-hidden="true" title="MOSTRAR FORMATO RF001"></i>
+                                        <a class="nav-link pt-0"
+                                            href="{{ route('reporte.rf001.set.details', ['id' => $item->id]) }}">
+                                            <i class="fa fa-eye fa-2x fa-lg text-grey" aria-hidden="true"
+                                                title="MOSTRAR FORMATO RF001"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -170,6 +173,16 @@
                     <h5> <b>NO SE ENCONTRARON REGISTROS</b></h5>
                 </div>
             @endif
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                {{-- ocutar lo siguiente porque sólo se activa si la bandera trae el dato que necesito --}}
+                @if (!$bandera === 'solicitud')
+                    <a href="{{ route('reporte.rf001.ingreso-propio') }}" class="btn">
+                        <i class="fas fa-plus"></i> RF001
+                    </a>
+                @endif
+            </div>
         </div>
     </div>
 @endsection

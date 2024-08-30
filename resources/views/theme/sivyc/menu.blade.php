@@ -1,5 +1,10 @@
 {{-- Desarrollado por MIS. Daniel Méndez Cruz --}}
-
+{{-- variables de bandera para navegación en menu solicitud RF001 --}}
+@php
+    $bandera = Crypt::encrypt('solicitud');
+    $encrypted = base64_encode($bandera);
+    $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
+@endphp
 <!--Navbar -->
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark pink darken-4">
     <a class="navbar-brand" href="#"><h4><b>Icatech</b></h4></a>
@@ -84,7 +89,7 @@
                             @can('efirma.index') {{-- Agregar efirma.index a usuarios delegados y academicos --}}
                                 <a class="dropdown-item" href="{{route('firma.inicio')}}">Firma Electronica</a>
                             @endcan
-                            <a class="dropdown-item" href="{{route('reporte.rf001.sent')}}">Solicitud RF001</a>
+                            <a class="dropdown-item" href="{{route('reporte.rf001.sent', ['generado' => $encrypted])}}">Solicitud RF001</a>
                         </div>
                     </li>
                     @endcanany
