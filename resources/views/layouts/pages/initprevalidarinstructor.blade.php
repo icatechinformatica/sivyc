@@ -359,7 +359,7 @@
                 </li>
             </ul>
             <div class="tab-content">
-                <div id="home" class="tab-pane fade in active">
+                <div id="home" class="tab-pane fade show active">
                     <h3>Solicitudes</h3>
                     <table class="table table-responsive-md" id='tableperfiles'>
                         <thead>
