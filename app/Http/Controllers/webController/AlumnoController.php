@@ -28,9 +28,9 @@ use PharIo\Manifest\Author;
 class AlumnoController extends Controller {
 
     public function index(Request $request) {
-        $buscar_aspirante = $request->get('busqueda_aspirantepor');
-
-        $tipoaspirante = $request->get('busqueda_aspirante');
+        if(session('curp')) $buscar_aspirante = session('curp');
+        else $buscar_aspirante = $request->get('busqueda_aspirantepor');
+        
         $tipo=null;
         if(isset($buscar_aspirante)) {
             if(ctype_alpha($buscar_aspirante)) {
@@ -46,10 +46,14 @@ class AlumnoController extends Controller {
             }
         }
 
-        $retrieveAlumnos = Alumnopre::busquedapor($tipo, $buscar_aspirante)->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')
-        ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso','matricula','permiso_exoneracion']);
-        $contador = $retrieveAlumnos->count();
-        return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
+        $retrieveAlumnos = Alumnopre::busquedapor($tipo, $buscar_aspirante)
+        ->leftjoin('users','users.id','iduser_updated')
+        ->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')
+        ->PAGINATE(25, ['alumnos_pre.id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso','matricula','permiso_exoneracion',
+            DB::raw("requisitos->>'documento' as documento"),'name','alumnos_pre.updated_at']); 
+        //dd($retrieveAlumnos);
+        $contador = $retrieveAlumnos->count(); 
+        return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador','buscar_aspirante'));
     }
 
     public function showl(Request $request) {  //EN PRODUCCION vista inscripción aspirante
@@ -98,7 +102,7 @@ class AlumnoController extends Controller {
             $estado_civil = DB::table('estado_civil')->orderby('nombre','ASC')->pluck('nombre','nombre');
             $gvulnerables = DB::table('grupos_vulnerables')->select('grupo','id')->get();
             $etnias = $this->etnia = ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
-            $alumno = DB::table('alumnos_pre')->where('curp',$curp)->where('activo',true)->first();
+            $alumno = DB::table('alumnos_pre')->where('curp',$curp)->first();
             if (isset($alumno)) {
                 $municipios = DB::table('tbl_municipios')->where('id_estado',$alumno->id_estado)->pluck('muni','clave');
                 $localidades = DB::table('tbl_localidades')->where('id_estado',$alumno->id_estado)->where('clave_municipio', $alumno->clave_municipio)->pluck('localidad', 'clave');
@@ -190,16 +194,18 @@ class AlumnoController extends Controller {
         $realizo = Auth::user()->name;
         $unidad = Auth::user()->unidad;
         $user_created = Auth::user()->id;
-        if (DB::table('alumnos_pre')->where('curp',$curp)->where('activo',true)->exists()) {
-            $alumno = DB::table('alumnos_pre')->where('curp',$curp)->where('activo',true)->first();
+        if (DB::table('alumnos_pre')->where('curp', 'ILIKE', $curp)->exists()) {
+            $alumno = DB::table('alumnos_pre')->where('curp', 'ILIKE', $curp)->first();
             $created_at = $alumno->created_at;
             $realizo = $alumno->realizo;
             $unidad = $alumno->id_unidad;
             $user_created = $alumno->iduser_created;
+            $curp = $alumno->curp;
         }
         $estado = DB::table('estados')->where('id',$request->estado)->first();
         $municipio = DB::table('tbl_municipios')->where('id_estado',$estado->id)->where('clave',$request->municipio)->first();
-        $result = DB::table('alumnos_pre')->updateOrInsert(['curp'=>strtoupper($curp)],[
+        $result = DB::table('alumnos_pre')->updateOrInsert(['curp'=>$curp],[
+            'curp'=>strtoupper($curp),
             'nombre' => str_replace('ñ','Ñ',strtoupper($request->nombre)),
             'apellido_paterno' => str_replace('ñ','Ñ',strtoupper($request->apellido_paterno)),
             'apellido_materno' => str_replace('ñ','Ñ',strtoupper($request->apellido_materno)),
@@ -258,21 +264,28 @@ class AlumnoController extends Controller {
             'check_bolsa'=> $checkPhone
         ]);
         //si se pretende cargar nuevos archivos
-        $AspiranteId = DB::table('alumnos_pre')->where('curp',$curp)->where('activo',true)->value('id');
+        $AspiranteId = DB::table('alumnos_pre')->where('curp',$curp)->value('id');
+        $url_documento = '';
         if (isset($request->customFile)) {
-            $arc = $request->file('customFile'); //dd($request);
-            $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos'); #invocamos el método
-            $arregloDocs = [
-                'documento'=>$url_documento,
-                'chk_curp' => $request->chk_curp,
-                'chk_acta_nacimiento' => $request->chk_acta,
-                'chk_escolaridad'=>$request->chk_escolaridad,
-                'chk_comprobante_migracion'=>$request->chk_comprobante_migratorio,
-                'fecha_expedicion_acta_nacimiento'=>$request->fecha_expedicion_acta_nacimiento,
-                'fecha_expedicion_curp'=>$request->fecha_expedicion_curp,
-                'fecha_vigencia_migratorio'=>$request->fecha_vigencia_migratorio
-            ];//dd($arregloDocs);
-            $affected = DB::table('alumnos_pre')->where('curp', $curp)->update(['requisitos' => json_encode($arregloDocs)]);
+            $arc = $request->file('customFile');             
+            $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos'); 
+           
+        }
+        if($AspiranteId){ //GUARDANDO REQUISITOS
+            $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => 
+                DB::raw("
+                    jsonb_build_object(
+                        'chk_curp',  COALESCE('$request->chk_curp', 'false'),
+                        'documento',  CASE  WHEN '$url_documento' != '' THEN '$url_documento' ELSE requisitos->>'documento' END,
+                        'chk_escolaridad', COALESCE('$request->chk_escolaridad', 'false'),
+                        'chk_acta_nacimiento', COALESCE('$request->chk_acta', 'false'),
+                        'chk_comprobante_migracion', COALESCE('$request->chk_comprobante_migratorio', 'false'),
+                        'fecha_expedicion_curp', CASE  WHEN '$request->chk_curp' != '' THEN '$request->fecha_expedicion_curp' ELSE 'null' END,                                                
+                        'fecha_expedicion_acta_nacimiento', CASE  WHEN '$request->chk_acta' != '' THEN '$request->fecha_expedicion_acta_nacimiento' ELSE 'null' END,
+                        'fecha_vigencia_migratorio', CASE  WHEN '$request->chk_comprobante_migratorio' != '' THEN '$request->fecha_vigencia_migratorio' ELSE 'null' END                     
+                    )
+                ")
+            ]);
         }
         if(isset($request->fotografia)) {
             $url = $request->fotografia;
@@ -280,7 +293,7 @@ class AlumnoController extends Controller {
             $opps = DB::table('alumnos_pre')->where('curp', $curp)->update(['fotografia' => $url_fotografia,'chk_fotografia'=>true]);
         }
         if ($result) {
-            return redirect()->route('alumnos.index')->with('success', sprintf('OPERACIÓN EXITOSA!', $curp));
+            return redirect()->route('alumnos.index')->with('success', sprintf('OPERACIÓN EXITOSA!', $curp))->with('curp',$curp);
         }
     }
 

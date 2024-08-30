@@ -137,14 +137,14 @@
         <div class= "container g-pt-30" style="font-size: 12px;">
             <div id="content">
                 <div align=right> <b>Contrato No.{{$data_contrato->numero_contrato}}.</b> </div>
-                <br><div align="justify"><b>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE HORAS CURSO, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, EN SU CARÁCTER DE {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} Y POR LA OTRA LA O EL C. {{$nomins}}, EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “ICATECH” Y “PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>
+                <br><div align="justify"><b>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE HORAS CURSO, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR {{$funcionarios['director']}}, EN SU CARÁCTER DE {{$funcionarios['director']}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} Y POR LA OTRA LA O EL C. {{$nomins}}, EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “ICATECH” Y “PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>
                 <br><div align="center"> DECLARACIONES</div>
                 <div align="justify">
                     <dl>
                         <dt>I.  <b>“ICATECH”</b> declara que:<br>
                         <br><dd>I.1 Es un Organismo Descentralizado de la Administración Pública Estatal, con personalidad jurídica y patrimonio propios, conforme a lo dispuesto en el artículo 1 del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
-                        <br><dd>I.2 La Mtra. Fabiola Lizbeth Astudillo Reyes, en su cáracter de Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, cuenta con personalidad juridica que acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 16 de enero de 2019, por lo que se encuentra plenamente facultada en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo @if($fecha_fir >= $fecha_act) 42 fracción I @else 29 fracción I @endif del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
-                        <br><dd>I.3 {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} tiene personalidad jurídica para representar en este acto a “ICATECH”, como lo acredita con el nombramiento expedido por la Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, y cuenta con plena facultad legal para suscribir el presente Instrumento conforme a lo dispuesto por los artículos @if($fecha_fir >= $fecha_act) 42 fracción I @else 29 fracción I @endif del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas y 12 fracción V, de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
+                        <br><dd>I.2 La Mtra. Fabiola Lizbeth Astudillo Reyes, en su cáracter de Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, cuenta con personalidad juridica que acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 16 de enero de 2019, por lo que se encuentra plenamente facultada en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
+                        <br><dd>I.3 {{$funcionarios['director']}}, {{$funcionarios['directorp']}} tiene personalidad jurídica para representar en este acto a “ICATECH”, como lo acredita con el nombramiento expedido por la Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, y cuenta con plena facultad legal para suscribir el presente Instrumento conforme a lo dispuesto por los artículos  42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas y 12 fracción V, de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
                         <br><dd>I.4 Tiene por objetivo impartir e impulsar la capacitación para la formación en el trabajo, propiciando la mejor calidad y vinculación de este servicio con el aparato productivo y las necesidades de desarrollo regional, estatal y nacional; actuar como organismo promotor en materia de capacitación para el trabajo, conforme a lo establecido por la Secretaría de Educación Pública; promover la capacitación que permita adquirir, reforzar o potencializar los conocimientos, habilidades y destrezas necesarias para elevar el nivel de vida, competencia laboral y productividad en el Estado; promover el surgimiento de nuevos perfiles académicos, que correspondan a las necesidades del mercado laboral.</dd>
                         <br><dd>I.5 De acuerdo a las necesidades de <b>“ICATECH”</b>, se requiere contar con los servicios de una persona física con conocimientos en {{$data->espe}}, por lo que se ha determinado llevar a cabo la Contratación por <b>HONORARIOS</b> en la modalidad de horas curso como <b>"PRESTADOR DE SERVICIOS"</b>.</dd>
                         <br><dd>I.6 Para los efectos del presente contrato se cuenta con la clave de grupo {{$data->clave}} y validación del instructor emitido por la Dirección Técnica Académica de <b>“ICATECH”</b> conforme a lo dispuesto por el artículo 4 fracción III de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, emitido por la Dirección Técnica Académica de <b>“ICATECH”</b>.</dd>
@@ -261,7 +261,7 @@
                             <td style="vertical-align: top;" width="25px;"><br><b>Folio:</b></td>
                             <td style="vertical-align: top; text-align: justify;">
                                 <br>{{$uuid}}<br><br><br>
-                                Las firmas electronicas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}; el día de la expedición de la suficiencia presupuestal.
+                                Las firmas electronicas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$funcionarios['director']}}, {{$funcionarios['directorp']}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}; el día de la expedición de la suficiencia presupuestal.
                             </td>
                         </tr>
                     </table>
@@ -277,11 +277,11 @@
                             <td colspan="2"><div align="center"><br><br></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['director']}}</b></td></div>
                             <td colspan="2"><div align="center"><b>C. {{$nomins}}</b></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['directorp']}}</b></td></div>
                             <td colspan="2"><div align="center"></td></div>
                         </tr>
                     </table>
@@ -293,12 +293,12 @@
                             <td colspan="2"><p align="center"></p></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$testigo1->nombre}} {{$testigo1->apellidoPaterno}} {{$testigo1->apellidoMaterno}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$testigo2->nombre}} {{$testigo2->apellidoPaterno}} {{$testigo2->apellidoMaterno}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['academico']}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['delegado']}}</b></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$testigo1->puesto}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$testigo2->puesto}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['academicop']}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['delegadop']}}</b></td></div>
                         </tr>
                     </table>
                     <div align=center>
@@ -310,7 +310,7 @@
                     </div>
                     <br>
                     <div align=justify>
-                        <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}; el día de la expedición de la suficiencia presupuestal.</small>
+                        <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$funcionarios['director']}}, {{$funcionarios['directorp']}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}; el día de la expedición de la suficiencia presupuestal.</small>
                     </div>
                 @endif
             </div>

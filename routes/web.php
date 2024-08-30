@@ -121,6 +121,7 @@ Route::middleware(['admin'])->group(function(){
     Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
     Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
     Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
+    Route::post('/update/activo', 'adminController\userController@updateActivo')->name('update.activo');
     Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
     Route::get('/roles/index', 'adminController\RolesController@index')->name('roles.index');
     Route::get('/roles/modificacion/{id}', 'adminController\RolesController@edit')->name('roles.edit');

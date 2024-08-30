@@ -313,7 +313,7 @@
                 </li>
                 @endcan
                 @canany(['consultas.folios','consultas.lotes','consultas.cursosaperturados','planeacion.estadisticas','planeacion.grupos.vulnerables','planeacion.ingresos.propios',
-                    'consultas.cursosefisico','consultas.instructor', 'consultas.instructores.disponibles','consultas.poa','show.cursos.validados','consulta.bolsa.trabajo'                
+                    'consultas.cursosefisico','consultas.instructor', 'consultas.instructores.disponibles','consultas.poa','show.cursos.validados','consulta.bolsa.trabajo'
                     ])
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -359,7 +359,7 @@
                     </div>
                 </li>
                 @endcan
-                @canany(['estadisticas.ecursos', 'tablero.metas.index'])                
+                @canany(['estadisticas.ecursos', 'tablero.metas.index'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Estadísticas
