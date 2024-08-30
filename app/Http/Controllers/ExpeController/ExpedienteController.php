@@ -875,15 +875,15 @@ class ExpedienteController extends Controller
                             }
                         }
                     }else if($radio_a === 'no' || $radio_a === 'no_aplica') {
-                        if($indice_docs[$i] == 17 || $indice_docs[$i] == 18){
-                            if(!empty($doc_a) || !empty($text)){
-                                $docs_true[] = $indice_docs[$i];
-                            }
-                        }else{
-                            if(!empty($doc_a)){
-                                $docs_true[] = $indice_docs[$i];
-                            }
+                        // if($indice_docs[$i] == 17 || $indice_docs[$i] == 18){
+                        //     if(!empty($doc_a) || !empty($text)){
+                        //         $docs_true[] = $indice_docs[$i];
+                        //     }
+                        // }else{
+                        if(!empty($doc_a)){
+                            $docs_true[] = $indice_docs[$i];
                         }
+                        // }
                     }
                 }else{
                     return response()->json(['mensaje' => 'FALTAN CAMPOS POR SELECCIONAR, ¡VERIFIQUE!']);
@@ -1246,6 +1246,57 @@ class ExpedienteController extends Controller
 
     }
 
+    private function objeto_movimiento($vinc, $acad, $admin, $status){
+        $mensajes_dta = array();
+        $array_vincu = [1,2,3,4,5,6,7,8];
+        $array_acad = [8,9,10,11,12,13,14,15,16,17,18,19,25];
+        $array_admin = [20,21,22,23,24];
+        $objeto = [];
+
+        ## Función para obtener mensajes de dta y unidad
+        $iteracion_msn = function ($array, $dpto_json, $nom_corto, $campo_mensaje){
+            $msn = array();
+            foreach($array as $i){
+                $observacion = data_get($dpto_json['doc_' . $i], $campo_mensaje, '');
+                if (!empty($observacion)) {  // Verifica si el valor no está vacío
+                    $msn['msn_'.$nom_corto.$i] = $observacion;
+                }
+            }
+            return $msn;
+        };
+
+        if($status == 'ENVIADO'){
+
+            $msn_vincu = $iteracion_msn($array_vincu, $vinc, 'vincu', 'observaciones');
+            $msn_acad = $iteracion_msn($array_acad, $acad, 'acad', 'observaciones');
+            $msn_admin = $iteracion_msn($array_admin, $admin, 'admin', 'observaciones');
+            $observaciones = array_merge($msn_vincu, $msn_acad, $msn_admin);
+
+            $objeto = [
+                "status_dpto" => "ENVIADO",
+                "fecha_envio_dta" => $admin['fecha_envio_dta'],
+                "id_user_save" => $admin['id_user_save'],
+                "observaciones" => $observaciones
+            ];
+
+        } else if($status == 'RETORNADO'){
+            $msn_vincu = $iteracion_msn($array_vincu, $vinc, 'vincu_dta', 'mensaje_dta');
+            $msn_acad = $iteracion_msn($array_acad, $acad, 'acad_dta', 'mensaje_dta');
+            $msn_admin = $iteracion_msn($array_admin, $admin, 'admin_dta', 'mensaje_dta');
+            $observaciones_dta = array_merge($msn_vincu, $msn_acad, $msn_admin);
+
+            $objeto = [
+                "status_dpto" => "RETORNADO",
+                "fecha_retornado" => $admin['fecha_envio_dta'],
+                "id_user_return" => $admin['id_user_save'],
+                "observaciones_dta" => $observaciones_dta
+            ];
+        }
+
+
+        return $objeto;
+    }
+
     //Cambio de estatus a Enviado para DTA
     public function validar_form(Request $request)  {
         // $rol_user = $request->rol_user;
@@ -1272,6 +1323,15 @@ class ExpedienteController extends Controller
                 $json1 = $expeUnico->vinculacion;
                 $json2 = $expeUnico->academico;
                 $json3 = $expeUnico->administrativo;
+                $json4 = $expeUnico->movimientos;
+
+                // Guardamos los datos de retorno a partir de la segunda vez
+                if(!empty($json3['fecha_retornado'])){
+                    $resul_objeto = $this->objeto_movimiento($json1, $json2, $json3, 'RETORNADO');
+                    $json4[] = $resul_objeto;
+                    $expeUnico->movimientos = $json4;
+                }
+
                 $json1['status_dpto'] = 'ENVIADO';
                 $json2['status_dpto'] = 'ENVIADO';
                 $json3['status_dpto'] = 'ENVIADO';
@@ -1305,64 +1365,88 @@ class ExpedienteController extends Controller
     public function validar_dta (Request $request){
         $rol = $request->rol;
         $idcurso = $request->idcurso;
-        // $txtarea = $request->valor_area;
         $accion = $request->accion;
-        $mensajes_dta = $request->mensajes_dta;
+        // $mensajes_dta = $request->mensajes_dta;
+        $deshacer_valid = $request->nota_dta;
 
         try {
             $expeUnico = ExpeUnico::find($idcurso);
             $json1 = $expeUnico->vinculacion;
             $json2 = $expeUnico->academico;
             $json3 = $expeUnico->administrativo;
+            $json4 = $expeUnico->movimientos;
+
             if($accion == 'validar'){
                 $json1['status_dpto'] = 'VALIDADO';
                 $json1['fecha_validado'] = date('Y-m-d H:i');
                 $json1['id_user_valid'] = Auth::user()->id;
-                // for ($i=1; $i <= 8; $i++) {$json1['doc_'.$i]['mensaje_dta'] = "";}
 
                 $json2['status_dpto'] = 'VALIDADO';
                 $json2['fecha_validado'] = date('Y-m-d H:i');
                 $json2['id_user_valid'] = Auth::user()->id;
-                // for ($i=8; $i <= 19; $i++) {$json2['doc_'.$i]['mensaje_dta'] = "";}
-                // $json2['doc_25']['mensaje_dta'] = "";
 
                 $json3['status_dpto'] = 'VALIDADO';
                 $json3['fecha_validado'] = date('Y-m-d H:i');
                 $json3['id_user_valid'] = Auth::user()->id;
-                // for ($i=20; $i <= 24; $i++) {$json3['doc_'.$i]['mensaje_dta'] = "";}
 
             }else if($accion == 'retornar'){
+                ## Guardamos los datos de envio a DTA a partir de la segunda vez.
+                if(!empty($json3['fecha_envio_dta'])){
+                    $resul_objeto = $this->objeto_movimiento($json1, $json2, $json3, 'ENVIADO');
+                    $json4[] = $resul_objeto;
+                    $expeUnico->movimientos = $json4;
+                }
+
                 $json1['status_dpto'] = 'RETORNADO';
                 $json1['fecha_retornado'] = date('Y-m-d H:i');
                 $json1['id_user_return'] = Auth::user()->id;
-                // $json1['descrip_return'] = $txtarea;
-                // for ($i=1; $i <= 8; $i++) {
-                //     $index = ($i == 8) ? 26 : $i;
-                //     $json1['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$index])) ? $mensajes_dta['txtarea'.$index] : "";
-                // }
 
                 $json2['status_dpto'] = 'RETORNADO';
                 $json2['fecha_retornado'] = date('Y-m-d H:i');
                 $json2['id_user_return'] = Auth::user()->id;
-                // $json2['descrip_return'] = $txtarea;
-                // for ($i=8; $i <= 19; $i++) {
-                //     $json2['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
-                // }
-                // $json2['doc_25']['mensaje_dta'] = (!empty($mensajes_dta['txtarea25'])) ? $mensajes_dta['txtarea25'] : "";
-
 
                 $json3['status_dpto'] = 'RETORNADO';
                 $json3['fecha_retornado'] = date('Y-m-d H:i');
                 $json3['id_user_return'] = Auth::user()->id;
-                // $json3['descrip_return'] = $txtarea;
-                // for ($i=20; $i <= 24; $i++) {
-                //     $json3['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
-                // }
+
+            }else if($accion == 'deshacer_valid' && !empty($deshacer_valid)){
+                ##Verificamos si antes ya se habia validado, si es asi entonces procedemos a guardar la validacion anterior al campo de movimientos.
+                if(!empty($json3['fecha_validado'])){
+                    ## (DELEGADO) status_dpto = VALIDAO, fecha_validado, id_user_valid, motivo de deshacer validación
+                    $resul_objeto = [
+                        "status_dpto" => "VALIDADO",
+                        "fecha_validado" => $json3['fecha_validado'],
+                        "id_user_valid" => $json3['id_user_valid'],
+                        "sms_deshacer_valid" => $deshacer_valid
+                    ];
+                    $json4[] = $resul_objeto;
+                    $expeUnico->movimientos = $json4;
+                }
+
+                //Vinculacion
+                $json1['status_dpto'] = 'ENVIADO';
+                $json1['fecha_validado'] = "";
+                $json1['id_user_valid'] = null;
+
+                //Academico
+                $json2['status_dpto'] = 'ENVIADO';
+                $json2['fecha_validado'] = "";
+                $json2['id_user_valid'] = null;
+
+                //Administrativo
+                $json3['status_dpto'] = 'ENVIADO';
+                $json3['fecha_validado'] = "";
+                $json3['id_user_valid'] = null;
             }
             $expeUnico->vinculacion = $json1;
             $expeUnico->academico = $json2;
             $expeUnico->administrativo = $json3;
             $expeUnico->save();
+
+            return response()->json([
+                'status' => 200,
+                'mensaje' => 'Operacion exitosa'
+            ]);
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -1374,8 +1458,7 @@ class ExpedienteController extends Controller
 
         return response()->json([
             'status' => 200,
-            'arreglo' => $mensajes_dta,
-            'mensaje' => '¡INFORMACIÓN '.($accion == 'validar' ? 'VALIDADA' : 'RETORNADA').'!'
+            'mensaje' => 'Vuelva a intentarlo.'
         ]);
     }
 
