@@ -177,7 +177,7 @@
         <div class="row">
             <div class="col-md-4">
                 {{-- ocutar lo siguiente porque sólo se activa si la bandera trae el dato que necesito --}}
-                @if (!$bandera === 'solicitud')
+                @if ($dato === 'solicitud')
                     <a href="{{ route('reporte.rf001.ingreso-propio') }}" class="btn">
                         <i class="fas fa-plus"></i> RF001
                     </a>

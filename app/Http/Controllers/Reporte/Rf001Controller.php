@@ -19,6 +19,7 @@ use Illuminate\Http\Response;
 use PDF;
 use App\Services\ReportService;
 use App\Http\Requests\rf001ComentariosRequest;
+use Illuminate\Support\Facades\Crypt;
 
 class Rf001Controller extends Controller
 {
@@ -245,7 +246,7 @@ class Rf001Controller extends Controller
         $encrypted = base64_decode($encrypted);
         $dato = Crypt::decrypt($encrypted);
         $data = $this->rfoo1Repository->sentRF001Format($request);
-        return view('reportes.rf001.formatos', compact('data'))->render();
+        return view('reportes.rf001.formatos', compact('data', 'dato'))->render();
     }
 
     public function addComment(rf001ComentariosRequest $request): JsonResponse
