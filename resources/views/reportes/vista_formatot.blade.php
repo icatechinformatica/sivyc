@@ -105,7 +105,7 @@
                 <div class="form-row">
                     <div class="form-group mb-2 mb-2">
                         <button input type="submit" class="btn btn-success my-2 my-sm-0 waves-effect waves-light">
-                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            <i class="far fa-file-excel fa-2x" aria-hidden="true"></i>&nbsp;
                             EXPORTAR FORMATO T
                         </button>
                     </div>
@@ -124,7 +124,7 @@
                     <div class="form-group mb-2">
                         <button input type="submit" id="generarMemoAFirma" name="generarMemoAFirma"
                             class="btn btn-danger my-2 my-sm-0 waves-effect waves-light">
-                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                            <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>
                             GENERAR MEMORANDUM
                         </button>
                     </div>
@@ -142,7 +142,7 @@
                             <button type="button" id="mod_format" name="mod_format"
                                 style="{{ $retornoUnidad->isEmpty() ? 'display: none' : '' }}"
                                 class="btn btn-warning my-2 my-sm-0 waves-effect waves-light">
-                                <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
+                                <i class="fas fa-pencil-alt fa-2x" aria-hidden="true"></i>
                                 Modificar Campos
                             </button>
                         </div>

@@ -4,7 +4,7 @@
 @section('title', 'Modificación de un curso | SIVyC Icatech')
 
 @section('content')
-    
+
     <div class="container-fluid px-5 mt-4">
         {{-- titulo --}}
         <div class="row pb-2">
@@ -84,12 +84,12 @@
                                     @if ($item->opcion_solicitud == 'CANCELACIÓN DE CURSO')
                                         <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Modificar"
                                             href="{{ route('solicitudesDTA.show', ['id' => $item->id_solicitud]) }}">
-                                            <i class="fa fa-pencil-square-o fa-2x pt-2" aria-hidden="true"></i>
+                                            <i class="fas fa-pencil-alt fa-2x pt-2" aria-hidden="true"></i>
                                         </a>
                                     @else
                                         <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Modificar"
                                             href="{{ route('solicitudesDTA.showModify', ['id' => $item->id_solicitud]) }}">
-                                            <i class="fa fa-pencil-square-o fa-2x pt-2" aria-hidden="true"></i>
+                                            <i class="fas fa-pencil-alt fa-2x pt-2" aria-hidden="true"></i>
                                         </a>
                                     @endif
                                 @endif
@@ -116,7 +116,7 @@
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    
+
 
                     <form id="formCargarArchivoRes" enctype="multipart/form-data" action="{{route('solicitudesDTA.guardarRespuesta')}}" method="post">
                         @csrf
@@ -164,7 +164,7 @@
                 archivo_respuesta: {
                     required: true
                 }
-            }, 
+            },
             messages: {
                 archivo_respuesta: {
                     required: 'Debe cargar la respuesta en formato pdf'

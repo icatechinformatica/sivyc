@@ -200,13 +200,20 @@
             </div>
         @endif
     @elseif($file)
-        <a href="{{$file}}" target="_blank" class="btn  bg-warning">IMPRIMIR
-            @if($g->option =='ARC01')  {{$munidad}}
-            @elseif($g->option =='ARC02') {{$nmunidad}} @endif
-            .PDF
-        </a> 
+        <a href="{{$file}}" target="_blank" class="btn  bg-warning"> SOLICITUD {{$g->option}}</a> 
     @endif
     @if($pdf_curso)  
-        <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>
+        <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">AUTORIZACIÓN</a>
+    @endif
+    @if($movimientos)        
+        <div class="form-row col-md-9 justify-content-end">  
+            {{ Form::select('movimiento', $movimientos, '', ['id'=>'movimiento','class' => 'form-control  col-md-4 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }}
+            {{ Form::text('motivo', '', ['id'=>'motivo', 'class' => 'form-control col-md-4 m-1 ', 'placeholder' => 'MOTIVO', 'title' => 'MOTIVO', 'style'=>'display:none']) }}
+            <div class="custom-file col-md-3 m-1" id="inputFile" style="display:none">
+                <input id="file_autorizacion" type="file" name="file_autorizacion" class="custom-file-input" accept=".pdf" >
+                <label class="custom-file-label" for="file_recibo">PDF</label>
+            </div> 
+            {{ Form::button('ENVIAR', ['id'=>'enviar','class' => 'btn btn-danger','style'=>'display:none']) }}
+        </div>
     @endif
 </div>

@@ -3,7 +3,7 @@
 @section('title', 'Reportes | SIVyC Icatech')
 @section('content')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
-   
+
     <div class="card-header">
         Grupos / Búsqueda
     </div>
@@ -19,7 +19,7 @@
             if(isset($curso)) $clave = $curso->clave;
             else $clave = null;
         ?>
-        {{ Form::open(['route' => 'grupos.consultas', 'method' => 'post', 'id'=>'frm']) }}              
+        {{ Form::open(['route' => 'grupos.consultas', 'method' => 'post', 'id'=>'frm']) }}
 
             <div class="row">
                 <div class="form-group col-md-3">
@@ -27,27 +27,27 @@
                 </div>
                 <div class="form-group col-md-2">
                         {{ Form::button('FILTRAR', ['class' => 'btn', 'type' => 'submit']) }}
-                </div>                    
+                </div>
             </div>
             <div class="row">
                 @include('grupos.consultas.table')
-            </div>             
-        {!! Form::close() !!}    
-    </div>    
+            </div>
+        {!! Form::close() !!}
+    </div>
     @section('script_content_js')
-        <script language="javascript">        
+        <script language="javascript">
             function editar(clave){
                 $("#clave").val(clave);
-                $('#frm').attr('action', "{{route('grupos.consultas.calificaciones')}}"); $('#frm').submit();                 
+                $('#frm').attr('action', "{{route('grupos.consultas.calificaciones')}}"); $('#frm').submit();
             }
             function signar(clave){
                 $("#clave").val(clave);
-                $('#frm').attr('action', "{{route('grupos.consultas.folios')}}"); $('#frm').submit();                 
+                $('#frm').attr('action', "{{route('grupos.consultas.folios')}}"); $('#frm').submit();
             }
             function cancelar(clave){
                 $("#clave").val(clave);
-                $('#frm').attr('action', "{{route('grupos.consultas.cancelarfolios')}}"); $('#frm').submit();                 
+                $('#frm').attr('action', "{{route('grupos.consultas.cancelarfolios')}}"); $('#frm').submit();
             }
-        </script>  
+        </script>
     @endsection
 @endsection

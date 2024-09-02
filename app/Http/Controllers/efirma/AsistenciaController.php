@@ -128,7 +128,7 @@ class AsistenciaController extends Controller
         ]);
         //Generacion de cadena unica mediante el ICTI
         $xmlBase64 = base64_encode($result);
-        $getToken = Tokens_icti::all()->last();
+        $getToken = Tokens_icti::Where('sistema', 'sivyc')->First();
         if ($getToken) {
             $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
             if ($response->json() == null) {
@@ -245,8 +245,8 @@ class AsistenciaController extends Controller
         return redirect()->route('firma.inicio')->with('success', 'Documento Rechazado Exitosamente!');
     }
 
-    public function asistencia_pdf($id, $output = null) {
-        $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 = null;
+    public function asistencia_pdf($id) {
+        $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 = $EFolio = null;
         if ($id) {
             // $curso = tbl_cursos::where('clave', '=', $clave)->first();
             $curso = DB::Table('tbl_cursos')->select(
@@ -338,6 +338,7 @@ class AsistenciaController extends Controller
                             $documento->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
                             $documento->save();
                         }
+
                         ob_start();
                         QRcode::png($verificacion);
                         $qrCodeData = ob_get_contents();
@@ -346,7 +347,11 @@ class AsistenciaController extends Controller
                         // Fin de Generacion
                     }
 
-                    $pdf = PDF::loadView('layouts.FirmaElectronica.reporteAsistencia', compact('curso', 'alumnos', 'mes', 'consec', 'meses','objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64'));
+                    if(!is_null($documento)){
+                        $EFolio = $documento->num_oficio;
+                    }
+
+                    $pdf = PDF::loadView('layouts.FirmaElectronica.reporteAsistencia', compact('curso', 'alumnos', 'mes', 'consec', 'meses','objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64','EFolio'));
                     $pdf->setPaper('Letter', 'landscape');
                     $file = "ASISTENCIA_$id.PDF";
 
@@ -501,7 +506,7 @@ class AsistenciaController extends Controller
 
         $token = $resToken->json();
 
-        Tokens_icti::create([
+        Tokens_icti::Where('sistema','sivyc')->update([
             'token' => $token
         ]);
         return $token;

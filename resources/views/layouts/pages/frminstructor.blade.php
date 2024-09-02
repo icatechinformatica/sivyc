@@ -222,7 +222,7 @@
                             <H5><small><small>Comprobante Domicilio</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
                             <label class='onpoint' for="arch_domicilio" required>
@@ -237,7 +237,7 @@
                             <H5><small><small>CURP</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
                             <label class='onpoint' for="arch_curp">
@@ -252,7 +252,7 @@
                             <H5><small><small>Comprobante Bancario</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
                             <label class='onpoint' for="arch_banco">
@@ -267,7 +267,7 @@
                             <H5><small><small>Fotografía</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
                             <label class='onpoint' for="arch_foto">
@@ -284,7 +284,7 @@
                             <H5><small><small>Acta de nacimiento</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
                             <label class='onpoint' for="arch_id">
@@ -299,7 +299,7 @@
                             <H5><small><small>RFC</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
                             <label class='onpoint' for="arch_rfc">
@@ -314,7 +314,7 @@
                             <H5><small><small>Comprobante Estudios</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
                             <label class='onpoint' for="arch_estudio">
@@ -329,7 +329,7 @@
                             <H5><small><small>Curriculum</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
                             <label class='onpoint' for="arch_curriculum_personal">

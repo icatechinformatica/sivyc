@@ -32,7 +32,7 @@
                 </div>
                 <div class="from-group  col-md-3">
                     {{ Form::select('id_curso', $cursos, $request->id_curso, ['id'=>'id_curso','class' => 'form-control mr-sm-2'] ) }}
-                </div>               
+                </div>
                 <div class="form-group col-sx-2">
                     <input type="date" name="inicio" class="form-control" id="inicio" placeholder="FECHA INICIO" value="{{$request->inicio}}">
                 </div>
@@ -42,7 +42,7 @@
                 <div class="form-group col-sx-1">
                     <input type="time" name='hini' id='hini' type="text" class="form-control" aria-required="true" value="{{$request->hini}}"/>
                 </div>
-                <div class="form-group col-sx-1">                    
+                <div class="form-group col-sx-1">
                     <input type="time" name='hfin' id='hfin' type="text" class="form-control" aria-required="true" value="{{$request->hfin}}"/>
                 </div>
                 <div class="form-group col-sx-1">
@@ -56,7 +56,7 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <tr>
-                        <td>#</td>                        
+                        <td>#</td>
                         <td>INSTRUCTOR</td>
                         <td>CURP</td>
                         <td>N.CONTROL</td>
@@ -70,7 +70,7 @@
                     @isset($consulta)
                         <?php $n=1;?>
                         @foreach ($consulta as $item)
-                        <tr>        
+                        <tr>
                             <td>{{ $n++}}</td>
                             <td>{{$item->instructor}}</td>
                             <td>{{$item->curp}}</td>
@@ -81,9 +81,9 @@
                             <td>{{$item->fecha_validacion}}</td>
                             <td>{{$item->memorandum_validacion}}</td>
                             <td>
-                                @if ($item->archivo_alta != NULL)                                    
+                                @if ($item->archivo_alta != NULL)
                                     <a class="nav-link" href={{$item->archivo_alta}} target="_blank">
-                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                                        <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                                     </a>
 
                                 @else
@@ -91,14 +91,14 @@
                                 @endif
                            </td>
                         </tr>
-                        @endforeach                  
+                        @endforeach
                     @endisset
                 </table>
             </div>
         </div>
     </div>
-    @section('script_content_js') 
-        <script src="{{asset('js/preinscripcion/grupo.js')}}"></script>   
-        
+    @section('script_content_js')
+        <script src="{{asset('js/preinscripcion/grupo.js')}}"></script>
+
     @endsection
 @endsection

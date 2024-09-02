@@ -4,6 +4,7 @@
 @section('title', 'Contratos | SIVyC Icatech')
 <!--seccion-->
 @section('content')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         * {
         box-sizing: border-box;
@@ -26,7 +27,10 @@
             line-height:50px;
         }
     </style>
-    <div class="container g-pt-50">
+    <div class="card-header">
+        Modulo de Contratos
+    </div>
+    <div class="card card-body" style=" min-height:450px;">
         @if ($message =  Session::get('info'))
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
@@ -165,11 +169,11 @@
                             <td>
                                 @if ($itemData->status == 'Validado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
-                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf" aria-hidden="true"></i>
                                     </a>
                                     @can('contratos.create')
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Crear Contrato y Solicitud de Pago" href="{{route('contratos.create', ['id' => $itemData->id_folios])}}">
-                                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                                            <i class="fas fa-file-alt" aria-hidden="true"></i>
                                         </a>
                                     @endcan
                                     @can('folio.cancel')
@@ -201,14 +205,14 @@
                                 @if ($itemData->status == 'Capturando' || $itemData->status_recepcion == 'Rechazado' || ($itemData->status_recepcion == null && $itemData->id_contrato != null))
                                     @can('contratos.edit')
                                         {{-- <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Firma Electronica" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
-                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                            <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                                         </a> --}}
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Modificar Contrato y Pago" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}">
-                                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                                            <i class="fas fa-file-alt" aria-hidden="true"></i>
                                         </a>
                                     @endcan
                                     {{-- <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
-                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf" aria-hidden="true"></i>
                                     </a> --}}
                                     @if(!is_null($itemData->status_recepcion))
                                         @can('contrato.restart')
@@ -246,37 +250,11 @@
                                             </button>
                                         @endcan
                                     @endif
-                                    @if($itemData->recepcion == NULL)
-                                        @can('contrato.recepcion')
-                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
-                                                data-toggle="modal" data-placement="top"
-                                                data-target="#recepcionModal"
-                                                data-id='{{$itemData->id_folios}}'
-                                                title="Recepción de documentos">
-                                                <i class="fa fa-book"></i>
-                                            </button>
-                                        @endcan
-                                    @endif
-
                                 @endif
                                 @if ($itemData->status == 'Pago_Verificado' || ($itemData->status_recepcion == null && $itemData->id_contrato != null))
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                    {{-- <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
-                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </a> --}}
-                                    @if($itemData->recepcion == NULL)
-                                        @can('contrato.recepcion')
-                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
-                                                data-toggle="modal" data-placement="top"
-                                                data-target="#recepcionModal"
-                                                data-id='{{$itemData->id_folios}}'
-                                                title="Recepción de documentos">
-                                                <i class="fa fa-book"></i>
-                                            </button>
-                                        @endcan
-                                    @endif
                                     @can('folio.cancel')
                                         <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
@@ -324,15 +302,15 @@
                             <td>
                                 @if ($itemData->fecha_dif > 0)
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" data-fecha-id="{{$itemData->fecha_dif }}" title="La fecha de vencimiento ha pasado por {{$itemData->fecha_dif }} días">
-                                        <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                                        <i class="fas fa-lightbulb" aria-hidden="true"></i>
                                     </a>
                                 @elseif ($itemData->fecha_dif >= -3)
                                     <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-fecha-id="{{$itemData->fecha_dif }}" title="La fecha de vencimiento está cerca faltán {{$itemData->fecha_dif }} días">
-                                        <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                                        <i class="fas fa-lightbulb" aria-hidden="true"></i>
                                     </a>
                                 @else
                                     <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Está a tiempo">
-                                        <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                                        <i class="fas fa-lightbulb" aria-hidden="true"></i>
                                     </a>
                                 @endif
                             </td>
@@ -407,17 +385,17 @@
             <div class="modal-body">
 
                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="LA FECHA DEL CURSO YA HA FINALIZADO O TERMINADO">
-                    <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                    <i class="fas fa-lightbulb" aria-hidden="true"></i>
                 </a>
                     <b>LA FECHA DEL CURSO YA HA FINALIZADO O TERMINADO</b>
                 <br>
                 <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="EL CURSO TIENE TRES DÍAS PARA FINALIZAR">
-                    <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                    <i class="fas fa-lightbulb" aria-hidden="true"></i>
                 </a>
                     <b>EL CURSO TIENE TRES DÍAS PARA FINALIZAR</b>
                 <br>
                 <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="LAS FECHAS DE FINALIZACIÓN DEL CURSO ESTÁN EN TIEMPO Y FORMA">
-                    <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                    <i class="fas fa-lightbulb" aria-hidden="true"></i>
                 </a>
                     <b>LAS FECHAS DE FINALIZACIÓN DEL CURSO ESTÁN EN TIEMPO Y FORMA</b>
             </div>

@@ -66,7 +66,7 @@
                     data-toggle="modal" data-placement="top"
                     data-target="#RechazarModal"
                     data-id='{{$getinstructor->id}}'>
-                    <i class="fa fa-remove"></i> &nbsp Rechazar
+                    <i class="fas fa-times"></i> &nbsp Rechazar
                 </button>
             </div>
             <div class="pull-right">

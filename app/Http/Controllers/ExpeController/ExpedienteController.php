@@ -34,7 +34,7 @@ class ExpedienteController extends Controller
         else if($slug == 'direccion_vinculacion' || $slug == 'unidad_vinculacion' || $slug == 'vinculadores_administrativo' || $slug == 'director_unidad') {$val_rol = 1;}
         else if($slug == 'unidad' || $slug == 'titular_unidad' || $slug == 'auxiliar_unidad') {$val_rol = 2;}
         else if($slug == 'administrativo' || $slug == 'pagos_contratos') {$val_rol = 3;}
-        else if($slug == 'titular-innovacion') {$val_rol = 4;}
+        else if($slug == 'titular-innovacion' || $slug == 'auxiliar-innovacion' || $slug == 'dta') {$val_rol = 4;}
 
         #REALIZAMOS LA BUSQUEDA
         $valor_select_true = $array_rol = [];
@@ -44,18 +44,25 @@ class ExpedienteController extends Controller
         }else{
             $req_foliogrupo = $folio;
         }
+        $ubic_unidad = null;
         $data_cursos = null;
         $v_radios = null; //Variable que obtiene los valores de cada json
         $json_dptos = null;
         $search_docs = null;
         $st_general = null;
+        $mensajes_dta = [];
         $path_files = $this->path_files;
-        if($req_foliogrupo != ''){
-            // $data_cursos = DB::table('tbl_cursos')->select('id', 'folio_grupo')->where('folio_grupo', $req_foliogrupo)->first();
+
+        //Agregarmos validacion que si es clave hacer que busque el folio;
+        $val_folio = DB::table('tbl_cursos')->where('folio_grupo', '=', $req_foliogrupo)->value('folio_grupo');
+        if(empty($val_folio)){$req_foliogrupo = DB::table('tbl_cursos')->where('clave', '=', $req_foliogrupo)->value('folio_grupo');}
+
+        if(!empty($req_foliogrupo)){
+
             $data_cursos = DB::table('tbl_cursos as tc')
             ->join('alumnos_registro as ar', 'tc.folio_grupo', '=', 'ar.folio_grupo')
             ->select('tc.id','tc.folio_grupo','tc.curso','tc.area','tc.tcapacitacion','tc.clave','tc.nombre', 'tc.tipo_curso',
-                'tc.espe','tc.mexoneracion','tc.inicio','tc.termino','tc.hini','tc.hfin','tc.costo','ar.costo as costo_alumnos',
+                'tc.espe','tc.mexoneracion','tc.inicio','tc.termino','tc.hini','tc.hfin','tc.costo','tc.unidad','tc.id_unidad','ar.costo as costo_alumnos',
                 DB::raw("CASE
                             WHEN tc.tipo = 'EXO' THEN 'EXONERACIÓN DE CUOTA'
                             WHEN tc.tipo = 'PINS' THEN 'CUOTA ORDINARIA'
@@ -63,6 +70,9 @@ class ExpedienteController extends Controller
                         END as tpago"))
             ->where('tc.folio_grupo', '=', $req_foliogrupo)
             ->first();
+
+            ##Buscamos la unidad /accion movil
+            $ubic_unidad = DB::table('tbl_unidades')->where('id', '=', $data_cursos->id_unidad)->value('unidad');
 
             if ($data_cursos != null) {
                 #Hacemos la consulta en expedientes unicos
@@ -137,16 +147,18 @@ class ExpedienteController extends Controller
                             $array_rol = ['rol' => $val_rol, 'status_json' => $foundJson->administrativo['status_dpto'], 'btn_envio_dta' => false, 'idcurso' => $data_cursos->id, 'message_return' => $foundJson->administrativo['descrip_return']];
                         }
 
+                        ##Consultas mensaje DTA
+                        $mensajes_dta = $this->get_mensaje_return($json_dptos, $array_rol['rol'], $array_rol['status_json']);
                     }
 
                 }
             }else{
                 #Mensaje de no encontrado
-                return redirect()->route('expunico.principal.mostrar.get')->with('message', '¡FOLIO NO ENCONTRADO!')->with('status', 'danger');
+                return redirect()->route('expunico.principal.mostrar.get')->with('message', '¡FOLIO O CLAVE NO ENCONTRADO!')->with('status', 'danger');
             }
         }
 
-        return view('vistas_expe.expediente_unico', compact('val_rol', 'data_cursos', 'array_rol', 'st_general', 'v_radios', 'json_dptos', 'search_docs', 'path_files'));
+        return view('vistas_expe.expediente_unico', compact('val_rol', 'data_cursos', 'array_rol', 'st_general', 'v_radios', 'json_dptos', 'search_docs', 'path_files','ubic_unidad','mensajes_dta'));
     }
 
     #Llenar array para anexar al json de expedientes
@@ -420,7 +432,7 @@ class ExpedienteController extends Controller
         ##Obtenemos el año del curso
         $bdanio_curso = DB::table('tbl_cursos')->select(DB::raw("EXTRACT(YEAR FROM inicio) as anio_curso"))->where('folio_grupo',$folio)->first();
 
-        $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->value('memo_soporte_dependencia');
+        $bddoc2 = DB::table('exoneraciones')->where('folio_grupo',$folio)->where('status', 'AUTORIZADO')->value('memo_soporte_dependencia');
         $mod_insctructor = DB::table('tbl_cursos')->where('folio_grupo',$folio)->value('modinstructor');
 
         //Obtenemos la lista de los alumnos con sus campos correspondientes
@@ -504,7 +516,7 @@ class ExpedienteController extends Controller
         $bdReciboP = DB::table('tbl_recibos')->where('folio_grupo', $folio)->where('status_folio', '!=', 'CANCELADO')->whereNotNull('status_folio')->value('file_pdf');
 
         $bdReciboT = DB::table('tbl_cursos')
-        ->select('comprobante_pago', DB::raw("EXTRACT(YEAR FROM termino) as anio_curso"), DB::raw("
+        ->select('comprobante_pago', 'tipo', DB::raw("EXTRACT(YEAR FROM termino) as anio_curso"), DB::raw("
             CASE
                 WHEN comprobante_pago IS NOT NULL
                     AND (folio_pago ILIKE '%PROV%' OR folio_pago ~ '^[0-9]+$')
@@ -532,10 +544,13 @@ class ExpedienteController extends Controller
         if(!empty($bddocAlumnos)){$docAlumnos = $bddocAlumnos;}
 
         //Validar recibo de pago en dos tablas
+        if($bdReciboT){
+            $validRec = $bdReciboT->es_valido;
+            $tipoCurso = $bdReciboT->tipo;
+        }
         if(!empty($bdReciboP)){$doc7 = env("APP_URL").'/storage/'.$bdReciboP; $validRec = 'digital';}
         else if(!empty($bdReciboT->comprobante_pago)){
             $doc7 = $bdReciboT->comprobante_pago;
-            $validRec = $bdReciboT->es_valido;
             // $anioCurso = $anio_curso;
         }
 
@@ -583,7 +598,8 @@ class ExpedienteController extends Controller
         $url_docs = array(
             "urldoc2" => $doc2,"urldoc5" => $doc5,"urldoc6" => $doc6,"urldoc7" => $doc7,"urldoc8" => $doc8,"urldoc9" => $doc9,"urldoc10" => $doc10,"urldoc11" => $doc11,
             "urldoc20" => $doc20,"urldoc21" => $doc21,"urldoc22" => $doc22,"urldoc23" =>$doc23,"urldoc24"=>$doc24,
-            "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec, "urldoc16"=>$docCalif, "alumnos_req" => $docAlumnos, 'doc_xml' => $docXml, 'anio_curso' => $anioCurso
+            "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec, "urldoc16"=>$docCalif, "alumnos_req" => $docAlumnos, 'doc_xml' => $docXml, 'anio_curso' => $anioCurso,
+            "tipo_curso" => $tipoCurso
         );
         //$this->guardarLinks($folio, $url_docs);  #Agregar las url externas a la tabla de expedientes
         $this->proces_documentos($folio, $url_docs);
@@ -744,11 +760,40 @@ class ExpedienteController extends Controller
             }
         }
 
+        //Validacion de solo g.1 url_soporte y url_documento
+        if(!empty($bd_json->academico['doc_25']['url_soporte']) || !empty($bd_json->academico['doc_25']['url_documento'])){
+            $json2['doc_25']['existe_evidencia'] = 'si';
+        }
+
         $exUnico->vinculacion = $json1;
         $exUnico->academico = $json2;
         $exUnico->administrativo = $json3;
         $exUnico->save();
 
+    }
+
+    ## Obtener mensajes de retorno de la dta
+    public function get_mensaje_return($json, $rol, $status){
+        $mensajes_dta = array();
+        $vincu = [1,2,3,4,5,6,7,8];
+        $acad = [8,9,10,11,12,13,14,15,16,17,18,19,25];
+        $deleg = [20,21,22,23,24];
+
+        $iteracion_msn = function ($array, $nombre_dpto, $nom_corto) use ($json){
+            $msn_dta = array();
+            foreach($array as $i){
+                $msn_dta['msn_'.$nom_corto.$i] = data_get($json->{$nombre_dpto}['doc_' . $i], 'mensaje_dta', '');
+            }
+            return $msn_dta;
+        };
+
+        if($rol == 4 || ($rol != 4 && $status == 'RETORNADO')){
+            $msn_vincu = $iteracion_msn($vincu, 'vinculacion', 'vincu');
+            $msn_acad = $iteracion_msn($acad, 'academico', 'acad');
+            $msn_admin = $iteracion_msn($deleg, 'administrativo', 'admin');
+            $mensajes_dta = array_merge($msn_vincu, $msn_acad, $msn_admin);
+        }
+        return $mensajes_dta;
     }
 
     #Guardar el formulario en la base de datos
@@ -830,15 +875,15 @@ class ExpedienteController extends Controller
                             }
                         }
                     }else if($radio_a === 'no' || $radio_a === 'no_aplica') {
-                        if($indice_docs[$i] == 17 || $indice_docs[$i] == 18){
-                            if(!empty($doc_a) || !empty($text)){
-                                $docs_true[] = $indice_docs[$i];
-                            }
-                        }else{
-                            if(!empty($doc_a)){
-                                $docs_true[] = $indice_docs[$i];
-                            }
+                        // if($indice_docs[$i] == 17 || $indice_docs[$i] == 18){
+                        //     if(!empty($doc_a) || !empty($text)){
+                        //         $docs_true[] = $indice_docs[$i];
+                        //     }
+                        // }else{
+                        if(!empty($doc_a)){
+                            $docs_true[] = $indice_docs[$i];
                         }
+                        // }
                     }
                 }else{
                     return response()->json(['mensaje' => 'FALTAN CAMPOS POR SELECCIONAR, ¡VERIFIQUE!']);
@@ -1201,6 +1246,57 @@ class ExpedienteController extends Controller
 
     }
 
+    private function objeto_movimiento($vinc, $acad, $admin, $status){
+        $mensajes_dta = array();
+        $array_vincu = [1,2,3,4,5,6,7,8];
+        $array_acad = [8,9,10,11,12,13,14,15,16,17,18,19,25];
+        $array_admin = [20,21,22,23,24];
+        $objeto = [];
+
+        ## Función para obtener mensajes de dta y unidad
+        $iteracion_msn = function ($array, $dpto_json, $nom_corto, $campo_mensaje){
+            $msn = array();
+            foreach($array as $i){
+                $observacion = data_get($dpto_json['doc_' . $i], $campo_mensaje, '');
+                if (!empty($observacion)) {  // Verifica si el valor no está vacío
+                    $msn['msn_'.$nom_corto.$i] = $observacion;
+                }
+            }
+            return $msn;
+        };
+
+        if($status == 'ENVIADO'){
+
+            $msn_vincu = $iteracion_msn($array_vincu, $vinc, 'vincu', 'observaciones');
+            $msn_acad = $iteracion_msn($array_acad, $acad, 'acad', 'observaciones');
+            $msn_admin = $iteracion_msn($array_admin, $admin, 'admin', 'observaciones');
+            $observaciones = array_merge($msn_vincu, $msn_acad, $msn_admin);
+
+            $objeto = [
+                "status_dpto" => "ENVIADO",
+                "fecha_envio_dta" => $admin['fecha_envio_dta'],
+                "id_user_save" => $admin['id_user_save'],
+                "observaciones" => $observaciones
+            ];
+
+        } else if($status == 'RETORNADO'){
+            $msn_vincu = $iteracion_msn($array_vincu, $vinc, 'vincu_dta', 'mensaje_dta');
+            $msn_acad = $iteracion_msn($array_acad, $acad, 'acad_dta', 'mensaje_dta');
+            $msn_admin = $iteracion_msn($array_admin, $admin, 'admin_dta', 'mensaje_dta');
+            $observaciones_dta = array_merge($msn_vincu, $msn_acad, $msn_admin);
+
+            $objeto = [
+                "status_dpto" => "RETORNADO",
+                "fecha_retornado" => $admin['fecha_envio_dta'],
+                "id_user_return" => $admin['id_user_save'],
+                "observaciones_dta" => $observaciones_dta
+            ];
+        }
+
+
+        return $objeto;
+    }
+
     //Cambio de estatus a Enviado para DTA
     public function validar_form(Request $request)  {
         // $rol_user = $request->rol_user;
@@ -1227,6 +1323,15 @@ class ExpedienteController extends Controller
                 $json1 = $expeUnico->vinculacion;
                 $json2 = $expeUnico->academico;
                 $json3 = $expeUnico->administrativo;
+                $json4 = $expeUnico->movimientos;
+
+                // Guardamos los datos de retorno a partir de la segunda vez
+                if(!empty($json3['fecha_retornado'])){
+                    $resul_objeto = $this->objeto_movimiento($json1, $json2, $json3, 'RETORNADO');
+                    $json4[] = $resul_objeto;
+                    $expeUnico->movimientos = $json4;
+                }
+
                 $json1['status_dpto'] = 'ENVIADO';
                 $json2['status_dpto'] = 'ENVIADO';
                 $json3['status_dpto'] = 'ENVIADO';
@@ -1260,64 +1365,88 @@ class ExpedienteController extends Controller
     public function validar_dta (Request $request){
         $rol = $request->rol;
         $idcurso = $request->idcurso;
-        // $txtarea = $request->valor_area;
         $accion = $request->accion;
-        $mensajes_dta = $request->mensajes_dta;
+        // $mensajes_dta = $request->mensajes_dta;
+        $deshacer_valid = $request->nota_dta;
 
         try {
             $expeUnico = ExpeUnico::find($idcurso);
             $json1 = $expeUnico->vinculacion;
             $json2 = $expeUnico->academico;
             $json3 = $expeUnico->administrativo;
+            $json4 = $expeUnico->movimientos;
+
             if($accion == 'validar'){
                 $json1['status_dpto'] = 'VALIDADO';
                 $json1['fecha_validado'] = date('Y-m-d H:i');
                 $json1['id_user_valid'] = Auth::user()->id;
-                for ($i=1; $i <= 8; $i++) {$json1['doc_'.$i]['mensaje_dta'] = "";}
 
                 $json2['status_dpto'] = 'VALIDADO';
                 $json2['fecha_validado'] = date('Y-m-d H:i');
                 $json2['id_user_valid'] = Auth::user()->id;
-                for ($i=8; $i <= 19; $i++) {$json2['doc_'.$i]['mensaje_dta'] = "";}
-                $json2['doc_25']['mensaje_dta'] = "";
 
                 $json3['status_dpto'] = 'VALIDADO';
                 $json3['fecha_validado'] = date('Y-m-d H:i');
                 $json3['id_user_valid'] = Auth::user()->id;
-                for ($i=20; $i <= 24; $i++) {$json3['doc_'.$i]['mensaje_dta'] = "";}
 
             }else if($accion == 'retornar'){
+                ## Guardamos los datos de envio a DTA a partir de la segunda vez.
+                if(!empty($json3['fecha_envio_dta'])){
+                    $resul_objeto = $this->objeto_movimiento($json1, $json2, $json3, 'ENVIADO');
+                    $json4[] = $resul_objeto;
+                    $expeUnico->movimientos = $json4;
+                }
+
                 $json1['status_dpto'] = 'RETORNADO';
                 $json1['fecha_retornado'] = date('Y-m-d H:i');
                 $json1['id_user_return'] = Auth::user()->id;
-                // $json1['descrip_return'] = $txtarea;
-                for ($i=1; $i <= 8; $i++) {
-                    $index = ($i == 8) ? 26 : $i;
-                    $json1['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$index])) ? $mensajes_dta['txtarea'.$index] : "";
-                }
 
                 $json2['status_dpto'] = 'RETORNADO';
                 $json2['fecha_retornado'] = date('Y-m-d H:i');
                 $json2['id_user_return'] = Auth::user()->id;
-                // $json2['descrip_return'] = $txtarea;
-                for ($i=8; $i <= 19; $i++) {
-                    $json2['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
-                }
-                $json2['doc_25']['mensaje_dta'] = (!empty($mensajes_dta['txtarea25'])) ? $mensajes_dta['txtarea25'] : "";
-
 
                 $json3['status_dpto'] = 'RETORNADO';
                 $json3['fecha_retornado'] = date('Y-m-d H:i');
                 $json3['id_user_return'] = Auth::user()->id;
-                // $json3['descrip_return'] = $txtarea;
-                for ($i=20; $i <= 24; $i++) {
-                    $json3['doc_'.$i]['mensaje_dta'] = (!empty($mensajes_dta['txtarea'.$i])) ? $mensajes_dta['txtarea'.$i] : "";
+
+            }else if($accion == 'deshacer_valid' && !empty($deshacer_valid)){
+                ##Verificamos si antes ya se habia validado, si es asi entonces procedemos a guardar la validacion anterior al campo de movimientos.
+                if(!empty($json3['fecha_validado'])){
+                    ## (DELEGADO) status_dpto = VALIDAO, fecha_validado, id_user_valid, motivo de deshacer validación
+                    $resul_objeto = [
+                        "status_dpto" => "VALIDADO",
+                        "fecha_validado" => $json3['fecha_validado'],
+                        "id_user_valid" => $json3['id_user_valid'],
+                        "sms_deshacer_valid" => $deshacer_valid
+                    ];
+                    $json4[] = $resul_objeto;
+                    $expeUnico->movimientos = $json4;
                 }
+
+                //Vinculacion
+                $json1['status_dpto'] = 'ENVIADO';
+                $json1['fecha_validado'] = "";
+                $json1['id_user_valid'] = null;
+
+                //Academico
+                $json2['status_dpto'] = 'ENVIADO';
+                $json2['fecha_validado'] = "";
+                $json2['id_user_valid'] = null;
+
+                //Administrativo
+                $json3['status_dpto'] = 'ENVIADO';
+                $json3['fecha_validado'] = "";
+                $json3['id_user_valid'] = null;
             }
             $expeUnico->vinculacion = $json1;
             $expeUnico->academico = $json2;
             $expeUnico->administrativo = $json3;
             $expeUnico->save();
+
+            return response()->json([
+                'status' => 200,
+                'mensaje' => 'Operacion exitosa'
+            ]);
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -1329,8 +1458,7 @@ class ExpedienteController extends Controller
 
         return response()->json([
             'status' => 200,
-            'arreglo' => $mensajes_dta,
-            'mensaje' => '¡INFORMACIÓN '.($accion == 'validar' ? 'VALIDADA' : 'RETORNADA').'!'
+            'mensaje' => 'Vuelva a intentarlo.'
         ]);
     }
 
@@ -1438,11 +1566,6 @@ class ExpedienteController extends Controller
             }
         }
 
-        //Prueba con folio 10K-230228
-        // $resultado_doc = DB::table('tbl_inscripcion')
-        // ->select('id_pre', DB::raw("EXTRACT(YEAR FROM termino) as anio"), DB::raw("requisitos->>'documento' as documento"), 'requisitos')
-        // ->where('folio_grupo', $folioG)->orderBy('id')->get();
-
         //Actualizar checks
         foreach ($alumnosIds as $key => $id) {
 
@@ -1452,22 +1575,24 @@ class ExpedienteController extends Controller
                 $json['chk_curp'] = $CheckboxCurp[$key];
                 $json['chk_escolaridad'] = $CheckboxEstudios[$key];
                 $json['chk_acta_nacimiento'] = $CheckboxActaNacim[$key];
+
+                // Verificamos si los campos no estan definidos o estan nulos
+                if (!isset($json['fecha_expedicion_curp']) || $json['fecha_expedicion_curp'] === null) {
+                    $json['fecha_expedicion_curp'] = null;
+                }
+                if(!isset($json['chk_comprobante_migracion']) || $json['chk_comprobante_migracion'] === null){
+                    $json['chk_comprobante_migracion'] = null;
+                }
+                if(!isset($json['fecha_vigencia_migratorio']) || $json['fecha_vigencia_migratorio'] === null){
+                    $json['fecha_vigencia_migratorio'] = null;
+                }
+                if(!isset($json['fecha_expedicion_acta_nacimiento']) || $json['fecha_expedicion_acta_nacimiento'] === null){
+                    $json['fecha_expedicion_acta_nacimiento'] = null;
+                }
+
                 $Alumnos->requisitos = $json;
                 $Alumnos->save();
 
-                ##Actualizamos masiva el json del alumno en otros grupos en caso de ser necesario
-                // if($CheckboxEstudios[$key] == "true"){
-                //     if(isset($resultado_doc[$key]) && !empty($resultado_doc[$key]->documento)){
-                //         DB::table('tbl_inscripcion')
-                //         ->where('id_pre', $resultado_doc[$key]->id_pre)
-                //         ->whereRaw("requisitos->>'chk_escolaridad' IS NULL")
-                //         ->orWhereRaw("requisitos->>'chk_escolaridad' = 'false'")
-                //         ->whereRaw("EXTRACT(YEAR FROM termino) = ?", [$resultado_doc[$key]->anio])
-                //         ->update([
-                //             'requisitos' => json_encode($json)
-                //         ]);
-                //     }
-                // }
 
             } catch (\Throwable $th) {
                 return redirect()->route('expunico.principal.mostrar.get', ['folio' => $folioG])->with(['message' => '¡ERROR AL GUARDAR INFORMACIÓN '.$th->getMessage() , 'status' => 'danger']);
@@ -1477,7 +1602,7 @@ class ExpedienteController extends Controller
 
     }
 
-        /** Funcion para subir pdf de alumnos
+    /** Funcion para subir pdf de alumnos
      * @param string $pdf, $id, $nom
      */
     protected function pdf_upload_alumnos($pdf, $id_pre, $pdfname)
@@ -1547,6 +1672,48 @@ class ExpedienteController extends Controller
             'status' => 500,
             'mensaje' => 'Archivo no encontrado'
         ]);
+    }
+
+    ##Guardar mensajes de retorno DTA
+    public function guardar_mensajes(Request $request){
+        $mensaje = $request->input('mensaje');
+        $dpto = $request->input('dpto');
+        $idcurso = $request->input('idcurso');
+        $doc = $request->input('documento');
+        $rol = $request->input('rol');
+
+        if(empty($idcurso) || empty($dpto) || empty($doc)){
+            return response()->json(['status' => 500, 'mensaje' => 'Los campos requeridos estan vacios']);
+        }
+
+        if($rol == '4'){
+            try {
+                $expeUnico = ExpeUnico::find($idcurso);
+                if($dpto == 'vinc'){
+                    $json1 = $expeUnico->vinculacion;
+                    $json1[$doc]['mensaje_dta'] = (!empty($mensaje)) ? $mensaje : "";
+                    $expeUnico->vinculacion = $json1;
+
+                }else if($dpto == 'acad'){
+                    $json2 = $expeUnico->academico;
+                    $json2[$doc]['mensaje_dta'] = (!empty($mensaje)) ? $mensaje : "";
+                    $expeUnico->academico = $json2;
+
+                }else if($dpto == 'admin'){
+                    $json3 = $expeUnico->administrativo;
+                    $json3[$doc]['mensaje_dta'] = (!empty($mensaje)) ? $mensaje : "";
+                    $expeUnico->administrativo = $json3;
+                }
+                $expeUnico->save();
+
+                return response()->json(['status' => 200, 'mensaje' => 'Mensaje guardado con exito']);
+
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => 500, 'mensaje' => 'error '.$th->getMessage()]);
+            }
+        }
+
     }
 
 }

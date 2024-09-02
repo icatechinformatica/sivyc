@@ -118,7 +118,7 @@
         </div>
         <div class="form-group col-md-3">
                 <a href="{{route('documento.sid', ['nocontrol' => base64_encode($alumnos[0]->no_control)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="DESCARGAR SID">
-                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                    <i class="far fa-file-pdf" aria-hidden="true"></i>
                 </a>
         </div>
         <!---->

@@ -4,11 +4,11 @@
 @section('content')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
-    
+
     <div class="card-header">
         Busqueda / Solicitud Clave de Apertura
     </div>
-    <div class="card card-body" style=" min-height:450px;">              
+    <div class="card card-body" style=" min-height:450px;">
     {{ Form::open(['route' => 'solicitud.apertura.search', 'method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data']) }}
         @csrf
         <div class="row">
@@ -17,13 +17,13 @@
             </div>
             <div class="form-group col-md-2">
                     {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-            </div> 
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th style="padding: 1px;" class="text-center">UNIDAD DE CAPACITACIÓN</th> 
+                        <th style="padding: 1px;" class="text-center">UNIDAD DE CAPACITACIÓN</th>
                         <th style="padding: 1px;" class="text-center">No. REVISIÓN</th>
                         <th style="padding: 1px;" class="text-center">No. MEMORÁNDUM</th>
                         <th style="padding: 1px;" class="text-center">STATUS</th>
@@ -54,7 +54,7 @@
                             <td class="text-center">
                                 @if ($item->pdf_curso OR $item->file_arc01)
                                 <a href="{{$pdf}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="PDF">
-                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf" aria-hidden="true"></i>
                                 </a>
                                 @endif
                             </td>
@@ -77,12 +77,12 @@
         <div>
             {{ $aperturas->links() }}
         </div>
-    {!! Form::close() !!}    
+    {!! Form::close() !!}
     </div>
-    @section('script_content_js') 
-        <script language="javascript">      
+    @section('script_content_js')
+        <script language="javascript">
             $(document).ready(function(){
             });
         </script>
-    @endsection 
+    @endsection
 @endsection

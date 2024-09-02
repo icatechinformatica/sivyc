@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}">
     <style>
         .custom-font-size { font-size: 18px; }
-        #tblAlumnos tr th{ text-align: center; padding:5px;}        
+        #tblAlumnos tr th{ text-align: center; padding:5px;}
     </style>
 @endsection
 @section('content')
@@ -34,11 +34,11 @@
         if($curso){
             $id_curso = $curso->id;
             $costo = $curso->costo;
-            $nombre_curso =  $curso->nombre_curso;            
+            $nombre_curso =  $curso->nombre_curso;
         }
         if(isset($grupo)){
             $plantel =  $grupo->plantel;
-            $programa =  $grupo->programa;       
+            $programa =  $grupo->programa;
             $hfin = $grupo->hfin;
             $hini = $grupo->hini;
             $id_cerss = $grupo->id_cerss;
@@ -64,9 +64,9 @@
             $repre = $grupo->depen_repre;
             $tel = $grupo->depen_telrepre;
             $solicita = $grupo->solicita;
-            $editar_solicita = $grupo->editar_solicita;            
+            $editar_solicita = $grupo->editar_solicita;
         }*/
-        
+
         $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = null;
         if(isset($grupo)){
             $turnado = $grupo->turnado_grupo;
@@ -86,7 +86,7 @@
             $fecha_pago = $recibo->fecha_expedicion;
         }
             */
-        
+
     ?>
     <div class="card-header">
         Preinscripci&oacute;n / Registro de Grupo
@@ -206,7 +206,7 @@
                     <div class="form-group col-md-2">
                         <label for="">TELEFONO REPRESENT:</label>
                         {!! Form::text('repre_tel', $grupo->depen_telrepre ?? '', ['id'=>'repre_tel', 'class'=>'form-control col-md-10']) !!}
-                    </div>               
+                    </div>
                     <div class="form-group col-md-4">
                         @if ($grupo->id_vulnerable ?? '')
                         <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($grupo->id_gvulnerable ?? ''){{'checked'}}@endif>&nbsp;&nbsp;GRUPO VULNERABLE</label>
@@ -218,12 +218,12 @@
                     <div class="form-group col-md-6">
                         <label>DOMICILIO, LUGAR O ESPACIO FÍSICO:</label>
                         <textarea id="efisico" name="efisico" rows="2" class="form-control">{{$grupo->efisico ?? ''}}</textarea>
-                        
+
                     </div>
                     <div class="form-group col-md-2">
                         <label>MEDIO VIRTUAL:</label>
                         {{ Form::select('medio_virtual', $medio_virtual, $grupo->medio_virtual ?? '', ['id'=>'medio_virtual','class' => 'form-control mr-sm-2'] ) }}
-                    </div>               
+                    </div>
                     <div class="form-group col-md-3">
                         <label>LINK VIRTUAL:</label>
                         <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$grupo->link_virtual ?? ''}}">
@@ -335,8 +335,8 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <label for="">SOLICITANTE (NOMBRE,CARGO):</label>  
-                                                                                          
+                                <label for="">SOLICITANTE (NOMBRE,CARGO):</label>
+
                                 {!! Form::text('solicita', $grupo->solicita ?? '', ['id'=>'solicita', 'class' => 'form-control', 'placeholder' => 'NOMBRE,CARGO', 'aria-label' => 'SOLICITANTE', $grupo->editar_solicita ? '' : 'readonly' => 'readonly']) !!}
                             </div>
                         </div>
@@ -473,12 +473,12 @@
         <script src="{{ asset('fullCalendar/list/main.js') }}" defer></script>
         <script src="{{ asset('fullCalendar/timegrid/main.js') }}" defer></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <script language="javascript">           
+        <script language="javascript">
 
             $(document).ready(function(){
                 $('#costoX').on('input', function() {
                     var text = $(this).val();
-                    $('.costo').val(text); 
+                    $('.costo').val(text);
                 });
 
                 // BOTONES DE PDF

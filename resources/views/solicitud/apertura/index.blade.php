@@ -18,7 +18,17 @@
         Solicitud / Clave de Apertura
     </div>
     <div class="card card-body" style=" min-height:450px;">
-        <?php
+        @php
+            $disabled = $inco = NULL;
+            if(isset($grupo)){
+                $inco = $grupo->inicio;
+                if($grupo->tcapacitacion=='PRESENCIAL')$disabled = 'disabled';                    
+                else 
+                    if ($exonerado)  $disabled = 'readonly';
+            }
+                    
+                
+        /*
             $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = $inco = $folio_pago = $fecha_pago = NULL;
             $activar = true;
             if(isset($grupo)){
@@ -47,12 +57,13 @@
                 $folio_pago = $grupo->folio_pago;
                 $fecha_pago = $grupo->fecha_pago;
             }
-        ?>
+                */
+    @endphp
     {{ Form::open(['route' => 'solicitud.apertura', 'method' => 'post', 'id'=>'frm']) }}
         @csrf
          <div class="row">
             <div class="form-group col-md-3">
-                    {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control', 'placeholder' => 'No. GRUPO', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 25]) }}
+                    {{ Form::text('folio_grupo', $grupo->folio_grupo ?? '', ['id'=>'folio_grupo', 'class' => 'form-control', 'placeholder' => 'No. GRUPO', 'aria-label' => 'No. GRUPO', 'required' => 'required', 'size' => 25]) }}
             </div>
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
@@ -96,9 +107,9 @@
                 @else
                     {{ $grupo->horas }}
                 @endif hrs.</strong></span>                
-                <input type="hidden" name="hini" id="hini" value="{{$hini}}">
+                <input type="hidden" name="hini" id="hini" value="{{$grupo->hini ?? ''}}">
                 
-                <div id="hora">HORARIO: <b>{{ $grupo->horario }}</b></div> <input type="hidden" name="hfin" id="hfin" value="{{$hfin}}">
+                <div id="hora">HORARIO: <b>{{ $grupo->hini }} - {{ $grupo->hfin }}</b></div> <input type="hidden" name="hfin" id="hfin" value="{{$grupo->hfin}}">
                 <span>COSTO ALUMNO: &nbsp;&nbsp;<strong>{{ $grupo->costo_individual }}</strong></span>
                 <span>HOMBRES: &nbsp;&nbsp;<strong>{{ $grupo->hombre }}</strong></span>                
                 <span>MUJERES: &nbsp;&nbsp;<strong>{{ $grupo->mujer }}</strong></span>                                
@@ -108,15 +119,15 @@
                     <span>TOTAL DIAS: &nbsp;&nbsp;<strong>{{ $grupo->tdias }}</strong></span>  
                     <span>DIAS: &nbsp;&nbsp;<strong>{{ $grupo->dia }}</strong></span>  
                 @endif
-                    <span>MUNICIPIO: &nbsp;&nbsp;<strong>{{ $muni }}</strong></span>
+                    <span>MUNICIPIO: &nbsp;&nbsp;<strong>{{ $grupo->muni }}</strong></span>
                     <span>LOCALIDAD: &nbsp;&nbsp;<strong>{{ $localidad }}</strong></span>
-                    <span>ORGANISMO PUBLICO: &nbsp;&nbsp;<strong>{{ $grupo->organismo_publico }}</strong></span>
+                    <span>ORGANISMO PUBLICO: &nbsp;&nbsp;<strong>{{ $grupo->depen }}</strong></span>
                         
             </div>
             <h5><b>DE LA APERTURA</b></h5>
             <hr />                           
             <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:2em; line-height: 3em;"> 
-                @if($munidad)
+                @if($grupo->munidad)
                     <span>CUOTA TOTAL: &nbsp;&nbsp;<strong>{{ $grupo->costo }}</strong></span>
                     <span>TIPO CUOTA: &nbsp;&nbsp;<strong>{{ $tcuota }}</strong></span>
                 @endif                
@@ -140,20 +151,21 @@
                 <div class="form-group col-md-6">
                     <label>INSTRUCTOR:</label>
                     <select name="instructor" id="instructor" class="form-control mr-sm--2" @if ($exonerado) style="background-color: lightGray;" @endif>
-                        @if ($instructor)
+                        @if($instructor)
                             <option value="{{$instructor->id}}">{{$instructor->instructor}}</option>
                         @else
                             <option value="">- SELECCIONAR -</option>
                         @endif
-
-                        @foreach ($instructores as $item)
-                            <option value="{{$item->id}}">{{$item->instructor}}</option>
-                        @endforeach
+                        @if($instructores)
+                            @foreach ($instructores as $item)
+                                <option value="{{$item->id}}">{{$item->instructor}}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
                 <div class="form-group col-md-3">
                     <label>MEMOR&Aacute;NDUM DE APERTURA:</label>
-                    <input name='munidad' id='munidad' type="text" class="form-control" aria-required="true" value="@if($munidad){{$munidad}}@else{{old('nombre')}}@endif"/>
+                    <input name='munidad' id='munidad' type="text" class="form-control" aria-required="true" value="@if($grupo->munidad){{$grupo->munidad}}@else{{old('munidad')}}@endif"/>
                 </div>
                 <div class="form-group col-md-3">
                     <label>PLANTEL:</label>
@@ -167,15 +179,15 @@
                 </div>
                 <div class="form-group col-md-2">
                     <label>CONVENIO GENERAL:</label>
-                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" readonly/>
+                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$grupo->fcgeneral ?? ''}}" readonly/>
                 </div>
                 <div class="form-group col-md-2">
                     <label>FECHA CONVENIO GENERAL:</label>
-                   <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" readonly/ >
+                   <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$grupo->fcgen ?? '' }}" readonly/ >
                 </div>
                 <div class="form-group col-md-3">
                     <label>SECTOR:</label>
-                    <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" readonly/>
+                    <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$grupo->sector}}" readonly/>
                 </div>
             </div>
             <div class="form-row" >
@@ -201,7 +213,7 @@
             <div class="form-row" >
                 <div class="form-group col-md-2">
                     <label>TIPO DE CAPACITACI&Oacute;N:</label>
-                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->tipo_curso}}" readonly>
+                    <input type="text" id="tipo_curso" name="tipo_curso" class="form-control" value="{{$grupo->tipo_curso}}" readonly>
                 </div>
                 <div class="form-group col-md-2">
                      <label>MEDIO VIRTUAL:</label>
@@ -215,7 +227,7 @@
             <div class="form-row" >
                 <div class="form-group col-md-12">
                     <label>OBSERVACIONES DE VINCULACI&Oacute;N:</label>
-                    <textarea name='obs_vincu' id='obs_vincu'  class="form-control" rows="5" readonly>{{$grupo->nota_vincu}}</textarea>
+                    <textarea name='obs_vincu' id='obs_vincu'  class="form-control" rows="5" readonly>{{$grupo->obs_vincula}}</textarea>
                 </div>
                 <div class="form-group col-md-12">
                     <label>OBSERVACIONES:</label>
@@ -225,20 +237,19 @@
             <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for="">NO. RECIBO DE PAGO:</label>
-                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$folio_pago}}"  @if($recibo) disabled @else readonly @endif>
+                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}"  @if($recibo) disabled @else readonly @endif>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="">EMISI&Oacute;N DEL RECIBO:</label>
-                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$fecha_pago}}"  @if($recibo) disabled @else readonly @endif>
+                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}"  @if($recibo) disabled @else readonly @endif>
                 </div>
                 <div class="form-group col-md-4">        
-                    <br/>            
-                    @if($comprobante)
-                        <a class="nav-link" href="{{$comprobante}}" target="_blank">
-                            <i  class="far fa-file-pdf  fa-3x text-danger"></i>
+                    @if($grupo->comprobante_pago ?? '')
+                        <a class="nav-link" href="{{$grupo->comprobante_pago}}" target="_blank" title="RECIBO DE PAGO PDF">
+                           <i  class="far fa-file-pdf  fa-3x text-danger"></i>
                         </a>
                     @else
-                        <i  class="far fa-file-pdf  fa-3x text-muted"  title='ARCHIVO NO DISPONIBLE.'></i>
+                        <i  class="far fa-file-pdf  fa-3x text-muted mt-1"  title='ARCHIVO NO DISPONIBLE.'></i>
                     @endif
                 </div>
             </div>
@@ -380,6 +391,12 @@
                 $('#medio_virtual').editableSelect();
                 //Generar pdf soporte / Made by Jose Luis Moreno Arcos
                 $("#genpdf_soporte").click(function(){
+                    let datos_titular = $("#datos_titular").val().trim();
+                    let partes = datos_titular.split(',');
+                    if (partes.length != 2) {
+                        alert("Ingrese el titular de la dependencia y el cargo, separados por una coma.");
+                        return false;
+                    }
                     if ($("#num_oficio").val().trim() != "") {
                         $('#frm').attr('action', "{{route('solicitud.genpdf.soporte')}}");
                         $('#frm').attr('target', '_blank');

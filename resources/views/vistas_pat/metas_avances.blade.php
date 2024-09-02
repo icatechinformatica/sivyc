@@ -283,7 +283,7 @@
                                 <div class="card-body px-2 py-2">
                                     {{-- <p class="card-text text-center mb-2">Descargar pdfs firmados</p> --}}
                                     <div class="d-flex justify-content-center">
-                                        {{-- <i  class="fa fa-file-pdf-o ml-2 text-danger"></i> --}}
+                                        {{-- <i  class="far fa-file-pdf ml-2 text-danger"></i> --}}
                                         <select name="selOpenLink" id="selOpenLink" class="form-control" onchange="pdfOpenfirm()">
                                             <option value="" disabled selected >Descargar PDF Oficializado</option>
                                             @if ($fecha_meta_avance->fecha_meta['urldoc_firm'] != '')
@@ -533,7 +533,7 @@
                                                 <form method="POST" class="d-flex flex-row" enctype="multipart/form-data" action="" id="doc_meta">
                                                     <input type="file" id="pdfInputMeta" accept=".pdf" style="display: none;" onchange="cargarNomFileMeta()">
                                                     <input class="form-control" type="text" id="nomPdfMeta" onclick="document.getElementById('pdfInputMeta').click()" placeholder="PDF firmado de Metas">
-                                                    <a class="btn" id="btnEnvPdfMeta" onclick="upPdfMetaFirm(event, '{{$fecha_meta_avance->fecha_meta['nomdoc_firm']}}')"><i class="fa fa-cloud-upload" aria-hidden="true"></i></a>
+                                                    <a class="btn" id="btnEnvPdfMeta" onclick="upPdfMetaFirm(event, '{{$fecha_meta_avance->fecha_meta['nomdoc_firm']}}')"><i class="fas fa-cloud-upload-alt" aria-hidden="true"></i></a>
                                                 </form>
                                             </div>
                                             <div class="col-12 mt-3">
@@ -553,7 +553,7 @@
                                                         <input class="form-control" type="text" id="nomPdfAvance" onclick="document.getElementById('pdfInputAvance').click()" placeholder="PDF firmado de avances">
                                                     </div>
                                                     <div class="d-flex col-2 px-0">
-                                                        <a class="btn" id="btnEnvPdfAva" onclick="upPdfAvanceFirm(event)"><i class="fa fa-cloud-upload" aria-hidden="true"></i></a>
+                                                        <a class="btn" id="btnEnvPdfAva" onclick="upPdfAvanceFirm(event)"><i class="fas fa-cloud-upload-alt" aria-hidden="true"></i></a>
                                                     </div>
 
                                                 </form>
@@ -635,7 +635,7 @@
                         <div class="{{$fecha_meta_avance->status_meta['proceso'] == '1' ? 'font-weight-bold' : ''}}"><i class="{{$fecha_meta_avance->status_meta['proceso'] == '1' ? 'fa fa-arrow-circle-right' : ''}} " aria-hidden="true"></i> Envio a validacion</div>
                         <div class="{{$fecha_meta_avance->status_meta['retornado'] == '1' ? 'font-weight-bold' : ''}}"><i class="{{$fecha_meta_avance->status_meta['retornado'] == '1' ? 'fa fa-arrow-circle-right' : ''}} " aria-hidden="true"></i> Devuelto por planeación</div>
                         <div class="{{$fecha_meta_avance->status_meta['validado'] == '1' ? 'font-weight-bold' : ''}}"><i class="{{$fecha_meta_avance->status_meta['validado'] == '1' ? 'fa fa-arrow-circle-right' : ''}} " aria-hidden="true"></i> Validado por planeación</div>
-                        {{-- <div class="{{$fecha_meta_avance->status_meta['validado'] == '1' ? 'font-weight-bold' : 'd-none'}}"><a href="{{ route('pat.metavance.genpdf.meta', ['accion' => 'meta', 'idorg' => isset($id_organismo) ? $id_organismo : 'null' ]) }}" target="_blank">Descargar PDF <i class="fa fa-file-pdf-o" aria-hidden="true"></i></a></div> --}}
+                        {{-- <div class="{{$fecha_meta_avance->status_meta['validado'] == '1' ? 'font-weight-bold' : 'd-none'}}"><a href="{{ route('pat.metavance.genpdf.meta', ['accion' => 'meta', 'idorg' => isset($id_organismo) ? $id_organismo : 'null' ]) }}" target="_blank">Descargar PDF <i class="far fa-file-pdf" aria-hidden="true"></i></a></div> --}}
                     </div>
                     <div>
                         <div><h5 class="font-weight-bold ml-2">Status</h5></div>
@@ -674,8 +674,8 @@
                                         <a href="#" rel="noopener noreferrer" onclick="generarPdfA('avance', '{{$mesGlob[$i]}}', '{{isset($id_organismo) ? $id_organismo : 'null'}}', '{{$fecha_meta_avance->fechas_avance[$mesGlob[$i]]['fecavanpdf'] }}')"
                                             data-toggle="tooltip" data-placement="top" title="Generar PDF Mes de {{$mesGlob[$i]}}">
                                             {{-- generarPdfA('avance', '{{$datos_status_avance[2]}}', '{{isset($id_organismo) ? $id_organismo : 'null'}}', '{{$fecha_meta_avance->fechas_avance[$datos_status_avance[2]]['fecavanpdf']}}') --}}
-                                            {{-- <span class="badge badge-pill badge-warning ml-1">{{$mesGlob[$i]}}<i class="fa fa-file-pdf-o ml-2 text-danger" aria-hidden="true"></i></span> --}}
-                                            <span class="btn btn-sm m-1 p-2">{{$mesGlob[$i]}} pdf<i class="fa fa-file-pdf-o ml-2 text-white" aria-hidden="true"></i></span>
+                                            {{-- <span class="badge badge-pill badge-warning ml-1">{{$mesGlob[$i]}}<i class="far fa-file-pdf ml-2 text-danger" aria-hidden="true"></i></span> --}}
+                                            <span class="btn btn-sm m-1 p-2">{{$mesGlob[$i]}} pdf<i class="far fa-file-pdf ml-2 text-white" aria-hidden="true"></i></span>
                                         </a>
                                     </div>
                                     @endif

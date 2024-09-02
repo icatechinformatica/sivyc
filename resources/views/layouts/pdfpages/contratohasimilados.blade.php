@@ -187,7 +187,7 @@
                             <td style="vertical-align: top;" width="25px;">@if(!is_null($uuid))<br><b>Folio:</b>@endif</td>
                             <td style="vertical-align: top; text-align: justify;">
                                 <br>{{$uuid}}<br><br><br>
-                                Las Firmas electrónicas que anteceden corresponden al Contrato de prestación de servicios profesionales modalidad de  @if($data->tipo_curso=='CURSO') horas curso @else   certificación extraordinaria @endif No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.
+                                Las Firmas electrónicas que anteceden corresponden al Contrato de prestación de servicios profesionales modalidad de  @if($data->tipo_curso=='CURSO') horas curso @else   certificación extraordinaria @endif No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$funcionarios['director']}}, {{$funcionarios['directorp']}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.
                             </td>
                         </tr>
                     </table>
@@ -203,11 +203,11 @@
                             <td colspan="2"><div align="center"><br><br></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['director']}}</b></td></div>
                             <td colspan="2"><div align="center"><b>C. {{$nomins}}</b></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['directorp']}}</b></td></div>
                             <td colspan="2"><div align="center"></td></div>
                         </tr>
                     </table>
@@ -219,12 +219,12 @@
                             <td colspan="2"><p align="center"></p></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$testigo1->nombre}} {{$testigo1->apellidoPaterno}} {{$testigo1->apellidoMaterno}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['academico']}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['delegado']}}</b></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$testigo1->puesto}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$testigo3->puesto}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['academicop']}}</b></td></div>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['delegadop']}}</b></td></div>
                         </tr>
                     </table>
                     {{-- <div align=center>
@@ -236,7 +236,7 @@
                     </div> --}}
                     <br>
                     <div align=justify>
-                        <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales en su modalidad de @if($data->tipo_curso=='CURSO') horas curso @else   certificación extraordinaria @endif No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.</small>
+                        <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales en su modalidad de @if($data->tipo_curso=='CURSO') horas curso @else   certificación extraordinaria @endif No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$funcionarios['director']}}, {{$funcionarios['directorp']}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.</small>
                     </div>
                 @endif
             </div>

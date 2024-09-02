@@ -35,22 +35,25 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport;
 use ZipArchive;
 use PDF;
+use App\User;
 
 class InstructorController extends Controller
 {
     public function prueba()
     {
-        $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
-        ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
-        ->Join('folios','folios.id_cursos','pagos.id_curso')
-        ->Where('id_instructor','528')
-        ->where(function ($query) {
-            $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
-                ->orWhereNull('pagos.status_recepcion')
-                ->orWhere('folios.edicion_pago','TRUE');
-        })
-        ->Get();
-        dd($data_ins_curso);
+        $data = User::Select('id')->Get();
+        foreach($data as $item)
+        {
+            $user = User::find($item->id);
+            if(str_contains($user->password,'BAJA') || str_contains($user->email,'BAJA')) {
+                $user->activo = FALSE;
+            } else {
+                $user->activo = TRUE;
+            }
+
+            $user->save();
+        }
+        dd('complete');
 
     }
 
@@ -2340,7 +2343,7 @@ class InstructorController extends Controller
         data-target="#modperprofModal"
         data-id=' . "'" . '["' . $request->grado_prof . '","' . $request->area_carrera . '","' . $request->carrera . '","'. $request->estatus . '",
                 "' . $request->pais_institucion . '",
-                "' . $request->id . '","' . $request->idInstructor . '","' . $request->row . '"]' . "'" . '> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>';
+                "' . $request->id . '","' . $request->idInstructor . '","' . $request->row . '"]' . "'" . '> <i class="fas fa-pencil-alt" aria-hidden="true"></i> </button>';
         $paw = '<button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
             data-toggle="modal"
             data-placement="top"
@@ -2447,7 +2450,7 @@ class InstructorController extends Controller
                 "' . $request->institucion_nombre . '","' . $request->fecha_documento . '","' . $request->folio_documento . '",
                 "' . $request->cursos_recibidos . '","' . $request->capacitador_icatech . '","' . $request->recibidos_icatech . '",
                 "' . $request->cursos_impartidos . '","' . $request->experiencia_laboral . '","' . $request->experiencia_docente . '",
-                "' . $request->idperfprof . '","' . $request->numero_control . '","' . $request->pos . '"]' . "'" . '> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>';
+                "' . $request->idperfprof . '","' . $request->numero_control . '","' . $request->pos . '"]' . "'" . '> <i class="fas fa-pencil-alt" aria-hidden="true"></i> </button>';
 
         $paw = '<button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
             data-toggle="modal"

@@ -237,6 +237,14 @@
         .file-icon.loaded {
             color: #28a745;
         }
+
+        .readonly-area {
+            background-color: #f0f0f0; /* Gris suave */
+            border: 1px solid #ccc;    /* Borde sutil */
+            color: #333;               /* Color del texto */
+            cursor: not-allowed;       /* Cursor para indicar que no es editable */
+        }
+
     </style>
 
     <div class="card-header py-2">
@@ -282,7 +290,7 @@
             <div class="row col-6 mb-3">
                 <form action="" method="post" id="frmBuscarGrupo">
                     @csrf
-                    <input type="text" class="form-control" name="txtbuscar" id="txtbuscar" placeholder="FOLIO DE GRUPO" value="{{(!empty($data_cursos->folio_grupo)) ? $data_cursos->folio_grupo : ''}}">
+                    <input type="text" class="form-control" name="txtbuscar" id="txtbuscar" placeholder="FOLIO O CLAVE" value="{{(!empty($data_cursos->folio_grupo)) ? $data_cursos->folio_grupo : ''}}">
                 </form>
                 <button class="btn" id="btnBuscarGrupo">BUSCAR</button>
             </div>
@@ -308,6 +316,8 @@
                 <div class="row justify-content-center">
                     <div class="col-12 colorTitulo d-flex align-items-center justify-content-center border border-1 border-white p-1 mb-3">
                         <div class="font-weight-bold text-center text-dark">CONDICIONES DEL SERVICIO DE CAPACITACIÓN</div>
+                        <input type="hidden" name="" id="rol_user" value="{{$array_rol['rol']}}">
+                        <input type="hidden" name="" id="txt_idcurso" value="{{$array_rol['idcurso']}}">
                     </div>
                     <div class="row col-12">
                         <div class="col-4 border-dark border-right">
@@ -330,6 +340,13 @@
                             <p><span class="negrita">FECHA TERMINO:</span> {{ \Carbon\Carbon::createFromFormat('Y-m-d', $data_cursos->termino)->format('d/m/Y') }}</p>
                             <p><span class="negrita">HORARIO:</span> {{date("H:i", strtotime($data_cursos->hini))}} -  {{date("H:i", strtotime($data_cursos->hfin))}} HRS</p>
                             <p><span class="negrita">CUOTA GENERAL:</span> {{$data_cursos->costo}}</p>
+                            @if($ubic_unidad == $data_cursos->unidad)
+                                <p><span class="negrita">UNIDAD: </span>{{$data_cursos->unidad}}</p>
+                            @else
+                                <p><span class="negrita">UNIDAD: </span>{{$ubic_unidad}}</p>
+                                <p><span class="negrita">ACCIÓN MOVIL: </span>{{$data_cursos->unidad}}</p>
+                            @endif
+                            {{-- <p><span class="negrita">{{($ubic_unidad == $data_cursos->unidad) ? 'UNIDAD: ' : 'ACCIÓN MOVIL: '}}</span>{{$data_cursos->unidad}}</p> --}}
                         </div>
                     </div>
                 </div>
@@ -354,7 +371,10 @@
                 $a_class = $isAcad ? '' : 'blocked';
                 $isAdmin = ($array_rol['rol'] == 3) && ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO');
                 $d_class = $isAdmin ? '' : 'blocked';
-                $dta_msg = $array_rol['rol'] == 4 ? '' : 'readonly';
+                $dta_msg = ($array_rol['rol'] == 4 && $array_rol['status_json'] == 'ENVIADO') ? '' : 'readonly';
+                $readonly_dta = ($array_rol['rol'] == 4 && $array_rol['status_json'] == 'ENVIADO') ? '' : 'readonly-area';
+                $readonly_u = $array_rol['rol'] != 4 ? '' : 'readonly-area';
+                $msg_uni = $array_rol['rol'] != 4 ? '' : 'readonly';
             @endphp
             {{-- tabla vinculacion --}}
             <div class="col-12 px-0 mt-1" id="vinculacion">
@@ -395,7 +415,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req1" id="comentario_req1" rows="1" cols="30">{{ $v_radios[0]['doc_txt1'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req1" id="comentario_req1" rows="1" cols="30">{{ $v_radios[0]['doc_txt1'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 1--}}
@@ -414,28 +434,24 @@
                         </td>
                         <td class="text-center">
                             @if (!empty($json_dptos->vinculacion['doc_1']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_convenio']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_acta']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -451,7 +467,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta1" id="comentario_dta1" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_1'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta1" id="comentario_dta1" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_1','vinc')">{{ data_get($mensajes_dta, 'msn_vincu1', '')}}</textarea>
                         </td>
                     </tr>
                     {{-- Soporte para convenio especifico --}}
@@ -474,7 +490,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req_v8" id="comentario_req_v8" rows="1" cols="30">{{ $v_radios[0]['doc_txt8'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req_v8" id="comentario_req_v8" rows="1" cols="30">{{ $v_radios[0]['doc_txt8'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             <form method="POST" enctype="multipart/form-data" action="" id="form_doc_v8">
@@ -487,16 +503,14 @@
                         </td>
                         <td class="text-center">
                             @if (!empty($json_dptos->vinculacion['doc_8']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_8']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -511,7 +525,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta26" id="comentario_dta26" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_8'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta26" id="comentario_dta26" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_8','vinc')">{{ data_get($mensajes_dta, 'msn_vincu8', '')}}</textarea>
                         </td>
                     </tr>
 
@@ -534,28 +548,26 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req2" id="comentario_req2" rows="1" cols="30">{{ $v_radios[0]['doc_txt2'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req2" id="comentario_req2" rows="1" cols="30">{{ $v_radios[0]['doc_txt2'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc2']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$search_docs['urldoc2'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea name="comentario_dta2" id="comentario_dta2" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_2'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta2" id="comentario_dta2" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_2','vinc')">{{ data_get($mensajes_dta, 'msn_vincu2', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -577,7 +589,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req3" id="comentario_req3" rows="1" cols="30">{{ $v_radios[0]['doc_txt3'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req3" id="comentario_req3" rows="1" cols="30">{{ $v_radios[0]['doc_txt3'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 3--}}
@@ -591,16 +603,14 @@
                         </td>
                         <td class="text-center">
                             @if (!empty($json_dptos->vinculacion['doc_3']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_3']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -616,7 +626,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta3" id="comentario_dta3" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_3'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta3" id="comentario_dta3" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_3','vinc')">{{ data_get($mensajes_dta, 'msn_vincu3', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -638,7 +648,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req4" id="comentario_req4" rows="1" cols="30">{{ $v_radios[0]['doc_txt4'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req4" id="comentario_req4" rows="1" cols="30">{{ $v_radios[0]['doc_txt4'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 4--}}
@@ -652,16 +662,14 @@
                         </td>
                         <td class="text-center">
                             @if (!empty($json_dptos->vinculacion['doc_4']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_4']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -677,7 +685,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta4" id="comentario_dta4" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_4'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta4" id="comentario_dta4" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_4','vinc')">{{ data_get($mensajes_dta, 'msn_vincu4', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -699,7 +707,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req5" id="comentario_req5" rows="1" cols="30">{{ $v_radios[0]['doc_txt5'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req5" id="comentario_req5" rows="1" cols="30">{{ $v_radios[0]['doc_txt5'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -711,7 +719,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta5" id="comentario_dta5" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_5'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta5" id="comentario_dta5" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_5','vinc')">{{ data_get($mensajes_dta, 'msn_vincu5', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -733,7 +741,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req6" id="comentario_req6" rows="1" cols="30">{{ $v_radios[0]['doc_txt6'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req6" id="comentario_req6" rows="1" cols="30">{{ $v_radios[0]['doc_txt6'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
@@ -745,7 +753,7 @@
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta6" id="comentario_dta6" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_6'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta6" id="comentario_dta6" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_6','vinc')">{{ data_get($mensajes_dta, 'msn_vincu6', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -767,14 +775,16 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req7" id="comentario_req7" rows="1" cols="30">{{ $v_radios[0]['doc_txt7'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req7" id="comentario_req7" rows="1" cols="30">{{ $v_radios[0]['doc_txt7'] ?? '' }}</textarea>
                         </td>
                         <td>
                             {{-- Subir recibo--}}
                             <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="
-                            @if($search_docs['anio_curso'] == '2023' && $search_docs['validRecibo'] != 'digital')
-
-                            @elseif($search_docs['validRecibo'] == 'digital')
+                            @if(($search_docs['anio_curso'] == '2023' || $search_docs['anio_curso'] == '2024') && $search_docs['validRecibo'] != 'digital')
+                                @if($search_docs['tipo_curso'] == 'EXO')
+                                    d-none
+                                @endif
+                            @else
                                 d-none
                             @endif
                             ">
@@ -790,8 +800,7 @@
                         </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc7']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="
                                     @if ($search_docs['validRecibo'] == 'digital')
                                         {{-- {{ route('grupos.recibos.descargar', ['folio_recibo' => $search_docs['urldoc7']]) }} --}}
@@ -800,13 +809,12 @@
                                         {{$path_files.$search_docs['urldoc7']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -822,7 +830,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta7" id="comentario_dta7" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->vinculacion['doc_7'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta7" id="comentario_dta7" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_7','vinc')">{{ data_get($mensajes_dta, 'msn_vincu7', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -878,28 +886,26 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req8" id="comentario_req8" rows="1" cols="30">{{ $v_radios[1]['doc_txt8'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req8" id="comentario_req8" rows="1" cols="30">{{ $v_radios[1]['doc_txt8'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc8']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$search_docs['urldoc8']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta8" id="comentario_dta8" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_8'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta8" id="comentario_dta8" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_8','acad')">{{ data_get($mensajes_dta, 'msn_acad8', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -921,28 +927,26 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req9" id="comentario_req9" rows="1" cols="30">{{ $v_radios[1]['doc_txt9'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req9" id="comentario_req9" rows="1" cols="30">{{ $v_radios[1]['doc_txt9'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc9']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$search_docs['urldoc9']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta9" id="comentario_dta9" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_9'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta9" id="comentario_dta9" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_9','acad')">{{ data_get($mensajes_dta, 'msn_acad9', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -966,28 +970,26 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req10" id="comentario_req10" rows="1" cols="30">{{ $v_radios[1]['doc_txt10'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req10" id="comentario_req10" rows="1" cols="30">{{ $v_radios[1]['doc_txt10'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc10']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$search_docs['urldoc10']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta10" id="comentario_dta10" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_10'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta10" id="comentario_dta10" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_10','acad')">{{ data_get($mensajes_dta, 'msn_acad10', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1009,28 +1011,26 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req11" id="comentario_req11" rows="1" cols="30">{{ $v_radios[1]['doc_txt11'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req11" id="comentario_req11" rows="1" cols="30">{{ $v_radios[1]['doc_txt11'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc11']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$search_docs['urldoc11']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta11" id="comentario_dta11" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_11'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta11" id="comentario_dta11" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_11','acad')">{{ data_get($mensajes_dta, 'msn_acad11', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1052,7 +1052,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req12" id="comentario_req12" rows="1" cols="30">{{ $v_radios[1]['doc_txt12'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req12" id="comentario_req12" rows="1" cols="30">{{ $v_radios[1]['doc_txt12'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1067,16 +1067,14 @@
                         <td class="text-center">
                             {{-- mostrar pdf --}}
                             @if (!empty($json_dptos->academico['doc_12']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_12"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_12"
                                     href="{{$path_files.$json_dptos->academico['doc_12']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1092,7 +1090,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta12" id="comentario_dta12" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_12'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta12" id="comentario_dta12" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_12','acad')">{{ data_get($mensajes_dta, 'msn_acad12', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1114,7 +1112,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req13" id="comentario_req13" rows="1" cols="30">{{ $v_radios[1]['doc_txt13'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req13" id="comentario_req13" rows="1" cols="30">{{ $v_radios[1]['doc_txt13'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1129,16 +1127,14 @@
                         <td class="text-center">
                             {{-- mostrar pdf --}}
                             @if (!empty($json_dptos->academico['doc_13']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_13"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_13"
                                     href="{{$path_files.$json_dptos->academico['doc_13']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1154,7 +1150,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta13" id="comentario_dta13" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_13'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta13" id="comentario_dta13" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_13','acad')">{{ data_get($mensajes_dta, 'msn_acad13', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1176,7 +1172,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req14" id="comentario_req14" rows="1" cols="30">{{ $v_radios[1]['doc_txt14'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req14" id="comentario_req14" rows="1" cols="30">{{ $v_radios[1]['doc_txt14'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1191,16 +1187,14 @@
                         <td class="text-center">
                             {{-- mostrar pdf --}}
                             @if (!empty($json_dptos->academico['doc_14']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_14"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_14"
                                     href="{{$path_files.$json_dptos->academico['doc_14']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1216,7 +1210,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta14" id="comentario_dta14" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_14'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta14" id="comentario_dta14" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_14','acad')">{{ data_get($mensajes_dta, 'msn_acad14', '')}}</textarea>
                         </td>
                     </tr>
                     {{-- esto es un extra se formato de entrega de constancias --}}
@@ -1241,7 +1235,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1259,13 +1253,13 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Oficio de entrega de constancias" id="verpdf_25"
                                     href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="No se encuentra el oficio de entrega de constancias" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                             {{-- Otro soportes --}}
@@ -1273,13 +1267,12 @@
                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                     data-placement="top" title="Ver PDF" id="verpdf_25"
                                     href="{{$path_files.$json_dptos->academico['doc_25']['url_soporte'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Archivo no encontrado" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1295,7 +1288,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_25'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_25','acad')">{{ data_get($mensajes_dta, 'msn_acad25', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1317,7 +1310,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req15" id="comentario_req15" rows="1" cols="30">{{ $v_radios[1]['doc_txt15'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req15" id="comentario_req15" rows="1" cols="30">{{ $v_radios[1]['doc_txt15'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1332,8 +1325,7 @@
                         <td class="text-center">
                             {{-- Mostrar lista de asistencia --}}
                             @if (!empty($search_docs['urldoc15']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="
                                     @if (is_numeric($search_docs['urldoc15']))
                                         {{route('asistencia-pdf', ['id' => $search_docs['urldoc15']])}}
@@ -1341,19 +1333,17 @@
                                         {{$search_docs['urldoc15']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->academico['doc_15']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_15"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_15"
                                     href="{{$path_files.$json_dptos->academico['doc_15']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1369,7 +1359,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta15" id="comentario_dta15" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_15'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta15" id="comentario_dta15" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_15','acad')">{{ data_get($mensajes_dta, 'msn_acad15', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1391,7 +1381,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req16" id="comentario_req16" rows="1" cols="30">{{ $v_radios[1]['doc_txt16'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req16" id="comentario_req16" rows="1" cols="30">{{ $v_radios[1]['doc_txt16'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1406,8 +1396,7 @@
                         <td class="text-center">
                             {{-- mostrar pdf --}}
                             @if (!empty($search_docs['urldoc16']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="
                                     @if (is_numeric($search_docs['urldoc16']))
                                         {{route('calificacion-pdf', ['id' => $search_docs['urldoc16']])}}
@@ -1415,19 +1404,17 @@
                                         {{$search_docs['urldoc16']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->academico['doc_16']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_16"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_16"
                                     href="{{$path_files.$json_dptos->academico['doc_16']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
 
@@ -1444,7 +1431,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta16" id="comentario_dta16" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_16'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta16" id="comentario_dta16" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_16','acad')">{{ data_get($mensajes_dta, 'msn_acad16', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1466,7 +1453,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req17" id="comentario_req17" rows="1" cols="30">{{ $v_radios[1]['doc_txt17'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req17" id="comentario_req17" rows="1" cols="30">{{ $v_radios[1]['doc_txt17'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1481,16 +1468,14 @@
                         <td class="text-center">
                             {{-- mostrar pdf --}}
                             @if (!empty($json_dptos->academico['doc_17']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_17"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_17"
                                     href="{{$path_files.$json_dptos->academico['doc_17']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1506,7 +1491,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta17" id="comentario_dta17" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_17'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta17" id="comentario_dta17" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_17','acad')">{{ data_get($mensajes_dta, 'msn_acad17', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1528,7 +1513,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req18" id="comentario_req18" rows="1" cols="30">{{ $v_radios[1]['doc_txt18'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req18" id="comentario_req18" rows="1" cols="30">{{ $v_radios[1]['doc_txt18'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1543,16 +1528,14 @@
                         <td class="text-center">
                             {{-- mostrar pdf --}}
                             @if (!empty($json_dptos->academico['doc_18']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_18"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_18"
                                     href="{{$path_files.$json_dptos->academico['doc_18']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1568,7 +1551,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta18" id="comentario_dta18" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_18'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta18" id="comentario_dta18" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_18','acad')">{{ data_get($mensajes_dta, 'msn_acad18', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1590,7 +1573,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req19" id="comentario_req19" rows="1" cols="30">{{ $v_radios[1]['doc_txt19'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req19" id="comentario_req19" rows="1" cols="30">{{ $v_radios[1]['doc_txt19'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir pdf --}}
@@ -1610,8 +1593,7 @@
                         </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc19']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="
                                     @if (is_numeric($search_docs['urldoc19']))
                                         {{route('reportefoto-pdf', ['id' => $search_docs['urldoc19']])}}
@@ -1619,19 +1601,17 @@
                                         {{$search_docs['urldoc19']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->academico['doc_19']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_19"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_19"
                                     href="{{$path_files.$json_dptos->academico['doc_19']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1647,7 +1627,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta19" id="comentario_dta19" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->academico['doc_19'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta19" id="comentario_dta19" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_19','acad')">{{ data_get($mensajes_dta, 'msn_acad19', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -1701,28 +1681,26 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req20" id="comentario_req20" rows="1" cols="30">{{ $v_radios[2]['doc_txt20'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req20" id="comentario_req20" rows="1" cols="30">{{ $v_radios[2]['doc_txt20'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc20']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$search_docs['urldoc20'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado.')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta20" id="comentario_dta20" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_20'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta20" id="comentario_dta20" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_20','admin')">{{ data_get($mensajes_dta, 'msn_admin20', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1744,28 +1722,26 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req21" id="comentario_req21" rows="1" cols="30">{{ $v_radios[2]['doc_txt21'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req21" id="comentario_req21" rows="1" cols="30">{{ $v_radios[2]['doc_txt21'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc21']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$search_docs['urldoc21'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta21" id="comentario_dta21" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_21'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta21" id="comentario_dta21" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_21','admin')">{{ data_get($mensajes_dta, 'msn_admin21', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1787,7 +1763,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
                         </td>
                         <td>
                             {{-- subir pdf --}}
@@ -1810,8 +1786,7 @@
                         </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc22']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="
                                     @if (is_numeric($search_docs['urldoc22']))
                                         {{route('contrato-pdf', ['id' => $search_docs['urldoc22']])}}
@@ -1819,20 +1794,18 @@
                                         {{$search_docs['urldoc22']}}
                                     @endif
                                     " target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->administrativo['doc_22']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_22"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_22"
                                     href="{{$path_files.$json_dptos->administrativo['doc_22']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                {{-- <button class="btn-circle btn-circle-sm border-0"><i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i></button> --}}
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                {{-- <button class="btn-circle btn-circle-sm border-0"><i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i></button> --}}
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1848,7 +1821,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta22" id="comentario_dta22" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_22'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta22" id="comentario_dta22" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_22','admin')">{{ data_get($mensajes_dta, 'msn_admin22', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1870,7 +1843,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req23" id="comentario_req23" rows="1" cols="30">{{ $v_radios[2]['doc_txt23'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req23" id="comentario_req23" rows="1" cols="30">{{ $v_radios[2]['doc_txt23'] ?? '' }}</textarea>
                         </td>
                         <td>
                             {{-- subir pdf --}}
@@ -1892,22 +1865,19 @@
                         </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc23']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$search_docs['urldoc23']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @elseif(!empty($json_dptos->administrativo['doc_23']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_23"
+                                <a class="btn-circle btn-circle-sm" id="verpdf_23"
                                     href="{{$path_files.$json_dptos->administrativo['doc_23']['url_documento']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -1923,7 +1893,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta23" id="comentario_dta23" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_23'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta23" id="comentario_dta23" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_23','admin')">{{ data_get($mensajes_dta, 'msn_admin23', '')}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -1945,7 +1915,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
                         </td>
                         <td>
                             {{-- subir pdf --}}
@@ -1964,32 +1934,28 @@
                         </td>
                         <td class="text-center">
                             @if (!empty($search_docs['urldoc24']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$search_docs['urldoc24']}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
 
                             @if ((empty($search_docs['urldoc24']) || empty($search_docs['doc_xml'])) && !empty($json_dptos->administrativo['doc_24']['url_documento']))
-                            <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                data-placement="top" title="Ver Archivo" id=""
+                            <a class="btn-circle btn-circle-sm" id=""
                                 href="{{$path_files.$json_dptos->administrativo['doc_24']['url_documento']}}" target="_blank">
-                                <i class="fa fa fa-file-text fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                <i class="fa fas fa-file-alt fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                             </a>
                             @endif
 
                             @if (!empty($search_docs['doc_xml']))
-                                <a class="btn-circle btn-circle-sm ml-2" data-toggle="tooltip"
-                                    data-placement="top" title="Ver xml" id=""
+                                <a class="btn-circle btn-circle-sm ml-2" id=""
                                     href="{{$search_docs['doc_xml']}}" target="_blank">
-                                    <i class="fa fa fa-file-text fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="fa fas fa-file-alt fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
@@ -2005,7 +1971,7 @@
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}}>{{ data_get($json_dptos->administrativo['doc_24'], 'mensaje_dta', '')}}</textarea>
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_24','admin')">{{ data_get($mensajes_dta, 'msn_admin24', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -2036,6 +2002,11 @@
                         </li>
                     </ul>
                 </div>
+                {{-- Nota de motivo de deshacer validación --}}
+                <div class="col-4 d-flex justify-content-end">
+                    <textarea class="d-none mt-2" name="" id="nota_deshacer" rows="5" cols="40" placeholder="Motivo de la accion"></textarea>
+                </div>
+
 
                 {{-- Botones de guardar y enviar que podra ver delegacion. --}}
                 <div class="col-5 d-flex justify-content-end align-items-start">
@@ -2073,6 +2044,7 @@
                                     <option value="0">-- MOVIMIENTOS --</option>
                                     <option {{($array_rol['status_json'] == 'ENVIADO') ? '' : 'disabled'}} value="1">VALIDAR</option>
                                     <option {{($array_rol['status_json'] == 'ENVIADO') ? '' : 'disabled'}} value="2">RETORNAR</option>
+                                    <option {{($array_rol['status_json'] == 'VALIDADO') ? '' : 'disabled'}} value="3">DESHACER VALIDACIÓN</option>
                                     {{-- <option value="3">GENERAR PDF</option> --}}
                                 </select>
                                 <div class="mt-2 text-center d-none" id="divValid">
@@ -2082,10 +2054,13 @@
                                 <div class="mt-2 text-center d-none" id="divReturn">
                                     <button class="btn btn-danger font-weight-bold" onclick="valid_return_dta('retornar', {{$array_rol['idcurso']}}, {{$array_rol['rol']}})">ACEPTAR</button>
                                 </div>
+
+                                <div class="mt-2 text-center d-none" id="divDeshacerValid">
+                                    <button class="btn btn-danger font-weight-bold" onclick="valid_return_dta('deshacer_valid', {{$array_rol['idcurso']}}, {{$array_rol['rol']}})">ACEPTAR</button>
+                                </div>
                             </div>
                         @endif
                     </div>
-
                 </div>
             </div>
         @else
@@ -2161,9 +2136,9 @@
                                                         <span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
                                                     <td class="text-center">
                                                         @if (!empty($valor['documento']))
-                                                            <a href="{{$valor['documento']}}" target="_blank"><i class="fa fa-file-pdf-o fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
+                                                            <a href="{{$valor['documento']}}" target="_blank"><i class="far fa-file-pdf fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
                                                         @else
-                                                            <i class="fa fa-file-pdf-o fa-1x fa-lg text-light" aria-hidden="true"></i>
+                                                            <i class="far fa-file-pdf fa-1x fa-lg text-light" aria-hidden="true"></i>
                                                         @endif
                                                     </td>
                                                     <td class="text-center">
@@ -2261,9 +2236,9 @@
                                             <td class="text-left"><span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
                                             <td class="text-center">
                                                 @if (!empty($valor['documento']))
-                                                    <a href="{{$valor['documento']}}" target="_blank"><i class="fa fa-file-pdf-o fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
+                                                    <a href="{{$valor['documento']}}" target="_blank"><i class="far fa-file-pdf fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
                                                 @else
-                                                    <i class="fa fa-file-pdf-o fa-1x fa-lg text-light" aria-hidden="true"></i>
+                                                    <i class="far fa-file-pdf fa-1x fa-lg text-light" aria-hidden="true"></i>
                                                 @endif
                                             </td>
                                         </tr>
@@ -2356,22 +2331,26 @@
                 switch (select_mov) {
                     case "0":
                         $("#divValid").addClass("d-none");
-                        $("#divArea").addClass("d-none");
                         $("#divReturn").addClass("d-none");
+                        $("#divDeshacerValid").addClass("d-none");
+                        $("#nota_deshacer").addClass("d-none");
                         break;
-                    case "1":
+                    case "1": //Validar
                         $("#divValid").removeClass("d-none");
-                        $("#divArea").addClass("d-none");
                         $("#divReturn").addClass("d-none");
+                        $("#divDeshacerValid").addClass("d-none");
+                        $("#nota_deshacer").addClass("d-none");
                         break;
-                    case "2":
-                        $("#divArea").removeClass("d-none");
+                    case "2": //Retornar
                         $("#divReturn").removeClass("d-none");
                         $("#divValid").addClass("d-none");
+                        $("#divDeshacerValid").addClass("d-none");
+                        $("#nota_deshacer").addClass("d-none");
                         break;
-                    case "3":;
+                    case "3": //Deshacer validación
+                        $("#divDeshacerValid").removeClass("d-none");
+                        $("#nota_deshacer").removeClass("d-none");
                         $("#divValid").addClass("d-none");
-                        $("#divArea").addClass("d-none");
                         $("#divReturn").addClass("d-none");
                         break;
                     default:
@@ -2486,7 +2465,7 @@
                         data: data,
                         dataType: "json",
                         success: function (response) {
-                            //console.log(response);
+                            // console.log(response);
                             loader('hide');
                             alert(response.mensaje);
                             if (response.status === 200) {
@@ -2701,18 +2680,22 @@
 
             //Valida o retorna DTA
             function valid_return_dta(accion, idcurso, rol) {
-                //let valor_area = "";
-                let resul_dta = "";
+                let resul_dta = "", nota_dta = "";
                 if (accion == 'retornar') {
-                    //valor_area = document.getElementById('area_retorno').value;
                     //Obtenemos todos los valores de el textarea mensaje DTA
                     resul_dta = get_mensaje_dta();
-                    // console.log(resul_dta);
                     if (resul_dta.conta_texto == 0) {
                         alert("Los campos 'Mensaje DTA' de las evidencias están vacíos. \nPara continuar, debe haber al menos un campo con el motivo del retorno.");
                         return false;
                     }
-                    // console.log(mensajes_dta);
+                }
+
+                if(accion == 'deshacer_valid'){
+                    nota_dta = $('#nota_deshacer').val().trim();
+                    if(nota_dta == '' || nota_dta == undefined || nota_dta == null){
+                        alert("POR FAVOR INGRESE EL MOTIVO DE LA ACCIÓN QUE DESEA REALIZAR.");
+                        return false;
+                    }
                 }
 
                 if (confirm("¿ESTAS SEGURO DE REALIZAR ESTA ACCIÓN?")) {
@@ -2724,9 +2707,10 @@
                         "_token": $("meta[name='csrf-token']").attr("content"),
                         "rol_user" : rol,
                         'idcurso' : idcurso,
-                        //'valor_area' : valor_area,
                         'accion' : accion,
-                        'mensajes_dta' : resul_dta.valores_dta
+                        'nota_dta' : nota_dta
+                        //'valor_area' : valor_area,
+                        // 'mensajes_dta' : resul_dta.valores_dta,
                     }
                     $.ajax({
                         type:"post",
@@ -2734,7 +2718,7 @@
                         data: data,
                         dataType: "json",
                         success: function (response) {
-                            // console.log(response);
+                            console.log(response);
                             loader('hide');
                             alert(response.mensaje);
                             if(response.status === 200) location.reload();
@@ -2845,6 +2829,32 @@
                         }
                     });
 
+                }
+
+            }
+
+            function guardarTexto(text, doc, dpto) {
+                let rol_user = $('#rol_user').val().trim();
+                if(rol_user == 4){ //Ingresa solo si es dta
+                    let idcurso = $('#txt_idcurso').val().trim();
+
+                    let data = {
+                        "_token": $("meta[name='csrf-token']").attr("content"),
+                        "mensaje" : text,
+                        'dpto' : dpto,
+                        'idcurso' : idcurso,
+                        'documento': doc,
+                        'rol': rol_user
+                    }
+                    $.ajax({
+                        type:"post",
+                        url: "{{ route('expunico.guardar.mensajes') }}",
+                        data: data,
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response.mensaje);
+                        }
+                    });
                 }
 
             }

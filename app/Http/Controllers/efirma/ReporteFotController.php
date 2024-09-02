@@ -43,7 +43,7 @@ class ReporteFotController extends Controller
         $array_fotos = [];
         $id_curso = $id;
         $fechapdf = "";
-        $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 =  null;
+        $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 = $EFolio =  null;
 
         #Distintivo
         $leyenda = DB::table('tbl_instituto')->value('distintivo');
@@ -156,8 +156,12 @@ class ReporteFotController extends Controller
             }
         }
 
+        if(!is_null($documento)){
+            $EFolio = $documento->num_oficio;
+        }
+
         $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('cursopdf', 'leyenda', 'fechapdf', 'objeto','dataFirmante',
-        'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos'));
+        'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos', 'EFolio'));
         $pdf->setPaper('Letter', 'portrait');
         $file = "REPORTE_FOTOGRAFICO_$id_curso.PDF";
 

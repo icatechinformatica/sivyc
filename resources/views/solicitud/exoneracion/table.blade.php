@@ -17,13 +17,13 @@
                 </div>
                 <div class="form-group col-md-2">
                         {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-                </div> 
+                </div>
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th style="padding: 1px;" class="text-center">UNIDAD DE CAPACITACIÓN</th> 
+                            <th style="padding: 1px;" class="text-center">UNIDAD DE CAPACITACIÓN</th>
                             <th style="padding: 1px;" class="text-center">No. REVISIÓN</th>
                             <th style="padding: 1px;" class="text-center">No. MEMORÁNDUM</th>
                             <th style="padding: 1px;" class="text-center">TURNADO</th>
@@ -51,7 +51,7 @@
                                 <td class="text-center">
                                     @if ($item->memo_soporte_dependencia)
                                     <a href="{{$pdf}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="PDF">
-                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                        <i class="far fa-file-pdf" aria-hidden="true"></i>
                                     </a>
                                     @endif
                                 </td>
@@ -80,7 +80,7 @@
         <script language="javascript">
             $(document).ready(function(){
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.exoneracion.search')}}"); $('#frm').attr('target', '_self').submit();});
-            }); 
+            });
         </script>
     @endsection
 @endsection

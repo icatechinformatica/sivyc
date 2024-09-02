@@ -1,6 +1,7 @@
 @extends("theme.sivyc.layout")
 <!--llamar la plantilla -->
 @section('content')
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <style>
     a.add_button, a.remove_button {
         position: absolute;
@@ -11,7 +12,10 @@
         width: 34px;
       }
 </style>
- <div class="container g-pt-50">
+<div class="card-header">
+    Suficiencia Presupuestal
+</div>
+<div class="card card-body" style=" min-height:450px;">
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -28,23 +32,27 @@
         </div>
         <hr style="border-color:dimgray">
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-2">
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
-                {{-- <select name="unidad" id="unidad" class="form-control">
-                    <option value="sin especificar">SIN ESPECIFICAR</option>
-                    @foreach ($unidades as $data )
-                        <option value="{{$data->unidad}}">{{$data->unidad}}</option>
-                    @endforeach
-                </select> --}}
                 <input type="text" class="form-control" id="unidad" name="unidad" value="{{$unidad->ubicacion}}" readonly>
             </div>
-            <div class="form-group col-md-5">
+            <div class="form-group col-md-4">
                 <label for="mamorandum" class="control-label">Memoramdum No. </label>
-                <input type="text" class="form-control" id="memorandum" name="memorandum" placeholder="ICATECH/0000/000/2020">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <p class="form-control" style="border: 0px;">ICATECH/{{$unidad->clave_contrato}}/</p>
+                    </div>
+                    <div class="form-group col-md-4" style="margin-right: -10px;">
+                        <input type="text" class="form-control" id="memorandum" name="memorandum" placeholder="No.">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <p id='ejercicio' name ='ejercicio' class="form-control" style="border: 0px;">/{{$year}}</p>
+                    </div>
+                </div>
             </div>
             <div class="form-group col-md-2">
                 <label for="fecha" class="control-label">Fecha</label>
-                <input class="form-control" name="fecha" type="date" value="2020-01-01" id="fecha">
+                <input class="form-control" name="fecha" type="date"  id="fecha">
             </div>
         </div>
         <div class="field_wrapper">
@@ -59,7 +67,7 @@
                     {{-- <th>Acción</th> --}}
                 </tr>
                 <tr>
-                    <td><input type="text" name="addmore[0][folio]" id="addmore[0][folio]" placeholder="folio" class="form-control" /><footer name="addmore[0][avisofolio]" id="addmore[0][avisofolio]" style="color: red"></footer></td>
+                    <td><input type="text" name="addmore[0][folio]" id="addmore[0][folio]" placeholder="folio" class="form-control" value="{{$folio_validacion}}"/><footer name="addmore[0][avisofolio]" id="addmore[0][avisofolio]" style="color: red"></footer></td>
                     <td><input type="text" name="addmore[0][numeropresupuesto]" id="addmore[0][numeropresupuesto]" placeholder="número presupuesto" class="form-control" disabled value="12101" /></td>
                     <td><input type="text" name="addmore[0][clavecurso]" id="addmore[0][clavecurso]" placeholder="clave curso" class="form-control claveCurso" /></td>
                     <td><input type="text" name="addmore[0][importe]" id="addmore[0][importe]" placeholder="importe total" class="form-control" readonly/><footer name="addmore[0][aviso]" id="addmore[0][aviso]" style="color: red"></footer></td>
@@ -72,34 +80,34 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputremitente" class="control-label">Remitente</label>
-                <input type="text" class="form-control" readonly id="remitente" name="remitente" placeholder="Nombre" value="{{$funcionarios['director']}}">
+                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre" readonly value="{{$funcionarios['director']}}">
             </div>
             <div class="form-group col-md-6">
                 <label for="inputremitente" class="control-label">Puesto</label>
-                <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto" value="{{$funcionarios['directorp']}}">
-                {{-- <input id="id_remitente" name="id_remitente" type="text" hidden> --}}
+                <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto" readonly value="{{$funcionarios['directorp']}}">
+                <input id="id_remitente" name="id_remitente" type="text" hidden>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="inputvalida" class="control-label">Nombre de Quien Valida</label>
-                <input type="text" class="form-control" readonly id="nombre_valida" name="nombre_valida" placeholder="Nombre" value="{{$funcionarios['delegado']}}">
+                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre" readonly value="{{$funcionarios['director']}}">
             </div>
             <div class="form-group col-md-4">
                 <label for="inputvalida" class="control-label">Puesto de Quien Valida</label>
-                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto" value="{{$funcionarios['delegadop']}}">
-                {{-- <input id="id_valida" name="id_valida" type="text" hidden> --}}
+                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto" readonly value="{{$funcionarios['directorp']}}">
+                <input id="id_valida" name="id_valida" type="text" hidden>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="inputelabora" class="control-label">Nombre de Quien Elabora</label>
-                <input type="text" class="form-control" readonly id="nombre_elabora" name="nombre_elabora" placeholder="Nombre" value="{{$funcionarios['elabora']}}">
+                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre" readonly value="{{$funcionarios['delegado']}}">
             </div>
             <div class="form-group col-md-4">
                 <label for="inputelabora" class="control-label">Puesto de Quien Elabora</label>
-                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto" value="{{$funcionarios['elaborap']}}">
-                {{-- <input id="id_elabora" name="id_elabora" type="text" hidden> --}}
+                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto" readonly value="{{$funcionarios['delegadop']}}">
+                <input id="id_elabora" name="id_elabora" type="text" hidden>
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -116,25 +124,16 @@
                     <label for="fecha_movimiento_bancario_0">Fecha de Expedición</label>
                     <input type="date" class="form-control" id="fecha_expedicion" name="fecha_expedicion" readonly>
                 </div>
-                {{-- <div class="form-group col-md-3">
-                    <label for="movimiento_bancario_0">Movimiento Bancario</label>
-                    <input type="text" class="form-control" id="movimiento_bancario_0" name="movimiento_bancario_[0]">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="fecha_movimiento_bancario_0">Fecha de Movimiento</label>
-                    <input type="date" class="form-control" id="fecha_movimiento_bancario_0" name="fecha_movimiento_bancario_[0]">
-                </div> --}}
             </div>
         </div>
-        {{-- <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button> --}}
         <br><br><br>
         <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+            <div class="col-lg-12 d-flex justify-content-between align-items-center">
+                <div>
+                    <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
                 </div>
-                <div class="pull-right">
-                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                <div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>
@@ -148,6 +147,13 @@
 <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
 <script type="text/javascript">
     let fieldCounter = 1;
+
+    // Obtener el elemento de input de fecha
+    var inputFecha = document.getElementById('fecha');
+    // Obtener la fecha actual en el formato 'YYYY-MM-DD'
+    var fechaActual = new Date().toISOString().split('T')[0];
+    // Establecer la fecha actual como valor inicial del campo de fecha
+    inputFecha.value = fechaActual;
 
 function addField() {
     const fieldsContainer = document.getElementById("fieldsContainer");
@@ -284,10 +290,7 @@ function textLabel(text) {
                         document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Clave de Curso Invalida';
                     } else {
                         if(!respuesta.hasOwnProperty('error')){
-                            // iva = respuesta[0] * 0.16;
-                            // iva = parseFloat(iva).toFixed(2);
                             if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS') {
-                                // total = respuesta[0]*1.16
                                 document.getElementById('addmore['+x+'][iva]').value = respuesta['iva'];
                                 if(respuesta['tabuladorConIva'] == true) {
                                     document.getElementById('tdiva').style.display = 'none';
@@ -296,17 +299,11 @@ function textLabel(text) {
                                     document.getElementById('tdiva').style.display = 'table-cell';
                                     document.getElementById('thiva').style.display = 'table-cell';
                                 }
-                                // style="display:none;"
                             } else {
-                                // total = respuesta[0]
                                 document.getElementById('addmore['+x+'][iva]').value = 0.00;
                             }
-                            // total = parseFloat(total).toFixed(2);
 
                             document.getElementById('addmore['+x+'][importe]').value = respuesta['importe_total'];
-                            // document.getElementById('norecibo').value = respuesta['recibo'];
-                            // document.getElementById('movimiento_bancario').value = respuesta['movimiento_bancario'];
-                            // document.getElementById('fecha_movimiento_bancario').value = respuesta['fecha_movimiento_bancario'];
                             document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
                             document.getElementById('no_recibo').value = respuesta['folio_recibo'];
                             document.getElementById('fecha_expedicion').value = respuesta['fecha_expedicion'];
@@ -326,137 +323,24 @@ function textLabel(text) {
             } else {
 
             }
-            /*var url = '/supre/busqueda/tipo_curso';
-                var request = $.ajax
-                ({
-                    url: url,
-                    method: 'POST',
-                    data: datos,
-                    dataType: 'json'
-                });
-                request.done(( respuesta) =>
-                {
-                    if (respuesta == 'CERT')
-                    {
-                        document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Curso Certificado Extraordinario';
-                    }
-                    if (respuesta == 'NORMAL')
-                    {
-                        document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
-                    }
-                });*/
         });
     });
 
-   /* $( document ).on('input', function(){
-        $('input').on('input', function(event){
-            id = this.id;
-            x = id.substring(8,10);
-            comp = x.substring(1);
-            if(comp == ']')
-            {
-                x = id.substring(8,9);
-            }
-            if (id == 'addmore['+x+'][folio]') {
-                var valor = (document.getElementById(id).value).toUpperCase();
-                var datos = {valor: valor};
-                var url = '/supre/busqueda/folio';
-                var request = $.ajax
-                ({
-                    url: url,
-                    method: 'POST',
-                    data: datos,
-                    dataType: 'json'
-                });
-                console.log('hola');
-                request.done(( respuesta) =>
-                {
-                    console.log(respuesta);
-                    if (respuesta != 'N/A') {
-                        document.getElementById('addmore['+x+'][avisofolio]').innerHTML = 'Folio Existente';
-                    } else {
-                        if(!respuesta.hasOwnProperty('error')){
-                            console.log('respuesta= ')
-                            console.log(respuesta)
-                            document.getElementById('addmore['+x+'][avisofolio]').innerHTML = null;
-                        }else{
+    const fechaInput = document.getElementById('fecha');
+    const ejercicioP = document.getElementById('ejercicio');
+    let previousYear = new Date(fechaInput.value).getFullYear();
 
-                            //Puedes mostrar un mensaje de error en algún div del DOM
-                        }
-                    }
-                });
+    fechaInput.addEventListener('change', function() {
+        const currentYear = new Date(fechaInput.value).getFullYear();
+        if (currentYear !== previousYear) {
+            console.log('El año ha cambiado');
+            ejercicioP.textContent = '/'+currentYear;
+            previousYear = currentYear;
+        }
+    });
 
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                alert( "Hubo un error: " + textStatus );
-            });
-
-            } else {
-
-            }
-        });
-    });*/
 
 });
-        // evento de cargar los datos en el elemento jquery con los inputs dinámicos
-       /* $('.claveCurso').on('input', function(event){
-            id = this.id;
-            x = id.substring(8,10);
-            comp = x.substring(1);
-            if(comp == ']')
-            {
-                x = id.substring(8,9);
-            }
-            console.log('hola');
-            if (id == 'addmore['+x+'][clavecurso]') {
-                var valor = (document.getElementById(id).value).toUpperCase();
-                var datos = {valor: valor, _token: "{{ csrf_token() }}"};
-                var url = "{{ route('supre.busqueda.curso') }}";
-                var request = $.ajax
-                ({
-                    url: url,
-                    method: 'POST',
-                    data: datos,
-                    dataType: 'json'
-                });
-
-                request.done(( respuesta) =>
-                {
-                    console.log(respuesta);
-                    if (respuesta == 'N/A') {
-                        document.getElementById('addmore['+x+'][importe]').value = null;
-                        document.getElementById('addmore['+x+'][iva]').value = null;
-                        document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Clave de Curso Invalida';
-                    } else {
-                        if(!respuesta.hasOwnProperty('error')){
-                            console.log('respuesta= ')
-                            console.log(respuesta)
-                            iva = respuesta * 0.16;
-                            iva = parseFloat(iva).toFixed(2);
-                            total = respuesta*1.16
-                            total = parseFloat(total).toFixed(2);
-
-                            document.getElementById('addmore['+x+'][importe]').value = total;
-
-                            document.getElementById('addmore['+x+'][iva]').value = iva;
-
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
-                        }else{
-                            console.log("Esto es una respuesta de Error:" + respuesta);
-                            //Puedes mostrar un mensaje de error en algún div del DOM
-                        }
-                    }
-                });
-
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                alert( "Hubo un error: " + jqXHR.responseText );
-            });
-
-            } else {
-
-            }
-        });*/
 
     });
 </script>
