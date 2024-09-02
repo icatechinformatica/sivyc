@@ -325,7 +325,7 @@ class EValsupreController extends Controller
                         <td scope="col" style="width: 20px"><small style="font-size: 8px;">HSM (horas)</small></td>';
                         if($data[0]['fecha_apertura'] <  '2023-10-12') {
                             $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">IMPORTE POR HORA</small></td>';
-                            if($tipop->modinstructor == 'HONORARIOS') {
+                            if($data[0]->modinstructor == 'HONORARIOS') {
                                 $body_html = $body_html . '<td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>';
                             }
                             $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
