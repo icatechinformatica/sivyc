@@ -264,7 +264,7 @@ class ConveniosController extends Controller
         $unidades = DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
         // $estados = \DB::table('estados')->orderBy('estados.id')->get();
         $organismos = DB::table('organismos_publicos')
-                        //->where('activo',true)
+                        ->where('activo',true)
                         ->orderBy('organismo')
                         ->get();
                         // ->pluck('organismo','id');
