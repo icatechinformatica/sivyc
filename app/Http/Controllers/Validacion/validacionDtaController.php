@@ -1821,8 +1821,8 @@ class validacionDtaController extends Controller {
 
         $unidad = DB::Table('tbl_unidades')->Where('unidad', $request->unidad_reporte)->FIRST();
         $elabora = ['nombre' => $elabora = Auth::user()->name, 'puesto' => $elabora = Auth::user()->puesto];
-        $direccion = DB::table('tbl_instituto')->Select('direccion','telefono','correo')->First();
-        $direccion->direccion = explode("*", $direccion->direccion);
+        $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
+        $direccion = explode("*", $direccion);
         $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','elabora','direccion'));
         return $pdf->Stream('Memo_unidad_para_DTA.pdf');
     }

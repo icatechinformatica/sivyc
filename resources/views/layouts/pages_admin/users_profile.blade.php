@@ -180,7 +180,7 @@
                                     <select name="inputCapacitacionUpdate" id="inputCapacitacionUpdate" class="form-control">
                                         {{-- <option value="">--SELECCIONAR--</option> --}}
                                         @foreach ($unidades as $unidad)
-                                            <option value="{{$unidad->unidad}}" @if($unidad->unidad ?? $ubicacion->unidad) selected @endif>{{$unidad->unidad}}</option>
+                                            <option value="{{$unidad->id}}" @if($unidad->unidad == $ubicacion->unidad) selected @endif>{{$unidad->unidad}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -209,12 +209,12 @@
                         required: true,
                         minlength: 3
                     },
-                    inputPasswordUpdate: {
-                        required: true,
-                    },
-                    inputPasswordRepeatInput: {
-                        equalTo : "#inputPasswordUpdate"
-                    },
+                    // inputPasswordUpdate: {
+                    //     required: true,
+                    // },
+                    // inputPasswordRepeatInput: {
+                    //     equalTo : "#inputPasswordUpdate"
+                    // },
                     inputPuestoUpdate: {
                         required: true
                     },
@@ -226,18 +226,18 @@
                     inputNameUpdate: {
                         required: 'Por favor ingrese el nombre completo'
                     },
-                    inputPasswordUpdate: {
-                        required: 'Por favor Ingresé la contraseña',
-                    },
+                    // inputPasswordUpdate: {
+                    //     required: 'Por favor Ingresé la contraseña',
+                    // },
                     inputPuestoUpdate: {
                         required: 'Por favor ingrese el puesto'
                     },
                     inputUbicacionUpdate: {
                         required: 'Por favor, seleccione la ubicación.',
                     },
-                    inputPasswordRepeatInput: {
-                        equalTo: 'Las contraseñas no coinciden'
-                    }
+                    // inputPasswordRepeatInput: {
+                    //     equalTo: 'Las contraseñas no coinciden'
+                    // }
                 }
             });
 
