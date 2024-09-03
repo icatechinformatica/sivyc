@@ -150,7 +150,8 @@ class ConveniosController extends Controller
 
         $convenios['fecha_vigencia'] = null;
         if ($request->input('fecha_termino') != null) {
-            $convenios['fecha_vigencia'] = $convenios->getMyDateFormat($request->input('fecha_termino'));
+            // $convenios['fecha_vigencia'] = $convenios->getMyDateFormat($request->input('fecha_termino'));
+            $convenios['fecha_vigencia'] = Carbon::parse(trim($request->input('fecha_termino')))->format('Y-m-d');
         }
 
         $convenios['poblacion'] = trim($request->input('poblacion'));
@@ -263,7 +264,7 @@ class ConveniosController extends Controller
         $unidades = DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
         // $estados = \DB::table('estados')->orderBy('estados.id')->get();
         $organismos = DB::table('organismos_publicos')
-                        //->where('activo',true)
+                        ->where('activo',true)
                         ->orderBy('organismo')
                         ->get();
                         // ->pluck('organismo','id');

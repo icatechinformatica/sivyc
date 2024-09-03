@@ -44,7 +44,7 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 812px;
+                bottom: 820px;
                 left: 20px;
                 font-size: 7.5px;
                 color: white;
