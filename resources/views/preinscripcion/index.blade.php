@@ -139,6 +139,10 @@
                             @if($grupo->clave)<span>CLAVE:&nbsp;&nbsp;<strong>{{$grupo->clave}}</strong></span>@endif
                             @if ($grupo->mexoneracion AND ($grupo->mexoneracion <> '0'))
                                 <span>MEMORÁNDUM DE EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong>{{$grupo->mexoneracion}}</strong></span>
+                            @elseif ($grupo->exo_nrevision )
+                                <span>EXONERACIÓN/REDUCCIÓN No. REVISIÓN:&nbsp;&nbsp;<strong>{{$grupo->exo_nrevision}}</strong></span>
+                            @elseif ($grupo->tipo != 'PINS' )
+                                <span>EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong class="text-danger">TRÁMITE PENDIENTE</strong></span>                                
                             @endif
                             @if($grupo->tdias)<span>TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></span>@endif
                             @if($grupo->dia)<span>DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></span>@endif
@@ -208,7 +212,7 @@
                         {!! Form::text('repre_tel', $grupo->depen_telrepre ?? '', ['id'=>'repre_tel', 'class'=>'form-control col-md-10']) !!}
                     </div>
                     <div class="form-group col-md-4">
-                        @if ($grupo->id_vulnerable ?? '')
+                        @if ($es_vulnerable==true)
                         <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($grupo->id_gvulnerable ?? ''){{'checked'}}@endif>&nbsp;&nbsp;GRUPO VULNERABLE</label>
                         @else
                         <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($grupo->id_gvulnerable ?? ''){{'checked'}}@endif disabled>&nbsp;&nbsp;GRUPO VULNERABLE</label>
