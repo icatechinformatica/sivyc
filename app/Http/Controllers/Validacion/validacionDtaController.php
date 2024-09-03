@@ -1728,7 +1728,7 @@ class validacionDtaController extends Controller {
     }
 
     public function resumen_unidad_pdf(Request $request)
-    { 
+    {
         $leyenda = Instituto::first();
         $leyenda = $leyenda->distintivo;
         $numero_memo = $request->memo_reporte_unidad; // proceso
