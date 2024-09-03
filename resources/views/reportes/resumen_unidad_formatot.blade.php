@@ -72,8 +72,7 @@
         <p class='direccion'><b>
             @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
             @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-            <br>Teléfono: {{$funcionarios['dacademico']['telefono']}}
-            <br>Correo: {{$funcionarios['dacademico']['correo']}}
+            <br>Teléfono: {{$funcionarios['dacademico']['telefono']}} Correo: {{$funcionarios['dacademico']['correo']}}
         </b></p>
     </footer>
     <div class="contenedor" style="margin-bottom: 100px;">
