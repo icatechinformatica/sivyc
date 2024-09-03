@@ -43,7 +43,7 @@
                 position: absolute;
                 bottom: 830px; /*773*/
                 left: 10px; /*20*/
-                font-size: 8.5px;
+                font-size: 7.5px;
                 color: white;
                 line-height: 1;
             }

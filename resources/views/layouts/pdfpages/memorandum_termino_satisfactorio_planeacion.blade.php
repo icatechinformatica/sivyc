@@ -40,7 +40,7 @@
                 position: absolute;
                 bottom: 32px;
                 left: 65px;
-                font-size: 8.5px;
+                font-size: 7.5px;
                 color: rgb(255, 255, 255);
                 line-height: 1;
             }
