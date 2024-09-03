@@ -158,13 +158,13 @@ class Rf001Controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, $solicitud)
     {
+        // dd($solicitud);
         //
         $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
-        // dd($getConcentrado);
         $pathFile = $this->path_files;
-        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id'))->render();
+        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'solicitud'))->render();
     }
 
     /**

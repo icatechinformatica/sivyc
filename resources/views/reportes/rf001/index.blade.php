@@ -517,9 +517,9 @@
                             document.getElementById('loader-overlay').style.display =
                                 'none';
                             if (response.resp) {
-                                window.location.href = '{{ route('reporte.rf001.sent') }}';
+                                window.location.href = '{{ route('reporte.rf001.sent', ['generado' => ]) }}';
                             }
-                        }, 2000); // 2 segundos de tiempo simulado
+                        }, 2500); // 2 segundos de tiempo simulado
 
                     },
                 }).fail(function(jqXHR, textStatus, errorThrown) {

@@ -398,163 +398,168 @@
 @php
     $movimiento = json_decode($getConcentrado->movimientos, true);
     $importeTotal = 0;
+
+    $bandera = Crypt::encrypt($solicitud);
+    $encrypted = base64_encode($bandera);
+    $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
 @endphp
 @section('content')
-    <div class="content-wrapper">
-        <section class="content p-4">
-            @if (session('message'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('message') }}
-                </div>
-            @endif
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <a href="{{ route('reporte.rf001.sent') }}">A Revisión </a>/ Detalles de Reporte RF-001
-                    </div>
-                </div>
-                <div class="card-body" style="display:block;">
-                    <div class="row">
-                        <div class="col-12 col-md-12 col-lg-12 order-2 order-md-1">
-                            <div class="row">
-                                <div class="col-12">
-                                    <h4>DETALLES DEL CONCENTRADO DE INGRESOS</h4>
-                                    <div class="post">
-                                        <div class="user-block">
-                                            <span class="username">UNIDAD:</span>
-                                            <span class="description"
-                                                style="font-weight: bold;">{{ $getConcentrado->unidad }}</span>
-                                        </div>
-                                        <div class="user-block">
-
-                                        </div>
-                                    </div>
-                                </div>
+    <div class="card-header"><a href="{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}">A Revisión </a>/ Detalles de Reporte RF-001</div>
+    <div class="card card-body  p-5" style=" min-height:450px;">
+        @if (session('message'))
+            <div class="alert alert-success" role="alert">
+                {{ session('message') }}
+            </div>
+        @endif
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-12 order-2 order-md-1">
+                <div class="row">
+                    <div class="col-12">
+                        <h4>DETALLES DEL CONCENTRADO DE INGRESOS</h4>
+                        <div class="post">
+                            <div class="user-block">
+                                <span class="username">UNIDAD:</span>
+                                <span class="description" style="font-weight: bold;">{{ $getConcentrado->unidad }}</span>
                             </div>
-                            <div class="row">
-                                <div class="col-12 col-sm-4">
-                                    <div class="info-box bg-light">
-                                        <div class="info-box-content">
-                                            <span class="info-box-text text-center text-muted">
-                                                Memorándum
-                                            </span>
-                                            <span
-                                                class="info-box-number text-center text-muted mb-0">{{ $getConcentrado->memorandum }}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="user-block">
 
-                                <div class="col-12 col-sm-4">
-                                    <div class="info-box bg-light">
-                                        <div class="info-box-content">
-                                            <span class="info-box-text text-center text-muted">
-                                                Periodo del concentrado
-                                            </span>
-                                            @php
-                                                $periodoInicio = Carbon\Carbon::parse($getConcentrado->periodo_inicio);
-                                                $periodoFin = Carbon\Carbon::parse($getConcentrado->periodo_fin);
-                                            @endphp
-                                            <span
-                                                class="info-box-number text-center text-muted mb-0">{{ $periodoInicio->format('d/m/Y') . ' - ' . $periodoFin->format('d/m/Y') }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-4">
-                                    <div class="info-box bg-light">
-                                        <div class="info-box-content">
-                                            <span class="info-box-text text-center text-muted">
-                                                Estado
-                                            </span>
-                                            <span
-                                                class="info-box-number text-center text-muted mb-0">{{ $getConcentrado->estado }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>FOLIO</th>
-                                                <th>CURSO</th>
-                                                <th>CONCEPTO</th>
-                                                <th>FOLIOS</th>
-                                                <th>DOCUMENTO</th>
-                                                <th>IMPORTES</th>
-                                                <th>COMENTARIOS</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($movimiento as $item)
-                                                @php
-
-                                                    $depositos = isset($item['depositos'])
-                                                        ? json_decode($item['depositos'], true)
-                                                        : [];
-
-                                                    $observaciones = isset($item['observaciones'])
-                                                        ? json_decode($item['observaciones'], true)
-                                                        : [];
-
-                                                    $jsonString = (string) json_encode($observaciones);
-                                                @endphp
-                                                <tr>
-                                                    <td>{{ $item['folio'] }}</td>
-                                                    <td>
-                                                        @if ($item['curso'] != null)
-                                                            {{ $item['curso'] }}
-                                                        @else
-                                                            {{ $item['descripcion'] }}
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $item['concepto'] }}</td>
-                                                    <td>
-                                                        @foreach ($depositos as $k)
-                                                            {{ $k['folio'] }} &nbsp;
-                                                        @endforeach
-                                                    </td>
-                                                    <td style="text-align: center;">
-                                                        <a class="nav-link pt-0"
-                                                            href="{{ $pathFile }}{{ $item['documento'] }}"
-                                                            target="_blank">
-                                                            <i class="far fa-file-pdf  fa-2x text-danger"
-                                                                title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
-                                                        </a>
-                                                    </td>
-                                                    <td style="text-align: end;">
-                                                        $ {{ number_format($item['importe'], 2, '.', ',') }}
-                                                    </td>
-                                                    <td style="text-align:center">
-                                                        <a href="javascript:;" class="btn btn-success openModal"
-                                                            data-toggle="modal" data-folio="{{ $item['folio'] }}"
-                                                            data-target="#exampleModal"
-                                                            data-observaciones="{{ $jsonString }}">
-                                                            <i class="fa fa-comment" aria-hidden="true"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                @php
-                                                    $importeTotal += $item['importe'];
-                                                @endphp
-                                            @endforeach
-                                            <tr>
-                                                <td colspan="5" style="text-align: end;"><b>SUBTOTAL</b></td>
-                                                <td style="text-align: end;"><b>$
-                                                        {{ number_format($importeTotal, 2, '.', ',') }}</b></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12 col-sm-3">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">
+                                    Memorándum
+                                </span>
+                                <span
+                                    class="info-box-number text-center text-muted mb-0">{{ $getConcentrado->memorandum }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-3">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">
+                                    Periodo del concentrado
+                                </span>
+                                @php
+                                    $periodoInicio = Carbon\Carbon::parse($getConcentrado->periodo_inicio);
+                                    $periodoFin = Carbon\Carbon::parse($getConcentrado->periodo_fin);
+                                @endphp
+                                <span
+                                    class="info-box-number text-center text-muted mb-0">{{ $periodoInicio->format('d/m/Y') . ' - ' . $periodoFin->format('d/m/Y') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-3">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">
+                                    Estado
+                                </span>
+                                <span
+                                    class="info-box-number text-center text-muted mb-0">{{ $getConcentrado->estado }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-3">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">
+                                    Realizado el
+                                    <b>{{ Carbon\Carbon::parse($getConcentrado->created_at)->format('d/m/Y') }}</b>
+                                </span>
+                                <span class="info-box-number text-center text-muted mb-0">Por:
+                                    {{ $getConcentrado->realiza }} </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">FOLIO</th>
+                                    <th style="text-align: center;">CURSO</th>
+                                    <th style="text-align: center;">CONCEPTO</th>
+                                    <th style="text-align: center;">FOLIOS</th>
+                                    <th style="text-align: center;">RECIBO DE PAGO</th>
+                                    <th style="text-align: center;">IMPORTES</th>
+                                    <th style="text-align: center;">COMENTARIOS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($movimiento as $item)
+                                    @php
+
+                                        $depositos = isset($item['depositos'])
+                                            ? json_decode($item['depositos'], true)
+                                            : [];
+
+                                        $observaciones = isset($item['observaciones'])
+                                            ? json_decode($item['observaciones'], true)
+                                            : [];
+
+                                        $jsonString = (string) json_encode($observaciones);
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $item['folio'] }}</td>
+                                        <td>
+                                            @if ($item['curso'] != null)
+                                                {{ $item['curso'] }}
+                                            @else
+                                                {{ $item['descripcion'] }}
+                                            @endif
+                                        </td>
+                                        <td>{{ $item['concepto'] }}</td>
+                                        <td>
+                                            @foreach ($depositos as $k)
+                                                {{ $k['folio'] }} &nbsp;
+                                            @endforeach
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a class="nav-link pt-0" href="{{ $pathFile }}{{ $item['documento'] }}"
+                                                target="_blank">
+                                                <i class="far fa-file-pdf  fa-2x {{ $item['documento'] === null || empty($item['documento']) ? 'text-gray' : 'text-danger' }}"
+                                                    title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
+                                            </a>
+                                        </td>
+                                        <td style="text-align: end;">
+                                            $ {{ number_format($item['importe'], 2, '.', ',') }}
+                                        </td>
+                                        <td style="text-align:center">
+                                            <a href="javascript:;"
+                                                class="btn {{ empty($jsonString) || $jsonString === 'null' || $jsonString === '[]' ? 'btn-light' : 'btn-warning' }} openModal"
+                                                data-toggle="modal" data-folio="{{ $item['folio'] }}"
+                                                data-target="#exampleModal" data-observaciones="{{ $jsonString }}">
+                                                <i class="fa fa-comment" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $importeTotal += $item['importe'];
+                                    @endphp
+                                @endforeach
+                                <tr>
+                                    <td colspan="5" style="text-align: end;"><b>SUBTOTAL</b></td>
+                                    <td style="text-align: end;"><b>$
+                                            {{ number_format($importeTotal, 2, '.', ',') }}</b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            {{-- incluir modal de inserción --}}
-            @include('reportes.rf001.modal.showComment')
-        </section>
+        </div>
     </div>
+    {{-- incluir modal de inserción --}}
+    @include('reportes.rf001.modal.showComment')
 @endsection
 @section('script_content_js')
     <!-- jQuery Validate -->
@@ -686,7 +691,7 @@
                                     $(".action-close").trigger(
                                         "click"); // ocultar modal
                                     window.location.href =
-                                        "{{ route('reporte.rf001.set.details', ['id' => $id]) }}"; // redirect
+                                        "{{ route('reporte.rf001.set.details', ['id' => $id, 'solicitud' => $encrypted]) }}"; // redirect
                                 }
                             },
                             error: function(xhr, textStatus, error) {

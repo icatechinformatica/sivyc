@@ -150,7 +150,7 @@
                                     </td>
                                     <td class="text-left">
                                         <a class="nav-link pt-0"
-                                            href="{{ route('reporte.rf001.set.details', ['id' => $item->id]) }}">
+                                            href="{{ route('reporte.rf001.set.details', ['id' => $item->id, 'solicitud' => $dato]) }}">
                                             <i class="fa fa-eye fa-2x fa-lg text-grey" aria-hidden="true"
                                                 title="MOSTRAR FORMATO RF001"></i>
                                         </a>

@@ -4,6 +4,9 @@
     $bandera = Crypt::encrypt('solicitud');
     $encrypted = base64_encode($bandera);
     $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
+    $banderaSolicitudes = Crypt::encrypt('SOLICITUDES');
+    $encryptedRequest = base64_encode($banderaSolicitudes);
+    $encryptedRequest = str_replace(['+', '/', '='], ['-', '_', ''], $encryptedRequest);
 @endphp
 <!--Navbar -->
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark pink darken-4">
@@ -214,7 +217,7 @@
                             @can('solicitudes.transferencia')
                                 <a class="dropdown-item" href="{{route('solicitudes.transferencia.index')}}">Transferencia BANCARIA</a>
                             @endcan
-                            <a href="" class="dropdown-item">Solicitudes de validación RF001</a>
+                            <a href="{{route('reporte.rf001.sent', ['generado' => $encryptedRequest])}}" class="dropdown-item">Solicitudes de validación RF001</a>
                         </div>
                     </li>
                 @endcan

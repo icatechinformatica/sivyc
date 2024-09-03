@@ -24,6 +24,7 @@ class Rf001Model extends Model
         'unidad',
         'periodo_inicio',
         'periodo_fin',
+        'realiza'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
