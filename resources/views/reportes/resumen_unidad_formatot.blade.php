@@ -70,9 +70,7 @@
             Teléfono (961)6121621, Email: dtecnicaacademica@gmail.com
         </b></p> --}}
         <p class='direccion'><b>
-            @foreach($direccion->direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-            <br>{{$direccion->telefono}}
-            <br>{{$direccion->correo}}
+            @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
         </b></p>
     </footer>
     <div class="contenedor" style="margin-bottom: 100px;">
