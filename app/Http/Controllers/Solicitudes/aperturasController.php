@@ -476,8 +476,8 @@ class aperturasController extends Controller
                 if($opt=="ARC01") $opt = "ARC-01";
                 else $opt = "ARC-02";
                 
-                $direccion = "Av. Circunvalación Pichucalco núm. 212-B. Colonia Moctezuma C.P. 29030; Tuxtla Gutiérrez, Chiapas.
-                Teléfono (961)6121621 Email: dtecnicaacademica@gmail.com";
+                $direccion = DB::table('tbl_instituto')->pluck('direccion')->first();
+                $direccion = $direccion."Teléfono (961)6121621 Email: dtecnicaacademica@gmail.com";
                 $realizo = $this->realizo;
                 $puesto = $this->puesto;
                 $pdf = PDF::loadView('solicitudes.aperturas.pdfAutoriza',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','opt','distintivo','realizo','puesto','marca','direccion'));
