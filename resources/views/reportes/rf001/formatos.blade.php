@@ -139,9 +139,9 @@
 
                                             @case('ENFIRMA')
                                                 <a class="nav-link pt-0"
-                                                    href="{{ route('reporte.generar.firma', ['id' => $item->id]) }}">
+                                                    href="{{ route('reporte.generar.firma', ['id' => $item->id, 'solicitud' => $dato]) }}">
                                                     <i class="fas fa-pen fa-2x fa-lg text-danger" aria-hidden="true"
-                                                        title='EN FIRMA'></i>
+                                                        title='PARA FIRMA'></i>
                                                 </a>
                                             @break
 

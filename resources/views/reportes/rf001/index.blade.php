@@ -517,7 +517,7 @@
                             document.getElementById('loader-overlay').style.display =
                                 'none';
                             if (response.resp) {
-                                window.location.href = '{{ route('reporte.rf001.sent', ['generado' => ]) }}';
+                                window.location.href = "{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}";
                             }
                         }, 2500); // 2 segundos de tiempo simulado
 

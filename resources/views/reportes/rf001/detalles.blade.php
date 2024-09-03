@@ -485,7 +485,7 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="text-align: center;">FOLIO</th>
+                                    <th style="text-align: center;" style="width: 15%;">FOLIO</th>
                                     <th style="text-align: center;">CURSO</th>
                                     <th style="text-align: center;">CONCEPTO</th>
                                     <th style="text-align: center;">FOLIOS</th>
@@ -509,7 +509,7 @@
                                         $jsonString = (string) json_encode($observaciones);
                                     @endphp
                                     <tr>
-                                        <td>{{ $item['folio'] }}</td>
+                                        <td style="width: 6em;">{{ $item['folio'] }}</td>
                                         <td>
                                             @if ($item['curso'] != null)
                                                 {{ $item['curso'] }}

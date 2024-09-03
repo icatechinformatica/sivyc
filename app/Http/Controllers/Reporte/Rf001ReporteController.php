@@ -68,10 +68,10 @@ class Rf001ReporteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, $solicitud)
     {
         $idFormato = $id;
-        return view('reportes.rf001.formatofirma', compact('idFormato'))->render();
+        return view('reportes.rf001.formatofirma', compact('idFormato', 'solicitud'))->render();
     }
 
     /**
