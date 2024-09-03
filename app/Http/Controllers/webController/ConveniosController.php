@@ -150,7 +150,8 @@ class ConveniosController extends Controller
 
         $convenios['fecha_vigencia'] = null;
         if ($request->input('fecha_termino') != null) {
-            $convenios['fecha_vigencia'] = $convenios->getMyDateFormat($request->input('fecha_termino'));
+            // $convenios['fecha_vigencia'] = $convenios->getMyDateFormat($request->input('fecha_termino'));
+            $convenios['fecha_vigencia'] = Carbon::parse(trim($request->input('fecha_termino')))->format('Y-m-d');
         }
 
         $convenios['poblacion'] = trim($request->input('poblacion'));
