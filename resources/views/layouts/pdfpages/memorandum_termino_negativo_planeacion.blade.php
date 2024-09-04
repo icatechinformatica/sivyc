@@ -34,11 +34,10 @@
         }
 
         img.izquierdabot {
-            position: fixed;
-            left: 50px;
-            width: 350px;
-            height: 60px;
-        }
+                float: inline-end;
+                width: 100%;
+                height: 100%;
+            }
 
         img.derechabot {
             position: fixed;
@@ -92,16 +91,28 @@
         }
 
         footer {
-            position: fixed;
-            left: 0px;
-            bottom: 0px;
-            height: 0px;
-            width: 100%;
-        }
-
-        footer .page:after {
-            content: counter(page, sans-serif);
-        }
+                position: fixed;
+                left: -40px;
+                bottom: -90px;
+                right: 0px;
+                height: 100px;
+                width: 85%;
+                padding-left: 45px;
+                background-color: white;
+                color: black;
+                text-align: center;
+            }
+        footer .page:after { content: counter(page, sans-serif);}
+        .direccion
+            {
+                text-align: left;
+                position: absolute;
+                bottom: 32px;
+                left: 65px;
+                font-size: 7.5px;
+                color: rgb(255, 255, 255);
+                line-height: 1;
+            }
 
         .contenedor {
             position: RELATIVE;
@@ -135,7 +146,7 @@
             if (isset($pdf))
             {
                 $x = 275;
-                $y = 725;
+                $y = 705;
                 $text = "Hoja {PAGE_NUM} de {PAGE_COUNT}";
                 $font = "Arial";
                 $size = 11;
@@ -146,19 +157,8 @@
                 $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
             }
         </script>
-
-        <table class="tablad" bgcolor="#621132">
-            <tr>
-                <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma </b></td>
-            </tr>
-            <tr>
-                <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, CP 29030 Teléfono: +52 (961) 61 21621</b></td>
-            </tr>
-            <tr>
-                <td colspan="4" style="color:white;"><b>email: icatech@icatech.chiapas.gob.mx</b></td>
-            </tr>
-        </table>
-        <img class="derecha" src='img/icatech-imagen.png'>
+        <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
     </footer>
     {{-- SECCIÓN DE PIE DE PÁGINA FIN --}}
     {{-- SECCIÓN DE CONTENIDO --}}

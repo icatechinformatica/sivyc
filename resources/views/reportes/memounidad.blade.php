@@ -39,7 +39,7 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 830px;
+                bottom: 820px;
                 left: 20px;
                 font-size: 8.5px;
                 color: white;
@@ -70,10 +70,7 @@
         </script>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
         {{-- <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p> --}}
-        <p class='direccion'><b> Av. Circunvalación Pichucalco N 212-B Colonia Moctezuma
-            <br>Tuxtla Gutiérrez, Chiapas, C.P.29030; Telefono (961)6121621
-            <br> Ext.601; Email: dtecnicaacademica@gmail.com</b>
-        </p>
+        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach</b></p>
     </footer>
     <div class= "contenedor">
         <div align=right style="font-size:11px;"><b>DIRECCION TECNICA ACADEMICA</b></div>

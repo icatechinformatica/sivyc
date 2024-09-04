@@ -95,7 +95,7 @@ class userController extends Controller
         $usuario = User::findOrfail($iduser);
         $ubicaciones = Unidad::groupBy('ubicacion')->GET(['ubicacion']);
         $ubicacion = Unidad::Select('unidad','ubicacion')->Where('id',$usuario->unidad)->First();
-        $unidades = Unidad::Where('ubicacion',$ubicacion->ubicacion)->Get(['unidad']);
+        $unidades = Unidad::Select('id','unidad')->Where('ubicacion',$ubicacion->ubicacion)->Get();
         return view('layouts.pages_admin.users_profile', compact('usuario', 'ubicaciones', 'ubicacion', 'unidades'));
     }
 
@@ -111,7 +111,7 @@ class userController extends Controller
         // modificacion de un recurso guardado
         if (isset($id)) {
             $idUsuario = base64_decode($id);
-            $usuarios = new User();
+            // $usuarios = new User();
 
             if (!empty($request->input('inputPasswordUpdate'))) {
                 # si no está vacio se agrega
@@ -119,19 +119,21 @@ class userController extends Controller
                     'name' => trim($request->inputNameUpdate),
                     'password' => Hash::make(trim($request->get('inputPasswordUpdate'))),
                     'puesto' => trim($request->get('inputPuestoUpdate')),
-                    'unidad' => trim($request->get('inputCapacitacionUpdate'))
+                    'unidad' => (int)trim($request->get('inputCapacitacionUpdate'))
                 ];
             } else {
                 # si está vacio no se agrega al arreglo
                 $arrayUser = [
                     'name' => trim($request->inputNameUpdate),
-                    'slug' => trim($request->rolSlugUpdate),
                     'puesto' => trim($request->get('inputPuestoUpdate')),
-                    'unidad' => trim($request->get('inputCapacitacionUpdate'))
+                    'unidad' => (int)$request->inputCapacitacionUpdate
                 ];
             }
 
-            $usuarios->WHERE('id', $idUsuario)->UPDATE($arrayUser);
+
+            User::WHERE('id', $idUsuario)->Update($arrayUser);
+            // $usuario = User::WHERE('id', $idUsuario)->First();dd($usuario, $arrayUser);
+            // dd($usuario);
             return redirect()->route('usuario_permisos.index')
                     ->with('success', 'USUARIO ACTUALIZADO EXTIOSAMENTE!');
         }

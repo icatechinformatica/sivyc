@@ -41,7 +41,7 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 820px; /*820*/
+                bottom: 820px; /*825*/
                 left: 20px;
                 font-size: 7.5px;
                 color: white;
@@ -70,9 +70,9 @@
             Teléfono (961)6121621, Email: dtecnicaacademica@gmail.com
         </b></p> --}}
         <p class='direccion'><b>
-            @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
-            @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-            <br>Teléfono: {{$funcionarios['dacademico']['telefono']}} Correo: {{$funcionarios['dacademico']['correo']}}
+            @foreach($direccion->direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+            <br>{{$direccion->telefono}}
+            <br>{{$direccion->correo}}
         </b></p>
     </footer>
     <div class="contenedor" style="margin-bottom: 100px;">
@@ -82,8 +82,8 @@
             <div align=right style="font-size:13px;"><b>MEMORANDUM NO. {{$numero_memo}}</b></div>
             <div align=right style="font-size:13px;"><b>Tuxtla Gutiérrez, Chiapas; {{$D}} de {{$M}} del {{$Y}}</b></div>
             <br><br>
-            <div align=left style="font-size:13px;"><b> {{$funcionarios['dunidad']['titulo']}} {{$funcionarios['dunidad']['nombre']}}</b></div>
-            <div align=left style="font-size:13px;"><b>{{$funcionarios['dunidad']['puesto']}}.</b></div>
+            <div align=left style="font-size:13px;"><b> {{$unidad->dunidad}}</b></div>
+            <div align=left style="font-size:13px;"><b>{{$unidad->pdunidad}} {{$unidad->ubicacion}}.</b></div>
             <div align=left style="font-size:13px;"><b>Presente</b></div>
             <br><br>
             <div align="justify" style="font-size:14px;">
@@ -98,13 +98,13 @@
             <br><br><br><br>
             <div align="justify" style="font-size:16px;"><b>A T E N T A M E N T E</b></div>
             <br><br><br>
-            <div align="justify" style="font-size:14px;"><b>{{$funcionarios['dacademico']['titulo']}} {{$funcionarios['dacademico']['nombre']}}.</b></div>
-            <div align="justify" style="font-size:14px;"><b>{{$funcionarios['dacademico']['puesto']}}.</b></div>
+            <div align="justify" style="font-size:14px;"><b>{{$unidad->dacademico}}.</b></div>
+            <div align="justify" style="font-size:14px;"><b>{{$unidad->pdacademico}}.</b></div>
             <br><br><br>
-            <div align="justify" style="font-size:10px;">C.c.p. {{$funcionarios['dacademico_unidad']['titulo']}} {{$funcionarios['dacademico_unidad']['nombre']}} - {{$funcionarios['dacademico_unidad']['puesto']}}, Ciudad.</div>
+            <div align="justify" style="font-size:10px;">C.c.p. {{$unidad->academico}} - {{$unidad->pacademico}}, Ciudad.</div>
             <div align="justify" style="font-size:10px;">Archivo.</div>
-            <div align="justify" style="font-size:10px;">Validó: {{$funcionarios['certificacion']['titulo']}} {{$funcionarios['certificacion']['nombre']}} - {{$funcionarios['certificacion']['puesto']}}, Edificio.</div>
-            <div align="justify" style="font-size:10px;">Elaboró: {{$funcionarios['elabora']['nombre']}} - {{$funcionarios['elabora']['puesto']}}.</div>
+            <div align="justify" style="font-size:10px;">Validó: {{$unidad->certificacion_control}} - {{$unidad->pcertificacion_control}}, Edificio.</div>
+            <div align="justify" style="font-size:10px;">Elaboró: {{$elabora['nombre']}} - {{$elabora['puesto']}}.</div>
         </div>
     </div>
 </body>
