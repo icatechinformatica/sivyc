@@ -1467,6 +1467,7 @@ class ExpedienteController extends Controller
         $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
         // $distintivo = "Lista de verificación de Expediente Único";
         $direccion = DB::table('tbl_instituto')->WHERE('id', 1)->VALUE('direccion');
+        $direccion = '*'.$direccion."Teléfono (961)6121621, Email: dtecnicaacademica@gmail.com";
         $json_dptos = ExpeUnico::select('vinculacion', 'academico', 'administrativo')->where('id_curso', $idcurso)->first();
         $st_vinc = $json_dptos->vinculacion['status_save'];
         $st_acad = $json_dptos->academico['status_save'];

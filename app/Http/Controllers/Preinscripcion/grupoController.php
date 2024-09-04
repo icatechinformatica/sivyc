@@ -208,6 +208,7 @@ class grupoController extends Controller
                 DB::raw('COALESCE(tc.dia, null) as dia'),
                 DB::raw('COALESCE(tc.cgeneral, null) as cgeneral'),
                 DB::raw('COALESCE(tc.fcgen, null) as fcgen'),
+                DB::raw('COALESCE(tc.tipo, null) as tipo'),
 
                 //DEL GRUPO
                 DB::raw('COALESCE(tc.id_cerss, ar.id_cerss) as id_cerss'),
@@ -263,12 +264,18 @@ class grupoController extends Controller
                 DB::raw('ar.turnado as  turnado_grupo'),
                 DB::raw('ar.observaciones as obs_vincula'),
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
-                DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital")
+                DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital"),
+                'exo.status as exo_status','exo.nrevision as exo_nrevision'
+
             )
             ->leftjoin('tbl_cursos as tc','tc.folio_grupo','ar.folio_grupo')
             ->leftJoin('tbl_recibos as tr', function ($join) {
                 $join->on('tr.folio_grupo', '=', 'ar.folio_grupo')
                      ->where('tr.status_folio','ENVIADO');
+            })
+            ->leftJoin('exoneraciones as exo', function ($join) {
+                $join->on('exo.folio_grupo', '=', 'ar.folio_grupo')
+                     ->where('exo.status','!=','CANCELADO');
             })
             ->leftjoin('cursos as c','c.id','ar.id_curso')
             ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')

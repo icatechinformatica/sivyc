@@ -21,7 +21,7 @@
         #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
 
         body { margin-top: 120px; font-family: sans-serif; font-size: 9px; width:100%; padding:0px; margin-bottom: 5px;}
-        .direccion {position: absolute;  top: 1.3cm; width:400px; margin-left:10px; height:auto; font-family: sans-serif; font-size: 8px; color:#FFF; }
+        .direccion {position: absolute;  top: 1.35cm; width:400px; margin-left:20px; height:auto; font-family: sans-serif; font-size: 10px; color:#FFF; }
 
     </style>
 @endsection
