@@ -1552,7 +1552,10 @@ class InstructorController extends Controller
         {
             $instructorOficial->status = $saveInstructor->status = 'VALIDADO';
         }
+
+        $instructorOficial->estado = FALSE;
         $saveInstructor->estado = FALSE;
+
         $saveInstructor->save();
         $instructorOficial->save();
 
