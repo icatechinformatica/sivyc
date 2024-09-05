@@ -86,7 +86,7 @@ class cursosaperturadosController extends Controller
                  ->join('exoneraciones as exo', 'exo.folio_grupo', '=', 'c.folio_grupo')
                  ->where('clave','!=','0')->select('unidad','espe','clave','curso','mod','dura',
                 'inicio', 'termino', DB::raw("To_char(termino, 'TMMONTH')"), DB::raw("CONCAT(hini,' A ',hfin) as horario"),'dia','horas',DB::raw("hombre+mujer as cupo"),'nombre',
-                'cp','mujer','hombre','costo','tipo_curso','tipo','nota','observaciones','muni','depen','munidad','mvalida','nmunidad','nmacademico','efisico','modinstructor','c.status','tcapacitacion','status_curso','medio_virtual',
+                'cp','mujer','hombre','costo','tipo_curso','tipo','nota','exo.observaciones','muni','depen','munidad','mvalida','nmunidad','nmacademico','efisico','modinstructor','c.status','tcapacitacion','status_curso','medio_virtual',
                 'exo.no_memorandum', 'exo.fecha_memorandum', DB::raw("
                 CASE
                    WHEN exo.tipo_exoneracion = 'EXO' THEN 'EXONERACIÓN'
