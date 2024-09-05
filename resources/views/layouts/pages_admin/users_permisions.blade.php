@@ -74,7 +74,11 @@
 
 <!--contenido-->
 @section('content')
-
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="col-md-12">
         <div class="main-card mb-3 card">
             <div class="card-header">

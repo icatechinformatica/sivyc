@@ -1728,7 +1728,7 @@ class validacionDtaController extends Controller {
     }
 
     public function resumen_unidad_pdf(Request $request)
-    { 
+    {
         $leyenda = Instituto::first();
         $leyenda = $leyenda->distintivo;
         $numero_memo = $request->memo_reporte_unidad; // proceso
@@ -1820,10 +1820,11 @@ class validacionDtaController extends Controller {
         // Fin info meses anteriores
 
         $unidad = DB::Table('tbl_unidades')->Where('unidad', $request->unidad_reporte)->FIRST();
-        $elabora = ['nombre' => $elabora = Auth::user()->name, 'puesto' => $elabora = Auth::user()->puesto];
-        $direccion = DB::table('tbl_instituto')->Select('direccion','telefono','correo')->First();
-        $direccion->direccion = explode("*", $direccion->direccion);
-        $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','elabora','direccion'));
+        // $elabora = ['nombre' => $elabora = Auth::user()->name, 'puesto' => $elabora = Auth::user()->puesto];
+        $funcionarios = $this->funcionarios($unidad->unidad);
+        // $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
+        // $direccion = explode("*", $direccion);
+        $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','funcionarios'));
         return $pdf->Stream('Memo_unidad_para_DTA.pdf');
     }
 
@@ -1916,5 +1917,34 @@ class validacionDtaController extends Controller {
                 return 'DICIEMBRE';
             break;
         }
+    }
+
+    public function funcionarios($unidad) {
+        $query = clone $dacademico = clone $dacademico_unidad = clone $certificacion = clone $dunidad = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true');
+
+        $dacademico = $dacademico->Where('o.id',16)->First();
+        $certificacion = $certificacion->Where('o.id',18)->First();
+
+        $dacademico_unidad = $dacademico_unidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DEPARTAMENTO ACADEMICO%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $dunidad = $dunidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $funcionarios = [
+            'dacademico' => ['titulo'=>$dacademico->titulo,'nombre'=>$dacademico->nombre,'puesto'=>$dacademico->cargo,'direccion'=>$dacademico->direccion,'telefono'=>$dacademico->telefono,'correo'=>$dacademico->correo],
+            'certificacion' => ['titulo'=>$certificacion->titulo,'nombre'=>$certificacion->nombre,'puesto'=>$certificacion->cargo,'direccion'=>$certificacion->direccion,'telefono'=>$certificacion->telefono,'correo'=>$certificacion->correo],
+            'dacademico_unidad' => ['titulo'=>$dacademico_unidad->titulo,'nombre'=>$dacademico_unidad->nombre,'puesto'=>$dacademico_unidad->cargo,'direccion'=>$dacademico_unidad->direccion,'telefono'=>$dacademico_unidad->telefono,'correo'=>$dacademico_unidad->correo],
+            'dunidad' => ['titulo'=>$dunidad->titulo,'nombre'=>$dunidad->nombre,'puesto'=>$dunidad->cargo,'direccion'=>$dunidad->direccion,'telefono'=>$dunidad->telefono,'correo'=>$dunidad->correo],
+            'elabora' => ['nombre'=>strtoupper(Auth::user()->name),'puesto'=>strtoupper(Auth::user()->puesto)]
+        ];
+
+        return $funcionarios;
     }
 }

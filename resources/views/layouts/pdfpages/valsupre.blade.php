@@ -145,7 +145,7 @@
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>
-                14 PONIENTE NORTE No. 239 COLONIA MOCTEZUMA.<br>TUXTLA GUTIÉRREZ, CHIAPAS, C.P. 29030 TELEFONO +52(961)6121621.<br>EMAIL: icatech@icatech.chiapas.gob.mx
+                AV. BARRIO SAN JACINTO N° 154, ENTRE CALLE PÁJAROS Y CALLE CONEJOS,<br>FRACC. EL DIAMANTE C.P. 29059<br>TUXTLA GUTIÉRREZ, CHIAPAS. TELEFONO +52(961)6121621.<br>EMAIL: icatech@icatech.chiapas.gob.mx
             </br></p>
         </footer>
         <div id="wrapperbot">

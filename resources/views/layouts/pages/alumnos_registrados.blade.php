@@ -25,7 +25,7 @@
                 <caption>Catalogo de Alumnos</caption>
                 <thead>
                     <tr>
-                        <th scope="col">N°CONTROL</th>
+                        <th scope="col">Matrícula</th>
                         <th width="85px">FOLIO</th>
                         <th scope="col">NOMBRE</th>
                         <th width="85px">N°GRUPO</th>
@@ -33,10 +33,9 @@
                         <th scope="col">CURSO</th>
                         <th scope="col">FECHAS</th>
                         <th scope="col">HORARIO</th>
-                        <th width="100px">ACCIONES</th>
-                        @can('alumno.inscrito.edit')
-                            <th scope="col">MODIFICAR</th>
-                        @endcan
+                        @can('alumno.inscrito.show')
+                        <th width="100px">VER</th>
+                        @endcan 
                         <th scope="col">SID</th>
                     </tr>
                 </thead>
@@ -53,28 +52,12 @@
                             <td scope="row">{{$itemData->horario}}</td>
                             @can('alumno.inscrito.show')
                                 <td>
-                                    <a href="{{route('alumnos.inscritos.detail', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="VER REGISTRO">
+                                    <a href="{{route('alumnos.inscritos.detail', ['id' => base64_encode($itemData->id_registro)])}}"  data-toggle="tooltip" data-placement="top" title="VER REGISTRO">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
                                 </td>
-                            @endcan
-                            @can('alumno.inscrito.edit')
-                                <td>
-                                    <a href="{{route('alumnos.update.registro', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
-                                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            @endcan
-                            <td>
-                                {{-- @if ($itemData->es_cereso == true)
-                                    <a href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID DE CERSS" target="_blank">
-                                        <i class="fa fa-file" aria-hidden="true"></i>
-                                    </a>
-                                @else --}}
-                                    <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID" target="_blank">
-                                        <i class="far fa-file-pdf" aria-hidden="true"></i>
-                                    </a>
-                                {{-- @endif --}}
+                            @endcan                          
+                            <td>                              
                             </td>
 
                         </tr>

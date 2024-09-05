@@ -57,7 +57,7 @@
 
                     switch($opt){
                         case "ARC01":
-                            if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
+                            if(($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') AND $g->status_curso =='AUTORIZADO') $activar=false;
                             $mextemporaneo = $g->mextemporaneo;
                             $rextemporaneo = $g->rextemporaneo;
                         break;
