@@ -357,6 +357,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/instructor/cursoExtra', 'webController\InstructorController@curso_extra_upd')->name('mod-curso-extra');
     Route::get('/instructor/estado/', 'webController\InstructorController@iestado')->name('instructor.estado');
     Route::post('/instructor/estado/', 'webController\InstructorController@iestado')->name('instructor.estado');
+    Route::get('/instructor/deshacer-movimiento/{id}', 'webController\InstructorController@deshacer_movimiento')->name('instructor.deshacer-movimimiento');
 
 
     // Solicitud de Suficiencia Presupuestal
