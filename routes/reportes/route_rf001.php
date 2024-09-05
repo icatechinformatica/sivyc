@@ -20,6 +20,9 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/reportes/fr001/firma/{id}/{solicitud}', [Rf001ReporteController::class, 'edit'])->name('reporte.generar.firma');
 
+    Route::get('/repore/rf001/firmante', [Rf001ReporteController::class, 'efirma'])->name('firma.electronica');
+
+
 
 
 });

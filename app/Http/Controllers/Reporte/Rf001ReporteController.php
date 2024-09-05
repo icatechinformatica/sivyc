@@ -106,4 +106,9 @@ class Rf001ReporteController extends Controller
             'resp' => $data
          ], Response::HTTP_CREATED);
     }
+
+    public function efirma()
+    {
+        return view('reportes.rf001.child.firma')->render();
+    }
 }
