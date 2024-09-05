@@ -1099,7 +1099,7 @@ class grupoController extends Controller
                         DB::raw('ar.apellido_paterno'),
                         DB::raw('ar.apellido_materno'),
                         DB::raw('ar.nombre'),
-                        DB::raw('COALESCE(ti.sexo, ap.sexo) as sexo'),
+                        DB::raw('COALESCE(substring(ti.curp,11,1), substring(ar.curp,11,1)) as sexo'),
                         DB::raw("extract(year from (age(ar.inicio,COALESCE(ti.fecha_nacimiento, ap.fecha_nacimiento)))) as edad"),
                         'ap.correo',
                         DB::raw('COALESCE(ti.curp, ar.curp) as curp'),
@@ -1125,7 +1125,6 @@ class grupoController extends Controller
                 $folio_grupo = $_SESSION['folio_grupo'];
                 $reg_unidad = DB::table('tbl_unidades')->where('id', $this->id_unidad)->first();
                 $direccion = $reg_unidad->direccion;
-
                 $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo','folio_grupo','direccion'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('LISTA.pdf');
