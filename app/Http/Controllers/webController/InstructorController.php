@@ -3760,6 +3760,71 @@ class InstructorController extends Controller
         return  $pdf->stream('baja_instructor_validacion.pdf');
     }
 
+    public function deshacer_movimiento($id) {
+        $instructor_ofc = instructor::find($id);
+        $temp = pre_instructor::find($id);
+        $perfiles = InstructorPerfil::WHERE('numero_control',$id)->GET();
+        $especialidades = especialidad_instructor::WHERE('id_instructor', '=', $id)->GET();
+
+        if(!is_null($perfiles) && !is_null($especialidades)) {
+            if($instructor_ofc->estado) {
+                $instructor_ofc->status = 'VALIDADO';
+            } else {
+                $instructor_ofc->status = 'BAJA';
+            }
+
+            foreach ($instructor_ofc->getAttributes() as $key => $data) {
+                $temp->$key = $data;
+            }
+
+            $instructor_ofc->turnado = $temp->turnado = 'UNIDAD';
+            $temp->registro_activo = FALSE;
+            unset($temp->curso_extra);
+
+            //data_especialidad
+            $data_especialidad = $temp->data_especialidad;
+            foreach ($especialidades as $pointer => $item) {
+                foreach ($data_especialidad as $count => $seguridad) {
+                    if($seguridad['id'] == $item->id && !$seguridad['new'] && !in_array($seguridad['status'],['VALIDADO','BAJA'])) { //Seguridad para evitar que nuevos o ya validados hagan cambios que no existen
+                        foreach ($item->getAttributes() as $element => $esp_ofc) {
+                            if(!in_array($element,['created_at','updated_at'])) { // evita que se inserten en data_especialidad
+                                $data_especialidad[$count][$element] = $esp_ofc;
+                            }
+                        }
+                        //termina proceso de llenado de un elemento de data_especialidad
+                        $data_especialidad[$count]['fecha_baja'] = $data_especialidad[$count]['memorandum_baja'] = $data_especialidad[$count]['memorandum_solicitud'] = $data_especialidad[$count]['memorandum_validacion'] = $data_especialidad[$count]['memorandum_modificacion'] = NULL; // campos que deben ir nulos en data_especialidad
+                    }
+                }
+            }
+            $temp->data_especialidad = $data_especialidad;
+
+            //data_perfil
+            $data_perfil = $temp->data_perfil;
+            foreach ($perfiles as $pointer => $item) {
+                foreach ($data_perfil as $count => $seguridad) {
+                    if($seguridad['id'] == $item->id && !$seguridad['new'] && !in_array($seguridad['status'],['VALIDADO','BAJA'])) { //Seguridad para evitar que nuevos o ya validados hagan cambios que no existen
+                        foreach ($item->getAttributes() as $element => $perf_ofc) {
+                            if(!in_array($element,['created_at','updated_at'])) { // evita que se inserten en data_especialidad
+                                $data_perfil[$count][$element] = $perf_ofc;
+                            }
+                        }
+                    }
+                }
+            }
+            $temp->data_perfil = $data_perfil;
+        } else {
+            $instructor_ofc->status = $temp->turnado = 'ELIMINADO';
+            $instructor_ofc->turnado = $temp->turnado = 'UNIDAD';
+            $instructor_ofc->estado = $temp->estado = FALSE;
+        }
+
+        $temp->save();
+        $instructor_ofc->save();
+
+        return redirect()->route('instructor-inicio')
+                ->with('success', 'El Movimiento ha sido Anulado Exitosamente');
+    }
+
     private function guardado_ins($saveInstructor,$request,$id)
     {
         // dd($saveInstructor);

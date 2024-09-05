@@ -1023,9 +1023,9 @@
                     </table>
                 </div>
             </div>
-            @if(($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO') &&  in_array($roluser->role_id, ['30','31']))
+            @if(($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO') &&  in_array($roluser->role_id, ['30','31']) && $datainstructor->estado)
                 <hr style="border-color:dimgray">
-                <label><h2>Solicitar Bajas del Instructor</h2></label>
+                <label><h2>Solicitar Baja del Instructor</h2></label>
                 <div class="form-group col-md-8">
                     <button type="button" class="btn btn-danger"
                         data-toggle="modal"
@@ -1049,7 +1049,7 @@
                     {{-- <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer> --}}
                 </div>
             @endif
-            @if($datainstructor->status != 'VALIDADO')
+            @if($datainstructor->status != 'VALIDADO' || $datainstructor->status != 'BAJA')
                 <hr style="border-color:dimgray">
                 <div>
                     <label><h2>Numero de Revisión</h2></label>
@@ -1059,6 +1059,11 @@
                         <br>
                         <input class="form-control" type="text" name="nrevision" id="nrevision" value='{{$datainstructor->nrevision}}' readonly>
                     </div>
+                    @can('instructor.editar_fase2')
+                        <div class="form-group col-md-4" style="padding-top: 5px;">
+                            <a class="btn mr-sm-4 mt-3" href="{{ route('instructor.deshacer-movimimiento', ['id' => $datainstructor->id]) }}" >DESHACER CAMBIOS</a>
+                        </div>
+                    @endcan
                     <div class="form-group col-md-1">
                         @if(!isset($nrevisionlast->nrevision))
                             <input hidden value={{$nrevisionlast}} id="revlast" name="revlast">
