@@ -85,7 +85,7 @@
                             <td>{{$item->apellido_materno}}</td>
                             <td>{{$item->nombre}}</td>
                             <td>{{$item->curp}}</td>
-                            <td>@if ($item->sexo=='MASCULINO') {{"M"}} @else {{"F"}} @endif</td>
+                            <td>@if ($item->sexo=='H'){{"H"}} @else {{"M"}} @endif</td>
                             <td>{{$item->edad}}</td>
                             <td>{{$item->correo}}</td>
                             <td>{{$item->costo}}</td>

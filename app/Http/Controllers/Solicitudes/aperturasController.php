@@ -179,9 +179,9 @@ class aperturasController extends Controller
                             $cuerpo = 'La autorización de clave de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
                             $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
                             ->where('clave','<>','0')
-                            ->where('turnado','UNIDAD')
+                            //->where('turnado','UNIDAD')
                             ->where('status_curso','EN FIRMA')
-                            ->where('status','NO REPORTADO')
+                            //->where('status','NO REPORTADO')
                             ->update(['status_curso' => 'AUTORIZADO', 'updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
                         break;
                         case "ARC02":
