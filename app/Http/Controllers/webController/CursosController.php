@@ -308,7 +308,7 @@ class CursosController extends Controller
             $curso = new curso();
             $cursos = $curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
                     'cursos.costo','cursos.duracion','cursos.tipo_curso','cursos.documento_memo_validacion','cursos.documento_memo_actualizacion','cursos.documento_solicitud_autorizacion',
-                    'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
+                    'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.fecha_solicitud','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
                     'especialidades.nombre AS especialidad', 'cursos.id_especialidad',
                     'cursos.area', 'cursos.cambios_especialidad', 'cursos.categoria', 'cursos.documento_memo_validacion',
