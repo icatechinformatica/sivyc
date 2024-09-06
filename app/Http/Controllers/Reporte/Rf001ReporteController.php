@@ -111,4 +111,9 @@ class Rf001ReporteController extends Controller
     {
         return view('reportes.rf001.child.firma')->render();
     }
+
+    public function getTokenFirma(Request $request)
+    {
+        return (new ReportService())->generarToken();
+    }
 }

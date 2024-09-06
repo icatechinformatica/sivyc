@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/repore/rf001/firmante', [Rf001ReporteController::class, 'efirma'])->name('firma.electronica');
 
+    Route::post('/reporte/rf001/getToken', [Rf001ReporteController::class, 'getTokenFirma'])->name('firma.gettoken');
 
 
 

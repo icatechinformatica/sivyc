@@ -402,13 +402,6 @@
             text-align: center;
         }
     </style>
-
-
-    {{-- links de prueba y de produccion --}}
-    <link rel="stylesheet" type="text/css"
-        href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css"
-        href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" />
 @endsection
 @section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
 @php
@@ -420,7 +413,6 @@
     $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
 @endphp
 @section('content')
-    <div class="d-none" id="vHTMLSignature"></div>
     <div class="card-header"><a href="{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}">A Revisión </a>/
         Detalles
         de Reporte RF-001</div>
@@ -581,8 +573,8 @@
                     </div>
                     <div class="col-4 col-sm-4">
                         <div class="padre">
-                            <a class="btn-sm btn-success mr-1" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal('dsahlkdsajlkdsajlsdajlsdakjsdlakjsdalk')"><i class="fas fa-signature"></i> Firmar</a>
-                            {{-- @yield('signContent', View::make('reportes.rf001.child.firma')) --}}
+                            {{-- Usar el componente creado --}}
+                            <x-firma-componente></x-firma-componente>
                         </div>
                     </div>
                 </div>
@@ -591,7 +583,7 @@
     </div>
 @endsection
 {{-- incluir modal de inserción --}}
-{{-- @include('reportes.rf001.modal.showComment') --}}
+@include('reportes.rf001.modal.showComment')
 @section('script_content_js')
     <!-- jQuery Validate -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -601,71 +593,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 
 
-        {{-- Todos estos links se ocupan en prueba y en producción --}}
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-        <script
-            src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/js/jasny-bootstrap.min.js">
-        </script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/js/bootstrap.min.js">
-        </script>
-
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sjcl.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sha1_002.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/llave.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/jsbn.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/jsbn2.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rsa.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rsa2.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/base64_002.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/crypto-1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/asn1hex-1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rsasign-1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/x509-1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/pbkdf2.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/tripledes_002.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/aes.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rc2.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/asn1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/base64.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/hex_002.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/yahoo-min.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/hex.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/base64x-1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/x64-core.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/tripledes.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/core.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/md5.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sha1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sha256.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/ripemd160.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sha512.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/enc-base64.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/hmac.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/pbkdf2_002.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/cipher-core.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/asn1-1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rsapem-1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/keyutil-1.js"></script>
-
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/forge-0.7.1/forge-0.7.1.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/mistake.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/validate.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/access.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataSign.js"></script>
-        <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataTransportSign.js">
-        </script>
-         {{-- Para el envio por arreglo --}}
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/ChainTransport.js"></script>
-
-        {{-- link de prueba signature-spv021_doctos-prueba --}}
-        <script
-            src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js">
-        </script>
-
-
     <script type="text/javascript">
-        var arrayCadenasG = [];
-        var curpG = '';
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
@@ -674,7 +602,6 @@
 
         $(document).ready(function() {
             let folio = '';
-            $('#btnsignature').attr('onclick', 'firmar();'); //boton firma modal
 
             $('.openModal').on('click', function() {
                 const folio = $(this).data('folio');
@@ -805,24 +732,5 @@
                 });
             });
         });
-
-        function abriModal(array_cadena) {
-            $('#vHTMLSignature').removeClass('d-none');
-            arrayCadenasG = generarArray(array_cadena);
-            curpG = $('#curpfir').val();
-        }
-
-        // Función para generar el array de cadenas
-        function generarArray(array_cadena) {
-            let chainTransports = [];
-            Object.entries(array_cadena).forEach(([clave, valor], index) => {
-
-                let nuevaInstancia = new ChainTransport();
-                nuevaInstancia.Dataid_cadenaOriginal = clave;
-                nuevaInstancia.DatacadenaOriginal = valor;
-                chainTransports.push(nuevaInstancia);
-            });
-            return chainTransports;
-        }
     </script>
 @endsection

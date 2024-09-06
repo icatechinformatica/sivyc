@@ -38,6 +38,7 @@
         <link rel="stylesheet" href="{{asset('css/paqueterias.css') }}">
     --}}
         @yield('content_script_css')
+        @stack('content_css_sign')
     </head>
 
     <body>
@@ -87,6 +88,7 @@
 
 
         @yield('script_content_js')
+        @stack('script_sign')
     </body>
 
 </html>
