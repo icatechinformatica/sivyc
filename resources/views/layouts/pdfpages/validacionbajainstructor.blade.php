@@ -121,15 +121,21 @@
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+            <p class='direccion'><b>
+                @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
+                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+                <br>
+                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
+                @if(!is_null($funcionarios['dacademico']['correo'])) Correo: {{$funcionarios['dacademico']['correo']}} @endif
+            </b></p>
         </footer>
         <div>
             <div align=right> <b>Dirección Técnica Académica</b> </div>
             <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_baja}}</b></div>
             <div align=right> <b>Tuxtla Gutiérrez, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-            <br><br><b>{{$data_unidad->dunidad}}..</b>
-            <br>{{$data_unidad->pdunidad}} DE {{$data_unidad->ubicacion}}
+            <br><br><b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
+            <br>{{ $funcionarios['dunidad']['puesto'] }}
             <br>Presente.<br>
 
             <br><p class="text-justify">En relación a la solicitud de baja en el Registro del Padrón de Instructores mediante memorándum No. <b>{{$especialidades[0]->memorandum_solicitud}}</b> de fecha <b>{{$DS}} DE {{$MS}} DEL {{$YS}}</b>, me permito informarle que, a petición de la Unidad, procedió la baja del siguiente instructor por las causas que se describen a continuación:</p>
@@ -171,13 +177,13 @@
             </div>
             <p class="text-left">Sin otro particular, aprovecho la ocasión para saludarlo.</p>
             <br><p class="text-left"><p>Atentamente.</p></p>
-            <br><br><br><br><b>{{$data_unidad->dacademico}}</b>
-            <br><b>{{$data_unidad->pdacademico}}.
-            <br><br><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-  Para su conocimiento.</b></small>
-            <br><small><b>C.c.p. {{$data_unidad->academico}}.- {{$data_unidad->pacademico}}.-  Mismo fin.</b></small>
+            <br><br><br><br><b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}</b>
+            <br><b>{{ $funcionarios['dacademico']['puesto'] }}.
+            <br><br><small><b>C.c.p. {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }}.- {{ $funcionarios['gestionacademica']['puesto'] }}.-  Para su conocimiento.</b></small>
+            <br><small><b>C.c.p. {{ $funcionarios['dacademico_unidad']['titulo'] }} {{ $funcionarios['dacademico_unidad']['nombre'] }}.- {{ $funcionarios['dacademico_unidad']['puesto'] }}.-  Mismo fin.</b></small>
             <br><small><b>Archivo<b></small>
-            <br><small><small><b>Validó: {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.</b></small></small>
-            <br><small><small><b>Elaboró: {{$elabora->name}}.- {{$elabora->puesto}}.</b></small></small>
+            <br><small><small><b>Validó: {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }}.- {{ $funcionarios['gestionacademica']['puesto'] }}.</b></small></small>
+            <br><small><small><b>Elaboró: C. {{ $funcionarios['elabora']['nombre'] }}.- {{ $funcionarios['elabora']['puesto'] }}.</b></small></small>
         </div>
     </body>
 </html>

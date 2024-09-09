@@ -121,15 +121,21 @@
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+            <p class='direccion'><b>
+                @php $direccion = explode("*",$funcionarios['dunidad']['direccion']) @endphp
+                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+                <br>
+                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
+                @if(!is_null($funcionarios['dunidad']['correo'])) Correo: {{$funcionarios['dunidad']['correo']}} @endif
+            </b></p>
         </footer>
         <div>&nbsp;
             <div align=right> <b>Unidad de Capacitación {{$data_unidad->ubicacion}}</b> </div>
             <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_solicitud}}</b></div>
             <div align=right> <b>{{$data_unidad->municipio}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-            <br><br><b>{{$data_unidad->dacademico}}.</b>
-            <br>{{$data_unidad->pdacademico}}.
+            <br><br><b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}.</b>
+            <br>{{ $funcionarios['dacademico']['puesto'] }}.
             <br>Presente.<br>
 
             <br><p class="text-justify">Por medio de la presente, me dirijo a usted para solicitar la baja operativa del instructor externo de la unidad {{$data_unidad->ubicacion}} que a continuación se menciona:</p>
@@ -173,11 +179,11 @@
             </div>
             <p class="text-left">Sin otro particular, aprovecho la ocasión para saludarlo.</p>
             <br><p class="text-left"><p>Atentamente.</p></p>
-            <br><br><br><br><b>{{$data_unidad->dunidad}}.</b>
-            <br><b>{{$data_unidad->pdunidad}} DE {{$data_unidad->ubicacion}}.
-            <br><br><h6><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-  Para su conocimiento</b></small></h6>
+            <br><br><br><br><b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
+            <br><b>{{ $funcionarios['dunidad']['puesto'] }}.
+            <br><br><h6><small><b>C.c.p. {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }}.- {{ $funcionarios['gestionacademica']['puesto'] }}.-  Para su conocimiento</b></small></h6>
             <h6><small><b>Archivo<b></small></h6>
-            <small><small><b>Elaboró y Validó: {{$data_unidad->academico}}.- {{$data_unidad->pacademico}} DE {{$data_unidad->ubicacion}}.</b></small></small>
+            <small><small><b>Elaboró y Validó: {{ $funcionarios['dacademico_unidad']['titulo'] }} {{ $funcionarios['dacademico_unidad']['nombre'] }}.- {{ $funcionarios['dacademico_unidad']['puesto'] }}.</b></small></small>
         </div>
     </body>
 </html>

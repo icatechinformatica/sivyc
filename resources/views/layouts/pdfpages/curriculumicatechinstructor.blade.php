@@ -48,7 +48,7 @@
             footer {
             position: fixed;
             /* left: 0px; */
-            bottom: 20px;
+            bottom: 70px;
             /* right: 0px; */
             /* height: 60px; */
             /* text-align: center; */
@@ -63,8 +63,8 @@
 
             img.izquierdabot {
                 float: inline-end;
-                width: 330px;
-                height: 60px;
+                width: 100%;
+                height: 90px;
             }
 
             img.derecha {
@@ -106,20 +106,17 @@
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
-        .direccion {
-            top: 0.20cm;
+        .direccion
+        {
             text-align: left;
             position: absolute;
-            bottom: 60px;
-            left: 6px;
-            font-size: 11px;
-            color:#FFF;
-            font-weight: bold;
+            /* bottom: 0px; */
+            top: 45px;
+            left: 15px;
+            font-size: 8.5px;
+            color: white;
             line-height: 1;
-            width: 320px;
-            margin-top: 5px;
-            margin-left: 3px;
-            }
+        }
         </style>
     </head>
     <body style="margin-top:90px; margin-bottom:70px; border: 1px">
@@ -131,18 +128,14 @@
             </div>
         </header>
         <footer>
-            <div style="position: relative;">
-                <img class="izquierdabot" src="{{ public_path('img/franja2.png') }}">
-                <div align="justify" class="direccion">
-                    14 Poniente Norte No.239 Colonia Moctezuma <br>
-                    Tuxtla Gutiérrez, CP 29030 Telefono: +52 (961) 61-2-16-21 <br>
-                    email: icatech@icatech.chiapas.gob.mx
-                </div>
-            </div>
-            <div style="position: relative; margin-left: 167%;">
-                <img class="" style="width: 200px; height:60px" src="{{ public_path('img/icatech-imagen.png') }}">
-            </div>
-            <div class="page-break-non"></div>
+            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+            <p class='direccion'><b>
+                @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
+                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+                <br>
+                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
+                @if(!is_null($funcionarios['dacademico']['correo'])) Correo: {{$funcionarios['dacademico']['correo']}} @endif
+            </b></p>
         </footer>
         <div>
             @if($data->archivo_fotografia != FALSE)

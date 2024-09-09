@@ -105,16 +105,16 @@
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
         .direccion
-            {
-                text-align: left;
-                position: absolute;
-                /* bottom: 0px; */
-                top: 45px;
-                left: 15px;
-                font-size: 8.5px;
-                color: white;
-                line-height: 1;
-            }
+        {
+            text-align: left;
+            position: absolute;
+            /* bottom: 0px; */
+            top: 45px;
+            left: 15px;
+            font-size: 8.5px;
+            color: white;
+            line-height: 1;
+        }
         </style>
     </head>
     <body style="margin-top:90px; margin-bottom:70px;">
@@ -124,15 +124,21 @@
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+            <p class='direccion'><b>
+                @php $direccion = explode("*",$funcionarios['dunidad']['direccion']) @endphp
+                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+                <br>
+                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
+                @if(!is_null($funcionarios['dunidad']['correo'])) Correo: {{$funcionarios['dunidad']['correo']}} @endif
+            </b></p>
         </footer>
         <div>
             <div align=right> <b>Unidad de Capacitación {{$daesp}}</b> </div>
             <div align=right> <b>Memorandum No. @if($nomemosol != null){{$nomemosol}} @else BORRADOR @endif</b></div>
             <div align=right> <b>{{$data_unidad->municipio}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-            <br><b>{{$data_unidad->dacademico}}.</b>
-            <br>{{$data_unidad->pdacademico}}.
+            <br><b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}.</b>
+            <br>{{ $funcionarios['dacademico']['puesto'] }}.
             <br>Presente.<br>
 
             <br><p class="text-justify">Por este medio solicito la <b> @if($tipo_doc == 'REVALIDACION') actualización @elseif($tipo_doc == 'REACTIVACION') reactivación @else validación @endif  </b> como Instructor Externo, en función a que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica.</p>
@@ -197,18 +203,18 @@
             <small><b>"La documentación proporcionada por el candidato a instructor externo a esta Unidad de Capacitación ha sido previamente cotejada con el ejemplar original".</b></small>
             <br><p class="text-left">Sin más por el momento le envío un cordial saludo.</p>
             <br><p class="text-left"><p>Atentamente.</p></p>
-            <b>{{$data_unidad->dunidad}}.</b>
-            <br><b>{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.
-            <br><h6><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-Mismo Fin</b></small></h6>
+            <b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
+            <br><b>{{ $funcionarios['dunidad']['puesto'] }}.
+            <br><h6><small><b>C.c.p. {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }}.- {{ $funcionarios['gestionacademica']['puesto'] }}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo<b></small></h6>
-            <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</b></small></small>
-            <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
+            <small><small><b>Valido: {{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.- {{ $funcionarios['dunidad']['puesto'] }}.</b></small></small>
+            <br><small><small><b>Elaboró: C. {{ $funcionarios['elabora']['nombre'] }}.- {{ $funcionarios['elabora']['puesto'] }}.</b></small></small>
             @foreach ($data as $altmer)
                 @if($altmer->status != 'BAJA EN FIRMA' && $altmer->status!= 'BAJA EN PREVALIDACION')
                     <div class="page-break"></div>
                     <div align=right> <b>{{$data_unidad->municipio}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
-                    <br><br><b>{{$data_unidad->dacademico}}.</b>
-                    <br>{{$data_unidad->pdacademico}}.
+                    <br><br><b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}.</b>
+                    <br>{{ $funcionarios['dacademico']['puesto'] }}.
                     <br>Presente.<br>
                     <br><p class="text-justify">Por este medio hago constar que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} fue entrevistado (a) y evaluado (a) por el Departamento Académico de esta Unidad de Capacitación a mi cargo, concluyendo que la persona es idónea para otorgar cursos de capacitación dentro de la Especialidad de {{$altmer->especialidad}}, así mismo cabe señalar que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica vigente de la Dirección Técnica Académica del Instituto.</p>
                     <br><p class="text-justify">Mucho agradeceré que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} sea integrado al "Padrón de Instructores de Capacitación para y en el Trabajo".</p>
@@ -226,17 +232,17 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center">{{$data_unidad->academico}}.</td></div>
-                            <td colspan="2"><div align="center">{{$data_unidad->dunidad}}.</td></div>
+                            <td colspan="2"><div align="center">{{ $funcionarios['dacademico_unidad']['titulo'] }} {{ $funcionarios['dacademico_unidad']['nombre'] }}.</td></div>
+                            <td colspan="2"><div align="center">{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center">{{$data_unidad->pacademico}} DE LA UNIDAD DE CAPACITACIÓN DE {{$daesp}}.</td></div>
-                            <td colspan="2"><div align="center">{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</div></td>
+                            <td colspan="2"><div align="center">{{ $funcionarios['dacademico_unidad']['puesto'] }}.</td></div>
+                            <td colspan="2"><div align="center">{{ $funcionarios['dunidad']['puesto'] }}.</div></td>
                         </tr>
                     </table>
                     <h6><small><b>Archivo<b></small></h6>
-                    <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</b></small></small>
-                    <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
+                    <small><small><b>Valido: {{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.- {{ $funcionarios['dunidad']['puesto'] }}.</b></small></small>
+                    <br><small><small><b>Elaboró: C. {{ $funcionarios['elabora']['nombre'] }}.- {{ $funcionarios['elabora']['puesto'] }}.</b></small></small>
                 @endif
             @endforeach
         </div>
