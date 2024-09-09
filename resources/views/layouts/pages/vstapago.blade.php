@@ -668,12 +668,12 @@
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:center">
-                    <p st>Vista de Documentos</p>
+                    <p>Vista de Documentos</p>
                     <ul class="nav nav-tabs">
                         <li class="active"><a data-toggle="tab" href="#home">Documentación</a></li>
                     </ul>
-                    <div class="tab-content">
-                        <div id="home" class="tab-pane fade in active">
+                    {{-- <div class="tab-content"> --}}
+                        {{-- <div id="home" class="tab-pane fade in active"> --}}
                             <table  class="table table-bordered">
                                 <caption>Documentos para Recepción</caption>
                                 <tbody>
@@ -737,8 +737,8 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
+                        {{-- </div>
+                    </div> --}}
                 </div>
                 <div style="text-align:center" class="form-group" id="div_val_certificacion">
                     <input id="id_contrato_agendavc" name="id_contrato_agendavc" hidden>

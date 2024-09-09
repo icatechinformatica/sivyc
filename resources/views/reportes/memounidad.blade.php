@@ -39,7 +39,7 @@
     {
         text-align: left;
         position: absolute;
-        bottom: 820px; /*820*/
+        bottom: 830px; /*830*/
         left: 20px;
         font-size: 7.5px;
         color: white;
