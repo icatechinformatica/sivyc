@@ -72,13 +72,6 @@
     <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
 @endsection
 
-{{-- @section('footer')
-    <span>
-        14 Poniente Norte No. 239 Colonia Moctezuma <br>
-        Tuxtla Gutiérrez, CP 29030 Télefono: +52 (961) 61-2-16-21 <br>
-        email: icatech@icatech.gob.mx
-    </span>
-@endsection --}}
 
 @section('body')
     <div class="contenedor">
