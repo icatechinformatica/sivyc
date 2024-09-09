@@ -3337,15 +3337,15 @@ class InstructorController extends Controller
         $fecha_solicitud = carbon::now()->toDateString();
         $date = strtotime($fecha_solicitud);
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
-        $usernombre = auth()->user()->name;
-        $userpuesto = auth()->user()->puesto;
 
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
-        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','usernombre','userpuesto'));
+        $funcionarios = $this->funcionarios('TUXTLA');
+
+        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('entrevista_instructor.pdf');
     }
@@ -3365,19 +3365,14 @@ class InstructorController extends Controller
             $perfiles = $this->make_collection($data->data_perfil);
         }
         $date = strtotime(carbon::now()->toDateString());
-        // dd($data->archivo_fotografia);
-        // $data->archivo_fotografia = substr($data->archivo_fotografia,33);
-        // dd($data->archivo_fotografia);
-        // dd($data->archivo_fotografia);
-
-        // dd($data);
+        $funcionarios  = $this->funcionarios('TUXTLA');
 
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
-        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y'));
+        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('curriculum_icatech_instructor.pdf');
     }
@@ -3518,9 +3513,8 @@ class InstructorController extends Controller
         // }
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
-        $direccion = $data_unidad->direccion;
-        $direccion = explode("*", $data_unidad->direccion);
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
+        $funcionarios = $this->funcionarios($daesp);
 
         if($honorario_actual != $instructor->tipo_honorario && $especialidad_cambios == FALSE && isset($request->borrador)) {
             $date = strtotime(carbon::now());
@@ -3531,7 +3525,7 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         $nomemosol = $request->nomemo;
         $fecha_letra = $this->obtenerFechaEnLetra($D);
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
     }
@@ -3597,7 +3591,7 @@ class InstructorController extends Controller
 
         $instructor->data_especialidad = $special;
 
-        $elaboro = DB::TABLE('users')->WHERE('id','=', $user)->FIRST();
+        // $elaboro = DB::TABLE('users')->WHERE('id','=', $user)->FIRST();
         $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $especialidades = $this->make_collection($especialidades);
         $ubicacion = DB::TABLE('tbl_unidades')
@@ -3606,8 +3600,7 @@ class InstructorController extends Controller
         $unidad = DB::TABLE('tbl_unidades')
                         ->WHERE('unidad', '=', $ubicacion)
                         ->FIRST();
-        $direccion = '14 PONIENTE NORTE NO. 239*COLONIA MOCTEZUMA.*TUXTLA GUTIÉRREZ, CP 29030 TELEFONO: 9616121621* EMAIL: ICATECH@ICATECH.CHIAPAS.GOB.MX';
-        $direccion = explode("*", $direccion);
+        $funcionarios = $this->funcionarios($ubicacion);
         if($instructor->numero_control == 'Pendiente')
         {
             $uni = substr($unidad->cct, -3, 2) * 1 . substr($unidad->cct, -1);
@@ -3647,7 +3640,7 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','elaboro','instructor','especialidades','unidad','D','M','Y','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','instructor','especialidades','unidad','D','M','Y','funcionarios'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('validacion_instructor.pdf');
     }
@@ -3693,8 +3686,7 @@ class InstructorController extends Controller
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
         ->WHERE('unidad', '!=', 'VILLA CORZO')
         ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
-        $direccion = $data_unidad->direccion;
-        $direccion = explode("*", $data_unidad->direccion);
+        $funcionarios = $this->funcionarios($data_unidad->ubicacion);
         $date = strtotime($especialidades[0]->fecha_solicitud);
         $D = date('d', $date);
         $MO = date('m',$date);
@@ -3702,7 +3694,7 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         // dd($especialidades);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor.pdf');
     }
@@ -3711,7 +3703,6 @@ class InstructorController extends Controller
     {
         // dd($request);
         $nomesp = $arrtemp = $especialidades = array();
-        $elabora = DB::TABLE('users')->WHERE('id', '=', auth::user()->id)->FIRST();
         $instructor = pre_instructor::find($request->idinsbajadocval);
         $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $special = $this->make_collection($instructor->data_especialidad);
@@ -3741,8 +3732,8 @@ class InstructorController extends Controller
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
         ->WHERE('unidad', '!=', 'VILLA CORZO')
         ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
-        $direccion = '14 PONIENTE NORTE NO. 239*COLONIA MOCTEZUMA.*TUXTLA GUTIÉRREZ, CP 29030 TELEFONO: 9616121621* EMAIL: ICATECH@ICATECH.CHIAPAS.GOB.MX';
-        $direccion = explode("*", $direccion);
+        $funcionarios = $this->funcionarios($data_unidad->ubicacion);
+
         $date = strtotime($especialidades[0]->fecha_baja);
         $datesol = strtotime($especialidades[0]->fecha_solicitud);
         $D = date('d', $date);
@@ -3755,7 +3746,7 @@ class InstructorController extends Controller
         $YS = date("Y",$datesol);
         // dd($data_unidad);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('elabora','distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor_validacion.pdf');
     }
@@ -4628,59 +4619,33 @@ class InstructorController extends Controller
         return $respond;
     }
 
-    protected function egg()
-    {
-        // ACTUALIZA HVALIDACION DE NULO A LLENO
-        // $moist = especialidad_instructor::select('especialidad_instructores.id','id_instructor')->get();
-        // foreach ($moist as $cadwell)
-        // {
-        //     $arrtemp = $hvalidacion = array();
-        //     $data = especialidad_instructor::find($cadwell->id);
-        //     $instructor_check = pre_instructor::find($cadwell->id_instructor);
-        //     $arch_alta = instructor::find($cadwell->id_instructor);
-        //     if(!isset($instructor_check))
-        //     {
-        //         // if(!isset($arch_alta->archivo_alta))
-        //         // {
-        //         //     dd($arch_alta);
-        //         // }
-        //         $arrtemp['arch_sol'] = $arch_alta->archivo_alta;
-        //         $arrtemp['arch_val'] = $arch_alta->archivo_alta;
-        //         $arrtemp['memo_sol'] = $data->memorandum_solicitud;
-        //         $arrtemp['memo_val'] = $data->memorandum_validacion;
-        //         $arrtemp['fecha_sol'] = $data->updated_at;
-        //         $arrtemp['fecha_val'] = $data->updated_at;
+    public function funcionarios($unidad) {
+        $query = clone $dacademico = clone $dacademico_unidad = clone $gestionacademica = clone $dunidad = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true');
 
-        //         array_push($hvalidacion, $arrtemp);
-        //         $data->hvalidacion = $hvalidacion;
-        //         $data->save();
-        //     }
+        $dacademico = $dacademico->Where('o.id',16)->First();
+        $gestionacademica = $gestionacademica->Where('o.id',17)->First();
 
-        // }
-        // dd('yeaaah boy');
+        $dacademico_unidad = $dacademico_unidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DEPARTAMENTO ACADEMICO%')
+            ->Where('u.unidad', $unidad)
+            ->First();
 
-        // UPDATE DE CURSOS_IMPARTIR
-        // set_time_limit(0);
-        // $idesin = DB::table('especialidad_instructores')->SELECT('id')->WHERENULL('cursos_impartir')->OrderBy('id', 'ASC')->GET();
+        $dunidad = $dunidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
 
-        // foreach ($idesin as $key => $cadwell)
-        // {
-        //     $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
-        //                   ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
-        //                   ->WHERE('activo', '=', TRUE)
-        //                   ->OrderBy('curso_id', 'ASC')
-        //                   ->GET();
+        $funcionarios = [
+            'dacademico' => ['titulo'=>$dacademico->titulo,'nombre'=>$dacademico->nombre,'puesto'=>$dacademico->cargo,'direccion'=>$dacademico->direccion,'telefono'=>$dacademico->telefono,'correo'=>$dacademico->correo_institucional],
+            'gestionacademica' => ['titulo'=>$gestionacademica->titulo,'nombre'=>$gestionacademica->nombre,'puesto'=>$gestionacademica->cargo,'direccion'=>$gestionacademica->direccion,'telefono'=>$gestionacademica->telefono,'correo'=>$gestionacademica->correo_institucional],
+            'dacademico_unidad' => ['titulo'=>$dacademico_unidad->titulo,'nombre'=>$dacademico_unidad->nombre,'puesto'=>$dacademico_unidad->cargo,'direccion'=>$dacademico_unidad->direccion,'telefono'=>$dacademico_unidad->telefono,'correo'=>$dacademico_unidad->correo_institucional],
+            'dunidad' => ['titulo'=>$dunidad->titulo,'nombre'=>$dunidad->nombre,'puesto'=>$dunidad->cargo,'direccion'=>$dunidad->direccion,'telefono'=>$dunidad->telefono,'correo'=>$dunidad->correo_institucional],
+            'elabora' => ['nombre'=>strtoupper(Auth::user()->name),'puesto'=>strtoupper(Auth::user()->puesto)]
+        ];
 
-        //     $array = [];
-        //     foreach ($cursos as $data)
-        //     {
-        //         array_push($array, $data->curso_id);
-        //     }
-
-        //     especialidad_instructor::WHERE('id', '=', $cadwell->id)
-        //                         ->update(['cursos_impartir' => $array]);
-        // }
-        // dd('Lock&Load');
+        return $funcionarios;
     }
 }
 
