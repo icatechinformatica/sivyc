@@ -1,9 +1,19 @@
 <div>
     <div class="d-none" id="vHTMLSignature"></div>
-    <a class="btn-sm btn-success" href="javascript:;"
-        onclick="abrirModal('dsahlkdsajlkdsajlsdajlsdakjsdlakjsdalk')"><i class="fas fa-signature"></i> Firmar</a>
-        {{-- <button type="button" style="color: #fff; background-color: #632327;" class="btn btn-sm" data-toggle="modal" data-target="#mdlLoadViewSignature" id="btnmodal" title="Firmar Electr&oacute;nicamente" ><i class="inverted pencil icon"></i> Firmar Electr&oacute;nicamente</button> --}}
-        {{-- <button onclick="openModal()">Test</button> --}}
+    <a class="btn-sm btn-success" href="javascript:;" onclick="abrirModal('dsahlkdsajlkdsajlsdajlsdakjsdlakjsdalk')"><i
+            class="fas fa-signature"></i> Firmar</a>
+    {{-- <button type="button" style="color: #fff; background-color: #632327;" class="btn btn-sm" data-toggle="modal" data-target="#mdlLoadViewSignature" id="btnmodal" title="Firmar Electr&oacute;nicamente" ><i class="inverted pencil icon"></i> Firmar Electr&oacute;nicamente</button> --}}
+    {{-- <button onclick="openModal()">Test</button> --}}
+
+    <form id="formUpdate" action="{{ route('firma.update') }}" method="post">
+        @csrf
+        <input class="d-none" id="fechaFirmado" name="fechaFirmado" type="text">
+        <input class="d-none" id="serieFirmante" name="serieFirmante" type="text">
+        <input class="d-none" id="firma" name="firma" type="text">
+        <input class="d-none" id="curp" name="curp" type="text">
+        <input class="d-none" id="idFile" name="idFile" type="text">
+        <input class="d-none" id="certificado" name="certificado" type="text">
+    </form>
 </div>
 
 {{-- scripts del componente --}}
@@ -66,7 +76,9 @@
 
     {{-- link de prueba signature-spv021_doctos-prueba --}}
     {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script> --}}
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic-prueba/js/firmado_prueba.js"></script>
+    <script
+        src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic-prueba/js/firmado_prueba.js">
+    </script>
 
     <script type="text/javascript">
         var arrayCadenasG = [];
@@ -169,5 +181,6 @@
         href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" /> --}}
     <link rel="stylesheet" type="text/css"
         href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic-prueba/css/firma.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic-prueba/css/firma.css">
 @endpush
