@@ -279,6 +279,9 @@ class EContratoController extends Controller
         $D = date('d', $date);
         $M = $this->toMonth(date('m', $date));
         $Y = date("Y", $date);
+        $direccion_instituto = DB::Table('tbl_instituto')->Where('id',1)->Value('direccion');
+        $direccion_instituto = str_replace('*',' ',$direccion_instituto);
+        $direccion_instituto = str_replace('. Tuxtla',', en la ciudad de Tuxtla',$direccion_instituto);
 
         $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
         $monto = explode(".",strval($data_contrato->cantidad_numero));
@@ -382,7 +385,7 @@ class EContratoController extends Controller
                     <br><dd>I.5 De acuerdo a las necesidades de <b>“ICATECH”</b>, se requiere contar con los servicios de una persona física con conocimientos en '. $data->espe .', por lo que se ha determinado llevar a cabo la Contratación bajo el régimen de <b>SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS,</b> en la modalidad de '.($data->tipo_curso == 'CURSO' ? 'horas curso' : 'certificación extraordinaria').' como <b>"PRESTADOR DE SERVICIOS"</b>.</dd>
                     <br><dd>I.6 Para los efectos del presente contrato se cuenta con la clave de grupo No: '. $data->clave. ', así como la validación del instructor emitido por la Dirección Técnica Académica de <b>“ICATECH”</b> conforme a lo dispuesto por el artículo 4 fracción III de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, emitido por la Dirección Técnica Académica de <b>“ICATECH”</b>.</dd>
                     <br><dd>I.7 Para los efectos del presente Contrato se cuenta con la suficiencia presupuestal, conforme al presupuesto de egresos autorizado, emitido por la Dirección de Planeación de <b>“ICATECH”</b>.</dd>
-                    <br><dd>I.8 Para los efectos del presente Contrato señala como su domicilio legal, el ubicado en la 14 poniente norte, número 239, Colonia Moctezuma, C. P. 29030, en la Ciudad de Tuxtla Gutiérrez, Chiapas.</dd>
+                    <br><dd>I.8 Para los efectos del presente Contrato señala como su domicilio legal, el ubicado en la ' . $direccion_instituto . '</dd>
                 </dl>
                 <dl><dt>II. <b>"PRESTADOR DE SERVICIOS"</b> declara que:</dt>
                     <br><dd>II.1 Es una persona física, de nacionalidad mexicana, que acredita mediante '. ($tipo_identificacion == 'INE' ? 'credencial para votar' : $tipo_identificacion).' con número de folio '.$folio_identificacion. ', con plena capacidad jurídica y facultades que le otorga la ley, para contratar y obligarse, así como también con los estudios, conocimientos y la experiencia necesaria en la materia de '. $data->espe. ' y conoce plenamente las necesidades de los servicios objeto del presente contrato, así como que ha considerado todos los factores que intervienen para desarrollar eficazmente las actividades que desempeñará.</dd>
