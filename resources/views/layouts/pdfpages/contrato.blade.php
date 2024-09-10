@@ -71,7 +71,7 @@
                         <br><dd>I.6 Para los efectos del presente contrato se cuenta con el Dictamen de autorización de habilidades como instructor según memorándum que se agrega al presente instrumento como <b>Anexo I</b>, emitido por la Dirección Técnica Académica de <b>“EL ICATECH”</b>.</dd>
                         <br><dd>I.7 Para los efectos del presente contrato se cuenta con la clave de grupo que se agrega al presente instrumento como <b>Anexo II</b>, emitido por la Dirección Técnica Académica de <b>“EL ICATECH”</b>.</dd>
                         <br><dd>I.8 Para los efectos del presente contrato se cuenta con la suficiencia presupuestal, que se agrega al presente instrumento como <b>Anexo III</b>, emitido por la Dirección de Planeación de <b>“EL ICATECH”</b>.</dd>
-                        <br><dd>I.9 Para los efectos del presente Contrato señala como su domicilio legal, el ubicado en la 14 poniente norte, número 239, Colonia Moctezuma, C. P. 29030, en la Ciudad de Tuxtla Gutiérrez, Chiapas.</dd>
+                        <br><dd>I.9 Para los efectos del presente Contrato señala como su domicilio legal, el ubicado en la Av. Barrio San Jacinto N° 154, entre calle Pájaros y calle Conejos, Fracc. El Diamante C.P. 29059, en la Ciudad de Tuxtla Gutiérrez, Chiapas.</dd>
                     </dl>
                     <br><dl><dt>II.Declara <b>"EL PRESTADOR DE SERVICIOS"</b> que:</dt>
                         <br><dd>II.1 Es una persona física, de nacionalidad Mexicana, lo cual acredita mediante credencial de elector número de folio {{$data->folio_ine}}, por lo que cuenta con los conocimientos necesarios para impartir el curso.</dd>
@@ -132,7 +132,7 @@
                     <br><dd>El presente contrato constituye el acuerdo de voluntades entre las partes, en relación con el objeto del mismo y deja sin efecto cualquier otra negociación o comunicación entre éstas, ya sea oral o escrita con anterioridad a la fecha de su firma.</dd>
                     <br><dd><b>DÉCIMA TERCERA</b>.- Manifiestan ambas partes bajo protesta de decir verdad que en el presente contrato no ha mediado dolo, error, mala fe, engaño, violencia, intimidación, ni cualquiera otra causa que pudiera invalidar el contenido y fuerza legal del mismo.</dd>
                     <br><dd><b>DÉCIMA CUARTA.- DOMICILIOS</b>. Para los efectos del presente instrumento las partes señalan como sus domicilios legales los siguientes:</dd>
-                    <br><dd><b>“EL ICATECH”</b>: ubicado en la 14 poniente norte número 239, de la Colonia Moctezuma, con Código Postal 29030, en la Ciudad de Tuxtla Gutiérrez, Chiapas.</dd>
+                    <br><dd><b>“EL ICATECH”</b>: ubicado en la av. Barrio San Jacinto N° 154, entre calle Pájaros y calle Conejos, Fracc. El Diamante C.P. 29059, en la Ciudad de Tuxtla Gutiérrez, Chiapas.</dd>
                     <br><dd><b>“EL PRESTADOR DE SERVICIOS”</b>: {{$data->domicilio}}.</dd>
                     <br><dd>Mientras las partes no notifiquen por escrito el cambio de su domicilio, los emplazamientos y demás diligencias judiciales y extrajudiciales, se practicarán en el domicilio señalado en esta cláusula.</dd>
                     <br><dd><b>DÉCIMA QUINTA.- RESPONSABILIDAD DE “EL PRESTADOR DE SERVICIOS”</b>. <b>“EL PRESTADOR DE SERVICIOS”</b> será el responsable de la ejecución de los trabajos y deberá sujetarse en la realización de éstos, a todos aquellos reglamentos administrativos y manuales que las autoridades competentes hayan emitido, así como a las disposiciones establecidas al efecto por <b>“EL ICATECH”</b>.</dd>
