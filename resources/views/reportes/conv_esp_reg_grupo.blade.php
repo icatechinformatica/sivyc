@@ -253,8 +253,6 @@
             <br>
             <div align="justify" style="font-size:12px;" class="estilo_p">
                 <b>I.4</b>     PARA EFECTOS DEL PRESENTE CONVENIO, SEÑALA COMO SU DOMICILIO LEGAL, EL UBICADO
-                {{-- EN LA 14 CALLE PONIENTE NORTE, NÚMERO 239, DE LA COLONIA MOCTEZUMA, C.P.
-                29030, EN LA CIUDAD DE TUXTLA GUTIÉRREZ, CHIAPAS. --}}
                 @php $direccionc = explode("*", $direccion);  @endphp
                 <span class="color_dina">@foreach($direccionc as $point => $ari){{$ari}}@endforeach</span>.
             </div>

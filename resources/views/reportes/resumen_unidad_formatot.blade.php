@@ -63,12 +63,6 @@
     </header>
     <footer>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-
-        {{-- <p class='direccion' style="bottom:25px;"><b>
-            Av. Circunvalación Pichucalco núm. 212-B. Colonia Moctezuma.<br>
-            C.P. 29030; Tuxtla Gutiérrez, Chiapas.<br><br>
-            Teléfono (961)6121621, Email: dtecnicaacademica@gmail.com
-        </b></p> --}}
         <p class='direccion'><b>
             @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
             @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
