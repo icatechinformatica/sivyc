@@ -305,7 +305,10 @@
                             <a class="dropdown-item" href="{{route('financieros-reporte-cursos')}}">Reporte de Cursos</a>
                         @endcan
                         @can('reportes.pat')
-                            <a class="dropdown-item" href="{{route('reportes.pat')}}">PAT-Concentrado</a>
+                            <a class="dropdown-item" href="{{route('reportes.pat')}}">PAT - Concentrado</a>
+                        @endcan
+                        @can('reportes.dpa')
+                            <a class="dropdown-item" href="{{route('reportes.dpa')}}">DPA - Nómina de Instructores</a>
                         @endcan
 
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
