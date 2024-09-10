@@ -1,17 +1,20 @@
 <div>
     <div class="d-none" id="vHTMLSignature"></div>
-    <a class="btn-sm btn-success" href="javascript:;" onclick="abrirModal('dsahlkdsajlkdsajlsdajlsdakjsdlakjsdalk')"><i
-            class="fas fa-signature"></i> Firmar</a>
-    {{-- <button type="button" style="color: #fff; background-color: #632327;" class="btn btn-sm" data-toggle="modal" data-target="#mdlLoadViewSignature" id="btnmodal" title="Firmar Electr&oacute;nicamente" ><i class="inverted pencil icon"></i> Firmar Electr&oacute;nicamente</button> --}}
-    {{-- <button onclick="openModal()">Test</button> --}}
+    <input class="d-none" id="token" name="token" type="text" value="{{ $tokenData }}">
+    <a class="btn btn-success" href="javascript:;" onclick="abrirModal()"><i class="fas fa-signature"></i> Firmar</a>
+
+    <input class="d-none" value="{{ $indice }}" name="idFile" id="idFile" type="text">
+    <input class="d-none" value="{{ $cadenaOriginal }}" name="cadena" id="cadena" type="text">
+    <input class="d-none" value="{{ $baseXml }}" name="xml" id="xml" type="text">
+    <input class="d-none" value="RAPV840531MCSMRR02" name="curp" id="curp" type="text">
 
     <form id="formUpdate" action="{{ route('firma.update') }}" method="post">
         @csrf
         <input class="d-none" id="fechaFirmado" name="fechaFirmado" type="text">
         <input class="d-none" id="serieFirmante" name="serieFirmante" type="text">
         <input class="d-none" id="firma" name="firma" type="text">
-        <input class="d-none" id="curp" name="curp" type="text">
-        <input class="d-none" id="idFile" name="idFile" type="text">
+        <input class="d-none" id="curpObtenido" name="curpObtenido" type="text">
+        <input class="d-none" id="getIdFile" name="getIdFile" type="text">
         <input class="d-none" id="certificado" name="certificado" type="text">
     </form>
 </div>
@@ -83,20 +86,24 @@
     <script type="text/javascript">
         var arrayCadenasG = [];
         var curpG = '';
+        let cadena = '',
+            idfile = '',
+            curp = '',
+            xmlBase64 = '';
 
         $(document).ready(function() {
             let folio = '';
-            $('#btnsignature').attr('onclick', 'firmar();'); //boton firma modal
+            $('#btnsignature').attr('onclick', 'firmarElectronica();'); //boton firma modal
 
         });
 
-        function abrirModal(array_cadena) {
-            console.log('mostrar');
+        function abrirModal() {
             // $('#vHTMLSignature').removeClass('d-none');
             openModal();
 
-            arrayCadenasG = generarArray(array_cadena);
-            curpG = $('#curpfir').val();
+            cadena = $('#cadena').val();
+            curp = $('#curp').val();
+            idfile = $('#idFile').val();
         }
 
         // Función para generar el array de cadenas
@@ -110,11 +117,6 @@
                 chainTransports.push(nuevaInstancia);
             });
             return chainTransports;
-        }
-        // firmar documentos
-        function firmarDocumento(token) {
-            let vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '30', token);
-            return vresponseSignature;
         }
         // generar token
         function generarToken() {
@@ -161,15 +163,29 @@
         function firmarElectronica() {
             let response = firmarDocumento($('#token').val());
             if (response.codeResponse == '401') {
+                console.log('intento 2');
                 generarToken().then((value) => {
                     response = firmarDocumento(value);
                     continueProcess(response);
                 }).catch((error) => {
                     continueProcess(response);
                 });
+            } else if(response.codeResponse !=='500') {
+                console.log(response.messageResponse)
             } else {
                 continueProcess(response);
             }
+        }
+
+        // firmar documentos
+        function firmarDocumento(token) {
+            console.log(cadena)
+            console.log(token)
+            console.log(curp)
+            console.log($('#txtpassword').val())
+            let vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '30', token);
+            console.log(vresponseSignature);
+            return vresponseSignature;
         }
     </script>
 @endpush

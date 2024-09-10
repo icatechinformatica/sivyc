@@ -11,9 +11,17 @@ class FirmaComponente extends Component
      *
      * @return void
      */
-    public function __construct()
+    public $indice;
+    public $cadenaOriginal;
+    public $baseXml;
+    public $tokenData;
+    public function __construct($indice, $cadenaOriginal, $baseXml, $tokenData)
     {
         //
+        $this->indice = $indice;
+        $this->cadenaOriginal = $cadenaOriginal;
+        $this->baseXml = $baseXml;
+        $this->tokenData = $tokenData;
     }
 
     /**

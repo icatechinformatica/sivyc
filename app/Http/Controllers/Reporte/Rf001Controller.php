@@ -20,6 +20,8 @@ use PDF;
 use App\Services\ReportService;
 use App\Http\Requests\rf001ComentariosRequest;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use App\Models\Tokens_icti;
 
 class Rf001Controller extends Controller
 {
@@ -161,9 +163,31 @@ class Rf001Controller extends Controller
     public function show($id, $solicitud)
     {
         $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
-        dd($getConcentrado);
+        $memorandum = $getConcentrado->memorandum;
+        $cadenaOriginal = DB::table('documentos_firmar')->select('cadena_original', 'id', 'documento')->where('numero_o_clave', $memorandum)->first();
+        // crear un arreglo
+        $data = [
+            'cadenaOriginal' => $cadenaOriginal->cadena_original,
+            'indice' => $cadenaOriginal->id,
+            'baseXml' => base64_decode($cadenaOriginal->documento)
+        ];
+
+        $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
+            ->Join('tbl_funcionarios','tbl_funcionarios.correo','users.email')
+            ->Where('users.id', Auth::user()->id)
+            ->First();
+
+        $getToken = Tokens_icti::latest()->first();
+
+        if (!isset($token)) {
+            // no hay registros
+            $token = (new ReportService())->generarToken();
+        } else {
+            $token = $getToken->token;
+        }
+
         $pathFile = $this->path_files;
-        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'solicitud'))->render();
+        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'solicitud', 'data', 'token'))->render();
     }
 
     /**
