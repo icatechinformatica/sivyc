@@ -61,6 +61,30 @@ class dpaController extends Controller
     private function data(Request $request){       
         if($request->fecha1 and $request->fecha2 ){   
             $NoQna = $this->obtenerNumeroQuincena($request->fecha1); 
+            $data = DB::table('tbl_cursos as tc')
+                ->selectRaw("'2' as nqna, 'ICAT' as subsistema, 'CHIAPAS' as entidad")
+                ->selectRaw("MAX(CASE 
+                                WHEN ze = 'I' THEN 1
+                                WHEN ze = 'II' THEN 2
+                                WHEN ze = 'III' THEN 3
+                                WHEN ze = 'VI' THEN 4
+                                ELSE 0 
+                            END) as ze")
+                ->selectRaw('MAX(nombre) as nombre')
+                ->addSelect('curp')
+                ->selectRaw('MAX(rfc) as rfc')
+                ->selectRaw("'DOCENTE' as tipo_plaza")
+                ->selectRaw("'PROFESOR INSTRUCTOR DE CAPACITACIÓN' as plaza")
+                ->selectRaw("'E11001' as codigo_plaza")
+                ->selectRaw('SUM(dura) as horas')
+                ->addSelect('cct')
+                ->where('status_curso', 'AUTORIZADO')
+                ->whereBetween('inicio', [$request->fecha1, $request->fecha2])
+                ->groupBy('curp', 'cct')
+                ->orderByRaw('MAX(nombre)')
+                ->get();
+/*
+
             $data = DB::table("tbl_cursos as tc")->select(
                 'inicio', 
                 DB::raw("'$NoQna' as nqna"), 
@@ -79,6 +103,8 @@ class dpaController extends Controller
             ->where('status_curso','AUTORIZADO')
             ->whereBetween('inicio', [$request->fecha1, $request->fecha2])                
             ->get();         //dd($data);
+
+            */
             return $data;                            
         }else $message["ERROR"] = "SE REQUIERE QUE SELECCIONE LA FECHA INICIAL Y FECHA FINAL PARA GENERAR EL REPORTE.";             
         //dd($message);
