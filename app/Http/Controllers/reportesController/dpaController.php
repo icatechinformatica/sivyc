@@ -83,28 +83,7 @@ class dpaController extends Controller
                 ->groupBy('curp', 'cct')
                 ->orderByRaw('MAX(nombre)')
                 ->get();
-/*
 
-            $data = DB::table("tbl_cursos as tc")->select(
-                'inicio', 
-                DB::raw("'$NoQna' as nqna"), 
-                DB::raw("'ICAT' as subsistema"), 
-                DB::raw("'CHIAPAS' as entidad"), 
-                'ze', 
-                'nombre', 
-                'curp', 
-                'rfc', 
-                DB::raw("'DOCENTE' as tipo_plaza"), 
-                DB::raw("'PROFESOR INSTRUCTOR DE CAPACITACIÓN' as plaza"), 
-                DB::raw("'E11001' as codigo_plaza"), 
-                'dura as horas', 
-                'cct'
-            )
-            ->where('status_curso','AUTORIZADO')
-            ->whereBetween('inicio', [$request->fecha1, $request->fecha2])                
-            ->get();         //dd($data);
-
-            */
             return $data;                            
         }else $message["ERROR"] = "SE REQUIERE QUE SELECCIONE LA FECHA INICIAL Y FECHA FINAL PARA GENERAR EL REPORTE.";             
         //dd($message);
