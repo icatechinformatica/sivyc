@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('/reporte/rf001/getToken', [Rf001ReporteController::class, 'getTokenFirma'])->name('firma.gettoken');
 
+    Route::post('/reporte/rf001/firma/update', [Rf001ReporteController::class, 'store'])->name('firma.store.update');
 
 
 });

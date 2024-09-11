@@ -7,8 +7,9 @@
     <input class="d-none" value="{{ $cadenaOriginal }}" name="cadena" id="cadena" type="text">
     <input class="d-none" value="{{ $baseXml }}" name="xml" id="xml" type="text">
     <input class="d-none" value="RAPV840531MCSMRR02" name="curp" id="curp" type="text">
+    <input class="d-none" value="{{ $id }}" name="idRf001" id="idRf001" type="text">
 
-    <form id="formUpdate" action="{{ route('firma.update') }}" method="post">
+    <form id="formSign" action="{{ route('firma.store.update') }}" method="post">
         @csrf
         <input class="d-none" id="fechaFirmado" name="fechaFirmado" type="text">
         <input class="d-none" id="serieFirmante" name="serieFirmante" type="text">
@@ -16,6 +17,7 @@
         <input class="d-none" id="curpObtenido" name="curpObtenido" type="text">
         <input class="d-none" id="getIdFile" name="getIdFile" type="text">
         <input class="d-none" id="certificado" name="certificado" type="text">
+        <input class="d-none" id="idRf" name="idRf" type="text">
     </form>
 </div>
 
@@ -89,7 +91,9 @@
         let cadena = '',
             idfile = '',
             curp = '',
-            xmlBase64 = '';
+            xmlBase64 = '',
+            idRf001 = '';
+        let res = '';
 
         $(document).ready(function() {
             let folio = '';
@@ -104,6 +108,7 @@
             cadena = $('#cadena').val();
             curp = $('#curp').val();
             idfile = $('#idFile').val();
+            idRf001 = $('#idRf001').val();
         }
 
         // Función para generar el array de cadenas
@@ -150,10 +155,11 @@
                 $('#fechaFirmado').val(response.date);
                 $('#serieFirmante').val(response.certifiedSeries)
                 $('#firma').val(response.sign);
-                $('#curp').val(curp);
+                $('#curpObtenido').val(curp);
                 $('#certificado').val(response.certificated)
-                $('#idFile').val(idFile);
-                $('#formUpdate').submit();
+                $('#getIdFile').val(idfile);
+                $('#idRf').val(idRf001);
+                $('#formSign').submit();
             } else {
                 confirm(response.messageResponse + ' ' + response.descriptionResponse)
                 location.reload;
@@ -161,31 +167,42 @@
         }
         // funcion firmar
         function firmarElectronica() {
-            let response = firmarDocumento($('#token').val());
-            if (response.codeResponse == '401') {
-                console.log('intento 2');
-                generarToken().then((value) => {
-                    response = firmarDocumento(value);
-                    continueProcess(response);
-                }).catch((error) => {
-                    continueProcess(response);
-                });
-            } else if(response.codeResponse !=='500') {
-                console.log(response.messageResponse)
-            } else {
-                continueProcess(response);
-            }
+            firmarDocumento($('#token').val()).then(signature => {
+                if (signature.codeResponse == '114') {
+                    generarToken().then((value) => {
+                        firmarDocumento(value).then(response => {
+                            continueProcess(response);
+                        }).catch(err => {
+                            continueProcess(response);
+                        });
+
+                    }).catch((error) => {
+                        continueProcess(response);
+                    });
+                } else if (signature.codeResponse !== '00') {
+                    console.log(signature)
+                } else {
+                    continueProcess(signature);
+                }
+            }).catch(error => {
+                console.error("Error:", error);
+            });
         }
 
         // firmar documentos
-        function firmarDocumento(token) {
-            console.log(cadena)
-            console.log(token)
-            console.log(curp)
-            console.log($('#txtpassword').val())
-            let vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '30', token);
-            console.log(vresponseSignature);
-            return vresponseSignature;
+        async function firmarDocumento(token) {
+            try {
+                const cadena = document.getElementById('cadena').value;
+                const curp = document.getElementById('curp').value;
+                const password = document.getElementById('txtpassword').value;
+                const token = document.getElementById('token').value;
+                const version = "39";
+                return await sign(cadena, curp, password, version, token);
+            } catch (error) {
+                console.error("Error en sign:", error);
+                // Puedes retornar un valor predeterminado o propagar el error si es necesario
+                throw error; // o return null; dependiendo de tus necesidades
+            }
         }
     </script>
 @endpush

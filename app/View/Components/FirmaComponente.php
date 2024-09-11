@@ -15,13 +15,15 @@ class FirmaComponente extends Component
     public $cadenaOriginal;
     public $baseXml;
     public $tokenData;
-    public function __construct($indice, $cadenaOriginal, $baseXml, $tokenData)
+    public $id;
+    public function __construct($indice, $cadenaOriginal, $baseXml, $tokenData, $id)
     {
         //
         $this->indice = $indice;
         $this->cadenaOriginal = $cadenaOriginal;
         $this->baseXml = $baseXml;
         $this->tokenData = $tokenData;
+        $this->id = $id;
     }
 
     /**

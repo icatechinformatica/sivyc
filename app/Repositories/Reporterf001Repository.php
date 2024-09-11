@@ -216,4 +216,11 @@ class Reporterf001Repository implements Reporterf001Interface
         ];
         return (new Rf001Model())->where('memorandum', $request['memo'])->update($updateComment);
     }
+
+    public function updateRf001($id)
+    {
+        return (new Rf001Model())->where('id', $id)->update([
+            'estado' => 'FIRMADO',
+        ]);
+    }
 }

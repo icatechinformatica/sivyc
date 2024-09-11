@@ -9,4 +9,5 @@ interface Reporterf001Interface {
     public function storeData(array $request);
     public function updateFormatoRf001($request, $id);
     public function storeComment($request);
+    public function updateRf001($id);
 }
