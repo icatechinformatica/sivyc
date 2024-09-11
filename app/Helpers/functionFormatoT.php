@@ -1137,8 +1137,19 @@ function dataFormatoT($unidad, $turnado=null, $fecha=null, $mesSearch=null, $sta
         )
         ->distinct();
 
+        if($add==true) {
+            $var_cursos = $var_cursos->addSelect('c.tcapacitacion','c.status','c.inicio','c.termino',
+                'c.memos->TURNADO_DTA->MEMORANDUM as memo_turnado_dta','c.memos->TURNADO_DTA->NUMERO as nmemo_turnado_dta',
+                'c.memos->TURNADO_PLANEACION->PLANEACION->MEMORANDUM as memo_turnado_planeacion','c.memos->TURNADO_PLANEACION->PLANEACION->NUMERO as nmemo_turnado_planeacion',
+                'c.memos->CERRADO_PLANEACION->MEMORANDUM as memo_cerrado_planeacion','c.memos->CERRADO_PLANEACION->NUMERO as nmemo_cerrado_planeacion',
+                'c.resumen_formatot_unidad as memo_turnado_unidad');
+        }
+
         if(!is_null($mesSearch)) {
             $var_cursos = $var_cursos->whereMonth('c.fecha_turnado', $mesSearch); // new
+        }
+        if($fecha_turnado) {
+            $var_cursos = $var_cursos->where('c.fecha_turnado', $fecha_turnado);
         }
         if(!is_null($turnado)){
             $var_cursos = $var_cursos->WHEREIN('c.turnado', $turnado);
@@ -1156,6 +1167,5 @@ function dataFormatoT($unidad, $turnado=null, $fecha=null, $mesSearch=null, $sta
                 unset($value->movimientos);
             }
         }
-
     return $var_cursos2;
 }
