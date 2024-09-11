@@ -1148,7 +1148,10 @@ function dataFormatoT($unidad, $turnado=null, $fecha=null, $mesSearch=null, $sta
         if(!is_null($mesSearch)) {
             $var_cursos = $var_cursos->whereMonth('c.fecha_turnado', $mesSearch); // new
         }
-        if($fecha_turnado) {
+        if($mes) {
+            $var_cursos = $var_cursos->whereRaw("c.fecha_turnado::TEXT LIKE ?", [$mes.'%']);
+        }
+        elseif($fecha_turnado) {
             $var_cursos = $var_cursos->where('c.fecha_turnado', $fecha_turnado);
         }
         if(!is_null($turnado)){
