@@ -62,7 +62,7 @@ class dpaController extends Controller
         if($request->fecha1 and $request->fecha2 ){   
             $NoQna = $this->obtenerNumeroQuincena($request->fecha1); 
             $data = DB::table('tbl_cursos as tc')
-                ->selectRaw("'2' as nqna, 'ICAT' as subsistema, 'CHIAPAS' as entidad")
+                ->selectRaw("'$NoQna' as nqna, 'ICAT' as subsistema, 'CHIAPAS' as entidad")
                 ->selectRaw("MAX(CASE 
                                 WHEN ze = 'I' THEN 1
                                 WHEN ze = 'II' THEN 2
