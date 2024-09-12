@@ -572,10 +572,13 @@
                     <div class="col-4 col-sm-4">
                     </div>
                     <div class="col-4 col-sm-4">
-                        <div class="padre">
-                            {{-- Usar el componente creado --}}
-                            <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']" :token-data="$token" :id="$id"></x-firma-componente>
-                        </div>
+                        @if (!empty($data['cadenaOriginal']))
+                            <div class="padre">
+                                {{-- Usar el componente creado --}}
+                                <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']" :token-data="$token"
+                                    :id="$id"></x-firma-componente>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -165,9 +165,6 @@
             animation-delay: 1.5s;
         }
     </style>
-    {{-- links de prueba y de produccion --}}
-    {{-- <link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" /> --}}
 @endsection
 @section('title', 'Rf001 | SIVyC Icatech')
 @php
@@ -318,7 +315,7 @@
 
                     <div class="form-row" style="display: flex; margin-left: 29em;">
                         {{-- formulario --}}
-                        <form class="form-inline">
+                        <div class="form-inline">
                             <div class="col-4 mt-4">
                                 <div class="form-group mb-2">
                                     <label for="consecutivo" class="sr-only">Memorándum</label>
@@ -332,14 +329,14 @@
                                 {{ Form::hidden('periodoInicio', $periodoInicio, ['id' => 'periodoInicio', 'class' => 'form-control']) }}
                                 {{ Form::hidden('periodoFIn', $periodoFin, ['class' => 'form-control mr-sm-2', 'id' => 'periodoFIn']) }}
                             </div>
-                        </form>
+                        </div>
                         {{-- formulario END --}}
-                        {!! Form::close() !!}
                         <div class="col-auto mt-4">
                             <button type="submit" class="btn mb-2">
                                 {{ $getConcentrado ? 'Modificar' : 'Generar' }}
                             </button>
                         </div>
+                        {!! Form::close() !!}
                         <div class="col-4 mt-4">
                             @if ($getConcentrado)
                                 <a id="enviar" class="btn btn-danger">
@@ -376,60 +373,6 @@
 @endsection
 @section('script_content_js')
 
-    {{-- Todos estos links se ocupan en prueba y en producción --}}
-    {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/js/jasny-bootstrap.min.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/bootstrap-4.3.1/js/bootstrap.min.js"></script>
-
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sjcl.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sha1_002.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/llave.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/jsbn.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/jsbn2.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rsa.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rsa2.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/base64_002.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/crypto-1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/asn1hex-1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rsasign-1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/x509-1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/pbkdf2.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/tripledes_002.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/aes.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rc2.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/asn1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/base64.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/hex_002.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/yahoo-min.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/hex.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/base64x-1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/x64-core.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/tripledes.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/core.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/md5.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sha1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sha256.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/ripemd160.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/sha512.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/enc-base64.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/hmac.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/pbkdf2_002.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/cipher-core.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/asn1-1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/rsapem-1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-sat/keyutil-1.js"></script>
-
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/forge-0.7.1/forge-0.7.1.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/mistake.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/validate.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/access.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataSign.js"></script>
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/utilities-scg/dataTransportSign.js"></script> --}}
-
-    {{-- link de prueba signature-spv021_doctos-prueba --}}
-    {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script> --}}
-
-
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -437,7 +380,6 @@
             }
         });
         $(document).ready(function() {
-            $('#btnsignature').attr('onclick', 'firmar();');
 
             async function enviarCurso(parametro1, parametro2) {
                 try {
@@ -517,7 +459,8 @@
                             document.getElementById('loader-overlay').style.display =
                                 'none';
                             if (response.resp) {
-                                window.location.href = "{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}";
+                                window.location.href =
+                                    "{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}";
                             }
                         }, 2500); // 2 segundos de tiempo simulado
 
@@ -577,42 +520,6 @@
                     }
                 });
             })
-        }
-
-        function firmarDocumento(token) {
-            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '30', token);
-            // el sistema 87 es el de produccion 30 es de pruebas
-            console.log(curp)
-            return vresponseSignature;
-        }
-
-        function continueProcess(response) {
-            if (response.statusResponse) {
-                $('#fechaFirmado').val(response.date);
-                $('#serieFirmante').val(response.certifiedSeries)
-                $('#firma').val(response.sign);
-                $('#curp').val(curp);
-                $('#certificado').val(response.certificated)
-                $('#idFile').val(idFile);
-                $('#formUpdate').submit();
-            } else {
-                confirm(response.messageResponse + ' ' + response.descriptionResponse)
-                location.reload;
-            }
-        }
-
-        function firmar() {
-            let response = firmarDocumento($('#token').val());
-            if (response.codeResponse == '401') {
-                generarToken().then((value) => {
-                    response = firmarDocumento(value);
-                    continueProcess(response);
-                }).catch((error) => {
-                    continueProcess(response);
-                });
-            } else {
-                continueProcess(response);
-            }
         }
     </script>
 @endsection

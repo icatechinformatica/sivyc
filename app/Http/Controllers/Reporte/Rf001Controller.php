@@ -141,8 +141,11 @@ class Rf001Controller extends Controller
             //siempre trata de ejecutarse el código
             $response = $this->rfoo1Repository->generateRF001Format($request);
             if ($response) {
+                $bandera = Crypt::encrypt('solicitud');
+                $encrypted = base64_encode($bandera);
+                $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
                 # si se ejecutó correctamente lo envíamos a una ruta distinta
-                return redirect()->route('reporte.rf001.sent')->with('message', 'Formato de concentrado de ingresos enviado!');
+                return redirect()->route('reporte.rf001.sent', ['generado' => $encrypted])->with('message', 'Formato de concentrado de ingresos enviado!');
             } else {
                 // mandar a una ruta que controle el error
                 return back()->withErrors(['sent' => 'Ocurrió un error al enviar la información'])->withInput();
@@ -166,11 +169,20 @@ class Rf001Controller extends Controller
         $memorandum = $getConcentrado->memorandum;
         $cadenaOriginal = DB::table('documentos_firmar')->select('cadena_original', 'id', 'documento')->where('numero_o_clave', $memorandum)->first();
         // crear un arreglo
-        $data = [
-            'cadenaOriginal' => $cadenaOriginal->cadena_original,
-            'indice' => $cadenaOriginal->id,
-            'baseXml' => base64_decode($cadenaOriginal->documento)
-        ];
+
+        if ($cadenaOriginal) {
+            $data = [
+                'cadenaOriginal' => $cadenaOriginal->cadena_original,
+                'indice' => $cadenaOriginal->id,
+                'baseXml' => base64_decode($cadenaOriginal->documento)
+            ];
+        } else {
+            $data = [
+                'cadenaOriginal' => null,
+                'indice' => null,
+                'baseXml' => null,
+            ];
+        }
 
         $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
             ->Join('tbl_funcionarios','tbl_funcionarios.correo','users.email')

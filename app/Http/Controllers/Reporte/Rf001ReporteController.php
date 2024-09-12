@@ -60,7 +60,7 @@ class Rf001ReporteController extends Controller
         }
 
         foreach ($obj_documento['firmantes']['firmante'][0] as $key => $value) {
-            if ($value['_attributes']['curp_firmante'] == $request->curp) {
+            if ($value['_attributes']['curp_firmante'] == $request->curpObtenido) {
                 $value['_attributes']['fecha_firmado_firmante'] = $request->fechaFirmado;
                 $value['_attributes']['no_serie_firmante'] = $request->serieFirmante;
                 $value['_attributes']['firma_firmante'] = $request->firma;
@@ -72,29 +72,31 @@ class Rf001ReporteController extends Controller
         $array = XmlToArray::convert($documento->documento);
         $array['DocumentoChis']['firmantes'] = $obj_documento['firmantes'];
 
-        if (isset($obj_documento['anexos'])) {
-            $ArrayXml = [
-                "emisor" => $obj_documento['emisor'],
-                "archivo" => $obj_documento['archivo'],
-                "anexos" =>  $obj_documento['anexos'],
-                "firmantes" => $obj_documento['firmantes'],
-            ];
-            $obj_documento = $ArrayXml;
-        }
+        // if (isset($obj_documento['anexos'])) {
+        //     $ArrayXml = [
+        //         "emisor" => $obj_documento['emisor'],
+        //         "archivo" => $obj_documento['archivo'],
+        //         "anexos" =>  $obj_documento['anexos'],
+        //         "firmantes" => $obj_documento['firmantes'],
+        //     ];
+        //     $obj_documento = $ArrayXml;
+        // }
 
-        $result = ArrayToXml::convert($obj_documento, [
-            '_attributes' => [
-                'version' => $array['DocumentoChis']['_attributes']['version'],
-                'fecha_creacion' => $array['DocumentoChis']['_attributes']['fecha_creacion'],
-                'no_oficio' => $array['DocumentoChis']['_attributes']['no_oficio'],
-                'dependencia_origen' => $array['DocumentoChis']['_attributes']['dependencia_origen'],
-                'asunto_docto' => $array['DocumentoChis']['_attributes']['asunto_docto'],
-                'tipo_docto' => $array['DocumentoChis']['_attributes']['tipo_docto'],
-                'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
-            ],
-        ]);
+        // $result = ArrayToXml::convert($obj_documento, [
+        //     '_attributes' => [
+        //         'version' => $array['DocumentoChis']['_attributes']['version'],
+        //         'fecha_creacion' => $array['DocumentoChis']['_attributes']['fecha_creacion'],
+        //         'no_oficio' => $array['DocumentoChis']['_attributes']['no_oficio'],
+        //         'dependencia_origen' => $array['DocumentoChis']['_attributes']['dependencia_origen'],
+        //         'asunto_docto' => $array['DocumentoChis']['_attributes']['asunto_docto'],
+        //         'tipo_docto' => $array['DocumentoChis']['_attributes']['tipo_docto'],
+        //         'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
+        //     ],
+        // ]);
 
-        DB::table('documentos_firmar')->where('id', $request->idFile)
+        dd($array); exit;
+
+        DB::table('documentos_firmar')->where('id', $request->getIdFile)
             ->update([
                 'obj_documento' => json_encode($obj_documento),
                 'documento' => $result,
