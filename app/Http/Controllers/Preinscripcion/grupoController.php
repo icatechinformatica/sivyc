@@ -938,7 +938,9 @@ class grupoController extends Controller
                             $instructor_valido = $this->valida_instructor($g->id_instructor);
                             if($instructor_valido['valido']){
                                 if($g->status_curso=="EDICION"){
-                                    $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['status_curso' => 'AUTORIZADO']);
+                                    if($g->clave !='0') $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','!=','0')->update(['status_curso' => 'AUTORIZADO']);
+                                    else $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','0')->update(['status_curso' => null]);
+
                                     if(!$result)return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
 
                                 }else{
