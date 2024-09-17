@@ -26,5 +26,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('/reporte/rf001/firma/update', [Rf001ReporteController::class, 'store'])->name('firma.store.update');
 
+ Route::get('/reporte/rf001/formarf001/{id}', [Rf001ReporteController::class, 'getForma'])->name('reporte.forma.rf001');
+
 
 });

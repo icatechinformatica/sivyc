@@ -337,7 +337,10 @@
                             </button>
                         </div>
                         {!! Form::close() !!}
-                        <div class="col-4 mt-4">
+                        {{-- <div class="col-auto mt-4">
+                            <a href="http://" class="btn btn-info">GENERAR DOCUMENTOS</a>
+                        </div> --}}
+                        <div class="col-auto mt-4">
                             @if ($getConcentrado)
                                 <a id="enviar" class="btn btn-danger">
                                     ENVIAR EFIRMA

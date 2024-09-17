@@ -180,4 +180,9 @@ class Rf001ReporteController extends Controller
     {
         return (new ReportService())->generarToken();
     }
+
+    public function getForma()
+    {
+        return (new ReportService())->renderHtmlForma(21);
+    }
 }
