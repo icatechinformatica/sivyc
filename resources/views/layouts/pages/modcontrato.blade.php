@@ -262,17 +262,17 @@
                             <button   button type="submit" class="btn btn-red" >Generar Contrato E.Firma</button>
                     </div>
                 @endif
-                {{-- @if($generarEfirmaPago && isset($datap->id))
-                <div class="form-group col-md-2">
-                    <form action="{{ route('solicitud-pago-efirma') }}" method="post" id="registersolicitudpago">
-                        @csrf
-                        <input type="text" name="idp" id="idp" value='{{$datap->id}}' hidden>
-                        <input type="text" name="idcon" id="idcon" value='{{$datacon->id_contrato}}' hidden>
-                        <input type="text" name="clavecursop" id="clavecursop" value='{{$data->clave}}' hidden>
-                        <button   button type="submit" class="btn btn-red" >Generar Solicitud de Pago E.Firma</button>
-                    </form>
-                </div>
-            @endif --}}
+                @if($generarEfirmaPago && isset($datap->id))
+                    <div class="form-group col-md-2">
+                        <form action="{{ route('solicitud-pago-efirma') }}" method="post" id="registersolicitudpago">
+                            @csrf
+                            <input type="text" name="idp" id="idp" value='{{$datap->id}}' hidden>
+                            <input type="text" name="idcon" id="idcon" value='{{$datacon->id_contrato}}' hidden>
+                            <input type="text" name="clavecursop" id="clavecursop" value='{{$data->clave}}' hidden>
+                            <button   button type="submit" class="btn btn-red" >Generar Solicitud de Pago E.Firma</button>
+                        </form>
+                    </div>
+                @endif
             </div>
         </form>
         <br>
