@@ -16,7 +16,7 @@ class SeguimientoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-
+        $tempIni = $tempFin = $query_entrega_contable_fotmatot = NULL;
         $year = $request->busquedaYear;
         $mes = $request->busquedaMes;
         $unidad = $request->busquedaPorUnidad;
@@ -45,31 +45,34 @@ class SeguimientoController extends Controller
          * DEL SERVIDOR POR EL MES EN EL QUE NOS ENCONTRAMOS
          * ES DECIR EL ULTIMO MES QUE SE HA REPORTADO
          */
-        $calendario_formatot = DB::Table('calendario_formatot')->Select('inicio','termino')->Where('mes_entrega',(int)$mes)->Get();
-        $tempIni = explode('-',$calendario_formatot[0]->inicio);
-        $tempIni[0] = $request->busquedaYear;
-        $tempIni = implode('-',$tempIni);
+        if(!is_null($mes)) {
+            $calendario_formatot = DB::Table('calendario_formatot')->Select('inicio','termino')->Where('mes_entrega',(int)$mes)->Get();
+            $tempIni = explode('-',$calendario_formatot[0]->inicio);
+            $tempIni[0] = $request->busquedaYear;
+            $tempIni = implode('-',$tempIni);
 
-        $tempFin = explode('-',$calendario_formatot[1]->termino);
-        $tempFin[0] = $request->busquedaYear;
-        $tempFin = implode('-',$tempFin);
+            $tempFin = explode('-',$calendario_formatot[1]->termino);
+            $tempFin[0] = $request->busquedaYear;
+            $tempFin = implode('-',$tempFin);
 
-        $query_entrega_contable_fotmatot = tbl_curso::select('tblU.ubicacion',
-                 DB::raw("COUNT(tbl_cursos.id) AS total_cursos"),
-                 DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'NO REPORTADO' THEN 1 ELSE 0 END ) AS no_reportado_unidad"),
-                 DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'TURNADO_DTA' THEN 1 ELSE 0 END ) AS turnado_dta"),
-                 DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'TURNADO_PLANEACION' THEN 1 ELSE 0 END ) AS turnado_planeacion"),
-                 DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'REPORTADO' THEN 1 ELSE 0 END ) AS reportado"),
-                 DB::raw("Round(SUM( CASE WHEN tbl_cursos.status = 'TURNADO_DTA' THEN 1 ELSE 0 END ) * 100/COUNT(tbl_cursos.id)::numeric, 2) AS porcentaje")
-                )
-        ->JOIN('tbl_unidades as tblU','tblU.unidad', '=', 'tbl_cursos.unidad')
-        ->WHEREIN('tblU.ubicacion', $condition_)
-        // ->whereMonth('fecha_turnado', $request->busquedaMes)
-        // ->whereYear('fecha_turnado', $request->busquedaYear)
-        ->WhereDate('fecha_turnado', '>=', $tempIni)
-        ->WhereDate('fecha_turnado', '<=', $tempFin)
-        // ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $messeleccionado)
-        ->groupBy('tblU.ubicacion')->get();
+            $query_entrega_contable_fotmatot = tbl_curso::select('tblU.ubicacion',
+                DB::raw("COUNT(tbl_cursos.id) AS total_cursos"),
+                DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'NO REPORTADO' THEN 1 ELSE 0 END ) AS no_reportado_unidad"),
+                DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'TURNADO_DTA' THEN 1 ELSE 0 END ) AS turnado_dta"),
+                DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'TURNADO_PLANEACION' THEN 1 ELSE 0 END ) AS turnado_planeacion"),
+                DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'REPORTADO' THEN 1 ELSE 0 END ) AS reportado"),
+                DB::raw("Round(SUM( CASE WHEN tbl_cursos.status = 'TURNADO_DTA' THEN 1 ELSE 0 END ) * 100/COUNT(tbl_cursos.id)::numeric, 2) AS porcentaje")
+            )
+            ->JOIN('tbl_unidades as tblU','tblU.unidad', '=', 'tbl_cursos.unidad')
+            ->WHEREIN('tblU.ubicacion', $condition_)
+            // ->whereMonth('fecha_turnado', $request->busquedaMes)
+            // ->whereYear('fecha_turnado', $request->busquedaYear)
+            ->WhereDate('fecha_turnado', '>=', $tempIni)
+            ->WhereDate('fecha_turnado', '<=', $tempFin)
+            // ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $messeleccionado)
+            ->groupBy('tblU.ubicacion')->get();
+        }
+
 
         $unidadesIcatech = DB::table('tbl_unidades')->select('ubicacion')->groupby('ubicacion')->get();
 
