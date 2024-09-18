@@ -117,18 +117,21 @@ class ftcontroller extends Controller {
             $var_cursos = null;
         }
 
-        $meses_ = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+        $meses_ = array(1 => "ENERO", "FEBRERO", "MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
         $anioActual = Carbon::now()->year;
-        $mesActual = $meses_[($fecha->format('n')) - 1];
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
-        $dateNow = $fechaEntregaActual->fecha_entrega."-".$anioActual;
-        $mesInformar = $fechaEntregaActual->mes_informar;
+        // $mesActual = $meses_[($fecha->format('n')) - 1];
+        $fecha = date_format($fecha, 'Y-m-d');
+        // $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
+        $fechaEntregaActual = \DB::Table('calendario_formatot')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
+        // $dateNow = $fechaEntregaActual->fecha_entrega."-".$anioActual;
+        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1]; // obtenemos del array meses el mes de reporte a entregar
         $mesComparador = Carbon::now()->month;
 
-        $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
-        $mesEntrega = $meses_[($convertfEAc->format('n')) - 1];
-        $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
+        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
+        $termino = explode('-',$fechaEntregaActual->termino);
+        $mesEntrega = $meses_[$termino[1]]; //obtenemos el mes de la fecha termino
+        $fechaEntregaFormatoT = $termino[2] . ' DE ' . $mesEntrega . ' DE ' . $termino[0];
         $diasParaEntrega = $this->chkDateToDeliver();
 
         return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar', 'diasParaEntrega', 'unidad', 'mesComparador'));
@@ -180,7 +183,7 @@ class ftcontroller extends Controller {
                 # vamos a checar sólo a los checkbox checados como propiedad
                 if (!empty($cursoschk)) {
                     // se agregar un arreglo con los meses del año calendario
-                    $mesesCalendarizado = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+                    $mesesCalendarizado = array(1=>"ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
                     $fecha_ahora = Carbon::now();
                     $fechaActual = Carbon::parse($fecha_ahora);
                     $date = $fecha_ahora->format('Y-m-d'); // fecha
@@ -189,19 +192,19 @@ class ftcontroller extends Controller {
 
                     $anioActual = $fecha_ahora->year; // año actual
 
-                    $currentMonth = $mesesCalendarizado[($fechaActual->format('n')) - 1];
-                    $fechaEntregaAct = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $currentMonth)->first();
-                    $fEAct = $fechaEntregaAct->fecha_entrega."-".$anioActual;
+                    $currentMonth = $mesesCalendarizado[($fechaActual->format('n'))];
+                    $fechaEntregaAct = \DB::table('calendario_formatot')->select('termino')->whereDate('inicio', '<=', $fechaActual)->whereDate('termino', '>=', $fechaActual)->first();
+                    // $fEAct = $fechaEntregaAct->fecha_entrega."-".$anioActual;dd($fechaActual);
                     /**
                      * convertirlo en un formato fecha
                      */
-                    $convertfEAct = date_create_from_format('d-m-Y', $fEAct);
-                    $confEAct = date_format($convertfEAct, 'd-m-Y');
+                    // $convertfEAct = date_create_from_format('d-m-Y', $fEAct);
+                    // $confEAct = date_format($convertfEAct, 'd-m-Y');
                     /**
                      * fecha actual
                      */
                     $fecha_actual = strtotime($fecha_nueva);
-                    $fechaEntregaSpring = strtotime($confEAct);
+                    $fechaEntregaSpring = strtotime($fechaEntregaAct->termino);
                     /**
                      * se compara la fecha actual en la que se envía el paquete con la fecha establecida
                      * en la entrega del calendario del formato t
@@ -215,11 +218,11 @@ class ftcontroller extends Controller {
 
                     if ($fechaEntregaSpring >= $fecha_actual) {
                         // dd($fecha_nueva);
-                        $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('fecha','>=', $fecha_nueva)->orderby('id','asc')->first();
+                        // $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('fecha','>=', $fecha_nueva)->orderby('id','asc')->first();
                         // $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $actualMonth)->first();
-                        $fechActualSpring = $actualSpring->fecha_entrega."-".$anioActual;
-                        $fechActSpring = date_create_from_format('d-m-Y', $fechActualSpring);
-                        $formatFechaActual = date_format($fechActSpring, 'Y-m-d');
+                        // $fechActualSpring = $actualSpring->fecha_entrega."-".$anioActual;
+                        // $fechActSpring = date_create_from_format('d-m-Y', $fechActualSpring);
+                        // $formatFechaActual = date_format($fechActSpring, 'Y-m-d');
                         // dd($formatFechaActual);
                         # la fecha de entrega debe siempre ser mayor o igual sobre la fecha actual que se envía el paquete.
 
@@ -252,7 +255,7 @@ class ftcontroller extends Controller {
                                     'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"),
                                     'status' => 'TURNADO_DTA',
                                     'turnado' => 'DTA',
-                                    'fecha_turnado' => $formatFechaActual,
+                                    'fecha_turnado' => $fechaEntregaAct->termino,
                                     'fecha_envio' => $date
                                 ]);
                         }
@@ -262,9 +265,9 @@ class ftcontroller extends Controller {
                         # si la condición no se cumple se tiene que tomar el envío con fecha del siguiente spring
                         #obtenemos el mes después
                         // dd('a');
-                        $nextMonth = $mesesCalendarizado[($fechaActual->format('n')) + 0];
-                        $fechaNextSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $nextMonth)->first();
-                        $fechNextSpring = $fechaNextSpring->fecha_entrega."-".$anioActual;
+                        $nextMonth = $mesesCalendarizado[($fechaActual->format('n')) + 1];
+                        $fechaNextSpring = \DB::table('calendario_formatot')->select('termino')->whereDate('inicio', '<=', $nextMonth)->whereDate('termino', '>=', $nextMonth)->first();
+                        $fechNextSpring = $fechaNextSpring->termino;
                         $nextSpring = date_create_from_format('d-m-Y', $fechNextSpring);
                         $formatFechaSiguiente = date_format($nextSpring, 'Y-m-d');
 
@@ -541,20 +544,11 @@ class ftcontroller extends Controller {
     }
 
     protected function chkDateToDeliver() {
-        $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
-        $fecha = Carbon::parse(Carbon::now());
-        $anioActual = Carbon::now()->year;
-        $mes = $meses[($fecha->format('n')) - 1];
-        $fechaActual = Carbon::now()->format('d-m-Y');
-        /* hacemos una consulta a la tabla para obtener el mes correspondiente */
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $mes)->first();
-        $fEAc = $fechaEntregaActual->fecha_entrega."-".$anioActual;
-        $comfechaActual = strtotime($fechaActual);
-        $convertfEAc = date_create_from_format('d-m-Y', $fEAc);
-        $confEAc = date_format($convertfEAc, 'd-m-Y');
-        $comconfEAc = strtotime($confEAc); // fecha actual de entrega
-        $dias = (strtotime($confEAc) - strtotime($fechaActual))/86400;
-        $dias = abs($dias); $dias = floor($dias);
+        $fechaActual = Carbon::now();
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino')->whereDate('inicio', '<=', $fechaActual)->whereDate('termino', '>=', $fechaActual)->first();
+
+        $fechaTermino = Carbon::parse($fechaEntregaActual->termino); // Convertir la fecha de término a Carbon
+        $dias = $fechaActual->diffInDays($fechaTermino, false)+1; // Calcula la diferencia en días
 
         return $dias;
     }

@@ -57,7 +57,7 @@ class Consultaftcontroller extends Controller {
         $data=[];
         if($request->fecha){
             if($request->mes){
-                $mes = date("Y-m", strtotime($request->fecha));
+                $mes = date("m", strtotime($request->fecha));
                 $data = dataFormatoT($request->unidad, null, null, null, ['REPORTADO'], null, $mes, true);
             }else{
                 $data = dataFormatoT($request->unidad, null, null, null, ['REPORTADO'], $request->fecha, null, true);
@@ -81,7 +81,7 @@ class Consultaftcontroller extends Controller {
         $data=[];
         if($request->fecha){
             if($request->mes){
-                $mes = date("Y-m", strtotime($request->fecha));
+                $mes = date("m", strtotime($request->fecha));
                 $data = dataFormatoT($request->unidad, null, null, null, ['REPORTADO'], null, $mes, false);
             }else{
                 $data = dataFormatoT($request->unidad, null, null, null, ['REPORTADO'], $request->fecha, null, false);
