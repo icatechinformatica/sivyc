@@ -16,14 +16,14 @@ class SeguimientoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        
+
         $year = $request->busquedaYear;
         $mes = $request->busquedaMes;
         $unidad = $request->busquedaPorUnidad;
 
         if (empty($request->get('busquedaPorUnidad'))) {
             # si está vacio se agrega parte de la condicion
-            $condition_ =  ['JIQUIPILAS', 'SAN CRISTOBAL', 'TAPACHULA', 'TONALA', 'YAJALON', 'REFORMA', 
+            $condition_ =  ['JIQUIPILAS', 'SAN CRISTOBAL', 'TAPACHULA', 'TONALA', 'YAJALON', 'REFORMA',
             'OCOSINGO', 'TUXTLA', 'CATAZAJA', 'COMITAN', 'VILLAFLORES'];
         } else {
             # de no ser así se envía con la variable que tiene el request
@@ -39,12 +39,21 @@ class SeguimientoController extends Controller
         } else {
             $messeleccionado = $request->get('busquedaMes');
         } */
-        
+
         /**
-         * GENERAMOS LA CONSULTA DÓNDE SE CONTABILIZAN TODOS LOS DATOS 
+         * GENERAMOS LA CONSULTA DÓNDE SE CONTABILIZAN TODOS LOS DATOS
          * DEL SERVIDOR POR EL MES EN EL QUE NOS ENCONTRAMOS
          * ES DECIR EL ULTIMO MES QUE SE HA REPORTADO
          */
+        $calendario_formatot = DB::Table('calendario_formatot')->Select('inicio','termino')->Where('mes_entrega',(int)$mes)->Get();
+        $tempIni = explode('-',$calendario_formatot[0]->inicio);
+        $tempIni[0] = $request->busquedaYear;
+        $tempIni = implode('-',$tempIni);
+
+        $tempFin = explode('-',$calendario_formatot[1]->termino);
+        $tempFin[0] = $request->busquedaYear;
+        $tempFin = implode('-',$tempFin);
+
         $query_entrega_contable_fotmatot = tbl_curso::select('tblU.ubicacion',
                  DB::raw("COUNT(tbl_cursos.id) AS total_cursos"),
                  DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'NO REPORTADO' THEN 1 ELSE 0 END ) AS no_reportado_unidad"),
@@ -55,8 +64,10 @@ class SeguimientoController extends Controller
                 )
         ->JOIN('tbl_unidades as tblU','tblU.unidad', '=', 'tbl_cursos.unidad')
         ->WHEREIN('tblU.ubicacion', $condition_)
-        ->whereMonth('fecha_turnado', $request->busquedaMes)
-        ->whereYear('fecha_turnado', $request->busquedaYear)
+        // ->whereMonth('fecha_turnado', $request->busquedaMes)
+        // ->whereYear('fecha_turnado', $request->busquedaYear)
+        ->WhereDate('fecha_turnado', '>=', $tempIni)
+        ->WhereDate('fecha_turnado', '<=', $tempFin)
         // ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $messeleccionado)
         ->groupBy('tblU.ubicacion')->get();
 
