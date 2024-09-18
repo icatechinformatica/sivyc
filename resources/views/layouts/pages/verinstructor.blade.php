@@ -863,7 +863,7 @@
                 </div>
             </div>
             @if (count($validado) > 0)
-                <table class="table table-bordered table-responsive-md" id="table-perfprof2">
+                <table class="table table-bordered table-responsive-md" id="espec-table">
                     <thead>
                         <tr>
                             <th scope="col">Especialidad</th>
@@ -937,15 +937,15 @@
                                                 ><i class="fa fa-eye" aria-hidden="true"></i>
                                             </button>
                                         @endif
-                                        {{-- @if($item->status == 'EN CAPTURA')
+                                        @if($item->new)
                                             <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                                 data-toggle="modal"
                                                 data-placement="top"
                                                 data-target="#delespecvalidModal"
-                                                data-id='["{{$item->espinid}}","{{$loc2}}"]'>
+                                                data-id='["{{$item->espinid}}","{{$loc2}}","{{$datainstructor->id}}"]'>
                                                     <i class="fa fa-eraser" aria-hidden="true"></i>
                                             </button>
-                                        @endif --}}
+                                        @endif
                                         @if(isset($item->hvalidacion))
                                             <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VALIDACIÓN"
                                                 data-toggle="modal"
@@ -1443,8 +1443,9 @@
                         </div>
                     </div>
                     <br>
-                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif type="hidden" name="idespecvalid" id="idespecvalid">
-                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif type="hidden" name="loc2del" id="loc2del">
+                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif hidden  name="idespecvalid" id="idespecvalid">
+                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif hidden name="loc2del" id="loc2del">
+                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif hidden name="idinsespecvalid" id="idinsespecvalid">
                 </div>
             </div>
         </div>
@@ -2619,7 +2620,8 @@
 
         function delespecvalid() {
             var datos = {
-                            id: document.getElementById("idespecvalid").value
+                            id: document.getElementById("idespecvalid").value,
+                            idins: document.getElementById("idinsespecvalid").value
                         };
 
             var url = '/instructor/mod/especialidadimpartir/eliminar';
@@ -2634,10 +2636,9 @@
             request2.done(( respuesta) =>
             {
                 position = document.getElementById("row").value;
-                // console.log(respuesta);
-                $('#delperprofModal').modal('hide');
-                $('#delperprofwarning').prop("class", "d-none d-print-none")
-                var table = document.getElementById('tableperfiles')
+                $('#delespecvalidModal').modal('hide');
+                $('#delespecvalidwarning').prop("class", "d-none d-print-none")
+                var table = document.getElementById('espec-table')
                 var loc2del = document.getElementById('loc2del').value
                 table.deleteRow(loc2del);
             });
@@ -2953,6 +2954,7 @@
             var id = button.data('id');
             document.getElementById('idespecvalid').value = id['0'];
             document.getElementById('loc2del').value = id['1'];
+            document.getElementById('idinsespecvalid').value = id['2'];
         });
 
         $('#sendtodtaModal').on('show.bs.modal', function(event){

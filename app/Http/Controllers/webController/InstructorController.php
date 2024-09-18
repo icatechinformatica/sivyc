@@ -2820,15 +2820,15 @@ class InstructorController extends Controller
         $arrnew = $espec_imp->data_especialidad;
         foreach($arrnew as $cadwell)
         {
-            if($cadwell['id'] != $request->id)
+            if($cadwell['id'] != $request->id && $cadwell['new'] != TRUE)
             {
                 array_push($arrtemp, $cadwell);
             }
         }
         $espec_imp->data_especialidad = $arrtemp;
-        $espec_imp->save();
+        $row = $espec_imp->save();
 
-        $json=json_encode($perf);
+        $json=json_encode($arrtemp);
         return $json;
     }
 
