@@ -98,17 +98,18 @@ class validacionDtaController extends Controller {
 
         $unidades = DB::table('tbl_unidades')->select('unidad')->where('cct', 'LIKE', '%07EIC%')->orderBy('unidad', 'asc')->get();
 
-        $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
+        $meses = array(1=>"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
         $anioActual = Carbon::now()->year;
-        $mesActual = $meses[($fecha->format('n')) - 1];
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
-        $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-        $mesInformar = $fechaEntregaActual->mes_informar;
+        $mesActual = $meses[($fecha->format('n'))];
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
+        // $dateNow = $fechaEntregaActual->termino . "-" . $anioActual;
+        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
 
-        $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
-        $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
-        $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
+        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
+        $terminoExplode = explode('-',$fechaEntregaActual->termino);
+        $mesEntrega = $meses[$terminoExplode[1]];
+        $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
         $diasParaEntrega = $this->getFechaDiff();
 
         return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad', 'fechaEntregaFormatoT', 'mesInformar', 'unidad', 'diasParaEntrega', 'mesSearch', 'formato_respuesta'));
@@ -143,17 +144,18 @@ class validacionDtaController extends Controller {
 
         $unidades = DB::table('tbl_unidades')->select('unidad')->where('cct', 'LIKE', '%07EIC%')->orderBy('unidad', 'asc')->get();
 
-        $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
+        $meses = array(1 => "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
         $anioActual = Carbon::now()->year;
-        $mesActual = $meses[($fecha->format('n')) - 1];
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
-        $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-        $mesInformar = $fechaEntregaActual->mes_informar;
+        $mesActual = $meses[($fecha->format('n'))];
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
+        // $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
+        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
 
-        $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
-        $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
-        $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
+        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
+        $terminoExplode = explode('-',$fechaEntregaActual->termino);
+        $mesEntrega = $meses[$terminoExplode[1]];
+        $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
 
         $diasParaEntrega = $this->getFechaDiff();
 
@@ -815,31 +817,24 @@ class validacionDtaController extends Controller {
     }
 
     protected function getFechaDiff() {
-        $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
-        $fecha = Carbon::parse(Carbon::now());
-        $anioActual = Carbon::now()->year;
-        $mes = $meses[($fecha->format('n')) - 1];
-        $fechaActual = Carbon::now()->format('d-m-Y');
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $mes)->first();
-        $fEAc = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-        $comfechaActual = strtotime($fechaActual);
-        $convertfEAc = date_create_from_format('d-m-Y', $fEAc);
-        $confEAc = date_format($convertfEAc, 'd-m-Y');
-        $comconfEAc = strtotime($confEAc); // fecha actual de entrega
-        $dias = (strtotime($confEAc) - strtotime($fechaActual)) / 86400;
-        $dias = abs($dias);
-        $dias = floor($dias);
+        $fechaActual = Carbon::now();
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino')->whereDate('inicio', '<=', $fechaActual)->whereDate('termino', '>=', $fechaActual)->first();
+
+        $fechaTermino = Carbon::parse($fechaEntregaActual->termino); // Convertir la fecha de término a Carbon
+        $dias = $fechaActual->diffInDays($fechaTermino, false)+1; // Calcula la diferencia en días
 
         return $dias;
     }
 
     protected function xlsExportReporteFormatotEnlacesUnidad(Request $request) {
+        $meses = array(1=>"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $anio_actual = Carbon::now()->year;
         $unidadActual = $request->unidad_;
         $mesSearch = $request->mes_;
 
         $formatot_enlace_dta = dataFormatoT($unidadActual, ['DTA', 'MEMO_TURNADO_RETORNO'], null, $mesSearch, ['TURNADO_DTA']);
-        foreach ($formatot_enlace_dta as $value) {
+        foreach ($formatot_enlace_dta as $key => $value) {
+            $formatot_enlace_dta[$key]->fechaturnado = $meses[(int)$mesSearch];
             unset($value->id_tbl_cursos);
             unset($value->estadocurso);
             unset($value->turnados_enlaces);
@@ -950,10 +945,12 @@ class validacionDtaController extends Controller {
      */
     protected function xlsExportReporteFormatoTDirectorDTA(Request $request)
     {
+        $meses = array(1=>"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $anioActual = Carbon::now()->year;
 
         $reporteDirectorDTA = dataFormatoT($request->unidadD, ['REVISION_DTA'], null, $request->mesSearch, ['REVISION_DTA']);
-        foreach ($reporteDirectorDTA as $value) {
+        foreach ($reporteDirectorDTA as $key => $value) {
+            $reporteDirectorDTA[$key]->fechaturnado = $meses[(int)$request->mesSearch];
             unset($value->id_tbl_cursos);
             unset($value->estadocurso);
             unset($value->turnados_enlaces);
@@ -1743,14 +1740,17 @@ class validacionDtaController extends Controller {
         // Fin Fecha
         // Info cursos
         $count_cursos = array();
+        $calendario_formatot = DB::Table('calendario_formatot')->Select('inicio','termino')->Where('mes_entrega',(int)$request->mes_reporte)->Get();
         $cursos = DB::Table('tbl_cursos')
-            ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
+            // ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
             ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
             ->where('tbl_cursos.turnado','!=','UNIDAD')
+            ->WhereDate('tbl_cursos.fecha_turnado', '>=', $calendario_formatot[0]->inicio)
+            ->WhereDate('tbl_cursos.fecha_turnado', '<=', $calendario_formatot[1]->termino)
             //->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
             //->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
             ->Where('tbl_cursos.status_curso','AUTORIZADO')
-            ->Where('fecha_entrega', 'LIKE', '%'.$request->mes_reporte)
+            // ->Where('fecha_entrega', 'LIKE', '%'.$request->mes_reporte)
             ->Where('tbl_unidades.ubicacion', $request->unidad_reporte)
             ->OrderBy('fecha_envio', 'DESC')
             ->Get();
@@ -1836,12 +1836,15 @@ class validacionDtaController extends Controller {
         $archivo = $request->file('subir_memo_reporte_unidad'); # obtenemos el archivo
         $url = $this->pdf_upload($archivo, $request->unidad_reporte, 'Resumen_formatoT'); # invocamos el método
 
+        $calendario_formatot = DB::Table('calendario_formatot')->Select('inicio','termino')->Where('mes_entrega',(int)$request->mes_reporte)->Get();
         $cursos = DB::Table('tbl_cursos')->Select('tbl_cursos.id')
-            ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
+            // ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
             ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
-            ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
-            ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
-            ->Where('fecha_entrega', 'LIKE', '%-'.$request->mes_reporte)
+            // ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
+            // ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
+            ->WhereDate('tbl_cursos.fecha_turnado', '>=', $calendario_formatot[0]->inicio)
+            ->WhereDate('tbl_cursos.fecha_turnado', '<=', $calendario_formatot[1]->termino)
+            // ->Where('fecha_entrega', 'LIKE', '%-'.$request->mes_reporte)
             ->Where('tbl_unidades.ubicacion', $request->unidad_reporte)
             ->OrderBy('fecha_envio', 'DESC')
             ->Get();

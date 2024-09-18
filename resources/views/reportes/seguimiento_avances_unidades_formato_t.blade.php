@@ -42,12 +42,12 @@
             table{
                 width:100%;
             }
-            
+
             td{
                 display:block;
                 width:100%;
             }
-            
+
             tr{
                 display:block;
                 margin-bottom:30px;
@@ -113,8 +113,8 @@
                             @endforeach
                         </select>
                         {{-- selector de busqueda por unidades END --}}
-                        
-                        
+
+
                     {{-- formulario de busqueda en index END --}}
                         {!! Form::submit('CONSULTAR', ['class' => 'btn btn-outline-info my-2 my-sm-0']) !!}
                     {!! Form::close() !!}
@@ -144,29 +144,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($query_entrega_contable_fotmatot as $itemEntregaContrableFormatoT)
-                    <tr class="{{ ($itemEntregaContrableFormatoT->porcentaje >= 50.00) ? 'table-success' : 'table-warning' }}">
-                        <th>{{ $itemEntregaContrableFormatoT->ubicacion }}</th>
-                        <td>{{ $itemEntregaContrableFormatoT->total_cursos }}</td>
-                        <td>{{ $itemEntregaContrableFormatoT->no_reportado_unidad }}</td>
-                        <td>{{ $itemEntregaContrableFormatoT->turnado_dta }}</td>
-                        <td>{{ $itemEntregaContrableFormatoT->turnado_planeacion }}</td>
-                        <td>{{ $itemEntregaContrableFormatoT->reportado }}</td>
-                        <td>{{ $itemEntregaContrableFormatoT->porcentaje }}</td>
-                    </tr>
-                    @endforeach
+                    @if(!is_null($query_entrega_contable_fotmatot))
+                        @foreach ($query_entrega_contable_fotmatot as $itemEntregaContrableFormatoT)
+                        <tr class="{{ ($itemEntregaContrableFormatoT->porcentaje >= 50.00) ? 'table-success' : 'table-warning' }}">
+                            <th>{{ $itemEntregaContrableFormatoT->ubicacion }}</th>
+                            <td>{{ $itemEntregaContrableFormatoT->total_cursos }}</td>
+                            <td>{{ $itemEntregaContrableFormatoT->no_reportado_unidad }}</td>
+                            <td>{{ $itemEntregaContrableFormatoT->turnado_dta }}</td>
+                            <td>{{ $itemEntregaContrableFormatoT->turnado_planeacion }}</td>
+                            <td>{{ $itemEntregaContrableFormatoT->reportado }}</td>
+                            <td>{{ $itemEntregaContrableFormatoT->porcentaje }}</td>
+                        </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
             {{-- fin tabla --}}
         </div>
     </div>
     <br>
-    
+
 @endsection
 {{-- contenido js --}}
 @section('script_content_js')
     <script type="text/javascript">
-        
+
     </script>
 @endsection
 {{-- contenido js END --}}
