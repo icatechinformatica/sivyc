@@ -20,12 +20,15 @@ class PlaneacionController extends Controller {
 
     public function index(Request $request) {
         // unidad a buscar
+        $mes = null;
         $unidades = $request->get('busqueda_unidad');
         $mesSearch = $request->get('mesSearch');
 
         if ($mesSearch != null) {
             session(['mesBuscar' => $mesSearch]);
             session(['uniSearch' => $unidades]);
+            $meses = array(1=>"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
+            $mes = $meses[(int)$mesSearch];
         }
 
         // anio actual
@@ -36,7 +39,7 @@ class PlaneacionController extends Controller {
         $unidadesIndex = DB::table('tbl_unidades')->select('ubicacion')->groupBy('ubicacion')
             ->orderBy('ubicacion', 'asc')->get();
 
-        return view('reportes.vista_planeacion_indice', compact('unidadesIndex', 'cursos_unidades_planeacion', 'unidades', 'mesSearch'));
+        return view('reportes.vista_planeacion_indice', compact('unidadesIndex', 'cursos_unidades_planeacion', 'unidades', 'mesSearch','mes'));
     }
 
     protected function sendtodta(Request $request)
@@ -390,21 +393,22 @@ class PlaneacionController extends Controller {
 
     protected function chkDateToDeliver()
     {
-        $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
+        $meses = array(1 => "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
         return json_encode($fecha);
     }
 
     protected function xlsExportReporteT(Request $request) {
         // $anio_actual = Carbon::now()->year;
-
+        $meses = array(1=>"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         set_time_limit(0);
         ini_set('memory_limit', '256M');
         $uniSearch = session('uniSearch');
         $mesSearch = session('mesBuscar');
 
         $formatot_planeacion = dataFormatoT($uniSearch, ['PLANEACION'], null, $mesSearch, ['TURNADO_PLANEACION']);
-        foreach ($formatot_planeacion as $value) {
+        foreach ($formatot_planeacion as $key => $value) {
+            $formatot_planeacion[$key]->fechaturnado = $meses[(int)$mesSearch];
             unset($value->id_tbl_cursos);
             unset($value->estadocurso);
             unset($value->turnados_enlaces);

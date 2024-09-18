@@ -395,7 +395,7 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td>{{ $datas->fechaturnado }}</td>
+                                        <td>{{ $mesInformar }}</td>
                                         <td>{{ $datas->unidad }}</td>
                                         <td>{{ $datas->plantel }}</td>
                                         <td>{{ $datas->espe }}</td>
