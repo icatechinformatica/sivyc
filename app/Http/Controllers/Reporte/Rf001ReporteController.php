@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Vyuldashev\XmlToArray\XmlToArray;
 use Spatie\ArrayToXml\ArrayToXml;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\tbl_unidades;
 
 class Rf001ReporteController extends Controller
 {
@@ -181,8 +182,15 @@ class Rf001ReporteController extends Controller
         return (new ReportService())->generarToken();
     }
 
-    public function getForma()
+    public function getForma($id)
     {
-        return (new ReportService())->renderHtmlForma(21);
+        // realizar consulta para enviar y generar documento pdf
+        $unidad = tbl_unidades::where('id', Auth::user()->unidad)->first();
+        $instituto = DB::table('tbl_instituto')->first();
+        // Decodificar el campo cuentas_bancarias
+        $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
+        $cuentaBancaria = $cuentas_bancarias[$unidad->unidad]['BBVA'];
+        $getFormatoRf = $this->rfoo1Repository->getDetailRF001Format($id);
+        return (new ReportService())->renderHtmlForma($getFormatoRf, $cuentaBancaria);
     }
 }

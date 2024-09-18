@@ -10,6 +10,8 @@ use App\Models\Tokens_icti;
 use Illuminate\Support\Facades\Http;
 use App\Models\DocumentosFirmar;
 use Illuminate\Support\Facades\View;
+use App\Models\tbl_unidades;
+use Illuminate\Support\Facades\DB;
 
 class ReportService
 {
@@ -55,9 +57,16 @@ class ReportService
     {
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
 
-        $body = $this->createBody($id, $rf001);
-
-
+        // $body = $this->createBody($id, $rf001);
+        $htmlContent = $this->renderHtmlForma($rf001, $usuario->unidad);
+        // return $htmlContent; exit;
+        $contWithoutHtml = strip_tags($htmlContent); //contenido sin html
+        // limpiar cadena
+        $clnHtml = preg_replace('/@page\s*\{.*?\}\s*\/\*.*?\*\/|\.tb\s*\{.*?\}|\#titulo\s*\{.*?\}|\.tablaf\s*\{.*?\}|\.showlast\s*\{.*?\}|\.showborders\s*\{.*?\}|\.prueba\s*\{.*?\}|\.direccion\s*\{.*?\}|\.mielemento\s*\{.*?\}|p\s*\{.*?\}|body\s*\{.*?\}|header\s*\{.*?\}|footer\s*\{.*?\}|if\s*\(\s*isset\(\$pdf\)\s*\)\s*\{.*?\}/s', '', $contWithoutHtml);
+        // Eliminar líneas en blanco o espacios innecesarios.
+        $clnEspacios = preg_replace('/\s+/', ' ', $clnHtml);
+        //eliminar elementos restantes css
+        $body = preg_replace('/[.#][\w\s-]+[\w\s,.]*\{[^}]*\}\s*/', '', $clnEspacios);
 
         $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
 
@@ -69,7 +78,7 @@ class ReportService
             ->Where('u.unidad', $ubicacion)
             ->First();
 
-        $body = $this->createBody($id, $dataFirmantes);
+        // $body = $this->createBody($id, $dataFirmantes);
         $arrayFirmantes = [];
         $temp = ['_attributes' =>
             [
@@ -155,7 +164,7 @@ class ReportService
             if (is_null($dataInsert)) {
                 $dataInsert = new DocumentosFirmar();
             }
-            $dataInsert->obj_documento_interno = json_encode($body);
+            $dataInsert->obj_documento_interno = $htmlContent;
             $dataInsert->obj_documento = json_encode($ArrayXml);
             $dataInsert->status = 'EnFirma';
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
@@ -458,14 +467,54 @@ class ReportService
         return $result;
     }
 
+    private function datos_firmantes($organismo)
+    {
+        $firmanteUno = $firmanteDos = array();
+        try {
+            //área del usuario
+            $area_org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as area_org', 'id_parent', 'fun.cargo', 'fun.titulo',
+            'fun.nombre as funcionario', 'fun.correo', 'fun.curp')
+            ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
+            ->where('o.id', $organismo)->first();
+
+            // ORGANISMO DEL USUARIO / (DIRECCION)
+            $org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as org', 'fun.cargo', 'fun.titulo', 'fun.nombre as funcionario',
+            'fun.correo', 'fun.curp')
+            ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
+            ->where('o.id', $area_org->id_parent)->first();
+
+            if (!$area_org || !$org) {
+                return "Error en la busqueda de firmantes";
+            }
+
+            if($area_org->id_parent == 1) {
+                // $firmanteUno = array('funcionario'=>Auth::user()->name, 'puesto'=>Auth::user()->puesto, 'curp'=>Auth::user()->curp, 'correo'=>Auth::user()->email);
+                // $firmanteDos = array('funcionario'=>$area_org->funcionario, 'puesto'=>$area_org->cargo, 'correo'=>$area_org->correo, 'curp'=>$area_org->curp);
+                return "Usuario no disponible para realizar el firmado electronico";
+            }else{
+                $firmanteUno = array('funcionario'=>$area_org->funcionario, 'puesto'=>$area_org->cargo, 'correo'=>$area_org->correo, 'curp'=>$area_org->curp);
+                $firmanteDos = array('funcionario'=>$org->funcionario, 'puesto'=>$org->cargo, 'correo'=>$org->correo, 'curp'=>$org->curp);
+            }
+
+            return [$area_org, $org, $firmanteUno, $firmanteDos];
+        } catch (\Throwable $th) {
+            return "Error: ".$th->getMessage();
+        }
+    }
+
     public function rederHtmlMemorandum($id)
     {
         return View::make('reportes.rf001.vista_concentrado.memorf001')->render();
 
     }
 
-    public function renderHtmlForma($id)
+    public function renderHtmlForma($data, $unidad)
     {
-        return View::make('reportes.rf001.vista_concentrado.formarf001')->render();
+        $unidad = tbl_unidades::where('id', $unidad)->first();
+        $instituto = DB::table('tbl_instituto')->first();
+        // Decodificar el campo cuentas_bancarias
+        $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
+        $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
+        return View::make('reportes.rf001.vista_concentrado.formarf001', compact('data', 'cuenta'))->render();
     }
 }

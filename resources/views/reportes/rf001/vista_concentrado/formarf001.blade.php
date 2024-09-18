@@ -52,8 +52,8 @@
          }
 
          /* .tabla_con_border td {
-                             page-break-inside: avoid;
-                         } */
+                                                                                         page-break-inside: avoid;
+                                                                                     } */
 
          .tabla_con_border thead tr th {
              border: 1px solid #000000;
@@ -128,144 +128,128 @@
  @endsection
 
  @section('contenido')
+     @php
+         $movimiento = json_decode($data->movimientos, true);
+         $importeTotal = 0;
+         $periodoInicio = Carbon\Carbon::parse($data->periodo_inicio);
+         $periodoFin = Carbon\Carbon::parse($data->periodo_fin);
+         $dateCreacion = Carbon\Carbon::parse($data->created_at);
+         $dateCreacion->locale('es'); // Configurar el idioma a español
+         $nombreMesCreacion = $dateCreacion->translatedFormat('F');
+     @endphp
      {{-- contenido del documento --}}
      <table class="tabla_con_border">
          <tr>
              <td width="200px">FECHA DE ELABORACIÓN</td>
-             <td width="700px" style="border: medium transparent" colspan="7"></td>
-             <td colspan="3" width="200px;">SEMANA </td>
+             <td width="750px" style="border: medium transparent" colspan="8"></td>
+             <td width="200px;" style="text-align:center;">SEMANA </td>
              <td colspan="13" style="border: inset 0pt"></td>
          </tr>
          <tr>
-            <td>16/10/2023</td>
-            <td style="border: medium transparent" colspan="7"></td>
-            <td colspan="3">09/19/2023 AL 13/10/2023 </td>
-            <td colspan="13" style="border: inset 0pt"></td>
-        </tr>
+             <td style="text-align:center;">{{ Carbon\Carbon::parse($data->created_at)->format('d/m/Y') }}</td>
+             <td style="border: medium transparent" colspan="8"></td>
+             <td style="text-align:center;">{{ $periodoInicio->format('d/m/Y') . ' AL ' . $periodoFin->format('d/m/Y') }}
+             </td>
+             <td colspan="13" style="border: inset 0pt"></td>
+         </tr>
      </table>
      <center class="espaciado"></center>
      <table class="tabla_con_border">
-        <tr>
-            <td colspan="3" style="text-align: center;">
-                <b>DEPOSITO (S) EFECTUADO (S) A LA CUENTA BANCARIA:</b>
-            </td>
-        </tr>
-        <tr>
-            <td style="text-align: center;">
-                NO. CUENTA 0119703322
-            </td>
-        </tr>
+         <tr>
+             <td colspan="3" style="text-align: center;">
+                 <b>DEPOSITO (S) EFECTUADO (S) A LA CUENTA BANCARIA:</b>
+             </td>
+         </tr>
+         <tr>
+             <td style="text-align: center;">
+                 NO. CUENTA {{ $cuenta }}
+             </td>
+         </tr>
      </table>
      {{-- body table --}}
      <table class="tabla_con_border">
          <thead style="background-color:#f2f2f2;">
              <tr>
-                <th style="text-align: center;"><b>MOVTO BANCARIO Y/O NÚMERO DE FOLIO</b></th>
-                 <th style="text-align: center;"><b>N°. RECIBO Y/O FACTURA</b></th>
+                 <th style="text-align: center;" width="40px"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
+                 <th style="text-align: center;" width="100px"><b>N°. RECIBO Y/O FACTURA</b></th>
                  <th style="text-align: center;">CONCEPTO DE COBRO</th>
                  <th style="text-align: center;">IMPORTE</th>
              </tr>
          </thead>
          <tbody>
-             @for ($i = 0; $i < 12; $i++)
+             @foreach ($movimiento as $item)
+                 @php
+                     $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
+                 @endphp
                  <tr>
                      <td data-label="KM inicial" style="width: 55px; text-align: center;">
-
+                         {{ $item['folio'] }}
                      </td>
                      <td data-label="KM inicial" style="width: 40px; text-align: center;">
-
+                         @foreach ($depositos as $k)
+                             {{ $k['folio'] }} &nbsp;
+                         @endforeach
                      </td>
                      <td data-label="De:" style="width: 160px; text-align: left; font-size: 9px;">
-
+                         @if ($item['curso'] != null)
+                             {{ $item['curso'] }}
+                         @else
+                             {{ $item['descripcion'] }}
+                         @endif
                      </td>
                      <td data-label="Importe" style="width: 50px; text-align: center;">
-                         xxxxxx
+                         ${{ number_format($item['importe'], 2, '.', ',') }}
                      </td>
                  </tr>
-             @endfor
-
+                 @php
+                     $importeTotal += $item['importe'];
+                 @endphp
+             @endforeach
              <tr>
-                 <td>LITROS:</td>
+                 <td></td>
                  <td><b></b></td>
-                 <td><b>$ xxxx</b></td>
-                 <td>$ xxxx</td>
+                 <td><b></b></td>
+                 <td style="text-align:center;">
+                     <b>$ {{ number_format($importeTotal, 2, '.', ',') }}</b>
+                 </td>
              </tr>
          </tbody>
      </table>
+     <center class="espaciado"></center>
      {{-- body table END --}}
      <table class="tabla_con_border">
          <tr>
-             <td>OBSERVACIONES:</td>
+             <td colspan="3">OBSERVACIONES:</td>
          </tr>
          <tr>
-            <td rowspan="3" style=" vertical-align: text-top;">OBSERVACIONES: <br>
-                <div style="padding-top: 3px;">
-                </div>
-            </td>
-         </tr>
-     </table>
-     {{-- firmar --}}
-     {{-- NOTAS --}}
-     <table class="tablad">
-         <tr>
-             <td colspan="3">NOTA: EL LLENADO DE ESTA BITACORA DEBERA SER EN BASE AL RECORRIDO PARA LLEVAR A CABO LA
-                 COMISIÓN, EL CUAL SERA REVISADO POR EL AREA DE RECURSOS MATERIALES Y SERVICIOS.</td>
-         </tr>
-     </table>
-     {{-- notas --}}
-     <br>
-     <table class="tablas_notas">
-         <tr>
-             <td colspan="3" style="text-align: center;">
-                 <b>PARA USO EXCLUSIVO DEL AREA DE RECURSOS MATERIALES Y SERVICIOS</b>
-             </td>
-         </tr>
-         <tr>
-             <td style="border-top:none; border-right:none; border-bottom: none; width:15%;">KM INICIAL:</td>
-             <td style="border-left:none; width:20%; text-align: right; border-top:none;">
-             </td>
-             <td style="width:55%; border-bottom: none; border-top:none;">PUESTO DEL RESGUARDANTE: &nbsp;
-             </td>
-         </tr>
-         <tr>
-             <td style="border-top:none; border-right:none; width:15%; border-bottom:none;">KM. FINAL:</td>
-             <td style="border-left:none; width:20%; text-align: right;"></td>
-             <td style="width:55%; border-bottom: none; border-top:none;">RESGUARDANTE: &nbsp;.</td>
-         </tr>
-         <tr>
-             <td style="border-top:none; border-right:none; width:15%; border-bottom:none;">KMS. RECORRIDOS:</td>
-             <td style="border-left:none; width:20%; text-align: right;">
-
-             </td>
-             <td style="width:55%;border-top:none;">No. DE UNIDAD O ECONOMICO:</td>
-         </tr>
-         <tr>
-             <td style="border-top:none; border-right:none; width:15%; border-bottom:none;">LTS. DE GASOLINA:</td>
-             <td style="border-left:none; width:20%; text-align: right;">
-             </td>
-             <td rowspan="3" style="border-bottom: none; vertical-align: text-top;">OBSERVACIONES: <br>
+             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b> <br>
                  <div style="padding-top: 3px;">
+                     @foreach ($movimiento as $k)
+                         {{ $k['folio'] }},
+                     @endforeach
+                     <p>
+                         <b>RECIBO OFICIAL: &nbsp;</b>
+                         @foreach ($movimiento as $v)
+                             @php
+                                 $deposito = isset($v['depositos']) ? json_decode($v['depositos'], true) : [];
+                             @endphp
+                             @foreach ($deposito as $j)
+                                 {{ $j['folio'] }},
+                             @endforeach
+                         @endforeach
+                         &nbsp;
+                         <b>{{ $dateCreacion->day ."/". Str::upper($nombreMesCreacion)."/".$dateCreacion->year}}</b>
+                     </p>
                  </div>
              </td>
          </tr>
          <tr>
-             <td style="border-top:none; border-right:none; width:15%; border-bottom:none;">RENDIMIENTO POR LTS:</td>
-             <td style="border-left:none; width:20%; text-align: right;">
-             </td>
-         </tr>
-         <tr>
-             <td style="border-top:none; border-right:none; width:15%; border-bottom:none;"></td>
-             <td style="border-left:none; width:20%;"></td>
-         </tr>
-         <tr>
-             <td colspan="2" style="text-align: center;">
-                 <b>AREA DE RECURSOS MATERIALES Y SERVICIOS</b>
-             </td>
-             <td style="border-top:none;">
-                 D.V: DIVISION DEL VALE.
-             </td>
+             <td>&nbsp;</td>
+             <td>&nbsp;</td>
+             <td>&nbsp;</td>
          </tr>
      </table>
+     {{-- firmar --}}
      {{-- contenido del documento END --}}
  @endsection
 

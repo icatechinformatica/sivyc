@@ -457,6 +457,7 @@
                     type: 'POST',
                     dataType: "json",
                     success: function(response) {
+                        // console.log(response); return;
                         setTimeout(function() {
                             // Ocultar el loader y mostrar el contenido después de la carga
                             document.getElementById('loader-overlay').style.display =

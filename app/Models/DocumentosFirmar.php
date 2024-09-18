@@ -13,6 +13,7 @@ class DocumentosFirmar extends Model {
 
     protected $casts = [
         'obj_documento' => 'jsonb',
+        'obj_documento_interno' => 'json',
         'documento' => 'xml',
     ];
 
