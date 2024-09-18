@@ -161,16 +161,16 @@
                 <a type="submit" id="btn_generar_supre" class="btn btn-primary" href="{{route('supre-pdf', ['id' => $supreIdB64])}}"  target="_blank">Visualizar PDF</a>
             </div>
             </form>
-            {{-- @if($generarEfirmaSupre)
-            <div class="form-group col-md-3">
-                <form action="{{ route('supre-efirma') }}" method="post" id="registersolicitudpago">
-                    @csrf
-                    <input type="text" name="ids" id="ids" value='{{$getsupre->id}}' hidden>
-                    <input type="text" name="clave_curso" id="clave_curso" value='{{$data->clave}}' hidden>
-                    <button button type="submit" class="btn btn-red" >Generar Suficiencia E.Firma</button>
-                </form>
-            </div>
-            @endif --}}
+            @if($generarEfirmaSupre)
+                <div class="form-group col-md-3">
+                    <form action="{{ route('supre-efirma') }}" method="post" id="registersolicitudpago">
+                        @csrf
+                        <input type="text" name="ids" id="ids" value='{{$getsupre->id}}' hidden>
+                        <input type="text" name="clave_curso" id="clave_curso" value='{{$data->clave}}' hidden>
+                        <button button type="submit" class="btn btn-red" >Generar Suficiencia E.Firma</button>
+                    </form>
+                </div>
+            @endif
         </div>
         <br>
     </form>
