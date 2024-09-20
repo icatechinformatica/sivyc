@@ -213,11 +213,13 @@
                     </div>
                     <div class="form-group col-md-4">
                         @if ($es_vulnerable==true)
-                        <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($grupo->id_gvulnerable ?? ''){{'checked'}}@endif>&nbsp;&nbsp;GRUPO VULNERABLE</label>
+                            <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" checked>&nbsp;&nbsp;GRUPO VULNERABLE</label>
+                            {{ Form::select('grupo_vulnerable', $grupo_vulnerable, $grupo->id_vulnerable ?? '', ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
                         @else
-                        <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($grupo->id_gvulnerable ?? ''){{'checked'}}@endif disabled>&nbsp;&nbsp;GRUPO VULNERABLE</label>
+                            <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($grupo->id_gvulnerable ?? ''){{'checked'}}@endif disabled>&nbsp;&nbsp;GRUPO VULNERABLE</label>
+                            {{ Form::select('grupo_vulnerable', $grupo_vulnerable, '', ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
                         @endif
-                        {{ Form::select('grupo_vulnerable', $grupo_vulnerable, $grupo->id_gvulnerable ?? '', ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
+                        
                     </div>
                     <div class="form-group col-md-6">
                         <label>DOMICILIO, LUGAR O ESPACIO FÍSICO:</label>
