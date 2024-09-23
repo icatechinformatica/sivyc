@@ -68,7 +68,7 @@ class aperturasController extends Controller
                else $grupos = $grupos->where('tc.nmunidad',$memo);
                $grupos = $grupos->groupby('tc.id','ar.turnado', 'tc.comprobante_pago','convenios.fecha_vigencia',
                'e.memo_soporte_dependencia','e.nrevision','tr.file_pdf','tr.status_folio','tr.motivo')->get();
-
+                //dd($grupos);
             if(count($grupos)>0){
                 $_SESSION['grupos'] = $grupos;
                 $_SESSION['memo'] = $memo;
@@ -87,7 +87,10 @@ class aperturasController extends Controller
                     if (isset($value->mextemporaneo) OR isset($value->mextemporaneo_arc02) ) {
                         $extemporaneo = true;
                     }
-                    if ($value->status_folio=='SOPORTE') $motivo_soporte = true;
+                    if ($value->status_folio=='SOPORTE'){
+                         $motivo_soporte = true;
+                         $movimientos = ['' => '- SELECCIONAR -', 'ACEPTADO'=>'AUTORIZAR CAMBIO DE RECIBO DE PAGO','DENEGADO'=>'DENEGAR REEMPLAZO DE RECIBO DE PAGO'];
+                    }
                 }
                 //var_dump($estatus);exit;
                 if($grupos[0]->status_curso == 'SOPORTE'){
@@ -179,9 +182,9 @@ class aperturasController extends Controller
                             $cuerpo = 'La autorización de clave de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
                             $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
                             ->where('clave','<>','0')
-                            ->where('turnado','UNIDAD')
+                            //->where('turnado','UNIDAD')
                             ->where('status_curso','EN FIRMA')
-                            ->where('status','NO REPORTADO')
+                            //->where('status','NO REPORTADO')
                             ->update(['status_curso' => 'AUTORIZADO', 'updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
                         break;
                         case "ARC02":
@@ -412,8 +415,7 @@ class aperturasController extends Controller
                                 $result = DB::table('tbl_recibos')->whereIn('id',$ids)
                                     ->update(['status_folio'=>'DENEGADO','observaciones'=>$request->observaciones,'fecha_status'=>date('Y-m-d H:i:s'),'updated_at'=> date('Y-m-d H:m:s'),'iduser_updated'=>$this->id_user]);
                             }
-                            if($result)$message = "OPERACIÓN EXITOSA!!";
-                            else $message = "NO SE PERMITEN DESHACER LAS CLAVES, NO SON LAS ULTIMAS!!";
+                            if($result) $message = "Operación exitosa!";                            
                         }  
                     }                  
                 break;

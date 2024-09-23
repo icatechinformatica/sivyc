@@ -12,10 +12,10 @@
         header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;}
         img.izquierda {float: left;width: 100%;height: 60px;}
         img.izquierdabot {
-                float: inline-end;
-                width: 712px;
-                height: 100px;
-            }
+            float: inline-end;
+            width: 712px;
+            height: 100px;
+        }
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
         img.derecha {float: right;width: 50%;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
@@ -40,16 +40,15 @@
         .margin_top_ccp {
             margin-top: 7em;
         }
-        .direccion
-            {
-                text-align: left;
-                position: absolute;
-                bottom: 820px;
-                left: 20px;
-                font-size: 7.5px;
-                color: white;
-                line-height: 1;
-            }
+        .direccion {
+            text-align: left;
+            position: absolute;
+            bottom: 820px; /*820*/
+            left: 20px;
+            font-size: 7.5px;
+            color: white;
+            line-height: 1;
+        }
     </style>
 </head>
 <body>
@@ -62,22 +61,11 @@
     {{-- SECCIÓN DE PIE DE PÁGINA --}}
     <footer>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach</b></p>
-        <script type="text/php">
-            if (isset($pdf))
-            {
-                $x = 275;
-                $y = 725;
-                $text = "Hoja {PAGE_NUM} de {PAGE_COUNT}";
-                $font = "Arial";
-                $size = 11;
-                $color = array(0,0,0);
-                $word_space = 0.0;  //  default
-                $char_space = 0.0;  //  default
-                $angle = 0.0;   //  default
-                $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
-            }
-        </script>
+        <p class='direccion'><b>
+            @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
+            @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+            <br>Teléfono: {{$funcionarios['dacademico']['telefono']}} Correo: {{$funcionarios['dacademico']['correo']}}
+        </b></p>
     </footer>
     {{-- SECCIÓN DE PIE DE PÁGINA FIN --}}
     {{-- SECCIÓN DE CONTENIDO --}}
@@ -86,8 +74,8 @@
         <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $num_memo_planeacion }}</b></div>
         <div align=right style="font-size:11px;"><b>TUXTLA GUTIÉRREZ, CHIAPAS; {{ $fecha_ahora_espaniol }}</b></div>
         <br><br>
-        <div align=left style="font-size:12px;"><b>{{ $directorPlaneacion->nombre." ".$directorPlaneacion->apellidoPaterno." ".$directorPlaneacion->apellidoMaterno }}.</b></div>
-        <div align=left style="font-size:11px;"><b>{{ $directorPlaneacion->puesto }}.</b></div>
+        <div align=left style="font-size:12px;"><b>{{ $funcionarios['dplaneacion']['titulo'] }} {{ $funcionarios['dplaneacion']['nombre'] }}.</b></div>
+        <div align=left style="font-size:11px;"><b>{{ $funcionarios['dplaneacion']['puesto'] }}.</b></div>
         <div align="left" style="font-size: 11px;"><b>Presente</b></div>
         <br><br><br><br>
         <div align="justify" style="font-size:16px;">
@@ -108,15 +96,14 @@
         <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
 
         <div class="margin_top_ccp">
-            <div style="font-size:11px;"> <b> {{ $reg_unidad->dacademico }} </b> </div>
-            <div style="font-size:11px;"> <b> {{ $reg_unidad->pdacademico }} </b> </div>
+            <div style="font-size:11px;"> <b> {{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }} </b> </div>
+            <div style="font-size:11px;"> <b> {{ $funcionarios['dacademico']['puesto'] }} </b> </div>
             <br><br><br>
-            <div style="font-size:9px;"> <b>C.c.p  {{ $reg_unidad->dgeneral }}  , {{ $reg_unidad->pdgeneral }} . Para su conocimiento.</b> </div>
-            <div style="font-size:9px"><b>C.c. {{ $directorio->nombre." ".$directorio->apellidoPaterno." ".$directorio->apellidoMaterno }} - {{ $directorio->puesto }} . Para su conocimiento.</b></div>
+            <div style="font-size:9px;"> <b>C.c.p  {{ $funcionarios['dgeneral']['titulo'] }} {{ $funcionarios['dgeneral']['nombre'] }}, {{ $funcionarios['dgeneral']['puesto'] }}. Para su conocimiento.</b> </div>
+            <div style="font-size:9px"><b>C.c. {{ $funcionarios['progpres']['titulo'] }} {{ $funcionarios['progpres']['nombre'] }} - {{ $funcionarios['progpres']['puesto'] }} . Para su conocimiento.</b></div>
             <div style="font-size:9px;"> <b>Archivo.</b> </div>
-            <div style="font-size:8px;"> <b>Validó: {{ $reg_unidad->dacademico }} - {{ $reg_unidad->pdacademico }}</b></div>
-            <div style="font-size:8px;"> <b>Elaboró: {{ $jefeDepto->nombre." ".$jefeDepto->apellidoPaterno." ".$jefeDepto->apellidoMaterno }} - {{ $jefeDepto->puesto }} . </b></div>
-            {{-- <div style="font-size:8px;"> <b>Elaboró:  {{ $reg_unidad->academico }} .  {{ $reg_unidad->pacademico }} .</b></div> --}}
+            <div style="font-size:8px;"> <b>Validó: {{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }} - {{ $funcionarios['dacademico']['puesto'] }}</b></div>
+            <div style="font-size:8px;"> <b>Elaboró: {{ $funcionarios['certificacion']['titulo'] }} {{ $funcionarios['certificacion']['nombre'] }} - {{ $funcionarios['certificacion']['puesto'] }} . </b></div>
             <br><br>
         </div>
 

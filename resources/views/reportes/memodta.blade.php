@@ -12,10 +12,10 @@
         header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;}
         img.izquierda {float: left;width: 100%;height: 60px;}
         img.izquierdabot {
-                float: inline-end;
-                width: 713px;
-                height: 100px;
-            }
+            float: inline-end;
+            width: 712px;
+            height: 100px;
+        }
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
         img.derecha {float: right;width: 50%;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
@@ -37,16 +37,16 @@
         /* Propiedad que ha sido agreda*/
 
         }
-        .direccion
-            {
-                text-align: left;
-                position: absolute;
-                bottom: 830px; /*773*/
-                left: 10px; /*20*/
-                font-size: 7.5px;
-                color: white;
-                line-height: 1;
-            }
+    .direccion
+        {
+            text-align: left;
+            position: absolute;
+            bottom: 835px; /*820*/
+            left: 20px;
+            font-size: 7.5px;
+            color: white;
+            line-height: 1;
+        }
     </style>
 
      {{-- condicion cuando el array sea de 14 elementos cambia el pading de la fila de la tabla--}}
@@ -63,22 +63,11 @@
     </header>
     <footer>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach</b></p>
-        <script type="text/php">
-            if (isset($pdf))
-            {
-                $x = 275;
-                $y = 725;
-                $text = "Hoja {PAGE_NUM} de {PAGE_COUNT}";
-                $font = "Arial";
-                $size = 11;
-                $color = array(0,0,0);
-                $word_space = 0.0;  //  default
-                $char_space = 0.0;  //  default
-                $angle = 0.0;   //  default
-                $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
-            }
-        </script>
+        <p class='direccion'><b>
+            @php $direccion = explode("*",$funcionarios['dunidad']['direccion']) @endphp
+            @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+            {{-- <br>Teléfono: {{$funcionarios['dacademico']['telefono']}} Correo: {{$funcionarios['dacademico']['correo']}} --}}
+        </b></p>
     </footer>
     <div class="contenedor" style="margin-bottom: 100px;">
         {{-- crear un div para encerrar todo lo que lleva al inicio --}}
@@ -87,8 +76,8 @@
             <div align=right style="font-size:13px;">MEMORANDUM NO. {{ $numero_memo }}</div>
             <div align=right style="font-size:13px;">{{ $reg_unidad->unidad }}, CHIAPAS; {{ $fecha_nueva }}</div>
             <br>
-            <div align=left style="font-size:13px;">C. {{ $destinatario->nombre }}</div>
-            <div align=left style="font-size:13px;">{{ $destinatario->cargo }}</div><br>
+            <div align=left style="font-size:13px;">C. {{ $funcionarios['dacademico']['nombre'] }}</div>
+            <div align=left style="font-size:13px;">{{ $funcionarios['dacademico']['puesto'] }}</div><br>
 
             <div align=left style="font-size:13px;">Asunto: Reporte de cursos finalizados de la  Unidad de Capacitación {{ $reg_unidad->unidad }}.</div><br>
             <div align="justify" style="font-size:13px;">
@@ -155,13 +144,13 @@
                 <br>
                 <div style="font-size:13px;">ATENTAMENTE</div>
                 <br><br><br>
-                <div style="font-size:13px;">C. {{ $remitente->nombre }}</div>
-                <div style="font-size:13px;">{{ $remitente->cargo }}</div>
+                <div style="font-size:13px;">C. {{ $funcionarios['dunidad']['nombre'] }}</div>
+                <div style="font-size:13px;">{{ $funcionarios['dunidad']['puesto'] }}</div>
                 <br><br>
-                <div style="font-size:10px;">C.c.p. {{$ccp->nombre}}. - {{$ccp->cargo}}. - Para su conocimiento.</div>
+                <div style="font-size:10px;">C.c.p. {{$funcionarios['certificacion']['nombre']}}. - {{$funcionarios['certificacion']['puesto']}}. - Para su conocimiento.</div>
                 <div style="font-size:10px;">Archivo.</b> </div>
-                <div style="font-size:10px;">Validó: {{ $remitente->nombre }}. - {{ $remitente->cargo }}.</div>
-                <div style="font-size:10px;">Elaboró: {{ $elabora->nombre }}. - {{ $elabora->cargo }}.</div>
+                <div style="font-size:10px;">Validó: {{ $funcionarios['dunidad']['nombre'] }}. - {{ $funcionarios['dunidad']['puesto'] }}.</div>
+                <div style="font-size:10px;">Elaboró: {{ $funcionarios['elabora']['nombre']}}. - {{ $funcionarios['elabora']['puesto'] }}.</div>
             </div>
 
     </div>

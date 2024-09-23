@@ -1,4 +1,3 @@
-
 <html>
     <head>
         <meta charset="utf-8">
@@ -137,15 +136,21 @@
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+            <p class='direccion'><b>
+                @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
+                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+                <br>
+                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
+                @if(!is_null($funcionarios['dacademico']['correo'])) Correo: {{$funcionarios['dacademico']['correo']}} @endif
+            </b></p>
         </footer>
         <div>
             @php $cont=0; foreach($especialidades AS $ari){if($ari->status != 'BAJA EN FIRMA'){$cont++;}} @endphp
                 <div align=right> <b>Dirección Técnica Académica</b></div>
                 <div align=right> <b>Memorandum No. @if($especialidades[0]->status != 'BAJA EN FIRMA') {{$especialidades[0]->memorandum_validacion}} @else {{$especialidades[0]->memorandum_baja}} @endif</b></div>
                 <div align=right> <b>Tuxtla Gutiérrez, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
-                <b>{{$unidad->dunidad}}.</b>
-                <br>{{$unidad->pdunidad}} {{$unidad->unidad}}.
+                <b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
+                <br>{{ $funcionarios['dunidad']['puesto'] }}.
                 <br>Presente.
                 <br><br>Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.
                 <div class="table table-responsive">
@@ -194,8 +199,8 @@
                                     <td>
                                         <b>ELABORÓ</b><br><br>
                                         <b><br>_________________________</b>
-                                        <br><small><small><small>{{$elaboro->name}}</small></small></small>
-                                        <br><small><small><small>{{$elaboro->puesto}}</small></small></small>
+                                        <br><small><small><small>C. {{ $funcionarios['elabora']['nombre'] }}</small></small></small>
+                                        <br><small><small><small>{{ $funcionarios['elabora']['puesto'] }}</small></small></small>
                                         <br>
                                     </td>
                                 </tr>
@@ -211,8 +216,8 @@
                                     <td>
                                         <b>REVISÓ</b><br><br>
                                         <b><br>_________________________</b>
-                                        <br><small><small><small>{{$unidad->jcyc}}</small></small></small>
-                                        <br><small><small><small>{{$unidad->pjcyc}}</small></small></small>
+                                        <br><small><small><small>{{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }}</small></small></small>
+                                        <br><small><small><small>{{ $funcionarios['gestionacademica']['puesto'] }}</small></small></small>
                                         <br>
                                     </td>
                                 </tr>
@@ -228,8 +233,8 @@
                                     <td>
                                         <b>AUTORIZÓ</b><br><br>
                                         <b><br>_________________________</b>
-                                        <br><small><small><small>{{$unidad->dacademico}}</small></small></small>
-                                        <br><small><small><small>{{$unidad->pdacademico}}</small></small></small>
+                                        <br><small><small><small>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}</small></small></small>
+                                        <br><small><small><small>{{ $funcionarios['dacademico']['puesto'] }}</small></small></small>
                                         <br>
                                     </td>
                                 </tr>
@@ -259,7 +264,7 @@
                 <div>
                     “Este documento es de uso interno y no tiene validez jurídica ni contractual, se extiende únicamente con fines académicos. Estos datos y resultados son considerados confidenciales por lo que se prohíbe su reproducción parcial o total para fines distintos al uso interno de la Dirección Técnica Académica y las Unidades de Capacitación”.
                     <br><br>
-                    <small><small>C.c.p. {{$unidad->jcyc}} .- {{$unidad->pjcyc}}. – Para su conocimiento - Edificio.</small></small>
+                    <small><small>C.c.p. {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }} .- {{ $funcionarios['gestionacademica']['puesto'] }}. – Para su conocimiento - Edificio.</small></small>
                     <br><small><small>Archivo</small></small>
                 </div>
         </div>

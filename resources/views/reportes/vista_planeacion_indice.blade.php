@@ -360,7 +360,7 @@
                                                 id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"
                                                 disabled></textarea>
                                         </td>
-                                        <td>{{ $datas->fechaturnado }}</td>
+                                        <td>{{ $mes }}</td>
                                         <td>{{ $datas->unidad }}</td>
                                         <td>{{ $datas->plantel }}</td>
                                         <td>{{ $datas->espe }}</td>

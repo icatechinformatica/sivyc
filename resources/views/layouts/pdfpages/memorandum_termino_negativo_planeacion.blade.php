@@ -34,10 +34,10 @@
         }
 
         img.izquierdabot {
-                float: inline-end;
-                width: 100%;
-                height: 100%;
-            }
+            float: inline-end;
+            width: 712px;
+            height: 100px;
+        }
 
         img.derechabot {
             position: fixed;
@@ -90,29 +90,18 @@
             padding: 0px;
         }
 
-        footer {
-                position: fixed;
-                left: -40px;
-                bottom: -90px;
-                right: 0px;
-                height: 100px;
-                width: 85%;
-                padding-left: 45px;
-                background-color: white;
-                color: black;
-                text-align: center;
-            }
+        footer {position:fixed;left:0px;bottom:0px;width:100%;}
         footer .page:after { content: counter(page, sans-serif);}
         .direccion
-            {
-                text-align: left;
-                position: absolute;
-                bottom: 32px;
-                left: 65px;
-                font-size: 7.5px;
-                color: rgb(255, 255, 255);
-                line-height: 1;
-            }
+        {
+            text-align: left;
+            position: absolute;
+            bottom: 830px; /*830*/
+            left: 20px;
+            font-size: 7.5px;
+            color: white;
+            line-height: 1;
+        }
 
         .contenedor {
             position: RELATIVE;
@@ -132,33 +121,21 @@
 </head>
 
 <body>
-    {{-- SECCIÓN DE LA CABECERA --}}
     <header>
         <img class="izquierda" src='img/logohorizontalica1.jpg'>
         <img class="derecha" src='img/chiapas.png'>
         <br>
         <h6><b></b>{{$leyenda}}</h6>
     </header>
-    {{-- SECCIÓN DE LA CABECERA FIN --}}
-    {{-- SECCIÓN DE PIE DE PÁGINA --}}
     <footer>
-        <script type="text/php">
-            if (isset($pdf))
-            {
-                $x = 275;
-                $y = 705;
-                $text = "Hoja {PAGE_NUM} de {PAGE_COUNT}";
-                $font = "Arial";
-                $size = 11;
-                $color = array(0,0,0);
-                $word_space = 0.0;  //  default
-                $char_space = 0.0;  //  default
-                $angle = 0.0;   //  default
-                $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
-            }
-        </script>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+        <p class='direccion'><b>
+            @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
+            @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+            <br>
+            {{-- Teléfono: {{$funcionarios['dacademico']['telefono']}}  --}}
+            Correo: {{$funcionarios['progpres']['correo']}}
+        </b></p>
     </footer>
     {{-- SECCIÓN DE PIE DE PÁGINA FIN --}}
     {{-- SECCIÓN DE CONTENIDO --}}
@@ -167,8 +144,8 @@
         <div align=right style="font-size:11px;"><b>MEMORÁNDUM NO. {{ $num_memo_planeacion }}</b></div>
         <div align=right style="font-size:11px;"><b>TUXTLA GUTIÉRREZ, CHIAPAS; {{ $fecha_ahora_espaniol }}</b></div>
         <br><br>
-        <div align=left style="font-size:12px;"><b>{{ $reg_unidad->dacademico }}.</b></div>
-        <div align=left style="font-size:11px;"><b>{{ $reg_unidad->pdacademico }}.</b></div>
+        <div align=left style="font-size:12px;"><b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}.</b></div>
+        <div align=left style="font-size:11px;"><b>{{ $funcionarios['dacademico']['puesto'] }}.</b></div>
         <div align="left" style="font-size: 11px;"><b>Presente</b></div>
         <br><br><br><br>
         <div align="justify" style="font-size:16px;">
@@ -192,21 +169,16 @@
         <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
 
         <div class="margin_top_ccp">
-            <div style="font-size:11px;"> <b>C.P.
-                    {{ $directorPlaneacion->nombre . ' ' . $directorPlaneacion->apellidoPaterno . ' ' . $directorPlaneacion->apellidoMaterno }}
+            <div style="font-size:11px;"> <b>{{ $funcionarios['dplaneacion']['titulo'] }} {{ $funcionarios['dplaneacion']['nombre']}}
                 </b> </div>
-            <div style="font-size:11px;"> <b> {{ $directorPlaneacion->puesto }} </b> </div>
+            <div style="font-size:11px;"> <b> {{ $funcionarios['dplaneacion']['puesto'] }} </b> </div>
             <br><br><br>
-            <div style="font-size:11px;"> <b>C.C.P {{ $reg_unidad->dgeneral }} , {{ $reg_unidad->pdgeneral }} .
+            <div style="font-size:11px;"> <b>C.C.P {{ $funcionarios['dgeneral']['titulo'] }} {{ $funcionarios['dgeneral']['nombre'] }} , {{ $funcionarios['dgeneral']['puesto'] }} .
                     Edificio.</b> </div>
-            <div style="font-size:11px"><b>C.C. ING.
-                    {{ $directorio->nombre . ' ' . $directorio->apellidoPaterno . ' ' . $directorio->apellidoMaterno }} -
-                    {{ $directorio->puesto }} . EDIFICIO.</b></div>
+            <div style="font-size:11px"><b>C.C. {{ $funcionarios['progpres']['titulo'] }} {{ $funcionarios['progpres']['nombre'] }} - {{ $funcionarios['progpres']['puesto'] }}. EDIFICIO.</b></div>
             <div style="font-size:10px;"> <b>ARCHIVO.</b> </div>
-            <div style="font-size:10px;"> <b>VALIDÓ: ING.
-                    {{ $directorio->nombre . ' ' . $directorio->apellidoPaterno . ' ' . $directorio->apellidoMaterno }} -
-                    {{ $directorio->puesto }} .</b> </div>
-            <div style="font-size:10px;"> <b>ELABORÓ: LIC. VIANEY SOLEDAD RÍOS CRUZ. - ANALISTA TÉCNICO ESPECIALIZADO.</b></div>
+            <div style="font-size:10px;"> <b>VALIDÓ: {{ $funcionarios['progpres']['titulo'] }} {{ $funcionarios['progpres']['nombre'] }} - {{ $funcionarios['progpres']['puesto'] }}.</b> </div>
+            <div style="font-size:10px;"> <b>ELABORÓ: LIC. {{ $funcionarios['elabora']['nombre'] }} - {{ $funcionarios['elabora']['puesto'] }}.</b></div>
             <br><br>
         </div>
 

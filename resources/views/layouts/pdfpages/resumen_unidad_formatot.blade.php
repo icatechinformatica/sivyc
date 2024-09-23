@@ -48,13 +48,6 @@
                 line-height: 1;
             }
     </style>
-
-     {{-- condicion cuando el array sea de 14 elementos cambia el pading de la fila de la tabla--}}
-    {{-- @if (count($reg_cursos) ==14)
-        <style>
-            .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
-        </style>
-    @endif --}}
 </head>
 <body>
     <header>
@@ -63,12 +56,6 @@
     </header>
     <footer>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-
-        {{-- <p class='direccion' style="bottom:25px;"><b>
-            Av. Circunvalación Pichucalco núm. 212-B. Colonia Moctezuma.<br>
-            C.P. 29030; Tuxtla Gutiérrez, Chiapas.<br><br>
-            Teléfono (961)6121621, Email: dtecnicaacademica@gmail.com
-        </b></p> --}}
         <p class='direccion'><b>
             @foreach($direccion->direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
             <br>{{$direccion->telefono}}

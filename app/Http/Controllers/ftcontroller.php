@@ -117,18 +117,21 @@ class ftcontroller extends Controller {
             $var_cursos = null;
         }
 
-        $meses_ = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+        $meses_ = array(1 => "ENERO", "FEBRERO", "MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
         $anioActual = Carbon::now()->year;
-        $mesActual = $meses_[($fecha->format('n')) - 1];
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
-        $dateNow = $fechaEntregaActual->fecha_entrega."-".$anioActual;
-        $mesInformar = $fechaEntregaActual->mes_informar;
+        // $mesActual = $meses_[($fecha->format('n')) - 1];
+        $fecha = date_format($fecha, 'Y-m-d');
+        // $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
+        $fechaEntregaActual = \DB::Table('calendario_formatot')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
+        // $dateNow = $fechaEntregaActual->fecha_entrega."-".$anioActual;
+        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1]; // obtenemos del array meses el mes de reporte a entregar
         $mesComparador = Carbon::now()->month;
 
-        $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
-        $mesEntrega = $meses_[($convertfEAc->format('n')) - 1];
-        $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
+        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
+        $termino = explode('-',$fechaEntregaActual->termino);
+        $mesEntrega = $meses_[$termino[1]]; //obtenemos el mes de la fecha termino
+        $fechaEntregaFormatoT = $termino[2] . ' DE ' . $mesEntrega . ' DE ' . $termino[0];
         $diasParaEntrega = $this->chkDateToDeliver();
 
         return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar', 'diasParaEntrega', 'unidad', 'mesComparador'));
@@ -180,7 +183,7 @@ class ftcontroller extends Controller {
                 # vamos a checar sólo a los checkbox checados como propiedad
                 if (!empty($cursoschk)) {
                     // se agregar un arreglo con los meses del año calendario
-                    $mesesCalendarizado = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+                    $mesesCalendarizado = array(1=>"ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
                     $fecha_ahora = Carbon::now();
                     $fechaActual = Carbon::parse($fecha_ahora);
                     $date = $fecha_ahora->format('Y-m-d'); // fecha
@@ -189,19 +192,19 @@ class ftcontroller extends Controller {
 
                     $anioActual = $fecha_ahora->year; // año actual
 
-                    $currentMonth = $mesesCalendarizado[($fechaActual->format('n')) - 1];
-                    $fechaEntregaAct = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $currentMonth)->first();
-                    $fEAct = $fechaEntregaAct->fecha_entrega."-".$anioActual;
+                    $currentMonth = $mesesCalendarizado[($fechaActual->format('n'))];
+                    $fechaEntregaAct = \DB::table('calendario_formatot')->select('termino')->whereDate('inicio', '<=', $fechaActual)->whereDate('termino', '>=', $fechaActual)->first();
+                    // $fEAct = $fechaEntregaAct->fecha_entrega."-".$anioActual;dd($fechaActual);
                     /**
                      * convertirlo en un formato fecha
                      */
-                    $convertfEAct = date_create_from_format('d-m-Y', $fEAct);
-                    $confEAct = date_format($convertfEAct, 'd-m-Y');
+                    // $convertfEAct = date_create_from_format('d-m-Y', $fEAct);
+                    // $confEAct = date_format($convertfEAct, 'd-m-Y');
                     /**
                      * fecha actual
                      */
                     $fecha_actual = strtotime($fecha_nueva);
-                    $fechaEntregaSpring = strtotime($confEAct);
+                    $fechaEntregaSpring = strtotime($fechaEntregaAct->termino);
                     /**
                      * se compara la fecha actual en la que se envía el paquete con la fecha establecida
                      * en la entrega del calendario del formato t
@@ -215,11 +218,11 @@ class ftcontroller extends Controller {
 
                     if ($fechaEntregaSpring >= $fecha_actual) {
                         // dd($fecha_nueva);
-                        $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('fecha','>=', $fecha_nueva)->orderby('id','asc')->first();
+                        // $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('fecha','>=', $fecha_nueva)->orderby('id','asc')->first();
                         // $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $actualMonth)->first();
-                        $fechActualSpring = $actualSpring->fecha_entrega."-".$anioActual;
-                        $fechActSpring = date_create_from_format('d-m-Y', $fechActualSpring);
-                        $formatFechaActual = date_format($fechActSpring, 'Y-m-d');
+                        // $fechActualSpring = $actualSpring->fecha_entrega."-".$anioActual;
+                        // $fechActSpring = date_create_from_format('d-m-Y', $fechActualSpring);
+                        // $formatFechaActual = date_format($fechActSpring, 'Y-m-d');
                         // dd($formatFechaActual);
                         # la fecha de entrega debe siempre ser mayor o igual sobre la fecha actual que se envía el paquete.
 
@@ -252,7 +255,7 @@ class ftcontroller extends Controller {
                                     'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"),
                                     'status' => 'TURNADO_DTA',
                                     'turnado' => 'DTA',
-                                    'fecha_turnado' => $formatFechaActual,
+                                    'fecha_turnado' => $fechaEntregaAct->termino,
                                     'fecha_envio' => $date
                                 ]);
                         }
@@ -262,9 +265,9 @@ class ftcontroller extends Controller {
                         # si la condición no se cumple se tiene que tomar el envío con fecha del siguiente spring
                         #obtenemos el mes después
                         // dd('a');
-                        $nextMonth = $mesesCalendarizado[($fechaActual->format('n')) + 0];
-                        $fechaNextSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $nextMonth)->first();
-                        $fechNextSpring = $fechaNextSpring->fecha_entrega."-".$anioActual;
+                        $nextMonth = $mesesCalendarizado[($fechaActual->format('n')) + 1];
+                        $fechaNextSpring = \DB::table('calendario_formatot')->select('termino')->whereDate('inicio', '<=', $nextMonth)->whereDate('termino', '>=', $nextMonth)->first();
+                        $fechNextSpring = $fechaNextSpring->termino;
                         $nextSpring = date_create_from_format('d-m-Y', $fechNextSpring);
                         $formatFechaSiguiente = date_format($nextSpring, 'Y-m-d');
 
@@ -400,20 +403,12 @@ class ftcontroller extends Controller {
 
                     $reg_unidad=DB::table('tbl_unidades')->select('unidad','ubicacion','codigo_postal')->where('unidad',$_SESSION['unidad'])->whereNotIn('direccion', ['N/A', 'null'])->first();
 
-                    $destinatario = clone $remitente = clone $elabora = clone $ccp = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-                    ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-                    ->Where('f.activo', 'true');
-
-                    $destinatario = $destinatario->Where('o.id',16)->First();
-                    $remitente = $remitente->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')->Where('o.id_parent',1)->Where('u.unidad', $reg_unidad->ubicacion)->First();
-                    $elabora = $elabora->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')->Where('u.unidad', $reg_unidad->ubicacion)->Where('o.nombre', 'LIKE', '%ACAD%')->First();
-                    $ccp = $ccp->Where('o.id',18)->First();
-
                     $leyenda = Instituto::first();
                     $leyenda = $leyenda->distintivo;
-                    $direccion = DB::Table('tbl_unidades')->WHERE('unidad',$unidad)->VALUE('direccion');
-                    $direccion = explode("*", $direccion);
-                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'leyenda','direccion','destinatario','remitente','elabora','ccp'));
+
+                    $funcionarios = $this->funcionarios($unidad);
+
+                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'leyenda','funcionarios'));
                     return $pdf->stream('Memo_unidad_para_DTA.pdf');
                     /**
                      * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
@@ -549,20 +544,11 @@ class ftcontroller extends Controller {
     }
 
     protected function chkDateToDeliver() {
-        $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
-        $fecha = Carbon::parse(Carbon::now());
-        $anioActual = Carbon::now()->year;
-        $mes = $meses[($fecha->format('n')) - 1];
-        $fechaActual = Carbon::now()->format('d-m-Y');
-        /* hacemos una consulta a la tabla para obtener el mes correspondiente */
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $mes)->first();
-        $fEAc = $fechaEntregaActual->fecha_entrega."-".$anioActual;
-        $comfechaActual = strtotime($fechaActual);
-        $convertfEAc = date_create_from_format('d-m-Y', $fEAc);
-        $confEAc = date_format($convertfEAc, 'd-m-Y');
-        $comconfEAc = strtotime($confEAc); // fecha actual de entrega
-        $dias = (strtotime($confEAc) - strtotime($fechaActual))/86400;
-        $dias = abs($dias); $dias = floor($dias);
+        $fechaActual = Carbon::now();
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino')->whereDate('inicio', '<=', $fechaActual)->whereDate('termino', '>=', $fechaActual)->first();
+
+        $fechaTermino = Carbon::parse($fechaEntregaActual->termino); // Convertir la fecha de término a Carbon
+        $dias = $fechaActual->diffInDays($fechaTermino, false)+1; // Calcula la diferencia en días
 
         return $dias;
     }
@@ -705,180 +691,32 @@ class ftcontroller extends Controller {
         return view('reportes.memorandum_unidad_formatot', compact('meses', 'queryGetMemo', 'unidadstr', 'queryGetMemoRetorno'));
     }
 
+    public function funcionarios($unidad) {
+        $query = clone $dacademico = clone $dacademico_unidad = clone $certificacion = clone $dunidad = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true');
 
+        $dacademico = $dacademico->Where('o.id',16)->First();
+        $certificacion = $certificacion->Where('o.id',18)->First();
 
-    // protected function cursosreportados(Request $request){
-    //     $setMes = $request->get('messeleccionado');
+        $dacademico_unidad = $dacademico_unidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DEPARTAMENTO ACADEMICO%')
+            ->Where('u.unidad', $unidad)
+            ->First();
 
-    //     if (empty($request->get('anio'))) {
-    //         # si está vacio se toma el año actual
-    //         $anioActual = Carbon::now()->year;
-    //     } else {
-    //         # code...
-    //         $anioActual = $request->get('anio');
-    //     }
+        $dunidad = $dunidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
 
-    //     // obtener el año actual --
+        $funcionarios = [
+            'dacademico' => ['titulo'=>$dacademico->titulo,'nombre'=>$dacademico->nombre,'puesto'=>$dacademico->cargo,'direccion'=>$dacademico->direccion,'telefono'=>$dacademico->telefono,'correo'=>$dacademico->correo_institucional],
+            'certificacion' => ['titulo'=>$certificacion->titulo,'nombre'=>$certificacion->nombre,'puesto'=>$certificacion->cargo,'direccion'=>$certificacion->direccion,'telefono'=>$certificacion->telefono,'correo'=>$certificacion->correo_institucional],
+            'dacademico_unidad' => ['titulo'=>$dacademico_unidad->titulo,'nombre'=>$dacademico_unidad->nombre,'puesto'=>$dacademico_unidad->cargo,'direccion'=>$dacademico_unidad->direccion,'telefono'=>$dacademico_unidad->telefono,'correo'=>$dacademico_unidad->correo_institucional],
+            'dunidad' => ['titulo'=>$dunidad->titulo,'nombre'=>$dunidad->nombre,'puesto'=>$dunidad->cargo,'direccion'=>$dunidad->direccion,'telefono'=>$dunidad->telefono,'correo'=>$dunidad->correo_institucional],
+            'elabora' => ['nombre'=>strtoupper(Auth::user()->name),'puesto'=>strtoupper(Auth::user()->puesto)]
+        ];
 
-    //     $id_user = Auth::user()->id;
-    //     // dd($id_user);exit;
-    //     $rol = DB::table('role_user')
-    //     ->select('roles.slug')
-    //     ->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')
-    //     ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])
-    //     ->get();
-    //     $_SESSION['unidades']=NULL;
-    //     $meses = array(1 => 'ENERO', 2 => 'FEBRERO', 3 => 'MARZO', 4 => 'ABRIL', 5 => 'MAYO', 6 => 'JUNIO', 7 => 'JULIO', 8 => 'AGOSTO', 9 => 'SEPTIEMBRE', 10 => 'OCTUBRE', 11 => 'NOVIEMBRE', 12 => 'DICIEMBRE');
-    //     //var_dump($rol);exit;
-    //     if (!empty($rol[0]->slug)) {
-    //         # si no está vacio
-    //         if(count($rol) > 0)
-    //         {
-    //             $unidad = Auth::user()->unidad;
-    //             //dd($unidad);
-    //             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
-    //             $_SESSION['unidad'] = $unidad;
-    //             // dd($_SESSION['unidad']);
-    //         }
-
-    //         $tempinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
-
-    //         $cursos_reportados = tbl_curso::searchbymesunidadanio($setMes)
-    //             ->select('tbl_cursos.id AS id_tbl_cursos', 'tbl_cursos.status AS estadocurso' ,'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura',DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
-    //             DB::raw('extract(day from tbl_cursos.inicio) as diai'),DB::raw('extract(month from tbl_cursos.inicio) as mesi'),DB::raw('extract(day from tbl_cursos.termino) as diat'),DB::raw('extract(month from tbl_cursos.termino) as mest'),DB::raw("case when EXTRACT( Month FROM tbl_cursos.termino) between '7' and '9' then '1' when EXTRACT( Month FROM tbl_cursos.termino) between '10' and '12' then '2' when EXTRACT( Month FROM tbl_cursos.termino) between '1' and '3' then '3' else '4' end as pfin"),
-    //             'tbl_cursos.horas','tbl_cursos.dia',DB::raw("concat(tbl_cursos.hini,' ', 'A', ' ',tbl_cursos.hfin) as horario"),DB::raw('count(distinct(ca.id)) as tinscritos'),DB::raw("SUM(CASE WHEN ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as imujer"),DB::raw("SUM(CASE WHEN ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ihombre"),DB::raw("SUM(CASE WHEN ca.acreditado= 'X' THEN 1 ELSE 0 END) as egresado"),
-    //             DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as emujer"),DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ehombre"),DB::raw("SUM(CASE WHEN ca.noacreditado='X' THEN 1 ELSE 0 END) as desertado"),
-    //             DB::raw("SUM(DISTINCT(ins.costo)) as costo"),
-    //             DB::raw("SUM(ins.costo) as ctotal"),
-    //             DB::raw("sum(case when ins.abrinscri='ET' and ap.sexo='FEMENINO' then 1 else 0 end) as etmujer"),
-    //             DB::raw("sum(case when ins.abrinscri='ET' and ap.sexo='MASCULINO' then 1 else 0 end) as ethombre"),DB::raw("sum(case when ins.abrinscri='EP' and ap.sexo='FEMENINO' then 1 else 0 end) as epmujer"),
-    //             DB::raw("sum(case when ins.abrinscri='EP' and ap.sexo='MASCULINO' then 1 else 0 end) as ephombre"),'tbl_cursos.cespecifico','tbl_cursos.mvalida','tbl_cursos.efisico','tbl_cursos.nombre','ip.grado_profesional','ip.estatus','i.sexo','ei.memorandum_validacion','tbl_cursos.mexoneracion',
-    //             DB::raw("sum(case when ap.empresa_trabaja<>'DESEMPLEADO' then 1 else 0 end) as empleado"),DB::raw("sum(case when ap.empresa_trabaja='DESEMPLEADO' then 1 else 0 end) as desempleado"),
-    //             DB::raw("sum(case when ap.discapacidad<> 'NINGUNA' then 1 else 0 end) as discapacidad"),DB::raw("sum(case when ar.migrante='true' then 1 else 0 end) as migrante"),DB::raw("sum(case when ar.indigena='true' then 1 else 0 end) as indigena"),DB::raw("sum(case when ar.etnia<> NULL then 1 else 0 end) as etnia"),
-    //             'tbl_cursos.programa','tbl_cursos.muni','tbl_cursos.depen','tbl_cursos.cgeneral','tbl_cursos.sector','tbl_cursos.mpaqueteria',
-
-    //             DB::raw("sum( case when EXTRACT( year from (age(tbl_cursos.termino, ap.fecha_nacimiento))) < 15 and ap.sexo='FEMENINO' then 1 else 0 end) as iem1"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) < 15 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh1"),
-    //             DB::raw("sum( CASE  WHEN  EXTRACT(YEAR FROM (AGE(tbl_cursos.termino, ap.fecha_nacimiento))) between 15 and 19 AND ap.sexo = 'FEMENINO'  THEN 1  ELSE 0 END ) as iem2"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 15 and 19 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh2"),
-    //             DB::raw("sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 20 and 24 AND ap.sexo='FEMENINO' THEN 1 ELSE 0  END ) as iem3"),
-    //             DB::raw("sum( Case When EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 20 and 24 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh3"),
-    //             DB::raw("sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34  AND ap.sexo='FEMENINO' THEN 1 ELSE 0 END ) as iem4"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34 AND ap.sexo='MASCULINO' then 1 else 0 end) as ieh4"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 35 and 44 AND ap.sexo='FEMENINO' then 1 else 0 end) as iem5"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 35 and 44 AND ap.sexo='MASCULINO' then 1 else 0 end) as ieh5"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 45 and 54 AND ap.sexo='FEMENINO' then 1 else 0 end) as iem6"),
-    //             db::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 45 and 54 AND ap.sexo='MASCULINO' then 1 else 0 end) as ieh6"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 55 and 64 AND ap.sexo='FEMENINO' then 1 else 0 end) as iem7"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 55 and 64 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh7"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) >= 65 AND ap.sexo='FEMENINO' then 1 else 0 end) as iem8"),
-    //             DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) >= 65 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh8"),
-
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm1"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh1"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm2"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh2"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm3"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh3"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm4"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh4"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm5"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh5"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm6"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh6"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm7"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh7"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm8"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh8"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm9"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh9"),
-
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm1"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh1"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm2"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh2"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm3"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh3"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm4"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh4"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm5"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh5"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm6"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh6"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm7"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh7"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm8"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh8"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm9"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh9"),
-
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm1"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh1"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm2"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh2"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm3"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh3"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm4"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh4"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm5"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh5"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm6"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh6"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm7"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh7"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm8"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh8"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm9"),
-    //             DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh9"),
-
-    //             DB::raw("case when tbl_cursos.arc='01' then nota else observaciones end as tnota"),
-    //             DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD'->>'OBSERVACION_RETORNO' AS observaciones_enlaces"),
-    //             DB::raw("count( ar.id_pre) AS totalinscripciones"),
-    //             DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
-    //             DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
-    //             DB::raw("COALESCE(sum( case when EXTRACT( year from (age(tbl_cursos.termino, ap.fecha_nacimiento))) < 15 and ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) < 15 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(YEAR FROM (AGE(tbl_cursos.termino, ap.fecha_nacimiento))) between 15 and 19 AND ap.sexo = 'FEMENINO'
-    //             THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 15 and 19 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 20 and 24 AND ap.sexo='FEMENINO' THEN 1 ELSE 0  END )) + COALESCE(sum( Case When EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34  AND ap.sexo='FEMENINO' THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34
-    //             AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 35 and 44
-    //             AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 35 and 44 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 45 and 54
-    //             AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 45 and 54 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 55 and 64 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between '55' and '64' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) >= 65 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) >= 65 and ap.sexo='MASCULINO' then 1 else 0 end)) as sumatoria_total_ins_edad"),
-    //             DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_enlaces"),
-    //             DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS mesturnado")
-    //             )
-    //             ->JOIN('tbl_calificaciones as ca','tbl_cursos.id', '=', 'ca.idcurso')
-    //             ->JOIN('instructores as i','tbl_cursos.id_instructor', '=', 'i.id')
-    //             ->JOIN('instructor_perfil as ip','i.id', '=', 'ip.numero_control')
-    //             ->JOIN('especialidad_instructores as ei','ip.id', '=', 'ei.perfilprof_id')
-    //             ->JOIN('especialidades as e', function($join)
-    //                 {
-    //                     $join->on('ei.especialidad_id', '=', 'e.id');
-    //                     $join->on('tbl_cursos.espe', '=', 'e.nombre');
-    //                 })
-    //             ->JOIN($tempinner ,function($join)
-    //             {
-    //                 $join->on('ca.matricula', '=', 'ar.no_control');
-    //                 $join->on('tbl_cursos.id_curso','=','ar.id_curso');
-    //             })
-    //             ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
-    //             ->JOIN('tbl_inscripcion as ins', function($join)
-    //             {
-    //                 $join->on('ca.idcurso', '=', 'ins.id_curso');
-    //                 $join->on('ca.matricula','=','ins.matricula');
-    //             })
-    //             ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
-    //             ->WHERE('u.ubicacion', '=', $_SESSION['unidad'])
-    //             ->WHERE('tbl_cursos.status', 'REPORTADO')
-    //             ->WHERE('tbl_cursos.turnado', 'PLANEACION_TERMINADO')
-    //             ->WHERE('tbl_cursos.clave', '!=', 'NULL')
-    //             ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anioActual)
-    //             ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion', 'e.id')
-    //             ->distinct()->get();
-
-    //     } else {
-    //         # si se encuentra vacio
-    //         $cursos_reportados = null;
-    //     }
-
-    //     return view('reportes.cursos_reportados_formatot_unidad',compact('cursos_reportados', 'meses', 'unidad'));
-    // }
-
+        return $funcionarios;
+    }
 }

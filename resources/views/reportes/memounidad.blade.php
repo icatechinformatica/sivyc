@@ -12,10 +12,10 @@
         header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;}
         img.izquierda {float: left;width: 100%;height: 60px;}
         img.izquierdabot {
-                float: inline-end;
-                width: 712px;
-                height: 100px;
-            }
+            float: inline-end;
+            width: 712px;
+            height: 100px;
+        }
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
         img.derecha {float: right;width: 50%;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
@@ -35,16 +35,16 @@
         /* Propiedad que ha sido agreda*/
 
         }
-        .direccion
-            {
-                text-align: left;
-                position: absolute;
-                bottom: 820px;
-                left: 20px;
-                font-size: 8.5px;
-                color: white;
-                line-height: 1;
-            }
+    .direccion
+    {
+        text-align: left;
+        position: absolute;
+        bottom: 830px; /*830*/
+        left: 20px;
+        font-size: 7.5px;
+        color: white;
+        line-height: 1;
+    }
     </style>
 </head>
 <body>
@@ -53,31 +53,19 @@
             <h6><small><small>{{$leyenda}}</small></small></h6><p class='direccion'>
     </header>
     <footer>
-        <script type="text/php">
-            if (isset($pdf))
-            {
-                $x = 275;
-                $y = 700;
-                $text = "Hoja {PAGE_NUM} de {PAGE_COUNT}";
-                $font = "Arial";
-                $size = 11;
-                $color = array(0,0,0);
-                $word_space = 0.0;  //  default
-                $char_space = 0.0;  //  default
-                $angle = 0.0;   //  default
-                $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
-            }
-        </script>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        {{-- <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p> --}}
-        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach</b></p>
+        <p class='direccion'><b>
+            @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
+            @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+            <br>Teléfono: {{$funcionarios['dacademico']['telefono']}} Correo: {{$funcionarios['dacademico']['correo']}}
+        </b></p>
     </footer>
     <div class= "contenedor">
         <div align=right style="font-size:11px;"><b>DIRECCION TECNICA ACADEMICA</b></div>
         <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $nume_memo }}</b></div>
         <div align=right style="font-size:11px;"><b>TUXTLA GUTIERREZ, CHIAPAS; {{ $fecha_nueva }}</b></div>
         <br>
-        <div align=left style="font-size:12px;"><b>{{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}</b></div>
+        <div align=left style="font-size:12px;"><b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}, {{ $funcionarios['dunidad']['puesto'] }}</b></div>
         <div align=left style="font-size:11px;"><b>PRESENTE.</b></div>
         <br>
             @php
@@ -142,15 +130,15 @@
                 <br>
                 <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
                 <br><br><br><br>
-                <div style="font-size:11px;"> <b>{{ $reg_unidad->dacademico }}</b> </div>
-                <div style="font-size:11px;"> <b>{{ $reg_unidad->pdacademico }}</b> </div>
+                <div style="font-size:11px;"> <b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}</b> </div>
+                <div style="font-size:11px;"> <b>{{ $funcionarios['dacademico']['puesto'] }}</b> </div>
                 <br>
                 {{-- <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div> --}}
                 {{-- <div style="font-size:9px;"> <b>C.C.P LIC. YESENIA FUSIKO. KOMUKAI HORITA, JEFA DEL DEPARTAMENTO ACADÉMICO. PARA SU CONOCIMIENTO, CIUDAD.</b> </div> --}}
-                <div style="font-size:9px;"> <b>C.c.p. {{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
+                <div style="font-size:9px;"> <b>C.c.p. {{ $funcionarios['dacademico_unidad']['titulo'] }} {{ $funcionarios['dacademico_unidad']['nombre'] }}. {{ $funcionarios['dacademico_unidad']['puesto'] }}.</b> </div>
                 <div style="font-size:9px;"> <b>ARCHIVO</b> </div>
-                <div style="font-size:7px;"> <b>VALIDÓ: ING. MARÍA TERESA JIMÉNEZ FONSECA. JEFA DEL DEPTO. DE CERTIFICACIÓN Y CONTROL</b> </div>
-                <div style="font-size:7px;"> <b>ELABORÓ: {{ $elabora }}.</b> </div>
+                <div style="font-size:7px;"> <b>VALIDÓ: {{ $funcionarios['certificacion']['titulo'] }} {{ $funcionarios['certificacion']['nombre'] }}. {{ $funcionarios['certificacion']['puesto'] }}</b> </div>
+                <div style="font-size:7px;"> <b>ELABORÓ: {{ $funcionarios['elabora']['nombre'] }}. {{ $funcionarios['elabora']['puesto'] }}</b> </div>
             </div><br>
     </div>
 </body>

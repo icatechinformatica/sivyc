@@ -6,23 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>MANUAL DIDACTICO</title>
-    <style>      
+    <style>
         body{margin-top: 50px; margin-bottom: 80px; }
         @page {margin: 40px 70px 10px 70px;}
-            
+
         header { position: fixed; left: 0px;  right: 0px; text-align: center;}
         header h1{height:0; line-height: 14px; padding: 9px; margin: 0;}
         header h2{margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
         footer {position:fixed;   left:0px;   bottom:-50px;   height:100px;   width:100%;}
         footer .page:after { content: counter(page, sans-serif);}
-            
+
         img.derecha { float: right; width: 200px; height: 60px; }
         img.centro { float: right;width: 200px;height: 60px;}
-        
-        
 
-        
-        .tabla-indice td, th {  
+
+
+
+        .tabla-indice td, th {
             text-align: left;
             padding: 8px;
         }
@@ -34,7 +34,7 @@
         .tabla-indice {
             border-collapse: collapse;
         }
-        
+
         .tabla-indice th{
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; font-size:16px
         }
@@ -50,12 +50,12 @@
         .logos{position: absolute; top: 30; left: 0;}
         .contenido{font-weight: bold; font-size: 12px; }
 
-        
+
 
         .segoeUI { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
         label { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-style: normal;}
 
-        
+
         .top-title{text-transform:capitalize;line-height:normal;   }
         .header-image{ width:20%;margin-right:5%;margin-top:-5%;text-align:right; float: left;}
         .pic-img{height:10vw; width:19.15vw;}
@@ -64,7 +64,7 @@
         .img-portada { display: flex; margin-right: auto;text-align: center; }
         .img-portada img{ width: 550px; height:600px;}
         .subtitle-portada{ float: right; position: fixed; bottom: 200; width: 100%; text-align: right;}
-        
+
         .creditos {float: right; width: 100%; text-align: right; }
         .derechos-autor{float: right; width: 100%; text-align: right; }
         .derechos-autor-3 {margin-left: auto; margin-right: auto;text-align: justify;}
@@ -78,14 +78,14 @@
         .instrucciones-guia .center{ text-align: center; font-weight: bold; font-size: 20px;}
         .instrucciones-guia .justify{ text-align: justify; }
 
-        .tablaf { border-collapse: collapse; width: 100%; text-align: center; font-weight: bold; }     
+        .tablaf { border-collapse: collapse; width: 100%; text-align: center; font-weight: bold; }
         .tablaf tr { text-align: center;  }
         .tablaf th { text-align: center;  }
         .tablaf td { text-align: center;  }
         .tablaf td img{ width: 100px; height:80px}
 
         .glosario{text-transform:capitalize; width:65%; margin-left: auto; margin-right: auto;text-align: center;}
-        
+
     </style>
 </head>
 
@@ -175,10 +175,10 @@
             </div>
             <br><br><br><br><br>
             <div class="derechos-autor-3">
-                <label style="text-align:center; font-weight: bold;">© INSTITUTO DE CAPACITACION Y VINCULACIÓN TECNOLÓGICA</label><br>
-                <label style="text-align:center; font-weight: bold;">DEL ESTADO DE CHIAPAS.</label><br>
-                <label style="text-align:center; font-weight: bold;">CIRCUNV. PICHUCALCO COL. MOCTEZUMA. TUXTLA GUTIÉRREZ CHIAPAS.</label><br>
-                <label style="text-align:center; font-weight: bold;">TEL. Y FAX 612 16 21 • Ext 601</label><br>
+                <label style="text-align:center; font-weight: bold;">© {{$info_icatech->name}}</label><br>
+                {{-- <label style="text-align:center; font-weight: bold;">DEL ESTADO DE CHIAPAS.</label><br> --}}
+                <label style="text-align:center; font-weight: bold;">{{$info_icatech->direccion}}</label><br>
+                <label style="text-align:center; font-weight: bold;">TEL. Y FAX {{$info_icatech->telefono}} • Ext 601</label><br>
                 <label style="text-align:center; font-weight: bold;">EMAIL. icatech@icatech.gob.mx</label><br>
 
             </div>
@@ -294,7 +294,7 @@
                 <div class="justify">
                     <label for="">Al final de la guía encontrarás un Glosario, en el que podrás conocer una breve explicación de muchos términos y palabras técnicas o poco usadas en el lenguaje habitual.</label>
                 </div>
-                
+
             </div>
 
             <div class="page_break"></div>
@@ -304,7 +304,7 @@
 
             <div class="page_break"></div>
 
-            <label align="center" style="color: #808080; font-size: 36px; text-align: center;">BIBLIOGRAFIA</label> 
+            <label align="center" style="color: #808080; font-size: 36px; text-align: center;">BIBLIOGRAFIA</label>
             <div class="justify">
             <?php echo htmlspecialchars_decode(stripslashes($carta_descriptiva->referencias)); ?>
             </div>

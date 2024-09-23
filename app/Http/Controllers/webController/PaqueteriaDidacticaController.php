@@ -272,8 +272,9 @@ class PaqueteriaDidacticaController extends Controller
         }
 
         $curso = curso::toBase()->where('id', $idCurso)->first();
+        $info_icatech = DB::Table('tbl_instituto')->Where('id',1)->First();
 
-        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueteriasDidacticas','contenidos', 'carta_descriptiva'));
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueteriasDidacticas','contenidos', 'carta_descriptiva','info_icatech'));
         return $pdf->stream('manualDidactico');
     }
 

@@ -149,7 +149,7 @@
                 </div>
             </div>
             </form>
-            {{-- @if($generarEfirmaValsupre)
+            @if($generarEfirmaValsupre)
                 <div class="form-group col-md-3">
                     <form action="{{ route('valsupre-efirma') }}" method="post" id="registersolicitudpago">
                         @csrf
@@ -158,7 +158,7 @@
                         <button button type="submit" class="btn btn-red" onclick="loader('show')">Generar Validación E.Firma</button>
                     </form>
                 </div>
-            @endif --}}
+            @endif
     </section>
 @endsection
 @section('script_content_js')

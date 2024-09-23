@@ -40,8 +40,8 @@
                             @can('alumnos.index')
                                 <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
                             @endcan
-                            @can('alumnos.inscritos.index')
-                                <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
+                            @can('preinscripcion.alumnos')
+                                <a class="dropdown-item" href="{{ route('preinscripcion.alumnos') }}">Alumnos</a>
                             @endcan
                             @can('preinscripcion.grupo.save')
                                 <a class="dropdown-item" href="{{route('preinscripcion.grupo.nuevo')}}">Nuevo Grupo</a>
@@ -214,15 +214,15 @@
                         </div>
                     </li>
                 @endcan
-                @canany(['alumnos.inscritos.index', 'cursos.index', 'instructor.index', 'organismo.inicio','convenios.index','cerss.inicio','areas.inicio','especialidades.inicio',
+                @canany(['preinscripcion.alumnos', 'cursos.index', 'instructor.index', 'organismo.inicio','convenios.index','cerss.inicio','areas.inicio','especialidades.inicio',
                     'unidades.index','exoneraciones.inicio', 'instituto.inicio','funproc.pat.index','unidades.medida.index'])
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Catálogos
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        @can('alumnos.inscritos.index')
-                            <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
+                        @can('preinscripcion.alumnos')
+                            <a class="dropdown-item" href="{{ route('preinscripcion.alumnos') }}">Alumnos</a>
                         @endcan
                         @can('cursos.index')
                              <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
@@ -264,7 +264,7 @@
                 </li>
                 @endcan
                 @canany(['reportes.cursos', 'planeacion.reporte', 'financieros.reporte', 'vinculacion.reporte', 'reportes.911', 'reportes.rdcd08', 'reportes.rcdod11',
-                    'reportes.rf001','financieros.reportevalrec','financieros.reportecursos','reportes.pat'
+                    'reportes.rf001','financieros.reportevalrec','financieros.reportecursos','reportes.pat','reportes.dpa'
                     ])
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -305,7 +305,10 @@
                             <a class="dropdown-item" href="{{route('financieros-reporte-cursos')}}">Reporte de Cursos</a>
                         @endcan
                         @can('reportes.pat')
-                            <a class="dropdown-item" href="{{route('reportes.pat')}}">PAT-Concentrado</a>
+                            <a class="dropdown-item" href="{{route('reportes.pat')}}">PAT - Concentrado</a>
+                        @endcan
+                        @can('reportes.dpa')
+                            <a class="dropdown-item" href="{{route('reportes.dpa')}}">DPA - Nómina de Instructores</a>
                         @endcan
 
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}

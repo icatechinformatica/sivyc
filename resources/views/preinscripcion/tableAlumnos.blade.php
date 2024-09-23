@@ -34,7 +34,7 @@
 
       @foreach($alumnos as $a)
         @php
-            if ($curso->costo < $a->costo) {
+            if(($curso->costo ?? 0) < ($a->costo ?? 0)) {
               $class= 'form-control numero bg-danger costo';
             } else {
               $class = 'form-control numero costo';
