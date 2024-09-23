@@ -513,7 +513,7 @@ class ExpedienteController extends Controller
         ->where('c.folio_grupo', $folio)->first();
 
         //Obtener comprobante de pago ya que se actualizaron rutas
-        $bdReciboP = DB::table('tbl_recibos')->where('folio_grupo', $folio)->where('status_folio', '!=', 'CANCELADO')->whereNotNull('status_folio')->value('file_pdf');
+        $bdReciboP = DB::table('tbl_recibos')->where('folio_grupo', $folio)->where('status_folio', 'ENVIADO')->value('file_pdf');
 
         $bdReciboT = DB::table('tbl_cursos')
         ->select('comprobante_pago', 'tipo', DB::raw("EXTRACT(YEAR FROM termino) as anio_curso"), DB::raw("

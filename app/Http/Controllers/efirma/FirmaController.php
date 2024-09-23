@@ -287,7 +287,21 @@ class FirmaController extends Controller {
             ];
 
             if ($DF->status == 'VALIDADO') {
-                $nuevo_status = 'CANCELADO ICTI';
+                //CONSULTA PARA VALIDACIÓN
+                $valid_finacieros = DB::table('tbl_cursos as tc')
+                ->join('pagos as pa', 'pa.id_curso', '=', 'tc.id')
+                ->join('folios as fo', 'fo.id_cursos', '=', 'tc.id')
+                ->where('pa.status_recepcion','VALIDADO')
+                ->where('fo.edicion_pago', false)  // Aquí se compara si es diferente de true
+                ->where('tc.clave', '=', $request->txtClave)
+                ->exists();
+
+                if($valid_finacieros){ //Si es true entonces mandar mensaje
+                        return redirect()->route('firma.inicio')->with('danger', 'No es posible anular el documento debido a que ha sido validado por financieros');
+                }else{ //No existe relacion con financieros o si tiene permiso de edición
+                    $nuevo_status = 'CANCELADO ICTI';
+                }
+
             } else {
                 $nuevo_status = 'CANCELADO';
             }
