@@ -14,59 +14,11 @@
     <style>
         .custom-font-size { font-size: 18px; }
         #tblAlumnos tr th{ text-align: center; padding:5px;}
+        .btn { font-size: 11px;}
     </style>
 @endsection
 @section('content')
-    <?php
-    /*
-        $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable = $servicio = $nombre_curso = $cespe = $fcespe = $nota =
-        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = $efisico = $mvirtual = $lvirtual = $memo = $repre = $tel =
-        // $firm_user = $firm_cerss_one = $firm_cerss_two = $url_pdf_conv = "";
-        $costo = $programa = $plantel = null;
-        // if ($grupo) {
-        //     $firm_user = $grupo->firma_user;
-        //     $firm_cerss_one = $grupo->firma_cerss_one;
-        //     $firm_cerss_two = $grupo->firma_cerss_two;
-        //     $url_pdf_acta = $grupo->url_pdf_acta;
-        //     $url_pdf_conv = $grupo->url_pdf_conv;
-
-        // }
-        if($curso){
-            $id_curso = $curso->id;
-            $costo = $curso->costo;
-            $nombre_curso =  $curso->nombre_curso;
-        }
-        if(isset($grupo)){
-            $plantel =  $grupo->plantel;
-            $programa =  $grupo->programa;
-            $hfin = $grupo->hfin;
-            $hini = $grupo->hini;
-            $id_cerss = $grupo->id_cerss;
-            $inicio = $grupo->inicio;
-            $termino = $grupo->termino;
-            $id_muni = $grupo->id_municipio;
-            $id_localidad = $grupo->clave_localidad;
-            $organismo = $grupo->depen;
-            $unidad = $grupo->unidad;
-            $folio = $grupo->folio_grupo;
-            $turnado = $grupo->turnado_grupo;
-            $id_vulnerable = $grupo->id_vulnerable;
-            $modalidad = $grupo->mod;
-            $tipo = $grupo->tipo_curso;
-            $efisico = $grupo->efisico;
-            $mvirtual = $grupo->medio_virtual;
-            $lvirtual = $grupo->link_virtual;
-            $servicio = $grupo->tipo_curso;
-            $cespe = $grupo->cespecifico;
-            $fcespe = $grupo->fcespe;
-            $nota = $grupo->obs_vincula;
-            $memo = $grupo->mpreapertura;
-            $repre = $grupo->depen_repre;
-            $tel = $grupo->depen_telrepre;
-            $solicita = $grupo->solicita;
-            $editar_solicita = $grupo->editar_solicita;
-        }*/
-
+    @php
         $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = null;
         if(isset($grupo)){
             $turnado = $grupo->turnado_grupo;
@@ -79,15 +31,7 @@
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
-/*
-        if($recibo){
-            $comprobante = env('APP_URL')."/storage/".$recibo->file_pdf;
-            $folio_pago = $recibo->folio_recibo;
-            $fecha_pago = $recibo->fecha_expedicion;
-        }
-            */
-
-    ?>
+    @endphp
     <div class="card-header">
         Preinscripci&oacute;n / Registro de Grupo
     </div>

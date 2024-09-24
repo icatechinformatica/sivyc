@@ -103,7 +103,7 @@
 </table>
 </div>
 
-<div class="d-flex flex-lg-row flex-column col-12 col-lg-4 justify-content-left mb-2 mt-3">
+<div class="d-flex flex-lg-row flex-column col-12 col-lg-3 justify-content-left mb-2 mt-3">
     {{-- Agregamos el apartado de subir PDF Jose Luis Moreno Arcos--}}
     @can('agenda.vinculacion')
             <div class="d-flex">
@@ -134,7 +134,7 @@
     @endcan
     {{-- Termina subir archivo --}}
   </div>
-  <div class="d-flex flex-lg-row flex-column col-12 col-lg-8 justify-content-end">
+  <div class="d-flex flex-lg-row flex-column col-12 col-lg-9 justify-content-end">
 
     @can('agenda.vinculacion')
         {{-- @dd($grupo) --}}

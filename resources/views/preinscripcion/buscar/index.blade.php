@@ -16,6 +16,7 @@
         @endif
         <div class="row">
                 {{ Form::open(['route' => 'preinscripcion.buscar', 'method' => 'post', 'id' => 'frm','class' => 'form-inline', 'enctype' => 'multipart/form-data' ]) }}
+                    {{ Form::select('ejercicio', $anios, $parameters['ejercicio']??'' ,['id'=>'ejercicio','class' => 'form-control mr-sm-2','title' => 'EJERCICIO','placeholder' => 'EJERCICIO']) }}
                     {{ Form::text('valor_buscar', null, ['size'=>50, 'class' => 'form-control', 'placeholder' => 'GRUPO / CURSO', 'aria-label' => 'BUSCAR']) }}
                     {{ Form::submit('BUSCAR', array('class' => 'btn', 'type' => 'submit')) }}
                     {{ Form::hidden('folio_grupo',NULL, ['id'=>'folio_grupo']) }}
@@ -28,8 +29,7 @@
     <br>  
 
     @section('script_content_js') 
-         <script language="javascript">
-                              
+         <script language="javascript">                              
                 function  show(id){
                     //if(id>0){
                         $('#folio_grupo').val(id);
