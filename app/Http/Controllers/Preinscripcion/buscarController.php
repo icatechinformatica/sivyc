@@ -41,9 +41,8 @@ class buscarController extends Controller
         $parameters = $request->all();
         if(!isset($parameters['ejercicio'])) $ejercicio = $parameters['ejercicio'] = date('Y');
         $data = DB::table('alumnos_registro as ar')
-        ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad', 'tc.status_curso')
-        ->join('cursos as c', 'ar.id_curso', '=', 'c.id')
-        ->leftjoin('tbl_cursos as tc', 'tc.folio_grupo', '=', 'ar.folio_grupo');
+        ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad')
+        ->join('cursos as c', 'ar.id_curso', '=', 'c.id');        
 
         if (preg_match('/^2B-\d{6}$/', $valor_buscar)){ dd("pasa");
             $data->where('ar.folio_grupo', 'like', '%' . $valor_buscar . '%');
@@ -65,7 +64,7 @@ class buscarController extends Controller
         }
 
         $data = $data->whereNotNull('ar.folio_grupo')
-            ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad', 'tc.id')
+            ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad')
             ->orderBy('ar.folio_grupo', 'DESC')
             ->paginate(15);
         return view('preinscripcion.buscar.index',compact('data','activar','anios','parameters'));
