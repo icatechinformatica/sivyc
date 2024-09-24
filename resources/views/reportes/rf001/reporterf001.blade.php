@@ -118,78 +118,42 @@
             Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001),
             original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad
             de Capacitación <span class="color_text"> {{ $unidad }}</span>, con los siguientes movimientos.
-            <br><br>
+            <br>
         </div>
         <br>
         <div class="tabla_alumnos">
-            <table class="tablas" border="1">
-                <thead>
-                    <tr>
-                        <th>
-                            <p width="5px">PROGRESIVO</p>
-                        </th>
-                        <th>
-                            <p width="20px">N° FOLIO</p>
-                        </th>
-                        <th>
-                            <p width="20px">CURSO / MOTIVO</p>
-                        </th>
-                        <th>
-                            <p width="20px">MOVIMIENTO</p>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($datoJson as $key => $value)
-                        @php
-                            $depositos = isset($value['depositos'])
-                                        ? json_decode($value['depositos'], true)
-                                        : [];
-                        @endphp
-                        <tr>
-                            <td>{{ ($key < 9 ? '0' : '') . ($key + 1) }}</td>
-                            <td>{{ $value['folio'] }}</td>
-                            <td>{{ $value['curso'] == null ? $value['descripcion'] : $value['curso'] }}</td>
-                            <td>
-                                @foreach ($depositos as $k)
-                                    {{ $k['folio'] }} &nbsp;
-                                @endforeach
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <ul style="font-size: 14px">
+                @foreach ($datoJson as $key => $value)
+                    @php
+                        $depositos = isset($value['depositos']) ? json_decode($value['depositos'], true) : [];
+                    @endphp
+                    <li style="font-size: 12px;"><b>{{ $value['curso'] == null ? strtolower($value['descripcion']) : strtolower($value['curso']) }}</b> con el siguiente folio
+                        {{ $value['folio'] }}</li>
+                @endforeach
+            </ul>
             <p style="font-size: 14px">Correspondientes al periodo comprendido del {{ $formattedStartDate }} al
                 {{ $formattedEndDate }} de {{ $mes }} del {{ $anio }}, lo anterior, para contabilización
                 respectiva.</p>
             <p style="font-size: 14px">Sin otro particular aprovecho la ocasión para saludarlo. </p>
-            <br><br>
+            <br>
         </div>
-        <div class="contenido">
+        {{-- <div class="contenido">
             ATENTAMENTE
             <br><br><br><br>
             <span class="color_text firmau"><b>{{ $data->dunidad }}</b></span> <br>
             <span class="color_text firmau"><b>{{ $data->pdunidad . ' ' . $unidad }}</b></span>
         </div>
-        <br>
-        <div class="textofin">
+        <br> --}}
+        {{-- <div class="textofin">
             <p class="delet_space_p">C.C.P. {{ $conocimiento->titulo }} {{ $conocimiento->nombre_funcionario }} - {{ $conocimiento->cargo }} - Para su conocimiento.</p>
             <p class="delet_space_p">ARCHIVO / MINUTARIO</p>
             <p class="delet_space_p">ELABORÓ: {{ $nombreElaboro }}. - {{ $puestoElaboro }}</p>
             <p class="delet_space_p">VALIDÓ: {{ $delegado->nombre }}. - {{ $delegado->cargo }}</p>
-        </div>
+        </div> --}}
     </div>
 
 
 @endsection
 
 @section('script_content_js')
-    {{-- <script type="text/php">
-        if ( isset($pdf) ) {
-            $pdf->page_script('
-                $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-                $pdf->text(73, 760, "Pág. $PAGE_NUM de $PAGE_COUNT", $font, 8);
-            ');
-        }
-    </script> --}}
 @endsection

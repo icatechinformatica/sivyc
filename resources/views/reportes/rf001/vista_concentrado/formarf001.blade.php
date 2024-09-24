@@ -1,10 +1,8 @@
  {{-- desarrollado y diseñado por MIS. DANIEL MÉNDEZ CRUZ - DERECHOS RESERVADOS ICATECH 2021 --}}
- @extends('reportes.rf001.plantilla.vertical_layout', ['title' => __('Reporte de Recorrido')])
+ @extends('theme.formatos.vlayout')
+ @section('title', 'Soporte de Entrega | SIVyC Icatech')
 
- @section('name')
- @endsection
-
- @section('contenido_css')
+ @section('content_script_css')
      <style>
          table,
          th,
@@ -44,6 +42,7 @@
              border-collapse: collapse;
              font-size: 10px;
              font-family: sans-serif;
+             width: 100%;
          }
 
          .tabla_con_border tr td {
@@ -127,7 +126,7 @@
      </style>
  @endsection
 
- @section('contenido')
+ @section('content')
      @php
          $movimiento = json_decode($data->movimientos, true);
          $importeTotal = 0;
@@ -138,16 +137,16 @@
          $nombreMesCreacion = $dateCreacion->translatedFormat('F');
      @endphp
      {{-- contenido del documento --}}
-     <table class="tabla_con_border">
+     <table class="tabla_con_border" style="padding-top: 20px;">
          <tr>
              <td width="200px">FECHA DE ELABORACIÓN</td>
-             <td width="750px" style="border: medium transparent" colspan="8"></td>
+             <td width="750px" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;" colspan="8"></td>
              <td width="200px;" style="text-align:center;">SEMANA </td>
              <td colspan="13" style="border: inset 0pt"></td>
          </tr>
          <tr>
              <td style="text-align:center;">{{ Carbon\Carbon::parse($data->created_at)->format('d/m/Y') }}</td>
-             <td style="border: medium transparent" colspan="8"></td>
+             <td colspan="8" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;"></td>
              <td style="text-align:center;">{{ $periodoInicio->format('d/m/Y') . ' AL ' . $periodoFin->format('d/m/Y') }}
              </td>
              <td colspan="13" style="border: inset 0pt"></td>
@@ -156,7 +155,7 @@
      <center class="espaciado"></center>
      <table class="tabla_con_border">
          <tr>
-             <td colspan="3" style="text-align: center;">
+             <td style="text-align: center;">
                  <b>DEPOSITO (S) EFECTUADO (S) A LA CUENTA BANCARIA:</b>
              </td>
          </tr>
@@ -168,7 +167,7 @@
      </table>
      {{-- body table --}}
      <table class="tabla_con_border">
-         <thead style="background-color:#f2f2f2;">
+         <thead>
              <tr>
                  <th style="text-align: center;" width="40px"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
                  <th style="text-align: center;" width="100px"><b>N°. RECIBO Y/O FACTURA</b></th>
@@ -253,11 +252,11 @@
      {{-- contenido del documento END --}}
  @endsection
 
- @section('contentJS')
-     <script type="text/php">
+ @section('script_content_js')
+     {{-- <script type="text/php">
         if (isset($pdf) ) {
             $font = $fontMetrics->getFont("helvetica", "bold");
             $pdf->page_text(370, 570, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, 6, array(0,0,0));
         }
-    </script>
+    </script> --}}
  @endsection

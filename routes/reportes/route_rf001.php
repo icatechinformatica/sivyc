@@ -11,7 +11,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/reportes/rf001/detalle/{concentrado}', [Rf001Controller::class, 'index'])->name('reporte.rf001.details');
     Route::put('/reportes/rf001/detalle/actualizar/{id}', [Rf001Controller::class, 'update'])->name('reporte.rf001.update');
     Route::post('/reportes/rf001/store', [Rf001Controller::class, 'storeData'])->name('reporte.rf001.jsonStore');
-    Route::get('/reportes/rf001/formato/pdf', [Rf001Controller::class, 'getPdfReport'])->name('reporte.rf001.getpdf');
+    Route::get('/reportes/rf001/formato/pdf/{id}', [Rf001Controller::class, 'getPdfReport'])->name('reporte.rf001.getpdf');
     Route::get('/reportes/rf001/concentrado/detalle/{id}/{solicitud}', [Rf001Controller::class, 'show'])->name('reporte.rf001.set.details');
     Route::post('/reportes/rf001/add/comment', [Rf001Controller::class, 'addComment'])->name('reporte.rf001.add.comments');
     Route::get('/reportes/rf001/create/xmlFormat/{id}', [Rf001ReporteController::class, 'show'])->name('reporte.rf001.xml.format');
@@ -26,7 +26,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('/reporte/rf001/firma/update', [Rf001ReporteController::class, 'store'])->name('firma.store.update');
 
- Route::get('/reporte/rf001/formarf001/{id}', [Rf001ReporteController::class, 'getForma'])->name('reporte.forma.rf001');
+    Route::get('/reporte/rf001/formarf001/{id}', [Rf001ReporteController::class, 'getForma'])->name('reporte.forma.rf001');
 
 
 });

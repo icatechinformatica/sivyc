@@ -8,12 +8,11 @@ class DocumentosFirmar extends Model {
     protected $table = 'documentos_firmar';
 
     protected $fillable = [
-        'obj_documento', 'status', 'link_pdf', 'documento','link_verificacion'
+        'obj_documento', 'status', 'link_pdf', 'documento','link_verificacion', 'body_html'
     ];
 
     protected $casts = [
         'obj_documento' => 'jsonb',
-        'obj_documento_interno' => 'json',
         'documento' => 'xml',
     ];
 

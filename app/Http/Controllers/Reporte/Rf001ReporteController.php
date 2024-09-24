@@ -191,6 +191,6 @@ class Rf001ReporteController extends Controller
         $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
         $cuentaBancaria = $cuentas_bancarias[$unidad->unidad]['BBVA'];
         $getFormatoRf = $this->rfoo1Repository->getDetailRF001Format($id);
-        return (new ReportService())->renderHtmlForma($getFormatoRf, $cuentaBancaria);
+        return (new ReportService())->renderHtmlForma($getFormatoRf, $cuentaBancaria, 'hola');
     }
 }

@@ -22,6 +22,8 @@ use App\Http\Requests\rf001ComentariosRequest;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tokens_icti;
+use App\Models\Reportes\Rf001Model;
+use setasign\Fpdi\Fpdi;
 
 class Rf001Controller extends Controller
 {
@@ -252,7 +254,7 @@ class Rf001Controller extends Controller
      */
     public function destroy($id)
     {
-        //
+        //getReport
     }
 
     protected function obtenerPrimerYUltimoDiaHabil($startDate)
@@ -322,17 +324,49 @@ class Rf001Controller extends Controller
         );
     }
 
-    public function getPdfReport()
+    public function getPdfReport($id)
     {
+        $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+        $unidad = Auth::user()->unidad;
+
+        // dd($unidad);
+
         $idOrganismo = Auth::user()->id_organismo; # obtener el organismo administrativo id
         $organismo = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $idOrganismo)->first();
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
         $nombreElaboro = Auth::user()->name;
         $puestoElaboro = Auth::user()->puesto;
-        $report = (new ReportService())->getReport($distintivo, $organismo, 26, $nombreElaboro, $puestoElaboro);
-        // return response()->json($report);
+        $report = (new ReportService())->getReport($distintivo, $organismo, $id, $nombreElaboro, $puestoElaboro);
+        $formatoRF001 = (new ReportService())->renderHtmlForma($rf001, $unidad, $distintivo);
         // $pdf = PDF::loadView('reportes.rf001.reporterf001');
-        return $report->stream('Reporte RF001 de ');
+        $file1 = tempnam(sys_get_temp_dir(), 'report');
+        $file2 = tempnam(sys_get_temp_dir(), 'formatoRF001');
+
+        // escribir los datos del PDF en los archivos temporales
+        file_put_contents($file1, $report);
+        file_put_contents($file2, $formatoRF001);
+
+        // cambiar los PDF usando FPDI
+        $newPdf = new Fpdi();
+        $newPdf->AddPage();
+        $pageCount1 = $newPdf->setSourceFile($file1);
+        $tpldx1 = $newPdf->importPage(1);
+        $newPdf->useTemplate($tpldx1);
+
+        $newPdf->AddPage();
+        $pageCount2 = $newPdf->setSourceFile($file2);
+        $tpldx2 = $newPdf->importPage(1);
+        $newPdf->useTemplate($tpldx2);
+
+        unlink($file1);
+        unlink($file2);
+
+        return $newPdf->Output('documento.pdf', 'I');
+
+        //generar el PDF
+        // $pdf = PDF::loadHTML($combinedConent);
+        // return $pdf->stream('combined_documents.pdf');
+        // return $report->stream();
         // return view('reportes.rf001.reporterf001', $data)->render();
     }
 }

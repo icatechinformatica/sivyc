@@ -50,7 +50,8 @@ class ReportService
             ->Where('u.unidad', $rf001->unidad)
             ->First();
 
-        return PDF::loadView('reportes.rf001.reporterf001', compact('distintivo', 'organismo', 'data', 'unidad', 'rf001', 'municipio', 'fecha_comp', 'dirigido', 'direccion', 'conocimiento', 'nombreElaboro', 'puestoElaboro', 'delegado'));
+        return PDF::loadView('reportes.rf001.reporterf001', compact('distintivo', 'organismo', 'data', 'unidad', 'rf001', 'municipio', 'fecha_comp', 'dirigido', 'direccion', 'conocimiento', 'nombreElaboro', 'puestoElaboro', 'delegado'))->setPaper('a4', 'portrait')->output();
+        // return view('reportes.rf001.reporterf001', compact('distintivo', 'organismo', 'data', 'unidad', 'rf001', 'municipio', 'fecha_comp', 'dirigido', 'direccion', 'conocimiento', 'nombreElaboro', 'puestoElaboro', 'delegado'))->render();
     }
 
     public function xmlFormat($id, $organismo, $unidad, $usuario)
@@ -58,8 +59,7 @@ class ReportService
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
 
         // $body = $this->createBody($id, $rf001);
-        $htmlContent = $this->renderHtmlForma($rf001, $usuario->unidad);
-        // return $htmlContent; exit;
+        $htmlContent = $this->renderHtmlForma($rf001, $unidad);
         $contWithoutHtml = strip_tags($htmlContent); //contenido sin html
         // limpiar cadena
         $clnHtml = preg_replace('/@page\s*\{.*?\}\s*\/\*.*?\*\/|\.tb\s*\{.*?\}|\#titulo\s*\{.*?\}|\.tablaf\s*\{.*?\}|\.showlast\s*\{.*?\}|\.showborders\s*\{.*?\}|\.prueba\s*\{.*?\}|\.direccion\s*\{.*?\}|\.mielemento\s*\{.*?\}|p\s*\{.*?\}|body\s*\{.*?\}|header\s*\{.*?\}|footer\s*\{.*?\}|if\s*\(\s*isset\(\$pdf\)\s*\)\s*\{.*?\}/s', '', $contWithoutHtml);
@@ -164,7 +164,8 @@ class ReportService
             if (is_null($dataInsert)) {
                 $dataInsert = new DocumentosFirmar();
             }
-            $dataInsert->obj_documento_interno = $htmlContent;
+            // $dataInsert->obj_documento_interno = json_encode($htmlContent);
+            $dataInsert->body_html = $htmlContent;
             $dataInsert->obj_documento = json_encode($ArrayXml);
             $dataInsert->status = 'EnFirma';
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
@@ -372,7 +373,8 @@ class ReportService
     }
 
     // obtener el token
-    public function generarToken(){
+    public function generarToken()
+    {
         // $resToken = Http::withHeaders([
         //     'Accept' => 'application/json'
         // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
@@ -508,13 +510,15 @@ class ReportService
 
     }
 
-    public function renderHtmlForma($data, $unidad)
+    public function renderHtmlForma($data, $unidad, $distintivo)
     {
         $unidad = tbl_unidades::where('id', $unidad)->first();
         $instituto = DB::table('tbl_instituto')->first();
+        $direccion = $unidad->direccion;
         // Decodificar el campo cuentas_bancarias
         $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
         $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
-        return View::make('reportes.rf001.vista_concentrado.formarf001', compact('data', 'cuenta'))->render();
+        // return view('reportes.rf001.vista_concentrado.formarf001', compact('distintivo','data', 'cuenta', 'direccion'))->render();
+        return PDF::loadView('reportes.rf001.vista_concentrado.formarf001', compact('distintivo','data', 'cuenta', 'direccion'))->setPaper('a4', 'portrait')->output();
     }
 }
