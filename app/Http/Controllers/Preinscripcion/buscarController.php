@@ -40,27 +40,34 @@ class buscarController extends Controller
         $anios = MyUtility::ejercicios();
         $parameters = $request->all();
         if(!isset($parameters['ejercicio'])) $ejercicio = $parameters['ejercicio'] = date('Y');
-
         $data = DB::table('alumnos_registro as ar')
-            ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad','tc.status_curso')
-            ->join('cursos as c', 'ar.id_curso', '=', 'c.id')->leftjoin('tbl_cursos as tc', 'tc.folio_grupo','=','ar.folio_grupo');
+        ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad', 'tc.status_curso')
+        ->join('cursos as c', 'ar.id_curso', '=', 'c.id')
+        ->leftjoin('tbl_cursos as tc', 'tc.folio_grupo', '=', 'ar.folio_grupo');
 
-        
-        if (preg_match('/^2B-\d{6}$/', $valor_buscar)){
-             $data->where(DB::raw("CONCAT(ar.folio_grupo, c.nombre_curso)"), 'like', '%' . $valor_buscar . '%');
-             $parameters['ejercicio']  = $ejercicio = null;
-        }else $data->where(DB::raw("CONCAT(ar.folio_grupo, c.nombre_curso)"), 'like', '%' . $valor_buscar . '%')
-                ->where(DB::raw("EXTRACT(YEAR FROM ar.inicio)"), '=', $ejercicio);
-               
-        if ($this->data['slug'] == 'vinculadores_administrativo') $data->where('ar.iduser_created', $this->id_user);
-        
-        if (!empty($_SESSION['unidades'])) $data->whereIn('ar.unidad', $_SESSION['unidades']);
-        
+        if (preg_match('/^2B-\d{6}$/', $valor_buscar)){ dd("pasa");
+            $data->where('ar.folio_grupo', 'like', '%' . $valor_buscar . '%');
+            $parameters['ejercicio'] = $ejercicio = null;
+        } else {
+            $data->whereYear('ar.inicio', '=', $ejercicio)
+            ->where(function ($query) use ($valor_buscar) {
+                $query->where('ar.folio_grupo', 'like', '%' . $valor_buscar . '%')
+                    ->orWhere('c.nombre_curso', 'like', '%' . $valor_buscar . '%');
+            });     
+        }
+
+        if ($this->data['slug'] == 'vinculadores_administrativo') {
+            $data->where('ar.iduser_created', $this->id_user);
+        }
+
+        if (!empty($_SESSION['unidades'])) {
+            $data->whereIn('ar.unidad', $_SESSION['unidades']);
+        }
+
         $data = $data->whereNotNull('ar.folio_grupo')
-            ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad','tc.id')
+            ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad', 'tc.id')
             ->orderBy('ar.folio_grupo', 'DESC')
             ->paginate(15);
-
         return view('preinscripcion.buscar.index',compact('data','activar','anios','parameters'));
 
     }
