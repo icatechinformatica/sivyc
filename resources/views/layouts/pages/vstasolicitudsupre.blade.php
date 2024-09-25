@@ -265,19 +265,19 @@
                             </button>
                         </div>
                         <div class="modal-body" style="text-align:center">
-                            @can('supre.create')
+                            {{-- @can('supre.create') --}}
                                 <div style="text-align:center" class="form-group">
                                     <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
                                 </div>
-                            @endcan
+                            {{-- @endcan --}}
                             <div style="text-align:center" class="form-group">
                                 <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
                             </div>
                             <div style="text-align:center" class="form-group">
-                                <a class="btn btn-danger" id="supre2_pdf" name="supre2_pdf" href="#" target="_blank" download>Suficiencia Presupuestal Autorizada</a><br>
+                                <a class="btn btn-danger" id="supre2_pdf" name="supre2_pdf" href="#" target="_blank" download>Suficiencia Presupuestal Autografa</a><br>
                             </div>
                             <div style="text-align:center" class="form-group">
-                                <a class="btn btn-danger" id="valsupre2_pdf" name="valsupre2_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal Autorizada</a><br>
+                                <a class="btn btn-danger" id="valsupre2_pdf" name="valsupre2_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal Autografa</a><br>
                             </div>
                         </div>
                         <div class="modal-footer">
