@@ -153,8 +153,8 @@ class PagoController extends Controller
                     ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                     ->leftJoin('documentos_firmar', function($join) {
                         $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
-                            //  ->where('documentos_firmar.tipo_archivo', '=', 'Contrato')
-                             ->Where('documentos_firmar.status', '=', 'VALIDADO');
+                             ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
+                            //  ->Where('documentos_firmar.status', '=', 'VALIDADO');
                     })
                     ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GroupBy('contratos.id_contrato','folios.permiso_editar','folios.status','pagos.recepcion','folios.id_folios', 'folios.id_supre','pagos.status_recepcion','pagos.created_at','pagos.arch_solicitud_pago',
@@ -205,8 +205,8 @@ class PagoController extends Controller
                 ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                 ->leftJoin('documentos_firmar', function($join) {
                     $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
-                        //  ->where('documentos_firmar.tipo_archivo', '=', 'Contrato')
-                         ->Where('documentos_firmar.status', '=', 'VALIDADO');
+                         ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
+                        //  ->Where('documentos_firmar.status', '=', 'VALIDADO');
                 })
                 // ->LEFTJOIN('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')
                 ->LEFTJOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
