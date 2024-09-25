@@ -1629,26 +1629,26 @@
         var id = button.data('id');
         console.log(id);
 
-        $.ajax({
-            url: `/pagos/verificacionDocs/${id['0']}`,
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                // Manejar la respuesta aquí
-                if(response.missing_documents != 'completo') {
-                    // guardarenviar style="text-align: right; font-size: 10px;"
-                    document.getElementById('guardarenviar').style.display = 'none';
-                    console.log('ssss'); // me quede aqui solo verificar valsupre,  asisstencia y evidencia
-                } else {
-                    document.getElementById('guardarenviar').style.display = 'block';
-                }
-                console.log(response.missing_documents); // Muestra el mensaje
-            },
-            error: function(xhr) {
-                console.error('Error en la solicitud:', xhr);
-                console.log('Ocurrió un error al verificar los documentos.');
-            }
-        });
+        // $.ajax({
+        //     url: `/pagos/verificacionDocs/${id['0']}`,
+        //     type: 'GET',
+        //     dataType: 'json',
+        //     success: function(response) {
+        //         // Manejar la respuesta aquí
+        //         if(response.missing_documents != 'completo') {
+        //             // guardarenviar style="text-align: right; font-size: 10px;"
+        //             document.getElementById('guardarenviar').style.display = 'none';
+        //             console.log('ssss'); // me quede aqui solo verificar valsupre,  asisstencia y evidencia
+        //         } else {
+        //             document.getElementById('guardarenviar').style.display = 'block';
+        //         }
+        //         console.log(response.missing_documents); // Muestra el mensaje
+        //     },
+        //     error: function(xhr) {
+        //         console.error('Error en la solicitud:', xhr);
+        //         console.log('Ocurrió un error al verificar los documentos.');
+        //     }
+        // });
 
         document.getElementById('id_contrato_agenda').value = id[0];
         if(id[14] == 1) {
