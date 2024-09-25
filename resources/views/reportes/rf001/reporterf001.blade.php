@@ -127,7 +127,9 @@
                     @php
                         $depositos = isset($value['depositos']) ? json_decode($value['depositos'], true) : [];
                     @endphp
-                    <li style="font-size: 12px;"><b>{{ $value['curso'] == null ? strtolower($value['descripcion']) : strtolower($value['curso']) }}</b> con el siguiente folio
+                    <li style="font-size: 12px;">
+                        <b>{{ $value['curso'] == null ? strtolower($value['descripcion']) : strtolower($value['curso']) }}</b>
+                        con el siguiente folio
                         {{ $value['folio'] }}</li>
                 @endforeach
             </ul>

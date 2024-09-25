@@ -12,6 +12,7 @@ use App\Models\DocumentosFirmar;
 use Illuminate\Support\Facades\View;
 use App\Models\tbl_unidades;
 use Illuminate\Support\Facades\DB;
+use setasign\Fpdi\Fpdi;
 
 class ReportService
 {
@@ -56,17 +57,35 @@ class ReportService
 
     public function xmlFormat($id, $organismo, $unidad, $usuario)
     {
+        $htmlBody = array();
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+        $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+        // elaboro y puesto de elaboración
+        $nombreElaboro = $usuario->name;
+        $puestoElaboro = $usuario->puesto;
 
-        // $body = $this->createBody($id, $rf001);
-        $htmlContent = $this->renderHtmlForma($rf001, $unidad);
-        $contWithoutHtml = strip_tags($htmlContent); //contenido sin html
-        // limpiar cadena
-        $clnHtml = preg_replace('/@page\s*\{.*?\}\s*\/\*.*?\*\/|\.tb\s*\{.*?\}|\#titulo\s*\{.*?\}|\.tablaf\s*\{.*?\}|\.showlast\s*\{.*?\}|\.showborders\s*\{.*?\}|\.prueba\s*\{.*?\}|\.direccion\s*\{.*?\}|\.mielemento\s*\{.*?\}|p\s*\{.*?\}|body\s*\{.*?\}|header\s*\{.*?\}|footer\s*\{.*?\}|if\s*\(\s*isset\(\$pdf\)\s*\)\s*\{.*?\}/s', '', $contWithoutHtml);
+        $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
+
+        // sección de creación pdf
+        $report = $this->getReport($distintivo, $organismoPublico, $id, $nombreElaboro, $puestoElaboro);
+        $formatoRF001 = $this->renderHtmlForma($rf001, $unidad, $distintivo);
+
+        // contenido sin html
+        $contNoHtmlRf001 = strip_tags($formatoRF001);
+        $contNoHtmlMemo = strip_tags($report);
+
+        //limpiar cadena
+        $clnStrHtmlRf001 = preg_replace('/@page\s*\{.*?\}\s*\/\*.*?\*\/|\.tb\s*\{.*?\}|\#titulo\s*\{.*?\}|\.tablaf\s*\{.*?\}|\.showlast\s*\{.*?\}|\.showborders\s*\{.*?\}|\.prueba\s*\{.*?\}|\.direccion\s*\{.*?\}|\.mielemento\s*\{.*?\}|p\s*\{.*?\}|body\s*\{.*?\}|header\s*\{.*?\}|footer\s*\{.*?\}|if\s*\(\s*isset\(\$pdf\)\s*\)\s*\{.*?\}/s', '', $contNoHtmlRf001);
+        $clnStrHtmlMemo = preg_replace('/@page\s*\{.*?\}\s*\/\*.*?\*\/|\.tb\s*\{.*?\}|\#titulo\s*\{.*?\}|\.tablaf\s*\{.*?\}|\.showlast\s*\{.*?\}|\.showborders\s*\{.*?\}|\.prueba\s*\{.*?\}|\.direccion\s*\{.*?\}|\.mielemento\s*\{.*?\}|p\s*\{.*?\}|body\s*\{.*?\}|header\s*\{.*?\}|footer\s*\{.*?\}|if\s*\(\s*isset\(\$pdf\)\s*\)\s*\{.*?\}/s', '', $contNoHtmlMemo);
         // Eliminar líneas en blanco o espacios innecesarios.
-        $clnEspacios = preg_replace('/\s+/', ' ', $clnHtml);
+        $clnEspaciosRf001 = preg_replace('/\s+/', ' ', $clnStrHtmlRf001);
+        $clnEspaciosMemo = preg_replace('/\s+/', ' ', $clnStrHtmlMemo);
         //eliminar elementos restantes css
-        $body = preg_replace('/[.#][\w\s-]+[\w\s,.]*\{[^}]*\}\s*/', '', $clnEspacios);
+        $bodyRf001 = preg_replace('/[.#][\w\s-]+[\w\s,.]*\{[^}]*\}\s*/', '', $clnEspaciosRf001);
+        $bodyMemo = preg_replace('/[.#][\w\s-]+[\w\s,.]*\{[^}]*\}\s*/', '', $clnEspaciosMemo);
+
+        $htmlBody['formatoRF001'] = $bodyRf001;
+        $htmlBody['memorandum'] = $bodyMemo;
 
         $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
 
@@ -78,7 +97,6 @@ class ReportService
             ->Where('u.unidad', $ubicacion)
             ->First();
 
-        // $body = $this->createBody($id, $dataFirmantes);
         $arrayFirmantes = [];
         $temp = ['_attributes' =>
             [
@@ -106,7 +124,7 @@ class ReportService
                 '_attributes' => [
                     'nombre_archivo' => $nameFileOriginal,
                 ],
-                'cuerpo' => [$body],
+                'cuerpo' => [$htmlBody],
             ],
             'firmantes' => [
                 '_attributes' => [
@@ -165,7 +183,7 @@ class ReportService
                 $dataInsert = new DocumentosFirmar();
             }
             // $dataInsert->obj_documento_interno = json_encode($htmlContent);
-            $dataInsert->body_html = $htmlContent;
+            $dataInsert->body_html = json_encode($htmlBody);
             $dataInsert->obj_documento = json_encode($ArrayXml);
             $dataInsert->status = 'EnFirma';
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
@@ -406,8 +424,7 @@ class ReportService
             # se genera un campo json
             $dataArray = json_decode($dataFirmante->incapacidad, true);
             #validamos los campos json
-            if (isset($dataArray['fecha_inicio']) && isset($dataArray['fecha_termino'])
-                && isset($dataArray['id_firmante']) && isset($dataArray['historial'])) {
+            if (isset($dataArray['fecha_inicio']) && isset($dataArray['fecha_termino']) && isset($dataArray['id_firmante']) && isset($dataArray['historial'])) {
                 # checar datos y mostrar información
                 if ($dataArray['fecha_inicio'] != '' && $dataArray['fecha_termino'] != '' && $dataArray['id_firmante'] != '')
                 {
@@ -489,7 +506,8 @@ class ReportService
                 return "Error en la busqueda de firmantes";
             }
 
-            if($area_org->id_parent == 1) {
+            if($area_org->id_parent == 1)
+            {
                 // $firmanteUno = array('funcionario'=>Auth::user()->name, 'puesto'=>Auth::user()->puesto, 'curp'=>Auth::user()->curp, 'correo'=>Auth::user()->email);
                 // $firmanteDos = array('funcionario'=>$area_org->funcionario, 'puesto'=>$area_org->cargo, 'correo'=>$area_org->correo, 'curp'=>$area_org->curp);
                 return "Usuario no disponible para realizar el firmado electronico";
@@ -518,7 +536,204 @@ class ReportService
         // Decodificar el campo cuentas_bancarias
         $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
         $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
-        // return view('reportes.rf001.vista_concentrado.formarf001', compact('distintivo','data', 'cuenta', 'direccion'))->render();
-        return PDF::loadView('reportes.rf001.vista_concentrado.formarf001', compact('distintivo','data', 'cuenta', 'direccion'))->setPaper('a4', 'portrait')->output();
+        return View::make('reportes.rf001.vista_concentrado.formarf001', compact('distintivo','data', 'cuenta', 'direccion'))->render();
+        // return PDF::loadView('reportes.rf001.vista_concentrado.formarf001', compact('distintivo','data', 'cuenta', 'direccion'))->setPaper('a4', 'portrait')->output();
+    }
+
+    public function createBodyToXml($data, $unidad, $distintivo, $organismo, $id, $nombreElaboro, $puestoElaboro)
+    {
+        $htmlBody = array();
+        // memorandum crear primer documento
+        $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        $rf001Detalle = new Rf001Model();
+        $rf001 = $rf001Detalle::findOrFail($id);
+        $data = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
+        $unidad = strtoupper($data->ubicacion);
+        $municipio = mb_strtoupper($data->municipio, 'UTF-8');
+        #OBTENEMOS LA FECHA ACTUAL
+        $fechaActual = getdate();
+        $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
+        $dia = ($dia < 10) ? '0'.$dia : $dia;
+
+        $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
+        $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
+        $conocimiento = \DB::table('tbl_funcionarios')
+            ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
+            ->where('tbl_organismos.id', 13)
+            ->select('tbl_organismos.nombre', 'tbl_funcionarios.nombre as nombre_funcionario', 'tbl_funcionarios.cargo', 'tbl_funcionarios.titulo')
+            ->first();
+        $direccion = $data->direccion;
+
+        $delegado = \DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('f.activo', 'true')
+            ->Where('o.nombre','LIKE','DELEG%')
+            ->Where('u.unidad', $rf001->unidad)
+            ->First();
+
+        $nombre_titular = $cargo_fun = 'DATO REQUERIDO';
+        if ($organismo) {
+            $nombre_titular = $organismo->nombre_titular;
+            $cargo_fun = mb_strtoupper($organismo->cargo_fun, 'UTF-8');
+        }
+
+        $datoJson = json_decode($rf001->movimientos, true);
+        $startDate = Carbon::parse($rf001->periodo_inicio);
+        $endDate = Carbon::parse($rf001->periodo_fin);
+        $formattedStartDate = $startDate->format('d');
+        $formattedEndDate = $endDate->format('d');
+        $mes = $startDate->translatedFormat('F');
+        $anio = $startDate->format('Y');
+
+        $movimiento = json_decode($rf001->movimientos, true);
+        $importeTotal = 0;
+        $periodoInicio = Carbon\Carbon::parse($rf001->periodo_inicio);
+        $periodoFin = Carbon\Carbon::parse($rf001->periodo_fin);
+        $dateCreacion = Carbon\Carbon::parse($rf001->created_at);
+        $dateCreacion->locale('es'); // Configurar el idioma a español
+        $nombreMesCreacion = $dateCreacion->translatedFormat('F');
+
+        // documento rf001
+        $unidad = tbl_unidades::where('id', $unidad)->first();
+        $instituto = DB::table('tbl_instituto')->first();
+        $direccion = $unidad->direccion;
+        // Decodificar el campo cuentas_bancarias
+        $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
+        $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
+
+        $htmlBody['memorandum'] = '<div class=contenedor>
+        <div class=bloque_uno align=right>
+            <p class=delet_space_p color_text>UNIDAD DE CAPACITACIÓN'.  strtoupper($unidad) .'</p>
+            <p class=delet_space_p color_text>OFICIO NÚM.'. $rf001->memorandum .'</p>
+            <p class=delet_space_p color_text>'.  $municipio .', CHIAPAS; <span
+                    class=color_text>'. strtoupper($fecha_comp)  .'</span></p>
+        </div><br><br><br>
+        <div class=bloque_dos align=left>
+            <p class=delet_space_p color_text>C. '.
+                 strtoupper($dirigido->titulo) .' '. strtoupper($dirigido->nombre) .'
+            </p>
+            <p class=delet_space_p color_text>
+                '. $dirigido->cargo .'
+            </p>
+            <p class=delet_space_p color_text>PRESENTE.</p>
+        </div>
+        <br>
+        <div class=contenido align=justify>
+            Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001),
+            original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad
+            de Capacitación <span class="color_text"> '. $unidad .' </span>, con los siguientes movimientos.
+            <br>
+        </div>
+        <br>';
+        $htmlBody['memorandum'] = $htmlBody['memorandum'] . ' <div class="tabla_alumnos">
+            <ul style=font-size: 14px> ';
+        foreach ($datoJson as $key => $value) {
+            $depositos = isset($value['depositos']) ? json_decode($value['depositos'], true) : [];
+            $htmlBody['memorandum'] = $htmlBody['memorandum'] . '<li style=font-size: 12px;><b>'.$value['curso'] == null ? strtolower($value['descripcion']) : strtolower($value['curso']).'</b> con el siguiente folio' . $value['folio'] . '</li>';
+        }
+
+        $htmlBody['memorandum'] = $htmlBody['memorandum'] . '</ul>
+        <p style=font-size: 14px>Correspondientes al periodo comprendido del '. $formattedStartDate .' al
+                '.  $formattedEndDate .' de '. $mes .' del '. $anio .', lo anterior, para contabilización
+                respectiva.</p>
+            <p style=font-size: 14px>Sin otro particular aprovecho la ocasión para saludarlo. </p>
+            <br>
+        </div></div>';
+
+        $htmlBody['formatoRf001'] = '<table class="tabla_con_border" style="padding-top: 20px;">
+         <tr>
+             <td width="200px">FECHA DE ELABORACIÓN</td>
+             <td width="750px" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;" colspan="8"></td>
+             <td width="200px;" style="text-align:center;">SEMANA </td>
+             <td colspan="13" style="border: inset 0pt"></td>
+         </tr>
+         <tr>
+             <td style="text-align:center;"> ' . Carbon::parse($data->created_at)->format('d/m/Y') .' </td>
+             <td colspan="8" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;"></td>
+             <td style="text-align:center;">'.  $periodoInicio->format('d/m/Y') . ' AL ' . $periodoFin->format('d/m/Y') .'
+             </td>
+             <td colspan="13" style="border: inset 0pt"></td>
+         </tr>
+     </table><center class="espaciado"></center>';
+     $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . '<table class="tabla_con_border">
+         <tr>
+             <td style="text-align: center;">
+                 <b>DEPOSITO (S) EFECTUADO (S) A LA CUENTA BANCARIA:</b>
+             </td>
+         </tr>
+         <tr>
+             <td style="text-align: center;">
+                 NO. CUENTA  '. $cuenta .'
+             </td>
+         </tr>
+     </table>';
+     $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . '<table class="tabla_con_border">
+         <thead>
+             <tr>
+                 <th style="text-align: center;" width="40px"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
+                 <th style="text-align: center;" width="100px"><b>N°. RECIBO Y/O FACTURA</b></th>
+                 <th style="text-align: center;">CONCEPTO DE COBRO</th>
+                 <th style="text-align: center;">IMPORTE</th>
+             </tr>
+         </thead>
+         <tbody>';
+
+            foreach ($movimiento as $item) {
+                $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
+                $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . '<tr>
+                     <td data-label="KM inicial" style="width: 55px; text-align: center;">
+                         '. $item['folio'] .'
+                     </td>
+                     <td data-label="KM inicial" style="width: 40px; text-align: center;">';
+                     foreach ($depositos as $k) {
+                        $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . $k['folio'] .'&nbsp;';
+                     }
+                $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] .' </td>
+                     <td data-label="De:" style="width: 160px; text-align: left; font-size: 9px;">';
+                if ($item['curso'] != null) {
+                    $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . $item['curso'];
+                } else {
+                    $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . $item['descripcion'];
+                }
+                $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . '</td>';
+            }
+             @foreach ($movimiento as $item)
+
+                     $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
+                $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] .' <tr>
+                     <td data-label="KM inicial" style="width: 55px; text-align: center;">
+                         '. $item['folio'] .'
+                     </td>
+                     <td data-label="KM inicial" style="width: 40px; text-align: center;">';
+                         @foreach ($depositos as $k)
+                            $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . $k['folio'] .' &nbsp; ';
+                         @endforeach
+                         $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] .' </td>
+                     <td data-label="De:" style="width: 160px; text-align: left; font-size: 9px;">
+                         @if ($item['curso'] != null)
+                             {{ $item['curso'] }}
+                         @else
+                             {{ $item['descripcion'] }}
+                         @endif
+                     </td>
+                     <td data-label="Importe" style="width: 50px; text-align: center;">
+                         ${{ number_format($item['importe'], 2, '.', ',') }}
+                     </td>
+                 </tr>
+                 @php
+                     $importeTotal += $item['importe'];
+                 @endphp
+             @endforeach
+             <tr>
+                 <td></td>
+                 <td><b></b></td>
+                 <td><b></b></td>
+                 <td style="text-align:center;">
+                     <b>$ {{ number_format($importeTotal, 2, '.', ',') }}</b>
+                 </td>
+             </tr>
+         </tbody>
+     </table>';
     }
 }
