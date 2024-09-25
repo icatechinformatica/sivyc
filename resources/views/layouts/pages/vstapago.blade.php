@@ -74,6 +74,11 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
+        @if ($message = Session::get('warning'))
+            <div class="alert alert-warning">
+                <p>{{ $message }}</p>
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -1623,6 +1628,28 @@
         var button = $(event.relatedTarget);
         var id = button.data('id');
         console.log(id);
+
+        $.ajax({
+            url: `/pagos/verificacionDocs/${id['0']}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                // Manejar la respuesta aquí
+                if(response.missing_documents != 'completo') {
+                    // guardarenviar style="text-align: right; font-size: 10px;"
+                    document.getElementById('guardarenviar').style.display = 'none';
+                    console.log('ssss'); // me quede aqui solo verificar valsupre,  asisstencia y evidencia
+                } else {
+                    document.getElementById('guardarenviar').style.display = 'block';
+                }
+                console.log(response.missing_documents); // Muestra el mensaje
+            },
+            error: function(xhr) {
+                console.error('Error en la solicitud:', xhr);
+                console.log('Ocurrió un error al verificar los documentos.');
+            }
+        });
+
         document.getElementById('id_contrato_agenda').value = id[0];
         if(id[14] == 1) {
             $('#guardarenviar').hide();
@@ -1640,13 +1667,13 @@
             request.done(( respuesta) =>
         {
             respuesta.forEach(element => {
-                console.log(element);
+                // console.log(element);
                 switch (element['tipo_archivo']) {
                     case 'valsupre':
                         const valsupreLink = document.getElementById('show_validacion_supre');
                         const valsupreUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
                         valsupreLink.href = valsupreUrl;
-                        console.log(valsupreLink.href);
+                        // console.log(valsupreLink.href);
                         valsupreLink.hidden = false;
                         $('#validacion_supre_pdf_label').attr('hidden', true);
                         $('#validacion_supre_pdf').prop('required', false);
