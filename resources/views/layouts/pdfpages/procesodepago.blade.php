@@ -132,7 +132,7 @@
                     {{-- </div> --}}
                     <div style="display: inline-block; width: 15%;">
                         {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                        <img style="position: fixed; width: 100%; top: 52%; left: 75%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                        <img style="position: fixed; width: 20%; top: 52%; left: 73%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                     </div>
                 @endif
                 <p style="line-height:0.8em;">
