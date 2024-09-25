@@ -153,7 +153,8 @@ class PagoController extends Controller
                     ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                     ->leftJoin('documentos_firmar', function($join) {
                         $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
-                            ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
+                            //  ->where('documentos_firmar.tipo_archivo', '=', 'Contrato')
+                             ->Where('documentos_firmar.status', '=', 'VALIDADO');
                     })
                     ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GroupBy('contratos.id_contrato','folios.permiso_editar','folios.status','pagos.recepcion','folios.id_folios', 'folios.id_supre','pagos.status_recepcion','pagos.created_at','pagos.arch_solicitud_pago',
@@ -204,7 +205,7 @@ class PagoController extends Controller
                 ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                 ->leftJoin('documentos_firmar', function($join) {
                     $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
-                         ->where('documentos_firmar.tipo_archivo', '=', 'Contrato')
+                        //  ->where('documentos_firmar.tipo_archivo', '=', 'Contrato')
                          ->Where('documentos_firmar.status', '=', 'VALIDADO');
                 })
                 // ->LEFTJOIN('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')
@@ -592,6 +593,8 @@ class PagoController extends Controller
         // dd($request);
         $variables = ['factura_pdf','factura_xml','contratof_pdf','solpa_pdf','asistencias_pdf','calificaciones_pdf',
                       'evidencia_fotografica_pdf'];
+        $documentosCompletos = ['Solicitud Pago' => FALSE, 'valsupre' => FALSE, 'Contrato' => FALSE, 'Lista de asistencia' => FALSE,
+            'Lista de calificaciones' => FALSE, 'Reporte fotografico' => FALSE];
         if(isset($request->id_contrato_agendac))
         {
             for($i=0;$i<=6;$i++)
@@ -633,47 +636,92 @@ class PagoController extends Controller
         {
             $contrato_pdf = $this->pdf_upload($doc_contrato, $id_contrato, $curso->id_instructor, 'contrato'); # invocamos el método
             $contrato->arch_contrato = $contrato_pdf;
+            $documentosCompletos['Contrato'] = TRUE;
         }
         if(isset($doc_solpa))
         {
             $solpa_pdf = $this->pdf_upload($doc_solpa, $id_contrato, $curso->id_instructor, 'solicitud_pago'); # invocamos el método
             $pago = pago::where('id_contrato', $id_contrato)
-            ->update(['arch_solicitud_pago' => $solpa_pdf]);
+                ->update(['arch_solicitud_pago' => $solpa_pdf]);
+            $documentosCompletos['Solicitud Pago'] = TRUE;
         }
         if(isset($doc_asistencias))
         {
             $asistencias_pdf = $this->pdf_upload($doc_asistencias, $id_contrato, $curso->id_instructor, 'lista_asistencia'); # invocamos el método
             $pago = pago::where('id_contrato', $id_contrato)
-            ->update(['arch_asistencia' => $asistencias_pdf]);
+                ->update(['arch_asistencia' => $asistencias_pdf]);
+            $documentosCompletos['Lista de asistencia'] = TRUE;
         }
         if(isset($doc_calificaciones))
         {
             $calificaciones_pdf = $this->pdf_upload($doc_calificaciones, $id_contrato, $curso->id_instructor, 'lista_calificaciones'); # invocamos el método
             $pago = pago::where('id_contrato', $id_contrato)
             ->update(['arch_calificaciones' => $calificaciones_pdf]);
+            $documentosCompletos['Lista de calificaciones'] = TRUE;
         }
         if(isset($doc_evidencia_fotografica))
         {
             $evidencia_fotografica_pdf = $this->pdf_upload($doc_evidencia_fotografica, $id_contrato, $curso->id_instructor, 'evidencia_fotografica'); # invocamos el método
             $pago = pago::where('id_contrato', $id_contrato)
             ->update(['arch_evidencia' => $evidencia_fotografica_pdf]);
+            $documentosCompletos['Reporte fotografico'] = TRUE;
         }
 
         if($request->tipo_envio == 'guardar_enviar' || $request->tipo_envioc == 'guardar_enviar')
         {
-            pago::where('id_contrato', $id_contrato)
-            ->update(['status_recepcion' => 'En Espera',
-                      'fecha_envio' => carbon::now()->format('d-m-Y')]);
+            // inicio de verificación de archivos completos 23092024
+            $documentosSellados = DB::Table('tbl_cursos')->Select('documentos_firmar.tipo_archivo')
+                ->Join('documentos_firmar', 'documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
+                ->Join('contratos', 'contratos.id_curso', 'tbl_cursos.id')
+                ->Where('contratos.id_contrato', $id_contrato)
+                ->Where('documentos_firmar.status','VALIDADO')
+                ->Get();
+            $documentosSubidos = DB::Table('contratos')->Select('arch_asistencia as Lista de asistencia','arch_calificaciones as Lista de calificaciones','arch_evidencia as Reporte fotografico','arch_solicitud_pago as Solicitud Pago','doc_validado as valsupre','arch_contrato as Contrato')
+            ->Join('pagos','pagos.id_contrato', 'contratos.id_contrato')
+            ->Join('folios','folios.id_cursos','contratos.id_curso')
+            ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
+            ->Where('contratos.id_contrato', $id_contrato)
+            ->First();
+
+            foreach($documentosSellados as $moist)
+            {
+                $documentosCompletos[$moist->tipo_archivo] = TRUE;
+                if(!is_null($documentosSubidos->{$moist->tipo_archivo})) {
+                    $documentosCompletos[$moist->tipo_archivo] = TRUE;
+                }
+            }
+            // fin de verificacion de archivos completos
+            if(in_array(false, $documentosCompletos)) { //aqui se define si esta completo o no
+                $faltantes = null;
+                foreach($documentosCompletos as $key => $result) {
+                    if(!$result) {
+                        $key = $key == 'valsupre' ? 'Validación de suficiencia presupuestal' : $key;
+                        $faltantes = is_null($faltantes) ? $key : $faltantes . ', ' . $key;
+                    }
+                }
+                $type = 'warning';
+                $message = 'El envío a validación no ha sido posible debido a la falta de documentos pendientes por integrar: '. $faltantes;
+            } else {
+                pago::where('id_contrato', $id_contrato)
+                ->update(['status_recepcion' => 'En Espera',
+                        'fecha_envio' => carbon::now()->format('d-m-Y')]);
+
+                $type = 'success';
+                $message = 'Entrega de Documentos Agendado Correctamente';
+            }
         } else {
             $idf = DB::Table('contratos')->Where('id_contrato',$id_contrato)->Value('id_folios');
             $update = folio::Find($idf)
                 ->update(['edicion_pago' => FALSE,]);
+
+            $type = 'success';
+            $message = 'Documentos Guardados Correctamente';
         }
 
         $contrato->save();
 
         return redirect()->route('pago-inicio')
-                ->with('success', 'Entrega de Documentos Agendada Correctamente');
+                ->with($type, $message);
     }
 
     public function confirmar_entrega_fisica(Request $request)
@@ -1139,6 +1187,90 @@ class PagoController extends Controller
         $pdf = PDF::loadView('layouts.pdfpages.reportefinancieros', compact('data','count'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
+
+    }
+
+    public function verificar_documentacion($idContrato) {
+    // Inicializar un array para los documentos faltantes
+    $missingDocuments = [];
+
+    // Consultar los documentos y verificar su existencia
+    // Realiza una sola consulta para verificar todos los documentos
+    $documents = DB::table('contratos')
+        ->join('tbl_cursos', 'tbl_cursos.id', '=', 'contratos.id_curso')
+        ->leftJoin('documentos_firmar as df1', function ($join) {
+            $join->on('df1.numero_o_clave', '=', 'tbl_cursos.clave')
+                 ->where('df1.tipo_archivo', '=', 'Solicitud Pago')
+                 ->where('df1.status', '=', 'VALIDADO');
+        })
+        ->leftJoin('documentos_firmar as df2', function ($join) {
+            $join->on('df2.numero_o_clave', '=', 'tbl_cursos.clave')
+                 ->where('df2.tipo_archivo', '=', 'valsupre')
+                 ->where('df2.status', '=', 'VALIDADO');
+        })
+        ->leftJoin('folios', 'folios.id_cursos', '=', 'tbl_cursos.id')
+        ->leftJoin('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+        ->leftJoin('documentos_firmar as df3', function ($join) {
+            $join->on('df3.numero_o_clave', '=', 'tbl_cursos.clave')
+                 ->where('df3.tipo_archivo', '=', 'Contrato');
+        })
+        ->leftJoin('documentos_firmar as df4', function ($join) {
+            $join->on('df4.numero_o_clave', '=', 'tbl_cursos.clave')
+                 ->where('df4.tipo_archivo', '=', 'Lista de asistencia');
+        })
+        ->leftJoin('documentos_firmar as df5', function ($join) {
+            $join->on('df5.numero_o_clave', '=', 'tbl_cursos.clave')
+                 ->where('df5.tipo_archivo', '=', 'Lista de calificaciones');
+        })
+        ->leftJoin('documentos_firmar as df6', function ($join) {
+            $join->on('df6.numero_o_clave', '=', 'tbl_cursos.clave')
+                 ->where('df6.tipo_archivo', '=', 'Reporte fotografico');
+        })
+        ->leftJoin('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+        ->select(
+            'df1.numero_o_clave as solicitud_pago',
+            'df2.numero_o_clave as validacion_suficiencia',
+            'tabla_supre.doc_validado as doc_validado_suficiencia',
+            'df3.numero_o_clave as contrato',
+            'df4.numero_o_clave as lista_asistencia',
+            'df5.numero_o_clave as lista_calificaciones',
+            'df6.numero_o_clave as reporte_fotografico',
+            'pagos.arch_solicitud_pago',
+            'contratos.arch_contrato',
+            'pagos.arch_asistencia',
+            'pagos.arch_calificaciones',
+            'pagos.arch_evidencia'
+        )
+        ->where('contratos.id_contrato', $idContrato)
+        ->first();
+
+        // Verifica los documentos y agrega los que faltan a la lista
+        if (empty($documents->solicitud_pago) && empty($documents->arch_solicitud_pago)) {
+            $missingDocuments[] = 'Solicitud de Pago';
+        }
+
+        if (empty($documents->validacion_suficiencia) && empty($documents->doc_validado_suficiencia)) {
+            $missingDocuments[] = 'Validación de Suficiencia Presupuestal';
+        }
+
+        if (empty($documents->contrato) && empty($documents->arch_contrato)) {
+            $missingDocuments[] = 'Contrato';
+        }
+
+        if (empty($documents->lista_asistencia) && empty($documents->arch_asistencia)) {
+            $missingDocuments[] = 'Lista de Asistencia';
+        }
+
+        if (empty($documents->lista_calificaciones) && empty($documents->arch_calificaciones)) {
+            $missingDocuments[] = 'Lista de Calificaciones';
+        }
+
+        if (empty($documents->reporte_fotografico) && empty($documents->arch_evidencia)) {
+            $missingDocuments[] = 'Reporte Fotográfico';
+        }
+
+        if(is_null($missingDocuments)) { $missingDocuments[] = 'completo';}
+        return response()->json(['missing_documents' => $missingDocuments]);
 
     }
 

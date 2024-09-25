@@ -26,6 +26,12 @@
         Suficiencia Presupuestal
     </div>
     <div class="card card-body" style=" min-height:450px;">
+        @if ($message =  Session::get('warning'))
+            <div class="alert alert-warning alert-block">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>{{ $message }}</strong>
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -83,6 +89,7 @@
                     <th scope="col">Fecha</th>
                     <th scope="col">Status</th>
                     <th scope="col">Ultima Modificación de Status</th>
+                    <th scope="col">E.Firma</th>
                     <th width="180px">Accion</th>
                 </tr>
             </thead>
@@ -102,6 +109,45 @@
                         </td>
                         <td>
                             {{$itemData->fecha_status}}
+                        </td>
+                        <td> Solicitud:
+                            @switch($itemData->efirma_status_supre)
+                                @case('EnFirma')
+                                    En Firma
+                                @break
+                                @case('VALIDADO')
+                                    Sellado
+                                @break
+                                @case('CANCELADO')
+                                    Cancelado
+                                @break
+                                @case('CANCELADO ICTI')
+                                    Cancelado
+                                @break
+                                @default
+                                    No Generado
+                                @break
+                            @endswitch
+                            @if(!is_null($itemData->folio_validacion))
+                            <br>Validación:
+                                @switch($itemData->efirma_status_valsupre)
+                                    @case('EnFirma')
+                                        En Firma
+                                    @break
+                                    @case('VALIDADO')
+                                        Sellado
+                                    @break
+                                    @case('CANCELADO')
+                                        Cancelado
+                                    @break
+                                    @case('CANCELADO ICTI')
+                                        Cancelado
+                                    @break
+                                    @default
+                                        No Generado
+                                    @break
+                                @endswitch
+                            @endif
                         </td>
                         <td>
                             @if ( $itemData->status == 'En_Proceso')
@@ -192,7 +238,7 @@
                                         data-toggle="modal" data-placement="top"
                                         data-target="#modfolioModal"
                                         data-id='{{$itemData->id}}'
-                                        title="Otorgar Permiso de Modificacion a Folio Validado">
+                                        title="Permiso de Reemplazo de solicitud autografo">
                                         <i class="fa fa-history"></i>
                                     </button>
                                 @endcan
@@ -451,7 +497,7 @@
                         @csrf
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title"><b>Seleccione el Folio de Validación</b></h5>
+                                <h5 class="modal-title"><b>Seleccione el número de Suficiencia</b></h5>
                                 <button type="button" class="close" data-dismiss="modal">
                                     <span aria-hidden="true">&times;</span>
                                 </button>

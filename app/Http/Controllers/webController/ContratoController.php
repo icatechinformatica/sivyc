@@ -1195,6 +1195,11 @@ class ContratoController extends Controller
 
     public function contrato_pdf($id)
     {
+        $user_data = DB::Table('users')->Select('ubicacion','role_user.role_id')
+            ->Join('tbl_unidades','tbl_unidades.id','users.unidad')
+            ->Join('role_user','role_user.user_id','users.id')
+            ->Where('users.id', Auth::user()->id)
+            ->First();
         $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = $body_html = null;
         $contrato = new contratos();
         $puestos = array();
@@ -1213,6 +1218,11 @@ class ContratoController extends Controller
                           ->FIRST();
 
         $uni = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
+        //validacion de unidad del usuario y el contrato. con esto evitamos que lo vea cualquier usuario fuera de la unidad correcta
+        if($user_data->ubicacion != $uni->ubicacion && !in_array($user_data->role_id, ['1','9','10'])) {
+            return redirect()->route('contrato-inicio')->with('warning','Acceso denegado para visualizar este contrato.');
+        }
+        //fin
         $funcionarios = $this->funcionarios($uni->ubicacion);
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         // carga de firmas electronicas organismo
