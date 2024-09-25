@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Input;
 use App\Models\cat\catUnidades;
+use App\Utilities\MyUtility;
+
 class buscarController extends Controller
 {
     use catUnidades;
@@ -33,16 +35,39 @@ class buscarController extends Controller
     }
     public function index(Request $request){
         $valor_buscar = $request->valor_buscar;
-
-        $data = DB::table('alumnos_registro as ar')->select('ar.folio_grupo','ar.turnado','c.nombre_curso as curso','ar.unidad')->join('cursos as c','ar.id_curso','c.id');
-        if($valor_buscar) $data = $data->where(DB::raw("CONCAT(ar.folio_grupo,c.nombre_curso)"),'like','%'.$valor_buscar.'%');
-
-        if($this->data['slug']=='vinculadores_administrativo')$data = $data->where('ar.iduser_created',$this->id_user);
-        if($_SESSION['unidades']) $data = $data->whereIn('ar.unidad',$_SESSION['unidades']);
-        $data = $data->where('folio_grupo','<>',null)->groupby('ar.folio_grupo','ar.turnado','c.nombre_curso','ar.unidad')->orderby(DB::raw("SUBSTRING(ar.folio_grupo,5,10)"),'DESC')->paginate(15);
-
+        $ejercicio = $request->ejercicio;
         $activar = $this->activar;
-        return view('preinscripcion.buscar.index',compact('data','activar'));
+        $anios = MyUtility::ejercicios();
+        $parameters = $request->all();
+        if(!isset($parameters['ejercicio'])) $ejercicio = $parameters['ejercicio'] = date('Y');
+        $data = DB::table('alumnos_registro as ar')
+        ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad')
+        ->join('cursos as c', 'ar.id_curso', '=', 'c.id');        
+
+        if (preg_match('/^2B-\d{6}$/', $valor_buscar)){ dd("pasa");
+            $data->where('ar.folio_grupo', 'like', '%' . $valor_buscar . '%');
+            $parameters['ejercicio'] = $ejercicio = null;
+        } else {
+            $data->whereYear('ar.inicio', '=', $ejercicio)
+            ->where(function ($query) use ($valor_buscar) {
+                $query->where('ar.folio_grupo', 'like', '%' . $valor_buscar . '%')
+                    ->orWhere('c.nombre_curso', 'like', '%' . $valor_buscar . '%');
+            });     
+        }
+
+        if ($this->data['slug'] == 'vinculadores_administrativo') {
+            $data->where('ar.iduser_created', $this->id_user);
+        }
+
+        if (!empty($_SESSION['unidades'])) {
+            $data->whereIn('ar.unidad', $_SESSION['unidades']);
+        }
+
+        $data = $data->whereNotNull('ar.folio_grupo')
+            ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad')
+            ->orderBy('ar.folio_grupo', 'DESC')
+            ->paginate(15);
+        return view('preinscripcion.buscar.index',compact('data','activar','anios','parameters'));
 
     }
 
