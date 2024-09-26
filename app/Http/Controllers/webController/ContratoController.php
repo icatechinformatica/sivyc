@@ -1624,7 +1624,7 @@ class ContratoController extends Controller
     }
 
     public function funcionarios($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true');
 
@@ -1651,6 +1651,10 @@ class ContratoController extends Controller
             ->Where('u.unidad', $unidad)
             ->First();
 
+        //parte de checado de incapacidad
+        $direc = $this->incapacidad(json_decode($direc->incapacidad), $direc->nombre) ?: $direc;
+        $delegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre) ?: $delegado;
+
         $funcionarios = [
             'director' => $direc->nombre,
             'directorp' => $direc->cargo,
@@ -1669,5 +1673,38 @@ class ContratoController extends Controller
         ];
 
         return $funcionarios;
+    }
+
+    private function incapacidad($incapacidad, $incapacitado) {
+        $fechaActual = now();
+        if(isset($incapacidad->fecha_inicio) && !is_null($incapacidad->fecha_inicio)) {
+            $fechaInicio = Carbon::parse($incapacidad->fecha_inicio);
+            $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
+            if ($fechaActual->between($fechaInicio, $fechaTermino)) {
+                // La fecha de hoy está dentro del rango
+                $firmanteIncapacidad = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
+                    ->Join('tbl_funcionarios AS fun','fun.id','org.id')
+                    ->Where('fun.id', $incapacidad->id_firmante)
+                    ->First();
+
+                return($firmanteIncapacidad);
+            } else {
+                // La fecha de hoy NO está dentro del rango
+                if($fechaTermino->isPast()) {
+                    $newIncapacidadHistory = 'Ini:'.$incapacidad->fecha_inicio.'/Fin:'.$incapacidad->fecha_termino.'/IdFun:'.$incapacidad->id_firmante;
+                    array_push($incapacidad->historial, $newIncapacidadHistory);
+                    $incapacidad->fecha_inicio = $incapacidad->fecha_termino = $incapacidad->id_firmante = null;
+                    $incapacidad = json_encode($incapacidad);
+
+                    DB::Table('tbl_funcionarios')->Where('nombre',$incapacitado)
+                        ->Update([
+                            'incapacidad' => $incapacidad
+                    ]);
+                }
+
+                return false;
+            }
+        }
+        return false;
     }
 }

@@ -49,7 +49,7 @@ class EValsupreController extends Controller
         $numFirmantes = '1';
         $arrayFirmantes = [];
 
-        $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+        $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
                             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
                             ->Where('org.id',9)
                             ->Where('fun.activo', 'true')
@@ -57,7 +57,7 @@ class EValsupreController extends Controller
 
         // Info de director firmante
         if(isset($dataFirmante->incapacidad)) {
-            $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+            $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
             if($incapacidadFirmante != FALSE) {
                 $dataFirmante = $incapacidadFirmante;
             }
@@ -65,7 +65,7 @@ class EValsupreController extends Controller
         $temp = ['_attributes' =>
             [
                 'curp_firmante' => $dataFirmante->curp,
-                'nombre_firmante' => $dataFirmante->funcionario,
+                'nombre_firmante' => $dataFirmante->nombre,
                 'email_firmante' => $dataFirmante->correo,
                 'tipo_firmante' => 'FM'
             ]
@@ -416,7 +416,7 @@ class EValsupreController extends Controller
             $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
             if ($fechaActual->between($fechaInicio, $fechaTermino)) {
                 // La fecha de hoy está dentro del rango
-                $firmanteIncapacidad = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+                $firmanteIncapacidad = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
                     ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                     ->Where('fun.id', $incapacidad->id_firmante)
                     ->First();
@@ -544,7 +544,7 @@ class EValsupreController extends Controller
     }
 
     public function funcionarios_valsupre($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $ccp3 = clone $delegado = clone $remitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $ccp3 = clone $delegado = clone $remitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true');
 
@@ -561,6 +561,10 @@ class EValsupreController extends Controller
             ->Where('o.nombre','LIKE','DELEG%')
             ->Where('u.unidad', $unidad)
             ->First();
+
+        //parte de checado de incapacidad
+        $direc = $this->incapacidad(json_decode($direc->incapacidad), $direc->nombre) ?: $direc;
+        $delegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre) ?: $delegado;
 
         $funcionarios = [
             'director' => $direc->nombre,
