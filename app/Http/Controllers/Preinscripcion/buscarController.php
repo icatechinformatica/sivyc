@@ -44,7 +44,7 @@ class buscarController extends Controller
         ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad')
         ->join('cursos as c', 'ar.id_curso', '=', 'c.id');        
 
-        if (preg_match('/^2B-\d{6}$/', $valor_buscar)){ dd("pasa");
+        if (preg_match('/^2B-\d{6}$/', $valor_buscar)){
             $data->where('ar.folio_grupo', 'like', '%' . $valor_buscar . '%');
             $parameters['ejercicio'] = $ejercicio = null;
         } else {
