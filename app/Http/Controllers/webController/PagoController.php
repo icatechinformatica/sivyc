@@ -670,45 +670,45 @@ class PagoController extends Controller
         if($request->tipo_envio == 'guardar_enviar' || $request->tipo_envioc == 'guardar_enviar')
         {
             // inicio de verificación de archivos completos 23092024
-            $documentosSellados = DB::Table('tbl_cursos')->Select('documentos_firmar.tipo_archivo')
-                ->Join('documentos_firmar', 'documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
-                ->Join('contratos', 'contratos.id_curso', 'tbl_cursos.id')
-                ->Where('contratos.id_contrato', $id_contrato)
-                ->Where('documentos_firmar.status','VALIDADO')
-                ->Get();
-            $documentosSubidos = DB::Table('contratos')->Select('arch_asistencia as Lista de asistencia','arch_calificaciones as Lista de calificaciones','arch_evidencia as Reporte fotografico','arch_solicitud_pago as Solicitud Pago','doc_validado as valsupre','arch_contrato as Contrato')
-            ->Join('pagos','pagos.id_contrato', 'contratos.id_contrato')
-            ->Join('folios','folios.id_cursos','contratos.id_curso')
-            ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
-            ->Where('contratos.id_contrato', $id_contrato)
-            ->First();
+            // $documentosSellados = DB::Table('tbl_cursos')->Select('documentos_firmar.tipo_archivo')
+            //     ->Join('documentos_firmar', 'documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
+            //     ->Join('contratos', 'contratos.id_curso', 'tbl_cursos.id')
+            //     ->Where('contratos.id_contrato', $id_contrato)
+            //     ->Where('documentos_firmar.status','VALIDADO')
+            //     ->Get();
+            // $documentosSubidos = DB::Table('contratos')->Select('arch_asistencia as Lista de asistencia','arch_calificaciones as Lista de calificaciones','arch_evidencia as Reporte fotografico','arch_solicitud_pago as Solicitud Pago','doc_validado as valsupre','arch_contrato as Contrato')
+            // ->Join('pagos','pagos.id_contrato', 'contratos.id_contrato')
+            // ->Join('folios','folios.id_cursos','contratos.id_curso')
+            // ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
+            // ->Where('contratos.id_contrato', $id_contrato)
+            // ->First();
 
-            foreach($documentosSellados as $moist)
-            {
-                $documentosCompletos[$moist->tipo_archivo] = TRUE;
-                if(!is_null($documentosSubidos->{$moist->tipo_archivo})) {
-                    $documentosCompletos[$moist->tipo_archivo] = TRUE;
-                }
-            }
-            // fin de verificacion de archivos completos
-            if(in_array(false, $documentosCompletos)) { //aqui se define si esta completo o no
-                $faltantes = null;
-                foreach($documentosCompletos as $key => $result) {
-                    if(!$result) {
-                        $key = $key == 'valsupre' ? 'Validación de suficiencia presupuestal' : $key;
-                        $faltantes = is_null($faltantes) ? $key : $faltantes . ', ' . $key;
-                    }
-                }
-                $type = 'warning';
-                $message = 'El envío a validación no ha sido posible debido a la falta de documentos pendientes por integrar: '. $faltantes;
-            } else {
+            // foreach($documentosSellados as $moist)
+            // {
+            //     $documentosCompletos[$moist->tipo_archivo] = TRUE;
+            //     if(!is_null($documentosSubidos->{$moist->tipo_archivo})) {
+            //         $documentosCompletos[$moist->tipo_archivo] = TRUE;
+            //     }
+            // }
+            // // fin de verificacion de archivos completos
+            // if(in_array(false, $documentosCompletos)) { //aqui se define si esta completo o no
+            //     $faltantes = null;
+            //     foreach($documentosCompletos as $key => $result) {
+            //         if(!$result) {
+            //             $key = $key == 'valsupre' ? 'Validación de suficiencia presupuestal' : $key;
+            //             $faltantes = is_null($faltantes) ? $key : $faltantes . ', ' . $key;
+            //         }
+            //     }
+            //     $type = 'warning';
+            //     $message = 'El envío a validación no ha sido posible debido a la falta de documentos pendientes por integrar: '. $faltantes;
+            // } else {
                 pago::where('id_contrato', $id_contrato)
                 ->update(['status_recepcion' => 'En Espera',
                         'fecha_envio' => carbon::now()->format('d-m-Y')]);
 
                 $type = 'success';
                 $message = 'Entrega de Documentos Agendado Correctamente';
-            }
+            // }
         } else {
             $idf = DB::Table('contratos')->Where('id_contrato',$id_contrato)->Value('id_folios');
             $update = folio::Find($idf)
