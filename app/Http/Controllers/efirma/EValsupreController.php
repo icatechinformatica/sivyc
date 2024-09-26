@@ -253,11 +253,11 @@ class EValsupreController extends Controller
                 <FONT SIZE=0>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO</FONT><br/>
                 <FONT SIZE=0>FORMATO DE VALIDACIÓN DE SUFICIENCIA PRESUPUESTAL</FONT><br/>
                 <FONT SIZE=0>EN ATENCIÓN AL MEMORÁNDUM ';
-                if(is_null($numOficioSupre)) {
+                // if(is_null($numOficioSupre)) {
                     $body_html = $body_html . $data[0]->no_memo;
-                } else {
-                    $body_html = $body_html . $numOficioSupre;
-                }
+                // } else {
+                //     $body_html = $body_html . $numOficioSupre;
+                // }
                 $body_html = $body_html . '</FONT></p>
             </div>
             <div class="c"><FONT SIZE=0>Folio de Validación: ';
@@ -274,11 +274,11 @@ class EValsupreController extends Controller
                 <FONT SIZE=0><b>'.$funcionarios['directorp'].'</b></FONT><br/>
                 <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
                 <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.';
-                if(is_null($numOficioSupre)) {
+                // if(is_null($numOficioSupre)) {
                     $body_html = $body_html . $data[0]->no_memo;
-                } else {
-                    $body_html = $body_html . $numOficioSupre;
-                }
+                // } else {
+                //     $body_html = $body_html . $numOficioSupre;
+                // }
                 $body_html = $body_html . ' de fecha '.$D.' de '.$M.' del '.$Y.'; me permito comunicarle lo siguiente:<br/></font>
                     <font size=0>La Secretaria de Hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal '.$Y.', en ese sentido, con Fundamento en el Art. 13 Y Art. 38 del decreto de presupuesto
                     de egresos del Estado de Chiapas para el Ejercicio Fiscal '.$Y.' y en apego al tabulador de pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de ';
