@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Reportes\Recibo;
 use Carbon\Carbon;
 use App\Models\Reportes\Rf001Model;
+use App\Models\DocumentosFirmar;
+use App\Services\ReportService;
+use PHPQRCode\QRcode;
 
 class Reporterf001Repository implements Reporterf001Interface
 {
@@ -222,5 +225,61 @@ class Reporterf001Repository implements Reporterf001Interface
         return (new Rf001Model())->where('id', $id)->update([
             'estado' => 'FIRMADO',
         ]);
+    }
+
+    public function firmarDocumento($Request)
+    {
+    }
+
+    public function generarDocumentoPdf($id, $unidad, $organismo): array
+    {
+        $id = base64_decode($id);
+        $dataRf = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+
+        $documentoFirma = (new DocumentosFirmar())->where('numero_o_clave', $dataRf->memorandum)
+            ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
+            ->Where('tipo_archivo','supre')
+            ->first();
+
+        // checa si el documento está vacio
+        if (is_null($documentoFirma)) {
+            # está vacio
+            $bodyHtml = (new ReportService())->createBodyToXml($dataRf, $unidad, $organismo);
+            $bodyMemo = $bodyHtml['memorandum'];
+            $bodyRf001 = $bodyHtml['formatoRf001'];
+        } else {
+            // no está vacio
+            $bodyHtml = json_decode($documentoFirma->body_html);
+            $bodyMemo = $bodyHtml->memorandum;
+            $bodyRf001 = $bodyHtml->formatoRf001;
+        }
+
+        if (isset($documentoFirma->uuid_sellado)) {
+            # está o no sellado
+            $objeto = json_decode($documentoFirma->obj_documento,true);
+            $noOficio = json_decode(json_encode(simplexml_load_string($documentoFirma->documento_interno, "SimpleXMLElement", LIBXML_NOCDATA),true));
+            $noOficio = $noOficio->{'@attributes'}->no_oficio;
+            $uuid = $documentoFirma->uuid_sellado;
+            $cadenaSellado = $documentoFirma->cadena_sello;
+            $fechaSellado = $documentoFirma->fecha_sellado;
+            $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
+            // verificar si existe el enlace de verificacion
+
+            if (isset($documentoFirma->link_verificacion)) {
+                // se encuentra
+                $verificacion = $documentoFirma->link_verificacion;
+            } else {
+                // no se encuentra
+                $documentoFirma->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$noOficio";
+                $documentoFirma->save();
+            }
+            ob_start();
+            QRcode::png($verificacion);
+            $qrCodeData = ob_get_contents();
+            ob_end_clean();
+            $qrCodeBase64 = base64_encode($qrCodeData);
+        }
+
+        return [$bodyMemo, $bodyRf001];
     }
 }

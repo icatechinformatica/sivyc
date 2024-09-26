@@ -66,11 +66,7 @@ class ReportService
 
         $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
-        // sección de creación pdf
-        // $report = $this->getReport($distintivo, $organismoPublico, $id, $nombreElaboro, $puestoElaboro);
-        // $formatoRF001 = $this->renderHtmlForma($rf001, $unidad, $distintivo);
-
-        $body = $this->createBodyToXml($rf001, $unidad, $distintivo, $organismoPublico);
+        $body = $this->createBodyToXml($rf001, $unidad, $organismoPublico);
 
         if (is_null($body)) {
             $error = ['error' => 1];
@@ -78,6 +74,9 @@ class ReportService
         }
 
         $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
+
+        $firmantes = $this->funcionariosUnidades($ubicacion);
+        list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
         $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
@@ -87,21 +86,36 @@ class ReportService
             ->Where('u.unidad', $ubicacion)
             ->First();
 
+
+        $nameFileOriginal = 'concentrado '.$rf001->memorandum.'.pdf';
+        $numOficio = "concentrado-".$rf001->memorandum;
+        $numFirmantes = '3'; // 1 o 2
+
         $arrayFirmantes = [];
+        // director
         $temp = ['_attributes' =>
             [
-                'curp_firmante' => $dataFirmantes->curp,
-                'nombre_firmante' => $dataFirmantes->funcionario,
-                'email_firmante' => $dataFirmantes->correo,
+                'curp_firmante' => $firmanteNoUno['curp'],
+                'nombre_firmante' => $firmanteNoUno['funcionario'],
+                'email_firmante' => $firmanteNoUno['correo'],
                 'tipo_firmante' => 'FM',
             ]
         ];
-        $nameFileOriginal = 'concentrado '.$rf001->memorandum.'.pdf';
-        $numOficio = "concentrado-".$rf001->memorandum;
-        $numFirmantes = '1'; // 1 o 2
         array_push($arrayFirmantes, $temp);
 
-        array_pop(body);
+        // delegado
+        $temp = ['_attributes' =>
+            [
+                'curp_firmante' => $firmanteNoDos['curp'],
+                'nombre_firmante' => $firmanteNoDos['funcionario'],
+                'email_firmante' => $firmanteNoDos['correo'],
+                'tipo_firmante' => 'FM'
+            ]
+        ];
+        array_push($arrayFirmantes, $temp);
+
+
+        $joinBody = strip_tags($body['memorandum']).'/n'.strip_tags($body['formatoRf001']);
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
@@ -116,7 +130,7 @@ class ReportService
                 '_attributes' => [
                     'nombre_archivo' => $nameFileOriginal,
                 ],
-                'cuerpo' => [strip_tags($body)],
+                'cuerpo' => [$joinBody],
             ],
             'firmantes' => [
                 '_attributes' => [
@@ -174,8 +188,7 @@ class ReportService
             if (is_null($dataInsert)) {
                 $dataInsert = new DocumentosFirmar();
             }
-            // $dataInsert->obj_documento_interno = json_encode($htmlContent);
-            $dataInsert->body_html = json_encode($htmlBody);
+            $dataInsert->body_html = json_encode($body);
             $dataInsert->obj_documento = json_encode($ArrayXml);
             $dataInsert->status = 'EnFirma';
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
@@ -195,139 +208,6 @@ class ReportService
             return FALSE;
         }
 
-    }
-
-    protected function createBody($id, $firmante)
-    {
-
-        try {
-            #Distintivo
-            $distintivo = \DB::connection('pgsql')->table('tbl_instituto')->value('distintivo');
-            $rf001 = (new Rf001Model())->findOrFail($id);
-
-            $data = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
-            $unidad = strtoupper($data->ubicacion);
-            $municipio = mb_strtoupper($data->municipio, 'UTF-8');
-
-            #OBTENEMOS LA FECHA ACTUAL
-
-            $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-
-            $fechaActual = Carbon::now();
-            $dia = $fechaActual->day;
-            $mes = $fechaActual->month;
-            $anio = $fechaActual->year;
-
-            $dia = ($dia) <= 9 ? '0'.$dia : $dia;
-            $fecha_comp = $dia.' DE '.$meses[$mes-1].' DE '.$anio;
-
-            $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
-
-            $datoJson = json_decode($rf001->movimientos, true);
-            $startDate = Carbon::parse($rf001->periodo_inicio);
-            $endDate = Carbon::parse($rf001->periodo_fin);
-            $formattedStartDate = $startDate->format('d');
-            $formattedEndDate = $endDate->format('d');
-            $mes = $startDate->translatedFormat('F');
-            $anio = $startDate->format('Y');
-
-            $bodyHtml = null;
-
-            // $bodyXml = null;
-
-            // #fecha del envio de documento
-            // $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-
-            // $bodyXml = "INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN".
-            // "\n TECNOLÓGICA DEL ESTADO DE CHIAPAS \n".
-            // "\n". $distintivo. "\n".
-            // "\n UNIDAD DE CAPACITACIÓN ".$unidad.
-            // "\n OFICIO NÚM. ". $rf001->memorandum .
-            // "\n ".$municipio.", CHIAPAS. A ".$fecha_comp.".\n";
-
-            // $bodyXml .= "\n ". strtoupper($dirigido->titulo) . " " . strtoupper($dirigido->nombre) .
-            // "\n ". $dirigido->cargo .
-            // "\n PRESENTE \n";
-
-            // $bodyXml .= "\n Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001), original, \n".
-            // "\n copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad de \n".
-            // "\n Capacitación , con los siguientes movimientos. \n";
-
-            // $bodyXml .= "";
-
-
-            $bodyHtml = '<div align=center><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS</b></div>
-            <div>
-                <b>'.$distintivo.'</b>
-            </div> <br>
-            <div align=right>
-                <b>UNIDAD DE CAPACITACIÓN '.$unidad.'</b> <br>
-                <b>OFICIO NÚM. '. $rf001->memorandum . '</b> <br>
-                <b>'. $municipio .', CHIAPAS. A '. $fecha_comp. '</b>
-            </div> <br>';
-
-            $bodyHtml .= '<div align=right>
-                '. strtoupper($dirigido->titulo) .' '. strtoupper($dirigido->nombre) .' <br>
-                '.$dirigido->cargo.' <br>
-                PRESENTE
-            </div><br>';
-
-            $bodyHtml .= '
-            <div align=left>
-                <p>
-                Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001), original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad de Capacitación '.$unidad.', con los siguientes movimientos:
-                </p>
-            </div><br><br>';
-
-            $bodyHtml .= '
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    <p>PROGRESIVO</p>
-                                </th>
-                                <th>
-                                    <p>N° FOLIO</p>
-                                </th>
-                                <th>
-                                    <p>CURSO / MOTIVO</p>
-                                </th>
-                                <th>
-                                    <p>MOVIMIENTO</p>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>';
-                foreach ($datoJson as $key => $value)
-                {
-                    $depositos = isset($value['depositos'])
-                    ? json_decode($value['depositos'], true)
-                    : [];
-
-                    $bodyHtml .= '<tr>';
-                    $bodyHtml .= '<td>' . ($key < 9 ? '0' : '') . ($key + 1) . '</td>'; // Aquí suponemos que $key es el PROGRESIVO
-                    $bodyHtml .= '<td>' . $value['folio'] . '</td>'; // Aquí accedes al número de folio
-                    $bodyHtml .= '<td>' . $value['curso'] == null ? $value['descripcion'] : $value['curso'] . '</td>'; // Aquí accedes al curso/motivo
-                    $bodyHtml .= '<td>';
-                    foreach ($depositos as $k) {
-                        $bodyHtml.=  $k['folio']; // Aquí accedes al movimiento
-                    }
-                    $bodyHtml .= '</td>';
-                    $bodyHtml .= '</tr>';
-                }
-
-            $bodyHtml.='</tbody>
-                    </table><br>';
-
-            $bodyHtml .= '<div align=justify>
-                <p>Correspondientes al periodo comprendido del '.$formattedStartDate.' al '.$formattedEndDate.' de '.$mes.' del '.$anio.', lo anterior, para contabilización
-                respectiva.</p>
-                <p>Sin otro particular aprovecho la ocasión para saludarlo.</p>
-            </div>';
-            return $bodyHtml; // retorno del cuerpo del xml
-        } catch (\Throwable $th) {
-            return "ERROR AL CREAR EL CUERPO DEL DOCUMENTO ".$th->getMessage();
-        }
     }
 
     private function incapacidad($incapacidad, $incapacitado)
@@ -478,42 +358,6 @@ class ReportService
         return $result;
     }
 
-    private function datos_firmantes($organismo)
-    {
-        $firmanteUno = $firmanteDos = array();
-        try {
-            //área del usuario
-            $area_org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as area_org', 'id_parent', 'fun.cargo', 'fun.titulo',
-            'fun.nombre as funcionario', 'fun.correo', 'fun.curp')
-            ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
-            ->where('o.id', $organismo)->first();
-
-            // ORGANISMO DEL USUARIO / (DIRECCION)
-            $org = DB::table('tbl_organismos as o')->select('o.id', 'o.nombre as org', 'fun.cargo', 'fun.titulo', 'fun.nombre as funcionario',
-            'fun.correo', 'fun.curp')
-            ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
-            ->where('o.id', $area_org->id_parent)->first();
-
-            if (!$area_org || !$org) {
-                return "Error en la busqueda de firmantes";
-            }
-
-            if($area_org->id_parent == 1)
-            {
-                // $firmanteUno = array('funcionario'=>Auth::user()->name, 'puesto'=>Auth::user()->puesto, 'curp'=>Auth::user()->curp, 'correo'=>Auth::user()->email);
-                // $firmanteDos = array('funcionario'=>$area_org->funcionario, 'puesto'=>$area_org->cargo, 'correo'=>$area_org->correo, 'curp'=>$area_org->curp);
-                return "Usuario no disponible para realizar el firmado electronico";
-            }else{
-                $firmanteUno = array('funcionario'=>$area_org->funcionario, 'puesto'=>$area_org->cargo, 'correo'=>$area_org->correo, 'curp'=>$area_org->curp);
-                $firmanteDos = array('funcionario'=>$org->funcionario, 'puesto'=>$org->cargo, 'correo'=>$org->correo, 'curp'=>$org->curp);
-            }
-
-            return [$area_org, $org, $firmanteUno, $firmanteDos];
-        } catch (\Throwable $th) {
-            return "Error: ".$th->getMessage();
-        }
-    }
-
     public function rederHtmlMemorandum($id)
     {
         return View::make('reportes.rf001.vista_concentrado.memorf001')->render();
@@ -534,11 +378,11 @@ class ReportService
 
     public function createBodyToXml($data, $unidad, $organismo)
     {
-        $htmlBody = array();
+        $htmlBody = [];
         // memorandum crear primer documento
         $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
         $tblUnidades = \DB::table('tbl_unidades')->where('unidad', $data->unidad)->first();
-        $unidad = strtoupper($tblUnidades->ubicacion);
+        $unidadUbicacion = strtoupper($tblUnidades->ubicacion);
         $municipio = mb_strtoupper($tblUnidades->municipio, 'UTF-8');
         #OBTENEMOS LA FECHA ACTUAL
         $fechaActual = getdate();
@@ -559,7 +403,7 @@ class ReportService
             ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('f.activo', 'true')
             ->Where('o.nombre','LIKE','DELEG%')
-            ->Where('u.unidad', $rf001->unidad)
+            ->Where('u.unidad', $data->unidad)
             ->First();
 
         $nombre_titular = $cargo_fun = 'DATO REQUERIDO';
@@ -578,9 +422,9 @@ class ReportService
 
         $movimiento = json_decode($data->movimientos, true);
         $importeTotal = 0;
-        $periodoInicio = Carbon\Carbon::parse($data->periodo_inicio);
-        $periodoFin = Carbon\Carbon::parse($data->periodo_fin);
-        $dateCreacion = Carbon\Carbon::parse($data->created_at);
+        $periodoInicio = Carbon::parse($data->periodo_inicio);
+        $periodoFin = Carbon::parse($data->periodo_fin);
+        $dateCreacion = Carbon::parse($data->created_at);
         $dateCreacion->locale('es'); // Configurar el idioma a español
         $nombreMesCreacion = $dateCreacion->translatedFormat('F');
 
@@ -592,73 +436,76 @@ class ReportService
         $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
         $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
 
-        $htmlBody['memorandum'] = '<div class=contenedor>
-        <div class=bloque_uno align=right>
-            <p class=delet_space_p color_text>UNIDAD DE CAPACITACIÓN'.  strtoupper($unidad) .'</p>
-            <p class=delet_space_p color_text>OFICIO NÚM.'. $rf001->memorandum .'</p>
-            <p class=delet_space_p color_text>'.  $municipio .', CHIAPAS; <span
-                    class=color_text>'. strtoupper($fecha_comp)  .'</span></p>
-        </div><br><br><br>
-        <div class=bloque_dos align=left>
-            <p class=delet_space_p color_text>C. '.
-                 strtoupper($dirigido->titulo) .' '. strtoupper($dirigido->nombre) .'
-            </p>
-            <p class=delet_space_p color_text>
-                '. $dirigido->cargo .'
-            </p>
-            <p class=delet_space_p color_text>PRESENTE.</p>
-        </div>
-        <br>
-        <div class=contenido align=justify>
-            Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001),
-            original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad
-            de Capacitación <span class="color_text"> '. $unidad .' </span>, con los siguientes movimientos.
+        $htmlBody['memorandum'] = '<div class="contenedor">
+            <div class="bloque_uno" align="right">
+                <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</p>
+                <p class="delet_space_p color_text">OFICIO NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
+                <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars(strtoupper($fecha_comp)) . '</span></p>
+            </div>
+            <br><br><br>
+            <div class="bloque_dos" align="left">
+                <p class="delet_space_p color_text">C. ' . htmlspecialchars(strtoupper($dirigido->titulo)) . ' ' . htmlspecialchars(strtoupper($dirigido->nombre)) . '</p>
+                <p class="delet_space_p color_text">' . htmlspecialchars($dirigido->cargo) . '</p>
+                <p class="delet_space_p color_text">PRESENTE.</p>
+            </div>
             <br>
-        </div>
-        <br>';
-        $htmlBody['memorandum'] = $htmlBody['memorandum'] . ' <div class="tabla_alumnos">
-            <ul style=font-size: 14px> ';
-        foreach ($datoJson as $key => $value) {
-            $depositos = isset($value['depositos']) ? json_decode($value['depositos'], true) : [];
-            $htmlBody['memorandum'] = $htmlBody['memorandum'] . '<li style=font-size: 12px;><b>'.$value['curso'] == null ? strtolower($value['descripcion']) : strtolower($value['curso']).'</b> con el siguiente folio' . $value['folio'] . '</li>';
-        }
+            <div class="contenido" align="justify">
+                Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001),
+                original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad
+                de Capacitación <span class="color_text"> ' . htmlspecialchars($unidadUbicacion) . ' </span>, con los siguientes movimientos.
+                <br>
+            </div>
+            <br>';
 
-        $htmlBody['memorandum'] = $htmlBody['memorandum'] . '</ul>
-        <p style=font-size: 14px>Correspondientes al periodo comprendido del '. $formattedStartDate .' al
-                '.  $formattedEndDate .' de '. $mes .' del '. $anio .', lo anterior, para contabilización
-                respectiva.</p>
-            <p style=font-size: 14px>Sin otro particular aprovecho la ocasión para saludarlo. </p>
-            <br>
-        </div></div>';
+        $htmlBody['memorandum'] .= '<div class="tabla_alumnos">
+                <ul style="font-size: 14px">';
 
+            foreach ($datoJson as $key) {
+                $curso = isset($key['curso']) && $key['curso'] !== null ? strtolower($key['curso']) : strtolower($key['descripcion']);
+                $htmlBody['memorandum'] .= '<li style="font-size: 12px;"><b>' . htmlspecialchars($curso) . '</b> con el siguiente folio: ' . htmlspecialchars($key['folio']) . '</li>';
+            }
+
+        $htmlBody['memorandum'] .= '</ul>
+                <p style="font-size: 14px">Correspondientes al periodo comprendido del ' . htmlspecialchars($formattedStartDate) . ' al ' . htmlspecialchars($formattedEndDate) . ' de ' . htmlspecialchars($mes) . ' del ' . htmlspecialchars($anio) . ', lo anterior, para contabilización respectiva.</p>
+                <p style="font-size: 14px">Sin otro particular aprovecho la ocasión para saludarlo. </p>
+                <br>
+            </div></div>';
+
+
+
+        // Inicialización de formato
         $htmlBody['formatoRf001'] = '<table class="tabla_con_border" style="padding-top: 20px;">
-         <tr>
-             <td width="200px">FECHA DE ELABORACIÓN</td>
-             <td width="750px" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;" colspan="8"></td>
-             <td width="200px;" style="text-align:center;">SEMANA </td>
-             <td colspan="13" style="border: inset 0pt"></td>
-         </tr>
-         <tr>
-             <td style="text-align:center;"> ' . Carbon::parse($data->created_at)->format('d/m/Y') .' </td>
-             <td colspan="8" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;"></td>
-             <td style="text-align:center;">'.  $periodoInicio->format('d/m/Y') . ' AL ' . $periodoFin->format('d/m/Y') .'
-             </td>
-             <td colspan="13" style="border: inset 0pt"></td>
-         </tr>
-        </table><center class="espaciado"></center>';
-        $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . '<table class="tabla_con_border">
+            <tr>
+                <td width="200px">FECHA DE ELABORACIÓN</td>
+                <td width="750px" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;" colspan="8"></td>
+                <td width="200px" style="text-align:center;">SEMANA</td>
+                <td colspan="13" style="border: inset 0pt;"></td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">' . htmlspecialchars(Carbon::parse($data->created_at)->format('d/m/Y')) . '</td>
+                <td colspan="8" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;"></td>
+                <td style="text-align:center;">' . htmlspecialchars($periodoInicio->format('d/m/Y')) . ' AL ' . htmlspecialchars($periodoFin->format('d/m/Y')) . '</td>
+                <td colspan="13" style="border: inset 0pt;"></td>
+            </tr>
+            </table>
+            <center class="espaciado"></center>';
+
+        // Información de la cuenta bancaria
+        $htmlBody['formatoRf001'] .= '<table class="tabla_con_border">
             <tr>
                 <td style="text-align: center;">
-                    <b>DEPOSITO (S) EFECTUADO (S) A LA CUENTA BANCARIA:</b>
+                    <b>DEPÓSITO(S) EFECTUADO(S) A LA CUENTA BANCARIA:</b>
                 </td>
             </tr>
             <tr>
                 <td style="text-align: center;">
-                    NO. CUENTA  '. $cuenta .'
+                    NO. CUENTA ' . htmlspecialchars($cuenta) . '
                 </td>
             </tr>
-        </table>';
-        $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . '<table class="tabla_con_border">
+            </table>';
+
+        // Tabla de movimientos bancarios
+        $htmlBody['formatoRf001'] .= '<table class="tabla_con_border">
             <thead>
                 <tr>
                     <th style="text-align: center;" width="40px"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
@@ -669,41 +516,77 @@ class ReportService
             </thead>
             <tbody>';
 
-                foreach ($movimiento as $item) {
-                    $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
-                    $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . '<tr>
-                        <td data-label="KM inicial" style="width: 55px; text-align: center;">
-                            '. $item['folio'] .'
-                        </td>
-                        <td data-label="KM inicial" style="width: 40px; text-align: center;">';
-                        foreach ($depositos as $k) {
-                            $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . $k['folio'] .'&nbsp;';
-                        }
-                    $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] .' </td>
-                        <td data-label="De:" style="width: 160px; text-align: left; font-size: 9px;">';
-                    if ($item['curso'] != null) {
-                        $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . $item['curso'];
-                    } else {
-                        $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . $item['descripcion'];
-                    }
-                    $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] . '</td>
-                    <td data-label="Importe" style="width: 50px; text-align: center;">
-                            $ '.  number_format($item['importe'], 2, '.', ',') .'
-                    </td> </tr>';
-                    $importeTotal += $item['importe'];
+        // Iterar sobre los movimientos
+        foreach ($movimiento as $item) {
+            $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
+
+            $htmlBody['formatoRf001'] .= '<tr>
+                <td style="text-align: center;">' . htmlspecialchars($item['folio']) . '</td>
+                <td style="text-align: center;">';
+
+                // Iterar sobre los depósitos
+                foreach ($depositos as $k) {
+                    $htmlBody['formatoRf001'] .= htmlspecialchars($k['folio']) . '&nbsp;';
                 }
 
-                $htmlBody['formatoRf001'] = $htmlBody['formatoRf001'] .' <tr>
-                    <td></td>
-                    <td><b></b></td>
-                    <td><b></b></td>
-                    <td style="text-align:center;">
-                        <b> $ ' .  number_format($importeTotal, 2, '.', ',') . '</b>
-                    </td>
-                </tr>
+            $htmlBody['formatoRf001'] .= '</td>
+                <td style="text-align: left; font-size: 9px;">';
+
+            // Mostrar curso o descripción
+            $htmlBody['formatoRf001'] .= htmlspecialchars($item['curso'] ?? $item['descripcion']);
+
+            $htmlBody['formatoRf001'] .= '</td>
+                <td style="text-align: center;">$ ' . number_format($item['importe'], 2, '.', ',') . '</td>
+            </tr>';
+
+            // Acumular el importe total
+            $importeTotal += $item['importe'];
+        }
+
+        // Agregar fila de total
+        $htmlBody['formatoRf001'] .= '<tr>
+            <td></td>
+            <td></td>
+            <td style="text-align:right;"><b>TOTAL</b></td>
+            <td style="text-align:center;">
+                <b>$ ' . number_format($importeTotal, 2, '.', ',') . '</b>
+            </td>
+            </tr>
             </tbody>
-        </table>';
+            </table>';
+
 
         return $htmlBody;
+    }
+
+    protected function funcionariosUnidades($unidadObtenida)
+    {
+        try {
+            // arreglo
+            $firmanteNoUno = $firmanteNoDos = [];
+            // delegado administrativo
+            $query = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
+                        ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
+                        ->Join('tbl_unidades AS unidades', 'unidades.id', 'tblOrganismo.id_unidad')
+                        ->Where('funcionarios.activo', 'true')
+                        ->Where('unidades.unidad', $unidadObtenida);
+            //director de la unidad
+            $directorQuery = clone $query;
+            $director = $directorQuery->Where('tblOrganismo.id_parent', 1)->first();
+            // delegado de la unidad
+            $delegadoQuery = clone $query;
+            $delegado = $delegadoQuery->Where('tblOrganismo.nombre', 'LIKE', 'DELEG%')->first();
+
+            if(!$director || !$delegado){
+                return "Error en la busqueda de firmantes";
+            }
+            // proceso en el cuál se generan los arreglos de los firmantes
+            $firmanteNoUno = array('funcionario'=>$director->nombre, 'puesto'=>$director->cargo, 'correo'=>$director->correo, 'curp'=>$director->curp);
+            $firmanteNoDos = array('funcionario'=>$delegado->nombre, 'puesto'=>$delegado->cargo, 'correo'=>$delegado->correo, 'curp'=>$delegado->curp);
+
+            return [$firmanteNoUno, $firmanteNoDos];
+        } catch (\Throwable $th) {
+            return "Error: ".$th->getMessage();
+        }
     }
 }
