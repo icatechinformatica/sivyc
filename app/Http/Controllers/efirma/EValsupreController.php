@@ -411,7 +411,7 @@ class EValsupreController extends Controller
 
     private function incapacidad($incapacidad, $incapacitado) {
         $fechaActual = now();
-        if(!is_null($incapacidad->fecha_inicio)) {
+        if(isset($incapacidad->fecha_inicio) && !is_null($incapacidad->fecha_inicio)) {
             $fechaInicio = Carbon::parse($incapacidad->fecha_inicio);
             $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
             if ($fechaActual->between($fechaInicio, $fechaTermino)) {
