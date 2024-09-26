@@ -47,7 +47,7 @@ class EContratoController extends Controller
         $numFirmantes = '4';
         $arrayFirmantes = [];
 
-        $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+        $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
                             ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                             ->Where('org.id_unidad', $info->id)
                             ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
@@ -57,7 +57,7 @@ class EContratoController extends Controller
 
             if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($dataFirmante->cargo, 'ENCARGADA DE LA UNIDAD')) {
                 if(isset($dataFirmante->incapacidad)) {
-                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
                     if($incapacidadFirmante != FALSE) {
                         $dataFirmante = $incapacidadFirmante;
                     }
@@ -65,7 +65,7 @@ class EContratoController extends Controller
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
-                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'nombre_firmante' => $dataFirmante->nombre,
                         'email_firmante' => $dataFirmante->correo,
                         'tipo_firmante' => 'FM'
                     ]
@@ -89,7 +89,7 @@ class EContratoController extends Controller
         foreach($dataFirmantes as $dataFirmante) {
             if (str_contains($dataFirmante->cargo, 'ACADÉMICO')) {
                 if(isset($dataFirmante->incapacidad)) {
-                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
                     if($incapacidadFirmante != FALSE) {
                         $dataFirmante = $incapacidadFirmante;
                     }
@@ -97,7 +97,7 @@ class EContratoController extends Controller
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
-                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'nombre_firmante' => $dataFirmante->nombre,
                         'email_firmante' => $dataFirmante->correo,
                         'tipo_firmante' => 'FM'
                     ]
@@ -111,7 +111,7 @@ class EContratoController extends Controller
 
         //     if (str_contains($dataFirmante->cargo, 'VINCULACION')) {
         //         if(isset($dataFirmante->incapacidad)) {
-        //             $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+        //             $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
         //             if($incapacidadFirmante != FALSE) {
         //                 $dataFirmante = $incapacidadFirmante;
         //             }
@@ -119,7 +119,7 @@ class EContratoController extends Controller
         //         $temp = ['_attributes' =>
         //             [
         //                 'curp_firmante' => $dataFirmante->curp,
-        //                 'nombre_firmante' => $dataFirmante->funcionario,
+        //                 'nombre_firmante' => $dataFirmante->nombre,
         //                 'email_firmante' => $dataFirmante->correo,
         //                 'tipo_firmante' => 'FM'
         //             ]
@@ -132,7 +132,7 @@ class EContratoController extends Controller
         foreach($dataFirmantes as $dataFirmante) {
             if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE DELEGA') || str_contains($dataFirmante->cargo, 'ENCARGADA DE DELEGA')) {
                 if(isset($dataFirmante->incapacidad)) {
-                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
                     if($incapacidadFirmante != FALSE) {
                         $dataFirmante = $incapacidadFirmante;
                     }
@@ -140,7 +140,7 @@ class EContratoController extends Controller
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
-                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'nombre_firmante' => $dataFirmante->nombre,
                         'email_firmante' => $dataFirmante->correo,
                         'tipo_firmante' => 'FM'
                     ]
@@ -462,7 +462,7 @@ class EContratoController extends Controller
             $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
             if ($fechaActual->between($fechaInicio, $fechaTermino)) {
                 // La fecha de hoy está dentro del rango
-                $firmanteIncapacidad = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+                $firmanteIncapacidad = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre as org_nombre','fun.incapacidad')
                     ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                     ->Where('fun.id', $incapacidad->id_firmante)
                     ->First();
