@@ -190,6 +190,7 @@ Route::post('/directorio/getdirectorio','webController\ContratoController@get_di
 Route::get('/pagos/documento/{docs}', 'webController\ContratoController@docs')->name('get-docs');
 Route::get('/contrato-certificacion/{id}', 'webController\ContratoController@contrato_certificacion_pdf')->name('contrato-certificacion-pdf');
 Route::post('/recepcion', 'webController\ContratoController@recepcion')->name('recepcion');
+Route::get('/pagos/verificacionDocs/{idContrato}', 'webController\PagoController@verificar_documentacion')->name('verificacion-docs');
 
 //Ruta Pago
 Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
@@ -255,8 +256,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('alumnos/sid/modificar/{idAspirante}', 'webController\AlumnoController@updateSid')->name('sid.modificar');
     Route::post('alumnos/sid/modificar/vinculador/{idAspirante}', 'webController\AlumnoController@updateSidJefeUnidad')->name('sid.modificar-vinculador')->middleware('can:alumnos.inscripcion-jefe-unidad-update');
     Route::get('alumnos/sid/documento/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoSid')->name('documento.sid');
-    Route::get('alumnos/sid/documento/cerrs/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoCerrsSid')->name('documento.sid_cerrs');    
-    
+    Route::get('alumnos/sid/documento/cerrs/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoCerrsSid')->name('documento.sid_cerrs');
+
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
     // documentos pdf Desarrollado por Adrian
