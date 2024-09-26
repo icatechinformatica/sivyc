@@ -47,7 +47,7 @@
                             <th scope="col">EDITAR</th>
                         @endcan
                         @can('permiso.alu.exo')
-                            <th>AUTORIZA EXO</th>
+                            <th>CURSO EXTRA</th>
                         @endcan
                     </tr>
                 </thead>
@@ -74,7 +74,7 @@
                             </td>
                             @can('permiso.alu.exo')
                                 <td  class="text-center">
-                                    @if ($itemData->permiso_exoneracion)
+                                    @if ($itemData->curso_extra)
                                         <i class="btn btn-success" id="descper" onclick="desactivar('{{$itemData->curp}}');">&nbsp;&nbsp;ACTIVO&nbsp;&nbsp;</i>
                                     @else
                                         <i class="btn btn-danger" onclick="activar('{{$itemData->curp}}');">INACTIVO</i>
@@ -106,7 +106,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">AUTORIZAR PERMISO DE EXONERACIÓN</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">AUTORIZAR PERMISO PARA UN CURSO EXTRA</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -115,15 +115,14 @@
                     @csrf
                     <div class="modal-body">
                         <div class="row d-flex align-items-center">
-                            <div class="col-12">
-                                <div class="form-row col-md-12">
-                                    <div class="form-group col-md-6">
+                            <div class="col-12">                                
+                                <div class="form-group">
+                                    <label for="curp" class="control-label h6">CURP:</label>
                                         <input type="text" id="curpo" name="curpo" class="form-control" readonly>
-                                    </div>
-                                    <div class="custom-file form-group col-md-6 text-center">
-                                        <input type="file" class="custom-file-input" id="customFile" name="customFile">
-                                        <label class="custom-file-label" for="customFile">PDF SOPORTE</label>
-                                    </div>
+                                </div>                                
+                                <div class="form-group"> 
+                                    <label for="motivo" class="control-label h6">DESCRIBA LA JUSTIFICACIÓN:</label>
+                                    <textarea name="motivo" id="motivo" class="form-control"  rows="3"></textarea>                                    
                                 </div>
                             </div>
                         </div>
@@ -141,7 +140,7 @@
         <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">QUITAR PERMISO DE EXONERACIÓN</h5>
+            <h5 class="modal-title" id="exampleModalLabel">QUITAR PERMISO PARA UN CURSO EXTRA</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>

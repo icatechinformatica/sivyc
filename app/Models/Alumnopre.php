@@ -53,7 +53,7 @@ class Alumnopre extends Model
         'tiene_documentacion',
         'es_cereso',
         'titular_cerss',
-        'permiso_exoneracion'
+        'curso_extra'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
