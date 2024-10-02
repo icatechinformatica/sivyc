@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\View;
 use App\Models\tbl_unidades;
 use Illuminate\Support\Facades\DB;
 use setasign\Fpdi\Fpdi;
+use Illuminate\Support\Str;
 
 class ReportService
 {
@@ -199,8 +200,9 @@ class ReportService
             $dataInsert->documento_interno = $resultado;
             $dataInsert->save();
 
+            // actualizar registro en modelo Rf001Model
             (new Rf001Model())->where('id', $id)->update([
-                'estado' => 'ENFIRMA'
+                'estado' => 'ENFIRMA',
             ]);
 
             return TRUE;
@@ -474,7 +476,7 @@ class ReportService
 
 
         // Inicialización de formato
-        $htmlBody['formatoRf001'] = '<table class="tabla_con_border" style="padding-top: 20px;">
+        $htmlBody['formatoRf001'] = '<div class="contenedor"><table class="tabla_con_border" style="padding-top: 20px;">
             <tr>
                 <td width="200px">FECHA DE ELABORACIÓN</td>
                 <td width="750px" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;" colspan="8"></td>
@@ -508,8 +510,8 @@ class ReportService
         $htmlBody['formatoRf001'] .= '<table class="tabla_con_border">
             <thead>
                 <tr>
-                    <th style="text-align: center;" width="40px"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
-                    <th style="text-align: center;" width="100px"><b>N°. RECIBO Y/O FACTURA</b></th>
+                    <th style="text-align: center;"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
+                    <th style="text-align: center;" ><b>N°. RECIBO Y/O FACTURA</b></th>
                     <th style="text-align: center;">CONCEPTO DE COBRO</th>
                     <th style="text-align: center;">IMPORTE</th>
                 </tr>
@@ -517,26 +519,38 @@ class ReportService
             <tbody>';
 
         // Iterar sobre los movimientos
+        $counter = 0;
         foreach ($movimiento as $item) {
             $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
 
             $htmlBody['formatoRf001'] .= '<tr>
-                <td style="text-align: center;">' . htmlspecialchars($item['folio']) . '</td>
-                <td style="text-align: center;">';
+                <td style="width: 55px; text-align: center;">' . htmlspecialchars($item['folio']) . '</td>
+                <td style="width: 40px; text-align: center;">';
 
                 // Iterar sobre los depósitos
                 foreach ($depositos as $k) {
-                    $htmlBody['formatoRf001'] .= htmlspecialchars($k['folio']) . '&nbsp;';
+                    $counter++;
+                    $htmlBody['formatoRf001'] .= $k['folio'];
+
+                    if ($counter % 3 == 0) {
+                        $htmlBody['formatoRf001'] .= '<br>';
+                    } else {
+                        $htmlBody['formatoRf001'] .= ', ';
+                    }
                 }
 
             $htmlBody['formatoRf001'] .= '</td>
-                <td style="text-align: left; font-size: 9px;">';
+                <td style="width: 160px; text-align: left; font-size: 9px;">';
 
             // Mostrar curso o descripción
-            $htmlBody['formatoRf001'] .= htmlspecialchars($item['curso'] ?? $item['descripcion']);
+            if ($item['curso'] != null) {
+                $htmlBody['formatoRf001'] .= htmlspecialchars($item['curso']);
+            } else {
+                $htmlBody['formatoRf001'] .= htmlspecialchars($item['descripcion']);
+            }
 
             $htmlBody['formatoRf001'] .= '</td>
-                <td style="text-align: center;">$ ' . number_format($item['importe'], 2, '.', ',') . '</td>
+                <td style="width: 50px; text-align: center;">$ ' . number_format($item['importe'], 2, '.', ',') . '</td>
             </tr>';
 
             // Acumular el importe total
@@ -553,9 +567,34 @@ class ReportService
             </td>
             </tr>
             </tbody>
-            </table>';
+            </table>
+            <center class="espaciado"></center>';
 
-
+        $htmlBody['formatoRf001'] .=
+        '<table class="tabla_con_border">
+            <tr>
+                <td colspan="3">OBSERVACIONES:</td>
+            </tr>
+            <tr>
+             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b> <br>
+             <div style="padding-top: 3px;">';
+             foreach ($movimiento as $k) {
+                $htmlBody['formatoRf001'] .= htmlspecialchars($k['folio']) . ',';
+             }
+             $htmlBody['formatoRf001'] .= '<p><b>RECIBO OFICIAL: &nbsp;</b>';
+             foreach ($movimiento as $v) {
+                $deposito = isset($v['depositos']) ? json_decode($v['depositos'], true) : [];
+                foreach ($deposito as $j) {
+                    $htmlBody['formatoRf001'] .= htmlspecialchars($j['folio']) . ',';
+                }
+             }
+             $htmlBody['formatoRf001'] .= '&nbsp; <b> '. $dateCreacion->day ."/". Str::upper($nombreMesCreacion)."/". $dateCreacion->year .'</b>';
+             $htmlBody['formatoRf001'] .=  '</p></div></td></tr>';
+             $htmlBody['formatoRf001'] .= '<tr>
+             <td>&nbsp;</td>
+             <td>&nbsp;</td>
+             <td>&nbsp;</td>
+             </tr></table></div>';
         return $htmlBody;
     }
 
@@ -588,5 +627,24 @@ class ReportService
         } catch (\Throwable $th) {
             return "Error: ".$th->getMessage();
         }
+    }
+
+    public function sellarDocumento($xml, $token) {
+        //Sellado de producción
+        // $response = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token
+        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+        //     'xml_Firmado' => $xml
+        // ]);
+
+        // Sellado de prueba
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token
+        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
+            'xml_Firmado' => $xml
+        ]);
+        return $response;
     }
 }

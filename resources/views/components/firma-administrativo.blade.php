@@ -10,7 +10,7 @@
     <input class="d-none" value="{{ $curpFirmante }}" name="curp" id="curp" type="text">
     <input class="d-none" value="{{ $id }}" name="idRf001" id="idRf001" type="text">
 
-    <form id="formSign" action="{{ route('firma.store.update') }}" method="post">
+    <form id="formSign" action="{{ route('administrativo.rf001.firmar') }}" method="post">
         @csrf
         <input class="d-none" id="fechaFirmado" name="fechaFirmado" type="text">
         <input class="d-none" id="serieFirmante" name="serieFirmante" type="text">

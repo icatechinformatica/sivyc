@@ -104,9 +104,9 @@
                     <table class="table table-hover" id="tabla">
                         <thead>
                             <tr>
+                                <th scope="col">ESTADO</th>
                                 <th scope="col">MEMORANDUM</th>
                                 <th scope="col">UNIDAD</th>
-                                <th scope="col">ESTADO</th>
                                 <th scope="col">PERIODO</th>
                                 <th scope="col">ACCIONES</th>
                                 <th scope="col">DETALLES</th>
@@ -121,27 +121,50 @@
                                     $formatoFin = $periodoFin->format('d/m/Y');
                                 @endphp
                                 <tr>
-                                    <th scope="row">{{ $item->memorandum }}</th>
+                                    @switch($item->estado)
+                                        @case('GENERADO')
+                                            <td style="background-color: #3ac122; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                        @break
+
+                                        @case('REVISION')
+                                            <td style="background-color: #c9420c; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                        @break
+
+                                        @case('FIRMADO')
+                                            <td style="background-color: #f7dc6f; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                        @break
+
+                                        @default
+                                            <td style="background-color: #3ac122; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                    @endswitch
+                                    <td style="width: 30px;">{{ $item->memorandum }}</td>
                                     <td>{{ $item->unidad }}</td>
-                                    <td>{{ $item->estado }}</td>
-                                    <td>
+                                    <td class="text-left">
                                         {{ $formatoInicio . ' - ' . $formatoFin }}
                                     </td>
                                     <td class="text-left">
                                         @switch($item->estado)
                                             @case('GENERADO')
-                                                <a class="nav-link pt-0"
-                                                    href="{{ route('reporte.rf001.details', ['concentrado' => $item->id]) }}">
-                                                    <i class="fa fa-edit  fa-2x fa-lg text-primary" aria-hidden="true"
-                                                        padding-right: 12px;" title='EDITAR REGISTROS'></i>
-                                                </a>
+                                                @can('actualizar.rf001')
+                                                    <a class="nav-link pt-0"
+                                                        href="{{ route('reporte.rf001.details', ['concentrado' => $item->id]) }}">
+                                                        <i class="fa fa-edit  fa-2x fa-lg text-primary" aria-hidden="true"
+                                                            padding-right: 12px;" title='EDITAR REGISTROS'></i>
+                                                    </a>
+                                                @endcan
                                             @break
 
-                                            @case('ENFIRMA')
-                                                <a class="nav-link pt-0"
+                                            @case('ENFIRMA' || 'FIRMADO')
+                                                {{-- <a class="nav-link pt-0"
                                                     href="{{ route('reporte.generar.firma', ['id' => $item->id, 'solicitud' => $dato]) }}">
                                                     <i class="fas fa-pen fa-2x fa-lg text-danger" aria-hidden="true"
                                                         title='PARA FIRMA'></i>
+                                                </a> --}}
+                                                <a class="nav-link pt-0"
+                                                    href="{{ route('reporte.rf001.getpdf', ['id' => $item->id]) }}"
+                                                    target="_blank">
+                                                    <img class="rounded" src="{{ asset('img/pdf.png') }}"
+                                                        alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                 </a>
                                             @break
 
@@ -169,19 +192,23 @@
                     {!! Form::close() !!}
                 </div>
             @else
-                <div class="text-center p-5 bg-light">
+                <div class="text-center p-4 mb-2 bg-light">
                     <h5> <b>NO SE ENCONTRARON REGISTROS</b></h5>
                 </div>
             @endif
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                {{-- ocutar lo siguiente porque sólo se activa si la bandera trae el dato que necesito --}}
-                @if ($dato === 'solicitud')
-                    <a href="{{ route('reporte.rf001.ingreso-propio') }}" class="btn">
-                        <i class="fas fa-plus"></i> RF001
-                    </a>
-                @endif
+        <div class="col-12">
+            <div class="row">
+                <div class="col-md-4">
+                    {{-- ocutar lo siguiente porque sólo se activa si la bandera trae el dato que necesito --}}
+                    @if ($dato === 'solicitud')
+                        @can('crear.rf001')
+                            <a href="{{ route('reporte.rf001.ingreso-propio') }}" class="btn">
+                                <i class="fas fa-plus"></i> RF001
+                            </a>
+                        @endcan
+                    @endif
+                </div>
             </div>
         </div>
     </div>

@@ -1,26 +1,26 @@
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">OBSERVACIONES SOBRE EL FOLIO N° <div id="noFolio"></div></h5>
+                <h5 class="modal-title" id="exampleModalLabel">OBSERVACIONES SOBRE EL FOLIO N° <div id="noFolio"></div>
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                @role('administrativo')
-                <form id="sendComment" method="POST">
-                    @csrf
-                    <div class="new-comment-box mb-3">
-                        <label for="observacion">Comentario:</label>
-                        <textarea name="observacion" id="observacion" class="form-control" rows="3" placeholder="Agregar un comentario"></textarea>
-                    </div>
-                    <input type="hidden" name="folio" id="folio">
-                    <input type="hidden" name="memo" id="memo">
-                    <input type="submit" class="btn" value="COMENTAR">
-                </form>
-                @endrole
+                @can('observaciones.rf001')
+                    <form id="sendComment" method="POST">
+                        @csrf
+                        <div class="new-comment-box mb-3">
+                            <label for="observacion">Comentario:</label>
+                            <textarea name="observacion" id="observacion" class="form-control" rows="3" placeholder="Agregar un comentario" {{ ($estado == 'REVISION') ? 'disabled' : '' }}></textarea>
+                        </div>
+                        <input type="hidden" name="folio" id="folio">
+                        <input type="hidden" name="memo" id="memo">
+                        <input type="submit" class="btn" value="COMENTAR" {{ ($estado == 'REVISION') ? 'disabled' : '' }}>
+                    </form>
+                @endcan
 
                 <div class="comments-container">
                     <div id="observacionesModal" class="scroll-vertical"></div>

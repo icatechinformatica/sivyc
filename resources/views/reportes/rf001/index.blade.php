@@ -393,7 +393,6 @@
                                 details: parametro2
                             },
                             success: function(response) {
-                                console.log(response);
                                 resolve(response);
                             }
                         }).fail(function(jqXHR, textStatus, errorThrown) {

@@ -79,82 +79,47 @@
         }
     </style>
 @endsection
-@php
-    $nombre_titular = $cargo_fun = 'DATO REQUERIDO';
-    if ($organismo) {
-        $nombre_titular = $organismo->nombre_titular;
-        $cargo_fun = mb_strtoupper($organismo->cargo_fun, 'UTF-8');
-    }
-@endphp
 @section('content')
-    @php
-        $datoJson = json_decode($rf001->movimientos, true);
-        $startDate = Carbon\Carbon::parse($rf001->periodo_inicio);
-        $endDate = Carbon\Carbon::parse($rf001->periodo_fin);
-        $formattedStartDate = $startDate->format('d');
-        $formattedEndDate = $endDate->format('d');
-        $mes = $startDate->translatedFormat('F');
-        $anio = $startDate->format('Y');
-    @endphp
-    <div class="contenedor">
-        <div class="bloque_uno" align="right">
-            <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN {{ strtoupper($unidad) }}</p>
-            <p class="delet_space_p color_text">OFICIO NÚM. {{ $rf001->memorandum }}</p>
-            <p class="delet_space_p color_text">{{ $municipio }}, CHIAPAS; <span
-                    class="color_text">{{ strtoupper($fecha_comp) }}</span></p>
-        </div>
-        <br><br><br>
-        <div class="bloque_dos" align="left">
-            <p class="delet_space_p color_text">C.
-                {{ strtoupper($dirigido->titulo) }} {{ strtoupper($dirigido->nombre) }}
-            </p>
-            <p class="delet_space_p color_text">
-                {{ $dirigido->cargo }}
-            </p>
-            <p class="delet_space_p color_text">PRESENTE.</p>
-        </div>
+    {!! $bodyMemo !!}
+    @if (!is_null($uuid))
         <br>
-        <div class="contenido" align="justify">
-            Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001),
-            original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad
-            de Capacitación <span class="color_text"> {{ $unidad }}</span>, con los siguientes movimientos.
-            <br>
-        </div>
-        <br>
-        <div class="tabla_alumnos">
-            <ul style="font-size: 14px">
-                @foreach ($datoJson as $key => $value)
-                    @php
-                        $depositos = isset($value['depositos']) ? json_decode($value['depositos'], true) : [];
-                    @endphp
-                    <li style="font-size: 12px;">
-                        <b>{{ $value['curso'] == null ? strtolower($value['descripcion']) : strtolower($value['curso']) }}</b>
-                        con el siguiente folio
-                        {{ $value['folio'] }}</li>
+        <div class="contenedor">
+            <table style="width: 100%; font-size: 10px;">
+                @foreach ($objeto['firmantes']['firmante'][0] as $key => $moist)
+                    @if (\Str::startsWith($puestos[$key], 'DELEG'))
+                        <tr>
+                            <td style="width: 10%; font-size: 9px;"><b>Nombre del firmante:</b></td>
+                            <td style="width: 90%; font-size: 9px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top; font-size: 9px;"><b>Firma Electrónica:</b></td>
+                            <td style="font-size: 9px;">
+                                {{ wordwrap($moist['_attributes']['firma_firmante'], 87, "\n", true) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 9px;"><b>Puesto:</b></td>
+                            <td style="font-size: 9px; height: 25px;">{{ $puestos[$key] }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 9px;"><b>Fecha de Firma:</b></td>
+                            <td style="font-size: 9px;">{{ $moist['_attributes']['fecha_firmado_firmante'] }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 9px;"><b>Número de Serie:</b></td>
+                            <td style="font-size: 9px;">{{ $moist['_attributes']['no_serie_firmante'] }}</td>
+                        </tr>
+                    @endif
                 @endforeach
-            </ul>
-            <p style="font-size: 14px">Correspondientes al periodo comprendido del {{ $formattedStartDate }} al
-                {{ $formattedEndDate }} de {{ $mes }} del {{ $anio }}, lo anterior, para contabilización
-                respectiva.</p>
-            <p style="font-size: 14px">Sin otro particular aprovecho la ocasión para saludarlo. </p>
-            <br>
+            </table>
+            <div style="display: inline-block; width: 16%;">
+                {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
+                <img style="position: fixed; width: 16%; top: 60%; left: 77%" src="data:image/png;base64,{{ $qrCodeBase64 }}"
+                    alt="Código QR">
+            </div>
         </div>
-        {{-- <div class="contenido">
-            ATENTAMENTE
-            <br><br><br><br>
-            <span class="color_text firmau"><b>{{ $data->dunidad }}</b></span> <br>
-            <span class="color_text firmau"><b>{{ $data->pdunidad . ' ' . $unidad }}</b></span>
-        </div>
-        <br> --}}
-        {{-- <div class="textofin">
-            <p class="delet_space_p">C.C.P. {{ $conocimiento->titulo }} {{ $conocimiento->nombre_funcionario }} - {{ $conocimiento->cargo }} - Para su conocimiento.</p>
-            <p class="delet_space_p">ARCHIVO / MINUTARIO</p>
-            <p class="delet_space_p">ELABORÓ: {{ $nombreElaboro }}. - {{ $puestoElaboro }}</p>
-            <p class="delet_space_p">VALIDÓ: {{ $delegado->nombre }}. - {{ $delegado->cargo }}</p>
-        </div> --}}
-    </div>
 
-
+    @endif
 @endsection
 
 @section('script_content_js')

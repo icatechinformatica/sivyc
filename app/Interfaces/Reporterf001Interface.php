@@ -10,5 +10,11 @@ interface Reporterf001Interface {
     public function updateFormatoRf001($request, $id);
     public function storeComment($request);
     public function updateRf001($id);
-    public function generarDocumentoPdf($id);
+    public function generarDocumentoPdf($id, $unidad, $organismo);
+    public function getDate($date);
+    public function getSigner($idUser);
+    public function getFirmadoFormat($request);
+    public function reenviarSolicitud($request);
+    public function firmarDocumento($request);
+    public function sellarDocumento($request);
 }

@@ -14,6 +14,9 @@ use Vyuldashev\XmlToArray\XmlToArray;
 use Spatie\ArrayToXml\ArrayToXml;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\tbl_unidades;
+use App\Models\DocumentosFirmar;
+use Carbon\Carbon;
+use App\Models\Reportes\Rf001Model;
 
 class Rf001ReporteController extends Controller
 {
@@ -50,11 +53,14 @@ class Rf001ReporteController extends Controller
      */
     public function store(Request $request)
     {
+
         //
-        $documento = DB::table('documentos_firmar')->select('md5_file', 'obj_documento_interno', 'obj_documento', 'documento')->where('id', $request->getIdFile)->first();
+        $estado = '';
+        $documento = DocumentosFirmar::WHERE('id', $request->getIdFile)->first();
+        $date = Carbon::now();
 
         $obj_documento = json_decode($documento->obj_documento, true);
-        $obj_documento_interno = json_decode($documento->obj_documento_interno, true);
+        // dd($obj_documento['firmantes']['firmante'][0]);
 
         if (empty($obj_documento['archivo']['_attributes']['md5_archivo'])) {
             $obj_documento['archivo']['_attributes']['md5_archivo'] = $documento->md5_file;
@@ -83,21 +89,21 @@ class Rf001ReporteController extends Controller
         //     $obj_documento = $ArrayXml;
         // }
 
-        // $result = ArrayToXml::convert($obj_documento, [
-        //     '_attributes' => [
-        //         'version' => $array['DocumentoChis']['_attributes']['version'],
-        //         'fecha_creacion' => $array['DocumentoChis']['_attributes']['fecha_creacion'],
-        //         'no_oficio' => $array['DocumentoChis']['_attributes']['no_oficio'],
-        //         'dependencia_origen' => $array['DocumentoChis']['_attributes']['dependencia_origen'],
-        //         'asunto_docto' => $array['DocumentoChis']['_attributes']['asunto_docto'],
-        //         'tipo_docto' => $array['DocumentoChis']['_attributes']['tipo_docto'],
-        //         'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
-        //     ],
-        // ]);
+        $result = ArrayToXml::convert($obj_documento, [
+            'rootElementName' => 'DocumentoChis',
+            '_attributes' => [
+                'version' => $array['DocumentoChis']['_attributes']['version'],
+                'fecha_creacion' => $array['DocumentoChis']['_attributes']['fecha_creacion'],
+                'no_oficio' => $array['DocumentoChis']['_attributes']['no_oficio'],
+                'dependencia_origen' => $array['DocumentoChis']['_attributes']['dependencia_origen'],
+                'asunto_docto' => $array['DocumentoChis']['_attributes']['asunto_docto'],
+                'tipo_docto' =>  $array['DocumentoChis']['_attributes']['tipo_docto'],
+                'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
+            ],
+        ]);
 
-        dd($array); exit;
 
-        DB::table('documentos_firmar')->where('id', $request->getIdFile)
+        DocumentosFirmar::where('id', $request->getIdFile)
             ->update([
                 'obj_documento' => json_encode($obj_documento),
                 'documento' => $result,
@@ -107,8 +113,50 @@ class Rf001ReporteController extends Controller
         $encrypted = base64_encode($bandera);
         $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
 
-        // actualizar registro sobre información de
-        $this->rfoo1Repository->updateRf001($request->idRf);
+        // actualizar firma electronica
+        $rf001 = (new Rf001Model())->findOrFail($request->idRf);
+        $fechaUnica = $this->rfoo1Repository->getDate($date);
+
+        switch ($rf001->estado) {
+            case 'GENERADO':
+                $estado = 'ENFIRMA';
+                break;
+            case 'FIRMADO':
+                $estado = 'REVISION';
+                break;
+            case 'ENFIRMA':
+                $estado = 'FIRMADO';
+                break;
+        }
+
+        // Obtener el campo JSON y decodificarlo
+        $datosExistentes  = json_decode($rf001->movimiento, true);
+        // obtener revision
+        $revisionLocal = collect(json_decode($rf001->movimiento, true))->first(function ($item) {
+            return isset($item['tipo']) && ($item['tipo'] === 'REVISION_LOCAL');
+        });
+
+        if ($revisionLocal) {
+            # si hay registros
+            $revision = 'REVISION_GENERAL';
+        } else {
+            #no hay registros
+            $revision = 'REVISION_LOCAL';
+        }
+        //GUARDAMOS INFORMACIÓN DEL MOVIMIENTO EN LA TABLA dateFormat
+        $jsonObject = [
+            'fecha' => $fechaUnica,
+            'usuario' => Auth::user()->email,
+            'unidad' => Auth::user()->unidad,
+            'tipo' => $revision
+        ];
+
+        $datosExistentes[] = $jsonObject;
+
+        (new Rf001Model())->where('id', $request->idRf)->update([
+            'estado' => $estado,
+            'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
+        ]);
 
         return redirect()->route('reporte.rf001.sent', ['generado' => $encrypted])->with('message', 'Documento firmado exitosamente!');
     }

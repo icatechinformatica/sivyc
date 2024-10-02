@@ -11,6 +11,11 @@ use App\Models\Reportes\Rf001Model;
 use App\Models\DocumentosFirmar;
 use App\Services\ReportService;
 use PHPQRCode\QRcode;
+use App\Models\User;
+use Vyuldashev\XmlToArray\XmlToArray;
+use Spatie\ArrayToXml\ArrayToXml;
+use App\Models\Tokens_icti;
+use Illuminate\Http\Request;
 
 class Reporterf001Repository implements Reporterf001Interface
 {
@@ -43,10 +48,11 @@ class Reporterf001Repository implements Reporterf001Interface
         return $recibo;
     }
 
-    public function generateRF001Format($request)
+    public function generateRF001Format($request, $usuario)
     {
         $seleccionados = $request->input('seleccionados', []);
         $dataAdd = [];
+        $movimientoAdd = [];
 
         foreach ($seleccionados as $seleccionado) {
             list($contrato, $numRecibo, $id) = explode("_", $seleccionado);
@@ -78,6 +84,25 @@ class Reporterf001Repository implements Reporterf001Interface
             $dataAdd[] = $JsonObj;
         }
 
+        // agregar movimiento - historial del movimiento del formato RF001 -- Creacion de estampa de hora exacta de creacion
+       $date = Carbon::now();
+       $month = $date->month < 10 ? '0'.$date->month : $date->month;
+       $day = $date->day < 10 ? '0'.$date->day : $date->day;
+       $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
+       $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
+       $second = $date->second < 10 ? '0'.$date->second : $date->second;
+       $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
+
+        // crear objeto -- pero se hara en un método
+       $ObjetoJson = [
+        'fecha' => $dateFormat,
+        'usuario' => $usuario->email,
+        'unidad' => $usuario->unidad,
+        'tipo' => 'GENERADO'
+       ];
+
+       $movimientoAdd[] = $ObjetoJson;
+
        return Rf001Model::create([
             'memorandum' => trim($request->get('consecutivo')),
             'estado' => trim('GENERADO'),
@@ -86,6 +111,7 @@ class Reporterf001Repository implements Reporterf001Interface
             'unidad' => $request->get('unidad'),
             'periodo_inicio' => $request->get('periodoInicio'),
             'periodo_fin' => $request->get('periodoFIn'),
+            'movimiento' => json_encode($movimientoAdd, JSON_UNESCAPED_UNICODE),
         ]);
     }
 
@@ -191,7 +217,8 @@ class Reporterf001Repository implements Reporterf001Interface
 
         $newComment = [
             'comentario' => $request['observacion'],
-            'fecha' => $fecha
+            'fecha' => $fecha,
+            'generado' => Auth::user()->name,
         ];
 
         $detalleFolio = (new Rf001Model())->where('memorandum', $request['memo'])->first();
@@ -227,24 +254,88 @@ class Reporterf001Repository implements Reporterf001Interface
         ]);
     }
 
-    public function firmarDocumento($Request)
+    public function firmarDocumento($request)
     {
+        $estado = '';
+        $documento = DocumentosFirmar::WHERE('id', $request->getIdFile)->first();
+        $date = Carbon::now();
+
+        $obj_documento = json_decode($documento->obj_documento, true);
+
+        if (empty($obj_documento['archivo']['_attributes']['md5_archivo'])) {
+            $obj_documento['archivo']['_attributes']['md5_archivo'] = $documento->md5_file;
+        }
+
+        foreach ($obj_documento['firmantes']['firmante'][0] as $key => $value) {
+            if ($value['_attributes']['curp_firmante'] == $request->curpObtenido) {
+                $value['_attributes']['fecha_firmado_firmante'] = $request->fechaFirmado;
+                $value['_attributes']['no_serie_firmante'] = $request->serieFirmante;
+                $value['_attributes']['firma_firmante'] = $request->firma;
+                $value['_attributes']['certificado'] = $request->certificado;
+                $obj_documento['firmantes']['firmante'][0][$key] = $value;
+            }
+        }
+
+        $array = XmlToArray::convert($documento->documento);
+        $array['DocumentoChis']['firmantes'] = $obj_documento['firmantes'];
+
+        $result = ArrayToXml::convert($obj_documento, [
+            'rootElementName' => 'DocumentoChis',
+            '_attributes' => [
+                'version' => $array['DocumentoChis']['_attributes']['version'],
+                'fecha_creacion' => $array['DocumentoChis']['_attributes']['fecha_creacion'],
+                'no_oficio' => $array['DocumentoChis']['_attributes']['no_oficio'],
+                'dependencia_origen' => $array['DocumentoChis']['_attributes']['dependencia_origen'],
+                'asunto_docto' => $array['DocumentoChis']['_attributes']['asunto_docto'],
+                'tipo_docto' =>  $array['DocumentoChis']['_attributes']['tipo_docto'],
+                'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
+            ],
+        ]);
+
+        DocumentosFirmar::where('id', $request->getIdFile)
+        ->update([
+            'obj_documento' => json_encode($obj_documento),
+            'documento' => $result,
+        ]);
+
+        $rf001 = (new Rf001Model())->findOrFail($request->idRf);
+        $fechaUnica = $this->getDate($date);
+
+        // Obtener el campo JSON y decodificarlo
+        $datosExistentes  = json_decode($rf001->movimiento, true);
+
+        $jsonObject = [
+            'fecha' => $fechaUnica,
+            'usuario' => Auth::user()->email,
+            'unidad' => Auth::user()->unidad,
+            'tipo' => 'ESPERA_SELLADO'
+        ];
+        $datosExistentes[] = $jsonObject;
+
+        return (new Rf001Model())->where('id', $request->idRf)->update([
+            'estado' => 'ENSELLADO',
+            'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
+        ]);
     }
 
     public function generarDocumentoPdf($id, $unidad, $organismo): array
     {
+        $uuid = $objeto = $qrCodeBase64 = null;
+        $puestos = array();
         $id = base64_decode($id);
         $dataRf = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
 
         $documentoFirma = (new DocumentosFirmar())->where('numero_o_clave', $dataRf->memorandum)
             ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
-            ->Where('tipo_archivo','supre')
             ->first();
+
+
+        $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
         // checa si el documento está vacio
         if (is_null($documentoFirma)) {
             # está vacio
-            $bodyHtml = (new ReportService())->createBodyToXml($dataRf, $unidad, $organismo);
+            $bodyHtml = (new ReportService())->createBodyToXml($dataRf, $unidad, $organismoPublico);
             $bodyMemo = $bodyHtml['memorandum'];
             $bodyRf001 = $bodyHtml['formatoRf001'];
         } else {
@@ -262,6 +353,7 @@ class Reporterf001Repository implements Reporterf001Interface
             $uuid = $documentoFirma->uuid_sellado;
             $cadenaSellado = $documentoFirma->cadena_sello;
             $fechaSellado = $documentoFirma->fecha_sellado;
+            $folio = $documentoFirma->nombre_archivo;
             $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
             // verificar si existe el enlace de verificacion
 
@@ -270,7 +362,7 @@ class Reporterf001Repository implements Reporterf001Interface
                 $verificacion = $documentoFirma->link_verificacion;
             } else {
                 // no se encuentra
-                $documentoFirma->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$noOficio";
+                $documentoFirma->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$noOficio";
                 $documentoFirma->save();
             }
             ob_start();
@@ -278,8 +370,134 @@ class Reporterf001Repository implements Reporterf001Interface
             $qrCodeData = ob_get_contents();
             ob_end_clean();
             $qrCodeBase64 = base64_encode($qrCodeData);
+
+            // fin de la generación
+            foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
+                $puesto = \DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+                if(!is_null($puesto)) {
+                    array_push($puestos,$puesto->cargo);
+                    // <td height="25px;">{{$search_puesto->cargo}}</td>
+                } else {
+                    array_push($puestos,'ENCARGADO');
+                }
+            }
         }
 
-        return [$bodyMemo, $bodyRf001];
+        return [$bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64];
+    }
+
+    public function getDate($date)
+    {
+        //Creacion de estampa de hora exacta de creacion
+        $month = $date->month < 10 ? '0'.$date->month : $date->month;
+        $day = $date->day < 10 ? '0'.$date->day : $date->day;
+        $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
+        $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
+        $second = $date->second < 10 ? '0'.$date->second : $date->second;
+        $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
+        return $dateFormat;
+    }
+
+    public function getSigner($idUser)
+    {
+        // obtener firmante
+        return User::select('tbl_funcionarios.curp', 'tbl_funcionarios.correo')
+            ->join('tbl_funcionarios', 'tbl_funcionarios.correo', '=', 'users.email')
+            ->where('users.id', $idUser)
+            ->first();
+    }
+
+    public function getFirmadoFormat($request)
+    {
+        return (new Rf001Model())->where('estado', 'REVISION')->orWhere('estado', 'ENSELLADO')->paginate(10 ?? 5);
+    }
+
+    public function reenviarSolicitud($request)
+    {
+        $movimientoAdd = [];
+        $rf001Id = $request->get('idRf001');
+        $rf001 = (new Rf001Model())->findOrFail($rf001Id);
+
+        $date = Carbon::now();
+        $month = $date->month < 10 ? '0'.$date->month : $date->month;
+        $day = $date->day < 10 ? '0'.$date->day : $date->day;
+        $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
+        $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
+        $second = $date->second < 10 ? '0'.$date->second : $date->second;
+        $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
+
+        $datosExistentes  = json_decode($rf001->movimiento, true);
+
+        // crear objeto -- pero se hara en un método
+        $ObjetoJson = [
+            'fecha' => $dateFormat,
+            'usuario' => Auth::user()->email,
+            'unidad' => Auth::user()->unidad,
+            'tipo' => 'RETORNADO'
+        ];
+
+        $datosExistentes[] = $ObjetoJson;
+
+        return (new Rf001Model())->where('id', $rf001Id)->update([
+            'estado' => 'RETORNADO',
+            'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
+        ]);
+    }
+
+    public function sellarDocumento($request)
+    {
+        $date = Carbon::now();
+        $formatoRf001 = $this->getDetailRF001Format($request->get('rf001Id'));
+        $documento = DocumentosFirmar::WHERE('numero_o_clave', $formatoRf001->memorandum)->first();
+        $xmlBase64 = base64_encode($documento->documento);
+        $getToken = Tokens_icti::latest()->first();
+
+        if (!isset($getToken)) {
+            // no hay registros
+            $token = (new ReportService())->generarToken();
+        } else {
+            $token = $getToken->token;
+        }
+
+        $response = (new ReportService())->sellarDocumento($xmlBase64, $token);
+
+        if ($response->json() === null) {
+            # generar y sellar
+            $request = new Request();
+            $token = (new ReportService())->generarToken();
+            $response = (new ReportService())->sellarDocumento($xmlBase64, $token);
+        }
+        if ($response->json()['status'] == 1) {
+            $decode = base64_decode($response->json()['xml']);
+
+            // Obtener el campo JSON y decodificarlo
+            $datosExistentes  = json_decode($formatoRf001->movimiento, true);
+            $fechaUnica = $this->getDate($date);
+
+            $jsonObject = [
+                'fecha' => $fechaUnica,
+                'usuario' => Auth::user()->email,
+                'unidad' => Auth::user()->unidad,
+                'tipo' => 'SELLADO'
+            ];
+            $datosExistentes[] = $jsonObject;
+
+            (new Rf001Model())->where('id', $formatoRf001->id)->update([
+                'estado' => 'SELLADO',
+                'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
+            ]);
+
+            return DocumentosFirmar::where('id', $documento->id)
+                ->update([
+                    'status' => 'VALIDADO',
+                    'uuid_sellado' => $response->json()['uuid'],
+                    'fecha_sellado' => $response->json()['fecha_Sellado'],
+                    'documento' => $decode,
+                    'cadena_sello' => $response->json()['cadenaSello']
+                ]);
+        } else {
+            $respuesta_icti = ['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']];
+            return $respuesta_icti;
+        }
     }
 }

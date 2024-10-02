@@ -219,6 +219,85 @@
             /* Subraya el enlace al pasar el ratón por encima */
         }
 
+                /* Estilo del loader */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Fondo semi-transparente */
+            z-index: 9999;
+            /* Asegura que esté por encima de otros elementos */
+            display: none;
+            /* Ocultar inicialmente */
+        }
+
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        #loader-text {
+            color: #fff;
+            margin-top: 150px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        /* Texto loader */
+        #loader-text span {
+            opacity: 0;
+            /* Inicia los puntos como invisibles */
+            font-size: 30px;
+            font-weight: bold;
+            animation: fadeIn 1s infinite;
+            /* Aplica la animación de aparecer */
+        }
+
+        @keyframes fadeIn {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        #loader-text span:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        #loader-text span:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        #loader-text span:nth-child(3) {
+            animation-delay: 1.5s;
+        }
+
         /* Estilos responsivos */
         @media screen and (max-width: 768px) {
 
@@ -403,17 +482,19 @@
         }
     </style>
 @endsection
-@section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
+@section('title', 'Revisión del formato RF001 por parte de Dirección Administrativa | SIVyC Icatech')
 @php
     $movimiento = json_decode($getConcentrado->movimientos, true);
     $importeTotal = 0;
-
-    $bandera = Crypt::encrypt($solicitud);
-    $encrypted = base64_encode($bandera);
-    $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
 @endphp
 @section('content')
-    <div class="card-header"><a href="{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}">A Revisión </a>/
+    <div id="loader-overlay">
+        <div id="loader"></div>
+        <div id="loader-text">
+            Espere un momento mientras se realiza el proceso<span> . </span><span> . </span><span> . </span>
+        </div>
+    </div>
+    <div class="card-header"><a href="{{ route('administrativo.index') }}">Indice Revisión </a>/
         Detalles
         de Reporte RF-001</div>
     <div class="card card-body  p-5" style=" min-height:450px;">
@@ -422,16 +503,8 @@
                 {{ session('message') }}
             </div>
         @endif
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
         <div class="row">
+            <meta name="csrf-token" content="{{ csrf_token() }}">
             <div class="col-12 col-md-12 col-lg-12 order-2 order-md-1">
                 <div class="row">
                     <div class="col-12">
@@ -579,37 +652,26 @@
                     <div class="col-6">
                     </div>
                     <div class="col-4 d-flex justify-content-end">
-                        @if (is_array($revisionLocal) && count($revisionLocal) > 0)
-                            @if ($revisionLocal['tipo'] === 'GENERADO')
-                                @if (!empty($data['cadenaOriginal']))
-                                    <div class="padre">
-                                        {{-- Usar el componente creado --}}
-                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                            :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
-                                    </div>
-                                @endif
-                            @endif
-                        @else
-                            @if (!empty($data['cadenaOriginal']))
-                                <div class="padre">
-                                    {{-- Usar el componente creado --}}
-                                    <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                        :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
-                                </div>
-                            @endif
-                        @endif
+                        <div class="padre">
+                            @can('firma.validacion.rf001')
+                                {{-- Usar el componente creado --}}
+                                <x-firma-administrativo :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']" :token-data="$token"
+                                :id="$id" :curp-firmante="$curpFirmante"></x-firma-administrativo>
+                            @endcan
+                        </div>
                     </div>
                     <div class="col-2 justify-content-end">
                         @can('retornar.rf001')
-                            @if ($getConcentrado->estado != 'REVISION')
-                                <button type="button" class="btn btn-danger btn-xs">
+                            @if ($getConcentrado->estado == 'REVISION')
+                                <a type="button" class="btn btn-danger btn-xs sendReviewBack">
                                     <i class="fas fa-undo"></i>
                                     REGRESAR
-                                </button>
+                                </a>
                             @endif
                         @endcan
                     </div>
                 </div>
+                <input type="hidden" name="idRf001" id="idRf001" value="{{ $id }}" />
             </div>
         </div>
     </div>
@@ -628,7 +690,7 @@
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
@@ -748,7 +810,7 @@
                                     $(".action-close").trigger(
                                         "click"); // ocultar modal
                                     window.location.href =
-                                        "{{ route('reporte.rf001.set.details', ['id' => $id, 'solicitud' => $encrypted]) }}"; // redirect
+                                        "{{ route('administrativo.index') }}"; // redirect
                                 }
                             },
                             error: function(xhr, textStatus, error) {
@@ -761,6 +823,40 @@
                             }
                         });
                         return;
+                    }
+                });
+            });
+
+            $('.sendReviewBack').on('click', function(event) {
+                event.preventDefault();
+                const URL = "{{ route('administrativo.rf001.retornar') }}";
+                $.ajax({
+                    url: URL,
+                    method: "POST",
+                    dataType: "json",
+                    data: {
+                        idRf001: $('#idRf001').val(),
+                        _token: '{{ csrf_token() }}' // Asegúrate de incluir el token CSRF
+                    },
+                    beforeSend: function() {
+                        document.getElementById('loader-overlay').style.display = 'block';
+                    },
+                    success: function(response) {
+                        setTimeout(function() {
+                            // Ocultar el loader y mostrar el contenido después de la carga
+                            document.getElementById('loader-overlay').style.display = 'none';
+                            if (response.resp == 1) {
+                                window.location.href = "{{ route('administrativo.index') }}?message=" + encodeURIComponent(response.message);
+                            }
+                        }, 2800);
+                    },
+                    error: function(xhr, textStatus, error) {
+                        // manejar errores
+                        console.log('ESTADO TEXTO: ' + xhr.statusText);
+                        console.log('RESPUESTA:  ' + xhr.responseText);
+                        console.log('ESTADO: ' + xhr.status);
+                        console.log(textStatus);
+                        console.log(error);
                     }
                 });
             });

@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class FirmaComponente extends Component
+class FirmaAdministrativo extends Component
 {
     /**
      * Create a new component instance.
@@ -17,6 +17,7 @@ class FirmaComponente extends Component
     public $tokenData;
     public $id;
     public $curpFirmante;
+
     public function __construct($indice, $cadenaOriginal, $baseXml, $tokenData, $id, $curpFirmante)
     {
         //
@@ -35,6 +36,6 @@ class FirmaComponente extends Component
      */
     public function render()
     {
-        return view('components.firma-componente');
+        return view('components.firma-administrativo');
     }
 }

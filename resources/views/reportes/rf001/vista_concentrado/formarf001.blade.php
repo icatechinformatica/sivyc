@@ -21,6 +21,11 @@
              text-align: left;
          }
 
+         .contenedor {
+             margin-left: 1cm;
+             margin-right: 1cm;
+         }
+
          .tablas {
              width: 100%
          }
@@ -51,8 +56,8 @@
          }
 
          /* .tabla_con_border td {
-                                                                                         page-break-inside: avoid;
-                                                                                     } */
+                                                                                                 page-break-inside: avoid;
+                                                                                             } */
 
          .tabla_con_border thead tr th {
              border: 1px solid #000000;
@@ -128,128 +133,43 @@
 
  @section('content')
      @php
-         $movimiento = json_decode($data->movimientos, true);
-         $importeTotal = 0;
-         $periodoInicio = Carbon\Carbon::parse($data->periodo_inicio);
-         $periodoFin = Carbon\Carbon::parse($data->periodo_fin);
-         $dateCreacion = Carbon\Carbon::parse($data->created_at);
-         $dateCreacion->locale('es'); // Configurar el idioma a español
-         $nombreMesCreacion = $dateCreacion->translatedFormat('F');
+         $html_sin_saltos = str_replace(["\r", "\n"], '', $bodyRf001);
      @endphp
-     {{-- contenido del documento --}}
-     <table class="tabla_con_border" style="padding-top: 20px;">
-         <tr>
-             <td width="200px">FECHA DE ELABORACIÓN</td>
-             <td width="750px" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;" colspan="8"></td>
-             <td width="200px;" style="text-align:center;">SEMANA </td>
-             <td colspan="13" style="border: inset 0pt"></td>
-         </tr>
-         <tr>
-             <td style="text-align:center;">{{ Carbon\Carbon::parse($data->created_at)->format('d/m/Y') }}</td>
-             <td colspan="8" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;"></td>
-             <td style="text-align:center;">{{ $periodoInicio->format('d/m/Y') . ' AL ' . $periodoFin->format('d/m/Y') }}
-             </td>
-             <td colspan="13" style="border: inset 0pt"></td>
-         </tr>
-     </table>
-     <center class="espaciado"></center>
-     <table class="tabla_con_border">
-         <tr>
-             <td style="text-align: center;">
-                 <b>DEPOSITO (S) EFECTUADO (S) A LA CUENTA BANCARIA:</b>
-             </td>
-         </tr>
-         <tr>
-             <td style="text-align: center;">
-                 NO. CUENTA {{ $cuenta }}
-             </td>
-         </tr>
-     </table>
-     {{-- body table --}}
-     <table class="tabla_con_border">
-         <thead>
-             <tr>
-                 <th style="text-align: center;" width="40px"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
-                 <th style="text-align: center;" width="100px"><b>N°. RECIBO Y/O FACTURA</b></th>
-                 <th style="text-align: center;">CONCEPTO DE COBRO</th>
-                 <th style="text-align: center;">IMPORTE</th>
-             </tr>
-         </thead>
-         <tbody>
-             @foreach ($movimiento as $item)
-                 @php
-                     $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
-                 @endphp
+     {!! $html_sin_saltos !!}
+     <br><br>
+     <div class="contenedor">
+         <table style="width: 100%; font-size: 10px;">
+             @foreach ($objeto['firmantes']['firmante'][0] as $key => $moist)
                  <tr>
-                     <td data-label="KM inicial" style="width: 55px; text-align: center;">
-                         {{ $item['folio'] }}
-                     </td>
-                     <td data-label="KM inicial" style="width: 40px; text-align: center;">
-                         @foreach ($depositos as $k)
-                             {{ $k['folio'] }} &nbsp;
-                         @endforeach
-                     </td>
-                     <td data-label="De:" style="width: 160px; text-align: left; font-size: 9px;">
-                         @if ($item['curso'] != null)
-                             {{ $item['curso'] }}
-                         @else
-                             {{ $item['descripcion'] }}
-                         @endif
-                     </td>
-                     <td data-label="Importe" style="width: 50px; text-align: center;">
-                         ${{ number_format($item['importe'], 2, '.', ',') }}
+                     <td style="width: 10%; font-size: 9px;"><b>Nombre del firmante:</b></td>
+                     <td style="width: 90%; font-size: 9px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
+                 </tr>
+                 <tr>
+                     <td style="vertical-align: top; font-size: 9px;"><b>Firma Electrónica:</b></td>
+                     <td style="font-size: 9px;">
+                         {{ wordwrap($moist['_attributes']['firma_firmante'], 87, "\n", true) }}
                      </td>
                  </tr>
-                 @php
-                     $importeTotal += $item['importe'];
-                 @endphp
+                 <tr>
+                     <td style="font-size: 9px;"><b>Puesto:</b></td>
+                     <td style="font-size: 9px; height: 25px;">{{ $puestos[$key] }}</td>
+                 </tr>
+                 <tr>
+                     <td style="font-size: 9px;"><b>Fecha de Firma:</b></td>
+                     <td style="font-size: 9px;">{{ $moist['_attributes']['fecha_firmado_firmante'] }}</td>
+                 </tr>
+                 <tr>
+                     <td style="font-size: 9px;"><b>Número de Serie:</b></td>
+                     <td style="font-size: 9px;">{{ $moist['_attributes']['no_serie_firmante'] }}</td>
+                 </tr>
              @endforeach
-             <tr>
-                 <td></td>
-                 <td><b></b></td>
-                 <td><b></b></td>
-                 <td style="text-align:center;">
-                     <b>$ {{ number_format($importeTotal, 2, '.', ',') }}</b>
-                 </td>
-             </tr>
-         </tbody>
-     </table>
-     <center class="espaciado"></center>
-     {{-- body table END --}}
-     <table class="tabla_con_border">
-         <tr>
-             <td colspan="3">OBSERVACIONES:</td>
-         </tr>
-         <tr>
-             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b> <br>
-                 <div style="padding-top: 3px;">
-                     @foreach ($movimiento as $k)
-                         {{ $k['folio'] }},
-                     @endforeach
-                     <p>
-                         <b>RECIBO OFICIAL: &nbsp;</b>
-                         @foreach ($movimiento as $v)
-                             @php
-                                 $deposito = isset($v['depositos']) ? json_decode($v['depositos'], true) : [];
-                             @endphp
-                             @foreach ($deposito as $j)
-                                 {{ $j['folio'] }},
-                             @endforeach
-                         @endforeach
-                         &nbsp;
-                         <b>{{ $dateCreacion->day ."/". Str::upper($nombreMesCreacion)."/".$dateCreacion->year}}</b>
-                     </p>
-                 </div>
-             </td>
-         </tr>
-         <tr>
-             <td>&nbsp;</td>
-             <td>&nbsp;</td>
-             <td>&nbsp;</td>
-         </tr>
-     </table>
-     {{-- firmar --}}
-     {{-- contenido del documento END --}}
+         </table>
+         <div style="display: inline-block; width: 16%;">
+             {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
+             <img style="position: fixed; width: 16%; top: 60%; left: 77%" src="data:image/png;base64,{{ $qrCodeBase64 }}"
+                 alt="Código QR">
+         </div>
+     </div>
  @endsection
 
  @section('script_content_js')

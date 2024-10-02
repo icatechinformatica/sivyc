@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Reporte\Rf001Controller;
 use App\Http\Controllers\Reporte\Rf001ReporteController;
+use App\Http\Controllers\Reporte\Rf001AdministrativoController;
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/reportes/rf001/indice', [Rf001Controller::class, 'dashboard'])->name('reporte.rf001.index');
@@ -28,5 +29,10 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/reporte/rf001/formarf001/{id}', [Rf001ReporteController::class, 'getForma'])->name('reporte.forma.rf001');
 
+    Route::get('/reporte/rf001/administrativo/index', [Rf001AdministrativoController::class, 'index'])->middleware('can:index.validacion.rf001')->name('administrativo.index');
+    Route::get('/reportes/rf001/administrativo/detalle/{id}', [Rf001AdministrativoController::class, 'show'])->name('administrativo.rf001.details');
+    Route::post('/reportes/rf001/administrativo/retornar', [Rf001AdministrativoController::class, 'sendBack'])->name('administrativo.rf001.retornar');
+    Route::post('/reportes/rf001/administrativo/firmar', [Rf001AdministrativoController::class, 'firmar'])->name('administrativo.rf001.firmar');
+    Route::post('/reportes/rf001/administrativo/sellar', [Rf001AdministrativoController::class, 'sellado'])->name('administrativo.rf001.sellado');
 
 });

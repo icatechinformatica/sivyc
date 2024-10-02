@@ -140,8 +140,10 @@ class Rf001Controller extends Controller
     {
         // manejar error de consulta con try catch
         try {
+            // obtener usuario que realiza la acción
+            $logUser = Auth::user();
             //siempre trata de ejecutarse el código
-            $response = $this->rfoo1Repository->generateRF001Format($request);
+            $response = $this->rfoo1Repository->generateRF001Format($request, $logUser);
             if ($response) {
                 $bandera = Crypt::encrypt('solicitud');
                 $encrypted = base64_encode($bandera);
@@ -168,6 +170,7 @@ class Rf001Controller extends Controller
     public function show($id, $solicitud)
     {
         $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
+        $getSigner = $this->rfoo1Repository->getSigner(Auth::user()->id);
         $memorandum = $getConcentrado->memorandum;
         $cadenaOriginal = DB::table('documentos_firmar')->select('cadena_original', 'id', 'documento')->where('numero_o_clave', $memorandum)->first();
         // crear un arreglo
@@ -186,11 +189,6 @@ class Rf001Controller extends Controller
             ];
         }
 
-        $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
-            ->Join('tbl_funcionarios','tbl_funcionarios.correo','users.email')
-            ->Where('users.id', Auth::user()->id)
-            ->First();
-
         $getToken = Tokens_icti::latest()->first();
 
         if (!isset($token)) {
@@ -200,8 +198,17 @@ class Rf001Controller extends Controller
             $token = $getToken->token;
         }
 
+        // obtener revision
+        $revisionLocal = collect(json_decode($getConcentrado->movimiento, true))->first(function ($item) {
+            return isset($item['tipo'], $item['usuario']) &&
+                (
+                    ($item['tipo'] === 'REVISION_LOCAL' && $item['usuario'] === Auth::user()->email) ||
+                    ($item['tipo'] === 'REVISION_GENERAL' && $item['usuario'] === Auth::user()->email)
+                );
+        });
         $pathFile = $this->path_files;
-        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'solicitud', 'data', 'token'))->render();
+        $curpFirmante = $getSigner->curp;
+        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'solicitud', 'data', 'token', 'curpFirmante', 'revisionLocal'))->render();
     }
 
     /**
@@ -328,16 +335,20 @@ class Rf001Controller extends Controller
     {
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
         $unidad = Auth::user()->unidad;
+        $organismo = Auth::user()->id_organismo;
+        $idReporte = base64_encode($id);
 
-        // dd($unidad);
-
-        $idOrganismo = Auth::user()->id_organismo; # obtener el organismo administrativo id
-        $organismo = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $idOrganismo)->first();
+        $data = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
+        $direccion = $data->direccion;
+        // aplicando distructuración
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
-        $nombreElaboro = Auth::user()->name;
-        $puestoElaboro = Auth::user()->puesto;
-        $report = (new ReportService())->getReport($distintivo, $organismo, $id, $nombreElaboro, $puestoElaboro);
-        $formatoRF001 = (new ReportService())->renderHtmlForma($rf001, $unidad, $distintivo);
+        list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $unidad, $organismo);
+
+        $report = PDF::loadView('reportes.rf001.reporterf001', compact('bodyMemo', 'distintivo','direccion',  'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
+        $formatoRF001 = PDF::loadView('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion', 'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
+
+        // return view('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
+
         // $pdf = PDF::loadView('reportes.rf001.reporterf001');
         $file1 = tempnam(sys_get_temp_dir(), 'report');
         $file2 = tempnam(sys_get_temp_dir(), 'formatoRF001');
@@ -361,7 +372,7 @@ class Rf001Controller extends Controller
         unlink($file1);
         unlink($file2);
 
-        return $newPdf->Output('documento.pdf', 'I');
+        return $newPdf->Output('concentreado_de_ingresos_rf001_'.$rf001->memorandum.'.pdf', 'I');
 
         //generar el PDF
         // $pdf = PDF::loadHTML($combinedConent);
