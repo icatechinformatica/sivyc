@@ -70,6 +70,7 @@ class Rf001Controller extends Controller
         $filteredUrl = $request->except(['_token', 'ID', 'filtrar', 'idconcepto']);
         $folioGrupo = $request->get('folio_grupo');
         $getUnidad = $request->get('unidad');
+        $statusRecibo = $request->get('estado');
         $user = Auth::user();
         $datos = $this->rfoo1Repository->index($user);
         $filters = [];
@@ -100,6 +101,10 @@ class Rf001Controller extends Controller
 
         if (isset($folioGrupo) && $folioGrupo !== '') {
             $data->where('tbl_recibos.folio_recibo', '=', $folioGrupo);
+        }
+
+        if (isset($statusRecibo) && $statusRecibo !== '') {
+            $data->where('tbl_recibos.status_folio', '=', $statusRecibo);
         }
 
 

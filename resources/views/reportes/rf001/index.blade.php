@@ -207,7 +207,7 @@
             @if ($getConcentrado)
                 {{ Form::open(['route' => ['reporte.rf001.details', 'concentrado' => $getConcentrado->id], 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
             @else
-                {{ Form::open(['route' => 'reporte.rf001.index', 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
+                {{ Form::open(['route' => 'reporte.rf001.ingreso-propio', 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
             @endif
             <div class="form-row">
                 <div class="form-group col-md-1">
@@ -233,6 +233,12 @@
                 <div class="form-group col-md-3">
                     {{ Form::label('folio_grupo', 'N°. Recibo', ['class' => 'awesome']) }}
                     {{ Form::text('folio_grupo', '', ['id' => 'folio_grupo', 'class' => 'form-control mr-2', 'placeholder' => 'N°.RECIBO', 'title' => 'NO. RECIBO / FOLIO DE GRUPO / CLAVE ', 'size' => 25]) }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    {{ Form::label('estado', 'Estado', ['class' => 'awesome']) }}
+                    {{ Form::select('estado', ['seleccionar' => '--- SELECCIONAR ---', 'ENVIADO' => 'ENVIADO', 'CARGADO' => 'CARGADO', 'CANCELADO' => 'CANCELADO'], 'seleccionar', ['id' => 'status_folio', 'class' => 'form-control mr-2']) }}
                 </div>
                 <div class="form-group col-md-3 pt-4">
                     {{ Form::submit('FILTRAR', ['id' => 'filtrar', 'class' => 'btn mr-5 mt-1']) }}
@@ -293,7 +299,7 @@
                                             </div>
                                         @else
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox"
+                                                <input class="form-check-input concentrado-checkbox" type="checkbox"
                                                     value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
                                                     id="seleccionar_{{ $item->folio_recibo }}" name="seleccionados[]"
                                                     @if (in_array($item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id, $selectedCheckboxes)) checked @endif>
@@ -372,7 +378,7 @@
     </div>
 @endsection
 @section('script_content_js')
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -432,6 +438,30 @@
                 } catch (error) {
                     console.error(`Error después de la llamada Ajax: ${error}`);
                 }
+            });
+
+            //sessionStorage
+            $('.concentrado-checkbox').each(function() {
+                let checkboxId = $(this).attr('id');
+                let isChecked = sessionStorage.getItem(checkboxId);
+                if (isChecked === 'true') {
+                    $(this).prop('checked', true);
+                }
+
+                // Guardar el estado en sessionStorage cuando se seleccione/deseleccione un checkbox
+                $(this).on('change', function() {
+                    sessionStorage.setItem(checkboxId, $(this).prop('checked'));
+                });
+            });
+
+            $('#frmString').on('submit', function(e) {
+                e.preventDefault();
+                // Limpiar el sessionStorage
+                $('.concentrado-checkbox').each(function() {
+                    sessionStorage.removeItem($(this).attr('id'));
+                });
+                // Enviar el formulario
+                this.submit();
             });
         });
 
