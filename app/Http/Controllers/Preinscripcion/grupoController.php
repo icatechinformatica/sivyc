@@ -343,7 +343,7 @@ class grupoController extends Controller
                 else $date = $request->inicio;
                 $alumno = DB::table('alumnos_pre')
                     ->select('id as id_pre', 'matricula', DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"),'ultimo_grado_estudios as escolaridad',
-                    'nombre','apellido_paterno','apellido_materno','requisitos')
+                    'nombre','apellido_paterno','apellido_materno','requisitos','curso_extra')
                     ->where('curp', $curp)->where('activo', true)->first(); //dd($alumno);
                 $valida_alumno = $this->valida_alumno($curp, $request);
                 if ($valida_alumno['valido']) {//Validación del alummnos en multiples criterios.
@@ -357,7 +357,7 @@ class grupoController extends Controller
                                                             and extract(year from a.inicio) = extract(year from current_date)) as t"))
                                 ->select(DB::raw("count(curso) as total"), DB::raw("count(case when curso = '$request->id_curso' then curso end) as igual"))
                                 ->first(); //dd($cursos);
-                            if ($cursos->total < 16) {
+                            if ($cursos->total < 16 OR $alumno->curso_extra==true) {
                                 if($_SESSION['folio_grupo'] AND DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','<>','VINCULACION')->exists() == true) $_SESSION['folio_grupo'] = NULL;
                                 if(!$_SESSION['folio_grupo'] AND $alumno) $_SESSION['folio_grupo'] =$this->genera_folio();
                                 //EXTRAER MATRICULA Y GUARDAR
@@ -478,7 +478,10 @@ class grupoController extends Controller
                                                         'fcespe'=>$fcespe, 'observaciones'=>$observaciones, 'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre, 'requisitos'=> $alumno->requisitos
                                                     ]
                                                 );
-                                                if ($result) $message = "Operación Exitosa!!";
+                                                if ($result){
+                                                     $message = "Operación Exitosa!!";
+                                                     if($alumno->curso_extra==true) DB::table('alumnos_pre')->where('id',$alumno->id_pre)->where('curso_extra',true)->update(['curso_extra'=>false]);
+                                                }
                                         } else {
                                             $message = 'La fecha de termino no puede ser menor a la de inicio';
                                         }

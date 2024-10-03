@@ -190,7 +190,7 @@
                                                     @endphp
                                                     <tr>
                                                         <td><p>{{ isset($docFirmar->folio_grupo) ? $docFirmar->folio_grupo : '' }}</p></td>
-                                                        <td><p>{{ isset($docFirmar->numero_o_clave) ? $docFirmar->numero_o_clave : '' }}</p></td>
+                                                        <td><p>{{ !in_array($docFirmar->tipo_archivo, ['supre','valsupre']) ? $docFirmar->numero_o_clave : $docFirmar->folio_validacion }}</p></td>
                                                         <td><small>{{$nameArchivo}}</small></td>
                                                         <td>
                                                             @switch($docFirmar->tipo_archivo)
@@ -316,7 +316,7 @@
 
                                                     <tr>
                                                         <td><p>{{ isset($docFirmado->folio_grupo) ? $docFirmado->folio_grupo : '' }}</p></td>
-                                                        <td><p>{{ isset($docFirmado->numero_o_clave) ? $docFirmado->numero_o_clave : '' }}</p></td>
+                                                        <td><p>{{ !in_array($docFirmado->tipo_archivo, ['supre','valsupre']) ? $docFirmado->numero_o_clave : $docFirmado->folio_validacion }}</p></td>
                                                         <td><small>{{$nameArchivo}}</small></td>
                                                         <td>
                                                             @switch($docFirmado->tipo_archivo)
@@ -447,7 +447,7 @@
                                                     @endphp
                                                     <tr>
                                                         <td><p>{{ isset($docValidado->folio_grupo) ? $docValidado->folio_grupo : '' }}</p></td>
-                                                        <td><p>{{ isset($docValidado->numero_o_clave) ? $docValidado->numero_o_clave : '' }}</p></td>
+                                                        <td><p>{{ !in_array($docValidado->tipo_archivo, ['supre','valsupre']) ? $docValidado->numero_o_clave : $docValidado->folio_validacion }}</p></td>
                                                         <td><small>{{$nameArchivo}}</small></td>
                                                         <td>
                                                             @switch($docValidado->tipo_archivo)

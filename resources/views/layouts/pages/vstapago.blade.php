@@ -74,6 +74,11 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
+        @if ($message = Session::get('warning'))
+            <div class="alert alert-warning">
+                <p>{{ $message }}</p>
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -1623,6 +1628,7 @@
         var button = $(event.relatedTarget);
         var id = button.data('id');
         console.log(id);
+
         document.getElementById('id_contrato_agenda').value = id[0];
         if(id[14] == 1) {
             $('#guardarenviar').hide();
@@ -1640,13 +1646,13 @@
             request.done(( respuesta) =>
         {
             respuesta.forEach(element => {
-                console.log(element);
+                // console.log(element);
                 switch (element['tipo_archivo']) {
                     case 'valsupre':
                         const valsupreLink = document.getElementById('show_validacion_supre');
                         const valsupreUrl = "/supre/validacion/pdf/" + element['id_supre_64'];
                         valsupreLink.href = valsupreUrl;
-                        console.log(valsupreLink.href);
+                        // console.log(valsupreLink.href);
                         valsupreLink.hidden = false;
                         $('#validacion_supre_pdf_label').attr('hidden', true);
                         $('#validacion_supre_pdf').prop('required', false);
@@ -1890,16 +1896,8 @@
             icons.splice(10, 1);
         }
 
-        // if(idx[12] == 'ASIMILADOS A SALARIOS') {
-        //     anchors.splice(5,1);
-        //     anchors.splice(5,1);
-        //     idx.splice(6,1);
-        //     idx.splice(6,1);
-        //     variables.splice(5,1);
-        //     variables.splice(5,1);
-        //     icons.splice(5,1);
-        //     icons.splice(5,1);
-        // }
+        $('#guardarenviar').show();
+        const array1 = ['#show_fact_pdf', '#show_fact_xml', '#show_fact_pdfc', '#show_fact_xmlc']
 
         for (let i = 0; i < anchors.length; i++) {
             const href = idx[i+1];
@@ -1928,11 +1926,14 @@
                     document.getElementById('td'+[i+1]+td).previousElementSibling.style.display = 'none';
                     document.getElementById('td'+[i+1]+td).nextElementSibling.style.display = 'none';
                 }
-
+//alert(array1.includes(anchors[i]));
                 $(anchors[i]).attr('hidden', true);
                 document.getElementById('td'+[i+1]+td).style.color = "red";
                 $(variables[i]+'_label').attr('hidden', false);
                 $(icons[i]).attr('class', "fas fa-times text-danger");
+                // if(!array1.includes(anchors[i])) {
+                //     $('#guardarenviar').hide();
+                // }
                 // $(anchors[i]).parent().parent().css("background-color", "white");
 
             }

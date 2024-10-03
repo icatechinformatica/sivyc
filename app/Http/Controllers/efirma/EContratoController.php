@@ -47,7 +47,7 @@ class EContratoController extends Controller
         $numFirmantes = '4';
         $arrayFirmantes = [];
 
-        $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+        $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
                             ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                             ->Where('org.id_unidad', $info->id)
                             ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
@@ -57,7 +57,7 @@ class EContratoController extends Controller
 
             if (str_contains($dataFirmante->cargo, 'DIRECTOR') || str_contains($dataFirmante->cargo, 'DIRECTORA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($dataFirmante->cargo, 'ENCARGADA DE LA UNIDAD')) {
                 if(isset($dataFirmante->incapacidad)) {
-                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
                     if($incapacidadFirmante != FALSE) {
                         $dataFirmante = $incapacidadFirmante;
                     }
@@ -65,7 +65,7 @@ class EContratoController extends Controller
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
-                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'nombre_firmante' => $dataFirmante->nombre,
                         'email_firmante' => $dataFirmante->correo,
                         'tipo_firmante' => 'FM'
                     ]
@@ -89,7 +89,7 @@ class EContratoController extends Controller
         foreach($dataFirmantes as $dataFirmante) {
             if (str_contains($dataFirmante->cargo, 'ACADÉMICO')) {
                 if(isset($dataFirmante->incapacidad)) {
-                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
                     if($incapacidadFirmante != FALSE) {
                         $dataFirmante = $incapacidadFirmante;
                     }
@@ -97,7 +97,7 @@ class EContratoController extends Controller
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
-                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'nombre_firmante' => $dataFirmante->nombre,
                         'email_firmante' => $dataFirmante->correo,
                         'tipo_firmante' => 'FM'
                     ]
@@ -111,7 +111,7 @@ class EContratoController extends Controller
 
         //     if (str_contains($dataFirmante->cargo, 'VINCULACION')) {
         //         if(isset($dataFirmante->incapacidad)) {
-        //             $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+        //             $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
         //             if($incapacidadFirmante != FALSE) {
         //                 $dataFirmante = $incapacidadFirmante;
         //             }
@@ -119,7 +119,7 @@ class EContratoController extends Controller
         //         $temp = ['_attributes' =>
         //             [
         //                 'curp_firmante' => $dataFirmante->curp,
-        //                 'nombre_firmante' => $dataFirmante->funcionario,
+        //                 'nombre_firmante' => $dataFirmante->nombre,
         //                 'email_firmante' => $dataFirmante->correo,
         //                 'tipo_firmante' => 'FM'
         //             ]
@@ -132,7 +132,7 @@ class EContratoController extends Controller
         foreach($dataFirmantes as $dataFirmante) {
             if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE DELEGA') || str_contains($dataFirmante->cargo, 'ENCARGADA DE DELEGA')) {
                 if(isset($dataFirmante->incapacidad)) {
-                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->funcionario);
+                    $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
                     if($incapacidadFirmante != FALSE) {
                         $dataFirmante = $incapacidadFirmante;
                     }
@@ -140,7 +140,7 @@ class EContratoController extends Controller
                 $temp = ['_attributes' =>
                     [
                         'curp_firmante' => $dataFirmante->curp,
-                        'nombre_firmante' => $dataFirmante->funcionario,
+                        'nombre_firmante' => $dataFirmante->nombre,
                         'email_firmante' => $dataFirmante->correo,
                         'tipo_firmante' => 'FM'
                     ]
@@ -379,7 +379,7 @@ class EContratoController extends Controller
                 <dl>
                     <dt>I.  <b>“ICATECH”</b> declara que:<br>
                     <br><dd>I.1 Es un Organismo Descentralizado de la Administración Pública Estatal, con personalidad jurídica y patrimonio propio, conforme a lo dispuesto en el artículo 1 del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
-                    <br><dd>I.2 La Mtra. Fabiola Lizbeth Astudillo Reyes, en su carácter de Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, cuenta con personalidad jurídica que acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 16 de enero de 2019, por lo que se encuentra plenamente facultada en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
+                    <br><dd>I.2 El Mtro. Walter Domínguez Camacho, en su carácter de Encargado de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, cuenta con personalidad jurídica que acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 16 de enero de 2019, por lo que se encuentra plenamente facultada en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
                     <br><dd>I.3 '. $firmantes->dunidad.', '.$firmantes->pdunidad.' '.$data_contrato->unidad_capacitacion.', tiene personalidad jurídica para representar en este acto a “ICATECH”, como lo acredita con el nombramiento expedido por la Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, y cuenta con plena facultad legal para suscribir el presente Instrumento conforme a lo dispuesto por los artículos 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas y 12 fracción V, de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
                     <br><dd>I.4 Tiene por objetivo impartir e impulsar la capacitación para la formación en el trabajo, propiciando la mejor calidad y vinculación de este servicio con el aparato productivo y las necesidades de desarrollo Regional, Estatal y Nacional; actuar como Organismo promotor en materia de capacitación para el trabajo, conforme a lo establecido por la Secretaría de Educación Pública; promover la capacitación que permita adquirir, reforzar o potencializar los conocimientos, habilidades y destrezas necesarias para elevar el nivel de vida, competencia laboral y productividad en el Estado; promover el surgimiento de nuevos perfiles académicos, que correspondan a las necesidades del mercado laboral.</dd>
                     <br><dd>I.5 De acuerdo a las necesidades de <b>“ICATECH”</b>, se requiere contar con los servicios de una persona física con conocimientos en '. $data->espe .', por lo que se ha determinado llevar a cabo la Contratación bajo el régimen de <b>SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS,</b> en la modalidad de '.($data->tipo_curso == 'CURSO' ? 'horas curso' : 'certificación extraordinaria').' como <b>"PRESTADOR DE SERVICIOS"</b>.</dd>
@@ -462,7 +462,7 @@ class EContratoController extends Controller
             $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
             if ($fechaActual->between($fechaInicio, $fechaTermino)) {
                 // La fecha de hoy está dentro del rango
-                $firmanteIncapacidad = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+                $firmanteIncapacidad = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre as org_nombre','fun.incapacidad')
                     ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                     ->Where('fun.id', $incapacidad->id_firmante)
                     ->First();

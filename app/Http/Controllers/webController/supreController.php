@@ -44,10 +44,10 @@ class supreController extends Controller
         $año_pointer = CARBON::now()->format('Y');
         $unidaduser = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
         $roles = DB::table('role_user')
-            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
-            ->SELECT('roles.slug AS role_name')
-            ->WHERE('role_user.user_id', '=', Auth::user()->id)
-            ->FIRST();
+            ->Join('roles', 'roles.id', '=', 'role_user.role_id')
+            ->Select('roles.slug AS role_name')
+            ->Where('role_user.user_id', '=', Auth::user()->id)
+            ->First();
         /**
          * parametros de busqueda
          */
@@ -75,31 +75,46 @@ class supreController extends Controller
 
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-            ->SELECT('tabla_supre.*','folios.permiso_editar')
+            ->Select('tabla_supre.*','folios.permiso_editar')
             ->selectSub(function($query) {
-                $query->from('documentos_firmar')
-                    ->selectRaw('CASE WHEN COUNT(*) > 0 THEN true ELSE false END')
-                    ->whereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
-                    ->where('documentos_firmar.tipo_archivo', 'supre')
-                    ->where('documentos_firmar.status', ['VALIDADO','EnFirma']);
-            }, 'supre_sellado')
-            ->selectSub(function($query) {
-                $query->from('documentos_firmar')
-                    ->selectRaw('CASE WHEN COUNT(*) > 0 THEN true ELSE false END')
-                    ->whereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
-                    ->where('documentos_firmar.tipo_archivo', 'valsupre')
-                    ->whereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
-            }, 'valsupre_sellado')
-            ->where('tabla_supre.id', '!=', '0')
+                $query->From('documentos_firmar')
+                    ->SelectRaw('CASE WHEN COUNT(*) > 0 THEN true ELSE false END')
+                    ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
+                    ->Where('documentos_firmar.tipo_archivo', 'supre')
+                    ->Where('documentos_firmar.status', ['VALIDADO','EnFirma']);
+                }, 'supre_sellado')
+            ->SelectSub(function($query) {
+                $query->From('documentos_firmar')
+                    ->Select('status')
+                    ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
+                    ->Where('documentos_firmar.tipo_archivo', 'supre');
+                    // ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
+                }, 'efirma_status_supre')
+            ->SelectSub(function($query) {
+                $query->From('documentos_firmar')
+                    ->SelectRaw('CASE WHEN COUNT(*) > 0 THEN true ELSE false END')
+                    ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
+                    ->Where('documentos_firmar.tipo_archivo', 'valsupre')
+                    ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
+                }, 'valsupre_sellado')
+                ->SelectSub(function($query) {
+                    $query->From('documentos_firmar')
+                    ->Select('status')
+                    ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
+                    ->Where('documentos_firmar.tipo_archivo', 'valsupre');
+                    // ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
+                }, 'efirma_status_valsupre')
+            ->Where('tabla_supre.id', '!=', '0')
             ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
             ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             ->WHERE('tabla_supre.status', '!=', 'Cancelado');
-        if($roles->role_name != 'admin' && $roles->role_name != 'planeacion')
-        {
-            $data = $data->WHERE('unidad_capacitacion', $unidaduser->ubicacion);
+
+        if($roles->role_name != 'admin' && $roles->role_name != 'planeacion') {
+            $data = $data->Where('unidad_capacitacion', $unidaduser->ubicacion);
         }
-        $data = $data->RIGHTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
-            ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+
+        $data = $data->RightJoin('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+            ->RightJoin('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
             ->LeftJoin('documentos_firmar','documentos_firmar.numero_o_clave','=', 'tbl_cursos.clave')
             ->OrderBy('tabla_supre.status','ASC')
             ->OrderBy('tabla_supre.updated_at','DESC')
@@ -107,14 +122,6 @@ class supreController extends Controller
             ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado')]);
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
-
-        // $prueba = 'ICATECH/1000/7859/2024';
-        // $numDocs = 2;
-        // $numDocs = '0'.($numDocs+1);
-        // $numOficioBuilder = explode('/',$prueba);dd($numOficioBuilder);
-        // array_splice($numOficioBuilder, count($numOficioBuilder) - 2, 0, $numDocs);
-        // dd($numOficioBuilder);
-        // $numOficio = implode('/',$numOficioBuilder);
 
         return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades','array_ejercicio','año_pointer'));
     }
@@ -1266,6 +1273,11 @@ class supreController extends Controller
     public function supre_pdf($id){
         $id = base64_decode($id);
         $uuid = $objeto = $qrCodeBase64 = null;
+        $user_data = DB::Table('users')->Select('ubicacion','role_user.role_id')
+            ->Join('tbl_unidades','tbl_unidades.id','users.unidad')
+            ->Join('role_user','role_user.user_id','users.id')
+            ->Where('users.id', Auth::user()->id)
+            ->First();
         $supre = new supre();
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data_supre = $supre::WHERE('id', '=', $id)->FIRST(); //cambiar data2 a data_supre en tabla supre
@@ -1276,6 +1288,12 @@ class supreController extends Controller
         $funcionarios = $this->funcionarios_supre($data_supre->unidad_capacitacion);
         $direccion = explode("*", $unidad->direccion);
         $puestos = array();
+
+        //validacion de unidad del usuario y el contrato. con esto evitamos que lo vea cualquier usuario fuera de la unidad correcta
+        if($user_data->ubicacion != $unidad->ubicacion && !in_array($user_data->role_id, ['1','4','9','10'])) {
+            return redirect()->route('supre-inicio')->with('warning','Acceso denegado para visualizar esta Suficiencia Presupuestal.');
+        }
+        //fin
 
         //body en firma electronica
         $clave = DB::table('folios')->Where('folios.id_supre',$id)
@@ -1421,9 +1439,20 @@ class supreController extends Controller
         // dd($id);
         $puestos = array();
         $uuid = $objeto = $qrCodeBase64 = NULL;
+        $user_data = DB::Table('users')->Select('ubicacion','role_user.role_id')
+        ->Join('tbl_unidades','tbl_unidades.id','users.unidad')
+        ->Join('role_user','role_user.user_id','users.id')
+        ->Where('users.id', Auth::user()->id)
+        ->First();
         $firma_electronica = True;
         $id = base64_decode($id);
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
+
+        //validacion de unidad del usuario y el contrato. con esto evitamos que lo vea cualquier usuario fuera de la unidad correcta
+        if($user_data->ubicacion != $data2->unidad_capacitacion && !in_array($user_data->role_id, ['1','4','9','10'])) {
+            return redirect()->route('supre-inicio')->with('warning','Acceso denegado para visualizar esta Suficiencia Presupuestal.');
+        }
+        //fin
 
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $funcionarios = $this->funcionarios_valsupre($data2->unidad_capacitacion);
@@ -1821,7 +1850,7 @@ class supreController extends Controller
     }
 
     public function funcionarios_supre($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true');
 
@@ -1837,6 +1866,10 @@ class supreController extends Controller
             ->Where('o.nombre','LIKE','DELEG%')
             ->Where('u.unidad', $unidad)
             ->First();
+
+        //parte de checado de incapacidad
+        $direc = $this->incapacidad(json_decode($direc->incapacidad), $direc->nombre) ?: $direc;
+        $delegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre) ?: $delegado;
 
         $funcionarios = [
             'director' => $direc->nombre,
@@ -1857,7 +1890,7 @@ class supreController extends Controller
     }
 
     public function funcionarios_valsupre($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $ccp3 = clone $delegado = clone $remitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $ccp3 = clone $delegado = clone $remitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true');
 
@@ -1874,6 +1907,10 @@ class supreController extends Controller
             ->Where('o.nombre','LIKE','DELEG%')
             ->Where('u.unidad', $unidad)
             ->First();
+
+        //parte de checado de incapacidad
+        $direc = $this->incapacidad(json_decode($direc->incapacidad), $direc->nombre) ?: $direc;
+        $delegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre) ?: $delegado;
 
         $funcionarios = [
             'director' => $direc->nombre,
@@ -2123,6 +2160,39 @@ class supreController extends Controller
         if(count($data)>0){
             return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
         }
+    }
+
+    private function incapacidad($incapacidad, $incapacitado) {
+        $fechaActual = now();
+        if(isset($incapacidad->fecha_inicio) && !is_null($incapacidad->fecha_inicio)) {
+            $fechaInicio = Carbon::parse($incapacidad->fecha_inicio);
+            $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
+            if ($fechaActual->between($fechaInicio, $fechaTermino)) {
+                // La fecha de hoy está dentro del rango
+                $firmanteIncapacidad = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre as org_nombre','fun.incapacidad')
+                    ->Join('tbl_funcionarios AS fun','fun.id','org.id')
+                    ->Where('fun.id', $incapacidad->id_firmante)
+                    ->First();
+
+                return($firmanteIncapacidad);
+            } else {
+                // La fecha de hoy NO está dentro del rango
+                if($fechaTermino->isPast()) {
+                    $newIncapacidadHistory = 'Ini:'.$incapacidad->fecha_inicio.'/Fin:'.$incapacidad->fecha_termino.'/IdFun:'.$incapacidad->id_firmante;
+                    array_push($incapacidad->historial, $newIncapacidadHistory);
+                    $incapacidad->fecha_inicio = $incapacidad->fecha_termino = $incapacidad->id_firmante = null;
+                    $incapacidad = json_encode($incapacidad);
+
+                    DB::Table('tbl_funcionarios')->Where('nombre',$incapacitado)
+                        ->Update([
+                            'incapacidad' => $incapacidad
+                    ]);
+                }
+
+                return false;
+            }
+        }
+        return false;
     }
 }
 //A
