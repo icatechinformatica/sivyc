@@ -125,7 +125,7 @@
                 </div>
                 <div style="display: inline-block; width: 15%;">
                     {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                    <img style="position: fixed; width: 15%; top: 60%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                    <img style="position: fixed; width: 15%; top: 45%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                 </div>
             @else
                 <div align=center> <b>SOLICITA

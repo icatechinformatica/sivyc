@@ -1629,27 +1629,6 @@
         var id = button.data('id');
         console.log(id);
 
-        // $.ajax({
-        //     url: `/pagos/verificacionDocs/${id['0']}`,
-        //     type: 'GET',
-        //     dataType: 'json',
-        //     success: function(response) {
-        //         // Manejar la respuesta aquí
-        //         if(response.missing_documents != 'completo') {
-        //             // guardarenviar style="text-align: right; font-size: 10px;"
-        //             document.getElementById('guardarenviar').style.display = 'none';
-        //             console.log('ssss'); // me quede aqui solo verificar valsupre,  asisstencia y evidencia
-        //         } else {
-        //             document.getElementById('guardarenviar').style.display = 'block';
-        //         }
-        //         console.log(response.missing_documents); // Muestra el mensaje
-        //     },
-        //     error: function(xhr) {
-        //         console.error('Error en la solicitud:', xhr);
-        //         console.log('Ocurrió un error al verificar los documentos.');
-        //     }
-        // });
-
         document.getElementById('id_contrato_agenda').value = id[0];
         if(id[14] == 1) {
             $('#guardarenviar').hide();
@@ -1917,16 +1896,8 @@
             icons.splice(10, 1);
         }
 
-        // if(idx[12] == 'ASIMILADOS A SALARIOS') {
-        //     anchors.splice(5,1);
-        //     anchors.splice(5,1);
-        //     idx.splice(6,1);
-        //     idx.splice(6,1);
-        //     variables.splice(5,1);
-        //     variables.splice(5,1);
-        //     icons.splice(5,1);
-        //     icons.splice(5,1);
-        // }
+        $('#guardarenviar').show();
+        const array1 = ['#show_fact_pdf', '#show_fact_xml', '#show_fact_pdfc', '#show_fact_xmlc']
 
         for (let i = 0; i < anchors.length; i++) {
             const href = idx[i+1];
@@ -1960,6 +1931,10 @@
                 document.getElementById('td'+[i+1]+td).style.color = "red";
                 $(variables[i]+'_label').attr('hidden', false);
                 $(icons[i]).attr('class', "fas fa-times text-danger");
+                if(!array1.includes(anchors[i])) {
+                    $('#guardarenviar').hide();
+                    console.log(anchors[i]);
+                }
                 // $(anchors[i]).parent().parent().css("background-color", "white");
 
             }
