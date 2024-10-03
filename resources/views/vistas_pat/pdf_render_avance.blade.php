@@ -24,6 +24,7 @@
 @endsection
 @section('header')
     <div id="titulo">
+        <br><br><br>
         <h3>SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR</h3>
         <h3>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO</h3>
         <div id="fontotext"><b style="background: black;">"INFORME MENSUAL DE AVANCE PROGRAMÁTICO DEL PROGRAMA ANUAL DE TRABAJO
@@ -38,6 +39,7 @@
 @endsection
 @section('body')
         <div id="para">
+            <br><br>
             <strong>Dirección: </strong> {{isset($nom_direc_depto) ? $nom_direc_depto->direccion : ''}}
             <br>
             <strong>Departamento: </strong> {{isset($nom_direc_depto) ? $nom_direc_depto->depto : ''}}
@@ -157,40 +159,5 @@
             </tbody>
         </table>
 
-        <table class="tablaf" style="margin-top: 20px;">
-            <tr>
-                <td style="line-height: 1;">
-                    <p style="margin-bottom: 35px;">ELABORÓ</p>
-                    <p>___<u>{{isset($area_org) ? $area_org->titulo.' '.$area_org->funcionario : ''}}</u>___</p>
-                    <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
-                </td>
-                <td>
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                    <p>Fecha: {{isset($fecha_avance) ? $fecha_avance : ''}}</p>
-                </td>
-                <td style="line-height: 1;">
-                    <p style="margin-bottom: 35px;">Vo. Bo.</p>
-                    <p>___<u>{{isset($org) ? $org->titulo.' '.$org->funcionario : ''}}</u>___</p>
-                    <p><b>{{isset($org) ? $org->cargo : ''}}</b></p>
-                </td>
-            </tr>
-        </table>
-
-{{-- $pdf->text(40, 530, "Pág. $PAGE_NUM de $PAGE_COUNT", $font, 8); pienso que 530 es la parte del eje y--}}
 @endsection
-@section('js')
-    <script type="text/php">
-        if ( isset($pdf) ) {
-            $pdf->page_script('
-                $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-                $pdf->text(40, 570, "Pág. $PAGE_NUM de $PAGE_COUNT", $font, 8);
-            ');
-        }
 
-    </script>
-    <script>
-        // $(document).ready(function(){});
-    </script>
-@endsection
