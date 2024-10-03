@@ -126,7 +126,7 @@
                 </div>
                 <div style="display: inline-block; width: 15%;">
                     {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                    <img style="position: fixed; width: 15%; top: 60%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                    <img style="position: fixed; width: 15%; top: 50%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                 </div>
             @else
                 <br><br><b> C. {{$funcionarios['director']}}</b> <!-- now -->
@@ -137,10 +137,10 @@
                 @else
                 @endif
             @endif
-            <br><br><br><h6><small><b>C.c.p. {{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Mismo Fin</b></small></h6>
+            <br><br><h6><small><b>C.c.p. {{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Mismo Fin</b></small></h6>
             <h6><small><b>C.c.p. {{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo.<b></small></h6>
-            <br><br><small><b>Valido: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
+            <br><small><b>Valido: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
             <br><small><b>Elaboró: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
         </div>
     </body>

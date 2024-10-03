@@ -1766,66 +1766,23 @@ class AlumnoController extends Controller {
         $soporte = [];
         $curp = $request->curpo;
         $message = "La acción no se ejecuto correctamente";
-        if ($request->motivo) {
-            //$file =  $request->customFile;
-            //$extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
-            //$extensionFile = strtolower($extensionFile);
-            //if ($extensionFile == "pdf") {
-                # nuevo nombre del archivo
-                //$documentFile = trim("curso_extra" . "_" . $curp . "_" . date('YmdHis') . "." . $extensionFile);
-                //$path_pdf = "/ALUMNOS/curso_extra/";
-                //$path = $path_pdf . $documentFile;
-                //Storage::disk('custom_folder_1')->put($path, file_get_contents($file)); // guardamos el archivo en la carpeta storage
-                //$documentUrl = storage::url($path); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
-               // $documentUrl = $path;
-                //if ($documentUrl) {
-                /*
-                    $soporte[] = ['url'=>$documentUrl,'user_id'=>Auth::user()->id,'date'=>date('d-m-Y H:i')];
-                    $soportes = json_decode(DB::table('alumnos_pre')->where('curp',$curp)->value('motivo_curso_extra'));
-                    if ($soportes) {
-                        foreach ($soportes as $key => $value) {
-                            $soporte[] = $value;
-                        }
-                    }
-                        */
-                    $result = DB::table('alumnos_pre')->where('curp',$curp)->update(['curso_extra'=>true,                    
-                    'movimientos' => DB::raw("
-                        COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
-                            jsonb_build_object(
-                                'fecha', '".Carbon::now()->format('Y-m-d H:i:s')."',
-                                'usuario', '".Auth::user()->name."',
-                                'operacion', 'AUTORIZACION CURSO EXTRA',
-                                'motivo', '".$request->motivo."'
+        if ($request->motivo) {           
+            $result = DB::table('alumnos_pre')->where('curp',$curp)->update(['curso_extra'=>true,                    
+                'movimientos' => DB::raw("
+                COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                    jsonb_build_object(
+                        'fecha', '".Carbon::now()->format('Y-m-d H:i:s')."',
+                        'usuario', '".Auth::user()->name."',
+                        'operacion', 'AUTORIZACION CURSO EXTRA',
+                       'motivo', '".$request->motivo."'
                             )
                         )
-                    "),
-                    
-                    
-                    //'motivo_curso_extra'=>json_encode($soporte)
-                    ]);
-                    if ($result) {
-                        $message = "Operación exitosa!";
-                    }
-                //} else {
-                  //  $message = "Error al subir el archivo, volver a intentar.";
-                //}
-           // } else {
-             //   $message = "Formato de Archivo no válido, sólo PDF.";
-            //}
-        } else {
-            // $message = "Ingrese el archivo pdf.";
-            $soporte[] = ['url'=>'','user_id'=>Auth::user()->id,'date'=>date('d-m-Y H:i')];
-            $soportes = json_decode(DB::table('alumnos_pre')->where('curp',$curp)->value('motivo_curso_extra'));
-            if ($soportes) {
-                foreach ($soportes as $key => $value) {
-                    $soporte[] = $value;
-                }
-            }
-            $result = DB::table('alumnos_pre')->where('curp',$curp)->update(['curso_extra'=>true,'motivo_curso_extra'=>json_encode($soporte)]);
-            if ($result) {
-                $message = "Operación exitosa!";
-            }
-        }
+                    ")
+                ]);
+                if ($result) $message = "Operación exitosa!";
+               
+        } else $message = "La operación no ha sido ejecutada, por favor describa la justificación.";           
+        
         return redirect()->route('alumnos.index')->with('success',$message);
     }
 
