@@ -25,10 +25,125 @@ use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportExcel;
 use ZipArchive;
+use setasign\Fpdi\Fpdi;
 use File;
 
 class PagoController extends Controller
 {
+    public function prueba()
+    {
+        $asistencia_pdf = $reporte_pdf = NULL;
+        $start = microtime(true);
+        $archivosFull = DB::Table('tbl_cursos')->Select('tbl_cursos.id','tbl_cursos.clave','id_instructor','instructor_mespecialidad',
+            'contratos.id_contrato','arch_solicitud_pago', DB::raw("soportes_instructor->>'archivo_bancario' as archivo_bancario"),
+            'tbl_cursos.pdf_curso','tabla_supre.doc_validado','pagos.arch_asistencia','pagos.arch_evidencia','contratos.arch_contrato',
+            'pagos.arch_pago', DB::raw("soportes_instructor->>'archivo_ine' as archivo_ine"))
+            ->Join('pagos','pagos.id_curso','tbl_cursos.id')
+            ->Join('folios','folios.id_cursos','tbl_cursos.id')
+            ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
+            ->Join('contratos','contratos.id_contrato','pagos.id_contrato')
+            ->Where('status_transferencia','PAGADO')
+            ->whereDate('tbl_cursos.inicio', '>=', '2024-01-01')
+            ->whereDate('pagos.fecha_transferencia', '>=', '2024-03-01')->whereDate('fecha_transferencia', '<=', '2024-03-31')
+            // ->Where('pagos.id_curso', '242260259')
+            // ->First();
+            ->Get();
+
+        foreach($archivosFull as $pointer => $archivos)
+        {
+
+            printf('ini: '.$pointer.' // ');
+            if($pointer == 4) {echo 'a';}
+            $memoval = especialidad_instructor::WHERE('id_instructor',$archivos->id_instructor) // obtiene la validacion del instructor
+                ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+                if(isset($memoval)) {
+                    foreach($memoval as $me) {
+                        if(isset($me['memo_val']) && $me['memo_val'] == $archivos->instructor_mespecialidad) {
+                            $validacion_ins = $me['arch_val'];
+                            break;
+                        }
+                    }
+                }
+
+        // }
+
+            // $asistenciaController = new AsistenciaController();
+            // $asistencia_pdf = $asistenciaController->asistencia_pdf($archivos->id,true);
+            // $reporteController = new ReporteFotController();
+            // $reporte_pdf = $reporteController->repofotoPdf($archivos->id,true);
+            $contratoController = new ContratoController();
+            $contrato_pdf = $contratoController->contrato_pdf($archivos->id_contrato,true);
+
+            // if(is_null($asistencia_pdf)) {
+            //     $asistencia_pdf = $archivos->arch_asistencia;
+            // }
+            // if(is_null($reporte_pdf)) {
+            //     $reporte_pdf = $archivos->arch_evidencia;
+            // }
+            if(is_null($contrato_pdf)) {
+                $contrato_pdf = $archivos->arch_contrato;
+            }
+
+                $pdf = new FPDI();
+                $arch_pago = 'https://sivyc.icatech.gob.mx'.$archivos->arch_pago;
+
+                $fileUrls = [
+                    $arch_pago,
+                    $archivos->arch_solicitud_pago,
+                    $archivos->archivo_bancario,
+                    // $validacion_ins,
+                    $archivos->pdf_curso,
+                    $archivos->doc_validado,
+                    // $asistencia_pdf,
+                    // $reporte_pdf,
+                    $contrato_pdf,
+                    $archivos->archivo_ine
+                ];
+
+                $localFiles = [];
+
+                // Descargar los archivos PDF y guardarlos en archivos temporales
+                foreach ($fileUrls as $key=>$url) {
+                    $tempFile = tempnam(sys_get_temp_dir(), 'pdf');
+                    if (filter_var($url, FILTER_VALIDATE_URL)) {
+                        $contents = file_get_contents($url);
+                    } else {
+                        $contents = $url;
+                    }
+                    file_put_contents($tempFile, $contents);
+                    $localFiles[] = $tempFile;
+                }
+
+                // Añadir cada página de los PDFs al nuevo documento
+                foreach ($localFiles as $file) {
+                    try {
+                        printf($file . '//');
+                        $pageCount = $pdf->setSourceFile($file);
+                        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                            $templateId = $pdf->importPage($pageNo);
+                            $size = $pdf->getTemplateSize($templateId);
+                            $orientation = ($size['width'] > $size['height']) ? 'L' : 'P';
+                            $pdf->addPage($orientation, [$size['width'], $size['height']]);
+                            $pdf->useTemplate($templateId);
+                        }
+                    } catch (\Exception $e) {
+                        echo "Error al procesar el archivo: {$file}. " . $e->getMessage();
+                    }
+                }
+
+                // Guarda el PDF combinado
+                $fileName = 'app/public/temporal/'.$archivos->clave.'.pdf';
+                $outputPath = storage_path($fileName);
+                $pdf->Output($outputPath, 'F');
+
+                foreach ($localFiles as $file) {
+                    unlink($file);
+                }
+        }
+            $time_elapsed_secs = microtime(true) - $start;
+            printf($time_elapsed_secs);
+    }
+
     public function fill(Request $request)
     {
         $instructor = new instructor();

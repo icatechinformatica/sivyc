@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use ZipArchive;
+use Illuminate\Support\Facades\Storage;
 
 class BuzonController extends Controller
 {
@@ -473,6 +474,72 @@ class BuzonController extends Controller
         $pdf = PDF::loadView('vistas_pat.genpdfgeneral', compact('areas', 'direcciones', 'funciones_global', 'proced_global', 'mes_avance', 'mes_meta_avance_global', 'mes_get', 'global_ejercicio'));
         $pdf->setpaper('letter', 'landscape');
         return $pdf->stream('GENERAL_PDF.1.pdf');
+    }
+
+    public function cancelar_documento(Request $request){
+        $organismo = $request->input('organismo');
+        $tipo = $request->input('tipo'); // meta o enero
+        $periodo = $request->input('periodo');
+
+        $fechas_pat = FechasPat::select('id', 'fecha_meta', 'fechas_avance')->where('id_org', '=', $organismo)
+        ->where('periodo', '=', $periodo)->first();
+
+
+        //Eliminar el documento si existe
+        if($tipo == 'meta'){
+            $filePath = 'uploadFiles/pat/'.$fechas_pat->id.'/'.$fechas_pat->fecha_meta['nomdoc_firm'];
+            if (Storage::exists($filePath)) {Storage::delete($filePath);}
+
+            //Cancelar documento firma electronica en caso de que exista
+            if(!empty($fechas_pat->fecha_meta['id_efirma']) && !empty($fechas_pat->fecha_meta['mod_documento'])){
+                if($fechas_pat->fecha_meta['mod_documento'] == 'efirma'){
+                    DB::table('documentos_firmar')
+                    ->where('id', $fechas_pat->fecha_meta['id_efirma'])
+                    ->update([
+                        'status' => 'CANCELADO ICTI'
+                    ]);
+                }
+            }
+
+            $meta = FechasPat::find($fechas_pat->id);
+            $url = $meta->fecha_meta;
+            $url['urldoc_firm'] = '';
+            $url['nomdoc_firm'] = '';
+            $url['id_efirma'] = '';
+            $url['mod_documento'] = '';
+            $meta->fecha_meta = $url; # guardamos el path
+            $meta->save();
+
+        }else if(!empty($tipo)){ //tipo es el mes de avance
+            $filePath = 'uploadFiles/pat/'.$fechas_pat->id.'/'.$fechas_pat->fechas_avance[$tipo]['nomdoc_firmav'];
+            if (Storage::exists($filePath)) {Storage::delete($filePath);}
+
+             //Cancelar documento firma electronica en caso de que exista
+             if(!empty($fechas_pat->fechas_avance[$tipo]['id_efirma']) && !empty($fechas_pat->fechas_avance[$tipo]['mod_documento'])){
+                if($fechas_pat->fechas_avance[$tipo]['mod_documento'] == 'efirma'){
+                    DB::table('documentos_firmar')
+                    ->where('id', $fechas_pat->fechas_avance[$tipo]['id_efirma'])
+                    ->update([
+                        'status' => 'CANCELADO ICTI'
+                    ]);
+                }
+            }
+            $avance = FechasPat::find($fechas_pat->id);
+            $url = $avance->fechas_avance;
+            $url[$tipo]['urldoc_firmav'] = '';
+            $url[$tipo]['nomdoc_firmav'] = '';
+            $url[$tipo]['id_efirma'] = '';
+            $url[$tipo]['mod_documento'] = '';
+            $avance->fechas_avance = $url; # guardamos el path
+            $avance->save();
+
+        }
+        return response()->json([
+            'status' => 200,
+            'mensaje' => 'Cancelado con exito!',
+            'organismo' => $organismo,
+            'tipo' => $tipo
+        ]);
     }
 
     // public function pdforg_direc($mes_get, $opcion_get){
