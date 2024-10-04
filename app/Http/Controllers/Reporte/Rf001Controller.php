@@ -451,4 +451,37 @@ class Rf001Controller extends Controller
             Response::HTTP_CREATED
         );
     }
+
+    public function cambioSello($id)
+    {
+        $date = Carbon::now();
+        $estado = 'PARASELLAR';
+        $rf001 = (new Rf001Model())->findOrFail($id);
+        $fechaUnica = $this->rfoo1Repository->getDate($date);
+        // Obtener el campo JSON y decodificarlo
+        $datosExistentes  = json_decode($rf001->movimiento, true);
+        // obtener revision
+        $revision = 'ENVIAR_A_SELLADO';
+        //GUARDAMOS INFORMACIÓN DEL MOVIMIENTO EN LA TABLA dateFormat
+        $jsonObject = [
+            'fecha' => $fechaUnica,
+            'usuario' => Auth::user()->email,
+            'unidad' => Auth::user()->unidad,
+            'tipo' => $revision
+        ];
+
+        $datosExistentes[] = $jsonObject;
+
+        (new Rf001Model())->where('id', $id)->update([
+            'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
+        ]);
+
+        return response()->json(
+            [
+                'data' => $this->rfoo1Repository->actualizarEstado($id, $estado)
+            ],
+            Response::HTTP_CREATED
+        );
+    }
+
 }

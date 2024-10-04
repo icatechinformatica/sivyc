@@ -60,6 +60,13 @@ class ReportService
     {
         $htmlBody = array();
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+        // checar si el documento se encuentra en la tabla documentos_firmar
+        $documentoFirmar = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->First();
+        if ($documentoFirmar) {
+            # TODO: se encuentra se tiene que eliminar y por ende volver a generar
+            $documentoFirmar->delete();
+        }
+
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
         // elaboro y puesto de elaboración
         $nombreElaboro = $usuario->name;
@@ -196,7 +203,7 @@ class ReportService
         // guardando cadena única
         if ($response->json()['cadenaOriginal'] != null) {
 
-            $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->Where('tipo_archivo','Reporte fotografico')->First();
+            $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->First();
             if (is_null($dataInsert)) {
                 $dataInsert = new DocumentosFirmar();
             }
@@ -663,6 +670,7 @@ class ReportService
     {
         $htmlBody = array();
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+        //checa si existe
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
         // elaboro y puesto de elaboración
         $nombreElaboro = $usuario->name;
@@ -788,20 +796,34 @@ class ReportService
         // guardando cadena única
         if ($response->json()['cadenaOriginal'] != null) {
 
-            $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->Where('tipo_archivo','Reporte fotografico')->First();
+            $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->first();
             if (is_null($dataInsert)) {
                 $dataInsert = new DocumentosFirmar();
+                $dataInsert->body_html = json_encode($body);
+                $dataInsert->obj_documento = json_encode($ArrayXml);
+                $dataInsert->status = 'EnFirma';
+                $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
+                $dataInsert->tipo_archivo = 'Concentrado de Ingresos Propios';
+                $dataInsert->numero_o_clave = $rf001->memorandum;
+                $dataInsert->nombre_archivo = $nameFileOriginal;
+                $dataInsert->documento = $resultado;
+                $dataInsert->documento_interno = $resultado;
+                $dataInsert->save();
             }
-            $dataInsert->body_html = json_encode($body);
-            $dataInsert->obj_documento = json_encode($ArrayXml);
-            $dataInsert->status = 'EnFirma';
-            $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
-            $dataInsert->tipo_archivo = 'Concentrado de Ingresos Propios';
-            $dataInsert->numero_o_clave = $rf001->memorandum;
-            $dataInsert->nombre_archivo = $nameFileOriginal;
-            $dataInsert->documento = $resultado;
-            $dataInsert->documento_interno = $resultado;
-            $dataInsert->save();
+            else {
+                // TODO: ACTUALIZAR REGISTROS CON EL MISMO DOCUMENTO
+                $dataInsert->update([
+                    'body_html' => json_encode($body),
+                    'obj_documento' => json_encode($ArrayXml),
+                    'status' => 'EnFirma',
+                    'cadena_original' => $response->json()['cadenaOriginal'],
+                    'tipo_archivo' => 'Concentrado de Ingresos Propios',
+                    'numero_o_clave' => $rf001->memorandum,
+                    'nombre_archivo' => $nameFileOriginal,
+                    'documento' => $resultado,
+                    'documento_interno' => $resultado,
+                ]);
+            }
 
             // actualizar registro en modelo Rf001Model
             (new Rf001Model())->where('id', $id)->update([

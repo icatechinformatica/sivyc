@@ -141,7 +141,7 @@ class Rf001AdministrativoController extends Controller
     {
         return response()->json([
             'resp' => $this->rf001Repository->reenviarSolicitud($request),
-            'message' => 'Documento Regresado para revisión!',
+            'message' => 'Documento Regresado para Corrección!',
          ], Response::HTTP_CREATED);
     }
 

@@ -216,7 +216,7 @@
                                             @endcan
                                         </td>
                                         <td class="text-left">
-                                            @if ($item->estado == 'FIRMA')
+                                            @if ($item->estado == 'ENSELLADO')
                                                 <a class="nav-link pt-0 openModal" data-toggle="modal"
                                                     data-target="#exampleModal" href="javascript:;"
                                                     data-id="{{ $item->id }}" data-memo="{{ $item->memorandum }}">

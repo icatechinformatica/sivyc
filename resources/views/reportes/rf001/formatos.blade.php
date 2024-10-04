@@ -160,6 +160,11 @@
             Espere un momento mientras se realiza el proceso<span> . </span><span> . </span><span> . </span>
         </div>
     </div>
+    @php
+        $bandera = Crypt::encrypt('solicitud');
+        $encrypted = base64_encode($bandera);
+        $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
+    @endphp
     <div class="card-header">
         Reportes / Reportes RF-001 a Revisión
     </div>
@@ -209,23 +214,39 @@
                                 <tr>
                                     @switch($item->estado)
                                         @case('GENERADO')
-                                            <td style="background-color: #3ac122; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                            <td style="background-color: #5dade2; width: 15px; text-align: center; vertical-align: middle;"><b>{{ $item->estado }}</b></td>
+                                        @break
+
+                                        @case('GENERARDOCUMENTO')
+                                            <td style="background-color: #f7dc6f; width: 15px; text-align: center; vertical-align: middle;"><b>DOCUMENTO GENERADO</b></td>
                                         @break
 
                                         @case('REVISION')
-                                            <td style="background-color: #c9420c; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                            <td style="background-color: #e67e22; width: 15px; text-align: center; vertical-align: middle;"><b>{{ $item->estado }}</b></td>
                                         @break
 
                                         @case('FIRMADO')
-                                            <td style="background-color: #f7dc6f; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                            <td style="background-color: #f7dc6f; width: 15px; text-align: center; vertical-align: middle;"><b>{{ $item->estado }}</b></td>
+                                        @break
+
+                                        @case('RETORNADO')
+                                            <td style="background-color: #CD5C5C; width: 15px; text-align: center; vertical-align: middle;"><b style="color: #f0f0f0;">{{ $item->estado }}</b></td>
+                                        @break
+
+                                        @case('APROBADO')
+                                            <td style="background-color: #58d68d; width: 15px; text-align: center; vertical-align: middle;"><b style="color: #f0f0f0;">{{ $item->estado }}</b></td>
                                         @break
 
                                         @case('ENFIRMA')
-                                            <td style="background-color: yellow; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                            <td style="background-color: #52be80; width: 15px; text-align: center; vertical-align: middle;"><b>EN FIRMA</b></td>
+                                        @break
+
+                                        @case('PARASELLAR')
+                                            <td style="background-color: #d68910; width: 15px; text-align: center; vertical-align: middle;"><b>PARA SELLAR</b></td>
                                         @break
 
                                         @default
-                                            <td style="background-color: #922b21; width: 15px;"><b
+                                            <td style="background-color: #922b21; width: 15px; text-align: center; vertical-align: middle;"><b
                                                     style="color: #f0f0f0;">{{ $item->estado }}</b></td>
                                     @endswitch
                                     <td style="width: 30px;">{{ $item->memorandum }}</td>
@@ -235,6 +256,7 @@
                                     </td>
                                     <td class="text-left">
                                         @switch($item->estado)
+                                            @case('RETORNADO')
                                             @case('GENERADO')
                                                 @can('actualizar.rf001')
                                                     @if ($item->tipo == 'CANCELADO')
@@ -253,7 +275,7 @@
                                                 @endcan
                                             @break
 
-                                            @case('ENFIRMA' || 'FIRMADO' || 'GENERARDOCUMENTO')
+                                            @case('ENFIRMA' || 'FIRMADO' || 'GENERARDOCUMENTO' || 'SELLADO')
                                                 {{-- <a class="nav-link pt-0"
                                                     href="{{ route('reporte.generar.firma', ['id' => $item->id, 'solicitud' => $dato]) }}">
                                                     <i class="fas fa-pen fa-2x fa-lg text-danger" aria-hidden="true"
@@ -343,12 +365,14 @@
                 // Aquí puedes hacer lo que necesites con el id
                 console.log("El ID del item es: " + itemId);
 
-                let URL = "{{ route('reporte.rf001.cambio.estado', ['id' => $getConcentrado->id]) }}";
+                let URL = "{{ route('reporte.rf001.cambio.sello', ['id' => ':id']) }}";
+                // Reemplaza el marcador de posición con el itemId
+                URL = URL.replace(':id', itemId);
                 try {
                     document.getElementById('loader-overlay').style.display = 'block';
-                    await $.ajax({
+                    $.ajax({
                         url: URL,
-                        type: 'POST',
+                        type: 'GET',
                         dataType: "json",
                         success: function(response) {
                             // console.log(response); return;

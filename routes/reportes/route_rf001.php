@@ -23,6 +23,7 @@ Route::middleware(['auth'])->group(function(){
 
     // cambios de estado
     Route::get('/reportes/rf001/cambio-estado/{id}', [Rf001Controller::class, 'cambioEstado'])->name('reporte.rf001.cambio.estado');
+    Route::get('/reportes/rf001/enviar-sellar/{id}', [Rf001Controller::class, 'cambioSello'])->name('reporte.rf001.cambio.sello');
 
 
     Route::get('/reportes/fr001/firma/{id}/{solicitud}', [Rf001ReporteController::class, 'edit'])->name('reporte.generar.firma');

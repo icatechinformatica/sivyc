@@ -111,6 +111,7 @@ class Reporterf001Repository implements Reporterf001Interface
             'periodo_fin' => $request->get('periodoFIn'),
             'movimiento' => json_encode($movimientoAdd, JSON_UNESCAPED_UNICODE),
             'tipo' => trim($request->get('tipoSolicitud')),
+            'envia' => trim($usuario->name),
         ]);
     }
 
@@ -128,9 +129,8 @@ class Reporterf001Repository implements Reporterf001Interface
     public function storeData(array $request)
     {
         list($claveContrado, $numeroRecibo, $id, $idConcentrado, $numFolio) = explode("_", $request['elemento']);
-        $rf001Detalle = new Rf001Model();
 
-        $registro = $rf001Detalle->findOrFail($idConcentrado);
+        $registro = (new Rf001Model())->findOrFail($idConcentrado);
         $insertData = [];
         $dataAdd = [];
 
@@ -406,7 +406,7 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function getFirmadoFormat($request)
     {
-        return (new Rf001Model())->where('estado', 'REVISION')->orWhere('estado', 'ENSELLADO')->paginate(10 ?? 5);
+        return (new Rf001Model())->whereIn('estado', ['REVISION', 'PARASELLAR', 'ENSELLADO', 'SELLADO'])->paginate(10 ?? 5);
     }
 
     public function reenviarSolicitud($request)

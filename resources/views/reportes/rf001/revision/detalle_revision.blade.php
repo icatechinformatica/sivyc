@@ -654,7 +654,7 @@
                     <div class="col-2 d-flex justify-content-end">
                         <div class="padre">
                             @can('firma.validacion.rf001')
-                                @if ($getConcentrado->estado == 'ENFIRMA')
+                                @if ($getConcentrado->estado == 'PARASELLAR')
                                     {{-- Usar el componente creado --}}
                                     <x-firma-administrativo :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
                                         :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-administrativo>
@@ -673,7 +673,9 @@
                         @endcan
                     </div>
                     <div class="col-2 justify-content-end">
+                        @if ($getConcentrado->estado == 'REVISION')
                         <a href="javascript:;" class="btn" id="enviarAprobracion">APROBAR</a>
+                        @endif
                     </div>
                 </div>
                 <input type="hidden" name="idRf001" id="idRf001" value="{{ $id }}" />
@@ -815,7 +817,7 @@
                                     $(".action-close").trigger(
                                         "click"); // ocultar modal
                                     window.location.href =
-                                        "{{ route('administrativo.index') }}"; // redirect
+                                        "{{ route('administrativo.rf001.details', ['id' => $id]) }}"; // redirect
                                 }
                             },
                             error: function(xhr, textStatus, error) {

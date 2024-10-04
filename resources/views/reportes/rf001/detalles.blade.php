@@ -580,8 +580,9 @@
                                     Realizado el
                                     <b>{{ Carbon\Carbon::parse($getConcentrado->created_at)->format('d/m/Y') }}</b>
                                 </span>
-                                <span class="info-box-number text-center text-muted mb-0">Por:
-                                    {{ $getConcentrado->realiza }} </span>
+                                <span class="info-box-number text-center text-muted mb-0" style="font-size: 11px;">
+                                    Por: {{ $getConcentrado->envia }}
+                                </span>
                             </div>
                         </div>
                     </div>

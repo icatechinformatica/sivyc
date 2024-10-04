@@ -255,7 +255,7 @@
                         @method('PUT')
                         @csrf
                     @else
-                        {{ Form::open(['route' => 'reporte.rf001.store', 'method' => 'POST', 'id' => 'frmString']) }}
+                        {{ Form::open(['route' => 'reporte.rf001.store', 'method' => 'POST', 'id' => 'formString']) }}
                         @csrf
                     @endif
 
@@ -455,7 +455,7 @@
                 });
             });
 
-            $('#frmString').on('submit', function(e) {
+            $('#formString').on('submit', function(e) {
                 e.preventDefault();
                 // Limpiar el sessionStorage
                 $('.concentrado-checkbox').each(function() {
@@ -493,7 +493,6 @@
                     type: 'POST',
                     dataType: "json",
                     success: function(response) {
-                        // console.log(response); return;
                         setTimeout(function() {
                             // Ocultar el loader y mostrar el contenido después de la carga
                             document.getElementById('loader-overlay').style.display =
