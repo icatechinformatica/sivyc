@@ -57,7 +57,22 @@ Route::get('/vista/pat/metasav/genpdf/meta/{accion}/{idorg}', 'PatController\Met
 Route::post('/vista/pat/metasav/guardar/pdfmeta/', 'PatController\MetavanceController@uploadpdfmeta')->name('pat.metavance.guardar.updpdfmeta');
 //Subir al serv pdf de avances por mes
 Route::post('/vista/pat/metasav/guardar/pdfavance/', 'PatController\MetavanceController@uploadpdfavance')->name('pat.metavance.guardar.updpdfavance');
+//Cancelar subida de archivos
+Route::post('/vista/pat/metasav/cancel/docs/', 'PatController\MetavanceController@cancel_accion_docs')->name('pat.metavance.upload.cancel');
 
+#FIRMADO ELECTRONICO
+//Generar xml para firma
+Route::post('/vista/pat/metasav/genxml/', 'PatController\MetavanceController@generar_xml_meta')->name('pat.metavance.generar.xml');
+//Mostrar opcion de ccarga tradicional
+Route::post('/vista/pat/metasav/pdftradi/', 'PatController\MetavanceController@show_carga_tradi')->name('pat.metavance.opcion.cargarpdf');
+//Firmado electronico
+Route::post('/vista/pat/metasav/firmar/', 'PatController\MetavanceController@firmar_documento')->name('pat.metavance.firmar.documento');
+//Sellar documento
+Route::post('/vista/pat/metasav/sellar/', 'PatController\MetavanceController@sellar_documento')->name('pat.metavance.sellar.documento');
+//Mostrar pdf efirma
+Route::get('/vista/pat/metasav/pdf/firma/{id?}', 'PatController\MetavanceController@show_pdf_efirma')->name('pat.metavance.pdf.efirma');
+//Generar token
+Route::post('vistas/pat/metasav/token', 'PatController\MetavanceController@generarToken')->name('pat.efirma.token');
 
 /**Fechas */
 Route::get('/vista/pat/fechaspat/{tipo?}', 'PatController\FechasController@index')->name('pat.fechaspat.mostrar')->middleware('can:fechaspat.index');
@@ -82,6 +97,8 @@ Route::post('/vista/pat/plane/valid', 'PatController\MetavanceController@registr
 Route::get('/vista/pat/buzon/index/', 'PatController\BuzonController@index')->name('pat.buzon.index')->middleware('can:metava.valid.index');
 // Generar pdf de todos los organismos
 Route::get('/vista/pat/buzon/pdf/general/{mes}/{opcion}', 'PatController\BuzonController@pdforg_direc')->name('pat.buzon.pdf.general');
+//Eliminar o cancelar documento tradicionar y con efirma
+Route::post('/vista/pat/buzon/delete', 'PatController\BuzonController@cancelar_documento')->name('pat.buzon.cancel.doc');
 
 
 

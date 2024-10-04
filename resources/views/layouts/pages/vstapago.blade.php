@@ -1926,15 +1926,14 @@
                     document.getElementById('td'+[i+1]+td).previousElementSibling.style.display = 'none';
                     document.getElementById('td'+[i+1]+td).nextElementSibling.style.display = 'none';
                 }
-
+//alert(array1.includes(anchors[i]));
                 $(anchors[i]).attr('hidden', true);
                 document.getElementById('td'+[i+1]+td).style.color = "red";
                 $(variables[i]+'_label').attr('hidden', false);
                 $(icons[i]).attr('class', "fas fa-times text-danger");
-                if(!array1.includes(anchors[i])) {
-                    $('#guardarenviar').hide();
-                    console.log(anchors[i]);
-                }
+                // if(!array1.includes(anchors[i])) {
+                //     $('#guardarenviar').hide();
+                // }
                 // $(anchors[i]).parent().parent().css("background-color", "white");
 
             }
