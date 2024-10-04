@@ -520,4 +520,70 @@ class Reporterf001Repository implements Reporterf001Interface
             'estado' => $estado,
         ]);
     }
+
+    public function generarDoctoCancelado($id, $unidad, $organismo): array
+    {
+        $uuid = $objeto = $qrCodeBase64 = null;
+        $puestos = array();
+        $id = base64_decode($id);
+        $dataRf = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+
+        $documentoFirma = (new DocumentosFirmar())->where('numero_o_clave', $dataRf->memorandum)
+            ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
+            ->first();
+
+
+        $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
+
+        // checa si el documento está vacio
+        if (is_null($documentoFirma)) {
+            # está vacio
+            $bodyHtml = (new ReportService())->htmlToXml($dataRf, $unidad, $organismoPublico);
+            $bodyMemo = $bodyHtml['memorandum'];
+        } else {
+            // no está vacio
+            $bodyHtml = json_decode($documentoFirma->body_html);
+            $bodyMemo = $bodyHtml->memorandum;
+        }
+
+        if (isset($documentoFirma->uuid_sellado)) {
+            # está o no sellado
+            $objeto = json_decode($documentoFirma->obj_documento,true);
+            $noOficio = json_decode(json_encode(simplexml_load_string($documentoFirma->documento_interno, "SimpleXMLElement", LIBXML_NOCDATA),true));
+            $noOficio = $noOficio->{'@attributes'}->no_oficio;
+            $uuid = $documentoFirma->uuid_sellado;
+            $cadenaSellado = $documentoFirma->cadena_sello;
+            $fechaSellado = $documentoFirma->fecha_sellado;
+            $folio = $documentoFirma->nombre_archivo;
+            $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
+            // verificar si existe el enlace de verificacion
+
+            if (isset($documentoFirma->link_verificacion)) {
+                // se encuentra
+                $verificacion = $documentoFirma->link_verificacion;
+            } else {
+                // no se encuentra
+                $documentoFirma->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$noOficio";
+                $documentoFirma->save();
+            }
+            ob_start();
+            QRcode::png($verificacion);
+            $qrCodeData = ob_get_contents();
+            ob_end_clean();
+            $qrCodeBase64 = base64_encode($qrCodeData);
+
+            // fin de la generación
+            foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
+                $puesto = \DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+                if(!is_null($puesto)) {
+                    array_push($puestos,$puesto->cargo);
+                    // <td height="25px;">{{$search_puesto->cargo}}</td>
+                } else {
+                    array_push($puestos,'ENCARGADO');
+                }
+            }
+        }
+
+        return [$bodyMemo, $uuid, $objeto, $puestos, $qrCodeBase64];
+    }
 }

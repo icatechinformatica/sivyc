@@ -407,7 +407,7 @@ class Rf001Controller extends Controller
         $report = PDF::loadView('reportes.rf001.reporterf001', compact('bodyMemo', 'distintivo','direccion',  'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
         $formatoRF001 = PDF::loadView('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion', 'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
 
-        // return view('reportes.rf001.reporterf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
+        // return view('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
 
         // $pdf = PDF::loadView('reportes.rf001.reporterf001');
         $file1 = tempnam(sys_get_temp_dir(), 'report');
@@ -439,6 +439,41 @@ class Rf001Controller extends Controller
         // return $pdf->stream('combined_documents.pdf');
         // return $report->stream();
         // return view('reportes.rf001.reporterf001', $data)->render();
+    }
+
+    public function getReporteCancelado($id)
+    {
+        $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+        $unidad = Auth::user()->unidad;
+        $organismo = Auth::user()->id_organismo;
+        $idReporte = base64_encode($id);
+
+        $data = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
+        $direccion = $data->direccion;
+        // aplicando distructuración
+        $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+        list($bodyMemo, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDoctoCancelado($idReporte, $unidad, $organismo);
+
+        $report = PDF::loadView('reportes.rf001.vista_concentrado.memorf001', compact('bodyMemo', 'distintivo','direccion',  'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
+
+        // return view('reportes.rf001.vista_concentrado.memorf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
+
+        // $pdf = PDF::loadView('reportes.rf001.reporterf001');
+        $file1 = tempnam(sys_get_temp_dir(), 'report');
+
+        // escribir los datos del PDF en los archivos temporales
+        file_put_contents($file1, $report);
+
+        // cambiar los PDF usando FPDI
+        $newPdf = new Fpdi();
+        $newPdf->AddPage();
+        $pageCount1 = $newPdf->setSourceFile($file1);
+        $tpldx1 = $newPdf->importPage(1);
+        $newPdf->useTemplate($tpldx1);
+
+        unlink($file1);
+
+        return $newPdf->Output('reporte_de_cancelacion_rf001_'.$rf001->memorandum.'.pdf', 'I');
     }
 
     public function cambioEstado($id)

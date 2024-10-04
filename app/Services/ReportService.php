@@ -670,6 +670,11 @@ class ReportService
     {
         $htmlBody = array();
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+        $documentoFirmar = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->First();
+        if ($documentoFirmar) {
+            # TODO: se encuentra se tiene que eliminar y por ende volver a generar
+            $documentoFirmar->delete();
+        }
         //checa si existe
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
         // elaboro y puesto de elaboración
@@ -704,16 +709,8 @@ class ReportService
         $numFirmantes = '2'; // 1 o 2
 
         $arrayFirmantes = [];
-        // director
-        $temp = ['_attributes' =>
-            [
-                'curp_firmante' => $firmanteNoUno['curp'],
-                'nombre_firmante' => $firmanteNoUno['funcionario'],
-                'email_firmante' => $firmanteNoUno['correo'],
-                'tipo_firmante' => 'FM',
-            ]
-        ];
-        array_push($arrayFirmantes, $temp);
+
+        // TODO: solo firma el delegado
 
         // delegado
         $temp = ['_attributes' =>
@@ -721,6 +718,17 @@ class ReportService
                 'curp_firmante' => $firmanteNoDos['curp'],
                 'nombre_firmante' => $firmanteNoDos['funcionario'],
                 'email_firmante' => $firmanteNoDos['correo'],
+                'tipo_firmante' => 'FM'
+            ]
+        ];
+
+        array_push($arrayFirmantes, $temp);
+
+        $temp = ['_attributes' =>
+            [
+                'curp_firmante' => 'CUMA850521MCSTNN09',
+                'nombre_firmante' => 'WALTER DOMINGUEZ CAMACHO',
+                'email_firmante' => 'w.dominguez.daicatech@gmail.com',
                 'tipo_firmante' => 'FM'
             ]
         ];
@@ -810,24 +818,10 @@ class ReportService
                 $dataInsert->documento_interno = $resultado;
                 $dataInsert->save();
             }
-            else {
-                // TODO: ACTUALIZAR REGISTROS CON EL MISMO DOCUMENTO
-                $dataInsert->update([
-                    'body_html' => json_encode($body),
-                    'obj_documento' => json_encode($ArrayXml),
-                    'status' => 'EnFirma',
-                    'cadena_original' => $response->json()['cadenaOriginal'],
-                    'tipo_archivo' => 'Concentrado de Ingresos Propios',
-                    'numero_o_clave' => $rf001->memorandum,
-                    'nombre_archivo' => $nameFileOriginal,
-                    'documento' => $resultado,
-                    'documento_interno' => $resultado,
-                ]);
-            }
 
             // actualizar registro en modelo Rf001Model
             (new Rf001Model())->where('id', $id)->update([
-                'estado' => 'ENFIRMA',
+                'estado' => 'GENERARDOCUMENTO',
             ]);
 
             return TRUE;
@@ -929,9 +923,15 @@ class ReportService
             foreach ($datoJson as $key) {
                 $curso = isset($key['curso']) && $key['curso'] !== null ? strtolower($key['curso']) : strtolower($key['descripcion']);
                 $htmlBody['memorandum'] .= '<tr>
-                    <td style="width: 55px; text-align: center;">' . $counter ++ . '</td>
-                    <td style="width: 160px; text-align: left; font-size: 9px;">'. htmlspecialchars($key['folio']) .'</td>
-                    <td>'. htmlspecialchars($curso) .'</td>
+                    <td style="width: 55px; text-align: center;">' . $counter . '</td>
+                    <td style="width: 40px; text-align: center; font-size: 9px;">'. htmlspecialchars($key['folio']) .'</td>
+                    <td style="width: 160px; text-align: center; font-size: 9px;">';
+                    if ($key['curso'] != null) {
+                        $htmlBody['memorandum'] .= htmlspecialchars($key['curso']);
+                    } else {
+                        $htmlBody['memorandum'] .= htmlspecialchars($key['descripcion']);
+                    }
+                $htmlBody['memorandum'] .=  '</td>
                     </tr>';
 
                 $counter ++;
@@ -941,10 +941,10 @@ class ReportService
             </table>
             <center class="espaciado"></center>';
 
-        $htmlBody['memorandum'] .= '</ul>
+        $htmlBody['memorandum'] .= '
                 <p style="font-size: 14px">Sin más que agregar, agradezco su atención y le envío un cordial saludo. </p>
                 <br>
-            </div></div>';
+            </div>';
 
 
         return $htmlBody;

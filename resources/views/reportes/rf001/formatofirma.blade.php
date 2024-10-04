@@ -195,12 +195,21 @@
                                                         <i class="fas fa-pen fa-2x fa-lg text-danger" aria-hidden="true"
                                                             title='PARA FIRMA'></i>
                                                     </a> --}}
-                                                    <a class="nav-link pt-0"
-                                                        href="{{ route('reporte.rf001.getpdf', ['id' => $item->id]) }}"
-                                                        target="_blank">
-                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}"
-                                                            alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                    </a>
+                                                    @if ($item->tipo != 'CANCELADO')
+                                                        <a class="nav-link pt-0"
+                                                            href="{{ route('reporte.rf001.getpdf', ['id' => $item->id]) }}"
+                                                            target="_blank">
+                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}"
+                                                                alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                        </a>
+                                                    @else
+                                                        <a class="nav-link pt-0"
+                                                            href="{{ route('reporte.rf001.pdf.cancelado', ['id' => $item->id]) }}"
+                                                            target="_blank">
+                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}"
+                                                                alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                        </a>
+                                                    @endif
                                                 @break
 
                                                 @default

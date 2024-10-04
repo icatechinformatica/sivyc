@@ -214,40 +214,66 @@
                                 <tr>
                                     @switch($item->estado)
                                         @case('GENERADO')
-                                            <td style="background-color: #5dade2; width: 15px; text-align: center; vertical-align: middle;"><b>{{ $item->estado }}</b></td>
+                                            <td
+                                                style="background-color: #5dade2; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b>{{ $item->estado }}</b>
+                                            </td>
                                         @break
 
                                         @case('GENERARDOCUMENTO')
-                                            <td style="background-color: #f7dc6f; width: 15px; text-align: center; vertical-align: middle;"><b>DOCUMENTO GENERADO</b></td>
+                                            <td
+                                                style="background-color: #f7dc6f; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b>DOCUMENTO GENERADO</b>
+                                            </td>
                                         @break
 
                                         @case('REVISION')
-                                            <td style="background-color: #e67e22; width: 15px; text-align: center; vertical-align: middle;"><b>{{ $item->estado }}</b></td>
+                                            <td
+                                                style="background-color: #e67e22; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b>{{ $item->estado }}</b>
+                                            </td>
                                         @break
 
                                         @case('FIRMADO')
-                                            <td style="background-color: #f7dc6f; width: 15px; text-align: center; vertical-align: middle;"><b>{{ $item->estado }}</b></td>
+                                            <td
+                                                style="background-color: #f7dc6f; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b>{{ $item->estado }}</b>
+                                            </td>
                                         @break
 
                                         @case('RETORNADO')
-                                            <td style="background-color: #CD5C5C; width: 15px; text-align: center; vertical-align: middle;"><b style="color: #f0f0f0;">{{ $item->estado }}</b></td>
+                                            <td
+                                                style="background-color: #CD5C5C; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b style="color: #f0f0f0;">{{ $item->estado }}</b>
+                                            </td>
                                         @break
 
                                         @case('APROBADO')
-                                            <td style="background-color: #58d68d; width: 15px; text-align: center; vertical-align: middle;"><b style="color: #f0f0f0;">{{ $item->estado }}</b></td>
+                                            <td
+                                                style="background-color: #58d68d; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b style="color: #f0f0f0;">{{ $item->estado }}</b>
+                                            </td>
                                         @break
 
                                         @case('ENFIRMA')
-                                            <td style="background-color: #52be80; width: 15px; text-align: center; vertical-align: middle;"><b>EN FIRMA</b></td>
+                                            <td
+                                                style="background-color: #52be80; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b>EN FIRMA</b>
+                                            </td>
                                         @break
 
                                         @case('PARASELLAR')
-                                            <td style="background-color: #d68910; width: 15px; text-align: center; vertical-align: middle;"><b>PARA SELLAR</b></td>
+                                            <td
+                                                style="background-color: #d68910; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b>PARA SELLAR</b>
+                                            </td>
                                         @break
 
                                         @default
-                                            <td style="background-color: #922b21; width: 15px; text-align: center; vertical-align: middle;"><b
-                                                    style="color: #f0f0f0;">{{ $item->estado }}</b></td>
+                                            <td
+                                                style="background-color: #922b21; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b style="color: #f0f0f0;">{{ $item->estado }}</b>
+                                            </td>
                                     @endswitch
                                     <td style="width: 30px;">{{ $item->memorandum }}</td>
                                     <td>{{ $item->unidad }}</td>
@@ -281,12 +307,21 @@
                                                     <i class="fas fa-pen fa-2x fa-lg text-danger" aria-hidden="true"
                                                         title='PARA FIRMA'></i>
                                                 </a> --}}
-                                                <a class="nav-link pt-0"
-                                                    href="{{ route('reporte.rf001.getpdf', ['id' => $item->id]) }}"
-                                                    target="_blank">
-                                                    <img class="rounded" src="{{ asset('img/pdf.png') }}"
-                                                        alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                </a>
+                                                @if ($item->tipo != 'CANCELADO')
+                                                    <a class="nav-link pt-0"
+                                                        href="{{ route('reporte.rf001.getpdf', ['id' => $item->id]) }}"
+                                                        target="_blank">
+                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}"
+                                                            alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                    </a>
+                                                @else
+                                                    <a class="nav-link pt-0"
+                                                        href="{{ route('reporte.rf001.pdf.cancelado', ['id' => $item->id]) }}"
+                                                        target="_blank">
+                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}"
+                                                            alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                    </a>
+                                                @endif
                                             @break
 
                                             @default
@@ -301,6 +336,14 @@
                                     </td>
                                     <td class="text-left">
                                         @if ($item->estado == 'FIRMADO')
+                                            <a class="nav-link pt-0" href="javascript:;"
+                                                id="enviarSellado_{{ $item->id }}">
+                                                <i class="fa fa-paper-plane fa-2x fa-lg text-success" aria-hidden="true"
+                                                    style="padding-right: 12px;" title='ENVIAR A SELLAR'></i>
+                                            </a>
+                                        @endif
+
+                                        @if ($item->estado == 'ENFIRMA' && $item->tipo == 'CANCELADO')
                                             <a class="nav-link pt-0" href="javascript:;"
                                                 id="enviarSellado_{{ $item->id }}">
                                                 <i class="fa fa-paper-plane fa-2x fa-lg text-success" aria-hidden="true"

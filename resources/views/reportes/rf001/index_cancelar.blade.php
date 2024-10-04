@@ -356,7 +356,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <h3>
-                        <p>¿Está seguro de ejecutar la acción para efirma?</p>
+                        <p>¿Está seguro de ejecutar la acción para generar el documento en pdf?</p>
                     </h3>
                 </div>
                 <div class="modal-footer">

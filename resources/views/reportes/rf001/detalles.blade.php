@@ -666,7 +666,7 @@
                     </div>
                     <div class="col-4 d-flex justify-content-end">
                         @if (is_array($revisionLocal) && count($revisionLocal) > 0)
-                            @if ($getConcentrado->estado == 'ENFIRMA')
+                            @if ($getConcentrado->estado == 'ENFIRMA' && $getConcentrado->tipo != 'CANCELADO')
                                 @if (!empty($data['cadenaOriginal']))
                                     <div class="padre">
                                         {{-- Usar el componente creado --}}
@@ -678,7 +678,6 @@
                         @else
                             @if (!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO')
                                 <div class="padre">
-                                    {{-- Usar el componente creado --}}
                                     <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
                                         :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
                                 </div>

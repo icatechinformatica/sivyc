@@ -14,6 +14,7 @@ Route::middleware(['auth'])->group(function(){
     Route::put('/reportes/rf001/detalle/actualizar/{id}', [Rf001Controller::class, 'update'])->name('reporte.rf001.update');
     Route::post('/reportes/rf001/store', [Rf001Controller::class, 'storeData'])->name('reporte.rf001.jsonStore');
     Route::get('/reportes/rf001/formato/pdf/{id}', [Rf001Controller::class, 'getPdfReport'])->name('reporte.rf001.getpdf');
+    Route::get('/reportes/rf001/cancelado/pdf/{id}', [Rf001Controller::class, 'getReporteCancelado'])->name('reporte.rf001.pdf.cancelado');
     Route::get('/reportes/rf001/concentrado/detalle/{id}/{solicitud}', [Rf001Controller::class, 'show'])->name('reporte.rf001.set.details');
     Route::post('/reportes/rf001/add/comment', [Rf001Controller::class, 'addComment'])->name('reporte.rf001.add.comments');
     Route::get('/reportes/rf001/create/xmlFormat/{id}', [Rf001ReporteController::class, 'show'])->name('reporte.rf001.xml.format');
