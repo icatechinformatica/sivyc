@@ -30,8 +30,9 @@ use File;
 
 class PagoController extends Controller
 {
-    public function prueba()
+    public function expediente_pagos_merge()
     {
+        set_time_limit(0);
         $asistencia_pdf = $reporte_pdf = NULL;
         $start = microtime(true);
         $archivosFull = DB::Table('tbl_cursos')->Select('tbl_cursos.id','tbl_cursos.clave','id_instructor','instructor_mespecialidad',
@@ -44,15 +45,17 @@ class PagoController extends Controller
             ->Join('contratos','contratos.id_contrato','pagos.id_contrato')
             ->Where('status_transferencia','PAGADO')
             ->whereDate('tbl_cursos.inicio', '>=', '2024-01-01')
-            ->whereDate('pagos.fecha_transferencia', '>=', '2024-03-01')->whereDate('fecha_transferencia', '<=', '2024-03-31')
+            ->whereDate('pagos.fecha_transferencia', '>=', '2024-08-01')->whereDate('fecha_transferencia', '<=', '2024-08-31')
             // ->Where('pagos.id_curso', '242260259')
             // ->First();
             ->Get();
-
+            // dd($archivosFull);
+            $ghostscriptPath = "C:\\Program Files\\gs\\gs10.04.0\\bin\\gswin64c.exe";
         foreach($archivosFull as $pointer => $archivos)
         {
 
-            printf('ini: '.$pointer.' // ');
+            if($pointer == 244) {
+            // 239, 244
             if($pointer == 4) {echo 'a';}
             $memoval = especialidad_instructor::WHERE('id_instructor',$archivos->id_instructor) // obtiene la validacion del instructor
                 ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
@@ -71,8 +74,6 @@ class PagoController extends Controller
             // $asistencia_pdf = $asistenciaController->asistencia_pdf($archivos->id,true);
             // $reporteController = new ReporteFotController();
             // $reporte_pdf = $reporteController->repofotoPdf($archivos->id,true);
-            $contratoController = new ContratoController();
-            $contrato_pdf = $contratoController->contrato_pdf($archivos->id_contrato,true);
 
             // if(is_null($asistencia_pdf)) {
             //     $asistencia_pdf = $archivos->arch_asistencia;
@@ -80,8 +81,12 @@ class PagoController extends Controller
             // if(is_null($reporte_pdf)) {
             //     $reporte_pdf = $archivos->arch_evidencia;
             // }
-            if(is_null($contrato_pdf)) {
+            $check_contrato_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','Contrato')->Where('status','VALIDADO')->value('id');
+            if(is_null($check_contrato_efirma)) {
                 $contrato_pdf = $archivos->arch_contrato;
+            } else {
+                $contratoController = new ContratoController();
+                $contrato_pdf = $contratoController->contrato_pdf($archivos->id_contrato,true);
             }
 
                 $pdf = new FPDI();
@@ -103,21 +108,48 @@ class PagoController extends Controller
                 $localFiles = [];
 
                 // Descargar los archivos PDF y guardarlos en archivos temporales
-                foreach ($fileUrls as $key=>$url) {
+                foreach ($fileUrls as $key => $url) {
+                    // Crear un archivo temporal
                     $tempFile = tempnam(sys_get_temp_dir(), 'pdf');
+
+                    // Obtener el contenido del archivo
                     if (filter_var($url, FILTER_VALIDATE_URL)) {
                         $contents = file_get_contents($url);
                     } else {
                         $contents = $url;
                     }
+
+                    // Guardar el contenido en el archivo temporal
                     file_put_contents($tempFile, $contents);
-                    $localFiles[] = $tempFile;
+
+                    $pdfFile = str_replace('.tmp', 'new.tmp', $tempFile);
+                    $localFiles[] = $pdfFile;
+                    // rename($tempFile, $pdfFile);
+                    // echo $pdfFile;
+                    // Comando de Ghostscript para convertir a PDF 1.4
+                    $command = "gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -o \"{$pdfFile}\" \"{$tempFile}\"";
+                    // dd($command);
+                                // gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -o "C:\Users\Tec academica\AppData\Local\Temp\pdfCF1F.pdf" "C:\Users\Tec academica\AppData\Local\Temp\pdfCF1F.pdf"
+                                // gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -o "C:\Games\complete.pdf" "C:\Games\testing.pdf"
+
+
+                    // Usar exec para ejecutar el comando
+                    exec($command, $output, $return_var); // Captura stderr
+
+                    if ($return_var === 0) {
+                        // Conversión exitosa
+                        // echo "PDF convertido a versión 1.4 y guardado en: {$pdfFile}\n";
+                    } else {
+                        // Ocurrió un error
+                        echo "Error al convertir el PDF: {$pdfFile}\n";
+                        echo implode("\n", $output); // Muestra los mensajes de error
+                    }
                 }
 
                 // Añadir cada página de los PDFs al nuevo documento
                 foreach ($localFiles as $file) {
-                    try {
-                        printf($file . '//');
+                    // try {
+                        // printf($file . '//');
                         $pageCount = $pdf->setSourceFile($file);
                         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
                             $templateId = $pdf->importPage($pageNo);
@@ -126,9 +158,9 @@ class PagoController extends Controller
                             $pdf->addPage($orientation, [$size['width'], $size['height']]);
                             $pdf->useTemplate($templateId);
                         }
-                    } catch (\Exception $e) {
-                        echo "Error al procesar el archivo: {$file}. " . $e->getMessage();
-                    }
+                    // } catch (\Exception $e) {
+                    //     echo "Error al procesar el archivo: {$file}. " . $e->getMessage();
+                    // }
                 }
 
                 // Guarda el PDF combinado
@@ -139,6 +171,7 @@ class PagoController extends Controller
                 foreach ($localFiles as $file) {
                     unlink($file);
                 }
+            }
         }
             $time_elapsed_secs = microtime(true) - $start;
             printf($time_elapsed_secs);
