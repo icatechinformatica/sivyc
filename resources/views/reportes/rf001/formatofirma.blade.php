@@ -216,12 +216,14 @@
                                             @endcan
                                         </td>
                                         <td class="text-left">
-                                            <a class="nav-link pt-0 openModal" data-toggle="modal"
-                                                data-target="#exampleModal" href="javascript:;" data-id="{{ $item->id }}"
-                                                data-memo="{{ $item->memorandum }}">
-                                                <i class="fas fa-stamp fa-2x fa-lg" aria-hidden="true"
-                                                    title="SELLADO DIGITAL" style="color:red"></i>
-                                            </a>
+                                            @if ($item->estado == 'FIRMA')
+                                                <a class="nav-link pt-0 openModal" data-toggle="modal"
+                                                    data-target="#exampleModal" href="javascript:;"
+                                                    data-id="{{ $item->id }}" data-memo="{{ $item->memorandum }}">
+                                                    <i class="fas fa-stamp fa-2x fa-lg" aria-hidden="true"
+                                                        title="SELLADO DIGITAL" style="color:red"></i>
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

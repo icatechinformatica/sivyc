@@ -17,4 +17,6 @@ interface Reporterf001Interface {
     public function reenviarSolicitud($request);
     public function firmarDocumento($request);
     public function sellarDocumento($request);
+    public function getQueryCancelado($unidad);
+    public function actualizarEstado($id, $estado);
 }

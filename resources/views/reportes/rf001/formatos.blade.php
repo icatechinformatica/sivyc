@@ -71,10 +71,95 @@
                 margin-right: 0;
             }
         }
+
+
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Fondo semi-transparente */
+            z-index: 9999;
+            /* Asegura que esté por encima de otros elementos */
+            display: none;
+            /* Ocultar inicialmente */
+        }
+
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        #loader-text {
+            color: #fff;
+            margin-top: 150px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        /* Texto loader */
+        #loader-text span {
+            opacity: 0;
+            /* Inicia los puntos como invisibles */
+            font-size: 30px;
+            font-weight: bold;
+            animation: fadeIn 1s infinite;
+            /* Aplica la animación de aparecer */
+        }
+
+        @keyframes fadeIn {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        #loader-text span:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        #loader-text span:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        #loader-text span:nth-child(3) {
+            animation-delay: 1.5s;
+        }
     </style>
 @endsection
 @section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
 @section('content')
+    <div id="loader-overlay">
+        <div id="loader"></div>
+        <div id="loader-text">
+            Espere un momento mientras se realiza el proceso<span> . </span><span> . </span><span> . </span>
+        </div>
+    </div>
     <div class="card-header">
         Reportes / Reportes RF-001 a Revisión
     </div>
@@ -108,8 +193,9 @@
                                 <th scope="col">MEMORANDUM</th>
                                 <th scope="col">UNIDAD</th>
                                 <th scope="col">PERIODO</th>
-                                <th scope="col">ACCIONES</th>
+                                <th scope="col">DOCUMENTO</th>
                                 <th scope="col">DETALLES</th>
+                                <th scope="col">ACCIÓN</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -134,8 +220,13 @@
                                             <td style="background-color: #f7dc6f; width: 15px;"><b>{{ $item->estado }}</b></td>
                                         @break
 
+                                        @case('ENFIRMA')
+                                            <td style="background-color: yellow; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                        @break
+
                                         @default
-                                            <td style="background-color: #3ac122; width: 15px;"><b>{{ $item->estado }}</b></td>
+                                            <td style="background-color: #922b21; width: 15px;"><b
+                                                    style="color: #f0f0f0;">{{ $item->estado }}</b></td>
                                     @endswitch
                                     <td style="width: 30px;">{{ $item->memorandum }}</td>
                                     <td>{{ $item->unidad }}</td>
@@ -146,15 +237,23 @@
                                         @switch($item->estado)
                                             @case('GENERADO')
                                                 @can('actualizar.rf001')
-                                                    <a class="nav-link pt-0"
-                                                        href="{{ route('reporte.rf001.details', ['concentrado' => $item->id]) }}">
-                                                        <i class="fa fa-edit  fa-2x fa-lg text-primary" aria-hidden="true"
-                                                            padding-right: 12px;" title='EDITAR REGISTROS'></i>
-                                                    </a>
+                                                    @if ($item->tipo == 'CANCELADO')
+                                                        <a class="nav-link pt-0"
+                                                            href="{{ route('reporte.rf001.edit', ['id' => $item->id]) }}">
+                                                            <i class="fa fa-edit  fa-2x fa-lg text-primary" aria-hidden="true"
+                                                                style="padding-right: 12px;" title='EDITAR RECIBOS CANCELADOS'></i>
+                                                        </a>
+                                                    @else
+                                                        <a class="nav-link pt-0"
+                                                            href="{{ route('reporte.rf001.details', ['concentrado' => $item->id]) }}">
+                                                            <i class="fa fa-edit  fa-2x fa-lg text-primary" aria-hidden="true"
+                                                                style="padding-right: 12px;" title='EDITAR REGISTROS'></i>
+                                                        </a>
+                                                    @endif
                                                 @endcan
                                             @break
 
-                                            @case('ENFIRMA' || 'FIRMADO')
+                                            @case('ENFIRMA' || 'FIRMADO' || 'GENERARDOCUMENTO')
                                                 {{-- <a class="nav-link pt-0"
                                                     href="{{ route('reporte.generar.firma', ['id' => $item->id, 'solicitud' => $dato]) }}">
                                                     <i class="fas fa-pen fa-2x fa-lg text-danger" aria-hidden="true"
@@ -177,6 +276,15 @@
                                             <i class="fa fa-eye fa-2x fa-lg text-grey" aria-hidden="true"
                                                 title="MOSTRAR FORMATO RF001"></i>
                                         </a>
+                                    </td>
+                                    <td class="text-left">
+                                        @if ($item->estado == 'FIRMADO')
+                                            <a class="nav-link pt-0" href="javascript:;"
+                                                id="enviarSellado_{{ $item->id }}">
+                                                <i class="fa fa-paper-plane fa-2x fa-lg text-success" aria-hidden="true"
+                                                    style="padding-right: 12px;" title='ENVIAR A SELLAR'></i>
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -212,4 +320,69 @@
             </div>
         </div>
     </div>
+@endsection
+@section('script_content_js')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+        $(document).ready(function() {
+            $('a[id^="enviarSellado_"]').on('click', function() {
+                // Obtenemos el id del elemento al que se le hizo clic
+                var id = $(this).attr('id');
+
+                // Extraemos la parte del id después de 'enviarSellado_'
+                var itemId = id.split('_')[1];
+
+                // Aquí puedes hacer lo que necesites con el id
+                console.log("El ID del item es: " + itemId);
+
+                let URL = "{{ route('reporte.rf001.cambio.estado', ['id' => $getConcentrado->id]) }}";
+                try {
+                    document.getElementById('loader-overlay').style.display = 'block';
+                    await $.ajax({
+                        url: URL,
+                        type: 'POST',
+                        dataType: "json",
+                        success: function(response) {
+                            // console.log(response); return;
+                            setTimeout(function() {
+                                // Ocultar el loader y mostrar el contenido después de la carga
+                                document.getElementById('loader-overlay').style
+                                    .display =
+                                    'none';
+                                if (response.data) {
+                                    window.location.href =
+                                        "{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}";
+                                }
+                            }, 2500); // 2 segundos de tiempo simulado
+
+                        },
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        // Maneja el error aquí
+                        console.error('Error:', jqXHR);
+                        console.warning('TextStatus:', textStatus);
+                        console.error('ErrorThrown:', errorThrown);
+                        reject(textStatus);
+
+                        // Si deseas mostrar un mensaje de error más detallado
+                        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                            alert('Error: ' + jqXHR.responseJSON.message);
+                        } else {
+                            alert('Error: ' + textStatus);
+                        }
+                    });;
+                } catch (error) {
+                    console.error(error.statusText);
+                    document.getElementById('loader-overlay').style.display = 'none';
+                }
+            });
+        });
+    </script>
 @endsection

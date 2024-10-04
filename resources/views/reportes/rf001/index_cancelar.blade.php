@@ -214,7 +214,7 @@
                     <b>AÑO {{ $currentYear }} </b> <br>
                 </div>
                 <div class="form-group col-md-2">
-                    {{ Form::select('unidad', $datos['unidades'], $getConcentrado ? $getConcentrado->unidad : '', ['id' => 'unidad', 'placeholder' => '- UNIDAD -', 'class' => 'form-control  mr-sm-2']) }}
+                    {{-- {{ Form::select('unidad', $datos['unidades'], $getConcentrado ? $getConcentrado->unidad : '', ['id' => 'unidad', 'placeholder' => '- UNIDAD -', 'class' => 'form-control  mr-sm-2']) }} --}}
                 </div>
                 <div class="form-group col-md-3">
                     <b>Periodo Del {{ $dateInit->day }} de {{ $monthNameInit }} al {{ $dateEnd->day }} de
@@ -234,12 +234,6 @@
                     {{ Form::label('folio_grupo', 'N°. Recibo', ['class' => 'awesome']) }}
                     {{ Form::text('folio_grupo', '', ['id' => 'folio_grupo', 'class' => 'form-control mr-2', 'placeholder' => 'N°.RECIBO', 'title' => 'NO. RECIBO / FOLIO DE GRUPO / CLAVE ', 'size' => 25]) }}
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    {{ Form::label('estado', 'Estado', ['class' => 'awesome']) }}
-                    {{ Form::select('estado', ['seleccionar' => '--- SELECCIONAR ---', 'ENVIADO' => 'ENVIADO', 'CARGADO' => 'CARGADO', 'CANCELADO' => 'CANCELADO'], 'seleccionar', ['id' => 'status_folio', 'class' => 'form-control mr-2']) }}
-                </div>
                 <div class="form-group col-md-3 pt-4">
                     {{ Form::submit('FILTRAR', ['id' => 'filtrar', 'class' => 'btn mr-5 mt-1']) }}
                 </div>
@@ -250,14 +244,9 @@
         <div class="col-12">
             @if (count($query) > 0)
                 <div class="p-0 m-0">
-                    @if ($getConcentrado)
-                        {{ Form::open(['route' => ['reporte.rf001.update', 'id' => $getConcentrado->id], 'method' => 'POST', 'id' => 'frmString']) }}
-                        @method('PUT')
-                        @csrf
-                    @else
-                        {{ Form::open(['route' => 'reporte.rf001.store', 'method' => 'POST', 'id' => 'frmString']) }}
-                        @csrf
-                    @endif
+                    {{ Form::open(['route' => ['reporte.rf001.update', 'id' => $getConcentrado->id], 'method' => 'POST', 'id' => 'frmString']) }}
+                     @method('PUT')
+                     @csrf
 
                     <table class="table table-hover" id="tabla">
                         <thead>
@@ -312,7 +301,7 @@
                         <tfoot>
                             <tr>
                                 <td colspan='14'>
-                                    {{ $query->appends(['seleccionados' => $selectedCheckboxes])->links() }}
+                                    {{ $query->links() }}
                                 </td>
                             </tr>
                         </tfoot>
@@ -330,11 +319,11 @@
                                         value="{{ $getConcentrado ? $getConcentrado->memorandum : '' }}">
                                 </div>
 
-                                {{ Form::hidden('id_unidad', $idUnidad, ['id' => 'id_unidad', 'class' => 'form-control ']) }}
-                                {{ Form::Hidden('unidad', $unidad, ['id' => 'unidad', 'class' => 'form-control ']) }}
-                                {{ Form::hidden('periodoInicio', $periodoInicio, ['id' => 'periodoInicio', 'class' => 'form-control']) }}
-                                {{ Form::hidden('periodoFIn', $periodoFin, ['class' => 'form-control mr-sm-2', 'id' => 'periodoFIn']) }}
-                                {!! Form::hidden('tipoSolicitud', $tipoSolicitud, ['class' => 'form-control mr-sm-2', 'id' => 'tipoSolicitud']) !!}
+                                {!! Form::hidden('id_unidad', $idUnidad, ['id' => 'id_unidad', 'class' => 'form-control ']) !!}
+                                {!! Form::Hidden('unidad', $unidad, ['id' => 'unidad', 'class' => 'form-control ']) !!}
+                                {!! Form::hidden('periodoInicio', $periodoInicio, ['id' => 'periodoInicio', 'class' => 'form-control']) !!}
+                                {!! Form::hidden('periodoFIn', $periodoFin, ['class' => 'form-control mr-sm-2', 'id' => 'periodoFIn']) !!}
+                                {!! Form::hidden('tipoSolicitud', $getConcentrado->tipo, ['class' => 'form-control mr-sm-2', 'id' => 'tipoSolicitud']) !!}
                             </div>
                         </div>
                         {{-- formulario END --}}
@@ -346,8 +335,8 @@
                         {!! Form::close() !!}
                         <div class="col-auto mt-4">
                             @if ($getConcentrado)
-                                <a id="enviar" class="btn btn-danger">
-                                    GENERAR DOCUMENTO
+                                <a id="enviar" class="btn btn-info">
+                                    ENVIAR A REVISIÓN
                                 </a>
                             @endif
                         </div>
@@ -367,7 +356,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <h3>
-                        <p>¿Está seguro de ejecutar la acción para generar el documento en pdf?</p>
+                        <p>¿Está seguro de ejecutar la acción para efirma?</p>
                     </h3>
                 </div>
                 <div class="modal-footer">
@@ -484,7 +473,7 @@
 
         $("#corfirmarEfirma").click(async function(event) {
             event.preventDefault(); // prevenir envío tradicional de formulario
-            let URL = "{{ route('reportes.rf001.xml.generar', ['id' => $idRf001]) }}";
+            let URL = "{{ route('reportes.rf001.xml.cancelado', ['id' => $idRf001]) }}";
             $('#exampleModal').modal('hide');
             try {
                 document.getElementById('loader-overlay').style.display = 'block';
@@ -518,27 +507,11 @@
                     } else {
                         alert('Error: ' + textStatus);
                     }
-                });
+                });;
             } catch (error) {
                 console.error(error.statusText);
                 document.getElementById('loader-overlay').style.display = 'none';
             }
-
-
-            // let form = $(document.createElement('form'));
-            // $(form).attr("action", URL);
-            // $(form).attr("method", "POST");
-
-            // // Añadir el token CSRF como un campo oculto dentro del formulario
-            // let csrfToken = "{{ csrf_token() }}";
-            // let input = $(document.createElement('input'));
-            // $(input).attr("type", "hidden");
-            // $(input).attr("name", "_token");
-            // $(input).attr("value", csrfToken);
-            // $(form).append(input);
-
-            // $('body').append(form);
-            // $(form).submit();
         });
 
         function generarToken() {

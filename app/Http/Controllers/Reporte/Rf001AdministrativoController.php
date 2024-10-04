@@ -168,4 +168,14 @@ class Rf001AdministrativoController extends Controller
             return redirect()->back()->with('error', 'Ocurrió un error al momento de sellar: '.$th);
         }
     }
+
+    public function aprobar(Request $request)
+    {
+        $estado = 'APROBADO';
+        $id = $request->get('idRf001');
+        return response()->json([
+            'resp' => $this->rf001Repository->actualizarEstado($id, $estado),
+            'message' => 'Documento Aprobado para proceso de efirma!',
+        ], Response::HTTP_CREATED);
+    }
 }

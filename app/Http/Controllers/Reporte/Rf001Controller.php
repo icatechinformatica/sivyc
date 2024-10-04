@@ -83,6 +83,9 @@ class Rf001Controller extends Controller
         #nuevo fechas del periodo que se obtiene la información
         $periodoInicio = $periodo[0];
         $periodoFin = $periodo[4];
+        $tipoSolicitud = 'CONCENTRADO'; //declarado vacio para fines prácticos
+        // $fechaInicio = $request->get('fechaInicio') ?? $periodo[0];
+        // $fechaFin = $request->get('fechaFin') ?? $periodo[4];
 
         if ( !empty($request->get('fechaInicio')) || !empty($request->get('fechaFin'))) {
             $fechaInicio = $request->get('fechaInicio');
@@ -94,25 +97,49 @@ class Rf001Controller extends Controller
             $fechaFin = $periodo[4];
         }
 
+        // Filtro por fechas, solo si ambos valores no están vacíos
+        // $data->when(!empty($fechaInicio) && !empty($fechaFin), function($query) use ($fechaInicio, $fechaFin) {
+        //     return $query->whereBetween('tbl_recibos.fecha_expedicion', [$fechaInicio, $fechaFin]);
+        // });
+
         if ($getUnidad !== '' && isset($getUnidad)) {
             $data->where('tbl_unidades.unidad', $request->get('unidad'));
         }
+
+        // $data->when(!empty($getUnidad), function($query) use ($getUnidad) {
+        //     return $query->where('tbl_unidades.unidad', $getUnidad);
+        // });
 
 
         if (isset($folioGrupo) && $folioGrupo !== '') {
             $data->where('tbl_recibos.folio_recibo', '=', $folioGrupo);
         }
 
+        // $data->when(isset($folioGrupo) && $folioGrupo !== '', function($query) use ($folioGrupo) {
+        //     return $query->where('tbl_recibos.folio_recibo', '=', $folioGrupo);
+        // });
+
         if (isset($statusRecibo) && $statusRecibo !== '') {
             $data->where('tbl_recibos.status_folio', '=', $statusRecibo);
+            if ($statusRecibo == 'CANCELADO') {
+                $tipoSolicitud = 'CANCELADO';
+            }
         }
+
+        // $data->when(isset($statusRecibo) && $statusRecibo !== '', function($query) use ($statusRecibo, &$estadoFiltro) {
+
+        //     if ($statusRecibo == 'CANCELADO') {
+        //         $estadoFiltro = 'CANCELADO';
+        //     }
+        //     return $query->where('tbl_recibos.status_folio', '=', $statusRecibo);
+        // });
 
 
         $query = $data->orderBy('tbl_recibos.id', 'ASC')->paginate(25);
         $currentYear = date('Y');
         $path_files = $this->path_files;
 
-        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'idUnidad', 'unidad', 'path_files', 'getConcentrado', 'foliosMovimientos', 'selectedCheckboxes', 'periodoInicio', 'periodoFin', 'fechaInicio', 'fechaFin', 'idRf001'))->render();
+        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'idUnidad', 'unidad', 'path_files', 'getConcentrado', 'foliosMovimientos', 'selectedCheckboxes', 'periodoInicio', 'periodoFin', 'fechaInicio', 'fechaFin', 'idRf001', 'tipoSolicitud'))->render();
     }
 
     public function dashboard(Request $request)
@@ -207,8 +234,8 @@ class Rf001Controller extends Controller
         $revisionLocal = collect(json_decode($getConcentrado->movimiento, true))->first(function ($item) {
             return isset($item['tipo'], $item['usuario']) &&
                 (
-                    ($item['tipo'] === 'REVISION_LOCAL' && $item['usuario'] === Auth::user()->email) ||
-                    ($item['tipo'] === 'REVISION_GENERAL' && $item['usuario'] === Auth::user()->email)
+                    ($item['tipo'] === 'REVISION_LOCAL' && $item['usuario'] != Auth::user()->email) ||
+                    ($item['tipo'] === 'GENERADO' && $item['usuario'] != Auth::user()->email)
                 );
         });
         $pathFile = $this->path_files;
@@ -225,7 +252,35 @@ class Rf001Controller extends Controller
     public function edit($id)
     {
         //
+        $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
+        $idRf001 = $id;
+        $idUnidad = Auth::user()->unidad;
+        $obtenerUnidad = \DB::table('tbl_unidades')->where('id', $idUnidad)->first();
+        $unidad = $obtenerUnidad->unidad;
 
+        // Decodificar el JSON
+        $data = json_decode($getConcentrado, true);
+
+        // Obtener los movimientos como un array PHP
+        $movimientos = json_decode($data['movimientos'], true);
+
+        // Extraer los folios de los movimientos
+        $foliosMovimientos = array_column($movimientos, 'folio');
+
+        $fechaActual = Carbon::now();
+        // Formatear la fecha al formato deseado
+
+        $periodo = $this->obtenerPrimerYUltimoDiaHabil($fechaActual);
+        $periodoInicio = $periodo[0];
+        $periodoFin = $periodo[4];
+        $currentYear = date('Y');
+
+        $getQuery = $this->rfoo1Repository->getQueryCancelado($obtenerUnidad->unidad);
+        $getQuery->where('tbl_recibos.status_folio', '=', 'CANCELADO');
+
+        $query = $getQuery->orderBy('tbl_recibos.id', 'ASC')->paginate(25);
+
+        return view('reportes.rf001.index_cancelar', compact('foliosMovimientos', 'movimientos', 'idRf001', 'getConcentrado', 'periodoInicio', 'periodoFin', 'currentYear', 'query', 'idUnidad', 'unidad'))->render();
     }
 
     /**
@@ -352,7 +407,7 @@ class Rf001Controller extends Controller
         $report = PDF::loadView('reportes.rf001.reporterf001', compact('bodyMemo', 'distintivo','direccion',  'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
         $formatoRF001 = PDF::loadView('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion', 'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
 
-        // return view('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
+        // return view('reportes.rf001.reporterf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
 
         // $pdf = PDF::loadView('reportes.rf001.reporterf001');
         $file1 = tempnam(sys_get_temp_dir(), 'report');
@@ -384,5 +439,16 @@ class Rf001Controller extends Controller
         // return $pdf->stream('combined_documents.pdf');
         // return $report->stream();
         // return view('reportes.rf001.reporterf001', $data)->render();
+    }
+
+    public function cambioEstado($id)
+    {
+        $estado = 'REVISION';
+        return response()->json(
+            [
+                'data' => $this->rfoo1Repository->actualizarEstado($id, $estado)
+            ],
+            Response::HTTP_CREATED
+        );
     }
 }

@@ -219,7 +219,7 @@
             /* Subraya el enlace al pasar el ratón por encima */
         }
 
-                /* Estilo del loader */
+        /* Estilo del loader */
         #loader-overlay {
             position: fixed;
             top: 0;
@@ -651,12 +651,14 @@
                 <div class="row">
                     <div class="col-6">
                     </div>
-                    <div class="col-4 d-flex justify-content-end">
+                    <div class="col-2 d-flex justify-content-end">
                         <div class="padre">
                             @can('firma.validacion.rf001')
-                                {{-- Usar el componente creado --}}
-                                <x-firma-administrativo :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']" :token-data="$token"
-                                :id="$id" :curp-firmante="$curpFirmante"></x-firma-administrativo>
+                                @if ($getConcentrado->estado == 'ENFIRMA')
+                                    {{-- Usar el componente creado --}}
+                                    <x-firma-administrativo :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
+                                        :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-administrativo>
+                                @endif
                             @endcan
                         </div>
                     </div>
@@ -669,6 +671,9 @@
                                 </a>
                             @endif
                         @endcan
+                    </div>
+                    <div class="col-2 justify-content-end">
+                        <a href="javascript:;" class="btn" id="enviarAprobracion">APROBAR</a>
                     </div>
                 </div>
                 <input type="hidden" name="idRf001" id="idRf001" value="{{ $id }}" />
@@ -844,9 +849,49 @@
                     success: function(response) {
                         setTimeout(function() {
                             // Ocultar el loader y mostrar el contenido después de la carga
-                            document.getElementById('loader-overlay').style.display = 'none';
+                            document.getElementById('loader-overlay').style.display =
+                                'none';
                             if (response.resp == 1) {
-                                window.location.href = "{{ route('administrativo.index') }}?message=" + encodeURIComponent(response.message);
+                                window.location.href =
+                                    "{{ route('administrativo.index') }}?message=" +
+                                    encodeURIComponent(response.message);
+                            }
+                        }, 2800);
+                    },
+                    error: function(xhr, textStatus, error) {
+                        // manejar errores
+                        console.log('ESTADO TEXTO: ' + xhr.statusText);
+                        console.log('RESPUESTA:  ' + xhr.responseText);
+                        console.log('ESTADO: ' + xhr.status);
+                        console.log(textStatus);
+                        console.log(error);
+                    }
+                });
+            });
+
+            $('#enviarAprobracion').on('click', function(e) {
+                e.preventDefault();
+                const URL = "{{ route('administrativo.rf001.aprobar') }}";
+                $.ajax({
+                    url: URL,
+                    method: "POST",
+                    dataType: "json",
+                    data: {
+                        idRf001: $('#idRf001').val(),
+                        _token: '{{ csrf_token() }}' // Asegúrate de incluir el token CSRF
+                    },
+                    beforeSend: function() {
+                        document.getElementById('loader-overlay').style.display = 'block';
+                    },
+                    success: function(response) {
+                        setTimeout(function() {
+                            // Ocultar el loader y mostrar el contenido después de la carga
+                            document.getElementById('loader-overlay').style.display =
+                                'none';
+                            if (response.resp == 1) {
+                                window.location.href =
+                                    "{{ route('administrativo.index') }}?message=" +
+                                    encodeURIComponent(response.message);
                             }
                         }, 2800);
                     },

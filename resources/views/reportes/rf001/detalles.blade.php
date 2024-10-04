@@ -401,6 +401,85 @@
             /* IMPORTANTE */
             text-align: center;
         }
+
+        /* Estilo del loader */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Fondo semi-transparente */
+            z-index: 9999;
+            /* Asegura que esté por encima de otros elementos */
+            display: none;
+            /* Ocultar inicialmente */
+        }
+
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        #loader-text {
+            color: #fff;
+            margin-top: 150px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        /* Texto loader */
+        #loader-text span {
+            opacity: 0;
+            /* Inicia los puntos como invisibles */
+            font-size: 30px;
+            font-weight: bold;
+            animation: fadeIn 1s infinite;
+            /* Aplica la animación de aparecer */
+        }
+
+        @keyframes fadeIn {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        #loader-text span:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        #loader-text span:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        #loader-text span:nth-child(3) {
+            animation-delay: 1.5s;
+        }
     </style>
 @endsection
 @section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
@@ -413,6 +492,12 @@
     $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
 @endphp
 @section('content')
+    <div id="loader-overlay">
+        <div id="loader"></div>
+        <div id="loader-text">
+            Espere un momento mientras se realiza el proceso<span> . </span><span> . </span><span> . </span>
+        </div>
+    </div>
     <div class="card-header"><a href="{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}">A Revisión </a>/
         Detalles
         de Reporte RF-001</div>
@@ -580,7 +665,7 @@
                     </div>
                     <div class="col-4 d-flex justify-content-end">
                         @if (is_array($revisionLocal) && count($revisionLocal) > 0)
-                            @if ($revisionLocal['tipo'] === 'GENERADO')
+                            @if ($getConcentrado->estado == 'ENFIRMA')
                                 @if (!empty($data['cadenaOriginal']))
                                     <div class="padre">
                                         {{-- Usar el componente creado --}}
@@ -590,7 +675,7 @@
                                 @endif
                             @endif
                         @else
-                            @if (!empty($data['cadenaOriginal']))
+                            @if (!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO')
                                 <div class="padre">
                                     {{-- Usar el componente creado --}}
                                     <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
@@ -600,14 +685,9 @@
                         @endif
                     </div>
                     <div class="col-2 justify-content-end">
-                        @can('retornar.rf001')
-                            @if ($getConcentrado->estado != 'REVISION')
-                                <button type="button" class="btn btn-danger btn-xs">
-                                    <i class="fas fa-undo"></i>
-                                    REGRESAR
-                                </button>
-                            @endif
-                        @endcan
+                        @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
+                            <a href="javascript:;" class="btn" id="enviarRevision">ENVIAR A REVISIÓN</a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -763,6 +843,50 @@
                         return;
                     }
                 });
+            });
+
+
+            $("#enviarRevision").click(async function(event) {
+                event.preventDefault(); // prevenir envío tradicional de formulario
+                let URL = "{{ route('reporte.rf001.cambio.estado', ['id' => $getConcentrado->id]) }}";
+                try {
+                    document.getElementById('loader-overlay').style.display = 'block';
+                    await $.ajax({
+                        url: URL,
+                        type: 'GET',
+                        dataType: "json",
+                        success: function(response) {
+                            // console.log(response); return;
+                            setTimeout(function() {
+                                // Ocultar el loader y mostrar el contenido después de la carga
+                                document.getElementById('loader-overlay').style
+                                    .display =
+                                    'none';
+                                if (response.data) {
+                                    window.location.href =
+                                        "{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}";
+                                }
+                            }, 2500); // 2 segundos de tiempo simulado
+
+                        },
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        // Maneja el error aquí
+                        console.error('Error:', jqXHR);
+                        console.warning('TextStatus:', textStatus);
+                        console.error('ErrorThrown:', errorThrown);
+                        reject(textStatus);
+
+                        // Si deseas mostrar un mensaje de error más detallado
+                        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                            alert('Error: ' + jqXHR.responseJSON.message);
+                        } else {
+                            alert('Error: ' + textStatus);
+                        }
+                    });;
+                } catch (error) {
+                    console.error(error.statusText);
+                    document.getElementById('loader-overlay').style.display = 'none';
+                }
             });
         });
     </script>

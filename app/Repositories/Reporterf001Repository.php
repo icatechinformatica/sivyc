@@ -32,8 +32,7 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function getReciboQry($unidad)
     {
-        // $recibo = Recibo::where('id_concepto', '>', 1)
-        $recibo = Recibo::where('tbl_recibos.status_recibo', 'PAGADO')
+        return Recibo::where('tbl_recibos.status_recibo', 'PAGADO')
             ->where('tbl_unidades.unidad', $unidad)
             ->with('concepto:id,concepto')
             ->select('tbl_recibos.*', 'cat_conceptos.concepto', 'tbl_recibos.id as id_recibo', 'tbl_unidades.clave_contrato')
@@ -45,7 +44,6 @@ class Reporterf001Repository implements Reporterf001Interface
             ->join('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
             ->join('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_recibos.unidad')
             ->leftJoin('tbl_cursos','tbl_cursos.folio_grupo','=', 'tbl_recibos.folio_grupo');
-        return $recibo;
     }
 
     public function generateRF001Format($request, $usuario)
@@ -112,14 +110,13 @@ class Reporterf001Repository implements Reporterf001Interface
             'periodo_inicio' => $request->get('periodoInicio'),
             'periodo_fin' => $request->get('periodoFIn'),
             'movimiento' => json_encode($movimientoAdd, JSON_UNESCAPED_UNICODE),
+            'tipo' => trim($request->get('tipoSolicitud')),
         ]);
     }
 
     public function sentRF001Format($request)
     {
-        $rf001Model = new Rf001Model();
-
-        return $rf001Model::latest()->paginate(10 ?? 5);
+        return (new Rf001Model())->latest()->paginate(10 ?? 5);
     }
 
     public function getDetailRF001Format($concentrado)
@@ -499,5 +496,28 @@ class Reporterf001Repository implements Reporterf001Interface
             $respuesta_icti = ['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']];
             return $respuesta_icti;
         }
+    }
+
+    public function getQueryCancelado($unidad)
+    {
+        return Recibo::where('tbl_recibos.status_recibo', 'PAGADO')
+            ->where('tbl_unidades.unidad', $unidad)
+            ->with('concepto:id,concepto')
+            ->select('tbl_recibos.*', 'cat_conceptos.concepto', 'tbl_recibos.id as id_recibo', 'tbl_unidades.clave_contrato')
+            ->addSelect(\DB::raw("
+                    CASE
+                        WHEN tbl_cursos.comprobante_pago <> 'null' THEN concat('uploadFiles',tbl_cursos.comprobante_pago)
+                        WHEN tbl_recibos.file_pdf <> 'null' THEN tbl_recibos.file_pdf
+                    END as file_pdf"))
+            ->join('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
+            ->join('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_recibos.unidad')
+            ->leftJoin('tbl_cursos','tbl_cursos.folio_grupo','=', 'tbl_recibos.folio_grupo');
+    }
+
+    public function actualizarEstado($id, $estado)
+    {
+        return (new Rf001Model())->where('id', $id)->update([
+            'estado' => $estado,
+        ]);
     }
 }

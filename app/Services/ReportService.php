@@ -113,6 +113,17 @@ class ReportService
                 'tipo_firmante' => 'FM'
             ]
         ];
+
+        array_push($arrayFirmantes, $temp);
+
+        $temp = ['_attributes' =>
+            [
+                'curp_firmante' => 'CUMA850521MCSTNN09',
+                'nombre_firmante' => 'WALTER DOMINGUEZ CAMACHO',
+                'email_firmante' => 'w.dominguez.daicatech@gmail.com',
+                'tipo_firmante' => 'FM'
+            ]
+        ];
         array_push($arrayFirmantes, $temp);
 
 
@@ -202,7 +213,7 @@ class ReportService
 
             // actualizar registro en modelo Rf001Model
             (new Rf001Model())->where('id', $id)->update([
-                'estado' => 'ENFIRMA',
+                'estado' => 'GENERARDOCUMENTO',
             ]);
 
             return TRUE;
@@ -646,5 +657,274 @@ class ReportService
             'xml_Firmado' => $xml
         ]);
         return $response;
+    }
+
+    public function genXmlFormato($id, $organismo, $unidad, $usuario)
+    {
+        $htmlBody = array();
+        $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+        $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+        // elaboro y puesto de elaboración
+        $nombreElaboro = $usuario->name;
+        $puestoElaboro = $usuario->puesto;
+
+        $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
+
+        $body = $this->htmlToXml($rf001, $unidad, $organismoPublico); //cambiar este formato
+
+        if (is_null($body)) {
+            $error = ['error' => 1];
+            return $error;
+        }
+
+        $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
+
+        $firmantes = $this->funcionariosUnidades($ubicacion);
+        list($firmanteNoUno, $firmanteNoDos) = $firmantes;
+
+        $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+            ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
+            ->Where('org.id_parent',1)
+            ->Where('fun.activo', 'true')
+            ->Where('u.unidad', $ubicacion)
+            ->First();
+
+
+        $nameFileOriginal = 'concentrado cancelacion'.$rf001->memorandum.'.pdf';
+        $numOficio = "cancelacion-rf001-".$rf001->memorandum;
+        $numFirmantes = '2'; // 1 o 2
+
+        $arrayFirmantes = [];
+        // director
+        $temp = ['_attributes' =>
+            [
+                'curp_firmante' => $firmanteNoUno['curp'],
+                'nombre_firmante' => $firmanteNoUno['funcionario'],
+                'email_firmante' => $firmanteNoUno['correo'],
+                'tipo_firmante' => 'FM',
+            ]
+        ];
+        array_push($arrayFirmantes, $temp);
+
+        // delegado
+        $temp = ['_attributes' =>
+            [
+                'curp_firmante' => $firmanteNoDos['curp'],
+                'nombre_firmante' => $firmanteNoDos['funcionario'],
+                'email_firmante' => $firmanteNoDos['correo'],
+                'tipo_firmante' => 'FM'
+            ]
+        ];
+        array_push($arrayFirmantes, $temp);
+
+
+        $joinBody = strip_tags($body['memorandum']);
+
+        //Creacion de array para pasarlo a XML
+        $ArrayXml = [
+            'emisor' => [
+                '_attributes' => [
+                    'nombre_emisor' => $usuario->name,
+                    'cargo_emisor' => $usuario->puesto,
+                    'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                ],
+            ],
+            'archivo' => [
+                '_attributes' => [
+                    'nombre_archivo' => $nameFileOriginal,
+                ],
+                'cuerpo' => [$joinBody],
+            ],
+            'firmantes' => [
+                '_attributes' => [
+                    'num_firmantes' => $numFirmantes
+                ],
+                'firmante' => [
+                    $arrayFirmantes
+                ],
+            ],
+        ];
+
+        //Creacion de estampa de hora exacta de creacion
+        $date = Carbon::now();
+        $month = $date->month < 10 ? '0'.$date->month : $date->month;
+        $day = $date->day < 10 ? '0'.$date->day : $date->day;
+        $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
+        $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
+        $second = $date->second < 10 ? '0'.$date->second : $date->second;
+        $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
+
+        $resultado = ArrayToXml::convert($ArrayXml, [
+            'rootElementName' => 'DocumentoChis',
+            '_attributes' => [
+                'version' => '2.0',
+                'fecha_creacion' => $dateFormat,
+                'no_oficio' => $numOficio,
+                'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                'asunto_docto' => 'Concentrado de Ingresos Propios',
+                'tipo_docto' => 'OFC',
+                'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
+            ],
+        ]);
+
+        //generación de la cadena única mediante el ICTI
+        $xmlBase64 = base64_encode($resultado);
+        $getToken = Tokens_icti::all()->last();
+        if ($getToken) {
+            # registros
+            $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
+            if ($response->json() == null) {
+                # token
+                $token = $this->generarToken();
+                $response = $this->getCadenaOriginal($xmlBase64, $token);
+            }
+        } else {
+            # no hay registros
+            $token = $this->generarToken();
+            $response = $this->getCadenaOriginal($xmlBase64, $token);
+        }
+
+        // guardando cadena única
+        if ($response->json()['cadenaOriginal'] != null) {
+
+            $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->Where('tipo_archivo','Reporte fotografico')->First();
+            if (is_null($dataInsert)) {
+                $dataInsert = new DocumentosFirmar();
+            }
+            $dataInsert->body_html = json_encode($body);
+            $dataInsert->obj_documento = json_encode($ArrayXml);
+            $dataInsert->status = 'EnFirma';
+            $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
+            $dataInsert->tipo_archivo = 'Concentrado de Ingresos Propios';
+            $dataInsert->numero_o_clave = $rf001->memorandum;
+            $dataInsert->nombre_archivo = $nameFileOriginal;
+            $dataInsert->documento = $resultado;
+            $dataInsert->documento_interno = $resultado;
+            $dataInsert->save();
+
+            // actualizar registro en modelo Rf001Model
+            (new Rf001Model())->where('id', $id)->update([
+                'estado' => 'ENFIRMA',
+            ]);
+
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function htmlToXml($data, $unidad, $organismo)
+    {
+        $htmlBody = [];
+        // memorandum crear primer documento
+        $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        $tblUnidades = \DB::table('tbl_unidades')->where('unidad', $data->unidad)->first();
+        $unidadUbicacion = strtoupper($tblUnidades->ubicacion);
+        $municipio = mb_strtoupper($tblUnidades->municipio, 'UTF-8');
+        #OBTENEMOS LA FECHA ACTUAL
+        $fechaActual = getdate();
+        $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
+        $dia = ($dia < 10) ? '0'.$dia : $dia;
+
+        $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
+        $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
+        $conocimiento = \DB::table('tbl_funcionarios')
+            ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
+            ->where('tbl_organismos.id', 13)
+            ->select('tbl_organismos.nombre', 'tbl_funcionarios.nombre as nombre_funcionario', 'tbl_funcionarios.cargo', 'tbl_funcionarios.titulo')
+            ->first();
+        $direccion = $tblUnidades->direccion;
+
+        $delegado = \DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('f.activo', 'true')
+            ->Where('o.nombre','LIKE','DELEG%')
+            ->Where('u.unidad', $data->unidad)
+            ->First();
+
+        $nombre_titular = $cargo_fun = 'DATO REQUERIDO';
+        if ($organismo) {
+            $nombre_titular = $organismo->nombre_titular;
+            $cargo_fun = mb_strtoupper($organismo->cargo_fun, 'UTF-8');
+        }
+
+        $datoJson = json_decode($data->movimientos, true);
+        $startDate = Carbon::parse($data->periodo_inicio);
+        $endDate = Carbon::parse($data->periodo_fin);
+        $formattedStartDate = $startDate->format('d');
+        $formattedEndDate = $endDate->format('d');
+        $mes = $startDate->translatedFormat('F');
+        $anio = $startDate->format('Y');
+
+        $movimiento = json_decode($data->movimientos, true);
+        $importeTotal = 0;
+        $periodoInicio = Carbon::parse($data->periodo_inicio);
+        $periodoFin = Carbon::parse($data->periodo_fin);
+        $dateCreacion = Carbon::parse($data->created_at);
+        $dateCreacion->locale('es'); // Configurar el idioma a español
+        $nombreMesCreacion = $dateCreacion->translatedFormat('F');
+
+        // documento rf001
+        $unidad = tbl_unidades::where('id', $unidad)->first();
+        $instituto = DB::table('tbl_instituto')->first();
+        $direccion = $unidad->direccion;
+        // Decodificar el campo cuentas_bancarias
+        $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
+        $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
+
+        $htmlBody['memorandum'] = '<div class="contenedor">
+            <div class="bloque_uno" align="right">
+                <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</p>
+                <p class="delet_space_p color_text">OFICIO NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
+                <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars(strtoupper($fecha_comp)) . '</span></p>
+            </div>
+            <br><br><br>
+            <div class="bloque_dos" align="left">
+                <p class="delet_space_p color_text">C. ' . htmlspecialchars(strtoupper($dirigido->titulo)) . ' ' . htmlspecialchars(strtoupper($dirigido->nombre)) . '</p>
+                <p class="delet_space_p color_text">' . htmlspecialchars($dirigido->cargo) . '</p>
+                <p class="delet_space_p color_text">PRESENTE.</p>
+            </div>
+            <br>
+            <div class="contenido" align="justify">
+                Por medio del presente, atentamente me permito informar a usted la cancelación del recibo que a continuación se indica, por la razón especifica:
+            </div>
+            <br>';
+
+        $htmlBody['memorandum'] .= '<table class="tabla_con_border">
+            <thead>
+                <tr>
+                    <th style="text-align: center;"><b>PROGRESIVO</b></th>
+                    <th style="text-align: center;" ><b>NÚMERO DE RECBIBO</b></th>
+                    <th style="text-align: center;">MOTIVO</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+        // Iterar sobre los movimientos
+        $counter = 1;
+            foreach ($datoJson as $key) {
+                $curso = isset($key['curso']) && $key['curso'] !== null ? strtolower($key['curso']) : strtolower($key['descripcion']);
+                $htmlBody['memorandum'] .= '<tr>
+                    <td style="width: 55px; text-align: center;">' . $counter ++ . '</td>
+                    <td style="width: 160px; text-align: left; font-size: 9px;">'. htmlspecialchars($key['folio']) .'</td>
+                    <td>'. htmlspecialchars($curso) .'</td>
+                    </tr>';
+
+                $counter ++;
+            }
+
+        $htmlBody['memorandum'] .= '</tbody>
+            </table>
+            <center class="espaciado"></center>';
+
+        $htmlBody['memorandum'] .= '</ul>
+                <p style="font-size: 14px">Sin más que agregar, agradezco su atención y le envío un cordial saludo. </p>
+                <br>
+            </div></div>';
+
+
+        return $htmlBody;
     }
 }

@@ -118,11 +118,11 @@ class Rf001ReporteController extends Controller
         $fechaUnica = $this->rfoo1Repository->getDate($date);
 
         switch ($rf001->estado) {
-            case 'GENERADO':
+            case 'APROBADO':
                 $estado = 'ENFIRMA';
                 break;
             case 'FIRMADO':
-                $estado = 'REVISION';
+                $estado = 'SELLADO';
                 break;
             case 'ENFIRMA':
                 $estado = 'FIRMADO';
@@ -240,5 +240,16 @@ class Rf001ReporteController extends Controller
         $cuentaBancaria = $cuentas_bancarias[$unidad->unidad]['BBVA'];
         $getFormatoRf = $this->rfoo1Repository->getDetailRF001Format($id);
         return (new ReportService())->renderHtmlForma($getFormatoRf, $cuentaBancaria, 'hola');
+    }
+
+    public function reporte_cancelado($id)
+    {
+        //genXmlFormato
+        $organismo = Auth::user()->id_organismo;
+        $unidad = Auth::user()->unidad;
+        $data = (new ReportService())->genXmlFormato($id, $organismo, $unidad, Auth::user());
+        return response()->json([
+            'resp' => $data
+         ], Response::HTTP_CREATED);
     }
 }
