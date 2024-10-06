@@ -136,7 +136,7 @@
          $html_sin_saltos = str_replace(["\r", "\n"], '', $bodyRf001);
      @endphp
      {!! $html_sin_saltos !!}
-     <br><br>
+     <br>
      @if (!is_null($uuid))
          <div class="contenedor">
              <table style="width: 100%; font-size: 10px;">

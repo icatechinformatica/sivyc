@@ -394,9 +394,9 @@ class Rf001Controller extends Controller
     public function getPdfReport($id)
     {
         $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
-        $unidad = Auth::user()->unidad;
         $organismo = Auth::user()->id_organismo;
         $idReporte = base64_encode($id);
+        $unidad = $rf001->unidad;
 
         $data = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
         $direccion = $data->direccion;
@@ -404,18 +404,18 @@ class Rf001Controller extends Controller
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
         list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $unidad, $organismo);
 
-        $report = PDF::loadView('reportes.rf001.reporterf001', compact('bodyMemo', 'distintivo','direccion',  'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
-        $formatoRF001 = PDF::loadView('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion', 'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
+        $report = PDF::loadView('reportes.rf001.reporterf001', compact('bodyMemo', 'distintivo','direccion',  'uuid', 'objeto', 'puestos', 'qrCodeBase64', 'unidad', 'bodyRf001'))->setPaper('a4', 'portrait')->output();
+        // $formatoRF001 = PDF::loadView('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion', 'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
 
-        // return view('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
+        // return view('reportes.rf001.reporterf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
 
         // $pdf = PDF::loadView('reportes.rf001.reporterf001');
         $file1 = tempnam(sys_get_temp_dir(), 'report');
-        $file2 = tempnam(sys_get_temp_dir(), 'formatoRF001');
+        // $file2 = tempnam(sys_get_temp_dir(), 'formatoRF001');
 
         // escribir los datos del PDF en los archivos temporales
         file_put_contents($file1, $report);
-        file_put_contents($file2, $formatoRF001);
+        // file_put_contents($file2, $formatoRF001);
 
         // cambiar los PDF usando FPDI
         $newPdf = new Fpdi();
@@ -424,13 +424,13 @@ class Rf001Controller extends Controller
         $tpldx1 = $newPdf->importPage(1);
         $newPdf->useTemplate($tpldx1);
 
-        $newPdf->AddPage();
-        $pageCount2 = $newPdf->setSourceFile($file2);
-        $tpldx2 = $newPdf->importPage(1);
-        $newPdf->useTemplate($tpldx2);
+        // $newPdf->AddPage();
+        // $pageCount2 = $newPdf->setSourceFile($file2);
+        // $tpldx2 = $newPdf->importPage(1);
+        // $newPdf->useTemplate($tpldx2);
 
         unlink($file1);
-        unlink($file2);
+        // unlink($file2);
 
         return $newPdf->Output('concentreado_de_ingresos_rf001_'.$rf001->memorandum.'.pdf', 'I');
 
