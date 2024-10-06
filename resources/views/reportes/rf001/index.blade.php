@@ -238,7 +238,7 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     {{ Form::label('estado', 'Estado', ['class' => 'awesome']) }}
-                    {{ Form::select('estado', ['seleccionar' => '--- SELECCIONAR ---', 'ENVIADO' => 'ENVIADO', 'CARGADO' => 'CARGADO', 'CANCELADO' => 'CANCELADO'], 'seleccionar', ['id' => 'status_folio', 'class' => 'form-control mr-2']) }}
+                    {{ Form::select('estado', ['' => '--- SELECCIONAR ---', 'ENVIADO' => 'ENVIADO', 'CARGADO' => 'CARGADO', 'CANCELADO' => 'CANCELADO'], 'seleccionar', ['id' => 'status_folio', 'class' => 'form-control mr-2']) }}
                 </div>
                 <div class="form-group col-md-3 pt-4">
                     {{ Form::submit('FILTRAR', ['id' => 'filtrar', 'class' => 'btn mr-5 mt-1']) }}
@@ -331,7 +331,7 @@
                                 </div>
 
                                 {{ Form::hidden('id_unidad', $idUnidad, ['id' => 'id_unidad', 'class' => 'form-control ']) }}
-                                {{ Form::Hidden('unidad', $unidad, ['id' => 'unidad', 'class' => 'form-control ']) }}
+                                {{ Form::hidden('unidad', $unidad, ['id' => 'unidad', 'class' => 'form-control ']) }}
                                 {{ Form::hidden('periodoInicio', $periodoInicio, ['id' => 'periodoInicio', 'class' => 'form-control']) }}
                                 {{ Form::hidden('periodoFIn', $periodoFin, ['class' => 'form-control mr-sm-2', 'id' => 'periodoFIn']) }}
                                 {!! Form::hidden('tipoSolicitud', $tipoSolicitud, ['class' => 'form-control mr-sm-2', 'id' => 'tipoSolicitud']) !!}

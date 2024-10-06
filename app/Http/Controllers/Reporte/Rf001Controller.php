@@ -41,6 +41,7 @@ class Rf001Controller extends Controller
      */
     public function index(Request $request, $concentrado = null)
     {
+        // dd($request->all());
         if ($concentrado) {
             $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($concentrado);
             $idRf001 = $concentrado;
@@ -84,58 +85,32 @@ class Rf001Controller extends Controller
         $periodoInicio = $periodo[0];
         $periodoFin = $periodo[4];
         $tipoSolicitud = 'CONCENTRADO'; //declarado vacio para fines prácticos
-        // $fechaInicio = $request->get('fechaInicio') ?? $periodo[0];
-        // $fechaFin = $request->get('fechaFin') ?? $periodo[4];
+        $fechaInicio = $request->get('fechaInicio');
+        $fechaFin = $request->get('fechaFin');
 
-        if ( !empty($request->get('fechaInicio')) || !empty($request->get('fechaFin'))) {
-            $fechaInicio = $request->get('fechaInicio');
-            $fechaFin = $request->get('fechaFin');
+        $data->when(!empty($fechaInicio) && !empty($fechaFin), function ($query) use ($fechaInicio, $fechaFin) {
+            return $query->whereBetween('tbl_recibos.fecha_expedicion', [$fechaInicio, $fechaFin]);
+        });
 
-            $data->whereBetween('tbl_recibos.fecha_expedicion', [$fechaInicio, $fechaFin]);
-        } else {
-            $fechaInicio = $periodo[0];
-            $fechaFin = $periodo[4];
-        }
+        $data->when($request->filled('unidad'), function ($query) use ($request) {
+            return $query->where('tbl_unidades.unidad', $request->get('unidad'));
+        });
 
-        // Filtro por fechas, solo si ambos valores no están vacíos
-        // $data->when(!empty($fechaInicio) && !empty($fechaFin), function($query) use ($fechaInicio, $fechaFin) {
-        //     return $query->whereBetween('tbl_recibos.fecha_expedicion', [$fechaInicio, $fechaFin]);
-        // });
+        // Filtrado por folio de grupo
+        $data->when(isset($folioGrupo) && $folioGrupo !== '', function ($query) use ($folioGrupo) {
+            return $query->where('tbl_recibos.folio_recibo', '=', trim($folioGrupo));
+        });
 
-        if ($getUnidad !== '' && isset($getUnidad)) {
-            $data->where('tbl_unidades.unidad', $request->get('unidad'));
-        }
-
-        // $data->when(!empty($getUnidad), function($query) use ($getUnidad) {
-        //     return $query->where('tbl_unidades.unidad', $getUnidad);
-        // });
-
-
-        if (isset($folioGrupo) && $folioGrupo !== '') {
-            $data->where('tbl_recibos.folio_recibo', '=', $folioGrupo);
-        }
-
-        // $data->when(isset($folioGrupo) && $folioGrupo !== '', function($query) use ($folioGrupo) {
-        //     return $query->where('tbl_recibos.folio_recibo', '=', $folioGrupo);
-        // });
-
-        if (isset($statusRecibo) && $statusRecibo !== '') {
-            $data->where('tbl_recibos.status_folio', '=', $statusRecibo);
+        // Filtrado por estado del recibo
+        $data->when(isset($statusRecibo) && $statusRecibo !== '', function ($query) use ($statusRecibo, &$tipoSolicitud) {
             if ($statusRecibo == 'CANCELADO') {
                 $tipoSolicitud = 'CANCELADO';
             }
-        }
-
-        // $data->when(isset($statusRecibo) && $statusRecibo !== '', function($query) use ($statusRecibo, &$estadoFiltro) {
-
-        //     if ($statusRecibo == 'CANCELADO') {
-        //         $estadoFiltro = 'CANCELADO';
-        //     }
-        //     return $query->where('tbl_recibos.status_folio', '=', $statusRecibo);
-        // });
-
+            return $query->where('tbl_recibos.status_folio', '=', trim($statusRecibo));
+        });
 
         $query = $data->orderBy('tbl_recibos.id', 'ASC')->paginate(25);
+
         $currentYear = date('Y');
         $path_files = $this->path_files;
 
