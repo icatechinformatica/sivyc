@@ -339,7 +339,7 @@ class PagoController extends Controller
                  END as status_dpto_general")
                 // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
             ]);
-        // dd($contratos_folios[2]);
+        dd($contratos_folios);
 
         foreach($contratos_folios as $pointer => $ari)
         {
