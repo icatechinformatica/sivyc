@@ -275,12 +275,16 @@ class Rf001Controller extends Controller
                 'periodoFIn',
                 'unidad'
             ]);
-            $response = $this->rfoo1Repository->updateFormatoRf001($order, $id);
-            if ($response) {
+            $response = $this->rfoo1Repository->updateAndValidateFormatRf001($id, $order);
+            if ($response['code'] == 1)
+            {
+                $bandera = Crypt::encrypt('solicitud');
+                $encrypted = base64_encode($bandera);
+                $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
                 # si la respuesta es satisfactoria
-                return redirect()->route('reporte.rf001.sent')->with('message', 'Formato de concentrado de ingresos '.$request['consecutivo'].' actualizado correctamente!');
+                return redirect()->route('reporte.rf001.sent', ['generado' => $encrypted])->with('message', 'Actualización del Memorandum '.$request['consecutivo'].' correctamente!');
             } else {
-                return back()->withErrors(['sent' => 'Ocurrió un error al actualizar la información.'])->withInput();
+                return back()->withErrors(['error' => $response['message']])->withInput();
             }
         } catch (\Throwable $th) {
             //lanzar un catch de error ejecución, no sabemos cuál error $th;

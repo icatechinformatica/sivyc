@@ -175,10 +175,10 @@
             </div>
         @endif
         <div class="col-12" style="margin-bottom: 5px;">
-            {{ Form::open(['route' => 'reporte.rf001.index', 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
+            {{ Form::open(['route' => 'reporte.rf001.sent', 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    {{ Form::label('memorandum', 'N° MEMORANDUM', ['class' => 'awesome']) }}
+                    {{ Form::label('lblmemorandum', 'N° MEMORANDUM', ['class' => 'awesome']) }}
                     {{ Form::text('memorandum', '', ['id' => 'memorandum', 'class' => 'form-control mr-2', 'placeholder' => 'N° MEMORANDUM', 'title' => 'NO. RECIBO / FOLIO DE GRUPO / CLAVE ', 'size' => 25, 'autocomplete' => 'off']) }}
                 </div>
                 <div class="form-group col-md-3 pt-4">

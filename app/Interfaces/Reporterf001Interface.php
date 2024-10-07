@@ -20,4 +20,5 @@ interface Reporterf001Interface {
     public function getQueryCancelado($unidad);
     public function actualizarEstado($id, $estado);
     public function generarDoctoCancelado($id, $unidad, $organismo);
+    public function updateAndValidateFormatRf001($id, $request);
 }
