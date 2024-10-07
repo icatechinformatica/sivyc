@@ -101,7 +101,8 @@ class supreController extends Controller
                     $query->From('documentos_firmar')
                     ->Select('status')
                     ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
-                    ->Where('documentos_firmar.tipo_archivo', 'valsupre');
+                    ->Where('documentos_firmar.tipo_archivo', 'valsupre')
+                    ->Limit(1);
                     // ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
                 }, 'efirma_status_valsupre')
             ->Where('tabla_supre.id', '!=', '0')

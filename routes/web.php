@@ -923,4 +923,5 @@ Route::post('/report/busqueda', 'efirma\ReporteFotController@getreportefoto')->n
 // Route::post('/reportefoto/validar', 'efirma\ReporteFotController@generar_xml')->name('reportefoto-xml');
 
 Route::post('/retorno/movimiento/instructor', 'webController\InstructorController@movimiento_retorno')->name('movimiento-retorno');
+Route::get('/expediente/pago/merge', 'webController\PagoController@expediente-pago-merge');
 
