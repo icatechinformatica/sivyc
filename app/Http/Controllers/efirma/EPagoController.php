@@ -140,12 +140,14 @@ class EPagoController extends Controller
         if ($response->json()['cadenaOriginal'] != null) {
             $sobrescribir = True;
             // Actualizar  este dataInsert ya que se pondra un consecutivo interno y poder hacer mas documentos por si alguno se cancela
-            $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Solicitud Pago')->Where('status','EnFirma')->First();
+            $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Solicitud Pago')->WhereIn('status',['CANCELADO','EnFirma'])->First();
             if(isset($dataInsert->obj_documento)) {
-                $firmantes = json_decode($dataInsert->obj_documento, true);
-                foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
-                    if(isset($firmante['_attributes']['certificado'])) {
-                        $sobrescribir = False;
+                if($dataInsert->status != 'CANCELADO') {
+                    $firmantes = json_decode($dataInsert->obj_documento, true);
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
+                        if(isset($firmante['_attributes']['certificado'])) {
+                            $sobrescribir = False;
+                        }
                     }
                 }
             } else {
