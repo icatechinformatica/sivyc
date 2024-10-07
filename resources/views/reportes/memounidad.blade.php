@@ -133,7 +133,6 @@
                 <div style="font-size:11px;"> <b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}</b> </div>
                 <div style="font-size:11px;"> <b>{{ $funcionarios['dacademico']['puesto'] }}</b> </div>
                 <br>
-                {{-- <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div> --}}
                 {{-- <div style="font-size:9px;"> <b>C.C.P LIC. YESENIA FUSIKO. KOMUKAI HORITA, JEFA DEL DEPARTAMENTO ACADÉMICO. PARA SU CONOCIMIENTO, CIUDAD.</b> </div> --}}
                 <div style="font-size:9px;"> <b>C.c.p. {{ $funcionarios['dacademico_unidad']['titulo'] }} {{ $funcionarios['dacademico_unidad']['nombre'] }}. {{ $funcionarios['dacademico_unidad']['puesto'] }}.</b> </div>
                 <div style="font-size:9px;"> <b>ARCHIVO</b> </div>
