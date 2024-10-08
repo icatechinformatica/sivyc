@@ -401,12 +401,8 @@
             $('a[id^="enviarSellado_"]').on('click', function() {
                 // Obtenemos el id del elemento al que se le hizo clic
                 var id = $(this).attr('id');
-
                 // Extraemos la parte del id después de 'enviarSellado_'
                 var itemId = id.split('_')[1];
-
-                // Aquí puedes hacer lo que necesites con el id
-                console.log("El ID del item es: " + itemId);
 
                 let URL = "{{ route('reporte.rf001.cambio.sello', ['id' => ':id']) }}";
                 // Reemplaza el marcador de posición con el itemId
@@ -436,7 +432,7 @@
                         console.error('Error:', jqXHR);
                         console.warning('TextStatus:', textStatus);
                         console.error('ErrorThrown:', errorThrown);
-                        reject(textStatus);
+                        // reject(textStatus);
 
                         // Si deseas mostrar un mensaje de error más detallado
                         if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
@@ -449,6 +445,14 @@
                     console.error(error.statusText);
                     document.getElementById('loader-overlay').style.display = 'none';
                 }
+            });
+
+            $('#memorandum').on('keyup', function(){
+                let value = $(this).val().toUpperCase();
+                $('#tabla tbody tr').filter(function(){
+                    // Mostrar u ocultar la fila según si contiene el texto ingresado
+                    $(this).toggle($(this).find('td:nth-child(2)').text().toUpperCase().indexOf(value) > -1)
+                });
             });
         });
     </script>

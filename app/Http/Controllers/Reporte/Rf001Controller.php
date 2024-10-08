@@ -325,10 +325,13 @@ class Rf001Controller extends Controller
 
     public function getSentFormat(Request $request)
     {
+        // si se necesita generar el dato
         $encrypted = str_replace(['-', '_'], ['+', '/'], $request->get('generado'));
         $encrypted = base64_decode($encrypted);
         $dato = Crypt::decrypt($encrypted);
+        // aplicar el filtro sólo para memorandum
         $data = $this->rfoo1Repository->sentRF001Format($request);
+
         return view('reportes.rf001.formatos', compact('data', 'dato'))->render();
     }
 
