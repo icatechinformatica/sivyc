@@ -552,11 +552,20 @@ class grupoController extends Controller
                             $convenio = null;
                             if($request->dependencia AND $request->modalidad=='CAE'){
                                 $organismo = DB::table('organismos_publicos')->where('id',$id_organismo)->value('organismo');
+
+                                $unidades_toarray = $_SESSION['unidades']->values()->toArray();                                
                                 $convenio_t = DB::table('convenios')
                                     ->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))
                                     ->where(db::raw("to_char(DATE (fecha_vigencia)::date, 'YYYY-MM-DD')"),'>=',$request->termino)
+                                    ->where('tipo_convenio','GENERAL')                                    
+                                    ->where(function ($q) use ($unidades_toarray) {
+                                        foreach ($unidades_toarray as $unidad) {
+                                            $q->orWhereJsonContains('unidades', $unidad);
+                                        }
+                                    })
                                     ->where('institucion',$organismo)
                                     ->where('activo','true')->first();
+                                    
                                 $convenio = [];
                                 if ($convenio_t) {
                                     foreach ($convenio_t as $key=>$value) {
