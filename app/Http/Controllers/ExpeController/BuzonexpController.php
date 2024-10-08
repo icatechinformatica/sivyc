@@ -95,45 +95,71 @@ class BuzonexpController extends Controller
     }
 
     public function consulta_datos($sel_status, $sel_eje, $unidades_env, $txtbuscar){
-        try {
-            if ($this->rol==4) $unidades_env = Unidad::wherein('ubicacion', $unidades_env)->orderby('unidad')->pluck('unidad');
 
-            $data = tbl_curso::query()->join('tbl_cursos_expedientes as ex', 'ex.folio_grupo', '=', 'tbl_cursos.folio_grupo');
+        try {
+            if ($this->rol == 4 && !empty($unidades_env)) {
+                $unidades_env = Unidad::whereIn('ubicacion', $unidades_env)
+                    ->orderBy('unidad')
+                    ->pluck('unidad');
+            }
+
+            $data = tbl_curso::query()
+                ->join('tbl_cursos_expedientes as ex', 'ex.folio_grupo', '=', 'tbl_cursos.folio_grupo')
+                ->join('pagos as pa', 'pa.id_curso', '=', 'tbl_cursos.id');
+
             if (!empty($txtbuscar)) {
-                $data = $data->whereRaw("CONCAT(tbl_cursos.clave, ' ', tbl_cursos.folio_grupo) LIKE ?", ['%' .$txtbuscar. '%']);
-            }elseif (!empty($sel_eje)){
-                if(!empty($sel_eje)) $data = $data->where(DB::raw("date_part('year' , tbl_cursos.inicio)"), '=', $sel_eje); //Anio
-                if(!empty($unidades_env)) $data = $data->whereIn('tbl_cursos.unidad', $unidades_env); //Unidad(es)
+                $data = $data->whereRaw("CONCAT(tbl_cursos.clave, ' ', tbl_cursos.folio_grupo) LIKE ?", ['%' . $txtbuscar . '%']);
+
+            } elseif (!empty($sel_eje)) {
+                $data = $data->where(DB::raw("date_part('year', tbl_cursos.inicio)"), '=', $sel_eje);
+
+                if (!empty($unidades_env)) {
+                    $data = $data->whereIn('tbl_cursos.unidad', $unidades_env);
+                }
+
                 if (!empty($sel_status)) {
                     $data = $data->where(function ($query) use ($sel_status) {
                         $query->BusquedaExpediente($sel_status);
                     });
                 }
+            } else {
+                return redirect()->route('buzon.expunico.index')
+                    ->with('message', '¡ERROR AL REALIZAR LA BÚSQUEDA!')
+                    ->with('status', 'danger');
+            }
 
+            // Filtrado de pagado por financieros y proceso terminado por parte de planeación.
+            $data = $data->where('tbl_cursos.proceso_terminado', true)->where('pa.status_transferencia', 'PAGADO');
 
-            } else return redirect()->route('buzon.expunico.index')->with('message', '¡ERROR AL REALIZAR LA BUSQUEDA!')->with('status', 'danger');
+            // Selección de campos
+            $data = $data->select(
+                'tbl_cursos.unidad',
+                'tbl_cursos.folio_grupo',
+                'tbl_cursos.clave',
+                'tbl_cursos.curso',
+                'tbl_cursos.nombre',
+                'tbl_cursos.inicio',
+                'tbl_cursos.termino',
+                'tbl_cursos.hini',
+                'tbl_cursos.hfin',
+                DB::raw("ex.administrativo->>'fecha_envio_dta' as fec_envio"),
+                DB::raw("ex.administrativo->>'fecha_retornado' as fec_return"),
+                DB::raw("ex.administrativo->>'fecha_validado' as fec_valid"),
+                DB::raw("ex.vinculacion->>'fecha_guardado' as fecg_vin"),
+                DB::raw("ex.academico->>'fecha_guardado' as fecg_aca"),
+                DB::raw("ex.administrativo->>'fecha_guardado' as fecg_admi"),
+                DB::raw("ex.vinculacion->>'status_save' as sav_vinc"),
+                DB::raw("ex.academico->>'status_save' as sav_acad"),
+                DB::raw("ex.administrativo->>'status_save' as sav_admin"),
+                DB::raw("ex.vinculacion->>'status_dpto' as st_vinc"),
+                DB::raw("ex.academico->>'status_dpto' as st_aca"),
+                DB::raw("ex.administrativo->>'status_dpto' as st_admin")
+            )->orderByDesc('tbl_cursos.id')->paginate(15);
 
-            $data = $data->select('tbl_cursos.unidad', 'tbl_cursos.folio_grupo', 'tbl_cursos.clave', 'tbl_cursos.curso', 'tbl_cursos.nombre',
-            'tbl_cursos.inicio', 'tbl_cursos.termino', 'tbl_cursos.hini', 'tbl_cursos.hfin',
-                    DB::raw("ex.administrativo->>'fecha_envio_dta' as fec_envio"),
-                    DB::raw("ex.administrativo->>'fecha_retornado' as fec_return"),
-                    DB::raw("ex.administrativo->>'fecha_validado' as fec_valid"),
-
-                    DB::raw("ex.vinculacion->>'fecha_guardado' as fecg_vin"),
-                    DB::raw("ex.academico->>'fecha_guardado' as fecg_aca"),
-                    DB::raw("ex.administrativo->>'fecha_guardado' as fecg_admi"),
-
-                    DB::raw("ex.vinculacion->>'status_save' as sav_vinc"),
-                    DB::raw("ex.academico->>'status_save' as sav_acad"),
-                    DB::raw("ex.administrativo->>'status_save' as sav_admin"),
-                    DB::raw("ex.vinculacion->>'status_dpto' as st_vinc"),
-                    DB::raw("ex.academico->>'status_dpto' as st_aca"),
-                    DB::raw("ex.administrativo->>'status_dpto' as st_admin"))
-            ->orderByDesc('tbl_cursos.id')
-            ->paginate(15, ['tbl_cursos.unidad', 'tbl_cursos.folio_grupo', 'tbl_cursos.clave', 'tbl_cursos.curso', 'tbl_cursos.nombre',
-            'tbl_cursos.inicio', 'tbl_cursos.termino', 'tbl_cursos.hini', 'tbl_cursos.hfin']);
-        } catch (\Throwable $th) {
-            return redirect()->route('buzon.expunico.index')->with('message', '¡ERROR AL REALIZAR LA BUSQUEDA!')->with('status', 'danger');
+        } catch (\Exception $e) {
+            return redirect()->route('buzon.expunico.index')
+                ->with('message', '¡ERROR AL REALIZAR LA BÚSQUEDA!')
+                ->with('status', 'danger');
         }
 
         return $data;
