@@ -276,6 +276,15 @@
                 $("#rf001Id").val(idRf001);
                 $("#memo").html(memo);
             });
+
+            $('#memorandum').on('keyup', function() {
+                let value = $(this).val().toUpperCase();
+                $('#tabla tbody tr').filter(function() {
+                    // Mostrar u ocultar la fila según si contiene el texto ingresado
+                    $(this).toggle($(this).find('td:nth-child(2)').text().toUpperCase().indexOf(
+                        value) > -1)
+                });
+            });
         });
     </script>
 @endsection

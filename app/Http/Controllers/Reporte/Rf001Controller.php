@@ -41,7 +41,9 @@ class Rf001Controller extends Controller
      */
     public function index(Request $request, $concentrado = null)
     {
-        // dd($request->all());
+        // Crear una instancia de Carbon para la fecha actual
+        $fechaActual = Carbon::now();
+        $periodo = $this->obtenerPrimerYUltimoDiaHabil($fechaActual);
         if ($concentrado) {
             $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($concentrado);
             $idRf001 = $concentrado;
@@ -54,11 +56,23 @@ class Rf001Controller extends Controller
 
             // Extraer los folios de los movimientos
             $foliosMovimientos = array_column($movimientos, 'folio');
+
+            $periodoInicio = ($request->get('fechaInicio') !== null && $request->get('fechaInicio') !== '') ? $request->get('fechaInicio') : $getConcentrado->periodo_inicio;
+            $periodoFin = ($request->get('fechaFin') !== null && $request->get('fechaFin') !== '')? $request->get('fechaFin') : $getConcentrado->periodo_fin;
+
+            $fechaInicio = ($request->get('fechaInicio') !== null && $request->get('fechaInicio') !== '') ? $request->get('fechaInicio') : $getConcentrado->periodo_inicio;
+            $fechaFin = ($request->get('fechaFin') !== null && $request->get('fechaFin') !== '') ? $request->get('fechaFin') : $getConcentrado->periodo_fin;
         }
         else {
             $getConcentrado = null;
             $foliosMovimientos = null;
             $idRf001 = 0;
+
+            $periodoInicio = ($request->get('fechaInicio') !== null && $request->get('fechaInicio') !== '') ? $request->get('fechaInicio') : $periodo[0];
+            $periodoFin = ($request->get('fechaFin') !== null && $request->get('fechaFin') !== '')? $request->get('fechaFin') : $periodo[4];
+
+            $fechaInicio = $request->get('fechaInicio');
+            $fechaFin = $request->get('fechaFin');
         }
 
         // Recuperar los checkboxes seleccionados de los parámetros de consulta
@@ -75,18 +89,12 @@ class Rf001Controller extends Controller
         $user = Auth::user();
         $datos = $this->rfoo1Repository->index($user);
         $filters = [];
-        // Crear una instancia de Carbon para la fecha actual
-        $fechaActual = Carbon::now();
         // Formatear la fecha al formato deseado
 
-        $periodo = $this->obtenerPrimerYUltimoDiaHabil($fechaActual);
         $data = $this->rfoo1Repository->getReciboQry($obtenerUnidad->unidad);
         #nuevo fechas del periodo que se obtiene la información
-        $periodoInicio = $periodo[0];
-        $periodoFin = $periodo[4];
         $tipoSolicitud = 'CONCENTRADO'; //declarado vacio para fines prácticos
-        $fechaInicio = $request->get('fechaInicio');
-        $fechaFin = $request->get('fechaFin');
+
 
         $data->when(!empty($fechaInicio) && !empty($fechaFin), function ($query) use ($fechaInicio, $fechaFin) {
             return $query->whereBetween('tbl_recibos.fecha_expedicion', [$fechaInicio, $fechaFin]);
@@ -386,41 +394,66 @@ class Rf001Controller extends Controller
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
         list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $unidad, $organismo);
 
-        $report = PDF::loadView('reportes.rf001.reporterf001', compact('bodyMemo', 'distintivo','direccion',  'uuid', 'objeto', 'puestos', 'qrCodeBase64', 'unidad', 'bodyRf001'))->setPaper('a4', 'portrait')->output();
+        // $report = PDF::loadView('reportes.rf001.reporterf001', compact('bodyMemo', 'distintivo','direccion',  'uuid', 'objeto', 'puestos', 'qrCodeBase64', 'unidad', 'bodyRf001'))->setPaper('a4', 'portrait')->output();
         // $formatoRF001 = PDF::loadView('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion', 'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
 
-        // return view('reportes.rf001.reporterf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
+        // return view('reportes.rf001.vista_concentrado.formarf001', compact('bodyRf001', 'distintivo', 'direccion'))->render();
 
         // $pdf = PDF::loadView('reportes.rf001.reporterf001');
-        $file1 = tempnam(sys_get_temp_dir(), 'report');
+        // $file1 = tempnam(sys_get_temp_dir(), 'report');
         // $file2 = tempnam(sys_get_temp_dir(), 'formatoRF001');
 
         // escribir los datos del PDF en los archivos temporales
-        file_put_contents($file1, $report);
+        // file_put_contents($file1, $report);
         // file_put_contents($file2, $formatoRF001);
 
         // cambiar los PDF usando FPDI
-        $newPdf = new Fpdi();
-        $newPdf->AddPage();
-        $pageCount1 = $newPdf->setSourceFile($file1);
-        $tpldx1 = $newPdf->importPage(1);
-        $newPdf->useTemplate($tpldx1);
+        // $newPdf = new Fpdi();
+        // $newPdf->AddPage();
+        // $pageCount1 = $newPdf->setSourceFile($file1);
+        // $tpldx1 = $newPdf->importPage(1);
+        // $newPdf->useTemplate($tpldx1);
 
         // $newPdf->AddPage();
         // $pageCount2 = $newPdf->setSourceFile($file2);
         // $tpldx2 = $newPdf->importPage(1);
         // $newPdf->useTemplate($tpldx2);
 
-        unlink($file1);
+        // unlink($file1);
         // unlink($file2);
 
-        return $newPdf->Output('concentreado_de_ingresos_rf001_'.$rf001->memorandum.'.pdf', 'I');
+        // return $newPdf->Output('concentreado_de_ingresos_rf001_'.$rf001->memorandum.'.pdf', 'I');
 
         //generar el PDF
         // $pdf = PDF::loadHTML($combinedConent);
         // return $pdf->stream('combined_documents.pdf');
         // return $report->stream();
         // return view('reportes.rf001.reporterf001', $data)->render();
+
+        $data = [
+            'bodyMemo' => $bodyMemo,
+            'distintivo' => $distintivo,
+            'direccion' => $direccion,
+            'uuid' => $uuid,
+            'objeto' => $objeto,
+            'puestos' => $puestos,
+            'qrCodeBase64' => $qrCodeBase64,
+            'unidad' => $unidad,
+            'bodyRf001' => $bodyRf001
+        ];
+
+        // generar el PDF
+        $pdf = PDF::loadview('reportes.rf001.reporterf001', $data)
+            ->setPaper('a4', 'portrait'); //Configura el tamaño de papel y la orientación
+
+        $dompdf = $pdf->getDomPDF();
+        $options = $dompdf->getOptions();
+        $options->setIsHtml5ParserEnabled(true);  // Habilita el parser HTML5
+        $options->setIsRemoteEnabled(true);       // Permitir imágenes remotas
+        $dompdf->setOptions($options);
+        // reenderizar PDF
+        return $pdf->stream('concentreado_de_ingresos_rf001_'.$rf001->memorandum.'.pdf');
+
     }
 
     public function getReporteCancelado($id)

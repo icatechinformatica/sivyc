@@ -14,6 +14,7 @@ use App\Models\tbl_unidades;
 use Illuminate\Support\Facades\DB;
 use setasign\Fpdi\Fpdi;
 use Illuminate\Support\Str;
+use App\Utilities\MyUtility;
 
 class ReportService
 {
@@ -441,6 +442,7 @@ class ReportService
         $anio = $startDate->format('Y');
 
         $movimiento = json_decode($data->movimientos, true);
+        $importeMemo = 0;
         $importeTotal = 0;
         $periodoInicio = Carbon::parse($data->periodo_inicio);
         $periodoFin = Carbon::parse($data->periodo_fin);
@@ -456,6 +458,13 @@ class ReportService
         $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
         $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
 
+        foreach ($movimiento as $key) {
+            // Acumular el importe total
+            $importeMemo += $key['importe'];
+        }
+
+        $importeLetra = (new MyUtility())->letras($importeMemo);
+
         $htmlBody['memorandum'] = '<div class="contenedor">
             <div class="bloque_uno" align="right">
                 <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</p>
@@ -470,9 +479,9 @@ class ReportService
             </div>
             <br>
             <div class="contenido" align="justify">
-                Por medio del presente, envío a usted Original del formato de concentrado de ingresos propios (RF-001),
-                original, copias de fichas de depósito y recibos oficiales correspondientes a los cursos generados en la unidad
-                de Capacitación <span class="color_text"> ' . htmlspecialchars($unidadUbicacion) . ' </span>, con los siguientes movimientos.
+                Por medio del presente, me permito enviar a usted el Concentrado de Ingresos Propios (FORMA RF-001) de la Unidad de Capacitación
+                <span class="color_text"> ' . htmlspecialchars($unidadUbicacion) . ' </span>, correspondiente a la semana comprendida del '. htmlspecialchars($formattedStartDate) .' al '. htmlspecialchars($formattedEndDate) .' del mes de '.htmlspecialchars($mes).' del año '.htmlspecialchars($anio).'.
+                El informe refleja un total de $'.number_format($importeMemo, 2, '.', ',').' ('.$importeLetra.'), mismo que se adjunta para su conocimiento y trámite correspondiente.
                 <br>
             </div>
             <br>';
@@ -486,7 +495,6 @@ class ReportService
             }
 
         $htmlBody['memorandum'] .= '</ul>
-                <p style="font-size: 14px">Correspondientes al periodo comprendido del ' . htmlspecialchars($formattedStartDate) . ' al ' . htmlspecialchars($formattedEndDate) . ' de ' . htmlspecialchars($mes) . ' del ' . htmlspecialchars($anio) . ', lo anterior, para contabilización respectiva.</p>
                 <p style="font-size: 14px">Sin otro particular aprovecho la ocasión para saludarlo. </p>
                 <br>
             </div></div>';
