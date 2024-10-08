@@ -1169,7 +1169,10 @@ class ExpedienteController extends Controller
         $rol = $request->rol_user;
         $idcurso = $request->idcurso;
         $radio = str_replace('opcion', '', $request->radio);
-        $json_dptos = ExpeUnico::select('vinculacion','academico','administrativo')->where('id_curso', $idcurso)->first();
+        $json_dptos = ExpeUnico::select('folio_grupo','vinculacion','academico','administrativo')->where('id_curso', $idcurso)->first();
+        $db_anio = DB::table('tbl_cursos')->selectRaw('EXTRACT(YEAR FROM inicio) as anio')->where('id', $idcurso)->first();
+        $anio = $db_anio->anio;
+        $folio_grupo = $json_dptos->folio_grupo;
         $st_acad = '';
         $val_doc = "";
         #Validamos los radiobutton para ver si le corresponde eliminar de acuerdo al rol
@@ -1189,7 +1192,12 @@ class ExpedienteController extends Controller
 
         if(($rol == '1' || $rol == '2' || $rol == '3') && $val_doc == "existe"){
             if($st_acad == 'CAPTURA' || $st_acad == 'RETORNADO'){
-                $this->proced_del_doc($rol, $idcurso, $partImg, $radio);
+                //Otra funcion para eliminar el archivo de pago
+                if($radio == '7'){
+                    $this->delete_recibo_pago($partImg, $folio_grupo);
+                }else{
+                    $this->proced_del_doc($rol, $idcurso, $partImg, $radio, $anio);
+                }
             }else{
                 return response()->json([
                     'status' => 500,
@@ -1204,13 +1212,11 @@ class ExpedienteController extends Controller
         }
         return response()->json([
             'status' => 200,
-            'mensaje' => '¡EL ARCHIVO SE HA ELIMINADO CORRECTAMENTE!'
+            'mensaje' => '¡EL ARCHIVO SE HA ELIMINADO CORRECTAMENTE!',
         ]);
     }
     //Tiene relacion con el proceso de guardado de imagenes
-    public function proced_del_doc($rol, $idcurso, $url, $radio){
-        $db_anio = DB::table('tbl_cursos')->selectRaw('EXTRACT(YEAR FROM inicio) as anio')->where('id', $idcurso)->first();
-        $anio = $db_anio->anio;
+    public function proced_del_doc($rol, $idcurso, $url, $radio, $anio){
         if($url != ''){
             #Reemplazar
             $filePath = 'uploadFiles/'.$anio.'/expedientes/'.$idcurso.'/'.$url;
@@ -1244,6 +1250,43 @@ class ExpedienteController extends Controller
 
         }
 
+    }
+
+    //Funcion eliminar documento de recibo de pago
+    private function delete_recibo_pago($urlImg, $folio_grupo){
+        //Eliminar el documento
+        if($urlImg != ''){
+            #Reemplazar
+            $filePath = 'uploadFiles/UNIDAD/comprobantes_pagos/'.$urlImg;
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+
+            try {
+                //Vaciar campos del registro eliminado
+                DB::table('tbl_cursos')
+                ->where('folio_grupo', $folio_grupo)
+                ->update([
+                    'folio_pago' => '',
+                    'comprobante_pago' => '',
+                    'fecha_pago' => null
+                ]);
+
+                DB::table('alumnos_registro')
+                ->where('folio_grupo', $folio_grupo)
+                ->update([
+                    'folio_pago' => '',
+                    'comprobante_pago' => '',
+                    'fecha_pago' => null
+                ]);
+
+
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'mensaje' => "¡ERROR AL INTENTAR ELIMINAR DATOS DEL ARCHIVO!"]);
+            }
+
+        }
     }
 
     private function objeto_movimiento($vinc, $acad, $admin, $status){
@@ -1310,10 +1353,24 @@ class ExpedienteController extends Controller
         $exists = DB::table('tbl_cursos')->where('id', $idcurso)->where('status', '!=', 'NO REPORTADO')
         ->where('status', '!=', 'CANCELADO')->whereNotNull('status')->exists();
 
-        if($exists == false){
+        $pagado = DB::table('tbl_cursos as tc')
+        ->join('pagos as pa', 'pa.id_curso', '=', 'tc.id')
+        ->where('tc.id', $idcurso)
+        ->where('tc.proceso_terminado', true)
+        ->where('pa.status_transferencia', 'PAGADO')
+        ->exists();
+
+        if($exists == false ){
             return response()->json([
                 'status' => 500,
                 'mensaje' => '¡EL ESTATUS DEL CURSO ESTA COMO NO REPORTADO O CANCELADO, NO ES POSIBLE ENVIAR LA INFORMACIÓN A DTA!',
+            ]);
+        }
+
+        if($pagado == false ){
+            return response()->json([
+                'status' => 500,
+                'mensaje' => '¡EL CURSO NO SE ENCUENTRA COMO PAGADO POR LO TANTO NO ES POSIBLE ENVIAR LA INFORMACIÓN A DTA!',
             ]);
         }
 
@@ -1641,6 +1698,15 @@ class ExpedienteController extends Controller
                     //Guardamos datos en la bd
                     $updated =DB::table('tbl_cursos')
                     ->where('id', $id_curso)
+                    ->update([
+                        'comprobante_pago' => $directorio,
+                        'folio_pago' => $folio_recibo,
+                        'fecha_pago' => $fecha_recibo
+                    ]);
+
+                    //Guardamos en la tabla alumnos
+                    DB::table('alumnos_registro')
+                    ->where('folio_grupo', $consulta->folio_grupo)
                     ->update([
                         'comprobante_pago' => $directorio,
                         'folio_pago' => $folio_recibo,
