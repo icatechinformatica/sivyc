@@ -244,6 +244,9 @@
             color: #333;               /* Color del texto */
             cursor: not-allowed;       /* Cursor para indicar que no es editable */
         }
+        .color-texto{
+            color: #621132;
+        }
 
     </style>
 
@@ -396,8 +399,8 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>a</td>
-                        <td>Convenio Especifico / Acta de acuerdo.</td>
+                        <td class="color-texto">a</td>
+                        <td class="color-texto">Convenio Especifico / Acta de acuerdo.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion1" id="yes_req1" value="si"{{($v_radios[0]['doc_1'] == 'si') ? 'checked' : ''}}>
@@ -472,8 +475,8 @@
                     </tr>
                     {{-- Soporte para convenio especifico --}}
                     <tr>
-                        <td>a.1</td>
-                        <td>Soporte de manifiesto de inscripción</td>
+                        <td class="color-texto">a.1</td>
+                        <td class="color-texto">Soporte de manifiesto de inscripción</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion_v8" id="yes_req_v8" value="si" {{($v_radios[0]['doc_8'] == 'si') ? 'checked' : ''}}>
@@ -571,8 +574,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>c</td>
-                        <td>Original de la solicitud de apertura de cursos de capacitación y/o certificación al Departamento Académico.</td>
+                        <td class="color-texto">c</td>
+                        <td class="color-texto">Original de la solicitud de apertura de cursos de capacitación y/o certificación al Departamento Académico.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion3" id="yes_req3" value="si" {{($v_radios[0]['doc_3'] == 'si') ? 'checked' : ''}}>
@@ -630,8 +633,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>d</td>
-                        <td>SID-01 solicitud de Inscripción del interesado.</td>
+                        <td class="color-texto">d</td>
+                        <td class="color-texto">SID-01 solicitud de Inscripción del interesado.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion4" id="yes_req4" value="si" {{($v_radios[0]['doc_4'] == 'si') ? 'checked' : ''}}>
@@ -757,8 +760,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>g</td>
-                        <td>Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.</td>
+                        <td class="color-texto">g</td>
+                        <td class="color-texto">Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion7" id="yes_req7" value="si" {{($v_radios[0]['doc_7'] == 'si') ? 'checked' : ''}}>
@@ -819,14 +822,14 @@
                             @endif
                         </td>
                         <td>
-                            {{-- eliminar pdf 1 --}}
-                            {{-- @if (!empty($search_docs['urldoc7']) && $search_docs['validRecibo'] != 'digital')
+                            {{-- Eliminar si se encuentra la ruta del archivo --}}
+                            @if ($search_docs['validRecibo'] != 'digital' && !empty($search_docs['urldoc7']))
                                 <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion7',
-                                    '{{$search_docs['urldoc7']}}',
+                                    '{{$path_files.$search_docs['urldoc7']}}',
                                     {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
-                            @endif --}}
+                            @endif
                         </td>
                         {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
@@ -1034,8 +1037,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>e</td>
-                        <td>Copia de RIACD-02 Inscripción.</td>
+                        <td class="color-texto">e</td>
+                        <td class="color-texto">Copia de RIACD-02 Inscripción.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion12" id="yes_req12" value="si" {{($v_radios[1]['doc_12'] == 'si') ? 'checked' : ''}}>
@@ -1094,8 +1097,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>f</td>
-                        <td>Copia de RIACD-02 Acreditación.</td>
+                        <td class="color-texto">f</td>
+                        <td class="color-texto">Copia de RIACD-02 Acreditación.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion13" id="yes_req13" value="si" {{($v_radios[1]['doc_13'] == 'si') ? 'checked' : ''}}>
@@ -1154,8 +1157,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>g</td>
-                        <td>Copia de RIACD-02 Certificación.</td>
+                        <td class="color-texto">g</td>
+                        <td class="color-texto">Copia de RIACD-02 Certificación.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion14" id="yes_req14" value="si" {{($v_radios[1]['doc_14'] == 'si') ? 'checked' : ''}}>
@@ -1215,8 +1218,8 @@
                     </tr>
                     {{-- esto es un extra se formato de entrega de constancias --}}
                     <tr>
-                        <td>g.1</td>
-                        <td>
+                        <td class="color-texto">g.1</td>
+                        <td class="color-texto">
                             Soportes de entrega de constancias de capacitación (si es el caso).
                         </td>
                         <td class="{{$a_class}}">
@@ -1435,8 +1438,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>j</td>
-                        <td>Originales o Copia de las Evaluaciones y/o Reactivos de aprendizaje del alumno y/o resumen de actividades.</td>
+                        <td class="color-texto">j</td>
+                        <td class="color-texto">Originales o Copia de las Evaluaciones y/o Reactivos de aprendizaje del alumno y/o resumen de actividades.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion17" id="yes_req17" value="si" {{($v_radios[1]['doc_17'] == 'si') ? 'checked' : ''}}>
@@ -1495,8 +1498,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>k</td>
-                        <td>Original o Copia de las Evaluaciones al Docente y Evaluación del Curso y/o resumen de actividades.</td>
+                        <td class="color-texto">k</td>
+                        <td class="color-texto">Original o Copia de las Evaluaciones al Docente y Evaluación del Curso y/o resumen de actividades.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion18" id="yes_req18" value="si" {{($v_radios[1]['doc_18'] == 'si') ? 'checked' : ''}}>
@@ -2484,7 +2487,7 @@
                     //VINCULACION
                     if (rol == 1) {
                         let mb5 = 5 * 1024 * 1024;
-                        let mb20 = 20 * 1024 * 1024;
+                        let mb20 = 10 * 1024 * 1024;
                         let maxSize;
                         let arrayDocs = [1,3,4,'_v8']; //Documentos que van a ser obtenidos
                         let docs = [1,3,4,8];
@@ -2515,7 +2518,7 @@
                         //Obtenemos los campos file
                         let fileSize;
                         let mb5 = 5 * 1024 * 1024;
-                        let mb20 = 20 * 1024 * 1024;
+                        let mb20 = 10 * 1024 * 1024;
                         let maxSize;
                         for (let i = 12; i <= 20; i++) {
                             inputFile = document.getElementById('pdfInputDoc' + i);

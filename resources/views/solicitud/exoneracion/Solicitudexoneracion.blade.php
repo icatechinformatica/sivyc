@@ -1,13 +1,13 @@
 @extends('theme.formatos.hlayout')
 @section('title', 'Solicitud de Exoneración | SIVyC Icatech')
 @section('css')
-    <style>    
-        @page { margin-bottom: 125px; }    
+    <style>
+        @page { margin-bottom: 125px; }
         body {
             margin-top: 150px;
-            
+
         }
-        
+
         .tb {width: 100%; border-collapse: collapse; text-align: center; font-size: 8px;}
         .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
         .tb thead{background: #EAECEE; width: 100%; }
@@ -21,17 +21,17 @@
             color:black;
             font-size:10px;
         }
-        .container{ margin-top: -50px; font-family: sans-serif; font-size: 12px;}        
-    </style>    
+        .container{ margin-top: -50px; font-family: sans-serif; font-size: 12px;}
+    </style>
 @endsection
-@section('header') 
+@section('header')
     <table style="text-align: right; border-collapse: collapse; font-family: sans-serif; font-size: 12px;" align="right">
         <tr><td>Unidad de Capacitación {{$reg_unidad->ubicacion}}.</td></tr>
         <tr><td style="font-weight:normal;">@if ($marca) {{ "Revisión No. "}} @else {{ "Memorándum No. "}} @endif{{$mexoneracion}}.</td></tr>
         <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha}}.</td></tr>
-    </table>    
+    </table>
 @endsection
-@section('body')   
+@section('body')
     <main>
         <div class="container">
             <table style="border-collapse: collapse;">
@@ -39,33 +39,33 @@
                     <td><b>{{$reg_unidad->dgeneral}}.</b></td>
                 </tr>
                 <tr>
-                    <td><b>Directora General del ICATECH.</b></td>
+                    <td><b>Encargado de la Dirección General</b></td>
                 </tr>
                 <tr>
                     <td><b>Presente.</b></td>
                 </tr>
             </table>
-            
-            <div style="text-align: justify; padding-top:7px; margin-bottom:7px;">Conforme a las atribuciones que me confiere el artículo 42 fracción II, IV y V del Reglamento Interior de nuestro Instituto, me 
+
+            <div style="text-align: justify; padding-top:7px; margin-bottom:7px;">Conforme a las atribuciones que me confiere el artículo 42 fracción II, IV y V del Reglamento Interior de nuestro Instituto, me
                 permito solicitarle la @if ($cursos[0]->tipo_exoneracion=='EXO') {{"Exoneración"}} @else {{"Reducción de Cuota de Recuperación"}} @endif
                 , derivado de la solicitud del @if ($depen=='CAPACITACION ABIERTA') {{"(los) grupo(s) de CAPACITACION ABIERTA"}} @else {{$depen}} @endif
                 que será(n) atendido(s) con el(los) siguiente(s) curso(s) de capacitación, conforme a lo siguiente:
             </div>
-            
+
             <table class="tb">
                 <thead>
                     <tr>
                         <th rowspan="2">CURSO /<br/>CERTIFICACIÓN</th>
-                        <th rowspan="2">UNIDAD DE CAPACITACIÓN /<br/>CENTRO DE TRABAJO ACCIÓN MÓVIL</th> 
+                        <th rowspan="2">UNIDAD DE CAPACITACIÓN /<br/>CENTRO DE TRABAJO ACCIÓN MÓVIL</th>
                         <th rowspan="2">NOMBRE DEL CURSO / <br/>CERTIFICACIÓN</th>
                         <th rowspan="2">MOD</th>
                         <th rowspan="2">COSTO</th>
                         <th rowspan="2">HORAS</th>
-                        <th rowspan="2">FECHA INICIO</th>       
+                        <th rowspan="2">FECHA INICIO</th>
                         <th rowspan="2">FECHA TERMINO</th>
                         <th rowspan="2">CUPO</th>
                         <th colspan="2">SEXO</th>
-                        <th colspan="2">FOLIAJE EXONERACION</th>                        
+                        <th colspan="2">FOLIAJE EXONERACION</th>
                         <th rowspan="2">EXO.</th>
                         <th rowspan="2">REDU.</th>
                         <th colspan="3">DEPENDENCIA O GRUPO BENEFICIADO</th>
@@ -98,29 +98,29 @@
                         <td>{{$item->mujer}}</td>
                         <td>{{$item->hombre}}</td>
                         <td>{{$item->fini}}</td>
-                        <td>{{$item->ffin}}</td>                        
+                        <td>{{$item->ffin}}</td>
                         <td >@if ($item->tipo_exoneracion == 'EXO') {{"X"}}  @endif</td>
                         <td >@if ($item->tipo_exoneracion == 'EPAR') {{"X"}} @endif</td>
                         <td>@if ($item->no_convenio) {{$item->no_convenio}} @else {{$item->noficio}} <br> {{$item->foficio}} @endif</td>
                         <td>{{$item->razon_exoneracion}}</td>
                         <td>{{$item->observaciones}}</td>
-                    </tr>                     
-                    @endforeach 
-                </tbody>                   
-            </table>            
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
             <p style="page-break-inside: avoid;  width: 100%; border: black 1px solid; font-size: 8px; padding: 2px; margin-top:7px; ">
                 GLOSARIO:<br>
                 TIPO DE EXONERACIÓN:&nbsp;&nbsp;<b>EXO</b> <span class="fa-arrow-right"></span> EXONERACIÓN&nbsp;&nbsp;&nbsp;<b>REDU</b> <span class="fa-arrow-right"></span> REDUCCIÓN DE PAGO <br>
                 RAZÓN DE LA EXONERACIÓN:&nbsp;&nbsp;<b>AM</b> <span class="fa-arrow-right"></span> ADULTOS MAYORES&nbsp;&nbsp;<b>BR</b> <span class="fa-arrow-right"></span> BAJOS RECURSOS&nbsp;&nbsp;<b>D</b> <span class="fa-arrow-right"></span> DISCAPACITADOS&nbsp;&nbsp;<b>MS</b> <span class="fa-arrow-right"></span> MADRES SOLTERAS&nbsp;&nbsp;<b>PPL</b> <span class="fa-arrow-right"></span> PERSONAS PRIVADAS DE LA LIBERTAD&nbsp;&nbsp;<b>GRS</b> <span class="fa-arrow-right"></span> GRUPOS DE REINSERCIÓN SOCIAL&nbsp;&nbsp;<b>O</b> <span class="fa-arrow-right"></span> OTRO
-            </p>            
+            </p>
             <div style="page-break-inside: avoid; text-align: justify;">
                 Lo anterior, con la finalidad de atender grupos en situación de vulnerabilidad que por sus características presentan desventaja por sexo, estado civil,
-                 nivel educativo, origen étnico, situación o condición física y/o mental y requieren de un esfuerzo adicional para incorporarse al desarrollo 
-                y a la convivencia, como  lo señala el artículo 32 de la Ley General de Educación y artículo 23, de los 
+                 nivel educativo, origen étnico, situación o condición física y/o mental y requieren de un esfuerzo adicional para incorporarse al desarrollo
+                y a la convivencia, como  lo señala el artículo 32 de la Ley General de Educación y artículo 23, de los
                 lineamientos para los procesos de vinculación y capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.<br/>
-                Considerando que los costos de los cursos que imparte esta Institución, varían de los $100.00 (Cien pesos 00/100 M.N.) a los $1,200.00 (Mil Doscientos 00/100 M.N.); 
+                Considerando que los costos de los cursos que imparte esta Institución, varían de los $100.00 (Cien pesos 00/100 M.N.) a los $1,200.00 (Mil Doscientos 00/100 M.N.);
                 según su tipo Oficios, Profesionalización, Especialización y Salud, así como su clasificación Básico, Medio o Avanzado y duración total de horas de capacitación. <br>
-                Se anexa(n) lista de alumnos y solicitud de la parte interesada. 
+                Se anexa(n) lista de alumnos y solicitud de la parte interesada.
                 <br/>
                 Atentamente.
             </div>
@@ -147,7 +147,7 @@
                             <b>{{$reg_unidad->dunidad}}</b> <br>
                             {{$reg_unidad->pdunidad}} DE LA UNIDAD DE CAPACITACIÓN {{$reg_unidad->ubicacion}} <br>&nbsp;
                         </div>
-                        <div></div>                        
+                        <div></div>
                     </td>
                     <td>
                         <div style="width: 30px;"> </div>
@@ -216,7 +216,7 @@
                     <tr>
                         <th>DIAS</th>
                         <th colspan="6">{{$item['dias']}}</th>
-                    </tr>                   
+                    </tr>
                     <tr>
                         <th colspan="7">LISTA DE ALUMNOS</th>
                     </tr>
@@ -241,7 +241,7 @@
                         <td>{{$value->edad}}</td>
                         <td>{{$value->costo}}</td>
                     </tr>
-                    
+
                     @endforeach
                 </tbody>
             </table>
