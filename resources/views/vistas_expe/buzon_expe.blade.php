@@ -96,7 +96,9 @@
 
                 <button class="btn mx-2" id="btn_buscar">BUSCAR</button>
                 <a href="{{ route('buzon.expunico.index') }}" class="btn mx-2">BORRAR FILTRO</a>
-
+                @if ($boton_excel)
+                    <a href="{{ route('buzon.expunico.buzon.excel') }}" class="mx-2 btn-sm btn-outline-success"><i class="fa fa-file-excel fa-2x" aria-hidden="true"></i></a>
+                @endif
             </div>
         </form>
 
