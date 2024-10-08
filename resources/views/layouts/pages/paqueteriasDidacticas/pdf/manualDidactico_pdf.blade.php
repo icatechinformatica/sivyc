@@ -133,8 +133,8 @@
                 <label style="color:#692E41; font-size:18px; font-weight:bold;">INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA </label> <br>
                 <label style="color:#692E41; font-size:18px; font-weight:bold;">DEL ESTADO DE CHIAPAS</label>
                 <br><br><br>
-                <label style="font-size:18px; font-weight: bold;">Mtra. Fabiola Lizbeth Astudillo Reyes </label> <br>
-                <label style="font-size:18px; font-weight: bold;"> Directora General.</label>
+                <label style="font-size:18px; font-weight: bold;">Lcdo. Gerardo Jimenéz Villalobos. </label> <br>
+                <label style="font-size:18px; font-weight: bold;">Encargado de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas</label>
                 <br><br><br>
                 <label style="font-size:18px; font-weight: bold;">RESPONSABLE DE LA PAQUETERÍA DIDÁCTICA</label> <br>
                 <label>Lic. Edgar Gonzalo Orozco Martínez</label><br>

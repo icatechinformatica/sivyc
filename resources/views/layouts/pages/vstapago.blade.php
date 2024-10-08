@@ -276,11 +276,13 @@
                                             </a>
                                         @endcan
                                     @else
-                                        @can('contrato.validate')
-                                            <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
-                                                Retorno o Edición
-                                            </a>
-                                        @endcan
+                                        @if ($itemData->status_dpto_general)
+                                            @can('contrato.validate')
+                                                <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
+                                                    Retorno o Edición
+                                                </a>
+                                            @endcan
+                                        @endif
                                     @endif
                                 @else
                                     <br>En Layout de Pago
@@ -291,11 +293,13 @@
                                             </a>
                                         @endcan
                                     @else
-                                        @can('contrato.validate')
-                                            <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
-                                                Retorno o Edición
-                                            </a>
-                                        @endcan
+                                        @if ($itemData->status_dpto_general)
+                                            @can('contrato.validate')
+                                                <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
+                                                    Retorno o Edición
+                                                </a>
+                                            @endcan
+                                        @endif
                                     @endif
                                 @endif
                             @else
@@ -364,7 +368,7 @@
                                     @break
                                 @endswitch
                             @endif
-                            @if ($itemData->status_recepcion == 'recepcion tradicional')
+                            @if ($itemData->status_recepcion == 'recepcion tradicional' && $itemData->status_recepcion)
                                 @can('contrato.validate')
                                     <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
                                         Retorno o Edición
