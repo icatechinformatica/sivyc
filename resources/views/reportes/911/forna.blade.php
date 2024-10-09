@@ -18,10 +18,10 @@ $gpo=0;
 <style type="text/css">
     .tabla-madre{
         border: 1px solid gray;
-        
+
     }
     .variable{
-        
+
         border: 1px solid gray;
         text-align: center
     }
@@ -178,7 +178,7 @@ $gpo=0;
                     <td class='variable'>@isset($consulta_inscritos[$key]){{$consulta_inscritos[$key]->insm7}}@else{{''}}@endisset</td>
                     <td class='variable'>@isset($consulta_inscritos[$key]){{$consulta_inscritos[$key]->insm8}}@else{{''}}@endisset</td>
                     <td class='variable'>@isset($consulta_inscritos[$key]){{$consulta_inscritos[$key]->insm9}}@else{{''}}@endisset</td>
-                    
+
                 </tr>
                 <tr>
                     <td class='variable5'>MUJERES</td>
@@ -239,7 +239,7 @@ $gpo=0;
                 </tr>
                 <tr>
                     <td></td>
-                    <td>INSCRIPCIÓN TOTAL</td> 
+                    <td>INSCRIPCIÓN TOTAL</td>
                     <td class='variable'>@foreach($consulta_inscritos as $consulta_inscrito)@php $value1 += $consulta_inscrito->insh1; @endphp@endforeach{{$value1}}</td>
                     <td class='variable'>@foreach($consulta_inscritos as $consulta_inscrito)@php $value2 += $consulta_inscrito->insh2; @endphp@endforeach{{$value2}}</td>
                     <td class='variable'>@foreach($consulta_inscritos as $consulta_inscrito)@php $value3 += $consulta_inscrito->insh3; @endphp@endforeach{{$value3}}</td>
@@ -759,4 +759,3 @@ $gpo=0;
 
 
 
-       
