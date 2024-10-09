@@ -957,4 +957,27 @@ class ReportService
 
         return $htmlBody;
     }
+
+    public function formatoIntervaloFecha($fechaIni, $fechaFin)
+    {
+        // Parsear las fechas usando Carbon
+        $dateInit = Carbon::parse($fechaIni);
+        $dateEnd = Carbon::parse($fechaFin);
+
+        // Configurar el idioma a español
+        $dateInit->locale('es');
+        $dateEnd->locale('es');
+
+        // Comparar si los meses de las fechas de inicio y fin son iguales
+        if($dateInit->translatedFormat('F') === $dateEnd->translatedFormat('F')) {
+            // Mismo mes, formato: "del 7 al 11 de octubre del 2024"
+            $formattedDates = 'del ' . $dateInit->translatedFormat('j') . ' al ' . $dateEnd->translatedFormat('j') . ' de ' . $dateEnd->translatedFormat('F') . ' del ' . $dateEnd->translatedFormat('Y');
+        } else {
+            // Meses diferentes, formato: "del 30 de septiembre al 4 de octubre del 2024"
+            $formattedDates = 'del ' . $dateInit->translatedFormat('j') . ' de ' . $dateInit->translatedFormat('F') . ' al ' . $dateEnd->translatedFormat('j') . ' de ' . $dateEnd->translatedFormat('F') . ' del ' . $dateEnd->translatedFormat('Y');
+        }
+
+        // Imprimir el resultado
+        return $formattedDates;
+    }
 }
