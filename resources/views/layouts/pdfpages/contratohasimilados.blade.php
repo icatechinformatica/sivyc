@@ -7,7 +7,7 @@
             font-family: sans-serif;
             }
             @page {
-                margin: 30px 60px, 60px, 60px;
+                margin: 30px 60px 60px 60px;
             }
             header { position: fixed;
                 left: 0px;
@@ -73,7 +73,7 @@
                 font-family: sans-serif;
             }
             @page {
-                margin: 30px 60px, 60px, 60px;
+                margin: 30px 55px 48px 50px;
             }
             header { position: fixed;
                 left: 0px;
