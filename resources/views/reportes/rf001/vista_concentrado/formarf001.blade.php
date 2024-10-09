@@ -128,6 +128,13 @@
          body {
              padding-bottom: 60px;
          }
+
+         .bloque_uno {
+            padding-top: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            font: bold;
+        }
      </style>
  @endsection
 

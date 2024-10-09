@@ -19,7 +19,7 @@
         }
 
         .bloque_uno {
-            padding-top: 40px;
+            padding-top: 20px;
             font-weight: bold;
             font-size: 13px;
             font: bold;
@@ -32,7 +32,7 @@
         }
 
         .contenido {
-            font-size: 13px;
+            font-size: 20px;
             line-height: 1.5;
         }
 

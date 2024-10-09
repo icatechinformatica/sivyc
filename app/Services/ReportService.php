@@ -466,38 +466,31 @@ class ReportService
         $importeLetra = (new MyUtility())->letras($importeMemo);
 
         $htmlBody['memorandum'] = '<div class="contenedor">
-            <div class="bloque_uno" align="right">
+            <div class="bloque_dos" align="right" style="font-family: Arial, sans-serif; font-size: 16px;">
                 <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</p>
                 <p class="delet_space_p color_text">OFICIO NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
                 <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars(strtoupper($fecha_comp)) . '</span></p>
             </div>
             <br><br><br>
-            <div class="bloque_dos" align="left">
+            <div class="bloque_dos" align="left" style="font-family: Arial, sans-serif; font-size: 16px;">
                 <p class="delet_space_p color_text">C. ' . htmlspecialchars(strtoupper($dirigido->titulo)) . ' ' . htmlspecialchars(strtoupper($dirigido->nombre)) . '</p>
                 <p class="delet_space_p color_text">' . htmlspecialchars($dirigido->cargo) . '</p>
                 <p class="delet_space_p color_text">PRESENTE.</p>
             </div>
             <br>
-            <div class="contenido" align="justify">
+            <div class="contenido" style="font-family: Arial, sans-serif; font-size: 16px; margin-top: 25px" align="justify">
                 Por medio del presente, me permito enviar a usted el Concentrado de Ingresos Propios (FORMA RF-001) de la Unidad de Capacitación
-                <span class="color_text"> ' . htmlspecialchars($unidadUbicacion) . ' </span>, correspondiente a la semana comprendida del '. htmlspecialchars($formattedStartDate) .' al '. htmlspecialchars($formattedEndDate) .' del mes de '.htmlspecialchars($mes).' del año '.htmlspecialchars($anio).'.
+                <span class="color_text"> ' .htmlspecialchars($unidadUbicacion). ' </span>, correspondiente a la semana comprendida '. $this->formatoIntervaloFecha($data->periodo_inicio, $data->periodo_fin) .'
                 El informe refleja un total de $'.number_format($importeMemo, 2, '.', ',').' ('.$importeLetra.'), mismo que se adjunta para su conocimiento y trámite correspondiente.
                 <br>
             </div>
             <br>';
 
         $htmlBody['memorandum'] .= '<div class="tabla_alumnos">
-                <ul style="font-size: 14px">';
-
-            foreach ($datoJson as $key) {
-                $curso = isset($key['curso']) && $key['curso'] !== null ? strtolower($key['curso']) : strtolower($key['descripcion']);
-                $htmlBody['memorandum'] .= '<li style="font-size: 12px;"><b>' . htmlspecialchars($curso) . '</b> con el siguiente folio: ' . htmlspecialchars($key['folio']) . '</li>';
-            }
-
-        $htmlBody['memorandum'] .= '</ul>
-                <p style="font-size: 14px">Sin otro particular aprovecho la ocasión para saludarlo. </p>
-                <br>
-            </div></div>';
+                   <p style="font-family: Arial, sans-serif; font-size: 16px;">Sin otro particular aprovecho la ocasión para saludarlo. </p>
+                    <br>
+                </div>
+            </div>';
 
 
 
@@ -533,13 +526,13 @@ class ReportService
             </table>';
 
         // Tabla de movimientos bancarios
-        $htmlBody['formatoRf001'] .= '<table class="tabla_con_border">
+        $htmlBody['formatoRf001'] .= '<table class="tabla_con_border" style="width: 100%; table-layout: fixed; border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th style="text-align: center;"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
-                    <th style="text-align: center;" ><b>N°. RECIBO Y/O FACTURA</b></th>
-                    <th style="text-align: center;">CONCEPTO DE COBRO</th>
-                    <th style="text-align: center;">IMPORTE</th>
+                    <th style="text-align: center; width: 20%; word-wrap: break-word;"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
+                    <th style="text-align: center; width: 20%; word-wrap: break-word;" ><b>N°. RECIBO Y/O FACTURA</b></th>
+                    <th style="text-align: center; width: 45%; word-wrap: break-word;">CONCEPTO DE COBRO</th>
+                    <th style="text-align: center; width: 15%; word-wrap: break-word;">IMPORTE</th>
                 </tr>
             </thead>
             <tbody>';
@@ -550,8 +543,8 @@ class ReportService
             $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
 
             $htmlBody['formatoRf001'] .= '<tr>
-                <td style="width: 55px; text-align: center;">' . htmlspecialchars($item['folio']) . '</td>
-                <td style="width: 40px; text-align: center;">';
+                <td style="text-align: center;  word-wrap: break-word;">' . htmlspecialchars($item['folio']) . '</td>
+                <td style="text-align: center;  word-wrap: break-word;">';
 
                 // Iterar sobre los depósitos
                 foreach ($depositos as $k) {
@@ -566,7 +559,7 @@ class ReportService
                 }
 
             $htmlBody['formatoRf001'] .= '</td>
-                <td style="width: 160px; text-align: left; font-size: 9px;">';
+                <td style="text-align: left; font-size: 9px;  word-wrap: break-word;">';
 
             // Mostrar curso o descripción
             if ($item['curso'] != null) {
@@ -576,7 +569,7 @@ class ReportService
             }
 
             $htmlBody['formatoRf001'] .= '</td>
-                <td style="width: 50px; text-align: center;">$ ' . number_format($item['importe'], 2, '.', ',') . '</td>
+                <td style="text-align: center;  word-wrap: break-word;">$ ' . number_format($item['importe'], 2, '.', ',') . '</td>
             </tr>';
 
             // Acumular el importe total
