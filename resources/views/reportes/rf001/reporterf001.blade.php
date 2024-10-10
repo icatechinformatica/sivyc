@@ -113,8 +113,8 @@
         }
 
         /* .tabla_con_border td {
-                                                                                                                 page-break-inside: avoid;
-                                                                                                             } */
+                                                                                                                         page-break-inside: avoid;
+                                                                                                                     } */
 
         .tabla_con_border thead tr th {
             border: 1px solid #000000;
@@ -181,6 +181,14 @@
         .page-break {
             page-break-after: always;
         }
+
+        .ccp {
+            font-size: 8px;
+            padding-top: 30px;
+            margin-left: 1cm;
+            margin-right: 1cm;
+            /* position: fixed; */
+        }
     </style>
 @endsection
 @section('content')
@@ -222,8 +230,19 @@
                     src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
             </div>
         </div>
-
     @endif
+    <div class="ccp">
+        {{ $ccp  }}
+        C.c.p.
+        @foreach ($ccp as $k => $v)
+            @if ($loop->first)
+                <!-- Código para la primera iteración -->
+                {{ $v->nombre }}. {{ $v->cargo }} . Para su conocimiento. <br>
+            @else
+                {{ $v->nombre }}. {{ $v->cargo }} . Mismo fin. <br>
+            @endif
+        @endforeach
+    </div>
     <div class="page-break"></div>
     @php
         $html_sin_saltos = str_replace(["\r", "\n"], '', $bodyRf001);

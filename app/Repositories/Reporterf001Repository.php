@@ -614,6 +614,7 @@ class Reporterf001Repository implements Reporterf001Interface
             ->where('funcionario.cargo', 'like', 'DELEG%')
             ->orWhere('organismos.id_parent', 0)
             ->orWhere('funcionario.id_org', 13)
+            ->orderBy('funcionario.id_org', 'asc')
             ->get();
 
     }

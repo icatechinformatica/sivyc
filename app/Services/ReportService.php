@@ -495,7 +495,7 @@ class ReportService
 
 
         // Inicialización de formato
-        $htmlBody['formatoRf001'] = '<div class="contenedor"><table class="tabla_con_border" style="padding-top: 20px;">
+        $htmlBody['formatoRf001'] = '<div class="contenedor"><table class="tabla_con_border" style="padding-top: 10px;">
             <tr>
                 <td width="200px">FECHA DE ELABORACIÓN</td>
                 <td width="750px" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;" colspan="8"></td>

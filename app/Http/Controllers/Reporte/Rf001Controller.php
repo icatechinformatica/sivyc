@@ -389,7 +389,7 @@ class Rf001Controller extends Controller
         $unidad = $rf001->unidad;
         $idUnidad = Auth::user()->unidad;
         $ccp = $this->rfoo1Repository->setCcp($idUnidad);
-        dd($ccp);
+        // dd($ccp);
 
         $data = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
         $direccion = $data->direccion;
@@ -406,7 +406,8 @@ class Rf001Controller extends Controller
             'puestos' => $puestos,
             'qrCodeBase64' => $qrCodeBase64,
             'unidad' => $unidad,
-            'bodyRf001' => $bodyRf001
+            'bodyRf001' => $bodyRf001,
+            'ccp' => $ccp
         ];
 
         // generar el PDF
