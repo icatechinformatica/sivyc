@@ -117,10 +117,11 @@ class supreController extends Controller
         $data = $data->RightJoin('folios', 'folios.id_supre', '=', 'tabla_supre.id')
             ->RightJoin('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
             ->LeftJoin('documentos_firmar','documentos_firmar.numero_o_clave','=', 'tbl_cursos.clave')
+            ->LeftJoin('pagos', 'pagos.id_curso', 'folios.id_cursos')
             ->OrderBy('tabla_supre.status','ASC')
             ->OrderBy('tabla_supre.updated_at','DESC')
             ->GroupBy('tabla_supre.id','folios.permiso_editar','clave')
-            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado')]);
+            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado')],'pagos.status_recepcion');
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
@@ -349,16 +350,15 @@ class supreController extends Controller
 
         foreach($status_doc as $mxs) {
             if(!is_null($mxs)) {
-                if($mxs->status != 'CANCELADO' && $mxs->status != 'CANCELADO ICTI') {
+                if(in_array($mxs->status, ['CANCELADO ICTI','VALIDADO'])) {
+                    $generarEfirmaSupre = FALSE;
+                } elseif($mxs->status == 'EnFirma') {
                     $firmantes = json_decode($mxs->obj_documento, true);
                     foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
                         if(isset($firmante['_attributes']['certificado'])) {
                             $generarEfirmaSupre = FALSE;
                         }
                     }
-                }
-                if($mxs->status == 'VALIDADO') {
-                    $generarEfirmaSupre = FALSE;
                 }
             }
         }
@@ -391,13 +391,12 @@ class supreController extends Controller
 
         if($request->id_supre != NULL)
         {
-            folio::WHERE('id_supre', '=', $request->id_supre)->DELETE();
+            $folio = folio::WHERE('id_supre', '=', $request->id_supre)->FIRST();
         }
-        $id = $supre::SELECT('id')->WHERE('no_memo', '=', $memorandum)->FIRST();
 
         //Guarda Folios
-        foreach ($request->addmore as $key => $value){
-            $folio = new folio();
+        $value = $request->addmore[0];
+
             $folio->folio_validacion = $value['folio'];
             $folio->iva = $value['iva'];
             $folio->comentario = $value['comentario'];
@@ -416,7 +415,7 @@ class supreController extends Controller
             $importe_hora = $importe / $hora->dura;
             $folio->importe_hora = $importe_hora;
             $folio->importe_total = $value['importe'];
-            $folio->id_supre = $id->id;
+            $folio->id_supre = $request->id_supre;
             $folio->id_cursos = $hora->id;
             $folio->status = 'En_Proceso';
 
@@ -430,12 +429,9 @@ class supreController extends Controller
             }
 
             $folio->save();
-        }
 
-        $ids = base64_encode($id->id);
-        return redirect()->route('modificar_supre', ['id' => $ids])
+        return redirect()->route('modificar_supre', ['id' => base64_encode($request->id_supre)])
             ->with('success','Solicitud de Suficiencia Presupuestal Modificada');
-
     }
 
     public function generar_supre_efirma(request $request) {
@@ -557,8 +553,24 @@ class supreController extends Controller
         $supre->observacion_validacion = $request->observacion;
         $supre->save();
 
-        folio::where('id_supre', '=', $request->id)
-        ->update(['status' => 'Validado']);
+        $folio = folio::where('id_supre', '=', $request->id)->First();
+
+        // se analiza si ya tiene un contrato y un solpa para darle diferentes status y evitar el validado
+        $chk_contrato_pago = DB::Table('contratos AS c')->Select('c.id_contrato','p.id AS id_pago')
+            ->LeftJoin('pagos AS p','p.id_contrato','c.id_contrato')
+            ->Where('c.id_folios',$folio->id_folios)
+            ->First();
+        if(!is_null($chk_contrato_pago->id_contrato)) {
+            if(!is_null($chk_contrato_pago->id_pago)) {
+                $folio->status = 'Pago_Verificado';
+            } else {
+                $folio->status = 'Capturando';
+            }
+        } else {
+            $folio->status = 'Validado';
+        }
+
+        $folio->save();
 
         $id = $request->id;
         $idb64 = base64_encode($id);
@@ -610,16 +622,15 @@ class supreController extends Controller
 
         foreach($status_doc as $mxs) {
             if(!is_null($mxs)) {
-                if($mxs->status != 'CANCELADO' && $mxs->status != 'CANCELADO ICTI') {
+                if(in_array($mxs->status, ['CANCELADO ICTI','VALIDADO'])) {
+                    $generarEfirmaValsupre = FALSE;
+                } elseif($mxs->status == 'EnFirma') {
                     $firmantes = json_decode($mxs->obj_documento, true);
                     foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
                         if(isset($firmante['_attributes']['certificado'])) {
-                            $generarEfirmaSupre = FALSE;
+                            $generarEfirmaValsupre = FALSE;
                         }
                     }
-                }
-                if($mxs->status == 'VALIDADO') {
-                    $generarEfirmaValsupre = FALSE;
                 }
             }
         }
@@ -679,14 +690,14 @@ class supreController extends Controller
 
     public function restartSupre($id)
     {
-
+        // dd($id);
         $item = folio::SELECT('id_folios')->WHERE('id_supre', '=', $id)->First();
 
         DB::table("folios")->WHERE('id_folios', $item->id_folios)->update(['status' => 'Rechazado']);
         DB::table('tabla_supre')->WHERE('id', $id)->UPDATE(['status' => 'Rechazado', 'doc_validado' => '']);
 
         return redirect()->route('supre-inicio')
-                    ->with('success','Suficiencia Presupuestal Reiniciada');
+                    ->with('success','Solicitud y Validación de Suficiencia Presupuestal Reiniciada');
     }
 
     public function reporte_solicitados(Request $request)

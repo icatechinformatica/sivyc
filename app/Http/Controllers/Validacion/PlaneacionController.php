@@ -716,7 +716,8 @@ class PlaneacionController extends Controller {
     public function funcionarios($unidad) {
         $query = clone $dacademico = clone $dacademico_unidad = clone $certificacion = clone $dunidad = clone $dplaneacion = clone $dgeneral = clone $progpres = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('f.activo', 'true');
+            ->Where('f.activo', 'true')
+            ->Where('f.titular', true);
 
         $dacademico = $dacademico->Where('o.id',16)->First();
         $certificacion = $certificacion->Where('o.id',18)->First();

@@ -137,6 +137,8 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/vista/expedientes/validar', 'ExpeController\ExpedienteController@validar_dta')->name('expunico.valid.dta')->middleware('can:expedientes.unicos.index');
     /**Rutas de buzon para visualizar los expedientes pendientes, enviados, validados */
     Route::get('/vista/buzon/expedientes/', 'ExpeController\BuzonexpController@index')->name('buzon.expunico.index')->middleware('can:expunico.buzon.index');
+    //Generar excel en el buzon de expe unicos
+    Route::get('/vista/buzon/expedientes/excel', 'ExpeController\BuzonexpController@generar_excel')->name('buzon.expunico.buzon.excel')->middleware('can:expunico.buzon.index');
     //Subida de pdf recibo de pago
     Route::post('/vista/expedientes/uploadrecibo', 'ExpeController\ExpedienteController@upload_recibo')->name('expunico.upload.recibo')->middleware('can:expedientes.unicos.index');
     // Guardar requisitos de alumnos
