@@ -769,7 +769,7 @@ class grupoController extends Controller
                                         }
 
 
-                                }elseif (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
+                                }elseif(in_array($result_exo, ['CAPTURA', 'CANCELADO', 'EDICION', null],true)){
 
                                     $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','VINCULACION')->update(
                                         ['id_instructor'=>$instructor->id, 'observaciones'=>$request->observaciones,'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante,
@@ -788,7 +788,7 @@ class grupoController extends Controller
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
                                             'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp,'solicita'=>$request->solicita,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago
                                         ]);
                                       //  dd($instructor);
                                         if ($result_curso) $message = "Operación Exitosa!!";
