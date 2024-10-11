@@ -200,6 +200,7 @@ class EPagoController extends Controller
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('o.id',13)
             ->Where('f.activo', 'true')
+            ->Where('f.titular', true)
             ->First();
 
         if($data->solicitud_fecha == NULL)
