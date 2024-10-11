@@ -1865,7 +1865,7 @@ class supreController extends Controller
         $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true')
-            ->Where('fun.titular', true);
+            ->Where('f.titular', true);
 
         $direc = $direc->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('o.id_parent',1)
@@ -1906,7 +1906,7 @@ class supreController extends Controller
         $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $ccp3 = clone $delegado = clone $remitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true')
-            ->Where('fun.titular', true);
+            ->Where('f.titular', true);
 
         $direc = $direc->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('o.id_parent',1)
