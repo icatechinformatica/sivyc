@@ -641,7 +641,9 @@ class grupoController extends Controller
 
                                 /*REGISTRANDO COSTO Y TIPO DE INSCRIPCION*/
                                 $total_pago = 0;
-                                if (!(DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists())){
+                                $result_exo = DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->value('status');
+                                //dd($result_exo);
+                                if(in_array($result_exo, ['CAPTURA', 'CANCELADO', 'EDICION', null],true)){
                                     foreach ($request->costo as $key => $pago) {
                                         $pago = $pago ?: 0; // Si $pago es null, asigna 0.
                                         $diferencia = $costo_individual - $pago;
@@ -655,7 +657,7 @@ class grupoController extends Controller
 
 
                                         ///SI CAMBIA DE TIPO DE PAGO Y REDUCCION CANCELADA=> SE ACTUALIZA LOS COSTOS EN tbl_inscriçion
-                                        if ($tc_curso->status_curso == 'EDICION' AND $_SESSION['folio_grupo']) {
+                                        if (($tc_curso->status_curso == 'EDICION' OR $result_exo == 'EDICION') AND $_SESSION['folio_grupo']) {
                                             DB::table('tbl_inscripcion')
                                             ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
                                             ->where('tbl_inscripcion.folio_grupo', $_SESSION['folio_grupo'])
