@@ -560,7 +560,7 @@ class supreController extends Controller
             ->LeftJoin('pagos AS p','p.id_contrato','c.id_contrato')
             ->Where('c.id_folios',$folio->id_folios)
             ->First();
-        if(!is_null($chk_contrato_pago->id_contrato)) {
+        if(isset($chk_contrato_pago->id_contrato) && !is_null($chk_contrato_pago->id_contrato)) {
             if(!is_null($chk_contrato_pago->id_pago)) {
                 $folio->status = 'Pago_Verificado';
             } else {
