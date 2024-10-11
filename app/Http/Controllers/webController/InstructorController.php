@@ -4622,7 +4622,8 @@ class InstructorController extends Controller
     public function funcionarios($unidad) {
         $query = clone $dacademico = clone $dacademico_unidad = clone $gestionacademica = clone $dunidad = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('f.activo', 'true');
+            ->Where('f.activo', 'true')
+            ->Where('f.titular', true);
 
         $dacademico = $dacademico->Where('o.id',16)->First();
         $gestionacademica = $gestionacademica->Where('o.id',17)->First();
