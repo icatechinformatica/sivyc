@@ -769,7 +769,7 @@ class grupoController extends Controller
                                         }
 
 
-                                }elseif(in_array($result_exo, ['CAPTURA', 'CANCELADO', 'EDICION', null],true)){
+                                }elseif(in_array($result_exo, ['CAPTURA', 'CANCELADO', 'EDICION'],true)){
 
                                     $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','VINCULACION')->update(
                                         ['id_instructor'=>$instructor->id, 'observaciones'=>$request->observaciones,'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante,
