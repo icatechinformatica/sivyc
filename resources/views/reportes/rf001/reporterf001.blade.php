@@ -232,7 +232,7 @@
         </div>
     @endif
     <div class="ccp">
-        {{ $ccp  }}
+        {{-- {{ $ccp  }} --}}
         C.c.p.
         @foreach ($ccp as $k => $v)
             @if ($loop->first)

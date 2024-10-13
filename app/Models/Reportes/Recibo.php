@@ -11,7 +11,7 @@ class Recibo extends Model
     //
     protected $table = 'tbl_recibos';
 
-    protected $fillable = ['id', 'num_recibo', 'importe', 'importe_letra', 'status_folio', 'fecha_status', 'movimientos', 'id_curso', 'folio_grupo', 'fecha_expedicion', 'recibio', 'unidad', 'iduser_created', 'iduser_updated', 'recibide', 'file_pdf', 'folio_recibo', 'status_recibo', 'motivo', 'observaciones', 'id_concepto', 'descripcion', 'matricula', 'cantidad', 'constancias', 'depositos'];
+    protected $fillable = ['id', 'num_recibo', 'importe', 'importe_letra', 'status_folio', 'fecha_status', 'movimientos', 'id_curso', 'folio_grupo', 'fecha_expedicion', 'recibio', 'unidad', 'iduser_created', 'iduser_updated', 'recibide', 'file_pdf', 'folio_recibo', 'status_recibo', 'motivo', 'observaciones', 'id_concepto', 'descripcion', 'matricula', 'cantidad', 'constancias', 'depositos', 'estado_reportado'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
