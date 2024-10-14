@@ -51,6 +51,7 @@ class EPagoController extends Controller
             ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
             ->Where('org.id_parent',1)
             ->Where('fun.activo', 'true')
+            ->Where('fun.titular', true)
             ->Where('u.unidad', $info->ubicacion)
             ->First();
 
