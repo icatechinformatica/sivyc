@@ -34,6 +34,10 @@ class Reporterf001Repository implements Reporterf001Interface
     {
         return Recibo::where('tbl_recibos.status_recibo', 'PAGADO')
             ->where('tbl_unidades.unidad', $unidad)
+            ->where(function($query) {
+                $query->whereNull('tbl_recibos.estado_reportado')
+                      ->orWhere('tbl_recibos.estado_reportado', 'GENERADO');
+            })
             ->with('concepto:id,concepto')
             ->select('tbl_recibos.*', 'cat_conceptos.concepto', 'tbl_recibos.id as id_recibo', 'tbl_unidades.clave_contrato')
             ->addSelect(\DB::raw("
@@ -80,6 +84,12 @@ class Reporterf001Repository implements Reporterf001Interface
                 'descripcion' => $query->descripcion,
             ];
             $dataAdd[] = $JsonObj;
+
+            //actualizar tbl recibos
+            Recibo::where('num_recibo', '=', $numRecibo)
+                ->update([
+                    'estado_reportado' => 'GENERADO'
+                ]);
         }
 
         // agregar movimiento - historial del movimiento del formato RF001 -- Creacion de estampa de hora exacta de creacion
@@ -617,5 +627,22 @@ class Reporterf001Repository implements Reporterf001Interface
             ->orderBy('funcionario.id_org', 'asc')
             ->get();
 
+    }
+
+    public function actualizarRecibo($id)
+    {
+        try {
+            $rf001 = (new Rf001Model())->findOrFail($id);
+            $movimiento = json_decode($rf001->movimientos, true);
+            foreach ($movimiento as $item) {
+                Recibo::where('folio_recibo', '=', $item['folio'])
+                    ->update([
+                        'estado_reportado' => 'VALIDADO'
+                    ]);
+            }
+            return true;
+        } catch (\Throwable $th) {
+            return $th->message();
+        }
     }
 }

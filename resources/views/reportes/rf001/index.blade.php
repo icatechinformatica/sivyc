@@ -274,7 +274,7 @@
                         <tbody>
                             @foreach ($query as $item)
                                 <tr>
-                                    <th scope="row">{{ $item->id }}</th>
+                                    <th scope="row">{{ $item->num_recibo }}</th>
                                     <td>{{ $item->concepto }}</td>
                                     <td>
                                         @php

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use setasign\Fpdi\Fpdi;
 use Illuminate\Support\Str;
 use App\Utilities\MyUtility;
+use App\Models\Reportes\Recibo;
 
 class ReportService
 {
@@ -83,6 +84,16 @@ class ReportService
         }
 
         $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
+
+        $movimiento = json_decode($rf001->movimientos, true);
+
+        foreach ($movimiento as $item) {
+            # ciclo para actualizar el estado de todos los registros
+            Recibo::where('folio_recibo', '=', $item['folio'])
+                ->update([
+                    'estado_reportado' => 'CONCENTRADO'
+                ]);
+        }
 
         $firmantes = $this->funcionariosUnidades($ubicacion);
         list($firmanteNoUno, $firmanteNoDos) = $firmantes;

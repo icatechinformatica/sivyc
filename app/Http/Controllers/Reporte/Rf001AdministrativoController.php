@@ -173,6 +173,7 @@ class Rf001AdministrativoController extends Controller
     {
         $estado = 'APROBADO';
         $id = $request->get('idRf001');
+        $this->rf001Repository->actualizarRecibo($id);
         return response()->json([
             'resp' => $this->rf001Repository->actualizarEstado($id, $estado),
             'message' => 'Documento Aprobado para proceso de efirma!',
