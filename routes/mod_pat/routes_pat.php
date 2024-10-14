@@ -57,7 +57,22 @@ Route::get('/vista/pat/metasav/genpdf/meta/{accion}/{idorg}', 'PatController\Met
 Route::post('/vista/pat/metasav/guardar/pdfmeta/', 'PatController\MetavanceController@uploadpdfmeta')->name('pat.metavance.guardar.updpdfmeta');
 //Subir al serv pdf de avances por mes
 Route::post('/vista/pat/metasav/guardar/pdfavance/', 'PatController\MetavanceController@uploadpdfavance')->name('pat.metavance.guardar.updpdfavance');
+//Cancelar subida de archivos
+Route::post('/vista/pat/metasav/cancel/docs/', 'PatController\MetavanceController@cancel_accion_docs')->name('pat.metavance.upload.cancel');
 
+#FIRMADO ELECTRONICO
+//Generar xml para firma
+Route::post('/vista/pat/metasav/genxml/', 'PatController\MetavanceController@generar_xml_meta')->name('pat.metavance.generar.xml');
+//Mostrar opcion de ccarga tradicional
+Route::post('/vista/pat/metasav/pdftradi/', 'PatController\MetavanceController@show_carga_tradi')->name('pat.metavance.opcion.cargarpdf');
+//Firmado electronico
+Route::post('/vista/pat/metasav/firmar/', 'PatController\MetavanceController@firmar_documento')->name('pat.metavance.firmar.documento');
+//Sellar documento
+Route::post('/vista/pat/metasav/sellar/', 'PatController\MetavanceController@sellar_documento')->name('pat.metavance.sellar.documento');
+//Mostrar pdf efirma
+Route::get('/vista/pat/metasav/pdf/firma/{id?}', 'PatController\MetavanceController@show_pdf_efirma')->name('pat.metavance.pdf.efirma');
+//Generar token
+Route::post('vistas/pat/metasav/token', 'PatController\MetavanceController@generarToken')->name('pat.efirma.token');
 
 /**Fechas */
 Route::get('/vista/pat/fechaspat/{tipo?}', 'PatController\FechasController@index')->name('pat.fechaspat.mostrar')->middleware('can:fechaspat.index');
@@ -82,6 +97,8 @@ Route::post('/vista/pat/plane/valid', 'PatController\MetavanceController@registr
 Route::get('/vista/pat/buzon/index/', 'PatController\BuzonController@index')->name('pat.buzon.index')->middleware('can:metava.valid.index');
 // Generar pdf de todos los organismos
 Route::get('/vista/pat/buzon/pdf/general/{mes}/{opcion}', 'PatController\BuzonController@pdforg_direc')->name('pat.buzon.pdf.general');
+//Eliminar o cancelar documento tradicionar y con efirma
+Route::post('/vista/pat/buzon/delete', 'PatController\BuzonController@cancelar_documento')->name('pat.buzon.cancel.doc');
 
 
 
@@ -120,6 +137,14 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/vista/expedientes/validar', 'ExpeController\ExpedienteController@validar_dta')->name('expunico.valid.dta')->middleware('can:expedientes.unicos.index');
     /**Rutas de buzon para visualizar los expedientes pendientes, enviados, validados */
     Route::get('/vista/buzon/expedientes/', 'ExpeController\BuzonexpController@index')->name('buzon.expunico.index')->middleware('can:expunico.buzon.index');
+    //Generar excel en el buzon de expe unicos
+    Route::get('/vista/buzon/expedientes/excel', 'ExpeController\BuzonexpController@generar_excel')->name('buzon.expunico.buzon.excel')->middleware('can:expunico.buzon.index');
+    //Subida de pdf recibo de pago
+    Route::post('/vista/expedientes/uploadrecibo', 'ExpeController\ExpedienteController@upload_recibo')->name('expunico.upload.recibo')->middleware('can:expedientes.unicos.index');
+    // Guardar requisitos de alumnos
+    Route::post('/vista/expedientes/requisitos', 'ExpeController\ExpedienteController@requisitos_alumnos')->name('expunico.save.requisitos')->middleware('can:expedientes.unicos.index');
+    //Guardar mensajes retorno dta automaticamente
+    Route::post('/vista/expedientes/msmretorno', 'ExpeController\ExpedienteController@guardar_mensajes')->name('expunico.guardar.mensajes')->middleware('can:expedientes.unicos.index');
 });
 /**Generar pdf expedientes unicos */
 Route::get('vista/expedientes/genpdf/{folio}', 'ExpeController\ExpedienteController@pdf_expediente')->name('expunico.gen.pdfexpe');
@@ -132,3 +157,23 @@ Route::post('autocomplet/bolsa/cursos', 'Consultas\BolsaTrabController@autocompl
 //Generar reporte de excel
 Route::get('consultas/bolsa/reporte', 'Consultas\BolsaTrabController@crear_reporte_excel')->name('consulta.bolsa.reporte');
 
+/** MODULO DE EFIRMA BUZON FOLIO ALUMNOS */
+Route::get('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
+Route::post('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
+Route::post('grupos/efirma/buzon/eliminar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@cancelar_doc')->name('grupo.efirma.canceldoc');
+Route::get('grupos/efirma/pdf/{id}', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generar_pdf')->name('grupo.efirma.pdf');
+Route::post('grupos/efirma/token', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generarToken')->name('efirma.token');
+Route::post('grupos/efirma/buzon/update', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@firmar_documento')->name('grupo.efirma.update');
+Route::post('grupos/efirma/buzon/sellar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@sellar_documento')->name('grupo.efirma.sellar');
+
+
+//Ruta para le boton de generar xml de folios en el modulo de asigar folios
+Route::post('/grupos/asignarfolios/generar', 'Grupos\asignarfoliosController@efolios_insert')->name('grupos.asignarfolios.efolios');
+
+//Ruta para la nueva funcionalidad de agregar carta descriptiva de cursos
+Route::get('/cursos/carta-descriptiva/{id}/{parte}', 'webController\CursosController@carta_descriptiva')->name('cursos-catalogo.cartadescriptiva');
+Route::post('/cursos/save/primera', 'webController\CursosController@save_parte_uno')->name('cursos-catalogo.saveparteuno');  //Guardar primera parte
+Route::post('/cursos/save/segunda', 'webController\CursosController@save_parte_dos')->name('cursos-catalogo.savepartedos');  //Guardar segunda parte
+Route::post('/cursos/save/tercera', 'webController\CursosController@save_parte_tres')->name('cursos-catalogo.savepartetres');  //Guardar tercera parte
+Route::post('/cursos/edit/carta', 'webController\CursosController@edit_cartadescrip')->name('cursos-catalogo.editcartadecrip'); //Editar y eliminar
+Route::get('/cursos/carta-descriptiva-pdf/{id}', 'webController\CursosController@carta_descriptiva_pdf')->name('carta-descriptiva-pdf'); //Generar PDF de carta descriptiva

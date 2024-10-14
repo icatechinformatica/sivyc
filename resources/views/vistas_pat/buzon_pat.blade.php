@@ -131,26 +131,6 @@
                 </div>
             @endif
 
-            {{-- Generar pdf general avance por mes --}}
-            {{-- Comentamos este apartado para luego descargar el zip con los pdfs --}}
-            {{-- <div class="float-right border border-primary p-3 pdfGeneral">
-                <span class="text-center d-block mb-2"><b>Descargar pdf general de avances</b></span>
-                <div class="d-flex flex-row">
-                    <select name="" id="selOpcion" class="form-control-sm mr-2">
-                        <option value="">SELECCIONAR</option>
-                        <option value="centrales">OFICINAS CENTRALES</option>
-                        <option value="unidades">UNIDADES</option>
-                    </select>
-                    <select name="selmes_ava" id="selmes_ava" class="form-control-sm">
-                        <option value="">MES</option>
-                        @for ($i = 0; $i < count($mesGlob); $i++)
-                            <option value="{{$mesGlob[$i]}}">{{$mesGlob[$i]}}</option>
-                        @endfor
-                    </select>
-                    <a class="ml-2" id="btnGenPdf"><i class="fa fa-cloud-download fa-2x" aria-hidden="true"></i></a>
-                </div>
-            </div> --}}
-
             {{-- Tabla y opcion de selección --}}
             <div class="container">
                 <ul class="nav nav-tabs">
@@ -177,7 +157,7 @@
                         </form>
 
                         <h4 class="text-center font-weight-bold"><u>METAS</u></h4>
-                        <table class="table table-responsive-md" id='tableperfiles'>
+                        <table class="table table-hover table-responsive-md" id='tableperfiles'>
                             <thead>
                                 <tr>
                                     <th scope="col">No</th>
@@ -185,7 +165,9 @@
                                     <th scope="col">PERIODO</th>
                                     <th scope="col">FECHA DE ENVIO</th>
                                     <th scope="col">STATUS</th>
-                                    <th scope="col">ACCION</th>
+                                    <th scope="col">PDF</th>
+                                    <th scope="col" class="text-center">VER DETALLES</th>
+                                    <th scope="col" class="text-center">CANCELAR DOCUMENTO</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -215,27 +197,44 @@
                                             </a>
                                         </td>
                                         <td>
-                                            {{-- validacion v2 --}}
-                                            @if ($data[$i]->status_meta['proceso'] == '1')
-                                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                                    data-placement="top" title="Ir a validación" id="btnMostrarFrmEdit"
-                                                    href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}">
-                                                    <i class="fa fa-search fa-2x mt-2" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
+                                            @if( !empty($data[$i]->fecha_meta['id_efirma']) && $data[$i]->fecha_meta['mod_documento'] == 'efirma' )
+                                            {{-- Ejecutar el documento firmado electronicamente --}}
+                                                <a class="" href="{{route('pat.metavance.pdf.efirma', ['id' => $data[$i]->fecha_meta['id_efirma'] ]) }}" target="_blank">
+                                                    <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                                 </a>
 
-                                            @elseif($data[$i]->status_meta['validado'] == '1')
-                                                @if ($data[$i]->fecha_meta['urldoc_firm'] != '')
-                                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                                        data-placement="top" title="Ver pdf firmado" id=""
-                                                        href="{{$data[$i]->fecha_meta['urldoc_firm']}}" target="_blank">
-                                                        <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                                    </a>
-                                                @else
-                                                    <span class="">Pendiente PDF</span>
-                                                @endif
-
+                                            @elseif( !empty($data[$i]->fecha_meta['urldoc_firm']) )
+                                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                                    data-placement="top" title="Ver pdf firmado" id=""
+                                                    href="{{$data[$i]->fecha_meta['urldoc_firm']}}" target="_blank">
+                                                    <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                                </a>
                                             @else
+                                                <i class="far fa-file-pdf fa-2x fa-lg from-control" style="color: rgb(155, 156, 159);" aria-hidden="true"></i>
+                                            @endif
 
+                                            {{-- @if ($data[$i]->fecha_meta['urldoc_firm'] != '')
+                                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                                    data-placement="top" title="Ver pdf firmado" id=""
+                                                    href="{{$data[$i]->fecha_meta['urldoc_firm']}}" target="_blank">
+                                                    <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                                </a>
+                                            @else
+                                                <i class="far fa-file-pdf fa-2x fa-lg from-control" style="color: rgb(155, 156, 159);" aria-hidden="true"></i>
+                                            @endif --}}
+                                        </td>
+                                        <td class="text-center">
+                                            <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                                data-placement="top" title="Ir a validación" id="btnMostrarFrmEdit"
+                                                href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}">
+                                                <i class="fa fa-search fa-2x mt-2" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            @if ( (!empty($data[$i]->fecha_meta['id_efirma']) && $data[$i]->fecha_meta['mod_documento'] == 'efirma') || !empty($data[$i]->fecha_meta['urldoc_firm']) )
+                                                <a class="btn-circle btn-circle-sm"
+                                                    onclick="eliminar_documento('meta', '{{$data[$i]->id_org}}', '{{$anio}}')"> <i class="fa fa-times fa-2x mt-2" style="color: rgb(179, 43, 19);" aria-hidden="true"></i>
+                                                </a>
                                             @endif
                                         </td>
                                     </tr>
@@ -268,7 +267,7 @@
 
                         @if ($mes != 'seleccionar')
                             <h4 class="mt-2 text-center font-weight-bold"><u>AVANCES {{strtoupper($mes)}}</u></h4>
-                            <table class="table table-responsive-md" id='tableperfiles'>
+                            <table class="table table-hover table-responsive-md" id='tableperfiles'>
                                 <thead>
                                     <tr>
                                         <th scope="col">No</th>
@@ -277,7 +276,10 @@
                                         {{-- <th scope="col">MES DE AVANCE</th> --}}
                                         <th scope="col">FECHA DE ENVIO</th>
                                         <th scope="col">STATUS</th>
-                                        <th scope="col">ACCION</th>
+                                        <th scope="col">PDF</th>
+                                        <th scope="col">VER DETALLES</th>
+                                        <th scope="col">PDF DIRECCIÓNES</th>
+                                        <th scope="col">CANCELAR DOCUMENTO</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -309,27 +311,43 @@
                                                         <i class="fa fa-arrow-circle-o-right" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
                                                 </a>
                                             </td>
-                                            <td>
-                                                {{-- Otra validacion nueva --}}
-                                                @if ($data[$i]->status_avance['proceso'] == '1' && $data[$i]->fechas_avance[$mes]['fecenvioplane_a'] != '' && $data[$i]->fechas_avance[$mes]['statusmes'] == '')
-                                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                                        data-placement="top" title="Ir a validación" id=""
-                                                        href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}" target="_blank">
-                                                        <i class="fa fa-search fa-2x mt-2" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
-                                                    </a>
+                                            <td class="text-center">
 
-                                                @elseif ($data[$i]->fechas_avance[$mes]['statusmes'] == 'autorizado')
-                                                    @if ($data[$i]->fechas_avance[$mes]['urldoc_firmav'] != '')
+                                                @if( !empty($data[$i]->fechas_avance[$mes]['id_efirma']) && $data[$i]->fechas_avance[$mes]['mod_documento'] == 'efirma' )
+                                                    {{-- Ejecutar el documento firmado electronicamente --}}
+                                                    <a class="" href="{{route('pat.metavance.pdf.efirma', ['id' => $data[$i]->fechas_avance[$mes]['id_efirma'] ]) }}" target="_blank">
+                                                        <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                                    </a>
+                                                @elseif ($data[$i]->fechas_avance[$mes]['statusmes'] == 'autorizado' &&  !empty($data[$i]->fechas_avance[$mes]['urldoc_firmav']) )
                                                     <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                                         data-placement="top" title="Ver pdf firmado" id=""
                                                         href="{{$data[$i]->fechas_avance[$mes]['urldoc_firmav']}}" target="_blank">
-                                                        <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                                        <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                                     </a>
-                                                    @else
-                                                        <span class="">Pendiente PDF</span>
-                                                    @endif
                                                 @else
-
+                                                    <i class="far fa-file-pdf fa-2x fa-lg from-control" style="color: rgb(155, 156, 159);" aria-hidden="true"></i>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                                    data-placement="top" title="Ir a validación" id=""
+                                                    href="{{route('pat.metavance.envioplane', ['id' => $data[$i]->id_org])}}" target="_blank">
+                                                    <i class="fa fa-search fa-2x mt-2" style="color: rgb(65, 120, 203);" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                            <td class="text-center">
+                                                @if ($data[$i]->id_parent == 1)
+                                                    <a class="btn-sm btn-info text-white" data-toggle="tooltip" target="_blank"
+                                                        data-placement="top" title="Descargar PDF" href="{{ route('pat.buzon.pdf.general', ['mes' => $mes, 'opcion' => $data[$i]->id_org]) }}">
+                                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                                    </a>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                @if ( (!empty($data[$i]->fechas_avance[$mes]['id_efirma']) && $data[$i]->fechas_avance[$mes]['mod_documento'] == 'efirma') || !empty($data[$i]->fechas_avance[$mes]['urldoc_firmav']) )
+                                                    <a class="btn-circle btn-circle-sm"
+                                                        onclick="eliminar_documento('{{$mes}}', '{{$data[$i]->id_org}}', '{{$anio}}')"> <i class="fa fa-times fa-2x mt-2" style="color: rgb(179, 43, 19);" aria-hidden="true"></i>
+                                                    </a>
                                                 @endif
                                             </td>
                                         </tr>
@@ -450,17 +468,39 @@
         });
 
         $("#btnGenPdf").click(function() {
-            let selOpcion = document.getElementById('selOpcion').value;
-            let selMespdf = document.getElementById('selmes_ava').value;
+            // let selOpcion = document.getElementById('selOpcion').value;
+            // let selMespdf = document.getElementById('selmes_ava').value;
 
-            if (selMespdf != "" && selOpcion != "") {
-                let url = "{{ route('pat.buzon.pdf.general', [':mes', ':opcion']) }}";
-                url = url.replace(':mes', selMespdf).replace(':opcion', selOpcion);
-                window.open(url, "_blank");
-            } else {
-                alert("SELECCIONE UNA OPCIÓN")
-            }
+            // if (selMespdf != "" && selOpcion != "") {
+            //     let url = "{{ route('pat.buzon.pdf.general', [':mes', ':opcion']) }}";
+            //     url = url.replace(':mes', selMespdf).replace(':opcion', selOpcion);
+            //     window.open(url, "_blank");
+            // } else {
+            //     alert("SELECCIONE UNA OPCIÓN")
+            // }
         });
+
+        //Cancelar o eliminar documento
+        function eliminar_documento(tipo, organismo, periodo) {
+            if (!confirm("¿ESTÁS SEGURO DE CANCELAR EL DOCUMENTO DE FORMA PERMANENTE")) return false;
+
+            let data = {
+                    "_token": $("meta[name='csrf-token']").attr("content"),
+                    "tipo": tipo,
+                    "organismo": organismo,
+                    "periodo": periodo,
+                }
+                $.ajax({
+                    type:"post",
+                    url: "{{ route('pat.buzon.cancel.doc') }}",
+                    data: data,
+                    dataType: "json",
+                    success: function (response) {
+                        // console.log(response);
+                        location.reload();
+                    }
+                });
+        }
 
         </script>
         @endsection

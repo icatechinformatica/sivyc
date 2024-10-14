@@ -27,7 +27,7 @@
             <div class="form-group col-md-3 mt-4">
                 {{ Form::button('FILTRAR', ['id'=>'buscar','class' => 'btn']) }}
             </div>   
-            @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
+            @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND !in_array($status_solicitud , ['VALIDADO','AUTORIZADO'])))
                 <div class="form-group col-md-2 mt-4">
                     @if ($opt== "ARC01")
                     {{ Form::button('ARC-01 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
@@ -81,7 +81,22 @@
                         $('#frm').attr('target', '_blank').submit();
                     }
                 });
-                
+
+                $("#movimiento").change(function(){
+                    $("#enviar").hide(); 
+                    $("#motivo").hide(); 
+                    $("#inputFile").hide();                            
+                    switch($("#movimiento" ).val()){
+                        case "SOPORTE":
+                            $("#motivo").show("slow");                            
+                            $("#enviar").show("slow");
+                        break;
+                        case "SUBIR":
+                            $("#inputFile").show("slow");
+                            $("#enviar").show("slow");
+                        break;
+                    }
+                });
             });        
         </script>
     @endsection 

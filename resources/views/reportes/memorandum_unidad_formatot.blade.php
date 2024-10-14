@@ -120,7 +120,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ $itemgetmemo->ruta }}" class="btn btn-danger btn-circles btn-xl" title="MEMORANDUM DE ENVÍO A DIRECCIÓN TÉCNICA ACADÉMICA" target="_blank">
-                                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -166,7 +166,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ $itemgetretorno->ruta }}" class="btn btn-danger btn-circles btn-xl" title="MEMORANDUM DE ENVÍO A DIRECCIÓN TÉCNICA ACADÉMICA" target="_blank">
-                                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                            <i class="far fa-file-pdf" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>

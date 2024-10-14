@@ -120,9 +120,9 @@
                                 <td></td>
                                 <td id="center">
                                     @if($datainstructor->archivo_ine == NULL)
-                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                        <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                                     @else
-                                    <a href={{$datainstructor->archivo_ine}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                    <a href={{$datainstructor->archivo_ine}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                     @endif
                                 </td>
                                 <td></td>
@@ -411,9 +411,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_domicilio == NULL)
-                                <i id="arch_domicilio_pdf"  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_domicilio_pdf"  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_domicilio_pdf" href={{$datainstructor->archivo_domicilio}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_domicilio_pdf" href={{$datainstructor->archivo_domicilio}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -438,9 +438,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_curp == NULL)
-                                <i id="arch_curp_pdf"  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_curp_pdf"  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_curp_pdf" href={{$datainstructor->archivo_curp}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_curp_pdf" href={{$datainstructor->archivo_curp}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -465,9 +465,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_bancario == NULL)
-                                <i id="arch_banco_pdf"  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_banco_pdf"  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_banco_pdf" href={{$datainstructor->archivo_bancario}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_banco_pdf" href={{$datainstructor->archivo_bancario}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -492,9 +492,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_fotografia == NULL)
-                                <i id="arch_foto_jpg" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_foto_jpg" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_foto_jpg" href={{$datainstructor->archivo_fotografia}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_foto_jpg" href={{$datainstructor->archivo_fotografia}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -521,9 +521,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_otraid == NULL)
-                                <i id="arch_id_pdf" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_id_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_id_pdf" href={{$datainstructor->archivo_otraid}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_id_pdf" href={{$datainstructor->archivo_otraid}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -548,9 +548,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_rfc == NULL)
-                                <i id="arch_rfc_pdf" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_rfc_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_rfc_pdf" href={{$datainstructor->archivo_rfc}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_rfc_pdf" href={{$datainstructor->archivo_rfc}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -575,9 +575,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_estudios == NULL)
-                                <i id="arch_estudio_pdf" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_estudio_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_estudio_pdf" href={{$datainstructor->archivo_estudios}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_estudio_pdf" href={{$datainstructor->archivo_estudios}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -602,9 +602,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_curriculum_personal == NULL)
-                                <i id="arch_curriculum_personal_pdf" class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i id="arch_curriculum_personal_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_curriculum_personal_pdf" href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_curriculum_personal_pdf" href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -631,9 +631,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_alta == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_alta}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$datainstructor->archivo_alta}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                     </tr>
@@ -681,9 +681,9 @@
                                     <td></td>
                                     <td id="center">
                                         @if(!isset($datainstructor->entrevista['link']))
-                                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                                         @else
-                                            <a href={{$datainstructor->entrevista['link']}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                            <a href={{$datainstructor->entrevista['link']}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                         @endif
                                     </td>
                                     <td></td>
@@ -761,7 +761,7 @@
                                                     "{{$item->nombre_institucion}}","{{$item->fecha_expedicion_documento}}","{{$item->periodo}}","{{$item->folio_documento}}",
                                                     "{{$item->cursos_recibidos}}","{{$item->capacitador_icatech}}","{{$item->recibidos_icatech}}",
                                                     "{{$item->cursos_impartidos}}","{{$item->id}}","{{$datainstructor->id}}","{{$loc}}"]'>
-                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                    <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                                             </button>
                                         @endcan
                                         <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
@@ -863,7 +863,7 @@
                 </div>
             </div>
             @if (count($validado) > 0)
-                <table class="table table-bordered table-responsive-md" id="table-perfprof2">
+                <table class="table table-bordered table-responsive-md" id="espec-table">
                     <thead>
                         <tr>
                             <th scope="col">Especialidad</th>
@@ -912,7 +912,7 @@
                                                     ><i class="fa fa-eye" aria-hidden="true"></i>
                                                 </button>
                                                 @if($item->status != 'BAJA EN PREVALIDACION')
-                                                    <a class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    <a class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                                     <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="BAJA DE ESPECIALIDAD"
                                                         data-toggle="modal"
                                                         data-placement="top"
@@ -937,22 +937,22 @@
                                                 ><i class="fa fa-eye" aria-hidden="true"></i>
                                             </button>
                                         @endif
-                                        {{-- @if($item->status == 'EN CAPTURA')
+                                        @if($item->new)
                                             <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                                 data-toggle="modal"
                                                 data-placement="top"
                                                 data-target="#delespecvalidModal"
-                                                data-id='["{{$item->espinid}}","{{$loc2}}"]'>
+                                                data-id='["{{$item->espinid}}","{{$loc2}}","{{$datainstructor->id}}"]'>
                                                     <i class="fa fa-eraser" aria-hidden="true"></i>
                                             </button>
-                                        @endif --}}
+                                        @endif
                                         @if(isset($item->hvalidacion))
                                             <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VALIDACIÓN"
                                                 data-toggle="modal"
                                                 data-placement="top"
                                                 data-target="#validacionesModal"
                                                 data-id='{{$item->hvalidacion}}'>
-                                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                    <i class="far fa-file-pdf" aria-hidden="true"></i>
                                             </button>
                                         @endif
                                     </small></td>
@@ -1002,9 +1002,9 @@
                                 <td></td>
                                 <td id="center">
                                     @if($datainstructor->curriculum == NULL)
-                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                        <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                                     @else
-                                        <a href={{$datainstructor->curriculum}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                        <a href={{$datainstructor->curriculum}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                     @endif
                                 </td>
                                 <td></td>
@@ -1023,9 +1023,9 @@
                     </table>
                 </div>
             </div>
-            @if(($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO') &&  in_array($roluser->role_id, ['30','31']))
+            @if(($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO') &&  in_array($roluser->role_id, ['30','31']) && $datainstructor->estado)
                 <hr style="border-color:dimgray">
-                <label><h2>Solicitar Bajas del Instructor</h2></label>
+                <label><h2>Solicitar Baja del Instructor</h2></label>
                 <div class="form-group col-md-8">
                     <button type="button" class="btn btn-danger"
                         data-toggle="modal"
@@ -1049,7 +1049,7 @@
                     {{-- <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer> --}}
                 </div>
             @endif
-            @if($datainstructor->status != 'VALIDADO')
+            @if($datainstructor->status != 'VALIDADO' || $datainstructor->status != 'BAJA')
                 <hr style="border-color:dimgray">
                 <div>
                     <label><h2>Numero de Revisión</h2></label>
@@ -1059,6 +1059,11 @@
                         <br>
                         <input class="form-control" type="text" name="nrevision" id="nrevision" value='{{$datainstructor->nrevision}}' readonly>
                     </div>
+                    @can('instructor.editar_fase2')
+                        <div class="form-group col-md-4" style="padding-top: 5px;">
+                            <a class="btn mr-sm-4 mt-3" href="{{ route('instructor.deshacer-movimimiento', ['id' => $datainstructor->id]) }}" >DESHACER CAMBIOS</a>
+                        </div>
+                    @endcan
                     <div class="form-group col-md-1">
                         @if(!isset($nrevisionlast->nrevision))
                             <input hidden value={{$nrevisionlast}} id="revlast" name="revlast">
@@ -1438,8 +1443,9 @@
                         </div>
                     </div>
                     <br>
-                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif type="hidden" name="idespecvalid" id="idespecvalid">
-                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif type="hidden" name="loc2del" id="loc2del">
+                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif hidden  name="idespecvalid" id="idespecvalid">
+                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif hidden name="loc2del" id="loc2del">
+                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif hidden name="idinsespecvalid" id="idinsespecvalid">
                 </div>
             </div>
         </div>
@@ -2614,7 +2620,8 @@
 
         function delespecvalid() {
             var datos = {
-                            id: document.getElementById("idespecvalid").value
+                            id: document.getElementById("idespecvalid").value,
+                            idins: document.getElementById("idinsespecvalid").value
                         };
 
             var url = '/instructor/mod/especialidadimpartir/eliminar';
@@ -2629,10 +2636,9 @@
             request2.done(( respuesta) =>
             {
                 position = document.getElementById("row").value;
-                // console.log(respuesta);
-                $('#delperprofModal').modal('hide');
-                $('#delperprofwarning').prop("class", "d-none d-print-none")
-                var table = document.getElementById('tableperfiles')
+                $('#delespecvalidModal').modal('hide');
+                $('#delespecvalidwarning').prop("class", "d-none d-print-none")
+                var table = document.getElementById('espec-table')
                 var loc2del = document.getElementById('loc2del').value
                 table.deleteRow(loc2del);
             });
@@ -2948,6 +2954,7 @@
             var id = button.data('id');
             document.getElementById('idespecvalid').value = id['0'];
             document.getElementById('loc2del').value = id['1'];
+            document.getElementById('idinsespecvalid').value = id['2'];
         });
 
         $('#sendtodtaModal').on('show.bs.modal', function(event){

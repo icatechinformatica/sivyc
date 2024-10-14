@@ -90,77 +90,51 @@
             <br><h6>{{$distintivo}}</h6>
         </header>
         <div id="wrapper">
-            <div align=center><b><h6>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
-                <br>DIRECCIÓN DE PLANEACIÓN
-                <br>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO
-                <br>FORMATO DE SOLICITUD DE SUFICIENCIA PRESUPUESTAL
-                <br>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}} ANEXO DE MEMORÁNDUM No. {{$data2->no_memo}}</h6></b> </div>
-            </div>
-            <div class="form-row">
-                <table width="700" class="table table-striped" id="table-one">
-                    <thead>
-                        <tr class="active">
-                            <td scope="col"><small style="font-size: 10px;">No. DE SUFICIENCIA</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR EXTERNO</small></td>
-                            <td scope="col" width="10px"><small style="font-size: 10px;">UNIDAD/ACCION MOVIL</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">CURSO/CERTIFICACION</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">NOMBRE</small></td>
-                            <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
-                            <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>
-                            @if($data[0]['fecha_apertura'] <  '2023-10-12')
-                                <td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>
-                                @if($tipop == 'HONORARIOS')<td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>@endif
-                                <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
-                                <td scope="col"><small style="font-size: 10px;">IMPORTE</small></td>
-                            @else
-                                <td scope="col" ><small style="font-size: 10px;">COSTO POR HORA</small></td>
-                                <td scope="col"><small style="font-size: 10px;">TOTAL IMPORTE</small></td>
-                                <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
-                            @endif
-                            <td scope="col" ><small style="font-size: 10px;">OBSERVACION<small></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($data as $key=>$item)
+            {!!$bodyTabla!!}
+            @if(!is_null($uuid))
+                <div align=center> <b>SOLICITA
+                    <br>
+                    <br><small>C. {{$funcionarios['director']}}</small>
+                    <br><small>{{$funcionarios['directorp']}}</small>
+                </div>
+                <br><br><br><div style="display: inline-block; width: 85%;">
+                    <table style="width: 100%; font-size: 5px;">
+                        @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
                             <tr>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->folio_validacion}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->fecha}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->unidad}}</small></td>
-                                @if ($item->tipo_curso=='CERTIFICACION')
-                                    <td><small style="font-size: 10px;">CERTIFICACIÓN</small></td>
-                                @else
-                                    <td><small style="font-size: 10px;">CURSO</small></td>
-                                @endif
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->curso_nombre}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->clave}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->ze}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->dura}}</small></td>
-                                @if($data[0]['fecha_apertura'] <  '2023-10-12')
-                                    <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_hora, 2, '.', ',') }}</td>
-                                    @if($item->modinstructor == 'HONORARIOS')<td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->iva, 2, '.', ',')}}</td>@endif
-                                    <td scope="col" class="text-center"><small style="font-size: 10px;">@if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS')12101 HONORARIOS @else 12101 ASIMILADOS A SALARIOS @endif</td>
-                                    <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_total, 2, '.', ',') }}</td>
-                                @else
-                                    <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($criterio->monto, 2, '.', ',') }}</td>
-                                    <td scope="col" class="text-center"><small style="font-size: 10px;">{{ number_format($item->importe_total, 2, '.', ',') }}</td>
-                                    <td scope="col" class="text-center"><small style="font-size: 10px;">@if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS')12101 HONORARIOS @else 12101 ASIMILADOS A SALARIOS @endif</td>
-                                @endif
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->comentario}}</small></td>
+                                <td style="width: 10%; font-size: 7px;"><b>Nombre del firmante:</b></td>
+                                <td style="width: 90%; font-size: 7px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top; font-size: 7px;"><b>Firma Electrónica:</b></td>
+                                <td style="font-size: 7px;">{{ wordwrap($moist['_attributes']['firma_firmante'], 87, "\n", true) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 7px;"><b>Puesto:</b></td>
+                                <td style="font-size: 7px; height: 25px;">{{$puestos[$key]}}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 7px;"><b>Fecha de Firma:</b></td>
+                                <td style="font-size: 7px;">{{ $moist['_attributes']['fecha_firmado_firmante'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 7px;"><b>Número de Serie:</b></td>
+                                <td style="font-size: 7px;">{{ $moist['_attributes']['no_serie_firmante'] }}</td>
                             </tr>
                         @endforeach
-                    </tbody>
-                </table>
-                <br>
-            </div>
-            <div align=center> <b>SOLICITA
-                <br>
-                <br><small>{{$getremitente->nombre}}</small>
-                <br>________________________________________
-                <br><small>{{$getremitente->cargo}}
-            </div>
+                    </table>
+                </div>
+                <div style="display: inline-block; width: 15%;">
+                    {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
+                    <img style="position: fixed; width: 15%; top: 45%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                </div>
+            @else
+                <div align=center> <b>SOLICITA
+                    <br>
+                    <br><small>C. {{$funcionarios['director']}}</small>
+                    <br>________________________________________
+                    <br><small>{{$funcionarios['directorp']}}</small>
+                </div>
+            @endif
         </div>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">

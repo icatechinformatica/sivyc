@@ -11,7 +11,7 @@ class ExpeUnico extends Model
     protected $fillable = ['id', 'id_curso', 'folio_grupo', 'iduser_created', 'iduser_updated'];
 
     protected $hidden = ['created_at', 'updated_at'];
-    protected $casts = ['vinculacion' => 'json', 'academico' => 'json', 'administrativo' => 'json', 'sop_constancias' => 'json'];
+    protected $casts = ['vinculacion' => 'json', 'academico' => 'json', 'administrativo' => 'json', 'sop_constancias' => 'json', 'movimientos' => 'json'];
 
     protected function scopeBusqueda($query, $buscar){
     if (!empty(trim($buscar))) {

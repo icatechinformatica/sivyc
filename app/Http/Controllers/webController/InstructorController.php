@@ -35,27 +35,25 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport;
 use ZipArchive;
 use PDF;
+use App\User;
 
 class InstructorController extends Controller
 {
     public function prueba()
     {
-        $zip = new ZipArchive();
-        $zipFileName = public_path('example.zip');
+        $data = User::Select('id')->Get();
+        foreach($data as $item)
+        {
+            $user = User::find($item->id);
+            if(str_contains($user->password,'BAJA') || str_contains($user->email,'BAJA')) {
+                $user->activo = FALSE;
+            } else {
+                $user->activo = TRUE;
+            }
 
-        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
-            // Add files or directories to the ZIP archive
-            $zip->addFile(public_path('file1.txt'), 'file1.txt');
-            $zip->addFile(public_path('file2.txt'), 'file2.txt');
-            $zip->addEmptyDir('new_directory');
-
-            $zip->close();
-            dd($zipFileName);
-
-            return 'ZIP archive created successfully.';
-        } else {
-            return 'Failed to create ZIP archive.';
+            $user->save();
         }
+        dd('complete');
 
     }
 
@@ -1184,8 +1182,10 @@ class InstructorController extends Controller
                 // Verificar si hay elementos en hvalidacion
                 if (count($hvalidacion) > 0) {
                     // Obtener el último elemento
-                    $ultimoElemento = array_pop($hvalidacion);
-                    $data['hvalidacion'] = $hvalidacion;
+                    if((in_array($data['status'],['REVALIDACION EN FIRMA', 'BAJA EN FIRMA', 'EN FIRMA']) && $instructor['turnado'] == 'DTA') || $data['status'] == 'VALIDADO') {
+                        $ultimoElemento = array_pop($hvalidacion);
+                        $data['hvalidacion'] = $hvalidacion;
+                    }
                     if($request->movimiento == 'retornar en firma') {
                         if($data['status'] == 'VALIDADO') {
                             $data['status'] = 'REVALIDACION EN FIRMA';
@@ -1193,14 +1193,14 @@ class InstructorController extends Controller
                             $data['status'] = 'BAJA EN FIRMA';
                         }
                     } else {
-                        if($data['status'] == 'VALIDADO') {
+                        if($data['status'] != 'BAJA') {
                             $data['status'] = 'REVALIDACION EN CAPTURA';
                         } else {
                             $data['status'] = 'BAJA EN CAPTURA';
                         }
                     }
 
-                    if($data['new'] == false) {
+                    if($data['new'] == false && $data['status'] == 'VALIDADO') {
                         $especialidad_oficial = especialidad_instructor::WHERE('id', '=', $data['id'])->FIRST();
                         $hvalidacion_oficial = $especialidad_oficial->hvalidacion;
                         array_pop($hvalidacion_oficial);
@@ -1552,7 +1552,10 @@ class InstructorController extends Controller
         {
             $instructorOficial->status = $saveInstructor->status = 'VALIDADO';
         }
+
+        $instructorOficial->estado = FALSE;
         $saveInstructor->estado = FALSE;
+
         $saveInstructor->save();
         $instructorOficial->save();
 
@@ -2343,7 +2346,7 @@ class InstructorController extends Controller
         data-target="#modperprofModal"
         data-id=' . "'" . '["' . $request->grado_prof . '","' . $request->area_carrera . '","' . $request->carrera . '","'. $request->estatus . '",
                 "' . $request->pais_institucion . '",
-                "' . $request->id . '","' . $request->idInstructor . '","' . $request->row . '"]' . "'" . '> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>';
+                "' . $request->id . '","' . $request->idInstructor . '","' . $request->row . '"]' . "'" . '> <i class="fas fa-pencil-alt" aria-hidden="true"></i> </button>';
         $paw = '<button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
             data-toggle="modal"
             data-placement="top"
@@ -2450,7 +2453,7 @@ class InstructorController extends Controller
                 "' . $request->institucion_nombre . '","' . $request->fecha_documento . '","' . $request->folio_documento . '",
                 "' . $request->cursos_recibidos . '","' . $request->capacitador_icatech . '","' . $request->recibidos_icatech . '",
                 "' . $request->cursos_impartidos . '","' . $request->experiencia_laboral . '","' . $request->experiencia_docente . '",
-                "' . $request->idperfprof . '","' . $request->numero_control . '","' . $request->pos . '"]' . "'" . '> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>';
+                "' . $request->idperfprof . '","' . $request->numero_control . '","' . $request->pos . '"]' . "'" . '> <i class="fas fa-pencil-alt" aria-hidden="true"></i> </button>';
 
         $paw = '<button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
             data-toggle="modal"
@@ -2817,15 +2820,15 @@ class InstructorController extends Controller
         $arrnew = $espec_imp->data_especialidad;
         foreach($arrnew as $cadwell)
         {
-            if($cadwell['id'] != $request->id)
+            if($cadwell['id'] != $request->id && $cadwell['new'] != TRUE)
             {
                 array_push($arrtemp, $cadwell);
             }
         }
         $espec_imp->data_especialidad = $arrtemp;
-        $espec_imp->save();
+        $row = $espec_imp->save();
 
-        $json=json_encode($perf);
+        $json=json_encode($arrtemp);
         return $json;
     }
 
@@ -3334,15 +3337,15 @@ class InstructorController extends Controller
         $fecha_solicitud = carbon::now()->toDateString();
         $date = strtotime($fecha_solicitud);
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
-        $usernombre = auth()->user()->name;
-        $userpuesto = auth()->user()->puesto;
 
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
-        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','usernombre','userpuesto'));
+        $funcionarios = $this->funcionarios('TUXTLA');
+
+        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('entrevista_instructor.pdf');
     }
@@ -3362,19 +3365,14 @@ class InstructorController extends Controller
             $perfiles = $this->make_collection($data->data_perfil);
         }
         $date = strtotime(carbon::now()->toDateString());
-        // dd($data->archivo_fotografia);
-        // $data->archivo_fotografia = substr($data->archivo_fotografia,33);
-        // dd($data->archivo_fotografia);
-        // dd($data->archivo_fotografia);
-
-        // dd($data);
+        $funcionarios  = $this->funcionarios('TUXTLA');
 
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
-        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y'));
+        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('curriculum_icatech_instructor.pdf');
     }
@@ -3515,9 +3513,8 @@ class InstructorController extends Controller
         // }
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
-        $direccion = $data_unidad->direccion;
-        $direccion = explode("*", $data_unidad->direccion);
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
+        $funcionarios = $this->funcionarios($daesp);
 
         if($honorario_actual != $instructor->tipo_honorario && $especialidad_cambios == FALSE && isset($request->borrador)) {
             $date = strtotime(carbon::now());
@@ -3528,7 +3525,7 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         $nomemosol = $request->nomemo;
         $fecha_letra = $this->obtenerFechaEnLetra($D);
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
     }
@@ -3594,7 +3591,7 @@ class InstructorController extends Controller
 
         $instructor->data_especialidad = $special;
 
-        $elaboro = DB::TABLE('users')->WHERE('id','=', $user)->FIRST();
+        // $elaboro = DB::TABLE('users')->WHERE('id','=', $user)->FIRST();
         $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $especialidades = $this->make_collection($especialidades);
         $ubicacion = DB::TABLE('tbl_unidades')
@@ -3603,8 +3600,7 @@ class InstructorController extends Controller
         $unidad = DB::TABLE('tbl_unidades')
                         ->WHERE('unidad', '=', $ubicacion)
                         ->FIRST();
-        $direccion = '14 PONIENTE NORTE NO. 239*COLONIA MOCTEZUMA.*TUXTLA GUTIÉRREZ, CP 29030 TELEFONO: 9616121621* EMAIL: ICATECH@ICATECH.CHIAPAS.GOB.MX';
-        $direccion = explode("*", $direccion);
+        $funcionarios = $this->funcionarios($ubicacion);
         if($instructor->numero_control == 'Pendiente')
         {
             $uni = substr($unidad->cct, -3, 2) * 1 . substr($unidad->cct, -1);
@@ -3644,7 +3640,7 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','elaboro','instructor','especialidades','unidad','D','M','Y','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','instructor','especialidades','unidad','D','M','Y','funcionarios'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('validacion_instructor.pdf');
     }
@@ -3690,8 +3686,7 @@ class InstructorController extends Controller
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
         ->WHERE('unidad', '!=', 'VILLA CORZO')
         ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
-        $direccion = $data_unidad->direccion;
-        $direccion = explode("*", $data_unidad->direccion);
+        $funcionarios = $this->funcionarios($data_unidad->ubicacion);
         $date = strtotime($especialidades[0]->fecha_solicitud);
         $D = date('d', $date);
         $MO = date('m',$date);
@@ -3699,7 +3694,7 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         // dd($especialidades);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor.pdf');
     }
@@ -3708,7 +3703,6 @@ class InstructorController extends Controller
     {
         // dd($request);
         $nomesp = $arrtemp = $especialidades = array();
-        $elabora = DB::TABLE('users')->WHERE('id', '=', auth::user()->id)->FIRST();
         $instructor = pre_instructor::find($request->idinsbajadocval);
         $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $special = $this->make_collection($instructor->data_especialidad);
@@ -3738,8 +3732,8 @@ class InstructorController extends Controller
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
         ->WHERE('unidad', '!=', 'VILLA CORZO')
         ->WHERE('unidad', '!=', 'TUXTLA CHICO')->FIRST();
-        $direccion = '14 PONIENTE NORTE NO. 239*COLONIA MOCTEZUMA.*TUXTLA GUTIÉRREZ, CP 29030 TELEFONO: 9616121621* EMAIL: ICATECH@ICATECH.CHIAPAS.GOB.MX';
-        $direccion = explode("*", $direccion);
+        $funcionarios = $this->funcionarios($data_unidad->ubicacion);
+
         $date = strtotime($especialidades[0]->fecha_baja);
         $datesol = strtotime($especialidades[0]->fecha_solicitud);
         $D = date('d', $date);
@@ -3752,9 +3746,74 @@ class InstructorController extends Controller
         $YS = date("Y",$datesol);
         // dd($data_unidad);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('elabora','distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor_validacion.pdf');
+    }
+
+    public function deshacer_movimiento($id) {
+        $instructor_ofc = instructor::find($id);
+        $temp = pre_instructor::find($id);
+        $perfiles = InstructorPerfil::WHERE('numero_control',$id)->GET();
+        $especialidades = especialidad_instructor::WHERE('id_instructor', '=', $id)->GET();
+
+        if(!is_null($perfiles) && !is_null($especialidades)) {
+            if($instructor_ofc->estado) {
+                $instructor_ofc->status = 'VALIDADO';
+            } else {
+                $instructor_ofc->status = 'BAJA';
+            }
+
+            foreach ($instructor_ofc->getAttributes() as $key => $data) {
+                $temp->$key = $data;
+            }
+
+            $instructor_ofc->turnado = $temp->turnado = 'UNIDAD';
+            $temp->registro_activo = FALSE;
+            unset($temp->curso_extra);
+
+            //data_especialidad
+            $data_especialidad = $temp->data_especialidad;
+            foreach ($especialidades as $pointer => $item) {
+                foreach ($data_especialidad as $count => $seguridad) {
+                    if($seguridad['id'] == $item->id && !$seguridad['new'] && !in_array($seguridad['status'],['VALIDADO','BAJA'])) { //Seguridad para evitar que nuevos o ya validados hagan cambios que no existen
+                        foreach ($item->getAttributes() as $element => $esp_ofc) {
+                            if(!in_array($element,['created_at','updated_at'])) { // evita que se inserten en data_especialidad
+                                $data_especialidad[$count][$element] = $esp_ofc;
+                            }
+                        }
+                        //termina proceso de llenado de un elemento de data_especialidad
+                        $data_especialidad[$count]['fecha_baja'] = $data_especialidad[$count]['memorandum_baja'] = $data_especialidad[$count]['memorandum_solicitud'] = $data_especialidad[$count]['memorandum_validacion'] = $data_especialidad[$count]['memorandum_modificacion'] = NULL; // campos que deben ir nulos en data_especialidad
+                    }
+                }
+            }
+            $temp->data_especialidad = $data_especialidad;
+
+            //data_perfil
+            $data_perfil = $temp->data_perfil;
+            foreach ($perfiles as $pointer => $item) {
+                foreach ($data_perfil as $count => $seguridad) {
+                    if($seguridad['id'] == $item->id && !$seguridad['new'] && !in_array($seguridad['status'],['VALIDADO','BAJA'])) { //Seguridad para evitar que nuevos o ya validados hagan cambios que no existen
+                        foreach ($item->getAttributes() as $element => $perf_ofc) {
+                            if(!in_array($element,['created_at','updated_at'])) { // evita que se inserten en data_especialidad
+                                $data_perfil[$count][$element] = $perf_ofc;
+                            }
+                        }
+                    }
+                }
+            }
+            $temp->data_perfil = $data_perfil;
+        } else {
+            $instructor_ofc->status = $temp->turnado = 'ELIMINADO';
+            $instructor_ofc->turnado = $temp->turnado = 'UNIDAD';
+            $instructor_ofc->estado = $temp->estado = FALSE;
+        }
+
+        $temp->save();
+        $instructor_ofc->save();
+
+        return redirect()->route('instructor-inicio')
+                ->with('success', 'El Movimiento ha sido Anulado Exitosamente');
     }
 
     private function guardado_ins($saveInstructor,$request,$id)
@@ -4444,10 +4503,13 @@ class InstructorController extends Controller
 
         $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
         ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
+        ->Join('folios','folios.id_cursos', 'tbl_cursos.id')
         ->Where('id_instructor',$saveInstructor->id)
         ->where(function ($query) {
             $query->whereNotIn('pagos.status_recepcion', ['VALIDADO', 'recepcion tradicional'])
-                ->orWhereNull('pagos.status_recepcion');
+                ->orWhereNull('pagos.status_recepcion')
+                ->orWhere('pagos.status_recepcion', 'Rechazado')
+                ->orWhere('folios.edicion_pago','TRUE');
         })
         ->Get();
 
@@ -4455,17 +4517,7 @@ class InstructorController extends Controller
 
             foreach($data_ins_curso as $prime) {
                 $upd_curso = tbl_curso::Find($prime->id);
-                $upd_curso->soportes_instructor = [
-                    'banco' => $instructor->banco,
-                    'domicilio' => $instructor->domicilio,
-                    'no_cuenta' => $instructor->no_cuenta,
-                    'archivo_ine' => $instructor->archivo_ine,
-                    'archivo_rfc' => $instructor->archivo_rfc,
-                    'interbancaria' => $instructor->interbancaria,
-                    'tipo_honorario' => $instructor->tipo_honorario,
-                    'archivo_bancario' => $instructor->archivo_bancario,
-                    'archivo_domicilio' => $instructor->archivo_domicilio
-                ];
+                $upd_curso->soportes_instructor = $instructor->soportesInstructor();
                 $upd_curso->save();
             }
         }
@@ -4567,59 +4619,34 @@ class InstructorController extends Controller
         return $respond;
     }
 
-    protected function egg()
-    {
-        // ACTUALIZA HVALIDACION DE NULO A LLENO
-        // $moist = especialidad_instructor::select('especialidad_instructores.id','id_instructor')->get();
-        // foreach ($moist as $cadwell)
-        // {
-        //     $arrtemp = $hvalidacion = array();
-        //     $data = especialidad_instructor::find($cadwell->id);
-        //     $instructor_check = pre_instructor::find($cadwell->id_instructor);
-        //     $arch_alta = instructor::find($cadwell->id_instructor);
-        //     if(!isset($instructor_check))
-        //     {
-        //         // if(!isset($arch_alta->archivo_alta))
-        //         // {
-        //         //     dd($arch_alta);
-        //         // }
-        //         $arrtemp['arch_sol'] = $arch_alta->archivo_alta;
-        //         $arrtemp['arch_val'] = $arch_alta->archivo_alta;
-        //         $arrtemp['memo_sol'] = $data->memorandum_solicitud;
-        //         $arrtemp['memo_val'] = $data->memorandum_validacion;
-        //         $arrtemp['fecha_sol'] = $data->updated_at;
-        //         $arrtemp['fecha_val'] = $data->updated_at;
+    public function funcionarios($unidad) {
+        $query = clone $dacademico = clone $dacademico_unidad = clone $gestionacademica = clone $dunidad = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true')
+            ->Where('f.titular', true);
 
-        //         array_push($hvalidacion, $arrtemp);
-        //         $data->hvalidacion = $hvalidacion;
-        //         $data->save();
-        //     }
+        $dacademico = $dacademico->Where('o.id',16)->First();
+        $gestionacademica = $gestionacademica->Where('o.id',17)->First();
 
-        // }
-        // dd('yeaaah boy');
+        $dacademico_unidad = $dacademico_unidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DEPARTAMENTO ACADEMICO%')
+            ->Where('u.unidad', $unidad)
+            ->First();
 
-        // UPDATE DE CURSOS_IMPARTIR
-        // set_time_limit(0);
-        // $idesin = DB::table('especialidad_instructores')->SELECT('id')->WHERENULL('cursos_impartir')->OrderBy('id', 'ASC')->GET();
+        $dunidad = $dunidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
 
-        // foreach ($idesin as $key => $cadwell)
-        // {
-        //     $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
-        //                   ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
-        //                   ->WHERE('activo', '=', TRUE)
-        //                   ->OrderBy('curso_id', 'ASC')
-        //                   ->GET();
+        $funcionarios = [
+            'dacademico' => ['titulo'=>$dacademico->titulo,'nombre'=>$dacademico->nombre,'puesto'=>$dacademico->cargo,'direccion'=>$dacademico->direccion,'telefono'=>$dacademico->telefono,'correo'=>$dacademico->correo_institucional],
+            'gestionacademica' => ['titulo'=>$gestionacademica->titulo,'nombre'=>$gestionacademica->nombre,'puesto'=>$gestionacademica->cargo,'direccion'=>$gestionacademica->direccion,'telefono'=>$gestionacademica->telefono,'correo'=>$gestionacademica->correo_institucional],
+            'dacademico_unidad' => ['titulo'=>$dacademico_unidad->titulo,'nombre'=>$dacademico_unidad->nombre,'puesto'=>$dacademico_unidad->cargo,'direccion'=>$dacademico_unidad->direccion,'telefono'=>$dacademico_unidad->telefono,'correo'=>$dacademico_unidad->correo_institucional],
+            'dunidad' => ['titulo'=>$dunidad->titulo,'nombre'=>$dunidad->nombre,'puesto'=>$dunidad->cargo,'direccion'=>$dunidad->direccion,'telefono'=>$dunidad->telefono,'correo'=>$dunidad->correo_institucional],
+            'elabora' => ['nombre'=>strtoupper(Auth::user()->name),'puesto'=>strtoupper(Auth::user()->puesto)]
+        ];
 
-        //     $array = [];
-        //     foreach ($cursos as $data)
-        //     {
-        //         array_push($array, $data->curso_id);
-        //     }
-
-        //     especialidad_instructor::WHERE('id', '=', $cadwell->id)
-        //                         ->update(['cursos_impartir' => $array]);
-        // }
-        // dd('Lock&Load');
+        return $funcionarios;
     }
 }
 

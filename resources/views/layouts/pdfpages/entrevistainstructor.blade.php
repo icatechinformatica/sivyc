@@ -18,7 +18,7 @@
                 margin: 20px 30px 20px;
 
             }
-           
+
             header {
             position: fixed;
             left: 0px;
@@ -42,7 +42,7 @@
             footer {
             position: fixed;
             /* left: 0px; */
-            bottom: 50px;
+            bottom: 70px;
             /* right: 0px; */
             /* height: 60px; */
             /* text-align: center; */
@@ -57,8 +57,8 @@
 
             img.izquierdabot {
                 float: inline-end;
-                width: 350px;
-                height: 60px;
+                width: 100%;
+                height: 90px;
             }
 
             img.derecha {
@@ -97,6 +97,18 @@
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
+
+        .direccion
+        {
+            text-align: left;
+            position: absolute;
+            /* bottom: 0px; */
+            top: 45px;
+            left: 15px;
+            font-size: 8.5px;
+            color: white;
+            line-height: 1;
+        }
         </style>
     </head>
     <body style="margin-top:90px; margin-bottom:70px;">
@@ -108,9 +120,14 @@
             </div>
         </header>
         <footer>
-            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
-            <img style="position: absolute; left: 400px; top: -30px;" src="{{ public_path('img/icatech-imagen.png') }}">
-            <div class="page-break-non"></div>
+            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+            <p class='direccion'><b>
+                @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
+                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+                <br>
+                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
+                @if(!is_null($funcionarios['dacademico']['correo'])) Correo: {{$funcionarios['dacademico']['correo']}} @endif
+            </b></p>
         </footer>
         <div>
             <div align=center><b>Formato de Entrevista para Candidatos a Instructores</b></div>
@@ -203,11 +220,11 @@
                 </tr>
                 <tr>
                     <td colspan="2"><div align="center">{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</td></div>
-                    <td colspan="2"><div align="center">{{$usernombre}}</td></div>
+                    <td colspan="2"><div align="center">{{$funcionarios['elabora']['nombre']}}</td></div>
                 </tr>
                 <tr>
                     <td colspan="2"><div align="center">ENTREVISTADO</td>
-                    <td colspan="2"><div align="center">{{$userpuesto}}</td></div>
+                    <td colspan="2"><div align="center">{{$funcionarios['elabora']['puesto']}}</td></div>
                 </tr>
             </table>
         </div>

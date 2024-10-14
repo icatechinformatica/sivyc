@@ -41,13 +41,13 @@
 
         {{-- busqueda por rango de folios --}}
         {{-- {{$busquedaGeneral != '3' ? 'class'=>'d-none' : ''}} --}}
-        {{ Form::open(['method' => 'post','id'=>'frm']) }} 
+        {{ Form::open(['method' => 'post','id'=>'frm']) }}
             <div id="classRango" class="row form-inline {{$busquedaGeneral != '3' ? 'd-none' : ''}}">
                 {{ Form::select('unidad', $unidades, $unidad ,['id'=>'unidad','class' => 'form-control  mr-sm-4 mt-3','title' => 'UNIDAD']) }}
-                {{ Form::select('mod', ['EXT'=>'EXT','CAE'=>'CAE','GRAL'=>'GENERAL'], $mod ,array('id'=>'mod','class' => 'form-control  mr-sm-4 mt-3','title' => 'MODALIDAD')) }}                    
+                {{ Form::select('mod', ['EXT'=>'EXT','CAE'=>'CAE','GRAL'=>'GENERAL'], $mod ,array('id'=>'mod','class' => 'form-control  mr-sm-4 mt-3','title' => 'MODALIDAD')) }}
                 {{ Form::text('finicial', $finicial, ['id'=>'finicial', 'class' => 'form-control mr-sm-4 mt-3 numero', 'placeholder' => ' FOLIO INICIAL', 'title' => ' FOLIO INICIAL','size' => 20]) }}
-                {{ Form::text('ffinal', $ffinal, ['id'=>'ffinal', 'class' => 'form-control mr-sm-4 mt-3 numero', 'placeholder' => 'FOLIO FINAL', 'title' => 'FOLIO FINAL', 'size' => 20]) }}                    
-                {{ Form::text('busquedaGeneral', '3', ['id'=>'busquedaGeneral', 'class' => 'd-none']) }}                    
+                {{ Form::text('ffinal', $ffinal, ['id'=>'ffinal', 'class' => 'form-control mr-sm-4 mt-3 numero', 'placeholder' => 'FOLIO FINAL', 'title' => 'FOLIO FINAL', 'size' => 20]) }}
+                {{ Form::text('busquedaGeneral', '3', ['id'=>'busquedaGeneral', 'class' => 'd-none']) }}
                 {{ Form::button('FILTRAR', ['id' => 'botonFILTRAR', 'name'=> 'boton', 'value' => 'FILTRAR', 'class' => 'btn mr-sm-4 mt-3']) }}
                 {{ Form::button('XLS', ['id' => 'botonXLS', 'value' => 'XLS', 'class' => 'btn mr-sm-4 mt-3']) }}
             </div>
@@ -126,7 +126,7 @@
                             <th scope="col" class="text-center">FOLIO</th>
                             <th scope="col" class="text-center">MODALIDAD</th>
                             <th scope="col" class="text-center">EXPEDICI&Oacute;N</th>
-                            <th scope="col" class="text-center">ESTATUS</th>                            
+                            <th scope="col" class="text-center">ESTATUS</th>
                             <th scope="col" class="text-center">MOTIVO</th>
                             <th scope="col" class="text-center">MATR&Iacute;CULA</th>
                             <th class="text-center"><div style="width: 150px;" class="col">ALUMNOS</div></th>
@@ -148,14 +148,14 @@
                     </thead>
                     @if(isset($folios))
                     <?php $n=1;   ?>
-                    <tbody>                        
+                    <tbody>
                         @foreach($folios as $f)
                             <tr>
                                 <td class="text-center">{{ $n++ }} </td>
                                 <td class="text-center">{{ $f->unidad }} </td>
                                 <td class="text-center">{{ $f->clave}} </td>
-                                <td class="text-center">{{ $f->curso}} </td>                            
-                                <td class="text-center">{{ $f->folio }} </td>                           
+                                <td class="text-center">{{ $f->curso}} </td>
+                                <td class="text-center">{{ $f->folio }} </td>
                                 <td class="text-center">{{ $f->mod }} </td>
                                 <td class="text-center">@if($f->fecha_expedicion) {{ date('d/m/Y', strtotime($f->fecha_expedicion)) }} @endif</td>
                                 <td class="text-center">{{ $f->movimiento}} </td>
@@ -178,30 +178,30 @@
                                 <td class="text-center">
                                  @if($f->file_autorizacion)
                                     <a class="nav-link"  href="{{ $path_file.$f->file_autorizacion }}" target="_blank">
-                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
-                                    </a>  
-                                @else 
+                                        <i  class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
+                                    </a>
+                                @else
                                     {{ "NO ADJUNTADO"}}
                                 @endif
-                                </td>                                                                                                      
-                            </tr>                            
-                        @endforeach                       
-                    </tbody>                    
-                    
-                    <tfoot>                       
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+
+                    <tfoot>
                     </tfoot>
                     @endif
                 </table>
             </div>
-        </div>     
-    </div>    
+        </div>
+    </div>
 @endsection
 
-@section('script_content_js') 
-    <script language="javascript">           
-        $(document).ready(function(){ 
+@section('script_content_js')
+    <script language="javascript">
+        $(document).ready(function(){
             $("#botonFILTRAR" ).click(function(){ $('#frm').attr('action', "{{route('consultas.folios')}}"); $("#frm").attr("target", '_self'); $('#frm').submit(); });
-            $("#botonXLS" ).click(function(){ $('#frm').attr('action', "{{route('consultas.folios.xls')}}"); $("#frm").attr("target", '_blanck');$('#frm').submit();});                                
+            $("#botonXLS" ).click(function(){ $('#frm').attr('action', "{{route('consultas.folios.xls')}}"); $("#frm").attr("target", '_blanck');$('#frm').submit();});
         });
 
         $('#btnXlsCurso').click(function() {
@@ -354,5 +354,5 @@
         });
 
 
-    </script>  
+    </script>
 @endsection

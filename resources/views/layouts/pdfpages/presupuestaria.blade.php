@@ -1,7 +1,3 @@
-<?php
-if ($uj[0]->tipo_curso=='CERTIFICACION'){$tipo='CERTIFICACIÓN EXTRAORDINARIA';}
-else{$tipo='CURSO';}
-?>
 <html>
     <head>
         <meta charset="utf-8">
@@ -76,6 +72,16 @@ else{$tipo='CURSO';}
                 color: rgb(255, 255, 255);
                 line-height: 1;
             }
+            .landscape {
+                page: landscape;
+                size: landscape;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            .page-break-non {
+                page-break-after: avoid;
+            }
         </style>
     </head>
     <body>
@@ -83,65 +89,60 @@ else{$tipo='CURSO';}
             <img class="izquierda" src="{{ public_path('img/formatos/bannervertical.jpeg') }}">
             <h6><i>{{$distintivo}}<i></h6>
         </header>
-        <div class= "container g-pt-30">
-            <div align=right> <b>Unidad de Capacitación {{$unidad->ubicacion}}</b> </div>
-            <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
-            <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
-
-            <br><br><b>{{$destino->nombre}}.</b>
-            <br>{{$destino->cargo}}.
-            <br><br>Presente.
-
-            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 {{$uj[0]->modinstructor}}, para la contratación de instructores externos para la impartición de
-            @if ($uj[0]->tipo_curso=='CERTIFICACION')
-                certificación extraordinaria
-            @else
-                curso
-            @endif
-            de la
-            @if ($unidad->cct == '07EI')
-                    Unidad de Capacitación <b>{{$unidad->ubicacion}}</b>,
-            @else
-                    Acción Movil <b>{{$data_supre->unidad_capacitacion}}</b>,
-            @endif
-                 de acuerdo a los números de folio que se indican en el cuadro analítico siguiente y acorde a lo que se describe en el formato anexo.</p>
-            <br><div align=justify><b>Números de Folio</b></div>
-
-            <table class="table table-bordered">
-                <thead>
-                </thead>
-                <tbody>
-                    @foreach ($data_folio as $key=>$value )
-                        @if ($key == 0 || $key == 3 || $key == 6 || $key == 9 || $key == 12 || $key == 15 || $key == 18 || $key == 21)
-                        <tr><td>{{$value->folio_validacion}}</td>
-                        @else
-                        <td>{{$value->folio_validacion}}</td>
-                        @endif
-                        @if ($key == 2 || $key == 5 || $key == 8 || $key == 11 || $key == 14 || $key == 17 || $key == 20)
-                        </tr>
-                        @endif
-                    @endforeach
-                </tbody>
-            </table>
-            <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
-            <br><p class="text-left"><p>Atentamente.</p></p>
-            <br><br><b>{{$getremitente->nombre}}</b> <!-- now -->
-            <br><b>{{$getremitente->cargo}}</b>
-            <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
-            @if ($unidad->cct != '07EI')
-                <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
-            @else
-            @endif
-            <br><br><br><h6><small><b>C.c.p.  {{$ccp1->nombre}}.-{{$ccp1->cargo}}.-Mismo Fin</b></small></h6>
-            <h6><small><b>C.c.p. {{$ccp2->nombre}}.-{{$ccp2->cargo}}.-Mismo Fin</b></small></h6>
-            <h6><small><b>Archivo.<b></small></h6>
-            <br><br><small><b>Valido: {{$getelabora->nombre}}.-{{$getelabora->cargo}}</b></small></h6>
-            <br><small><b>Elaboró:  {{$getelabora->nombre}}.-{{$getelabora->cargo}}</b></small></h6>
-        </div>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
+        <div class= "container g-pt-30">
+            {!!$bodySupre!!}
+            @if(!is_null($uuid))
+                <br><b> C. {{$funcionarios['director']}}</b> <!-- now -->
+                <br><b>{{$funcionarios['directorp']}}</b>
+                <br><br><br><div style="display: inline-block; width: 85%;">
+                    <table style="width: 100%; font-size: 5px;">
+                        @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
+                            <tr>
+                                <td style="width: 10%; font-size: 7px;"><b>Nombre del firmante:</b></td>
+                                <td style="width: 90%; font-size: 7px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top; font-size: 7px;"><b>Firma Electrónica:</b></td>
+                                <td style="font-size: 7px;">{{ wordwrap($moist['_attributes']['firma_firmante'], 87, "\n", true) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 7px;"><b>Puesto:</b></td>
+                                <td style="font-size: 7px; height: 25px;">{{$puestos[$key]}}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 7px;"><b>Fecha de Firma:</b></td>
+                                <td style="font-size: 7px;">{{ $moist['_attributes']['fecha_firmado_firmante'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 7px;"><b>Número de Serie:</b></td>
+                                <td style="font-size: 7px;">{{ $moist['_attributes']['no_serie_firmante'] }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+                <div style="display: inline-block; width: 15%;">
+                    {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
+                    <img style="position: fixed; width: 15%; top: 50%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                </div>
+            @else
+                <br><br><b> C. {{$funcionarios['director']}}</b> <!-- now -->
+                <br><b>{{$funcionarios['directorp']}}</b>
+                <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
+                @if ($unidad->cct != '07EI')
+                    <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
+                @else
+                @endif
+            @endif
+            <br><br><h6><small><b>C.c.p. {{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Mismo Fin</b></small></h6>
+            <h6><small><b>C.c.p. {{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo Fin</b></small></h6>
+            <h6><small><b>Archivo.<b></small></h6>
+            <br><small><b>Valido: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
+            <br><small><b>Elaboró: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
+        </div>
     </body>
 </html>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

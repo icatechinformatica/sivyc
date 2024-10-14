@@ -50,7 +50,24 @@ class instructor extends Model
 
     public function setFechaNacAttribute($value) {
         return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
-     }
+    }
+
+    public function soportesInstructor() {
+        return [
+            'banco' => $this->banco,
+            'domicilio' => $this->domicilio,
+            'no_cuenta' => $this->no_cuenta,
+            'archivo_ine' => $this->archivo_ine,
+            'archivo_rfc' => $this->archivo_rfc,
+            'interbancaria' => $this->interbancaria,
+            'tipo_honorario' => $this->tipo_honorario,
+            'archivo_bancario' => $this->archivo_bancario,
+            'archivo_domicilio' => $this->archivo_domicilio,
+            'tipo_identificacion'  => $this->tipo_identificacion,
+            'folio_identificacion' => $this->folio_ine
+        ];
+    }
+
 
     public function scopeSearchInstructor($query, $tipo, $buscar, $tipo_status, $tipo_especialidad)
     {

@@ -25,7 +25,7 @@ Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@histor
 Route::get('/contrato/historial/validado/{id}', 'webController\ContratoController@historial_validado')->name('contrato-validado-historial');
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
-Route::get('/prueba', 'efirma\EContratoController@prueba');
+Route::get('/prueba', 'webController\PagoController@prueba');
 Route::get('/prueba2', 'webController\CursosController@prueba2');
 Route::get('/contrato/reiniciar/{id}', 'webController\ContratoController@contractRestart')->name('reiniciar-contrato');
 
@@ -121,6 +121,7 @@ Route::middleware(['admin'])->group(function(){
     Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
     Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
     Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
+    Route::post('/update/activo', 'adminController\userController@updateActivo')->name('update.activo');
     Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
     Route::get('/roles/index', 'adminController\RolesController@index')->name('roles.index');
     Route::get('/roles/modificacion/{id}', 'adminController\RolesController@edit')->name('roles.edit');
@@ -189,6 +190,7 @@ Route::post('/directorio/getdirectorio','webController\ContratoController@get_di
 Route::get('/pagos/documento/{docs}', 'webController\ContratoController@docs')->name('get-docs');
 Route::get('/contrato-certificacion/{id}', 'webController\ContratoController@contrato_certificacion_pdf')->name('contrato-certificacion-pdf');
 Route::post('/recepcion', 'webController\ContratoController@recepcion')->name('recepcion');
+Route::get('/pagos/verificacionDocs/{idContrato}', 'webController\PagoController@verificar_documentacion')->name('verificacion-docs');
 
 //Ruta Pago
 Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
@@ -255,11 +257,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('alumnos/sid/modificar/vinculador/{idAspirante}', 'webController\AlumnoController@updateSidJefeUnidad')->name('sid.modificar-vinculador')->middleware('can:alumnos.inscripcion-jefe-unidad-update');
     Route::get('alumnos/sid/documento/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoSid')->name('documento.sid');
     Route::get('alumnos/sid/documento/cerrs/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoCerrsSid')->name('documento.sid_cerrs');
-    // nueva ruta
-    Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail')
-    ->middleware('can:alumno.inscrito.show');
-    Route::get('alumnos/registrados', 'webController\AlumnoRegistradoController@index')->name('alumnos.inscritos')
-    ->middleware('can:alumnos.inscritos.index');
+
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
     // documentos pdf Desarrollado por Adrian
@@ -356,6 +354,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/instructor/cursoExtra', 'webController\InstructorController@curso_extra_upd')->name('mod-curso-extra');
     Route::get('/instructor/estado/', 'webController\InstructorController@iestado')->name('instructor.estado');
     Route::post('/instructor/estado/', 'webController\InstructorController@iestado')->name('instructor.estado');
+    Route::get('/instructor/deshacer-movimiento/{id}', 'webController\InstructorController@deshacer_movimiento')->name('instructor.deshacer-movimimiento');
 
 
     // Solicitud de Suficiencia Presupuestal
@@ -781,6 +780,7 @@ Route::post('/financieros/denegado/recepcion-entrega-fisica','webController\Pago
 Route::post('/financieros/aceptado/recepcion-entrega-fisica','webController\PagoController@recibido_entrega_fisica')->name('recibido-entrega-fisica');
 Route::get('/financieros/download-rar/{id_contrato}', 'webController\PagoController@downloadRar')->name('downloadRarPagos');
 Route::post('/financieros/retorno/entrega-fisica','webController\PagoController@retorno_validacion_entrega_fisica')->name('retorno-entrega-fisica');
+Route::post('/financieros/edicion/entrega-fisica','webController\PagoController@edicion_validacion_entrega_fisica')->name('edicion-entrega-fisica');
 Route::get('/financieros/reporte/cursos','reportesController\financierosReportesController@index')->name('financieros-reporte-cursos');
 Route::post('/financieros/reporte/cursos/xls','reportesController\financierosReportesController@cursos_xls')->name('financieros-reporte-cursos-xls');
 
@@ -909,6 +909,9 @@ Route::get('/lista/calificacion/{id}', 'efirma\CalificacionController@calificaci
 Route::post('/calificacion/rechazo', 'efirma\CalificacionController@rechazo')->name('calificacion-rechazo');
 Route::post('/calificacion/validar', 'efirma\CalificacionController@generar_xml')->name('calificacion-xml');
 Route::post('/contrato/efirma','webController\ContratoController@generar_contrato_efirma')->name('contrato-efirma');
+Route::post('/solicitudPago/efirma','webController\ContratoController@generar_solicitud_pago_efirma')->name('solicitud-pago-efirma');
+Route::post('/supre/efirma','webController\supreController@generar_supre_efirma')->name('supre-efirma');
+Route::post('/valsupre/efirma','webController\supreController@generar_valsupre_efirma')->name('valsupre-efirma');
 Route::get('/XMLrecovery/{uuid}', 'efirma\FirmaController@obtener_xml')->name('obtener-xml');
 Route::post('/efirma/anularcancelado', 'efirma\FirmaController@deshacer_anulado')->name('efirma.deshacer.anulado');
 
@@ -920,4 +923,5 @@ Route::post('/report/busqueda', 'efirma\ReporteFotController@getreportefoto')->n
 // Route::post('/reportefoto/validar', 'efirma\ReporteFotController@generar_xml')->name('reportefoto-xml');
 
 Route::post('/retorno/movimiento/instructor', 'webController\InstructorController@movimiento_retorno')->name('movimiento-retorno');
+Route::get('/expediente/pago/merge', 'webController\PagoController@expediente-pago-merge');
 

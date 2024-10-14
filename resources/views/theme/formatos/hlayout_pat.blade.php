@@ -47,7 +47,9 @@
     <section>
         @yield("body")
     </section>
-
+    <footer>
+        @yield("footer")
+    </footer>
     {{-- <footer>
         @yield("footer")
         <div style="position: relative;";>

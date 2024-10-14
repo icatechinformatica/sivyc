@@ -96,7 +96,9 @@
 
                 <button class="btn mx-2" id="btn_buscar">BUSCAR</button>
                 <a href="{{ route('buzon.expunico.index') }}" class="btn mx-2">BORRAR FILTRO</a>
-
+                @if ($boton_excel)
+                    <a href="{{ route('buzon.expunico.buzon.excel') }}" class="mx-2 btn-sm btn-outline-success"><i class="fa fa-file-excel fa-2x" aria-hidden="true"></i></a>
+                @endif
             </div>
         </form>
 
@@ -128,7 +130,7 @@
                         <tbody>
                             @foreach($data_admin as $key => $item)
                                 <tr>
-                                    <td class="fila-especial">{{$key+1}}</td>
+                                    <td class="fila-especial">{{($data_admin->currentPage() - 1) * $data_admin->perPage() + $key + 1 }}</td>
                                     <td class="fila-especial">{{$item->unidad}}</td>
                                     <td class="fila-especial">{{$item->folio_grupo}}</td>
                                     <td class="fila-especial">{{$item->clave}}</td>
@@ -205,13 +207,7 @@
                                 <th scope="col">INSTRUCTOR</th>
                                 <th scope="col">FECHA DE CURSO</th>
                                 <th scope="col">HORARIO</th>
-                                @if ($sel_status == 'PENDIENTE')
-                                    <th scope="col">FECHA DE ENVIO</th>
-                                @elseif($sel_status == 'RETORNADO')
-                                    <th scope="col">FECHA DE RETORNO</th>
-                                @elseif($sel_status == 'VALIDADO')
-                                    <th scope="col">FECHA DE VALIDACION</th>
-                                @endif
+                                <th scope="col">FECHA DEL MOVIMIENTO</th>
                                 <th scope="col">STATUS</th>
                                 <th scope="col">VER</th>
                             </tr>
@@ -219,7 +215,7 @@
                         <tbody>
                             @foreach($data_admin as $key => $item)
                                 <tr>
-                                    <td>{{$key+1}}</td>
+                                    <td>{{($data_admin->currentPage() - 1) * $data_admin->perPage() + $key + 1 }}</td>
                                     <td>{{$item->unidad}}</td>
                                     <td>{{$item->folio_grupo}}</td>
                                     <td>{{$item->clave}}</td>
@@ -227,14 +223,22 @@
                                     <td>{{$item->nombre}}</td>
                                     <td>{{\Carbon\Carbon::parse($item->inicio)->format('d/m/Y').' '.\Carbon\Carbon::parse($item->termino)->format('d/m/Y')}}</td>
                                     <td>{{$item->hini}} a {{$item->hfin}}</td>
-                                    @if ($sel_status == 'PENDIENTE')
+                                    @if ($item->st_admin == 'ENVIADO')
                                         <td>{{\Carbon\Carbon::parse($item->fec_envio)->format('d/m/Y g:i A')}}</td>
-                                    @elseif($sel_status == 'RETORNADO')
+                                    @elseif($item->st_admin == 'RETORNADO')
                                         <td>{{\Carbon\Carbon::parse($item->fec_return)->format('d/m/Y g:i A')}}</td>
-                                    @elseif($sel_status == 'VALIDADO')
+                                    @elseif($item->st_admin == 'VALIDADO')
                                         <td>{{\Carbon\Carbon::parse($item->fec_valid)->format('d/m/Y g:i A')}}</td>
                                     @endif
-                                    <td>{{$sel_status}}</td>
+                                    <td>
+                                        @if($item->st_admin == 'ENVIADO')
+                                            PENDIENTE
+                                        @elseif($item->st_admin == 'RETORNADO')
+                                            RETORNADO
+                                        @elseif($item->st_admin == 'VALIDADO')
+                                            VALIDADO
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         <a class="btn-circle btn-circle-sm"  title="Ver pdf" id=""
                                             href="{{route('expunico.principal.mostrar.get', ['folio' => $item->folio_grupo])}}" target="_blank">

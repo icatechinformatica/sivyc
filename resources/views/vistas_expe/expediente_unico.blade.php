@@ -11,139 +11,252 @@
             box-sizing: border-box;
         }
         .card-header{
-                font-variant: small-caps;
-                background-color: #621132;
-                color: white;
-                margin: 1.7% 1.7% 1% 1.7%;
-                padding: 1.3% 39px 1.3% 39px;
-                font-style: normal;
-                font-size: 22px;
-            }
+            font-variant: small-caps;
+            background-color: #621132;
+            color: white;
+            margin: 1.7% 1.7% 1% 1.7%;
+            padding: 1.3% 39px 1.3% 39px;
+            font-style: normal;
+            font-size: 22px;
+        }
 
-            .card-body{
-                margin: 1%;
-                margin-left: 1.7%;
-                margin-right: 1.7%;
-                /* padding: 55px; */
-                -webkit-box-shadow: 0 8px 6px -6px #999;
-                -moz-box-shadow: 0 8px 6px -6px #999;
-                box-shadow: 0 8px 6px -6px #999;
-            }
-            .card-body.card-msg{
-                background-color: yellow;
-                margin: .5% 1.7% .5% 1.7%;
-                padding: .5% 5px .5% 25px;
-            }
+        .card-body{
+            margin: 1%;
+            margin-left: 1.7%;
+            margin-right: 1.7%;
+            /* padding: 55px; */
+            -webkit-box-shadow: 0 8px 6px -6px #999;
+            -moz-box-shadow: 0 8px 6px -6px #999;
+            box-shadow: 0 8px 6px -6px #999;
+        }
+        .card-body.card-msg{
+            background-color: yellow;
+            margin: .5% 1.7% .5% 1.7%;
+            padding: .5% 5px .5% 25px;
+        }
 
-            body { background-color: #E6E6E6; }
+        body { background-color: #E6E6E6; }
 
-            .btn, .btn:focus{ color: white; background: #12322b; font-size: 14px; border-color: #12322b; margin: 0 5px 0 5px; padding: 10px 13px 10px 13px; }
-            .btn:hover { color: white; background:#2a4c44; border-color: #12322b; }
+        .btn, .btn:focus{ color: white; background: #12322b; font-size: 14px; border-color: #12322b; margin: 0 5px 0 5px; padding: 10px 13px 10px 13px; }
+        .btn:hover { color: white; background:#2a4c44; border-color: #12322b; }
 
-            .form-control { height: 40px; }
+        .form-control { height: 40px; }
 
-            input[type=text],
-            select,
-            textarea {
-                text-transform: none !important;
-            }
+        input[type=text],
+        select,
+        textarea {
+            text-transform: none !important;
+        }
 
-            /* estilo de cuerpo */
-            .colorTitulo{
-                background-color: #adabab;
-            }
-            .negrita {
-                font-weight: bold;
-                color: #000;
-            }
-            table {
-                width: 100%;
-                border: 2px solid #b8b5b5;
-            }
+        /* estilo de cuerpo */
+        .colorTitulo{
+            background-color: #adabab;
+        }
+        .negrita {
+            font-weight: bold;
+            color: #000;
+        }
+        table {
+            width: 100%;
+            border: 2px solid #b8b5b5;
+        }
 
-            th {
-                background-color: #621132;
-                color: #ffff;
-                font-weight: bolder !important;
-                text-align: center;
-            }
+        th {
+            background-color: #621132;
+            color: #ffff;
+            font-weight: bolder !important;
+            text-align: center;
+        }
 
-            td {
-                padding: 10px;
-                color: #000;
-            }
-            .titulo_tabla{
-                background-color: #621132;
-                color: #fff;
-                font-weight:bold;
-                padding:2px;
-            }
-            /* CSS personalizado para un checkbox más grande */
-            .form-check-input[type="radio"] {
-                width: 1.5rem;
-                height: 1.5rem;
-            }
-            /* Se usa para bloquear los campos donde el user no le corresponde */
-            .blocked {
-                pointer-events: none;
-                opacity: 0.5;
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-            }
-            /* ajustar textarea */
-            textarea {
-                height: 40px;
-            }
+        td {
+            padding: 10px;
+            color: #000;
+        }
 
-            /* Color de icono pdf cuando no existe */
-            .text-gray{
-                color: #adabab;
-            }
+        .table-hover tbody tr {
+            border-bottom: 1px solid #dee2e6; /* Línea de separación */
+        }
 
-            /* Modal para sugerencias */
-            .modal_del {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0, 0, 0, 0.5);
-            }
+        .titulo_tabla{
+            background-color: #621132;
+            color: #fff;
+            font-weight:bold;
+            padding:2px;
+            border: 1px solid #000;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
 
-            .modal_al {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-            }
+        /* Agregamos borde al contenedor de datos del curso */
+        .datos-curso{
+            /* border: 1px solid #000; */
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+        /* CSS personalizado para un checkbox más grande */
+        .form-check-input[type="radio"] {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+        /* Se usa para bloquear los campos donde el user no le corresponde */
+        .blocked {
+            pointer-events: none;
+            opacity: 0.5;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
 
-            .modal-content {
-                background-color: #fff;
-                margin: 15% auto;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                width: 30%;
-                padding-bottom: 7px;
-                padding-left: 10px;
-                padding-right: 10px;
-                padding-top: 7px;
-                margin-top: 10%;
-            }
+        /* ajustar textarea */
+        textarea {
+            height: 40px;
+        }
 
-            .scrollable-list {
-                max-height: 200px;
-                overflow-y: auto;
+        /* Color de icono pdf cuando no existe */
+        .text-gray{
+            color: #adabab;
+        }
+
+        /* Modal para sugerencias */
+        .modal_del {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Modal para mostrar lista de alumnos */
+        .modal_al {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            outline: 0;
+            background: rgba(0,0,0,0.5);
+        }
+        /* Clase del modal de alumnos */
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 0;
+            width: 60%;
+            max-width: 800px;
+            height: 80%;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* Clase del modal de alerta de archivo no existente */
+        .modal-content2 {
+            background-color: #fff;
+            margin: 15% auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 30%;
+            padding-left: 10px;
+            padding-top: 7px;
+            margin-top: 10%;
+            height: 18%;
+        }
+
+        .modal-body {
+            height: 60%;
+        }
+
+        .scrollable-list {
+            max-height: 100%;
+            overflow-y: auto;
+        }
+
+        /* Estilo del loader */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+            z-index: 9999; /* Asegura que esté por encima de otros elementos */
+            display: none; /* Ocultar inicialmente */
+        }
+
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
             }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* input para carga de archivos alumnos */
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-icon {
+            font-size: 16px;
+            cursor: pointer;
+            color: #007bff;
+            transition: color 0.3s;
+        }
+
+        .file-icon.loaded {
+            color: #28a745;
+        }
+
+        .readonly-area {
+            background-color: #f0f0f0; /* Gris suave */
+            border: 1px solid #ccc;    /* Borde sutil */
+            color: #333;               /* Color del texto */
+            cursor: not-allowed;       /* Cursor para indicar que no es editable */
+        }
+        .color-texto{
+            color: #621132;
+        }
+
     </style>
 
     <div class="card-header py-2">
         <h3>Expediente Unico</h3>
+    </div>
+
+    {{-- Loader --}}
+    <div id="loader-overlay">
+        <div id="loader"></div>
     </div>
 
     {{-- Card como contenedor --}}
@@ -159,18 +272,31 @@
             </div>
         @endif
 
+        {{-- Alerta de retorno --}}
+        @if (isset($array_rol['rol']))
+            @if (($array_rol['rol'] == 1 || $array_rol['rol'] == 2 || $array_rol['rol'] == 3))
+                <div class="col-12 justify-content-center d-flex align-items-start px-0">
+                    @if ($array_rol['status_json'] == 'RETORNADO')
+                        <div class="alert alert-warning" role="alert"><b>El Expediente Unico fue retornado, verifique los mensajes de DTA para mas detalles..</b><br></div>
+                    @endif
+                    @if ($array_rol['status_json'] == 'VALIDADO')
+                        <div class="alert alert-success" role="alert"><b>Expediente Unico validado por DTA</b><br></div>
+                    @endif
+                    {{-- <b>Nota:</b> {{$array_rol['message_return']}} --}}
+                </div>
+            @endif
+        @endif
+
+
         {{-- CAJA DE BUSQUEDA --}}
         <div class="col-12 row d-flex justify-content-between">
             <div class="row col-6 mb-3">
                 <form action="" method="post" id="frmBuscarGrupo">
                     @csrf
-                    <input type="text" class="form-control" name="txtbuscar" id="txtbuscar" placeholder="FOLIO DE GRUPO">
+                    <input type="text" class="form-control" name="txtbuscar" id="txtbuscar" placeholder="FOLIO O CLAVE" value="{{(!empty($data_cursos->folio_grupo)) ? $data_cursos->folio_grupo : ''}}">
                 </form>
                 <button class="btn" id="btnBuscarGrupo">BUSCAR</button>
             </div>
-            {{-- <div class="row col-3 d-flex justify-content-end">
-                <input class="form-control" type="text" placeholder="" readonly="" value="{{($data_cursos != null) ? $data_cursos->folio_grupo : ''}}">
-            </div> --}}
         </div>
         {{-- CONTENDOR DE TODO EL CUERPO --}}
         @if ($data_cursos != null)
@@ -189,10 +315,12 @@
                 @endif
             </span>
             </div>
-            <div class="container-fluid px-5 pt-3 bg-light">
+            <div class="container-fluid px-5 pt-3 bg-light datos-curso">
                 <div class="row justify-content-center">
                     <div class="col-12 colorTitulo d-flex align-items-center justify-content-center border border-1 border-white p-1 mb-3">
                         <div class="font-weight-bold text-center text-dark">CONDICIONES DEL SERVICIO DE CAPACITACIÓN</div>
+                        <input type="hidden" name="" id="rol_user" value="{{$array_rol['rol']}}">
+                        <input type="hidden" name="" id="txt_idcurso" value="{{$array_rol['idcurso']}}">
                     </div>
                     <div class="row col-12">
                         <div class="col-4 border-dark border-right">
@@ -215,6 +343,13 @@
                             <p><span class="negrita">FECHA TERMINO:</span> {{ \Carbon\Carbon::createFromFormat('Y-m-d', $data_cursos->termino)->format('d/m/Y') }}</p>
                             <p><span class="negrita">HORARIO:</span> {{date("H:i", strtotime($data_cursos->hini))}} -  {{date("H:i", strtotime($data_cursos->hfin))}} HRS</p>
                             <p><span class="negrita">CUOTA GENERAL:</span> {{$data_cursos->costo}}</p>
+                            @if($ubic_unidad == $data_cursos->unidad)
+                                <p><span class="negrita">UNIDAD: </span>{{$data_cursos->unidad}}</p>
+                            @else
+                                <p><span class="negrita">UNIDAD: </span>{{$ubic_unidad}}</p>
+                                <p><span class="negrita">ACCIÓN MOVIL: </span>{{$data_cursos->unidad}}</p>
+                            @endif
+                            {{-- <p><span class="negrita">{{($ubic_unidad == $data_cursos->unidad) ? 'UNIDAD: ' : 'ACCIÓN MOVIL: '}}</span>{{$data_cursos->unidad}}</p> --}}
                         </div>
                     </div>
                 </div>
@@ -239,28 +374,33 @@
                 $a_class = $isAcad ? '' : 'blocked';
                 $isAdmin = ($array_rol['rol'] == 3) && ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO');
                 $d_class = $isAdmin ? '' : 'blocked';
+                $dta_msg = ($array_rol['rol'] == 4 && $array_rol['status_json'] == 'ENVIADO') ? '' : 'readonly';
+                $readonly_dta = ($array_rol['rol'] == 4 && $array_rol['status_json'] == 'ENVIADO') ? '' : 'readonly-area';
+                $readonly_u = $array_rol['rol'] != 4 ? '' : 'readonly-area';
+                $msg_uni = $array_rol['rol'] != 4 ? '' : 'readonly';
             @endphp
             {{-- tabla vinculacion --}}
-            <div class="col-12 px-0 mt-1 table-bordered table-striped" id="vinculacion">
+            <div class="col-12 px-0 mt-1" id="vinculacion">
                 <div class="text-center titulo_tabla">DEPARTAMENTO DE VINCULACIÓN</div>
-                <table>
+                <table class="table-hover">
                     <thead>
                     <tr>
                         <th width = "3%">NO.</th>
-                        <th width = "41%">EVIDENCIAS</th>
+                        <th width = "30%">EVIDENCIAS</th>
                         <th width = "5%">SI</th>
                         <th width = "5%">NO</th>
-                        <th width = "9%">NO APLICA</th>
-                        <th width = "17%">OBSERVACIONES</th>
-                        <th width = "8%">SUBIR PDF</th>
+                        <th width = "8%">NO APLICA</th>
+                        <th width = "15%">OBSERVACIONES</th>
+                        <th width = "7%">SUBIR PDF</th>
                         <th width = "6%">VER PDF</th>
                         <th width = "6%">ELIMINAR</th>
+                        <th width ="15">MENSAJE DTA</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td>1</td>
-                        <td>Convenio Especifico / Acta de acuerdo.</td>
+                        <td class="color-texto">a</td>
+                        <td class="color-texto">Convenio Especifico / Acta de acuerdo.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion1" id="yes_req1" value="si"{{($v_radios[0]['doc_1'] == 'si') ? 'checked' : ''}}>
@@ -278,11 +418,16 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req1" id="comentario_req1" rows="1" cols="30">{{ $v_radios[0]['doc_txt1'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req1" id="comentario_req1" rows="1" cols="30">{{ $v_radios[0]['doc_txt1'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 1--}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc1">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc1"
+                            class="
+                            @if(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']) || !empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
+                            d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc1" style="display: none;" onchange="checkIcon('iconCheck1', 'pdfInputDoc1')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc1').click();">Archivo
@@ -291,33 +436,104 @@
                             </form>
                         </td>
                         <td class="text-center">
-                            @if ($json_dptos->vinculacion['doc_1']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
-                                    href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($json_dptos->vinculacion['doc_1']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_documento']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_convenio']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_acta']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf 1 --}}
-                            @if ($json_dptos->vinculacion['doc_1']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion1',
+                            @if (!empty($json_dptos->vinculacion['doc_1']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion1',
                                     '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_1']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta1" id="comentario_dta1" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_1','vinc')">{{ data_get($mensajes_dta, 'msn_vincu1', '')}}</textarea>
+                        </td>
                     </tr>
+                    {{-- Soporte para convenio especifico --}}
                     <tr>
-                        <td>2</td>
+                        <td class="color-texto">a.1</td>
+                        <td class="color-texto">Soporte de manifiesto de inscripción</td>
+                        <td class="{{$v_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcion_v8" id="yes_req_v8" value="si" {{($v_radios[0]['doc_8'] == 'si') ? 'checked' : ''}}>
+                            </div>
+                        </td>
+                        <td class="{{$v_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcion_v8" id="no_req_v8" value="no" {{($v_radios[0]['doc_8'] == 'no') ? 'checked' : ''}}>
+                            </div>
+                        </td>
+                        <td class="{{$v_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcion_v8" id="na_req_v8" value="no_aplica" {{($v_radios[0]['doc_8'] == 'no_aplica') ? 'checked' : ''}}>
+                            </div>
+                        </td>
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req_v8" id="comentario_req_v8" rows="1" cols="30">{{ $v_radios[0]['doc_txt8'] ?? '' }}</textarea>
+                        </td>
+                        <td class="text-center">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc_v8">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc_v8" style="display: none;" onchange="checkIcon('iconCheck_v8', 'pdfInputDoc_v8')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc_v8').click();">Archivo
+                                    <div id="iconCheck_v8" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
+                        </td>
+                        <td class="text-center">
+                            @if (!empty($json_dptos->vinculacion['doc_8']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$path_files.$json_dptos->vinculacion['doc_8']['url_documento']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if (!empty($json_dptos->vinculacion['doc_8']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion8',
+                                    '{{$json_dptos->vinculacion['doc_8']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta26" id="comentario_dta26" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_8','vinc')">{{ data_get($mensajes_dta, 'msn_vincu8', '')}}</textarea>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>b</td>
                         <td>Copia de autorización de Exoneración y/o Reducción de Cuota de Recuperación.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -335,23 +551,31 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req2" id="comentario_req2" rows="1" cols="30">{{ $v_radios[0]['doc_txt2'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req2" id="comentario_req2" rows="1" cols="30">{{ $v_radios[0]['doc_txt2'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc2'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                            @if (!empty($search_docs['urldoc2']))
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$search_docs['urldoc2'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta2" id="comentario_dta2" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_2','vinc')">{{ data_get($mensajes_dta, 'msn_vincu2', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>3</td>
-                        <td>Original  de la solicitud de apertura de Cursos de Capacitación y/o Certificación al Departamento Académico.</td>
+                        <td class="color-texto">c</td>
+                        <td class="color-texto">Original de la solicitud de apertura de cursos de capacitación y/o certificación al Departamento Académico.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion3" id="yes_req3" value="si" {{($v_radios[0]['doc_3'] == 'si') ? 'checked' : ''}}>
@@ -368,7 +592,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req3" id="comentario_req3" rows="1" cols="30">{{ $v_radios[0]['doc_txt3'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req3" id="comentario_req3" rows="1" cols="30">{{ $v_radios[0]['doc_txt3'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 3--}}
@@ -381,34 +605,36 @@
                             </form>
                         </td>
                         <td class="text-center">
-                            @if ($json_dptos->vinculacion['doc_3']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                            @if (!empty($json_dptos->vinculacion['doc_3']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_3']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf 3--}}
-                            @if ($json_dptos->vinculacion['doc_3']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion3',
+                            @if (!empty($json_dptos->vinculacion['doc_3']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion3',
                                     '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_3']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta3" id="comentario_dta3" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_3','vinc')">{{ data_get($mensajes_dta, 'msn_vincu3', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>4</td>
-                        <td>SID-01 solicitud de Inscripción del interesado.</td>
+                        <td class="color-texto">d</td>
+                        <td class="color-texto">SID-01 solicitud de Inscripción del interesado.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion4" id="yes_req4" value="si" {{($v_radios[0]['doc_4'] == 'si') ? 'checked' : ''}}>
@@ -425,7 +651,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req4" id="comentario_req4" rows="1" cols="30">{{ $v_radios[0]['doc_txt4'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req4" id="comentario_req4" rows="1" cols="30">{{ $v_radios[0]['doc_txt4'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen 4--}}
@@ -438,33 +664,35 @@
                             </form>
                         </td>
                         <td class="text-center">
-                            @if ($json_dptos->vinculacion['doc_4']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                            @if (!empty($json_dptos->vinculacion['doc_4']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$path_files.$json_dptos->vinculacion['doc_4']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf 4--}}
-                            @if ($json_dptos->vinculacion['doc_4']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion4',
+                            @if (!empty($json_dptos->vinculacion['doc_4']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion4',
                                     '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_4']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta4" id="comentario_dta4" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_4','vinc')">{{ data_get($mensajes_dta, 'msn_vincu4', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>5</td>
+                        <td>e</td>
                         <td>CURP actualizada o Copia de Acta de Nacimiento.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -482,20 +710,24 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req5" id="comentario_req5" rows="1" cols="30">{{ $v_radios[0]['doc_txt5'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req5" id="comentario_req5" rows="1" cols="30">{{ $v_radios[0]['doc_txt5'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
-                            <a class="btn-circle btn-circle-sm btn_modal_alumnos" id=""
+                            <a class="btn-circle btn-circle-sm btn_modal_alumnos" id="" onclick="modalRequisitos(event, 'curp')"
                                 href="#">
                                 <i class="fa fa fa-eye fa-2x fa-lg text-dark" aria-hidden="true"></i>
                             </a>
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta5" id="comentario_dta5" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_5','vinc')">{{ data_get($mensajes_dta, 'msn_vincu5', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>6</td>
-                        <td>Copia de comprobante de último grado de estudios (en caso de contar con el).</td>
+                        <td>f</td>
+                        <td>Copia de comprobante de último grado de estudios (en caso de contar con él).</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion6" id="yes_req6" value="si" {{($v_radios[0]['doc_6'] == 'si') ? 'checked' : ''}}>
@@ -512,20 +744,24 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req6" id="comentario_req6" rows="1" cols="30">{{ $v_radios[0]['doc_txt6'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req6" id="comentario_req6" rows="1" cols="30">{{ $v_radios[0]['doc_txt6'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
-                            <a class="btn-circle btn-circle-sm btn_modal_alumnos" id=""
+                            <a class="btn-circle btn-circle-sm btn_modal_alumnos" id="" onclick="modalRequisitos(event, 'estudios')"
                                 href="#">
                                 <i class="fa fa fa-eye fa-2x fa-lg text-dark" aria-hidden="true"></i>
                             </a>
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta6" id="comentario_dta6" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_6','vinc')">{{ data_get($mensajes_dta, 'msn_vincu6', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>7</td>
-                        <td>Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.</td>
+                        <td class="color-texto">g</td>
+                        <td class="color-texto">Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.</td>
                         <td class="{{$v_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion7" id="yes_req7" value="si" {{($v_radios[0]['doc_7'] == 'si') ? 'checked' : ''}}>
@@ -542,19 +778,63 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req7" id="comentario_req7" rows="1" cols="30">{{ $v_radios[0]['doc_txt7'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req7" id="comentario_req7" rows="1" cols="30">{{ $v_radios[0]['doc_txt7'] ?? '' }}</textarea>
                         </td>
-                        <td></td>
+                        <td>
+                            {{-- Subir recibo--}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="
+                            @if(($search_docs['anio_curso'] == '2023' || $search_docs['anio_curso'] == '2024') && $search_docs['validRecibo'] != 'digital')
+                                @if($search_docs['tipo_curso'] == 'EXO')
+                                    d-none
+                                @endif
+                            @else
+                                d-none
+                            @endif
+                            ">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc7" style="display: none;" onchange="checkIcon('iconCheck7', 'pdfInputDoc7')">
+                                    <input type="hidden" name="" id="txt_folio_recibo" value="">
+                                    <input type="hidden" name="" id="txt_folio_fecha" value="">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc7').click();">Archivo
+                                    <div id="iconCheck7" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
+                            {{-- @endif --}}
+                        </td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc7'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
-                                    href="{{$path_files.$search_docs['urldoc7'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc7']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="
+                                    @if ($search_docs['validRecibo'] == 'digital')
+                                        {{-- {{ route('grupos.recibos.descargar', ['folio_recibo' => $search_docs['urldoc7']]) }} --}}
+                                        {{$search_docs['urldoc7']}}
+                                    @else
+                                        {{$path_files.$search_docs['urldoc7']}}
+                                    @endif
+                                    " target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
-                        <td></td>
+                        <td>
+                            {{-- Eliminar si se encuentra la ruta del archivo --}}
+                            @if ($search_docs['validRecibo'] != 'digital' && !empty($search_docs['urldoc7']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion7',
+                                    '{{$path_files.$search_docs['urldoc7']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta7" id="comentario_dta7" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_7','vinc')">{{ data_get($mensajes_dta, 'msn_vincu7', '')}}</textarea>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -570,26 +850,27 @@
             </div>
 
             {{-- tabla academico --}}
-            <div class="col-12 px-0 mt-3 table-bordered table-striped" id="academico">
+            <div class="col-12 px-0 mt-3" id="academico">
                 <div class="text-center titulo_tabla">DEPARTAMENTO ACADÉMICO</div>
-                <table>
+                <table class="table-hover">
                     <thead>
                     <tr>
                         <th width = "3%">NO.</th>
-                        <th width = "41%">EVIDENCIAS</th>
+                        <th width = "30%">EVIDENCIAS</th>
                         <th width = "5%">SI</th>
                         <th width = "5%">NO</th>
-                        <th width = "9%">NO APLICA</th>
-                        <th width = "17%">OBSERVACIONES</th>
-                        <th width = "8%">SUBIR PDF</th>
+                        <th width = "8%">NO APLICA</th>
+                        <th width = "15%">OBSERVACIONES</th>
+                        <th width = "7%">SUBIR PDF</th>
                         <th width = "6%">VER PDF</th>
                         <th width = "6%">ELIMINAR</th>
+                        <th width ="15">MENSAJE DTA</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td>1</td>
-                        <td>Original de memorándum ARC-01, solicitud de Apertura de cursos de Capacitación y/o certificación a la
+                        <td>a</td>
+                        <td>Original de memorándum ARC-01, solicitud de Apertura de cursos de capacitación y/o Certificación a la
                             Dirección Técnica Académica.
                         </td>
                         <td class="{{$a_class}}">
@@ -608,22 +889,30 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req8" id="comentario_req8" rows="1" cols="30">{{ $v_radios[1]['doc_txt8'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req8" id="comentario_req8" rows="1" cols="30">{{ $v_radios[1]['doc_txt8'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc8'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
-                                    href="{{$path_files.$search_docs['urldoc8'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc8']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$path_files.$search_docs['urldoc8']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta8" id="comentario_dta8" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_8','acad')">{{ data_get($mensajes_dta, 'msn_acad8', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>2</td>
+                        <td>b</td>
                         <td>Copia de memorándum de autorización de ARC-01, emitido por la Dirección Técnica Académica.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -641,22 +930,30 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req9" id="comentario_req9" rows="1" cols="30">{{ $v_radios[1]['doc_txt9'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req9" id="comentario_req9" rows="1" cols="30">{{ $v_radios[1]['doc_txt9'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc9'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc9'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc9']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$search_docs['urldoc9']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta9" id="comentario_dta9" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_9','acad')">{{ data_get($mensajes_dta, 'msn_acad9', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>3</td>
+                        <td>c</td>
                         <td>
                             Original de memorándum ARC-02, solicitud de modificación, reprogramación y/o cancelación de curso a la Dirección Técnica Académica, en caso aplicable.
                         </td>
@@ -676,28 +973,30 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req10" id="comentario_req10" rows="1" cols="30">{{ $v_radios[1]['doc_txt10'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req10" id="comentario_req10" rows="1" cols="30">{{ $v_radios[1]['doc_txt10'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc10'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc10'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc10']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$path_files.$search_docs['urldoc10']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
-                                    onclick="showModal(event, 'Archivo Memorándum ARC-02 no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta10" id="comentario_dta10" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_10','acad')">{{ data_get($mensajes_dta, 'msn_acad10', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>4</td>
+                        <td>d</td>
                         <td>Copia de memorándum de autorización de ARC-02, emitido por la Dirección Técnica Académica, en caso aplicable.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -715,23 +1014,31 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req11" id="comentario_req11" rows="1" cols="30">{{ $v_radios[1]['doc_txt11'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req11" id="comentario_req11" rows="1" cols="30">{{ $v_radios[1]['doc_txt11'] ?? '' }}</textarea>
                         </td>
                         <td></td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc11'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc11'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc11']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$search_docs['urldoc11']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta11" id="comentario_dta11" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_11','acad')">{{ data_get($mensajes_dta, 'msn_acad11', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>5</td>
-                        <td>Copia de RIACD-02 Inscripción.</td>
+                        <td class="color-texto">e</td>
+                        <td class="color-texto">Copia de RIACD-02 Inscripción.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion12" id="yes_req12" value="si" {{($v_radios[1]['doc_12'] == 'si') ? 'checked' : ''}}>
@@ -748,7 +1055,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req12" id="comentario_req12" rows="1" cols="30">{{ $v_radios[1]['doc_txt12'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req12" id="comentario_req12" rows="1" cols="30">{{ $v_radios[1]['doc_txt12'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -762,34 +1069,36 @@
                         </td>
                         <td class="text-center">
                             {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_12']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_12"
+                            @if (!empty($json_dptos->academico['doc_12']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_12"
                                     href="{{$path_files.$json_dptos->academico['doc_12']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_12']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion12',
+                            @if (!empty($json_dptos->academico['doc_12']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion12',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_12']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta12" id="comentario_dta12" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_12','acad')">{{ data_get($mensajes_dta, 'msn_acad12', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>6</td>
-                        <td>Copia de RIACD-02 Acreditación.</td>
+                        <td class="color-texto">f</td>
+                        <td class="color-texto">Copia de RIACD-02 Acreditación.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion13" id="yes_req13" value="si" {{($v_radios[1]['doc_13'] == 'si') ? 'checked' : ''}}>
@@ -806,7 +1115,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req13" id="comentario_req13" rows="1" cols="30">{{ $v_radios[1]['doc_txt13'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req13" id="comentario_req13" rows="1" cols="30">{{ $v_radios[1]['doc_txt13'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -820,34 +1129,36 @@
                         </td>
                         <td class="text-center">
                             {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_13']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_13"
+                            @if (!empty($json_dptos->academico['doc_13']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_13"
                                     href="{{$path_files.$json_dptos->academico['doc_13']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_13']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion13',
+                            @if (!empty($json_dptos->academico['doc_13']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion13',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_13']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta13" id="comentario_dta13" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_13','acad')">{{ data_get($mensajes_dta, 'msn_acad13', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>7</td>
-                        <td>Copia de RIACD-02 Certificación.</td>
+                        <td class="color-texto">g</td>
+                        <td class="color-texto">Copia de RIACD-02 Certificación.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion14" id="yes_req14" value="si" {{($v_radios[1]['doc_14'] == 'si') ? 'checked' : ''}}>
@@ -864,7 +1175,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req14" id="comentario_req14" rows="1" cols="30">{{ $v_radios[1]['doc_txt14'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req14" id="comentario_req14" rows="1" cols="30">{{ $v_radios[1]['doc_txt14'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -878,33 +1189,113 @@
                         </td>
                         <td class="text-center">
                             {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_14']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_14"
+                            @if (!empty($json_dptos->academico['doc_14']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_14"
                                     href="{{$path_files.$json_dptos->academico['doc_14']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_14']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion14',
+                            @if (!empty($json_dptos->academico['doc_14']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion14',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_14']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta14" id="comentario_dta14" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_14','acad')">{{ data_get($mensajes_dta, 'msn_acad14', '')}}</textarea>
+                        </td>
+                    </tr>
+                    {{-- esto es un extra se formato de entrega de constancias --}}
+                    <tr>
+                        <td class="color-texto">g.1</td>
+                        <td class="color-texto">
+                            Soportes de entrega de constancias de capacitación (si es el caso).
+                        </td>
+                        <td class="{{$a_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcion25" id="yes_req25" value="si" {{($v_radios[1]['doc_25'] == 'si') ? 'checked' : ''}}>
+                            </div>
+                        </td>
+                        <td class="{{$a_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcion25" id="no_req25" value="no" {{($v_radios[1]['doc_25'] == 'no') ? 'checked' : ''}}>
+                            </div>
+                        </td>
+                        <td class="{{$a_class}}">
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="opcion25" id="na_req25" value="no_aplica" {{($v_radios[1]['doc_25'] == 'no_aplica') ? 'checked' : ''}}>
+                            </div>
+                        </td>
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
+                        </td>
+                        <td class="text-center">
+                            {{-- Subir Imagen --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc25">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc25" style="display: none;" onchange="checkIcon('iconCheck25', 'pdfInputDoc25')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc25').click();">Archivo
+                                    <div id="iconCheck25" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
+                        </td>
+                        <td class="text-center">
+                            {{-- mostrar pdf --}}
+                            @if (!empty($json_dptos->academico['doc_25']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Oficio de entrega de constancias" id="verpdf_25"
+                                    href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="No se encuentra el oficio de entrega de constancias" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                            {{-- Otro soportes --}}
+                            @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
+                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                    data-placement="top" title="Ver PDF" id="verpdf_25"
+                                    href="{{$path_files.$json_dptos->academico['doc_25']['url_soporte'] ?? ''}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            {{-- eliminar pdf --}}
+                            @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion25',
+                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_soporte'] : ''}}',
+                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_25','acad')">{{ data_get($mensajes_dta, 'msn_acad25', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>8</td>
+                        <td>h</td>
                         <td>Copia de LAD-04 Lista de Asistencia.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -922,11 +1313,11 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req15" id="comentario_req15" rows="1" cols="30">{{ $v_radios[1]['doc_txt15'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req15" id="comentario_req15" rows="1" cols="30">{{ $v_radios[1]['doc_txt15'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc15">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc15" class="{{(!empty($search_docs['urldoc15'])) ? 'd-none' : ''}}">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc15" style="display: none;" onchange="checkIcon('iconCheck15', 'pdfInputDoc15')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc15').click();">Archivo
@@ -935,34 +1326,47 @@
                             </form>
                         </td>
                         <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_15']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_15"
-                                    href="{{$path_files.$json_dptos->academico['doc_15']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            {{-- Mostrar lista de asistencia --}}
+                            @if (!empty($search_docs['urldoc15']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="
+                                    @if (is_numeric($search_docs['urldoc15']))
+                                        {{route('asistencia-pdf', ['id' => $search_docs['urldoc15']])}}
+                                    @else
+                                        {{$search_docs['urldoc15']}}
+                                    @endif
+                                    " target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->academico['doc_15']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_15"
+                                    href="{{$path_files.$json_dptos->academico['doc_15']['url_documento']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_15']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion15',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_15']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                            @if (!empty($json_dptos->academico['doc_15']['url_documento']) && empty($search_docs['urldoc15']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion15',
+                                    '{{$json_dptos->academico['doc_15']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta15" id="comentario_dta15" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_15','acad')">{{ data_get($mensajes_dta, 'msn_acad15', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>9</td>
+                        <td>i</td>
                         <td>Copia de RESD-05 Registro de Evaluación por Sub - objetivos.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -980,11 +1384,11 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req16" id="comentario_req16" rows="1" cols="30">{{ $v_radios[1]['doc_txt16'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req16" id="comentario_req16" rows="1" cols="30">{{ $v_radios[1]['doc_txt16'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc16">
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc16" class="{{(!empty($search_docs['urldoc16'])) ? 'd-none' : ''}}">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc16" style="display: none;" onchange="checkIcon('iconCheck16', 'pdfInputDoc16')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc16').click();">Archivo
@@ -994,34 +1398,48 @@
                         </td>
                         <td class="text-center">
                             {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_16']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_16"
-                                    href="{{$path_files.$json_dptos->academico['doc_16']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc16']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="
+                                    @if (is_numeric($search_docs['urldoc16']))
+                                        {{route('calificacion-pdf', ['id' => $search_docs['urldoc16']])}}
+                                    @else
+                                        {{$search_docs['urldoc16']}}
+                                    @endif
+                                    " target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->academico['doc_16']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_16"
+                                    href="{{$path_files.$json_dptos->academico['doc_16']['url_documento']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
+
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_16']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion16',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_16']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                            @if (!empty($json_dptos->academico['doc_16']['url_documento']) && empty($search_docs['urldoc16']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion16',
+                                    '{{$json_dptos->academico['doc_16']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta16" id="comentario_dta16" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_16','acad')">{{ data_get($mensajes_dta, 'msn_acad16', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>10</td>
-                        <td>Originales o copia de las Evaluaciones y/o Reactivos de aprendizaje del alumno y/o resumen de actividades. </td>
+                        <td class="color-texto">j</td>
+                        <td class="color-texto">Originales o Copia de las Evaluaciones y/o Reactivos de aprendizaje del alumno y/o resumen de actividades.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion17" id="yes_req17" value="si" {{($v_radios[1]['doc_17'] == 'si') ? 'checked' : ''}}>
@@ -1038,7 +1456,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req17" id="comentario_req17" rows="1" cols="30">{{ $v_radios[1]['doc_txt17'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req17" id="comentario_req17" rows="1" cols="30">{{ $v_radios[1]['doc_txt17'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1052,34 +1470,36 @@
                         </td>
                         <td class="text-center">
                             {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_17']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_17"
+                            @if (!empty($json_dptos->academico['doc_17']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_17"
                                     href="{{$path_files.$json_dptos->academico['doc_17']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_17']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion17',
+                            @if (!empty($json_dptos->academico['doc_17']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion17',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_17']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta17" id="comentario_dta17" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_17','acad')">{{ data_get($mensajes_dta, 'msn_acad17', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>11</td>
-                        <td>Original o copia de las Evaluaciones al Docente y Evaluación del Curso y/o resumen de actividades.</td>
+                        <td class="color-texto">k</td>
+                        <td class="color-texto">Original o Copia de las Evaluaciones al Docente y Evaluación del Curso y/o resumen de actividades.</td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion18" id="yes_req18" value="si" {{($v_radios[1]['doc_18'] == 'si') ? 'checked' : ''}}>
@@ -1096,7 +1516,7 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req18" id="comentario_req18" rows="1" cols="30">{{ $v_radios[1]['doc_txt18'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req18" id="comentario_req18" rows="1" cols="30">{{ $v_radios[1]['doc_txt18'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
                             {{-- Subir Imagen --}}
@@ -1110,33 +1530,35 @@
                         </td>
                         <td class="text-center">
                             {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_18']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_18"
-                                    href="{{$path_files.$json_dptos->academico['doc_18']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($json_dptos->academico['doc_18']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_18"
+                                    href="{{$path_files.$json_dptos->academico['doc_18']['url_documento']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_18']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion18',
+                            @if (!empty($json_dptos->academico['doc_18']['url_documento']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion18',
                                     '{{isset($json_dptos) ? $json_dptos->academico['doc_18']['url_documento'] : ''}}',
                                     {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta18" id="comentario_dta18" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_18','acad')">{{ data_get($mensajes_dta, 'msn_acad18', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>12</td>
+                        <td>l</td>
                         <td>Reporte fotográfico, como mínimo dos fotografías. </td>
                         <td class="{{$a_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1154,11 +1576,17 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req19" id="comentario_req19" rows="1" cols="30">{{ $v_radios[1]['doc_txt19'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req19" id="comentario_req19" rows="1" cols="30">{{ $v_radios[1]['doc_txt19'] ?? '' }}</textarea>
                         </td>
                         <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19">
+                            {{-- Subir pdf --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="
+                            {{-- {{(!empty($search_docs['urldoc19']) && $search_docs['anio_curso'] != '2023') ? 'd-none' : ''}} --}}
+                            @if($search_docs['anio_curso'] == '2023' && empty($search_docs['urldoc19']))
+                            @elseif(!empty($search_docs['urldoc19']))
+                                d-none
+                            @endif
+                            ">
                                 <div class="d-flex row justify-content-center">
                                     <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc19" style="display: none;" onchange="checkIcon('iconCheck19', 'pdfInputDoc19')">
                                     <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc19').click();">Archivo
@@ -1167,89 +1595,42 @@
                             </form>
                         </td>
                         <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_19']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_19"
-                                    href="{{$path_files.$json_dptos->academico['doc_19']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc19']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="
+                                    @if (is_numeric($search_docs['urldoc19']))
+                                        {{route('reportefoto-pdf', ['id' => $search_docs['urldoc19']])}}
+                                    @else
+                                        {{$search_docs['urldoc19']}}
+                                    @endif
+                                    " target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->academico['doc_19']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_19"
+                                    href="{{$path_files.$json_dptos->academico['doc_19']['url_documento']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
                                     onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
                         <td class="text-center">
                             {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_19']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion19',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_19']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                            @if (!empty($json_dptos->academico['doc_19']['url_documento']) && empty($search_docs['urldoc19']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion19',
+                                    '{{$json_dptos->academico['doc_19']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
                                     <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </td>
-                    </tr>
-                    {{-- esto es un extra se formato de entrega de constancias --}}
-                    <tr>
-                        <td>13</td>
-                        <td>Formato de soporte de entrega de constancias</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion25" id="yes_req25" value="si" {{($v_radios[1]['doc_25'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion25" id="no_req25" value="no" {{($v_radios[1]['doc_25'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion25" id="na_req25" value="no_aplica" {{($v_radios[1]['doc_25'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
+                        {{-- observacion dta --}}
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc25">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc25" style="display: none;" onchange="checkIcon('iconCheck25', 'pdfInputDoc25')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc25').click();">Archivo
-                                    <div id="iconCheck25" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
-                                </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if ($json_dptos->academico['doc_25']['url_documento'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id="verpdf_25"
-                                    href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if ($json_dptos->academico['doc_25']['url_documento'] != '')
-                                <button class="ml-2 btn-transparent border-0" onclick="delete_pdf(event, 'opcion25',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta19" id="comentario_dta19" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_19','acad')">{{ data_get($mensajes_dta, 'msn_acad19', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -1265,25 +1646,28 @@
                 @endif
             </div>
 
-            {{-- tabla administrativo --}}
-            <div class="col-12 px-0 mt-3 table-bordered table-striped" id="administrativo">
+            {{-- tabla administrativo table-bordered para bordes --}}
+            <div class="col-12 px-0 mt-3" id="administrativo">
                 <div class="text-center titulo_tabla">DELEGACIÓN ADMINISTRATIVA</div>
-                <table>
+                <table class="table-hover">
                     <thead>
                     <tr>
                         <th width = "3%">NO.</th>
-                        <th width = "35%">EVIDENCIAS</th>
+                        <th width = "30%">EVIDENCIAS</th>
                         <th width = "5%">SI</th>
                         <th width = "5%">NO</th>
-                        <th width = "9%">NO APLICA</th>
-                        <th width = "17%">OBSERVACIONES</th>
+                        <th width = "8%">NO APLICA</th>
+                        <th width = "15%">OBSERVACIONES</th>
+                        <th width = "7%">SUBIR PDF</th>
                         <th width = "6%">VER PDF</th>
+                        <th width = "6%">ELIMINAR</th>
+                        <th width ="15">MENSAJE DTA</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td>1</td>
-                        <td>Memorandum de solicitud de suficiencia presupuestal.</td>
+                        <td>a</td>
+                        <td>Memorándum de solicitud de Suficiencia Presupuestal.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion20" id="yes_req20" value="si" {{($v_radios[2]['doc_20'] == 'si') ? 'checked' : ''}}>
@@ -1300,20 +1684,30 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req20" id="comentario_req20" rows="1" cols="30">{{ $v_radios[2]['doc_txt20'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req20" id="comentario_req20" rows="1" cols="30">{{ $v_radios[2]['doc_txt20'] ?? '' }}</textarea>
                         </td>
+                        <td></td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc20'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                            @if (!empty($search_docs['urldoc20']))
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$search_docs['urldoc20'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado.')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
+                        <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta20" id="comentario_dta20" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_20','admin')">{{ data_get($mensajes_dta, 'msn_admin20', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>2</td>
+                        <td>b</td>
                         <td>Copia de formato de autorización de suficiencia Presupuestal.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
@@ -1331,21 +1725,31 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req21" id="comentario_req21" rows="1" cols="30">{{ $v_radios[2]['doc_txt21'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req21" id="comentario_req21" rows="1" cols="30">{{ $v_radios[2]['doc_txt21'] ?? '' }}</textarea>
                         </td>
+                        <td></td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc21'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
+                            @if (!empty($search_docs['urldoc21']))
+                                <a class="btn-circle btn-circle-sm" id=""
                                     href="{{$search_docs['urldoc21'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
+                        <td></td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta21" id="comentario_dta21" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_21','admin')">{{ data_get($mensajes_dta, 'msn_admin21', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>3</td>
-                        <td>Original de Contrato de prestación de curso de Capacitación y/o Certificación del Instructor Externo, con firma autógrafa o firma electrónica.</td>
+                        <td>c</td>
+                        <td>Original de Contrato de prestación de curso de Capacitación y/o Certificación del Instructor externo, con firma autógrafa o firma electrónica.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion22" id="yes_req22" value="si" {{($v_radios[2]['doc_22'] == 'si') ? 'checked' : ''}}>
@@ -1362,28 +1766,70 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
+                        </td>
+                        <td>
+                            {{-- subir pdf --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc22" class="
+                            {{-- {{(!empty($search_docs['urldoc22'])) ? 'd-none' : ''}} --}}
+                            @if($search_docs['anio_curso'] == '2023')
+                                @if(!empty($search_docs['urldoc22']))
+                                    d-none
+                                @endif
+                            @elseif(!empty($search_docs['urldoc23']))
+                                d-none
+                            @endif
+                            ">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc22" style="display: none;" onchange="checkIcon('iconCheck22', 'pdfInputDoc22')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc22').click();">Archivo
+                                    <div id="iconCheck22" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
                         </td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc22'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc22'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc22']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="
+                                    @if (is_numeric($search_docs['urldoc22']))
+                                        {{route('contrato-pdf', ['id' => $search_docs['urldoc22']])}}
+                                    @else
+                                        {{$search_docs['urldoc22']}}
+                                    @endif
+                                    " target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->administrativo['doc_22']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_22"
+                                    href="{{$path_files.$json_dptos->administrativo['doc_22']['url_documento']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
                             @else
-                                {{-- <button class="btn-circle btn-circle-sm border-0"><i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i></button> --}}
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encontro el archivo" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                {{-- <button class="btn-circle btn-circle-sm border-0"><i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i></button> --}}
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
+                        <td>
+                            {{-- eliminar pdf --}}
+                            @if (!empty($json_dptos->administrativo['doc_22']['url_documento']) && empty($search_docs['urldoc22']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion22',
+                                    '{{$json_dptos->administrativo['doc_22']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta22" id="comentario_dta22" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_22','admin')">{{ data_get($mensajes_dta, 'msn_admin22', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>4</td>
-                        <td>Copia de memorándum de solicitud de pago al Instructor Externo.</td>
+                        <td>d</td>
+                        <td>Copia de memorándum de solicitud de pago al Instructor externo.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion23" id="yes_req23" value="si" {{($v_radios[2]['doc_23'] == 'si') ? 'checked' : ''}}>
@@ -1400,21 +1846,62 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req23" id="comentario_req23" rows="1" cols="30">{{ $v_radios[2]['doc_txt23'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req23" id="comentario_req23" rows="1" cols="30">{{ $v_radios[2]['doc_txt23'] ?? '' }}</textarea>
+                        </td>
+                        <td>
+                            {{-- subir pdf --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc23" class="
+                            @if($search_docs['anio_curso'] == '2023')
+                                @if(!empty($search_docs['urldoc23']))
+                                    d-none
+                                @endif
+                            @elseif(!empty($search_docs['urldoc23']))
+                                d-none
+                            @endif
+                            ">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc23" style="display: none;" onchange="checkIcon('iconCheck23', 'pdfInputDoc23')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc23').click();">Archivo
+                                    <div id="iconCheck23" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
                         </td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc23'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc23'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc23']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$search_docs['urldoc23']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @elseif(!empty($json_dptos->administrativo['doc_23']['url_documento']))
+                                <a class="btn-circle btn-circle-sm" id="verpdf_23"
+                                    href="{{$path_files.$json_dptos->administrativo['doc_23']['url_documento']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
+                        <td>
+                            {{-- eliminar pdf --}}
+                            @if (!empty($json_dptos->administrativo['doc_23']['url_documento']) && empty($search_docs['urldoc23']))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion23',
+                                    '{{$json_dptos->administrativo['doc_23']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta23" id="comentario_dta23" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_23','admin')">{{ data_get($mensajes_dta, 'msn_admin23', '')}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <td>5</td>
-                        <td>Comprobante Fiscal Digital por Internet del instructor Externo.</td>
+                        <td>e</td>
+                        <td>Comprobante Fiscal Digital por Internet del Instructor externo.</td>
                         <td class="{{$d_class}}">
                             <div class="form-check d-flex justify-content-center align-items-center">
                                 <input class="form-check-input" type="radio" name="opcion24" id="yes_req24" value="si" {{($v_radios[2]['doc_24'] == 'si') ? 'checked' : ''}}>
@@ -1431,16 +1918,63 @@
                             </div>
                         </td>
                         <td class="text-center my-0 py-0">
-                            <textarea class="" name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
+                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
+                        </td>
+                        <td>
+                            {{-- subir pdf --}}
+                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc24" class="
+                            @if($search_docs['anio_curso'] == '2023' && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
+                            @else
+                                d-none
+                            @endif
+                            ">
+                                <div class="d-flex row justify-content-center">
+                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc24" style="display: none;" onchange="checkIcon('iconCheck24', 'pdfInputDoc24')">
+                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc24').click();">Archivo
+                                    <div id="iconCheck24" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                </div>
+                            </form>
                         </td>
                         <td class="text-center">
-                            @if ($search_docs['urldoc24'] != '')
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver pdf" id=""
-                                    href="{{$search_docs['urldoc24'] ?? ''}}" target="_blank">
-                                    <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            @if (!empty($search_docs['urldoc24']))
+                                <a class="btn-circle btn-circle-sm" id=""
+                                    href="{{$search_docs['urldoc24']}}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a class="btn-circle btn-circle-sm" id="" href="#"
+                                    onclick="showModal(event, 'Archivo no encontrado')">
+                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
                                 </a>
                             @endif
+
+                            @if ((empty($search_docs['urldoc24']) || empty($search_docs['doc_xml'])) && !empty($json_dptos->administrativo['doc_24']['url_documento']))
+                            <a class="btn-circle btn-circle-sm" id=""
+                                href="{{$path_files.$json_dptos->administrativo['doc_24']['url_documento']}}" target="_blank">
+                                <i class="fa fas fa-file-alt fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            </a>
+                            @endif
+
+                            @if (!empty($search_docs['doc_xml']))
+                                <a class="btn-circle btn-circle-sm ml-2" id=""
+                                    href="{{$search_docs['doc_xml']}}" target="_blank">
+                                    <i class="fa fas fa-file-alt fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </td>
+                        <td>
+                             {{-- eliminar pdf --}}
+                             @if (!empty($json_dptos->administrativo['doc_24']['url_documento']) && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
+                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion24',
+                                    '{{$json_dptos->administrativo['doc_24']['url_documento']}}',
+                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        </td>
+                        {{-- observacion dta --}}
+                        <td class="text-center my-0 py-0">
+                            <textarea class="{{$readonly_dta}}" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_24','admin')">{{ data_get($mensajes_dta, 'msn_admin24', '')}}</textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -1471,15 +2005,12 @@
                         </li>
                     </ul>
                 </div>
-                {{-- Delegacion administrativa podra ver el mensaje de retorno --}}
-                @if (($array_rol['rol'] == 1 || $array_rol['rol'] == 2 || $array_rol['rol'] == 3) && $array_rol['status_json'] == 'RETORNADO')
-                    <div class="col-4 d-flex justify-content-center align-items-start">
-                        <div class="alert alert-warning" role="alert">
-                            <b>Motivo del retorno</b><br>
-                            <b>Nota:</b> {{$array_rol['message_return']}}
-                        </div>
-                    </div>
-                @endif
+                {{-- Nota de motivo de deshacer validación --}}
+                <div class="col-4 d-flex justify-content-end">
+                    <textarea class="d-none mt-2" name="" id="nota_deshacer" rows="5" cols="40" placeholder="Motivo de la accion"></textarea>
+                </div>
+
+
                 {{-- Botones de guardar y enviar que podra ver delegacion. --}}
                 <div class="col-5 d-flex justify-content-end align-items-start">
                     {{-- Generar pdf dele admin --}}
@@ -1516,21 +2047,23 @@
                                     <option value="0">-- MOVIMIENTOS --</option>
                                     <option {{($array_rol['status_json'] == 'ENVIADO') ? '' : 'disabled'}} value="1">VALIDAR</option>
                                     <option {{($array_rol['status_json'] == 'ENVIADO') ? '' : 'disabled'}} value="2">RETORNAR</option>
+                                    <option {{($array_rol['status_json'] == 'VALIDADO') ? '' : 'disabled'}} value="3">DESHACER VALIDACIÓN</option>
                                     {{-- <option value="3">GENERAR PDF</option> --}}
                                 </select>
                                 <div class="mt-2 text-center d-none" id="divValid">
                                     <button class="btn btn-danger font-weight-bold" onclick="valid_return_dta('validar', {{$array_rol['idcurso']}}, {{$array_rol['rol']}})">ACEPTAR</button>
                                 </div>
-                                <div class="mt-2 ml-2 text-center d-none" id="divArea">
-                                    <textarea name="" id="area_retorno" cols="30" rows="1" style="height:40px;" placeholder="Motivo del retorno"></textarea>
-                                </div>
+
                                 <div class="mt-2 text-center d-none" id="divReturn">
                                     <button class="btn btn-danger font-weight-bold" onclick="valid_return_dta('retornar', {{$array_rol['idcurso']}}, {{$array_rol['rol']}})">ACEPTAR</button>
+                                </div>
+
+                                <div class="mt-2 text-center d-none" id="divDeshacerValid">
+                                    <button class="btn btn-danger font-weight-bold" onclick="valid_return_dta('deshacer_valid', {{$array_rol['idcurso']}}, {{$array_rol['rol']}})">ACEPTAR</button>
                                 </div>
                             </div>
                         @endif
                     </div>
-
                 </div>
             </div>
         @else
@@ -1539,50 +2072,200 @@
 
         {{-- Modal para alerta --}}
         <div id="myModal" class="modal_del">
-            <div class="modal-content">
+            <div class="modal-content2">
                 <p class="mb-1"><b>Mensaje</b></p>
                 <span class="" id="mensajeModal"></span>
-                {{-- <a href="https://www.ejemplo.com" target="_blank">Enlace de ejemplo</a> --}}
                 <div class="col-12 float-right">
                     <button onclick="closeModal('myModal')" class="float-right btn-sm btn-sm-primary">Cerrar</button>
                 </div>
             </div>
         </div>
 
-        {{-- Modal v2 alumnos --}}
-        <div id="modalAlumnos" class="modal_al">
+
+        {{-- Modal v2 alumnos curp--}}
+        <div id="modalAlumnosCurp" class="modal_al">
             <div class="modal-content">
                 <div class="modal-header py-2">
-                    <h5 class="modal-title font-weight-bold">Alumnos</h5>
-                    <button type="button" class="close" onclick="closeModal('modalAlumnos')" aria-label="Close">
+                    <div class="alert alert-danger mt-1 p-2 mb-0" role="alert">
+                        <strong>Nota!</strong> Cargue un solo PDF por alumno, donde contenga los requisitos seleccionados.
+                    </div>
+                    <button type="button" class="close" onclick="closeModal('modalAlumnosCurp')" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body px-0">
-                    <div class="list-group scrollable-list">
-                        @if (isset($search_docs['urldoc5']) && count($search_docs['urldoc5']) > 0)
-                            @for ($i = 0; $i < count($search_docs['urldoc5']); $i++)
-                                @if ($search_docs['urldoc5'][$i]['doc_soporte']['url'] != null)
-                                    <a href="{{$search_docs['urldoc5'][$i]['doc_soporte']['url']}}" class="list-group-item py-1" target="_blank">{{$i+1 .'.- '.$search_docs['urldoc5'][$i]['alumno']}}</a>
-                                @endif
-                            @endfor
+                    <p class="font-weight-bold text-center mb-1" style="font-size: 16px;">Alumnos</p>
+                    <div class="scrollable-list">
+                        @if (isset($search_docs['alumnos_req']) && count($search_docs['alumnos_req']) > 0)
+                            <form action="" method="post" enctype="multipart/form-data" id="frmRequisitos">
+                                @csrf
+                                <input type="hidden" name="folioG" value="{{(!empty($data_cursos->folio_grupo)) ? $data_cursos->folio_grupo : ''}}">
+                                <input type="hidden" name="checksCurp" value="" id="checksCurp">
+                                <input type="hidden" name="checksEstudios" value="" id="checksEstudios">
+                                <input type="hidden" name="checksActaNacim" value="" id="checksActaNacim">
+                                <table class="table-hover">
+                                    <thead>
+                                        <tr>
+                                            {{-- <th colspan="1">Documentos</th> --}}
+                                            <th>Nombre del Alumno</th>
+                                            <th>PDF</th>
+                                            <th colspan="4">Subir PDF</th>
+                                        </tr>
+                                        <tr>
+                                            {{-- <th>Curp</th> --}}
+                                            {{-- <th></th> --}}
+                                            <th></th>
+                                            <th></th>
+                                            <th>Curp</th>
+                                            <th>C.Estudio</th>
+                                            <th>Acta Nacim.</th>
+                                            <th>Subir</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                            @foreach ($search_docs['alumnos_req'] as $key => $valor)
+                                                <tr>
+                                                    {{-- <td class="text-center">
+                                                        @if ($valor['curp'] == 'true' && !empty($valor['documento']))
+                                                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                                                        @else
+                                                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                                                        @endif
+                                                    </td> --}}
+                                                    <td class="text-left">
+                                                        <input type="hidden" name="alumnosId[]" value="{{$valor['id']}}">
+                                                        <input type="hidden" name="docAlumnos[{{ $valor['id'] }}]" value="{{$valor['documento']}}">
+                                                        <input type="hidden" name="identPre[{{ $valor['id'] }}]" value="{{$valor['id_pre']}}">
+                                                        <span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
+                                                    <td class="text-center">
+                                                        @if (!empty($valor['documento']))
+                                                            <a href="{{$valor['documento']}}" target="_blank"><i class="far fa-file-pdf fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
+                                                        @else
+                                                            <i class="far fa-file-pdf fa-1x fa-lg text-light" aria-hidden="true"></i>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check mb-4">
+                                                            <input class="form-check-input checkbox-curp" type="checkbox" value="true" id="" name=""
+                                                            @if ($valor['curp'] == 'true' && !empty($valor['documento']))
+                                                                checked
+                                                            @endif
+                                                            >
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check mb-4">
+                                                            <input class="form-check-input checkbox-estudios" type="checkbox" value="true" id="" name=""
+                                                            @if ($valor['estudio'] == 'true' && !empty($valor['documento']))
+                                                                checked
+                                                            @endif
+                                                            >
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check mb-4">
+                                                            <input class="form-check-input checkbox-acta" type="checkbox" value="true" id="" name=""
+                                                            @if ($valor['acta_nacimiento'] == 'true' && !empty($valor['documento']))
+                                                                checked
+                                                            @endif
+                                                            >
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {{-- @if (($valor['curp'] == 'false' || $valor['estudio'] == 'false' || $valor['acta_nacimiento'] == 'false') ||
+                                                            (empty($valor['curp'] ) || empty($valor['estudio']) || empty($valor['acta_nacimiento']) )) --}}
+                                                            <div class="file-input-wrapper">
+                                                                <i class="fas fa-upload file-icon"></i>
+                                                                <input type="file" class="file-input" name="documentos[{{ $valor['id'] }}]" id="docAlumno{{ $valor['id'] }}">
+                                                            </div>
+                                                        {{-- @endif --}}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        {{-- @endif --}}
+                                    {{-- @endfor --}}
+                                </table>
+                            </form>
                         @else
                             <p>No se encontraron documentos de los alumnos.</p>
                         @endif
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn py-1" onclick="closeModal('modalAlumnos')">Cerrar</button>
+                <div class="modal-footer mt-4">
+                    @if ($data_cursos != null)
+                        @if ($array_rol['rol'] == 1 && ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO'))
+                            <button class="btn py-1" id="btnSaveAlumnos">GUARDAR</button>
+                        @endif
+                    @endif
+
+                    <button class="btn btn-info py-1" onclick="closeModal('modalAlumnosCurp')">Cerrar</button>
                 </div>
             </div>
         </div>
+
+
+        {{-- Modal v2 alumnos estudios--}}
+        <div id="modalAlumnosEstudios" class="modal_al">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    {{-- <h5 class="modal-title font-weight-bold">Alumnos</h5> --}}
+                    <button type="button" class="close" onclick="closeModal('modalAlumnosEstudios')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body px-0">
+                    <p class="font-weight-bold text-center mb-1" style="font-size: 16px;">Alumnos</p>
+                    <div class="scrollable-list">
+                        @if (isset($search_docs['alumnos_req']) && count($search_docs['alumnos_req']) > 0)
+                            <table class="table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Comprobante de Estudios</th>
+                                        <th>Nombre del Alumno</th>
+                                        <th>PDF</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($search_docs['alumnos_req'] as $key => $valor)
+                                        <tr>
+                                            <td class="text-center">
+                                                @if ($valor['estudio'] == 'true' && !empty($valor['documento']))
+                                                    <i class="fa fa-check text-success" aria-hidden="true"></i>
+                                                @else
+                                                    <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                                                @endif
+                                            </td>
+                                            <td class="text-left"><span>{{($key+1).'.- '.$valor['alumno']}}</span></td>
+                                            <td class="text-center">
+                                                @if (!empty($valor['documento']))
+                                                    <a href="{{$valor['documento']}}" target="_blank"><i class="far fa-file-pdf fa-1x fa-lg text-danger" aria-hidden="true"></i></a>
+                                                @else
+                                                    <i class="far fa-file-pdf fa-1x fa-lg text-light" aria-hidden="true"></i>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p>No se encontraron documentos de los alumnos.</p>
+                        @endif
+                    </div>
+                </div>
+                <div class="modal-footer mt-4">
+                    <button class="btn btn-info py-1" onclick="closeModal('modalAlumnosEstudios')">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
 
 
     </div>
     {{-- fin del contenedor card --}}
 
 
-        @section('script_content_js')
+    @section('script_content_js')
         <script language="javascript">
             $(document).ready(function(){
 
@@ -1592,12 +2275,43 @@
                 // Buscar grupo
                 $("#btnBuscarGrupo" ).click(function(){
                     if ($("#txtbuscar").val().trim()) {
+                        loader('show');
                         $("#frmBuscarGrupo").attr('action', "{{ route('expunico.principal.mostrar.post')}}");
                         $("#frmBuscarGrupo").attr("target", '_self');
                         $("#frmBuscarGrupo").submit();
                     } else {
                         alert('POR FAVOR, INGRESE UN VALOR VÁLIDO');
                     }
+                });
+
+                // Buscar grupo
+                $("#btnSaveAlumnos" ).click(function(){
+                    loader('show');
+                    let valoresCheckboxCurp = [];
+                    $('.checkbox-curp').each(function() {
+                        let valor = $(this).is(':checked') ? $(this).val() : null; // Si está marcado, toma el valor; de lo contrario, establece null
+                        valoresCheckboxCurp.push(valor);
+                    });
+
+                    let valoresCheckboxEstu = [];
+                    $('.checkbox-estudios').each(function() {
+                        let valor = $(this).is(':checked') ? $(this).val() : null; // Si está marcado, toma el valor; de lo contrario, establece null
+                        valoresCheckboxEstu.push(valor);
+                    });
+
+                    let valoresCheckboxActaN = [];
+                    $('.checkbox-acta').each(function() {
+                        let valor = $(this).is(':checked') ? $(this).val() : null; // Si está marcado, toma el valor; de lo contrario, establece null
+                        valoresCheckboxActaN.push(valor);
+                    });
+
+                    $("#checksCurp").val(JSON.stringify(valoresCheckboxCurp));
+                    $("#checksEstudios").val(JSON.stringify(valoresCheckboxEstu));
+                    $("#checksActaNacim").val(JSON.stringify(valoresCheckboxActaN));
+
+                    $("#frmRequisitos").attr('action', "{{ route('expunico.save.requisitos')}}");
+                    $("#frmRequisitos").attr("target", '_self');
+                    $("#frmRequisitos").submit();
                 });
 
             });
@@ -1620,22 +2334,26 @@
                 switch (select_mov) {
                     case "0":
                         $("#divValid").addClass("d-none");
-                        $("#divArea").addClass("d-none");
                         $("#divReturn").addClass("d-none");
+                        $("#divDeshacerValid").addClass("d-none");
+                        $("#nota_deshacer").addClass("d-none");
                         break;
-                    case "1":
+                    case "1": //Validar
                         $("#divValid").removeClass("d-none");
-                        $("#divArea").addClass("d-none");
                         $("#divReturn").addClass("d-none");
+                        $("#divDeshacerValid").addClass("d-none");
+                        $("#nota_deshacer").addClass("d-none");
                         break;
-                    case "2":
-                        $("#divArea").removeClass("d-none");
+                    case "2": //Retornar
                         $("#divReturn").removeClass("d-none");
                         $("#divValid").addClass("d-none");
+                        $("#divDeshacerValid").addClass("d-none");
+                        $("#nota_deshacer").addClass("d-none");
                         break;
-                    case "3":;
+                    case "3": //Deshacer validación
+                        $("#divDeshacerValid").removeClass("d-none");
+                        $("#nota_deshacer").removeClass("d-none");
                         $("#divValid").addClass("d-none");
-                        $("#divArea").addClass("d-none");
                         $("#divReturn").addClass("d-none");
                         break;
                     default:
@@ -1655,9 +2373,10 @@
                     let radio5 = $('input[name="opcion5"]:checked').val(); let txtarea5 = $('#comentario_req5').val();
                     let radio6 = $('input[name="opcion6"]:checked').val(); let txtarea6 = $('#comentario_req6').val();
                     let radio7 = $('input[name="opcion7"]:checked').val(); let txtarea7 = $('#comentario_req7').val();
+                    let radio8 = $('input[name="opcion_v8"]:checked').val(); let txtarea8 = $('#comentario_req_v8').val();
                     valores = {'radio1': radio1, 'radio2': radio2, 'radio3': radio3, 'radio4': radio4, 'radio5': radio5,
-                    'radio6': radio6, 'radio7': radio7, 'txtarea1' : txtarea1, 'txtarea2' : txtarea2, 'txtarea3' : txtarea3,
-                    'txtarea4' : txtarea4, 'txtarea5' : txtarea5, 'txtarea6' : txtarea6, 'txtarea7' : txtarea7};
+                    'radio6': radio6, 'radio7': radio7, 'radio8': radio8, 'txtarea1' : txtarea1, 'txtarea2' : txtarea2, 'txtarea3' : txtarea3,
+                    'txtarea4' : txtarea4, 'txtarea5' : txtarea5, 'txtarea6' : txtarea6, 'txtarea7' : txtarea7, 'txtarea8' : txtarea8};
                 }else if(rol == 2){
                     let radio8 = $('input[name="opcion8"]:checked').val(); let txtarea8 = $('#comentario_req8').val();
                     let radio9 = $('input[name="opcion9"]:checked').val(); let txtarea9 = $('#comentario_req9').val();
@@ -1689,28 +2408,26 @@
 
                 //Enviar los datos por Ajax los valores
                 if (rol == 1 || rol == 2 || rol == 3) {
-                    // if (rol == 2) {
-                    //     subirPdfServidor(event, rol, idcurso);
-                    // }
-                        let data = {
-                        "_token": $("meta[name='csrf-token']").attr("content"),
-                        "valor_form": valores,
-                        "rol_user" : rol,
-                        'idcurso' : idcurso
-                        }
-                        $.ajax({
-                            type:"post",
-                            url: "{{ route('expunico.principal.guardar') }}",
-                            data: data,
-                            dataType: "json",
-                            success: function (response) {
-                                console.log(response);
-                                alert(response.mensaje);
-                                if(response.status == 200){
-                                    location.reload();
-                                }
+                    let data = {
+                    "_token": $("meta[name='csrf-token']").attr("content"),
+                    "valor_form": valores,
+                    "rol_user" : rol,
+                    'idcurso' : idcurso
+                    }
+                    $.ajax({
+                        type:"post",
+                        url: "{{ route('expunico.principal.guardar') }}",
+                        data: data,
+                        dataType: "json",
+                        success: function (response) {
+                            // console.log(response);
+                            loader('hide');
+                            alert(response.mensaje);
+                            if(response.status == 200){
+                                location.reload();
                             }
-                        });
+                        }
+                    });
                 }else{
                     alert("Error, No cuenta con permisos para guardar datos");
                 }
@@ -1719,27 +2436,19 @@
 
             //Funcion Await para ejecutar funcion de guardar y validar al mismo tiempo
             async function ejecutarAsync(rol, idcurso) {
-                if (rol == 2) {
+                if (rol == 1 || rol == 2 || rol == 3) {
+                    loader('show');
                     try {
                         // Ejecutar subirPdfServidor y esperar a que termine
                         const resultadoSubida = await subirPdfServidor(event, rol, idcurso);
-                        console.log(resultadoSubida);
-                        valores_por_rol(rol, idcurso); // Validar y guardar los radios
+                        if (resultadoSubida ==  'Success') {
+                            valores_por_rol(rol, idcurso); // Validar y guardar los radios
+                        }
                     } catch (error) {
                         console.error("Error:", error);
                     }
                 }else if(rol == 3){
                     valores_por_rol(rol, idcurso);
-
-                }else if(rol == 1){
-                    try {
-                        const resultadoSubida = await subirPdfServidor(event, rol, idcurso);
-                        if (resultadoSubida ==  'Success') {
-                            valores_por_rol(rol, idcurso);
-                        }
-                    } catch (error) {
-                        console.error("Error:", error);
-                    }
                 }
 
             }
@@ -1748,6 +2457,7 @@
             function validar_form(idcurso) {
                 if (confirm("¡AL ENVIAR, NO PODRÁ REALIZAR NINGUNA MODIFICACIÓN! ¿ESTÁS SEGURO DE ENVIAR LOS DATOS A DTA PARA SU VALIDACIÓN? ")) {
                 }else return;
+                loader('show');
                 let data = {
                         "_token": $("meta[name='csrf-token']").attr("content"),
                         'idcurso' : idcurso
@@ -1758,7 +2468,8 @@
                         data: data,
                         dataType: "json",
                         success: function (response) {
-                            console.log(response);
+                            // console.log(response);
+                            loader('hide');
                             alert(response.mensaje);
                             if (response.status === 200) {
                                 location.reload();
@@ -1772,29 +2483,86 @@
                 event.preventDefault();
                 return new Promise((resolve, reject) => {
                     let inputFiles = {};
-                    //OBTENEMOS LOS VALORES DEL LOS INPUT POR DEPARTAMENTO
+
                     //VINCULACION
                     if (rol == 1) {
-                        let arrayDocs = [1,3,4]; //Documentos que van a ser obtenidos
+                        let mb5 = 5 * 1024 * 1024;
+                        let mb20 = 10 * 1024 * 1024;
+                        let maxSize;
+                        let arrayDocs = [1,3,4,'_v8']; //Documentos que van a ser obtenidos
+                        let docs = [1,3,4,8];
                         for (let i = 0; i < arrayDocs.length; i++) {
                             let inputFile = document.getElementById('pdfInputDoc' + arrayDocs[i]);
-                            inputFiles['doc_'+arrayDocs[i]] = inputFile;
+                            inputFiles['doc_'+docs[i]] = inputFile;
+
+                            //Validamos el tamaño de los documentos
+                            if (inputFile.files.length > 0) {
+                                let fileSize = inputFile.files[0].size;
+                                maxSize = mb5;
+                                if (i == 0 || i == 2) {maxSize = mb20}
+                                if (fileSize > maxSize) {
+                                    // alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de 5 megabytes.');
+                                    alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de '+(maxSize / (1024 * 1024)) +' megabytes.');
+                                    loader('hide');
+                                    return false; //Detenemos el proceso
+                                }
+                            }
                         }
+                        //Ejecutamos la carga de archivos de recibo de pago
+                        uploadPdfRecibo(event, rol, idcurso);
+
                     }
 
                     //ACADEMICO
                     if (rol == 2) {
                         //Obtenemos los campos file
-                        let inputFiles25 = document.getElementById('pdfInputDoc25'); //Se le pone 20 para recorrer mas facil
-                        for (let i = 12; i <= 19; i++) {
+                        let fileSize;
+                        let mb5 = 5 * 1024 * 1024;
+                        let mb20 = 10 * 1024 * 1024;
+                        let maxSize;
+                        for (let i = 12; i <= 20; i++) {
+                            inputFile = document.getElementById('pdfInputDoc' + i);
+                            if(i == 20){
+                                inputFile = document.getElementById('pdfInputDoc25');
+                            }
+                            inputFiles['doc_'+i] = inputFile;
+
+                            //Validamos el tamaño de los documentos
+                            if (inputFile.files.length > 0) {
+                                fileSize = inputFile.files[0].size;
+                                maxSize = mb5;
+                                if (i == 17 || i == 18) {maxSize = mb20}
+
+                                if (fileSize > maxSize) {
+                                    alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de '+(maxSize / (1024 * 1024)) +' megabytes.');
+                                    loader('hide');
+                                    return false; //Detenemos el proceso
+                                }
+                            }
+                        }
+                    }
+
+                    if (rol == 3) { //Delegado
+                        let maxSize = 5 * 1024 * 1024;
+                        for (let i = 22; i <= 24; i++) {
                             let inputFile = document.getElementById('pdfInputDoc' + i);
                             inputFiles['doc_'+i] = inputFile;
+
+                            //Validamos el tamaño de los documentos
+                            if (inputFile.files.length > 0) {
+                                let fileSize = inputFile.files[0].size;
+                                if (fileSize > maxSize) {
+                                    alert('El archivo ' + inputFile.files[0].name + ' excede el tamaño permitido de 5 megabytes.');
+                                    loader('hide');
+                                    return false; //Detenemos el proceso
+                                }
+                            }
                         }
-                        inputFiles['doc_20'] = inputFiles25; //Esto se hace de manera individual
                     }
 
                     //ENVIAMOS LOS DATOS POR AJAX
-                    if (rol == 2 || rol == 1) {
+                    if (rol == 2 || rol == 1 || rol == 3) {
+                        // loader('show');
                         let formData = new FormData();
                         formData.append('_token', '{{ csrf_token() }}');
                         for (let key in inputFiles) {
@@ -1814,16 +2582,16 @@
                             processData: false,
                             success: function(response) {
                                 console.log(response);
-                                // alert(response.mensaje);
+                                if (response.status == 500) {
+                                    alert(response.mensaje);
+                                }
                                 if (response.status == 200) {
-                                    // return response.status == 200;
-                                }else{
-                                    // return response.status;
+                                    resolve("Success");
                                 }
                             },
                             error: function(xhr, status, error) {
                                 console.log(xhr.responseText);
-                                alert("Error al enviar el archivo.");
+                                alert("Error al enviar el archivo. Revise su conexión a Internet");
                             }
                         });
                     }else{
@@ -1831,7 +2599,7 @@
                     }
 
                     // Supongamos que al finalizar la subida, llamas a resolve
-                    resolve("Success");
+
                 });
 
             }
@@ -1841,11 +2609,43 @@
                 let pdfInput = document.getElementById(inputPdfId);
                 if (pdfInput.files.length > 0) {
                     iconIndic.style.display = 'inline-block';
+
+                    if(idIcon === 'iconCheck7'){ //Solo mostrar cuando es recibo de pago provisional
+                        //Folio de recibo
+                        let folio_recibo = prompt("Por favor, ingresa el folio de recibo:");
+                        if (folio_recibo !== null) {$("#txt_folio_recibo").val(folio_recibo);}
+                        else {alert("Debe ingresar el folio del recibo")}
+
+                        //Fecha de recibo
+                        let fecha_recibo = prompt("Por favor, ingresa la fecha de recibo con formato (YYYY-MM-DD)");
+                        // if (fecha_recibo !== null) {$("#txt_folio_fecha").val(fecha_recibo);}
+                        // else {alert("Debe ingresar una fecha.")}
+
+                        if (fecha_recibo !== null) {
+                            if (esFechaValida(fecha_recibo)) {
+                                $("#txt_folio_fecha").val(fecha_recibo);
+                            } else {
+                                alert("Debe ingresar una fecha válida con el formato (YYYY-MM-DD).");
+                            }
+                        } else {
+                            alert("Debe ingresar una fecha.");
+                        }
+                    }
+
                 } else {
                     iconIndic.style.display = 'none';
                 }
             }
 
+            function esFechaValida(fecha) {
+                const regex = /^\d{4}-\d{2}-\d{2}$/;
+                if (!regex.test(fecha)) {
+                    return false;
+                }
+                const [year, month, day] = fecha.split('-').map(Number);
+                const fechaObjeto = new Date(year, month - 1, day);
+                return fechaObjeto.getFullYear() === year && (fechaObjeto.getMonth() + 1) === month && fechaObjeto.getDate() === day;
+            }
 
             //Ajax para eliminar documento
             function delete_pdf(event, radioP, url_doc, rol, idcurso) {
@@ -1854,6 +2654,7 @@
                 }else return;
 
                 if (rol == 1 || rol == 2 || rol == 3) {
+                    loader('show');
                     let data = {
                         "_token": $("meta[name='csrf-token']").attr("content"),
                         "urlImg": url_doc,
@@ -1867,7 +2668,8 @@
                         data: data,
                         dataType: "json",
                         success: function (response) {
-                            console.log(response);
+                            // console.log(response);
+                            loader('hide');
                             alert(response.mensaje);
                             if(response.status === 200)
                             location.reload();
@@ -1881,21 +2683,37 @@
 
             //Valida o retorna DTA
             function valid_return_dta(accion, idcurso, rol) {
-                let valor_area = "";
+                let resul_dta = "", nota_dta = "";
                 if (accion == 'retornar') {
-                    valor_area = document.getElementById('area_retorno').value;
+                    //Obtenemos todos los valores de el textarea mensaje DTA
+                    resul_dta = get_mensaje_dta();
+                    if (resul_dta.conta_texto == 0) {
+                        alert("Los campos 'Mensaje DTA' de las evidencias están vacíos. \nPara continuar, debe haber al menos un campo con el motivo del retorno.");
+                        return false;
+                    }
+                }
+
+                if(accion == 'deshacer_valid'){
+                    nota_dta = $('#nota_deshacer').val().trim();
+                    if(nota_dta == '' || nota_dta == undefined || nota_dta == null){
+                        alert("POR FAVOR INGRESE EL MOTIVO DE LA ACCIÓN QUE DESEA REALIZAR.");
+                        return false;
+                    }
                 }
 
                 if (confirm("¿ESTAS SEGURO DE REALIZAR ESTA ACCIÓN?")) {
                 }else return;
 
                 if (rol == 4) {
+                    loader('show');
                     let data = {
                         "_token": $("meta[name='csrf-token']").attr("content"),
                         "rol_user" : rol,
                         'idcurso' : idcurso,
-                        'valor_area' : valor_area,
-                        'accion' : accion
+                        'accion' : accion,
+                        'nota_dta' : nota_dta
+                        //'valor_area' : valor_area,
+                        // 'mensajes_dta' : resul_dta.valores_dta,
                     }
                     $.ajax({
                         type:"post",
@@ -1904,6 +2722,7 @@
                         dataType: "json",
                         success: function (response) {
                             console.log(response);
+                            loader('hide');
                             alert(response.mensaje);
                             if(response.status === 200) location.reload();
                         }
@@ -1913,11 +2732,15 @@
                 }
             }
 
-            // Ejecuta el modal para visualizar lista de alumnos
-            $(".btn_modal_alumnos").click(function(e) {
-                e.preventDefault();
-                document.getElementById("modalAlumnos").style.display = "block";
-            });
+            function modalRequisitos(event, tipo) {
+                event.preventDefault();
+                console.log("entro");
+                if (tipo == 'curp') {
+                    document.getElementById("modalAlumnosCurp").style.display = "block";
+                }else if(tipo == 'estudios'){
+                    document.getElementById("modalAlumnosEstudios").style.display = "block";
+                }
+            }
 
             //Generar pdf espedientes unicos
             function genpdf_expe(id_curso) {
@@ -1926,8 +2749,119 @@
                 window.open(url, "_blank");
             }
 
+            function get_mensaje_dta() {
+                let valores_dta = {};
+                let conta_texto = 0;
+                for (let i = 1; i <= 26; i++) {
+                    let txtarea = $('#comentario_dta' + i).val();
+                    valores_dta['txtarea' + i] = txtarea;
+                    if (txtarea && txtarea.trim() !== '') {
+                        conta_texto++;
+                    }
+                }
+                return { valores_dta, conta_texto };
+            }
 
+            function loader(make) {
+                if(make == 'hide') make = 'none';
+                if(make == 'show') make = 'block';
+                document.getElementById('loader-overlay').style.display = make;
+            }
+
+            function modalUploadDoc(event, id) {
+                event.preventDefault();
+                document.getElementById("modalSubirDoc").style.display = "block";
+            }
+
+            // Escucha los cambios en todo el documento para los inputs de archivos
+            document.addEventListener('DOMContentLoaded', function() {
+                // Escucha los cambios en todo el documento para los inputs de archivos
+                document.addEventListener('change', function(event) {
+                    if (event.target.classList.contains('file-input')) {
+                        var icon = event.target.previousElementSibling;
+                        if (event.target.files && event.target.files.length > 0) {
+                            icon.classList.add('loaded');
+                        } else {
+                            icon.classList.remove('loaded');
+                        }
+                    }
+                });
+            });
+
+            function uploadPdfRecibo(event, rol, idcurso) {
+                event.preventDefault();
+                let maxSize = 5 * 1024 * 1024;
+                let inputFileRecibo = document.getElementById('pdfInputDoc7');
+                let folio_recibo = document.getElementById('txt_folio_recibo').value;
+                let fecha_recibo = document.getElementById('txt_folio_fecha').value;
+                //Validamos que pese menos de 5 mb
+                if (inputFileRecibo.files.length > 0) {
+                    let fileSize = inputFileRecibo.files[0].size;
+                    if (fileSize > maxSize) {
+                        alert('El archivo ' + inputFileRecibo.files[0].name + ' excede el tamaño permitido de 5 megabytes.');
+                        loader('hide');
+                        return false; // Detenemos el proceso
+                    }
+                }
+                //Envio de recibo
+                if(folio_recibo != "" && fecha_recibo != "" && inputFileRecibo.files.length > 0){
+                    let formData = new FormData();
+                    formData.append('_token', '{{ csrf_token() }}');
+                    formData.append('file', inputFileRecibo.files[0]);
+                    formData.append('rol', rol);
+                    formData.append('id_curso', idcurso);
+                    formData.append('folio_recibo', folio_recibo);
+                    formData.append('fecha_recibo', fecha_recibo);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('expunico.upload.recibo') }}",
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            console.log(response);
+                            if (response.status == 200) {
+                                // console.log("Recibo cargado exitosamente");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr.responseText);
+                            alert("Error al enviar el archivo.");
+                        }
+                    });
+
+                }
+
+            }
+
+            function guardarTexto(text, doc, dpto) {
+                let rol_user = $('#rol_user').val().trim();
+                if(rol_user == 4){ //Ingresa solo si es dta
+                    let idcurso = $('#txt_idcurso').val().trim();
+
+                    let data = {
+                        "_token": $("meta[name='csrf-token']").attr("content"),
+                        "mensaje" : text,
+                        'dpto' : dpto,
+                        'idcurso' : idcurso,
+                        'documento': doc,
+                        'rol': rol_user
+                    }
+                    $.ajax({
+                        type:"post",
+                        url: "{{ route('expunico.guardar.mensajes') }}",
+                        data: data,
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response.mensaje);
+                        }
+                    });
+                }
+
+            }
 
         </script>
-        @endsection
+    @endsection
 @endsection

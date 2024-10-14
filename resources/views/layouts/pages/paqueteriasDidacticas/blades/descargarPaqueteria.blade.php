@@ -22,7 +22,7 @@
             <th></th>
             <th class="text-center">
                 <a id="botonCARTADESCPDF" class="nav-link">
-                    <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                    <i class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                 </a>
             </th>
             <th class="text-center">
@@ -37,7 +37,7 @@
             <th></th>
             <th class="text-center">
                 <a id="botonMANUALDIDPDF" class="nav-link">
-                    <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                    <i class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                 </a>
             </th>
             <th class="text-center">
@@ -66,7 +66,7 @@
             <th></th>
             <th class="text-center">
                 <a id="botonEVALALUMNPDF" class="nav-link">
-                    <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                    <i class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                 </a>
             </th>
             <th class="text-center">
@@ -80,7 +80,7 @@
             <th></th>
             <th class="text-center">
                 <a id="botonEVALINSTRUCTORPDF" class="nav-link">
-                    <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                    <i class="far fa-file-pdf  fa-2x fa-lg text-danger"></i>
                 </a>
             </th>
             <th class="text-center">

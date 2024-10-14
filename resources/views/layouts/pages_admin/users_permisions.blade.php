@@ -74,7 +74,11 @@
 
 <!--contenido-->
 @section('content')
-
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="col-md-12">
         <div class="main-card mb-3 card">
             <div class="card-header">
@@ -117,11 +121,11 @@
                                 @foreach ($usuarios as $itemUsuarios)
                                     <div class="row" role="row">
                                         <div class="col-md-4" role="gridcell">
-                                            
+
                                             <div class="form-control-plaintext text-truncate">{{$itemUsuarios->name}}</div>
                                         </div>
                                         <div class="col-md-4" role="gridcell">
-                                            
+
                                             <div class="form-control-plaintext text-truncate">
                                                 <a href="{{route('usuarios.perfil.modificar', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR USUARIO">
                                                     <i class="fa fa-user" aria-hidden="true"></i>
@@ -129,7 +133,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4" role="gridcell">
-                                            
+
                                             <div class="form-control-plaintext text-truncate">
                                                 <a href="{{route('usuarios_permisos.show', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
                                                     <i class="fa fa-wrench" aria-hidden="true"></i>

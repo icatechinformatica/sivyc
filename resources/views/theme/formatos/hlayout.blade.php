@@ -16,10 +16,10 @@
         @if ($marca)
             <style>
                 header:after {
-                content: "BORRADOR"; 
-                font-size: 19em;  
+                content: "BORRADOR";
+                font-size: 19em;
                 color: rgba(40, 40, 43, 0.35);
-                z-index: 9999;                
+                z-index: 9999;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -27,10 +27,10 @@
                 top: 35%;
                 right: 0;
                 bottom: 0;
-                left: 10%;           
+                left: 10%;
                 transform: rotate(-25deg);
                 }
-            </style>        
+            </style>
             @endif
     @endif
 
@@ -39,9 +39,10 @@
 <body>
     <header>
         <img src='img/formatos/bannerhorizontal.jpeg' width="100%">
-        <p style="margin-top:-55px; padding:0px; font-size: 11px; "><span  style="font-style: italic; display:block; padding-bottom:5px;">@if(isset($distintivo)){{ $distintivo }}@endif</span>@if(isset($titulo)){{ $titulo }}@endif</p>
+        <p style="margin-top:-65px; padding:0px; font-size: 11px; "><span  style="font-style: italic; display:block; padding-bottom:5px;">@if(isset($distintivo)){{ $distintivo }}@endif</span>@if(isset($titulo)){{ $titulo }}@endif</p>
         @yield("header")
     </header>
+    @if(isset($direccion))
     <footer>
         @yield("footer")
         <div style="position: relative;";>
@@ -50,10 +51,11 @@
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </div>
     </footer>
+    @endif
     <content>
         @yield("content")
     </content>
-    
+
     @yield("body")
     @yield("js")
 </body>

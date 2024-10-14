@@ -12,10 +12,71 @@
             height:22px;
             font-weight: bold;
         }
+
+        /* Estilo del loader */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+            z-index: 9999; /* Asegura que esté por encima de otros elementos */
+            display: none; /* Ocultar inicialmente */
+        }
+
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {transform: translate(-50%, -50%) rotate(0deg);}
+            100% {transform: translate(-50%, -50%) rotate(360deg);}
+        }
+
+        #loader-text {
+            color: #fff;
+            margin-top: 150px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        /* Texto loader */
+        #loader-text span {
+            opacity: 0; /* Inicia los puntos como invisibles */
+            font-size: 30px;
+            font-weight: bold;
+            animation: fadeIn 1s infinite; /* Aplica la animación de aparecer */
+        }
+
+        @keyframes fadeIn {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        #loader-text span:nth-child(1) {animation-delay: 0.5s; }
+        #loader-text span:nth-child(2) {animation-delay: 1s; }
+        #loader-text span:nth-child(3) {animation-delay: 1.5s;}
     </style>
 @endsection
 @section('title', 'Reportes | SIVyC Icatech')
 @section('content')
+    {{-- Loader --}}
+    <div id="loader-overlay">
+        <div id="loader"></div>
+        <div id="loader-text">
+            Espere un momento mientras se realiza el proceso<span> . </span><span> . </span><span> . </span>
+        </div>
+    </div>
 
     <div class="card-header">
         Asignación de Folios
@@ -26,6 +87,14 @@
                 <div class="col-md-12 alert alert-success">
                     <p>{{ $message }}</p>
                 </div>
+            </div>
+        @endif
+        @if ($msn = Session::get('msn'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>{{ $msn }}</strong>
             </div>
         @endif
         @php
@@ -147,21 +216,24 @@
 
                         @endforeach
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3" class="text-right" style="border-color:white;"></td>
-                            @if($boton_asignar==true)
-                                <td colspan="2" class="text-right" style="border-color:white;">
-                                    {{ Form::select('id_afolio', $actas, NULL ,['id'=>'id_afolio', 'class' => 'form-control mt-2']) }}
-                                </td>
-                                <td colspan="2" class="text-right" style="border-color:white;">
-                                    {{ Form::button('ASIGNAR FOLIOS', ['id' => 'guardar','class' => 'form-control btn']) }}
-                                </td>
-                            @endif
-                        </tr>
-                    </tfoot>
                     @endif
                 </table>
+            </div>
+        </div>
+        {{-- botoneras --}}
+        <div class="d-flex justify-content-end">
+            <div class="row">
+                @if (isset($alumnos))
+                    @if($boton_asignar==true)
+                        <div class="form-inline">
+                            {{ Form::select('id_afolio', $actas, NULL ,['id'=>'id_afolio', 'class' => 'form-control mt-2']) }}
+                            {{ Form::button('ASIGNAR FOLIOS', ['id' => 'guardar','class' => 'form-control btn']) }}
+                        </div>
+                    @endif
+                    @if ($btn_genxml == true)
+                        {{ Form::button('ENVIAR PARA EFIRMA', ['id' => 'generar_xml','class' => 'form-control btn']) }}
+                    @endif
+                @endif
             </div>
         </div>
         @endif
@@ -175,7 +247,20 @@
                         $('#frm').attr('action', "{{route('grupos.asignarfolios.guardar')}}"); $('#frm').submit();
                     }
                 });
+
+                $("#generar_xml" ).click(function(){
+                    if(confirm("Esta seguro de ejecutar la acción para efirma?")==true){
+                        loader('show');
+                        $('#frm').attr('action', "{{route('grupos.asignarfolios.efolios')}}"); $('#frm').submit();
+                    }
+                });
             });
+
+            function loader(make) {
+                if(make == 'hide') make = 'none';
+                if(make == 'show') make = 'block';
+                document.getElementById('loader-overlay').style.display = make;
+            }
         </script>
     @endsection
 @endsection

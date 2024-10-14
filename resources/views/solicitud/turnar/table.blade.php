@@ -53,7 +53,7 @@
                     $aviso = NULL;                    
                     if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0')) 
                         OR ($g->option =='ARC02'
-                        AND ($g->status_curso!='AUTORIZADO' OR $g->turnado!='UNIDAD' OR $g->status == 'TURNADO_DTA' OR $g->status == 'TURNADO_PLANEACION' OR $g->status == 'REPORTADO'))){
+                        AND ( $g->status_solicitud_arc02 == 'AUTORIZADO' OR $g->status_curso!='AUTORIZADO' OR $g->turnado!='UNIDAD' OR $g->status == 'TURNADO_DTA' OR $g->status == 'TURNADO_PLANEACION' OR $g->status == 'REPORTADO'))){
                         $activar = false;                        
                         $aviso = "Grupo turnado a ".$g->turnado_solicitud.", Clave de Apertura ".$g->status_curso." y Estatus: ".$g->status;
                     }else if( ($g->status_solicitud_arc02 == 'TURNADO' AND $g->option =='ARC02') OR ($g->status_solicitud == 'TURNADO' AND $g->option =='ARC01') ){
@@ -158,7 +158,7 @@
 </div>
 
 <div class="form-row col-md-12 mt-4">
-    @if($activar OR Auth::user()->roles[0]->slug=='admin')
+    @if($activar)
         @if ((($opt=='ARC01')&&($grupos[0]->status_solicitud!='VALIDADO')) OR ($opt=='ARC02' && ($grupos[0]->status_solicitud_arc02 !='VALIDADO')) )
             <div class=" form-group col-md-2"></div>
             <div class="form-group col-md-4"></div>
@@ -200,13 +200,20 @@
             </div>
         @endif
     @elseif($file)
-        <a href="{{$file}}" target="_blank" class="btn  bg-warning">IMPRIMIR
-            @if($g->option =='ARC01')  {{$munidad}}
-            @elseif($g->option =='ARC02') {{$nmunidad}} @endif
-            .PDF
-        </a> 
+        <a href="{{$file}}" target="_blank" class="btn  bg-warning"> SOLICITUD {{$g->option}}</a> 
     @endif
     @if($pdf_curso)  
-        <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>
+        <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">AUTORIZACIÓN</a>
+    @endif
+    @if($movimientos)        
+        <div class="form-row col-md-9 justify-content-end">  
+            {{ Form::select('movimiento', $movimientos, '', ['id'=>'movimiento','class' => 'form-control  col-md-4 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }}
+            {{ Form::text('motivo', '', ['id'=>'motivo', 'class' => 'form-control col-md-4 m-1 ', 'placeholder' => 'MOTIVO', 'title' => 'MOTIVO', 'style'=>'display:none']) }}
+            <div class="custom-file col-md-3 m-1" id="inputFile" style="display:none">
+                <input id="file_autorizacion" type="file" name="file_autorizacion" class="custom-file-input" accept=".pdf" >
+                <label class="custom-file-label" for="file_recibo">PDF</label>
+            </div> 
+            {{ Form::button('ENVIAR', ['id'=>'enviar','class' => 'btn btn-danger','style'=>'display:none']) }}
+        </div>
     @endif
 </div>

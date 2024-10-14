@@ -113,9 +113,9 @@
                                 <td></td>
                                 <td id="center">
                                     @if($datainstructor->archivo_ine == NULL)
-                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                        <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                                     @else
-                                    <a href={{$datainstructor->archivo_ine}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                    <a href={{$datainstructor->archivo_ine}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                     @endif
                                 </td>
                                 <td></td>
@@ -385,9 +385,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_domicilio == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_domicilio}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$datainstructor->archivo_domicilio}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -404,9 +404,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_curp == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_curp}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$datainstructor->archivo_curp}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -423,9 +423,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_bancario == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_bancario}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$datainstructor->archivo_bancario}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -442,9 +442,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_fotografia == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_fotografia}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$datainstructor->archivo_fotografia}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -463,9 +463,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_otraid == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_otraid}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$datainstructor->archivo_otraid}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -482,9 +482,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_rfc == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_rfc}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$datainstructor->archivo_rfc}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -501,9 +501,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_estudios == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_estudios}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$datainstructor->archivo_estudios}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -520,9 +520,9 @@
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_curriculum_personal == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -577,9 +577,9 @@
                                     <td></td>
                                     <td id="center">
                                         @if($datainstructor->entrevista['link'] == NULL)
-                                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                            <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                                         @else
-                                            <a href={{$datainstructor->entrevista['link']}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                            <a href={{$datainstructor->entrevista['link']}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                         @endif
                                     </td>
                                     <td></td>
@@ -665,7 +665,7 @@
                                                     "{{$item->nombre_institucion}}","{{$item->fecha_expedicion_documento}}","{{$item->periodo}}","{{$item->folio_documento}}",
                                                     "{{$item->cursos_recibidos}}","{{$item->capacitador_icatech}}","{{$item->recibidos_icatech}}",
                                                     "{{$item->cursos_impartidos}}","{{$item->id}}","{{$datainstructor->id}}","{{$loc}}"]'>
-                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                                         </button>
                                         <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
                                             data-toggle="modal"
@@ -769,7 +769,7 @@
                                 <td>
                                     @can('instructor.editar_fase2')
                                         <!--<a class="btn btn-info" href="{ route('instructor-editespectval', ['id' => item->especialidadinsid,'idins' => datains->id]) }}">Modificar</a>-->
-                                        <a class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                        <a class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                         <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                             data-toggle="modal"
                                             data-placement="top"
@@ -823,9 +823,9 @@
                                 <td></td>
                                 <td id="center">
                                     @if($datainstructor->curriculum == NULL)
-                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                        <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                                     @else
-                                        <a href={{$datainstructor->curriculum}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                        <a href={{$datainstructor->curriculum}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                     @endif
                                 </td>
                                 <td></td>

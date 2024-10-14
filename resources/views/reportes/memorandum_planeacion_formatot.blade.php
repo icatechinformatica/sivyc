@@ -42,12 +42,12 @@
             table{
                 width:100%;
             }
-            
+
             td{
                 display:block;
                 width:100%;
             }
-            
+
             tr{
                 display:block;
                 margin-bottom:30px;
@@ -82,7 +82,7 @@
                                 @foreach ($meses as $key => $itemMeses)
                                     <option value="{{ $key }}">{{ $itemMeses }}</option>
                                 @endforeach
-                            </select>                
+                            </select>
                     {{-- formulario de busqueda en index END --}}
                         {!! Form::submit('CONSULTAR', ['class' => 'btn btn-outline-info my-2 my-sm-0']) !!}
                     {!! Form::close() !!}
@@ -94,16 +94,16 @@
         </div>
         <hr style="border-color:dimgray">
         <div class="form-row">
-                
+
                 @if (count($queryGetMemo) > 0)
                     {{-- listado de elementos --}}
-                        
+
                     <table  id="table-instructor" class="table table-bordered Datatables" style="width: 100%;">
                         <caption>MEMORANDUM RECIBIDOS Y ENVIADOS POR MES</caption>
                         <thead class="thead-dark">
                             <tr align="justify">
                                 <th>TIPO DE MEMORANDUM</th>
-                                <th>MEMORANDUM</th>                           
+                                <th>MEMORANDUM</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -120,10 +120,10 @@
                                         @if (!empty($itemgetmemo->memorandum_retorno_unidad))
                                             DE LA UNIDAD{{ tbl_cursos.unidad }}
                                             <a href="{{ $itemgetmemo->memorandum_retorno_unidad }}" class="btn btn-danger btn-circles btn-xl" title="MEMORANDUM DE ENVÍO A DIRECCIÓN TÉCNICA ACADÉMICA" target="_blank">
-                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                <i class="far fa-file-pdf" aria-hidden="true"></i>
                                             </a>
                                         @endif
-                                    </td>              
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -135,23 +135,23 @@
                             </tr>
                         </tfoot>
                     </table>
-                        
+
                     {{-- listado de elementos END --}}
                 @else
                     <div style="text-align: center;">
                         <h1><b>LA CONSULTA NO ARROJÓ RESULTADOS</b></h1>
                     </div>
                 @endif
-                
+
         </div>
     </div>
     <br>
-    
+
 @endsection
 {{-- contenido js --}}
 @section('script_content_js')
     <script type="text/javascript">
-        
+
     </script>
 @endsection
 {{-- contenido js END --}}

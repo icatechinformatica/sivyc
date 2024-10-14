@@ -98,17 +98,18 @@ class validacionDtaController extends Controller {
 
         $unidades = DB::table('tbl_unidades')->select('unidad')->where('cct', 'LIKE', '%07EIC%')->orderBy('unidad', 'asc')->get();
 
-        $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
+        $meses = array(1=>"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
         $anioActual = Carbon::now()->year;
-        $mesActual = $meses[($fecha->format('n')) - 1];
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
-        $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-        $mesInformar = $fechaEntregaActual->mes_informar;
+        $mesActual = $meses[($fecha->format('n'))];
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
+        // $dateNow = $fechaEntregaActual->termino . "-" . $anioActual;
+        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
 
-        $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
-        $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
-        $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
+        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
+        $terminoExplode = explode('-',$fechaEntregaActual->termino);
+        $mesEntrega = $meses[$terminoExplode[1]];
+        $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
         $diasParaEntrega = $this->getFechaDiff();
 
         return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad', 'fechaEntregaFormatoT', 'mesInformar', 'unidad', 'diasParaEntrega', 'mesSearch', 'formato_respuesta'));
@@ -143,17 +144,18 @@ class validacionDtaController extends Controller {
 
         $unidades = DB::table('tbl_unidades')->select('unidad')->where('cct', 'LIKE', '%07EIC%')->orderBy('unidad', 'asc')->get();
 
-        $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
+        $meses = array(1 => "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
         $anioActual = Carbon::now()->year;
-        $mesActual = $meses[($fecha->format('n')) - 1];
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
-        $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-        $mesInformar = $fechaEntregaActual->mes_informar;
+        $mesActual = $meses[($fecha->format('n'))];
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
+        // $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
+        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
 
-        $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
-        $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
-        $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
+        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
+        $terminoExplode = explode('-',$fechaEntregaActual->termino);
+        $mesEntrega = $meses[$terminoExplode[1]];
+        $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
 
         $diasParaEntrega = $this->getFechaDiff();
 
@@ -437,9 +439,10 @@ class validacionDtaController extends Controller {
                                 )->where('unidad', $unidadSeleccionada)->first();
                                 $leyenda = Instituto::first();
                                 $leyenda = $leyenda->distintivo;
-                                $direccion = DB::table('tbl_unidades')->WHERE('unidad',$unidadSeleccionada)->VALUE('direccion');
-                                $direccion = explode("*", $direccion);
-                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional','direccion','fecha_envio'));
+                                $funcionarios = $this->funcionarios($unidadSeleccionada);
+                                // $direccion = DB::table('tbl_unidades')->WHERE('unidad',$unidadSeleccionada)->VALUE('direccion');
+                                // $direccion = explode("*", $direccion);
+                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional','fecha_envio','funcionarios'));
                                 return $pdf->stream('Memo_Unidad.pdf');
                             } else {
                                 return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
@@ -731,31 +734,31 @@ class validacionDtaController extends Controller {
             $mes = $meses[($fechaFormato->format('n')) - 1];
             $fecha_ahora_espaniol = $fechaFormato->format('d') . ' de ' . $mes . ' de ' . $fechaFormato->format('Y');
             // registro de las unidades
-            $reg_unidad = DB::table('tbl_unidades')->select(
-                'academico',
-                'vinculacion',
-                'dacademico',
-                'pdacademico',
-                'pdunidad',
-                'pacademico',
-                'pvinculacion',
-                'jcyc',
-                'pjcyc',
-                'dgeneral',
-                'pdgeneral'
-            )->groupby(
-                'academico',
-                'vinculacion',
-                'dacademico',
-                'pdacademico',
-                'pdunidad',
-                'pacademico',
-                'pvinculacion',
-                'jcyc',
-                'pjcyc',
-                'dgeneral',
-                'pdgeneral'
-            )->first();
+            // $reg_unidad = DB::table('tbl_unidades')->select(
+            //     'academico',
+            //     'vinculacion',
+            //     'dacademico',
+            //     'pdacademico',
+            //     'pdunidad',
+            //     'pacademico',
+            //     'pvinculacion',
+            //     'jcyc',
+            //     'pjcyc',
+            //     'dgeneral',
+            //     'pdgeneral'
+            // )->groupby(
+            //     'academico',
+            //     'vinculacion',
+            //     'dacademico',
+            //     'pdacademico',
+            //     'pdunidad',
+            //     'pacademico',
+            //     'pvinculacion',
+            //     'jcyc',
+            //     'pjcyc',
+            //     'dgeneral',
+            //     'pdgeneral'
+            // )->first();
 
             switch ($mesUnity) {
                 case '01':
@@ -801,9 +804,10 @@ class validacionDtaController extends Controller {
             $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
             $leyenda = Instituto::first();
             $leyenda = $leyenda->distintivo;
-            $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
-            $direccion = explode("*", $direccion);
-            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity', 'totalCursos', 'leyenda','direccion'));
+            $funcionarios = $this->funcionarios('TUXTLA');
+            // $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
+            // $direccion = explode("*", $direccion);
+            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity', 'totalCursos', 'leyenda','funcionarios'));
             // return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
             return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
         } else {
@@ -813,31 +817,24 @@ class validacionDtaController extends Controller {
     }
 
     protected function getFechaDiff() {
-        $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
-        $fecha = Carbon::parse(Carbon::now());
-        $anioActual = Carbon::now()->year;
-        $mes = $meses[($fecha->format('n')) - 1];
-        $fechaActual = Carbon::now()->format('d-m-Y');
-        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $mes)->first();
-        $fEAc = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-        $comfechaActual = strtotime($fechaActual);
-        $convertfEAc = date_create_from_format('d-m-Y', $fEAc);
-        $confEAc = date_format($convertfEAc, 'd-m-Y');
-        $comconfEAc = strtotime($confEAc); // fecha actual de entrega
-        $dias = (strtotime($confEAc) - strtotime($fechaActual)) / 86400;
-        $dias = abs($dias);
-        $dias = floor($dias);
+        $fechaActual = Carbon::now();
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino')->whereDate('inicio', '<=', $fechaActual)->whereDate('termino', '>=', $fechaActual)->first();
+
+        $fechaTermino = Carbon::parse($fechaEntregaActual->termino); // Convertir la fecha de término a Carbon
+        $dias = $fechaActual->diffInDays($fechaTermino, false)+1; // Calcula la diferencia en días
 
         return $dias;
     }
 
     protected function xlsExportReporteFormatotEnlacesUnidad(Request $request) {
+        $meses = array(1=>"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $anio_actual = Carbon::now()->year;
         $unidadActual = $request->unidad_;
         $mesSearch = $request->mes_;
 
         $formatot_enlace_dta = dataFormatoT($unidadActual, ['DTA', 'MEMO_TURNADO_RETORNO'], null, $mesSearch, ['TURNADO_DTA']);
-        foreach ($formatot_enlace_dta as $value) {
+        foreach ($formatot_enlace_dta as $key => $value) {
+            $formatot_enlace_dta[$key]->fechaturnado = $meses[(int)$mesSearch];
             unset($value->id_tbl_cursos);
             unset($value->estadocurso);
             unset($value->turnados_enlaces);
@@ -948,10 +945,12 @@ class validacionDtaController extends Controller {
      */
     protected function xlsExportReporteFormatoTDirectorDTA(Request $request)
     {
+        $meses = array(1=>"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $anioActual = Carbon::now()->year;
 
         $reporteDirectorDTA = dataFormatoT($request->unidadD, ['REVISION_DTA'], null, $request->mesSearch, ['REVISION_DTA']);
-        foreach ($reporteDirectorDTA as $value) {
+        foreach ($reporteDirectorDTA as $key => $value) {
+            $reporteDirectorDTA[$key]->fechaturnado = $meses[(int)$request->mesSearch];
             unset($value->id_tbl_cursos);
             unset($value->estadocurso);
             unset($value->turnados_enlaces);
@@ -1741,12 +1740,17 @@ class validacionDtaController extends Controller {
         // Fin Fecha
         // Info cursos
         $count_cursos = array();
+        $calendario_formatot = DB::Table('calendario_formatot')->Select('inicio','termino')->Where('mes_entrega',(int)$request->mes_reporte)->Get();
         $cursos = DB::Table('tbl_cursos')
-            ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
+            // ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
             ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
-            ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
-            ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
-            ->Where('fecha_entrega', 'LIKE', '%'.$request->mes_reporte)
+            ->where('tbl_cursos.turnado','!=','UNIDAD')
+            ->WhereDate('tbl_cursos.fecha_turnado', '>=', $calendario_formatot[0]->inicio)
+            ->WhereDate('tbl_cursos.fecha_turnado', '<=', $calendario_formatot[1]->termino)
+            //->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
+            //->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
+            ->Where('tbl_cursos.status_curso','AUTORIZADO')
+            // ->Where('fecha_entrega', 'LIKE', '%'.$request->mes_reporte)
             ->Where('tbl_unidades.ubicacion', $request->unidad_reporte)
             ->OrderBy('fecha_envio', 'DESC')
             ->Get();
@@ -1778,7 +1782,8 @@ class validacionDtaController extends Controller {
             $cursos_validar = DB::Table('tbl_cursos')->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
                 ->Where('tbl_unidades.ubicacion',$request->unidad_reporte)
                 ->WhereBetween('tbl_cursos.termino',[$mes_inicio,$mes_fin])
-                ->WhereIn('tbl_cursos.status',['NO REPORTADO','RETORNO_UNIDAD'])
+                ->Where('tbl_cursos.turnado','UNIDAD')
+                //->WhereIn('tbl_cursos.status',['NO REPORTADO','RETORNO_UNIDAD'])
                 ->Where('tbl_cursos.status_curso','AUTORIZADO')
                 ->First();
 
@@ -1817,10 +1822,11 @@ class validacionDtaController extends Controller {
         // Fin info meses anteriores
 
         $unidad = DB::Table('tbl_unidades')->Where('unidad', $request->unidad_reporte)->FIRST();
-        $elabora = ['nombre' => $elabora = Auth::user()->name, 'puesto' => $elabora = Auth::user()->puesto];
-        $direccion = DB::table('tbl_instituto')->Select('direccion','telefono','correo')->First();
-        $direccion->direccion = explode("*", $direccion->direccion);
-        $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','elabora','direccion'));
+        // $elabora = ['nombre' => $elabora = Auth::user()->name, 'puesto' => $elabora = Auth::user()->puesto];
+        $funcionarios = $this->funcionarios($unidad->unidad);
+        // $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
+        // $direccion = explode("*", $direccion);
+        $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','funcionarios'));
         return $pdf->Stream('Memo_unidad_para_DTA.pdf');
     }
 
@@ -1830,12 +1836,15 @@ class validacionDtaController extends Controller {
         $archivo = $request->file('subir_memo_reporte_unidad'); # obtenemos el archivo
         $url = $this->pdf_upload($archivo, $request->unidad_reporte, 'Resumen_formatoT'); # invocamos el método
 
+        $calendario_formatot = DB::Table('calendario_formatot')->Select('inicio','termino')->Where('mes_entrega',(int)$request->mes_reporte)->Get();
         $cursos = DB::Table('tbl_cursos')->Select('tbl_cursos.id')
-            ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
+            // ->Join('calendario_formatot', 'calendario_formatot.fecha', 'tbl_cursos.fecha_turnado')
             ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
-            ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
-            ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
-            ->Where('fecha_entrega', 'LIKE', '%-'.$request->mes_reporte)
+            // ->whereIn('tbl_cursos.turnado', ['PLANEACION','PLANEACION_TERMINADO','REPORTADO'])
+            // ->whereIn('tbl_cursos.status', ['TURNADO_PLANEACION','REPORTADO'])
+            ->WhereDate('tbl_cursos.fecha_turnado', '>=', $calendario_formatot[0]->inicio)
+            ->WhereDate('tbl_cursos.fecha_turnado', '<=', $calendario_formatot[1]->termino)
+            // ->Where('fecha_entrega', 'LIKE', '%-'.$request->mes_reporte)
             ->Where('tbl_unidades.ubicacion', $request->unidad_reporte)
             ->OrderBy('fecha_envio', 'DESC')
             ->Get();
@@ -1913,5 +1922,41 @@ class validacionDtaController extends Controller {
                 return 'DICIEMBRE';
             break;
         }
+    }
+
+    public function funcionarios($unidad) {
+        $query = clone $dacademico = clone $dacademico_unidad = clone $certificacion = clone $dunidad = clone $dplaneacion = clone $dgeneral = clone $progpres = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true')
+            ->Where('f.titular', true);
+
+        $dacademico = $dacademico->Where('o.id',16)->First();
+        $certificacion = $certificacion->Where('o.id',18)->First();
+        $dplaneacion = $dplaneacion->Where('o.id',6)->First();
+        $dgeneral = $dgeneral->Where('o.id',1)->First();
+        $progpres = $progpres->Where('o.id',9)->First();
+
+        $dacademico_unidad = $dacademico_unidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DEPARTAMENTO ACADEMICO%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $dunidad = $dunidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $funcionarios = [
+            'dacademico' => ['titulo'=>$dacademico->titulo,'nombre'=>$dacademico->nombre,'puesto'=>$dacademico->cargo,'direccion'=>$dacademico->direccion,'telefono'=>$dacademico->telefono,'correo'=>$dacademico->correo_institucional],
+            'certificacion' => ['titulo'=>$certificacion->titulo,'nombre'=>$certificacion->nombre,'puesto'=>$certificacion->cargo,'direccion'=>$certificacion->direccion,'telefono'=>$certificacion->telefono,'correo'=>$certificacion->correo_institucional],
+            'dplaneacion' => ['titulo'=>$dplaneacion->titulo,'nombre'=>$dplaneacion->nombre,'puesto'=>$dplaneacion->cargo,'direccion'=>$dplaneacion->direccion,'telefono'=>$dplaneacion->telefono,'correo'=>$dplaneacion->correo_institucional],
+            'dgeneral' => ['titulo'=>$dgeneral->titulo,'nombre'=>$dgeneral->nombre,'puesto'=>$dgeneral->cargo,'direccion'=>$dgeneral->direccion,'telefono'=>$dgeneral->telefono,'correo'=>$dgeneral->correo_institucional],
+            'progpres' => ['titulo'=>$progpres->titulo,'nombre'=>$progpres->nombre,'puesto'=>$progpres->cargo,'direccion'=>$progpres->direccion,'telefono'=>$progpres->telefono,'correo'=>$progpres->correo_institucional],
+            'dacademico_unidad' => ['titulo'=>$dacademico_unidad->titulo,'nombre'=>$dacademico_unidad->nombre,'puesto'=>$dacademico_unidad->cargo,'direccion'=>$dacademico_unidad->direccion,'telefono'=>$dacademico_unidad->telefono,'correo'=>$dacademico_unidad->correo_institucional],
+            'dunidad' => ['titulo'=>$dunidad->titulo,'nombre'=>$dunidad->nombre,'puesto'=>$dunidad->cargo,'direccion'=>$dunidad->direccion,'telefono'=>$dunidad->telefono,'correo'=>$dunidad->correo_institucional],
+            'elabora' => ['nombre'=>strtoupper(Auth::user()->name),'puesto'=>strtoupper(Auth::user()->puesto)]
+        ];
+
+        return $funcionarios;
     }
 }

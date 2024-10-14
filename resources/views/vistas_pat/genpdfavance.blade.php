@@ -38,9 +38,9 @@
 @endsection
 @section('body')
         <div id="para">
-            <strong>Dirección: </strong> {{isset($org) ? $org->org : ''}}
+            <strong>Dirección: </strong> {{isset($nom_direc_depto) ? $nom_direc_depto->direccion : ''}}
             <br>
-            <strong>Departamento: </strong> {{isset($area_org) ? $area_org->area_org : ''}}
+            <strong>Departamento: </strong> {{isset($nom_direc_depto) ? $nom_direc_depto->depto : ''}}
         </div>
             <br><br><br><br>
         {{-- Nueva tabla v2 para ver que tal imprimer --}}
@@ -157,49 +157,26 @@
             </tbody>
         </table>
 
-        @if (isset($firm_logueado) and count($firm_logueado) > 0)
-            <table class="tablaf" style="margin-top: 20px;">
-                <tr>
-                    <td style="line-height: 1;">
-                        <p style="margin-bottom: 35px;">ELABORÓ</p>
-                        <p>___<u>{{$firm_logueado['user'] != '' ? $firm_logueado['user'] : 'Usuario'}}</u>___</p>
-                        <p><b>{{$firm_logueado['puesto'] != '' ? $firm_logueado['puesto'] : 'Puesto'}}</b></p>
-                    </td>
-                    <td>
-                        <p></p>
-                        <p></p>
-                        <p></p>
-                        <p>Fecha: {{isset($fecha_avance) ? $fecha_avance : ''}}</p>
-                    </td>
-                    <td style="line-height: 1;">
-                        <p style="margin-bottom: 35px;">Vo. Bo.</p>
-                        <p>___<u>{{isset($area_org) ? $area_org->titulo.' '.$area_org->func : ''}}</u>___</p>
-                        <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
-                    </td>
-                </tr>
-            </table>
-        @else
-            <table class="tablaf" style="margin-top: 20px;">
-                <tr>
-                    <td style="line-height: 1;">
-                        <p style="margin-bottom: 35px;">ELABORÓ</p>
-                        <p>___<u>{{isset($area_org) ? $area_org->titulo.' '.$area_org->func : ''}}</u>___</p>
-                        <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
-                    </td>
-                    <td>
-                        <p></p>
-                        <p></p>
-                        <p></p>
-                        <p>Fecha: {{isset($fecha_avance) ? $fecha_avance : ''}}</p>
-                    </td>
-                    <td style="line-height: 1;">
-                        <p style="margin-bottom: 35px;">Vo. Bo.</p>
-                        <p>___<u>{{isset($org) ? $org->titulo.' '.$org->fun : ''}}</u>___</p>
-                        <p><b>{{isset($org) ? $org->cargo : ''}}</b></p>
-                    </td>
-                </tr>
-            </table>
-        @endif
+        <table class="tablaf" style="margin-top: 20px;">
+            <tr>
+                <td style="line-height: 1;">
+                    <p style="margin-bottom: 35px;">ELABORÓ</p>
+                    <p>___<u>{{isset($area_org) ? $area_org->titulo.' '.$area_org->funcionario : ''}}</u>___</p>
+                    <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
+                </td>
+                <td>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p>Fecha: {{isset($fecha_avance) ? $fecha_avance : ''}}</p>
+                </td>
+                <td style="line-height: 1;">
+                    <p style="margin-bottom: 35px;">Vo. Bo.</p>
+                    <p>___<u>{{isset($org) ? $org->titulo.' '.$org->funcionario : ''}}</u>___</p>
+                    <p><b>{{isset($org) ? $org->cargo : ''}}</b></p>
+                </td>
+            </tr>
+        </table>
 
 {{-- $pdf->text(40, 530, "Pág. $PAGE_NUM de $PAGE_COUNT", $font, 8); pienso que 530 es la parte del eje y--}}
 @endsection

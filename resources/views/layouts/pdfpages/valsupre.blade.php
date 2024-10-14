@@ -1,37 +1,31 @@
-<?php
-if ($data[0]->tipo_curso=='CERTIFICACION'){
-    $tipo='CERTIFICACIÓN_EXTRAORDINARIA';
-}
-else{
-    $tipo='CURSO';
-}
-?>
 <!DOCTYPE HTML>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <style type="text/css">
-       *{
-        box-sizing: border-box;
-        }
-
-        @page {
-                margin: 100px 40px 90px;
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <style type="text/css">
+            *{
+                box-sizing: border-box;
             }
-            header { position: fixed;
+
+            @page {
+                margin: 100px 60px 60px -5px;
+            }
+            header {
+                position: fixed;
                 left: 0px;
                 top: -90px;
                 padding-left: 45px;
                 height: 70px;
-                width: 85%;
+                width: 100%;
                 background-color: white;
                 color: black;
                 text-align: center;
                 line-height: 60px;
+                margin-bottom: -10px;
             }
             body{
                 font-family: sans-serif;
@@ -39,10 +33,10 @@ else{
                 margin: 10px;
             }
             header h1{
-            margin: 10px 0;
+                margin: 10px 0;
             }
             header h2{
-            margin: 0 0 10px 0;
+                margin: 0 0 10px 0;
             }
             footer {
                 position: fixed;
@@ -52,8 +46,8 @@ else{
                 height: 100px;
                 width: 85%;
                 padding-left: 45px;
-                background-color: white;
-                color: black;
+                /* background-color: none; */
+                /* color: black; */
                 text-align: center;
             }
             footer table {
@@ -86,201 +80,123 @@ else{
                 color: rgb(255, 255, 255);
                 line-height: 1;
             }
-
-        #wrappertop {
-        margin-top: 0%;
-        background-position: 5px 10px;
-        background-repeat: no-repeat;
-        background-size: 32px;
-        width: 100%;
-        line-height: 60%;
-        font-size: 16px;
-        padding: 0px;
-        border: 1px solid transparent;
-        margin-bottom: 0px;
-        }
-        #wrapperbot {
-        background-position: 5px 10px;
-        background-repeat: no-repeat;
-        background-size: 32px;
-        width: 100%;
-        line-height: 70%;
-        font-size: 16px;
-        padding: 12px 20px 12px 40px;
-        border: 1px solid transparent;
-        margin-bottom: 0px;
-        }
-
-    div.a {
-        text-align: center;
-      }
-
-      div.b {
-        text-align: left;
-      }
-
-      div.c {
-        text-align: right;
-      }
-
-      div.d {
-        text-align: justify;
-      }
-    </style>
-
-    <script defer>
-        function alumn(h, m)
-        {
-            console.log(h);
-            var total = h + m;
-            if(total < 9)
-            {
-                document.write("<td style='text-align: center'><small>Federal</small></td>");
+            #wrappertop {
+                margin-top: -2%;
+                background-position: 5px 10px;
+                background-repeat: no-repeat;
+                background-size: 32px;
+                width: 100%;
+                line-height: 60%;
+                font-size: 16px;
+                padding: 0px;
+                border: 1px solid transparent;
+                margin-bottom: 0px;
             }
-            else
-            {
-                document.write("<td style='text-align: center'><small>Estatal</small></td>");
+            #wrapperbot {
+                background-position: 5px 10px;
+                background-repeat: no-repeat;
+                background-size: 32px;
+                width: 100%;
+                line-height: 70%;
+                font-size: 16px;
+                padding: 12px 20px 12px 40px;
+                border: 1px solid transparent;
+                margin-bottom: 0px;
             }
-        }
-    </script>
-</head>
+
+            div.a {
+                text-align: center;
+            }
+
+            div.b {
+                text-align: left;
+            }
+
+            div.c {
+                text-align: right;
+            }
+
+            div.d {
+                text-align: justify;
+            }
+            header .distintivo {
+                border: 1px solid transparent;
+                position: absolute;
+                top: 100%;
+                left: 2%;
+                width: 100%;
+                height: 100%;
+                /* display: flex; */
+                vertical-align: top;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+                /* background-color: rgba(255, 255, 255, 0.5); Opcional: para agregar un fondo semi-transparente */
+            }
+        </style>
+    </head>
     <body>
         <header>
-            <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-            <br><h6>{{$distintivo}}</h6>
+            <img class="izquierda" style="margin-bottom: 0px;" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
+            {{-- <div class="distintivo"> --}}
+                <p class="distintivo">{{$distintivo}}</p>
+            {{-- </div><br> <br> <br> <br>  --}}
         </header>
-        <div>
-            <div id="wrappertop">
-                <div align=center>
-                    {{-- <font size=0><b>{{$distintivo}}</b></font><br/> --}}
-                    <FONT SIZE=0><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS<br/>
-                    <FONT SIZE=0>DIRECCION DE PLANEACION</FONT><br/>
-                    <FONT SIZE=0>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO</FONT><br/>
-                    <FONT SIZE=0>FORMATO DE VALIDACIÓN DE SUFICIENCIA PRESUPUESTAL</FONT><br/>
-                    <FONT SIZE=0>EN ATENCIÓN AL MEMORÁNDUM {{$data2->no_memo}}</FONT></p>
-                </div>
-                <div class="c"><FONT SIZE=0>Folio de Validación: {{$data2->folio_validacion}}<br/>
-                Fecha: {{$Dv}} de {{$Mv}} del {{$Yv}}</FONT>
-                </div>
-                <div class="b"> <FONT SIZE=0>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}}</font><br/>
-                    <FONT SIZE=0><b>{{$para->nombre}}</b></FONT><br/>
-                    <FONT SIZE=0><b>{{$para->cargo}}</b></FONT><br/>
-                    <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
-                    <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
-                        <font size=0>La Secretaria de Hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal {{$Y}}, en ese sentido, con Fundamento en el Art. 13 Y Art. 38 del decreto de presupuesto
-                        de egresos del Estado de Chiapas para el Ejercicio Fiscal {{$Y}} y en apego al tabulador de pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de @if($tipo=='CURSO') Capacitación @else Certificación Extraordinaria @endif, al Padrón de Instructores externos del ICATECH
-                        y a la clave de autorización de apertura de cursos y certificación, y demás disposiciones normativas aplicables vigentes; le informo que una vez revisada su solicitud y la información descrita en el formato de Validación de Suficiencia Presupuestal, se otorga la Validación
-                        Presupuestal, con el fin de que conforme a lo indicado en la normatividad aplicable vigente se continúe y se cumpla con los procedimientos administrativos que correspondan, observando además el contrato de prestación de servicios profesionales por honorarios @if($data[0]->modinstructor=='ASIMILADOS A SALARIOS') asimilados a salarios @endif en su
-                        modalidad de @if($tipo=='CURSO') Horas-Curso @else Certificación Extraordinaria @endif que celebran el ICATECH con el prestador de servicios. @if($data['0']->cp == 12 || $data['0']->cp == 11) Es importante mencionar que la presente validacion tendrá efecto financiero en el mes de diciembre del ejercicio fiscal 2023. @endif<br/></font>
-                        <br><font size=0>Por lo anterior, me permito remitir a usted el original de la solicitud, así como su respectivo respaldo documental, debidamente validado presupuestalmente.<br/></font>
-                        <font size=0>La presente validación presupuestal no implica ninguna autorización de pago de recursos, si no que únicamente se refiere a la verificación de la disponibilidad presupuestal, No omito manifestarle que, en estricto apego a la normatividad vigente establecida,
-                        el área administrativa solicitante, es responsable de la correcta aplicación de los recursos públicos validados, en tal sentido el ejercicio y comprobación del gasto, deberá sujetarse a las disposiciones legales aplicables para tal efecto.<br/></font>
-                    </div>
-                <br>
-            </div>
-            <div class="form-row">
-                <table width="700"  class="table table-striped" id="table-one">
-                    <thead>
-                        <tr class="active">
-                            <td width="10px"><small style="font-size: 8px;">No. DE SUFICIENCIA</small></td>
-                            <td scope="col" ><small style="font-size: 8px;">FECHA</small></td>
-                            <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR EXTERNO</small></td>
-                            <td width="10px"><small style="font-size: 8px;">UNIDAD/ ACCION MOVIL</small></td>
-                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">CURSO/CERTIFCACION</small></td>
-                            <td scope="col" ><small style="font-size: 8px;">NOMBRE</small></td>
-                            <td scope="col"><small style="font-size: 8px;">CLAVE DEL GRUPO</small></td>
-                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">ZONA ECÓNOMICA</small></td>
-                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">HSM (horas)</small></td>
-                            @if($data[0]['fecha_apertura'] <  '2023-10-12')
-                                <td scope="col" style="width: 20px"><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
-                                @if($tipop->modinstructor == 'HONORARIOS')<td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>@endif
-                                <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
-                                <td scope="col"><small style="font-size: 8px;">IMPORTE</small></td>
-                            @else
-                                <td scope="col" style="width: 20px"><small style="font-size: 8px;">COSTO POR HORA</small></td>
-                                <td scope="col"><small style="font-size: 8px;">TOTAL IMPORTE</small></td>
-                                <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
-                            @endif
-                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
-                            <td width="140px" ><small style="font-size: 8px;">OBSERVACION</small></td>
-                            {{-- <td scope="col"><small style="font-size: 8px;">Observación del Dpto. Programación y Ppto.</small></td> --}}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($data as $key=>$item)
-                            <tr>
-                                <td><small style="font-size: 8px;">{{$item->folio_validacion}}</small></td>
-                                <td><small style="font-size: 8px;">{{$item->fecha}}</small></td>
-                                <td><small style="font-size: 8px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
-                                <td><small style="font-size: 8px;">{{$item->unidad}}</small></td>
-                                @if ($item->tipo_curso=='CERTIFICACION')
-                                    <td><small style="font-size: 8px;">CERTIFICACIÓN</small></td>
-                                @else
-                                    <td><small style="font-size: 8px;">CURSO</small></td>
-                                @endif
-                                <td><small style="font-size: 8px;">{{$item->curso_nombre}}</small></td>
-                                <td><small style="font-size: 8px;">{{$item->clave}}</small></td>
-                                <td><small style="font-size: 8px;">{{$item->ze}}</small></td>
-                                <td><small style="font-size: 8px;">{{$item->dura}}</small></td>
-                                @if($data[0]['fecha_apertura'] <  '2023-10-12')
-                                    <td><small style="font-size: 8px;">{{number_format($item->importe_hora, 2, '.', ',')}}</small></td>
-                                    @if($item->modinstructor == 'HONORARIOS')<td><small style="font-size: 8px;">{{number_format($item->iva, 2, '.', ',')}}</small></td>@endif
-                                    <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
-                                    <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
-                                    <td><small style="font-size: 8px;">@if($item->modinstructor == 'HONORARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</small></td>
-                                    <td><small style="font-size: 8px;">{{number_format($item->importe_total, 2, '.', ',')}}</small></td>
-                                @else
-                                    <td><small style="font-size: 8px;">{{number_format($criterio->monto, 2, '.', ',')}}</small></td>
-                                    <td><small style="font-size: 8px;">{{number_format($item->importe_total, 2, '.', ',')}}</small></td>
-                                    <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
-                                    <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
-                                    <td><small style="font-size: 8px;">@if($item->modinstructor == 'HONORARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</small></td>
-                                @endif
-                                <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
-                                <td style="text-align: center; font-size: 10px;"><small>
-                                    @if($data2->financiamiento == NULL)
-                                        {{$recursos[$key]}}
-                                    @elseif($data2->financiamiento == 'FEDERAL Y ESTATAL')
-                                        Federal {{$data2->porcentaje_financiamiento['federal']}}%<br>
-                                        Estatal {{$data2->porcentaje_financiamiento['estatal']}}%
-                                    @else
-                                        {{$data2->financiamiento}}
-                                    @endif
-                                </small></td>
-                                <td><small style="font-size: 8px;">{{$item->comentario}}</small></td>
-                                {{-- <td><small style="font-size: 8px;">{{$data2->observacion_validacion}}</small></td> --}}
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        @if(!is_null($data2->observacion_validacion))
-            <div class="d">
-                <small><small><b>Observación del Departamento de Programación y Presupuesto:</b> {{$data2->observacion_validacion}}</small></small>
-            </div><br>
-        @endif
-        <div id="wrapperbot">
-            <div align=center>
-                <small><small>{{$getfirmante->nombre}}</small></small>
-                <br><small>________________________________________</small><br/>
-                <br><small><small>{{$getfirmante->cargo}}</small></small></b>
-            </div>
-            <div><br><br><br>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp1->nombre}}.-{{$getccp1->cargo}}.-Para su conocimiento</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp2->nombre}}.-{{$getccp2->cargo}}.-mismo fin</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp3->nombre}}.-{{$getccp3->cargo}}.-mismo fin</FONT><br/>
-                {{-- <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br> --}}
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}}.-{{$getccp4->cargo}}.-mismo fin</FONT><br>
-                <FONT SIZE=0><b>C.c.p.</b>Archivo</FONT>
-            </div>
-        </div>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>
-                14 PONIENTE NORTE No. 239 COLONIA MOCTEZUMA.<br>TUXTLA GUTIÉRREZ, CHIAPAS, C.P. 29030 TELEFONO +52(961)6121621.<br>EMAIL: icatech@icatech.chiapas.gob.mx
-                {{-- @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach --}}
+                AV. BARRIO SAN JACINTO N° 154, ENTRE CALLE PÁJAROS Y CALLE CONEJOS,<br>FRACC. EL DIAMANTE C.P. 29059<br>TUXTLA GUTIÉRREZ, CHIAPAS. TELEFONO +52(961)6121621.<br>EMAIL: icatech@icatech.chiapas.gob.mx
             </br></p>
         </footer>
+        <div id="wrapperbot">
+            {!!$body_html!!}
+            @if(!is_null($uuid))
+                <br><div style="display: inline-block; width: 85%;">
+                <table style="width: 100%; font-size: 9px;">
+                    @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
+                        <tr>
+                            <td style="width: 10%; font-size: 9px;"><b>Nombre del firmante:</b></td>
+                            <td style="width: 90%; font-size: 9px;">{{ $moist['_attributes']['nombre_firmante'] }}</td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top; font-size: 9px;"><b>Firma Electrónica:</b></td>
+                            <td style="font-size: 9px;">{{ wordwrap($moist['_attributes']['firma_firmante'], 110, "\n", true) }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 9px;"><b>Puesto:</b></td>
+                            <td style="font-size: 9px; height: 25px;">{{$puestos[$key]}}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 9px;"><b>Fecha de Firma:</b></td>
+                            <td style="font-size: 9px;">{{ $moist['_attributes']['fecha_firmado_firmante'] }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 9px;"><b>Número de Serie:</b></td>
+                            <td style="font-size: 9px;">{{ $moist['_attributes']['no_serie_firmante'] }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
+            <div style="display: inline-block; width: 15%;">
+                {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
+                <img style="position: fixed; width: 13%; top: 48%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+            </div>
+        @else
+            <div align=center>
+                <small><small>C. {{$funcionarios['remitente']}}</small></small>
+                <br><small>________________________________________</small><br/>
+                <br><small><small>{{$funcionarios['remitentep']}}</small></small></b>
+            </div>
+            <br><br><br><br><br><br>
+        @endif
+            <div>
+                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['ccp1']}}.-{{$funcionarios['ccp1p']}}.-Para su conocimiento</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['ccp2']}}.-{{$funcionarios['ccp2p']}}.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['ccp3']}}.-{{$funcionarios['ccp3p']}}.-mismo fin</FONT><br/>
+                {{-- <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br> --}}
+                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['delegado']}}.-{{$funcionarios['delegadop']}}.-mismo fin</FONT><br>
+                <FONT SIZE=0><b>C.c.p.</b>Archivo</FONT>
+            </div>
+        </div>
     </body>
 </html>

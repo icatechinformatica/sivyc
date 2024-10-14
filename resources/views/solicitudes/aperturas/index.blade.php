@@ -158,9 +158,17 @@
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.soporte_pago')}}");
                         $('#frm').attr('target', '_self').submit();
                     break;
+                    case "ACEPTADO ARC":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.soporte_pago')}}");
+                        $('#frm').attr('target', '_self').submit();
+                    break;
+                    case "DENEGADO ARC":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.soporte_pago')}}");
+                        $('#frm').attr('target', '_self').submit();
+                    break;
                     default:
                         alert("POR FAVOR SELECCIONE UN MOVIMIENTO.")
-                        break;
+                    break;
                 }
             }
         });

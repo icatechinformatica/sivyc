@@ -37,117 +37,12 @@
 @endsection
 @section('body')
         <div id="para">
-            <strong>Dirección: </strong> {{isset($org) ? $org->org : ''}}
+            <strong>Dirección: </strong> {{isset($nom_direc_depto) ? $nom_direc_depto->direccion : ''}}
             <br>
-            <strong>Departamento: </strong> {{isset($area_org) ? $area_org->area_org : ''}}
+            <strong>Departamento: </strong> {{isset($nom_direc_depto) ? $nom_direc_depto->depto : ''}}
         </div>
 
         <br><br><br><br>
-        {{-- tabla nueva v1--}}
-        {{-- <table class="tb" style="">
-            <thead>
-                <tr style="background: #EAECEE;">
-                  <th rowspan="2" width="35px">No <br> FUN</th>
-                  <th rowspan="2" width="190px">FUNCIONES</th>
-                  <th rowspan="2" width="190px">ACTIVIDADES</th>
-                  <th rowspan="2" width="70px">UNIDAD <br> DE <br> MEDIDA</th>
-                  <th rowspan="2">TIPO <br> DE <br> U.M</th>
-                  <th rowspan="2">META <br> ANUAL</th>
-                  <th colspan="12">CALENDARIZACIÓN</th>
-                  <th rowspan="2">OBSERVACIÓN</th>
-                </tr>
-                <tr style="background: #EAECEE;">
-                  <th>I</th>
-                  <th>II</th>
-                  <th>III</th>
-                  <th>IV</th>
-                  <th>V</th>
-                  <th>VI</th>
-                  <th>VII</th>
-                  <th>VIII</th>
-                  <th>IX</th>
-                  <th>X</th>
-                  <th>XI</th>
-                  <th>XII</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($funciones as $key => $item)
-                @php $conta = $key; @endphp
-                    @if (count($procedimientos[$key]) == 1))
-                        <tr>
-                            <td>{{$conta+1}}</td>
-                            <td align="left">{{$item->fun_proc}}</td>
-                            <td align="left">{{$procedimientos[$key][0]->fun_proc}}</td>
-                            <td>({{$procedimientos[$key][0]->numero}}) {{$procedimientos[$key][0]->unidadm}}</td>
-                            <td>{{$procedimientos[$key][0]->tipo_unidadm}}</td>
-                            <td>{{$procedimientos[$key][0]->total}}</td>
-                            <td>{{$procedimientos[$key][0]->enero['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->febrero['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->marzo['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->abril['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->mayo['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->junio['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->julio['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->agosto['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->septiembre['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->octubre['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->noviembre['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->diciembre['meta']}}</td>
-                            <td>Observación 1</td>
-                        </tr>
-                    @endif
-
-                    @if (count($procedimientos[$key]) > 1)
-                        <tr>
-                            <td rowspan="{{count($procedimientos[$key])}}">{{$conta+1}}</td>
-                            <td align="left" rowspan="{{count($procedimientos[$key])}}">{{$item->fun_proc}}</td>
-                            <td align="left">{{$procedimientos[$key][0]->fun_proc}}</td>
-                            <td>({{$procedimientos[$key][0]->numero}}) {{$procedimientos[$key][0]->unidadm}}</td>
-                            <td>{{$procedimientos[$key][0]->tipo_unidadm}}</td>
-                            <td>{{$procedimientos[$key][0]->total}}</td>
-                            <td>{{$procedimientos[$key][0]->enero['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->febrero['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->marzo['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->abril['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->mayo['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->junio['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->julio['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->agosto['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->septiembre['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->octubre['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->noviembre['meta']}}</td>
-                            <td>{{$procedimientos[$key][0]->diciembre['meta']}}</td>
-                            <td>Observación 2</td>
-                        </tr>
-                        @for ($i = 1; $i < count($procedimientos[$key]); $i++)
-                            <tr>
-                                <td align="left">{{$procedimientos[$key][$i]->fun_proc}}</td>
-                                <td>({{$procedimientos[$key][$i]->numero}}) {{$procedimientos[$key][$i]->unidadm}}</td>
-                                <td>{{$procedimientos[$key][$i]->tipo_unidadm}}</td>
-                                <td>{{$procedimientos[$key][$i]->total}}</td>
-                                <td>{{$procedimientos[$key][$i]->enero['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->febrero['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->marzo['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->abril['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->mayo['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->junio['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->julio['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->agosto['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->septiembre['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->octubre['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->noviembre['meta']}}</td>
-                                <td>{{$procedimientos[$key][$i]->diciembre['meta']}}</td>
-                                <td>Observación 2</td>
-                            </tr>
-                        @endfor
-                    @endif
-
-                @endforeach
-
-            </tbody>
-        </table> --}}
-
 
         {{-- TABLA V2 --}}
         <table class="tb" style="">
@@ -262,49 +157,26 @@
             </tbody>
         </table>
 
-        @if (isset($firm_logueado) and count($firm_logueado) > 0)
-            <table class="tablaf" style="margin-top: 20px;">
-                <tr>
-                    <td style="line-height: 1;">
-                        <p style="margin-bottom: 35px;">ELABORÓ</p>
-                        <p>___<u>{{$firm_logueado['user'] != '' ? $firm_logueado['user'] : 'Usuario'}}</u>___</p>
-                        <p><b>{{$firm_logueado['puesto'] != '' ? $firm_logueado['puesto'] : 'Puesto'}}</b></p>
-                    </td>
-                    <td>
-                        <p></p>
-                        <p></p>
-                        <p></p>
-                        <p>Fecha: {{isset($fecha_meta) ? $fecha_meta : ''}}</p>
-                    </td>
-                    <td style="line-height: 1;">
-                        <p style="margin-bottom: 35px;">Vo. Bo.</p>
-                        <p>___<u>{{isset($area_org) ? $area_org->titulo.' '.$area_org->func : ''}}</u>___</p>
-                        <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
-                    </td>
-                </tr>
-            </table>
-        @else
-            <table class="tablaf" style="margin-top: 20px;">
-                <tr>
-                    <td style="line-height: 1;">
-                        <p style="margin-bottom: 35px;">ELABORÓ</p>
-                        <p>___<u>{{isset($area_org) ? $area_org->titulo.' '.$area_org->func : ''}}</u>___</p>
-                        <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
-                    </td>
-                    <td>
-                        <p></p>
-                        <p></p>
-                        <p></p>
-                        <p>Fecha: {{isset($fecha_meta) ? $fecha_meta : ''}}</p>
-                    </td>
-                    <td style="line-height: 1;">
-                        <p style="margin-bottom: 35px;">Vo. Bo.</p>
-                        <p>___<u>{{isset($org) ? $org->titulo.' '.$org->fun : ''}}</u>___</p>
-                        <p><b>{{isset($org) ? $org->cargo : ''}}</b></p>
-                    </td>
-                </tr>
-            </table>
-        @endif
+        <table class="tablaf" style="margin-top: 20px;">
+            <tr>
+                <td style="line-height: 1;">
+                    <p style="margin-bottom: 35px;">ELABORÓ</p>
+                    <p>___<u>{{isset($area_org) ? $area_org->titulo.' '.$area_org->funcionario : ''}}</u>___</p>
+                    <p><b>{{isset($area_org) ? $area_org->cargo : ''}}</b></p>
+                </td>
+                <td>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p>Fecha: {{isset($fecha_meta) ? $fecha_meta : ''}}</p>
+                </td>
+                <td style="line-height: 1;">
+                    <p style="margin-bottom: 35px;">Vo. Bo.</p>
+                    <p>___<u>{{isset($org) ? $org->titulo.' '.$org->funcionario : ''}}</u>___</p>
+                    <p><b>{{isset($org) ? $org->cargo : ''}}</b></p>
+                </td>
+            </tr>
+        </table>
 
 
 {{-- $pdf->text(40, 530, "Pág. $PAGE_NUM de $PAGE_COUNT", $font, 8); pienso que 530 es la parte del eje y--}}

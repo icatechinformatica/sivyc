@@ -31,7 +31,7 @@
             <div class="row my-4">
                 <div class="col">
                     <div class="form-group">
-                        <label for="area" class="control-label">Area de la especialidad</label>
+                        <label for="area" class="control-label">Campos de Formación Profesional</label>
                         <select name="area" id="area" class="custom-select">
                             @foreach ($areas as $area)
                                 <option value="{{$area->id}}">{{$area->formacion_profesional}}</option>

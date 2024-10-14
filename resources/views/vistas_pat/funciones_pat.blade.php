@@ -178,7 +178,7 @@
                             </td>
                             <td class="text-center">
                                 <a class="disabled btn-circle btn-circle-sm" data-toggle="tooltip" data-placement="top" title="EDITAR" id="btnMostrarFrmEdit" href="#">
-                                    <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
+                                    <i class="fas fa-pencil-alt fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
                                 </a>
                             </td>
                             <td class="text-center">
@@ -207,7 +207,7 @@
                                         <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                             data-placement="top" title="EDITAR" id="btnMostrarFrmEdit"
                                             href="{{ route('funciones.edit.show', ['id' => $itemData->id, 'idorg' => $organismo]) }}">
-                                            <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
+                                            <i class="fas fa-pencil-alt fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                     <td class="text-center">

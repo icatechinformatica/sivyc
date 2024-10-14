@@ -8,25 +8,15 @@
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.css">
+        <link rel="stylesheet" href="{{asset('css/all.css') }}">
         <!-- Google Fonts Roboto -->
         <link rel="stylesheet" href="{{asset('css/roboto.css') }}">
 
         <!-- CSS Global Compulsory -->
         <link rel="stylesheet" href="{{asset('vendor/bootstrap/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="https://mail.cdn.wpchile.com/assets/vendor/icon-hs/style.css">
+        <link rel="stylesheet" href="{{asset('css/icon-hs/style.css') }}">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-        {{--EN DEPURACION
-        <link rel="stylesheet" href="{{asset('vendor/bootstrap/offcanvas.css') }}">
-        <link rel="stylesheet" href="{{asset('vendor/icon-line-pro/style.css') }}">
-        <link rel="stylesheet" href="{{asset('vendor/icon-line/css/simple-line-icons.css') }} ">
-        <link rel="stylesheet" href="{{asset('vendor/dzsparallaxer/dzsparallaxer.css') }}">
-        <link rel="stylesheet" href="{{asset('vendor/dzsparallaxer/dzsscroller/scroller.css') }}">
-        <link rel="stylesheet" href="{{asset('vendor/dzsparallaxer/advancedscroller/plugin.css') }}">
-        <link rel="stylesheet" href="{{asset('vendor/animate.css') }}">
-        <link rel="stylesheet" href="{{asset('vendor/hamburgers/hamburgers.min.css') }}">
-        --}}
+
         <link rel="stylesheet" href="{{asset('css/unify-core.css') }}">
         <link rel="stylesheet" href="{{asset('css/unify-components.css') }}">
         <link rel="stylesheet" href="{{asset('css/unify-globals.css') }}">
@@ -34,9 +24,7 @@
         <link rel="stylesheet" href="{{asset('css/mdb.min.css') }}">
         <link rel="stylesheet" href="{{asset('css/jquery-ui.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.dataTables.min.css') }}">
-    {{-- ELIMINAR
-        <link rel="stylesheet" href="{{asset('css/paqueterias.css') }}">
-    --}}
+
         @yield('content_script_css')
         @stack('content_css_sign')
     </head>

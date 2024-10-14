@@ -599,10 +599,10 @@
     // SECCCIONES EXTRA DE MODIFICACION, INGRASO DE DOCUMENTACIÓN Y ACCIONES(INSCRIPCIÓN A GRUPOS)
      @can('alumno.inscripcion-documento')
                             <th scope="col">DOCUMENTOS</th>
-                        @endcan 
+                        @endcan
                         @can('alumnos.inscripcion-paso3')
                             <th scope="col">ACCIONES</th>
-                        @endcan 
+                        @endcan
                         @can('alumnos.inscripcion-update-jefe')
                             <th scope="col">MODIFICAR</th>
                         @endcan
@@ -628,7 +628,7 @@
                                 <td>
                                     @if (!$itemData->es_cereso)
                                         <a href="{{route('alumnos.modificar-jefe-unidad', ['id' => base64_encode($itemData->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">
-                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                            <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                                         </a>
                                     @else
                                         <a href="{{route('preinscripcion.cerss.show', ['id' => base64_encode($itemData->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">
@@ -637,8 +637,8 @@
                                     @endif
                                 </td>
                             @endcan
-                            
-                            
+
+
                             @if (!$itemData->es_cereso)
 @else
 <a href="{{route('preinscripcion.cerss.show', ['id' => base64_encode($itemData->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">

@@ -4,7 +4,7 @@
 @section('css')
     <style>
          @page { margin-bottom: 107px; } /*107*/
-        .tb {width: 100%; border-collapse: collapse; text-align: center; }
+        .tb {width: 98%; border-collapse: collapse; text-align: center; }
         .tb th{border: 1px solid black; padding: 1px; font-weight: normal; font-size: 9px;}
         .tb td{border: 1px solid black; padding: 1px; font-size: 9px; height: auto;}
         .tablaf { border-collapse: collapse; width: 100%; font-size: 12px !important; text-align: center; margin-top:0px;}
@@ -25,27 +25,16 @@
     <div id="titulo">
         <h3>SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR</h3>
         <h3>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO</h3>
-        <div id="fontotext"><b style="background: black;">"INFORME MENSUAL DE AVANCE PROGRAMÁTICO DEL PROGRAMA ANUAL DE TRABAJO {{date('Y')}}"</b></div>
+        <div id="fontotext"><b style="background: black;">"INFORME MENSUAL DE AVANCE PROGRAMÁTICO DEL PROGRAMA ANUAL DE TRABAJO {{$global_ejercicio}}"</b></div>
         <h3>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS</h3>
     </div>
 @endsection
 @section('body')
     @for ($i = 0; $i < count($areas); $i++)
-    {{-- @dd($direcciones) --}}
-        {{-- @php
-            $nom_direccion = $nom_depto = 'null';
-            if ($direcciones) {
-                $nom_direccion = $direcciones[$i]->nom_direc;
-                $nom_depto = $direcciones[$i]->nom_depto;
-            }
-        @endphp --}}
         <div id="para">
-            <strong>DIRECCIÓN: </strong> {{$direcciones[$i]->nom_direc != 'DIRECCIÓN' ? $direcciones[$i]->nom_direc : $areas[$i]->nom_dpto}}
+            <strong>DIRECCIÓN: </strong> {{ $direcciones[$i]->nom_direc}}
             <br>
-            <strong>DPTO: </strong> {{$direcciones[$i]->nom_direc != 'DIRECCIÓN' ? $areas[$i]->nom_dpto : $direcciones[$i]->nom_direc}}
-            {{-- <strong>DIRECCIÓN: </strong> {{$direcciones[$i]->nom_direc}}
-            <br>
-            <strong>DPTO: </strong> {{$areas[$i]->nom_dpto}} --}}
+            <strong>DPTO: </strong> {{$areas[$i]->nom_dpto}}
         </div>
         <br><br><br><br>
 
@@ -60,7 +49,8 @@
                 <th rowspan="3" width="40px">TIPO <br> DE <br> U.M</th>
                 <th rowspan="3" width="40px">META <br> ANUAL</th>
 
-                <th colspan="4">MES QUE INFORMA   <strong style="background: #000; color:white; padding: 5px; margin-left: 10px;">{{strtoupper($fechas_pdf_global[$i]['mes_avance'])}}</strong></th>
+                {{-- <th colspan="4">MES QUE INFORMA   <strong style="background: #000; color:white; padding: 5px; margin-left: 10px;">{{strtoupper($fechas_pdf_global[$i]['mes_avance'])}}</strong></th> --}}
+                <th colspan="4" width="180px">MES QUE INFORMA   <strong style="background: #000; color:white; padding: 5px; margin-left: 10px;">{{strtoupper($mes_get)}}</strong></th>
                 <th colspan="4" width="180px">ACUMULADO AL MES QUE INFORMA</th>
                 <th rowspan="3" width="40px">EXPLICACIÓN A LAS DESVIACIONES</th>
                 </tr>
@@ -160,49 +150,19 @@
 
             </tbody>
         </table>
-
-        <br><br><br>
-        {{-- aqui termina la tabla --}}
-        <br/>
-        <br/>
-        {{-- Firmas --}}
-        <table class="tablaf">
-            <tr>
-                <td>
-                    <p>ELABORÓ</p><br><br><br>
-                    <p>{{isset($areas) ? $areas[$i]->funcionario : ''}}</p>
-                    <p>_________________________________________</p>
-                    <p><b>{{isset($areas) ? $areas[$i]->cargo : ''}}</b></p>
-                </td>
-                <td>
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                    <p>Fecha: {{isset($fechas_pdf_global[$i]['fecha_avance']) ? $fechas_pdf_global[$i]['fecha_avance'] : ''}}</p>
-                </td>
-                <td>
-                    <p>Vo. Bo.</p><br><br><br>
-                    <p>{{isset($direcciones) ? $direcciones[$i]->funcionario : ''}}</p>
-                    <p>_________________________________________</p>
-                    <p><b>{{isset($direcciones) ? $direcciones[$i]->cargo : ''}}</b></p>
-                </td>
-            </tr>
-        </table>
-        <div style="page-break-after: always"></div>
+        @if ($i != (count($areas) -1))
+            <div style="page-break-after: always"></div>
+        @endif
     @endfor
 
 @endsection
 @section('js')
-    <script type="text/php">
+    {{-- <script type="text/php">
         if ( isset($pdf) ) {
             $pdf->page_script('
                 $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
                 $pdf->text(40, 570, "Pág. $PAGE_NUM de $PAGE_COUNT", $font, 8);
             ');
         }
-
-    </script>
-    <script>
-        // $(document).ready(function(){});
-    </script>
+    </script> --}}
 @endsection

@@ -4,6 +4,46 @@
 @section('title', 'PERFIL DE USUARIO | Sivyc Icatech')
 <!--contenido-->
 @section('content')
+    <style>
+        .custom-control-label {
+            margin-left: 9%; /* Ajusta según sea necesario */
+        }
+
+        /* Cambia el color del switch cuando esté desactivado */
+        .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: #28a745; /* Rojo (desactivado) */
+        }
+
+        .custom-control-input:not(:checked) ~ .custom-control-label::before {
+            background-color: #dc3545; /* Verde (activado) */
+        }
+
+        /* Cambiar el color de la palanca en sí */
+        .custom-control-input:checked ~ .custom-control-label::after {
+            background-color: #f8d7da; /* Color de la palanca cuando esté desactivado */
+        }
+
+        .custom-control-input:not(:checked) ~ .custom-control-label::after {
+            background-color: #d4edda; /* Color de la palanca cuando esté activado */
+        }
+
+        /* Aumentar el tamaño del switch */
+        .custom-switch .custom-control-label::before {
+            width: 3rem; /* Ancho del switch */
+            height: 1.5rem; /* Altura del switch */
+        }
+
+        .custom-switch .custom-control-label::after {
+            width: 1rem; /* Ancho de la palanca */
+            height: 1rem; /* Altura de la palanca */
+            top: -15; /* Ajuste vertical */
+        }
+
+        /* Ajustar la posición de la palanca cuando el switch está activado */
+        .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+            transform: translateX(1.5rem); /* Desplazamiento horizontal de la palanca al activarse */
+        }
+    </style>
     <div class="container-fluid mt--6">
         <div class="row">
 
@@ -97,6 +137,18 @@
                           </div>
                         </div>
                       </div>
+                       <!-- Switch de estatus -->
+                       <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="statusSwitch">Estatus</label>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" @if($usuario->activo) checked @endif class="custom-control-input" id="statusSwitch">
+                                        <label class="custom-control-label" for="statusSwitch" id="labelSwitch">@if($usuario->activo) Activo @endif</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                       <hr class="my-4" />
                       <!-- Address -->
                       <h6 class="heading-small text-muted mb-4">Información del contacto</h6>
@@ -115,8 +167,8 @@
                                     <label class="form-control-label" for="inputUnidadUpdate">UNIDAD</label>
                                     <select name="inputUbicacionUpdate" id="inputUbicacionUpdate" class="form-control">
                                         <option value="">--SELECCIONAR--</option>
-                                        @foreach ($ubicacion as $itemUbicacion)
-                                            <option value="{{$itemUbicacion->ubicacion}}">{{$itemUbicacion->ubicacion}}</option>
+                                        @foreach ($ubicaciones as $itemUbicacion)
+                                            <option value="{{$itemUbicacion->ubicacion}}" @if($itemUbicacion->ubicacion == $ubicacion->ubicacion) selected @endif>{{$itemUbicacion->ubicacion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -126,7 +178,10 @@
                                 <div class="form-group">
                                     <label class="form-control-label" for="inputCapacitacionUpdate">Unidades de capacitación</label>
                                     <select name="inputCapacitacionUpdate" id="inputCapacitacionUpdate" class="form-control">
-                                        <option value="">--SELECCIONAR--</option>
+                                        {{-- <option value="">--SELECCIONAR--</option> --}}
+                                        @foreach ($unidades as $unidad)
+                                            <option value="{{$unidad->id}}" @if($unidad->unidad == $ubicacion->unidad) selected @endif>{{$unidad->unidad}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -154,12 +209,12 @@
                         required: true,
                         minlength: 3
                     },
-                    inputPasswordUpdate: {
-                        required: true,
-                    },
-                    inputPasswordRepeatInput: {
-                        equalTo : "#inputPasswordUpdate"
-                    },
+                    // inputPasswordUpdate: {
+                    //     required: true,
+                    // },
+                    // inputPasswordRepeatInput: {
+                    //     equalTo : "#inputPasswordUpdate"
+                    // },
                     inputPuestoUpdate: {
                         required: true
                     },
@@ -171,18 +226,18 @@
                     inputNameUpdate: {
                         required: 'Por favor ingrese el nombre completo'
                     },
-                    inputPasswordUpdate: {
-                        required: 'Por favor Ingresé la contraseña',
-                    },
+                    // inputPasswordUpdate: {
+                    //     required: 'Por favor Ingresé la contraseña',
+                    // },
                     inputPuestoUpdate: {
                         required: 'Por favor ingrese el puesto'
                     },
                     inputUbicacionUpdate: {
                         required: 'Por favor, seleccione la ubicación.',
                     },
-                    inputPasswordRepeatInput: {
-                        equalTo: 'Las contraseñas no coinciden'
-                    }
+                    // inputPasswordRepeatInput: {
+                    //     equalTo: 'Las contraseñas no coinciden'
+                    // }
                 }
             });
 
@@ -211,8 +266,6 @@
 
                     request.done(( respuesta ) => {
                         if (respuesta.length < 1) {
-                            $("#inputCapacitacionUpdate").empty();
-                            $("#inputCapacitacionUpdate").append('<option value="" selected="selected">--SELECCIONAR--</option>');
                         } else {
                             if(!respuesta.hasOwnProperty('error')){
                                 $("#inputCapacitacionUpdate").empty();
@@ -235,6 +288,33 @@
                 });
             });
 
+            document.getElementById('statusSwitch').addEventListener('change', function() {
+                let label = document.getElementById('labelSwitch');
+                let status = this.checked ? 'Activo' : 'Baja';
+                let isActive = this.checked;
+                label.textContent = status;
+
+                fetch('{{ route("update.activo") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        user_id: {{ $usuario->id }},
+                        is_active: isActive
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Estado actualizado en la base de datos.');
+                    } else {
+                        console.log('Error al actualizar el estado.');
+                    }
+                })
+                .catch(error => console.log('Error:', error));
+            });
         });
     </script>
 @endsection

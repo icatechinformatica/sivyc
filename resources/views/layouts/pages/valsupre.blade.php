@@ -2,13 +2,13 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Validación de Suficiencia Presupuestal| Sivyc Icatech')
 @section('content')
-    <section class="container g-pt-50">
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    <div class="card-header">
+        <h1>Validacion de Suficiencia Presupuestal</h1>
+    </div>
+    <div class="card card-body" style=" min-height:450px;">
         <form method="POST" action="{{ route('supre-rechazo') }}" id="rechazosupre">
             @csrf
-                <div class="text-center">
-                    <h1>Validacion de Suficiencia Presupuestal</h1>
-                </div>
-                <br>
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label for="dropfecha_apertura">Fecha de Apertura ARC-01</label>
@@ -34,20 +34,27 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="droparea">Area de Adscripcion</label>
-                        <input name="area" id="area" type="text" disabled value="{{$getremitente->puesto}}" class="form-control">
+                        <input name="area" id="area" type="text" disabled value="{{$funcionarios['directorp']}}" class="form-control">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="dropnombre_dir">Nombre del Director de Unidad</label>
-                        <input name="nombre_dir" id="nombre_dir" type="text" disabled value="{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}" class="form-control">
+                        <input name="nombre_dir" id="nombre_dir" type="text" disabled value="{{$funcionarios['director']}}" class="form-control">
                     </div>
                 </div>
                 <br>
+                @php $supreIdB64 = base64_encode($data->id); @endphp
                 <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <a class="btn btn-primary" href="{{URL::previous()}}">Regresar</a>
+                    </div>
                     <div class="form-group col-md-2">
                         <button type="button" id="valsupre_rechazar" name="valsupre_rechazar" class="btn btn-danger">Rechazar</a>
                     </div>
-                    <div class="form-group col-md-2">
-                        <button type="button" id="valsupre_validar" name="valsupre_validar" class="btn btn-success">Validar</a>
+                    <div class="form-group col-md-5">
+                        <button type="button" id="valsupre_validar" name="valsupre_validar" class="btn" style="background-color: #12322B; color: white;">Validar</a>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <a type="submit" id="btn_generar_supre" class="btn btn-primary" @if(is_null($data->doc_supre)) href="{{route('supre-pdf', ['id' => $supreIdB64])}}" @else href="{{$data->doc_supre}}" @endif target="_blank">Visualizar Solicitud</a>
                     </div>
                 </div>
                 <div id="divrechazar" class="form-row d-none d-print-none">
@@ -63,27 +70,33 @@
                     </div>
                 </div>
                 <br>
-                <div class="row">
-                    <div class="col-lg-12 margin-tb">
-                        <div class="pull-left">
-                            <a class="btn btn-warning" href="{{URL::previous()}}">Regresar</a>
-                        </div>
-                    </div>
-                </div>
-                <br>
         </form>
         <form method="POST" action="{{ route('supre-validado') }}" id="validadosupre">
             @csrf
                 <div id="div1" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
                         <label for="inputfolio_validacion">Folio de Validación</label>
-                        <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" required>
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <p class="form-control" style="border: 0px; align-text:right;">ICATECH/500.1/H/</p>
+                            </div>
+                            <div class="form-group col-md-3" style="margin-right: -10px;">
+                                <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <p id='ejercicio' name ='ejercicio' class="form-control" style="border: 0px;">/{{$year}}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group col-md-3">
+                    {{-- <div class="form-group col-md-4">
+                        <label for="inputfolio_validacion">Folio de Validación</label>
+                        <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" required>
+                    </div> --}}
+                    <div class="form-group col-md-2">
                         <label for="inputfecha_validacion">Fecha de Validación</label>
                         <input name="fecha_val" id="fecha_val" type="date" class="form-control" required>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="inputfinanciamiento">Fuente de Financiamiento</label>
                         <select class="form-control" name="financiamiento" id="financiamiento" required>
                             {{-- <option value="">SELECCIONE</option> --}}
@@ -101,24 +114,23 @@
                 <div id="div3" class="d-none d-print-none">
                     <h3>Con Copia Para El Delegado:</h3>
                 </div>
-                </div>
                 <div id="div7" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
-                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" value="{{$delegado->delegado_administrativo}}" readonly>
+                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" value="{{$funcionarios['delegado']}}" readonly>
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" value="{{$delegado->pdelegado_administrativo}}" readonly>
+                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" value="{{$funcionarios['delegadop']}}" readonly>
                     </div>
                 </div>
                 <div id="confval" class="row d-none d-print-none">
                     <div class="col-lg-12 margin-tb">
                         <div class="pull-right">
-                            <button type="submit" class="btn btn-success" >Confirmar Validación</button>
+                            <button type="submit" class="btn" style="background-color: #12322B; color: white;">Confirmar Validación</button>
                             <input hidden id="id" name="id" value="{{$data->id}}">
-                            <input hidden id="directorio_id" name="directorio_id" value="{{$directorio->id}}">
                         </div>
                     </div>
                 </div>
+            </div>
                 <br>
         </form>
     </section>
@@ -126,4 +138,25 @@
 @section('script_content_js')
 <script src="{{ asset("js/validate/autocomplete.js") }}"></script>
 <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+<script>
+    // Obtener el elemento de input de fecha
+    var inputFecha = document.getElementById('fecha_val');
+    // Obtener la fecha actual en el formato 'YYYY-MM-DD'
+    var fechaActual = new Date().toISOString().split('T')[0];
+    // Establecer la fecha actual como valor inicial del campo de fecha
+    inputFecha.value = fechaActual;
+
+    const fechaInput = document.getElementById('fecha_val');
+    const ejercicioP = document.getElementById('ejercicio');
+    let previousYear = new Date(fechaInput.value).getFullYear();
+
+    fechaInput.addEventListener('change', function() {
+        const currentYear = new Date(fechaInput.value).getFullYear();
+        if (currentYear !== previousYear) {
+            // console.log('El año ha cambiado');
+            ejercicioP.textContent = '/'+currentYear;
+            previousYear = currentYear;
+        }
+    });
+</script>
 @endsection

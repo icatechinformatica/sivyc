@@ -68,7 +68,7 @@ class aperturasController extends Controller
                else $grupos = $grupos->where('tc.nmunidad',$memo);
                $grupos = $grupos->groupby('tc.id','ar.turnado', 'tc.comprobante_pago','convenios.fecha_vigencia',
                'e.memo_soporte_dependencia','e.nrevision','tr.file_pdf','tr.status_folio','tr.motivo')->get();
-
+                //dd($grupos);
             if(count($grupos)>0){
                 $_SESSION['grupos'] = $grupos;
                 $_SESSION['memo'] = $memo;
@@ -87,14 +87,23 @@ class aperturasController extends Controller
                     if (isset($value->mextemporaneo) OR isset($value->mextemporaneo_arc02) ) {
                         $extemporaneo = true;
                     }
-                    if ($value->status_folio=='SOPORTE') $motivo_soporte = true;
+                    if ($value->status_folio=='SOPORTE'){
+                         $motivo_soporte = true;
+                         $movimientos = ['' => '- SELECCIONAR -', 'ACEPTADO'=>'AUTORIZAR CAMBIO DE RECIBO DE PAGO','DENEGADO'=>'DENEGAR REEMPLAZO DE RECIBO DE PAGO'];
+                    }
                 }
                 //var_dump($estatus);exit;
-
+                if($grupos[0]->status_curso == 'SOPORTE'){
+                    $estatus = $grupos[0]->status_curso;
+                    $motivo_soporte = $grupos[0]->motivo_mov;
+                }
                 switch($opt){
                     case 'ARC01':
                         if($grupos[0]->file_arc01) $file =  $this->path_files.$grupos[0]->file_arc01;
                         switch($estatus){
+                            case 'SOPORTE': //SOLICITUD DE CAMBIO DE SOPORTE ARC01
+                                $movimientos = ['' => '- SELECCIONAR -', 'ACEPTADO ARC'=>'AUTORIZAR CAMBIO DE SOPORTE ARC','DENEGADO ARC'=>'DENEGAR REEMPLAZO DE SOPORTE ARC'];
+                            break;
                             case 'SOLICITADO':
                                 $movimientos = ['' => '- SELECCIONAR -', 'RETORNADO'=>'RETORNAR A UNIDAD','EN FIRMA'=>'ASIGNAR CLAVES'];
                             break;
@@ -121,14 +130,14 @@ class aperturasController extends Controller
                         }
                     break;
                 }
+                if($grupos[0]->status_folio == 'SOPORTE'){  /// SOLICITUD DE CAMBIO DE RECIBO DE PAGO
+                    if(!$movimientos) $movimientos []='- SELECCIONAR -';
+                     $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
+                     $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
+                }
             }else $message = "No se encuentran registros que mostrar.";
-
         }
-        if($motivo_soporte){
-            if(!$movimientos) $movimientos []='- SELECCIONAR -';
-             $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
-             $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
-        }
+       
         if(session('message')) $message = session('message');
         //var_dump($grupos);exit;
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
@@ -173,9 +182,9 @@ class aperturasController extends Controller
                             $cuerpo = 'La autorización de clave de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
                             $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
                             ->where('clave','<>','0')
-                            ->where('turnado','UNIDAD')
+                            //->where('turnado','UNIDAD')
                             ->where('status_curso','EN FIRMA')
-                            ->where('status','NO REPORTADO')
+                            //->where('status','NO REPORTADO')
                             ->update(['status_curso' => 'AUTORIZADO', 'updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
                         break;
                         case "ARC02":
@@ -205,7 +214,7 @@ class aperturasController extends Controller
                                 ->where('turnado','UNIDAD')
                                 ->where('status_curso','EN FIRMA')
                                 ->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
-                                ->update(['status_curso' => 'AUTORIZADO', 'arc'=>'02','updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
+                                ->update(['status_curso' => 'AUTORIZADO', 'arc'=>'02','status_solicitud_arc02'=>'AUTORIZADO','updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
                             }
                         break;
                     }
@@ -364,27 +373,51 @@ class aperturasController extends Controller
         return redirect('solicitudes/aperturas')->with('message',$message);
    }
 
-   public function soporte_pago(Request $request){ //autorizacion o denegar cambio de soporte de pago
+   public function soporte_pago(Request $request){ 
         $message = 'Operación fallida, vuelva a intentar..';
-        if($_SESSION['memo'] AND $_SESSION['opt']){
+        if($_SESSION['memo'] AND $_SESSION['opt']){            
             switch($_SESSION['opt']){
                 case "ARC01":                    
-                    $memo = $_SESSION['memo'];                                        
-                    $ids = DB::table('tbl_cursos as tc')->where('tc.munidad',$_SESSION['memo'])
-                        ->leftjoin('tbl_recibos as tr', function ($join) {                    
-                        $join->on('tc.folio_grupo','=','tr.folio_grupo')->where('tr.status_folio','SOPORTE'); 
-                        })->pluck('tr.id','tr.id');
-                    if($ids){
-                        if($request->movimiento=='ACEPTADO'){
-                            $result = DB::table('tbl_recibos')->whereIn('id',$ids)
-                                ->update(['status_folio'=>'ACEPTADO','fecha_status'=>date('Y-m-d H:i:s'),'iduser_updated'=>$this->id_user]);
-                        }elseif($request->movimiento=='DENEGADO'){
-                            $result = DB::table('tbl_recibos')->whereIn('id',$ids)
-                                ->update(['status_folio'=>'DENEGADO','observaciones'=>$request->observaciones,'fecha_status'=>date('Y-m-d H:i:s'),'updated_at'=> date('Y-m-d H:m:s'),'iduser_updated'=>$this->id_user]);
+                    if($request->movimiento=='ACEPTADO ARC' OR $request->movimiento=='DENEGADO ARC'){ //SOPORTE ARC
+                        if($request->movimiento=='ACEPTADO ARC'){
+                             $status_curso = "ACEPTADO"; // PARA QUE LA UNIDAD PUEDA SUBIR EL ARCHIVO
+                             $motivo = "AUTORIZACION CAMBIO DE SOPORTE ARC01";
+                        }else{ 
+                            $status_curso = "AUTORIZADO"; // SE REGRESA AL ESATO ORIGINAL PARA CERRAR 
+                            $motivo = "DENEGADO CAMBIO DE SOPORTE ARC01";
                         }
-                        if($result)$message = "OPERACIÓN EXITOSA!!";
-                        else $message = "NO SE PERMITEN DESHACER LAS CLAVES, NO SON LAS ULTIMAS!!";
-                    }                    
+
+                        $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','SOPORTE')
+                        ->update(['status_curso' => $status_curso,
+                            'movimientos' => DB::raw("
+                                COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                                    jsonb_build_object(
+                                        'fecha', '".date('Y-m-d H:i:s')."',
+                                        'usuario', '".Auth::user()->name."',
+                                        'operacion', '".$motivo."',
+                                        'motivo solicitud', motivo_mov
+                                    )
+                                )
+                            ")
+                        ]); 
+                        if($result) $message = "Operación exitosa!";                        
+                    }else{ //SOPORTE DE PAGO
+                        $memo = $_SESSION['memo'];                                        
+                        $ids = DB::table('tbl_cursos as tc')->where('tc.munidad',$_SESSION['memo'])
+                            ->leftjoin('tbl_recibos as tr', function ($join) {                    
+                            $join->on('tc.folio_grupo','=','tr.folio_grupo')->where('tr.status_folio','SOPORTE'); 
+                            })->pluck('tr.id','tr.id');
+                        if($ids){
+                            if($request->movimiento=='ACEPTADO'){
+                                $result = DB::table('tbl_recibos')->whereIn('id',$ids)
+                                    ->update(['status_folio'=>'ACEPTADO','fecha_status'=>date('Y-m-d H:i:s'),'iduser_updated'=>$this->id_user]);
+                            }elseif($request->movimiento=='DENEGADO'){
+                                $result = DB::table('tbl_recibos')->whereIn('id',$ids)
+                                    ->update(['status_folio'=>'DENEGADO','observaciones'=>$request->observaciones,'fecha_status'=>date('Y-m-d H:i:s'),'updated_at'=> date('Y-m-d H:m:s'),'iduser_updated'=>$this->id_user]);
+                            }
+                            if($result) $message = "Operación exitosa!";                            
+                        }  
+                    }                  
                 break;
                 case "ARC02":
                 break;
@@ -445,8 +478,8 @@ class aperturasController extends Controller
                 if($opt=="ARC01") $opt = "ARC-01";
                 else $opt = "ARC-02";
                 
-                $direccion = "Av. Circunvalación Pichucalco núm. 212-B. Colonia Moctezuma C.P. 29030; Tuxtla Gutiérrez, Chiapas.
-                Teléfono (961)6121621 Email: dtecnicaacademica@gmail.com";
+                $direccion = DB::table('tbl_instituto')->pluck('direccion')->first();
+                $direccion = $direccion."Teléfono (961)6121621 Email: dtecnicaacademica@gmail.com";
                 $realizo = $this->realizo;
                 $puesto = $this->puesto;
                 $pdf = PDF::loadView('solicitudes.aperturas.pdfAutoriza',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','opt','distintivo','realizo','puesto','marca','direccion'));

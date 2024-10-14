@@ -53,7 +53,7 @@ class Alumnopre extends Model
         'tiene_documentacion',
         'es_cereso',
         'titular_cerss',
-        'permiso_exoneracion'
+        'curso_extra'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -83,15 +83,15 @@ class Alumnopre extends Model
                 switch ($tipo) {
                     case 'matricula_aspirante':
                         # code...
-                        return $query->where('matricula', '=', $buscar);
+                        return $query->where('matricula', 'ILIKE', $buscar);
                         break;
                     case 'curp_aspirante':
                         # code...
-                        return $query->where('curp', '=', $buscar);
+                        return $query->where('curp', 'ILIKE', $buscar);
                         break;
                     case 'nombre_aspirante':
                         # code...
-                        return $query->where( \DB::raw("CONCAT(apellido_paterno, ' ',apellido_materno,' ',nombre)"), 'LIKE', "%$buscar%");
+                        return $query->where( \DB::raw("CONCAT(apellido_paterno, ' ',apellido_materno,' ',nombre)"), 'ILIKE', "%$buscar%");
                         break;
                     default:
                         # code...

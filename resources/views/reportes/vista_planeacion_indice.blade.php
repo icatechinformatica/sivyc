@@ -132,7 +132,7 @@
                 <div class="form-row my-2">
                     <div class="form-group mb-2">
                         <button input type="submit" id="generarReporteT" name="generarReporteT" class="btn btn-success">
-                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            <i class="far fa-file-excel fa-2x" aria-hidden="true"></i>&nbsp;
                             EXPORTAR FORMATO T
                         </button>
                     </div>
@@ -159,7 +159,7 @@
                     <div class="form-group mb-2">
                         <button input type="submit" id="memorandumGenerado" name="memorandumGenerado"
                             value="memorandumPositivo" class="btn btn-success">
-                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>&nbsp;
                             MEMORANDUM POSITIVO
                         </button>
                     </div>
@@ -175,7 +175,7 @@
                     <div class="form-group mb-2">
                         <button input type="submit" id="memorandumGenerado" name="memorandumGenerado"
                             value="memorandumNegativo" class="btn btn-danger">
-                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            <i class="far fa-file-pdf fa-2x" aria-hidden="true"></i>&nbsp;
                             MEMORANDUM NEGATIVO
                         </button>
                     </div>
@@ -360,7 +360,7 @@
                                                 id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"
                                                 disabled></textarea>
                                         </td>
-                                        <td>{{ $datas->fechaturnado }}</td>
+                                        <td>{{ $mes }}</td>
                                         <td>{{ $datas->unidad }}</td>
                                         <td>{{ $datas->plantel }}</td>
                                         <td>{{ $datas->espe }}</td>
