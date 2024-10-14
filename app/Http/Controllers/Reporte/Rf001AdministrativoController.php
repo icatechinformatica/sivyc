@@ -139,6 +139,8 @@ class Rf001AdministrativoController extends Controller
 
     public function sendBack(Request $request)
     {
+        $id = $request->get('idRf001');
+        $this->rf001Repository->regresarEstadoRecibo($id);
         return response()->json([
             'resp' => $this->rf001Repository->reenviarSolicitud($request),
             'message' => 'Documento Regresado para Corrección!',

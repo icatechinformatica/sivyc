@@ -23,4 +23,5 @@ interface Reporterf001Interface {
     public function updateAndValidateFormatRf001($id, $request);
     public function setCcp($idUnidad);
     public function actualizarRecibo($id);
+    public function regresarEstadoRecibo($id);
 }

@@ -459,6 +459,7 @@ class Reporterf001Repository implements Reporterf001Interface
         $xmlBase64 = base64_encode($documento->documento);
         $getToken = Tokens_icti::latest()->first();
 
+
         if (!isset($getToken)) {
             // no hay registros
             $token = (new ReportService())->generarToken();
@@ -493,6 +494,15 @@ class Reporterf001Repository implements Reporterf001Interface
                 'estado' => 'SELLADO',
                 'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
             ]);
+
+            $dataRf001 = (new Rf001Model())->findOrFail($formatoRf001->id);
+            $movimiento = json_decode($dataRf001->movimientos, true);
+            foreach ($movimiento as $item) {
+                Recibo::where('folio_recibo', '=', $item['folio'])
+                    ->update([
+                        'estado_reportado' => 'SELLADO'
+                    ]);
+            }
 
             return DocumentosFirmar::where('id', $documento->id)
                 ->update([
@@ -643,6 +653,18 @@ class Reporterf001Repository implements Reporterf001Interface
             return true;
         } catch (\Throwable $th) {
             return $th->message();
+        }
+    }
+
+    public function regresarEstadoRecibo($id)
+    {
+        $rf001 = (new Rf001Model())->findOrFail($id);
+        $movimiento = json_decode($rf001->movimientos, true);
+        foreach ($movimiento as $item) {
+            Recibo::where('folio_recibo', '=', $item['folio'])
+                ->update([
+                    'estado_reportado' => 'GENERADO'
+                ]);
         }
     }
 }
