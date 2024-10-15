@@ -552,11 +552,20 @@ class grupoController extends Controller
                             $convenio = null;
                             if($request->dependencia AND $request->modalidad=='CAE'){
                                 $organismo = DB::table('organismos_publicos')->where('id',$id_organismo)->value('organismo');
+
+                                $unidades_toarray = $_SESSION['unidades']->values()->toArray();                                
                                 $convenio_t = DB::table('convenios')
                                     ->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))
                                     ->where(db::raw("to_char(DATE (fecha_vigencia)::date, 'YYYY-MM-DD')"),'>=',$request->termino)
+                                    ->where('tipo_convenio','GENERAL')                                    
+                                    ->where(function ($q) use ($unidades_toarray) {
+                                        foreach ($unidades_toarray as $unidad) {
+                                            $q->orWhereJsonContains('unidades', $unidad);
+                                        }
+                                    })
                                     ->where('institucion',$organismo)
                                     ->where('activo','true')->first();
+                                    
                                 $convenio = [];
                                 if ($convenio_t) {
                                     foreach ($convenio_t as $key=>$value) {
@@ -646,7 +655,7 @@ class grupoController extends Controller
 
 
                                         ///SI CAMBIA DE TIPO DE PAGO Y REDUCCION CANCELADA=> SE ACTUALIZA LOS COSTOS EN tbl_inscriçion
-                                        if ($tc_curso->status_curso == 'EDICION' AND $_SESSION['folio_grupo']) {
+                                        if (($tc_curso->status_curso == 'EDICION') AND $_SESSION['folio_grupo']) {
                                             DB::table('tbl_inscripcion')
                                             ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
                                             ->where('tbl_inscripcion.folio_grupo', $_SESSION['folio_grupo'])
@@ -713,7 +722,6 @@ class grupoController extends Controller
 
                                 $result_curso = $result_alumnos = null;
                                 if($tc_curso->status_curso=='EDICION'){
-
                                         $result_curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
                                             ['inicio' => $request->inicio,'termino' => $termino,'hini' => $hini,'hfin' => $hfin,'horas' => $horas,
                                             'id_organismo' => $id_organismo,
@@ -756,10 +764,7 @@ class grupoController extends Controller
                                             );
                                             if($result_alumnos) $message = "Operación Exitosa!!";
                                         }
-
-
                                 }elseif (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
-
                                     $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','VINCULACION')->update(
                                         ['id_instructor'=>$instructor->id, 'observaciones'=>$request->observaciones,'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante,
                                         'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago,'mpreapertura'=>$mapertura,'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre,
@@ -777,7 +782,7 @@ class grupoController extends Controller
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
                                             'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp,'solicita'=>$request->solicita,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago
                                         ]);
                                       //  dd($instructor);
                                         if ($result_curso) $message = "Operación Exitosa!!";
@@ -1590,7 +1595,7 @@ class grupoController extends Controller
 
     private function valida_instructor($id_instructor)
     {
-        return ['valido' => true, 'message' => null]; //QUITAR ESTA LINEA EL 01 de JULIO 2024
+        //return ['valido' => true, 'message' => null]; //QUITAR ESTA LINEA EL 01 de JULIO 2024
         //echo $id_instructor;
         $valido = false;
         $message = null; //consultar instructores con id y que devuelva campo extra sea igual a true ya que lo devuelva un if si curso extra es igual a false entra a la validacion y si es true entonces cambie valido a true

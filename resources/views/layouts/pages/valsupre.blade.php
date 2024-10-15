@@ -114,7 +114,6 @@
                 <div id="div3" class="d-none d-print-none">
                     <h3>Con Copia Para El Delegado:</h3>
                 </div>
-                </div>
                 <div id="div7" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
                         <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" value="{{$funcionarios['delegado']}}" readonly>
@@ -131,6 +130,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
                 <br>
         </form>
     </section>

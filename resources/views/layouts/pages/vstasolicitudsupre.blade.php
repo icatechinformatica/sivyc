@@ -209,15 +209,26 @@
                                             @endcan
                                     @endif
                                 @else
-                                    @can('supre.restart')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                    @if(!in_array($itemData->status_recepcion, ['VALIDADO', 'En Espera']) || $itemData->permiso_editar)
+                                        @can('supre.restart')
+                                            <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#restartModal"
+                                                data-id='{{$itemData->id}}'
+                                                title="Rechazar Solicitud y Validación de Suficiencia Presupuestal">
+                                                <i class="fa fa-history"></i>
+                                            </button>
+                                        @endcan
+                                        @can('folio.modificar')
+                                        <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
-                                            data-target="#restartModal"
+                                            data-target="#modfolioModal"
                                             data-id='{{$itemData->id}}'
-                                            title="Reiniciar Suficiencia Presupuestal">
+                                            title="Permiso de Reemplazo de solicitud autografo">
                                             <i class="fa fa-history"></i>
                                         </button>
                                     @endcan
+                                    @endif
                                     @can('supre.upload_valsupre')
                                     <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                         data-toggle="modal" data-placement="top"
@@ -232,15 +243,6 @@
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $idh])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
-                                @endcan
-                                @can('folio.modificar')
-                                    <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
-                                        data-toggle="modal" data-placement="top"
-                                        data-target="#modfolioModal"
-                                        data-id='{{$itemData->id}}'
-                                        title="Permiso de Reemplazo de solicitud autografo">
-                                        <i class="fa fa-history"></i>
-                                    </button>
                                 @endcan
                                 @if ($itemData->permiso_editar)
                                     @can('supre.upload_supre')
@@ -446,11 +448,12 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title"><b>¿Esta seguro de reiniciar este proceso?</b></h5>
+                            <h5 class="modal-title"><b>¿Esta seguro de rechazar este proceso?</b></h5>
                             <button type="button" class="close" data-dismiss="modal">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
+                        <br>
                         <div class="form-row">
                             <div class="form-group col-md-2"></div>
                             <div class="form-group col-md-4">
