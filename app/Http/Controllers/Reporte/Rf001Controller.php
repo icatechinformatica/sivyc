@@ -182,7 +182,7 @@ class Rf001Controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, $solicitud)
+    public function show($id)
     {
         $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
         $getSigner = $this->rfoo1Repository->getSigner(Auth::user()->id);
@@ -223,7 +223,7 @@ class Rf001Controller extends Controller
         });
         $pathFile = $this->path_files;
         $curpFirmante = $getSigner->curp;
-        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'solicitud', 'data', 'token', 'curpFirmante', 'revisionLocal'))->render();
+        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal'))->render();
     }
 
     /**
@@ -334,13 +334,9 @@ class Rf001Controller extends Controller
     public function getSentFormat(Request $request)
     {
         // si se necesita generar el dato
-        $encrypted = str_replace(['-', '_'], ['+', '/'], $request->get('generado'));
-        $encrypted = base64_decode($encrypted);
-        $dato = Crypt::decrypt($encrypted);
         // aplicar el filtro sólo para memorandum
         $data = $this->rfoo1Repository->sentRF001Format($request);
-
-        return view('reportes.rf001.formatos', compact('data', 'dato'))->render();
+        return view('reportes.rf001.formatos', compact('data'))->render();
     }
 
     public function addComment(rf001ComentariosRequest $request): JsonResponse

@@ -486,10 +486,6 @@
 @php
     $movimiento = json_decode($getConcentrado->movimientos, true);
     $importeTotal = 0;
-
-    $bandera = Crypt::encrypt($solicitud);
-    $encrypted = base64_encode($bandera);
-    $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
 @endphp
 @section('content')
     <div id="loader-overlay">
@@ -498,7 +494,7 @@
             Espere un momento mientras se realiza el proceso<span> . </span><span> . </span><span> . </span>
         </div>
     </div>
-    <div class="card-header"><a href="{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}">A Revisión </a>/
+    <div class="card-header"><a href="{{ route('reporte.rf001.sent') }}">A Revisión </a>/
         Detalles
         de Reporte RF-001</div>
     <div class="card card-body  p-5" style=" min-height:450px;">
@@ -669,24 +665,30 @@
                             @if ($getConcentrado->estado == 'ENFIRMA' && $getConcentrado->tipo != 'CANCELADO')
                                 @if (!empty($data['cadenaOriginal']))
                                     <div class="padre">
-                                        {{-- Usar el componente creado --}}
-                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                            :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                        @can('vobo.rf001')
+                                            {{-- Usar el componente creado --}}
+                                            <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
+                                                :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                        @endcan
                                     </div>
                                 @endif
                             @endif
                         @else
                             @if (!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO')
                                 <div class="padre">
-                                    <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                        :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                    @can('solicitud.rf001')
+                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
+                                            :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                    @endcan
                                 </div>
                             @endif
                         @endif
                     </div>
                     <div class="col-2 justify-content-end">
                         @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
-                            <a href="javascript:;" class="btn" id="enviarRevision">ENVIAR A REVISIÓN</a>
+                            @canany(['solicitud.rf001', 'vobo.rf001'])
+                                <a href="javascript:;" class="btn" id="enviarRevision">ENVIAR A REVISIÓN</a>
+                            @endcanany
                         @endif
                     </div>
                 </div>
@@ -828,7 +830,7 @@
                                     $(".action-close").trigger(
                                         "click"); // ocultar modal
                                     window.location.href =
-                                        "{{ route('reporte.rf001.set.details', ['id' => $id, 'solicitud' => $encrypted]) }}"; // redirect
+                                        "{{ route('reporte.rf001.set.details', ['id' => $id]) }}"; // redirect
                                 }
                             },
                             error: function(xhr, textStatus, error) {
@@ -864,7 +866,7 @@
                                     'none';
                                 if (response.data) {
                                     window.location.href =
-                                        "{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}";
+                                        "{{ route('reporte.rf001.sent') }}";
                                 }
                             }, 2500); // 2 segundos de tiempo simulado
 

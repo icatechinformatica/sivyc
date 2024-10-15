@@ -184,14 +184,9 @@
     </div>
     {{-- <div class="d-none" id="vHTMLSignature"></div> --}}
     {{-- <input class="d-none" id="token" name="token" type="text" value="{{$token}}"> --}}
-    @php
-        $bandera = Crypt::encrypt('solicitud');
-        $encrypted = base64_encode($bandera);
-        $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
-    @endphp
     <!-- cabecera -->
     <div class="card-header">
-        <a href="{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}"> Reportes </a> / Reportes RF-001
+        <a href="{{ route('reporte.rf001.sent') }}"> Reportes </a> / Reportes RF-001
     </div>
     <div class="card card-body  p-5" style=" min-height:450px;">
         @if ($errors->any())
@@ -346,9 +341,11 @@
                         {!! Form::close() !!}
                         <div class="col-auto mt-4">
                             @if ($getConcentrado)
-                                <a id="enviar" class="btn btn-danger">
-                                    GENERAR DOCUMENTO
-                                </a>
+                                @can('solicitud.rf001')
+                                    <a id="enviar" class="btn btn-danger">
+                                        GENERAR DOCUMENTO
+                                    </a>
+                                @endcan
                             @endif
                         </div>
                     </div>
@@ -499,7 +496,7 @@
                                 'none';
                             if (response.resp) {
                                 window.location.href =
-                                    "{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}";
+                                    "{{ route('reporte.rf001.sent') }}";
                             }
                         }, 2500); // 2 segundos de tiempo simulado
 
@@ -522,22 +519,6 @@
                 console.error(error.statusText);
                 document.getElementById('loader-overlay').style.display = 'none';
             }
-
-
-            // let form = $(document.createElement('form'));
-            // $(form).attr("action", URL);
-            // $(form).attr("method", "POST");
-
-            // // Añadir el token CSRF como un campo oculto dentro del formulario
-            // let csrfToken = "{{ csrf_token() }}";
-            // let input = $(document.createElement('input'));
-            // $(input).attr("type", "hidden");
-            // $(input).attr("name", "_token");
-            // $(input).attr("value", csrfToken);
-            // $(form).append(input);
-
-            // $('body').append(form);
-            // $(form).submit();
         });
 
         function generarToken() {
