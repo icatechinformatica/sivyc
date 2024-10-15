@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                @can('observaciones.rf001')
+                @can('validacion.rf001')
                     <form id="sendComment" method="POST">
                         @csrf
                         <div class="new-comment-box mb-3">
