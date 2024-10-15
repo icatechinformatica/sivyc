@@ -275,7 +275,7 @@ class PagoController extends Controller
             'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.soportes_instructor',
             'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tbl_cursos.modinstructor','tabla_supre.doc_validado',
             'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio',
-            'pagos.updated_at','pagos.status_transferencia','arch_pago','edicion_pago','tbl_cursos_expedientes.id')
+            'pagos.updated_at','pagos.status_transferencia','arch_pago','edicion_pago','tbl_cursos_expedientes.id','tbl_cursos.clave')
                     ->orderBy('pagos.created_at', 'desc');
                     // ->PAGINATE(50, [
                     //     'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1','contratos.fecha_status','contratos.arch_contrato',
