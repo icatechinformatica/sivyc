@@ -507,6 +507,7 @@ class BuzonController extends Controller
             $url['nomdoc_firm'] = '';
             $url['id_efirma'] = '';
             $url['mod_documento'] = '';
+            $url['status_efirma'] = '';
             $meta->fecha_meta = $url; # guardamos el path
             $meta->save();
 
@@ -530,6 +531,7 @@ class BuzonController extends Controller
             $url[$tipo]['nomdoc_firmav'] = '';
             $url[$tipo]['id_efirma'] = '';
             $url[$tipo]['mod_documento'] = '';
+            $url[$tipo]['status_efirma'] = '';
             $avance->fechas_avance = $url; # guardamos el path
             $avance->save();
 
