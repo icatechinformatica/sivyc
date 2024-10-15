@@ -233,7 +233,6 @@ class PagoController extends Controller
             ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
             ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
             ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
-            // ->WHERE('documentos_firmar.tipo_archivo','Contrato')
             ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
             ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
             ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -243,13 +242,9 @@ class PagoController extends Controller
             ->leftJoin('documentos_firmar', function($join) {
                 $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
                         ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
-                    //  ->Where('documentos_firmar.status', '=', 'VALIDADO');
             })
-            // ->LEFTJOIN('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')
             ->LEFTJOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
             ->orderBy('pagos.created_at', 'desc');
-            // ->orderBy('contratos.fecha_firma', 'desc')
-            // ->GroupBy('contratos.id_contrato','folios.status','folios.id_folios','pagos.recepcion','pagos.status_recepcion','pagos.arch_solicitud_pago','pagos.fecha_agenda','pagos.created_at','pagos.arch_asistencia','pagos.arch_evidencia','pagos.arch_calificaciones')
 
         //dd($roles[0]->role_name);
         switch ($roles[0]->role_name) {
@@ -336,10 +331,30 @@ class PagoController extends Controller
                     AND jsonb_extract_path_text(tbl_cursos_expedientes.administrativo, 'status_dpto') NOT IN ('VALIDADO', 'ENVIADO'))
                     THEN TRUE
                     ELSE FALSE
-                 END as status_dpto_general")
-                // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
+                 END as status_dpto_general"),
+                 DB::raw("(SELECT
+            CASE
+                WHEN (EXISTS (SELECT 1 FROM pagos p WHERE p.arch_solicitud_pago IS NOT NULL AND p.id_contrato = contratos.id_contrato)
+                    OR EXISTS (SELECT 1 FROM documentos_firmar df WHERE df.tipo_archivo = 'Solicitud Pago' AND df.status = 'VALIDADO' AND df.numero_o_clave = tbl_cursos.clave))
+                    AND (EXISTS (SELECT 1 FROM tabla_supre ts WHERE ts.doc_validado IS NOT NULL AND ts.id = folios.id_supre)
+                    OR EXISTS (SELECT 1 FROM documentos_firmar df WHERE df.tipo_archivo = 'valsupre' AND df.status = 'VALIDADO' AND df.numero_o_clave = tbl_cursos.clave))
+                    AND (EXISTS (SELECT 1 FROM contratos c WHERE c.arch_contrato IS NOT NULL AND c.id_contrato = contratos.id_contrato)
+                    OR EXISTS (SELECT 1 FROM documentos_firmar df WHERE df.tipo_archivo = 'Contrato' AND df.status = 'VALIDADO' AND df.numero_o_clave = tbl_cursos.clave))
+                    AND (EXISTS (SELECT 1 FROM pagos p WHERE p.arch_asistencia IS NOT NULL AND p.id_contrato = contratos.id_contrato)
+                    OR EXISTS (SELECT 1 FROM documentos_firmar df WHERE df.tipo_archivo = 'Lista de asistencia' AND df.status = 'VALIDADO' AND df.numero_o_clave = tbl_cursos.clave)
+                    OR tbl_cursos.tipo_curso != 'CURSO')
+                    AND (EXISTS (SELECT 1 FROM pagos p WHERE p.arch_evidencia IS NOT NULL AND p.id_contrato = contratos.id_contrato)
+                    OR EXISTS (SELECT 1 FROM documentos_firmar df WHERE df.tipo_archivo = 'Reporte fotografico' AND df.status = 'VALIDADO' AND df.numero_o_clave = tbl_cursos.clave)
+                    OR tbl_cursos.tipo_curso != 'CURSO')
+                    AND (EXISTS (SELECT 1 FROM pagos p WHERE p.arch_calificaciones IS NOT NULL AND p.id_contrato = contratos.id_contrato)
+                    OR EXISTS (SELECT 1 FROM documentos_firmar df WHERE df.tipo_archivo = 'Reporte fotografico' AND df.status = 'VALIDADO' AND df.numero_o_clave = tbl_cursos.clave)
+                    OR tbl_cursos.tipo_curso != 'CERTIFICACION')
+                    THEN TRUE
+                ELSE FALSE
+            END
+            ) AS resultado")
             ]);
-        // dd($contratos_folios);
+        // dd($contratos_folios[1]->resultado);
 
         foreach($contratos_folios as $pointer => $ari)
         {
