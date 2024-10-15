@@ -250,8 +250,8 @@
 
     </style>
 
-    <div class="card-header py-2">
-        <h3>Expediente Unico</h3>
+    <div class="card-header">
+        Expediente Unico
     </div>
 
     {{-- Loader --}}
@@ -261,7 +261,6 @@
 
     {{-- Card como contenedor --}}
     <div class="card card-body">
-        {{-- style=" min-height:450px;"  para darle altura vertical --}}
         {{-- Mensaje de alerta --}}
         @if (session()->has('message') && session()->has('status'))
             <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
@@ -304,16 +303,16 @@
             {{-- CONTENIDO DEL ENCABEZADO --}}
             <div class="mb-2">
                 <span class="badge badge-success">
-                @if ($array_rol['rol'] == 1)
-                    DEPARTAMENTO DE VINCULACIÓN
-                @elseif($array_rol['rol'] == 2)
-                    DEPARTAMENTO ACADÉMICO
-                @elseif($array_rol['rol'] == 3)
-                    DELEGACIÓN ADMINISTRATIVA
-                @elseif($array_rol['rol'] == 4)
-                    DIRECCIÓN TÉCNICA ACADÉMICA
-                @endif
-            </span>
+                    @if ($array_rol['rol'] == 1)
+                        DEPARTAMENTO DE VINCULACIÓN
+                    @elseif($array_rol['rol'] == 2)
+                        DEPARTAMENTO ACADÉMICO
+                    @elseif($array_rol['rol'] == 3)
+                        DELEGACIÓN ADMINISTRATIVA
+                    @elseif($array_rol['rol'] == 4)
+                        DIRECCIÓN TÉCNICA ACADÉMICA
+                    @endif
+                </span>
             </div>
             <div class="container-fluid px-5 pt-3 bg-light datos-curso">
                 <div class="row justify-content-center">
@@ -382,462 +381,465 @@
             {{-- tabla vinculacion --}}
             <div class="col-12 px-0 mt-1" id="vinculacion">
                 <div class="text-center titulo_tabla">DEPARTAMENTO DE VINCULACIÓN</div>
-                <table class="table-hover">
-                    <thead>
-                    <tr>
-                        <th width = "3%">NO.</th>
-                        <th width = "30%">EVIDENCIAS</th>
-                        <th width = "5%">SI</th>
-                        <th width = "5%">NO</th>
-                        <th width = "8%">NO APLICA</th>
-                        <th width = "15%">OBSERVACIONES</th>
-                        <th width = "7%">SUBIR PDF</th>
-                        <th width = "6%">VER PDF</th>
-                        <th width = "6%">ELIMINAR</th>
-                        <th width ="15">MENSAJE DTA</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td class="color-texto">a</td>
-                        <td class="color-texto">Convenio Especifico / Acta de acuerdo.</td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion1" id="yes_req1" value="si"{{($v_radios[0]['doc_1'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion1" id="no_req1" value="no"{{($v_radios[0]['doc_1'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion1" id="na_req1" value="no_aplica"
-                                {{($v_radios[0]['doc_1'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req1" id="comentario_req1" rows="1" cols="30">{{ $v_radios[0]['doc_txt1'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen 1--}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc1"
-                            class="
-                            @if(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']) || !empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
-                            d-none
-                            @endif
-                            ">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc1" style="display: none;" onchange="checkIcon('iconCheck1', 'pdfInputDoc1')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc1').click();">Archivo
-                                    <div id="iconCheck1" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                <div class="table-responsive">
+                    <table class="table-hover">
+                        <thead>
+                        <tr>
+                            <th width = "3%">NO.</th>
+                            <th width = "30%">EVIDENCIAS</th>
+                            <th width = "5%">SI</th>
+                            <th width = "5%">NO</th>
+                            <th width = "8%">NO APLICA</th>
+                            <th width = "15%">OBSERVACIONES</th>
+                            <th width = "7%">SUBIR PDF</th>
+                            <th width = "6%">VER PDF</th>
+                            <th width = "6%">ELIMINAR</th>
+                            <th width ="15">MENSAJE DTA</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="color-texto">a</td>
+                            <td class="color-texto">Convenio Especifico / Acta de acuerdo.</td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion1" id="yes_req1" value="si"{{($v_radios[0]['doc_1'] == 'si') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($json_dptos->vinculacion['doc_1']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_documento']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_convenio']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_acta']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf 1 --}}
-                            @if (!empty($json_dptos->vinculacion['doc_1']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion1',
-                                    '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_1']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta1" id="comentario_dta1" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_1','vinc')">{{ data_get($mensajes_dta, 'msn_vincu1', '')}}</textarea>
-                        </td>
-                    </tr>
-                    {{-- Soporte para convenio especifico --}}
-                    <tr>
-                        <td class="color-texto">a.1</td>
-                        <td class="color-texto">Soporte de manifiesto de inscripción</td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion_v8" id="yes_req_v8" value="si" {{($v_radios[0]['doc_8'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion_v8" id="no_req_v8" value="no" {{($v_radios[0]['doc_8'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion_v8" id="na_req_v8" value="no_aplica" {{($v_radios[0]['doc_8'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req_v8" id="comentario_req_v8" rows="1" cols="30">{{ $v_radios[0]['doc_txt8'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc_v8">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc_v8" style="display: none;" onchange="checkIcon('iconCheck_v8', 'pdfInputDoc_v8')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc_v8').click();">Archivo
-                                    <div id="iconCheck_v8" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion1" id="no_req1" value="no"{{($v_radios[0]['doc_1'] == 'no') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($json_dptos->vinculacion['doc_8']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$path_files.$json_dptos->vinculacion['doc_8']['url_documento']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($json_dptos->vinculacion['doc_8']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion8',
-                                    '{{$json_dptos->vinculacion['doc_8']['url_documento']}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta26" id="comentario_dta26" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_8','vinc')">{{ data_get($mensajes_dta, 'msn_vincu8', '')}}</textarea>
-                        </td>
-                    </tr>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion1" id="na_req1" value="no_aplica"
+                                    {{($v_radios[0]['doc_1'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req1" id="comentario_req1" rows="1" cols="30">{{ $v_radios[0]['doc_txt1'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen 1--}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc1"
+                                class="
+                                @if(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']) || !empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
+                                d-none
+                                @endif
+                                ">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc1" style="display: none;" onchange="checkIcon('iconCheck1', 'pdfInputDoc1')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc1').click();">Archivo
+                                        <div id="iconCheck1" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($json_dptos->vinculacion['doc_1']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_documento']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_convenio']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_convenio']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @elseif(!empty($json_dptos->vinculacion['doc_1']['url_pdf_acta']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$path_files.$json_dptos->vinculacion['doc_1']['url_pdf_acta']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf 1 --}}
+                                @if (!empty($json_dptos->vinculacion['doc_1']['url_documento']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion1',
+                                        '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_1']['url_documento'] : ''}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta1" id="comentario_dta1" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_1','vinc')">{{ data_get($mensajes_dta, 'msn_vincu1', '')}}</textarea>
+                            </td>
+                        </tr>
+                        {{-- Soporte para convenio especifico --}}
+                        <tr>
+                            <td class="color-texto">a.1</td>
+                            <td class="color-texto">Soporte de manifiesto de inscripción</td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion_v8" id="yes_req_v8" value="si" {{($v_radios[0]['doc_8'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion_v8" id="no_req_v8" value="no" {{($v_radios[0]['doc_8'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion_v8" id="na_req_v8" value="no_aplica" {{($v_radios[0]['doc_8'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req_v8" id="comentario_req_v8" rows="1" cols="30">{{ $v_radios[0]['doc_txt8'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc_v8">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc_v8" style="display: none;" onchange="checkIcon('iconCheck_v8', 'pdfInputDoc_v8')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc_v8').click();">Archivo
+                                        <div id="iconCheck_v8" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($json_dptos->vinculacion['doc_8']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$path_files.$json_dptos->vinculacion['doc_8']['url_documento']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($json_dptos->vinculacion['doc_8']['url_documento']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion8',
+                                        '{{$json_dptos->vinculacion['doc_8']['url_documento']}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta26" id="comentario_dta26" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_8','vinc')">{{ data_get($mensajes_dta, 'msn_vincu8', '')}}</textarea>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td>b</td>
-                        <td>Copia de autorización de Exoneración y/o Reducción de Cuota de Recuperación.</td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion2" id="yes_req2" value="si" {{($v_radios[0]['doc_2'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion2" id="no_req2" value="no" {{($v_radios[0]['doc_2'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion2" id="na_req2" value="no_aplica" {{($v_radios[0]['doc_2'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req2" id="comentario_req2" rows="1" cols="30">{{ $v_radios[0]['doc_txt2'] ?? '' }}</textarea>
-                        </td>
-                        <td></td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc2']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$path_files.$search_docs['urldoc2'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td></td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta2" id="comentario_dta2" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_2','vinc')">{{ data_get($mensajes_dta, 'msn_vincu2', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="color-texto">c</td>
-                        <td class="color-texto">Original de la solicitud de apertura de cursos de capacitación y/o certificación al Departamento Académico.</td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion3" id="yes_req3" value="si" {{($v_radios[0]['doc_3'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion3" id="no_req3" value="no" {{($v_radios[0]['doc_3'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion3" id="na_req3" value="no_aplica" {{($v_radios[0]['doc_3'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req3" id="comentario_req3" rows="1" cols="30">{{ $v_radios[0]['doc_txt3'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen 3--}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc3">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc3" style="display: none;" onchange="checkIcon('iconCheck3', 'pdfInputDoc3')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc3').click();">Archivo
-                                    <div id="iconCheck3" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                        <tr>
+                            <td>b</td>
+                            <td>Copia de autorización de Exoneración y/o Reducción de Cuota de Recuperación.</td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion2" id="yes_req2" value="si" {{($v_radios[0]['doc_2'] == 'si') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($json_dptos->vinculacion['doc_3']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$path_files.$json_dptos->vinculacion['doc_3']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf 3--}}
-                            @if (!empty($json_dptos->vinculacion['doc_3']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion3',
-                                    '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_3']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta3" id="comentario_dta3" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_3','vinc')">{{ data_get($mensajes_dta, 'msn_vincu3', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="color-texto">d</td>
-                        <td class="color-texto">SID-01 solicitud de Inscripción del interesado.</td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion4" id="yes_req4" value="si" {{($v_radios[0]['doc_4'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion4" id="no_req4" value="no" {{($v_radios[0]['doc_4'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion4" id="na_req4" value="no_aplica" {{($v_radios[0]['doc_4'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req4" id="comentario_req4" rows="1" cols="30">{{ $v_radios[0]['doc_txt4'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen 4--}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc4">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc4" style="display: none;" onchange="checkIcon('iconCheck4', 'pdfInputDoc4')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc4').click();">Archivo
-                                    <div id="iconCheck4" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion2" id="no_req2" value="no" {{($v_radios[0]['doc_2'] == 'no') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($json_dptos->vinculacion['doc_4']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$path_files.$json_dptos->vinculacion['doc_4']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion2" id="na_req2" value="no_aplica" {{($v_radios[0]['doc_2'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req2" id="comentario_req2" rows="1" cols="30">{{ $v_radios[0]['doc_txt2'] ?? '' }}</textarea>
+                            </td>
+                            <td></td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc2']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$path_files.$search_docs['urldoc2'] ?? ''}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td></td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta2" id="comentario_dta2" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_2','vinc')">{{ data_get($mensajes_dta, 'msn_vincu2', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="color-texto">c</td>
+                            <td class="color-texto">Original de la solicitud de apertura de cursos de capacitación y/o certificación al Departamento Académico.</td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion3" id="yes_req3" value="si" {{($v_radios[0]['doc_3'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion3" id="no_req3" value="no" {{($v_radios[0]['doc_3'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion3" id="na_req3" value="no_aplica" {{($v_radios[0]['doc_3'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req3" id="comentario_req3" rows="1" cols="30">{{ $v_radios[0]['doc_txt3'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen 3--}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc3">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc3" style="display: none;" onchange="checkIcon('iconCheck3', 'pdfInputDoc3')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc3').click();">Archivo
+                                        <div id="iconCheck3" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($json_dptos->vinculacion['doc_3']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$path_files.$json_dptos->vinculacion['doc_3']['url_documento'] ?? ''}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf 3--}}
+                                @if (!empty($json_dptos->vinculacion['doc_3']['url_documento']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion3',
+                                        '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_3']['url_documento'] : ''}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta3" id="comentario_dta3" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_3','vinc')">{{ data_get($mensajes_dta, 'msn_vincu3', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="color-texto">d</td>
+                            <td class="color-texto">SID-01 solicitud de Inscripción del interesado.</td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion4" id="yes_req4" value="si" {{($v_radios[0]['doc_4'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion4" id="no_req4" value="no" {{($v_radios[0]['doc_4'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion4" id="na_req4" value="no_aplica" {{($v_radios[0]['doc_4'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req4" id="comentario_req4" rows="1" cols="30">{{ $v_radios[0]['doc_txt4'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen 4--}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc4">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc4" style="display: none;" onchange="checkIcon('iconCheck4', 'pdfInputDoc4')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc4').click();">Archivo
+                                        <div id="iconCheck4" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($json_dptos->vinculacion['doc_4']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$path_files.$json_dptos->vinculacion['doc_4']['url_documento'] ?? ''}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf 4--}}
+                                @if (!empty($json_dptos->vinculacion['doc_4']['url_documento']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion4',
+                                        '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_4']['url_documento'] : ''}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta4" id="comentario_dta4" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_4','vinc')">{{ data_get($mensajes_dta, 'msn_vincu4', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>e</td>
+                            <td>CURP actualizada o Copia de Acta de Nacimiento.</td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion5" id="yes_req5" value="si" {{($v_radios[0]['doc_5'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion5" id="no_req5" value="no" {{($v_radios[0]['doc_5'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion5" id="na_req5" value="no_aplica" {{($v_radios[0]['doc_5'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req5" id="comentario_req5" rows="1" cols="30">{{ $v_radios[0]['doc_txt5'] ?? '' }}</textarea>
+                            </td>
+                            <td></td>
+                            <td class="text-center">
+                                <a class="btn-circle btn-circle-sm btn_modal_alumnos" id="" onclick="modalRequisitos(event, 'curp')"
+                                    href="#">
+                                    <i class="fa fa fa-eye fa-2x fa-lg text-dark" aria-hidden="true"></i>
                                 </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                            </td>
+                            <td></td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta5" id="comentario_dta5" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_5','vinc')">{{ data_get($mensajes_dta, 'msn_vincu5', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>f</td>
+                            <td>Copia de comprobante de último grado de estudios (en caso de contar con él).</td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion6" id="yes_req6" value="si" {{($v_radios[0]['doc_6'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion6" id="no_req6" value="no" {{($v_radios[0]['doc_6'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion6" id="na_req6" value="no_aplica" {{($v_radios[0]['doc_6'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req6" id="comentario_req6" rows="1" cols="30">{{ $v_radios[0]['doc_txt6'] ?? '' }}</textarea>
+                            </td>
+                            <td></td>
+                            <td class="text-center">
+                                <a class="btn-circle btn-circle-sm btn_modal_alumnos" id="" onclick="modalRequisitos(event, 'estudios')"
+                                    href="#">
+                                    <i class="fa fa fa-eye fa-2x fa-lg text-dark" aria-hidden="true"></i>
                                 </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf 4--}}
-                            @if (!empty($json_dptos->vinculacion['doc_4']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion4',
-                                    '{{isset($json_dptos) ? $json_dptos->vinculacion['doc_4']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta4" id="comentario_dta4" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_4','vinc')">{{ data_get($mensajes_dta, 'msn_vincu4', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>e</td>
-                        <td>CURP actualizada o Copia de Acta de Nacimiento.</td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion5" id="yes_req5" value="si" {{($v_radios[0]['doc_5'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion5" id="no_req5" value="no" {{($v_radios[0]['doc_5'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion5" id="na_req5" value="no_aplica" {{($v_radios[0]['doc_5'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req5" id="comentario_req5" rows="1" cols="30">{{ $v_radios[0]['doc_txt5'] ?? '' }}</textarea>
-                        </td>
-                        <td></td>
-                        <td class="text-center">
-                            <a class="btn-circle btn-circle-sm btn_modal_alumnos" id="" onclick="modalRequisitos(event, 'curp')"
-                                href="#">
-                                <i class="fa fa fa-eye fa-2x fa-lg text-dark" aria-hidden="true"></i>
-                            </a>
-                        </td>
-                        <td></td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta5" id="comentario_dta5" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_5','vinc')">{{ data_get($mensajes_dta, 'msn_vincu5', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>f</td>
-                        <td>Copia de comprobante de último grado de estudios (en caso de contar con él).</td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion6" id="yes_req6" value="si" {{($v_radios[0]['doc_6'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion6" id="no_req6" value="no" {{($v_radios[0]['doc_6'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion6" id="na_req6" value="no_aplica" {{($v_radios[0]['doc_6'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req6" id="comentario_req6" rows="1" cols="30">{{ $v_radios[0]['doc_txt6'] ?? '' }}</textarea>
-                        </td>
-                        <td></td>
-                        <td class="text-center">
-                            <a class="btn-circle btn-circle-sm btn_modal_alumnos" id="" onclick="modalRequisitos(event, 'estudios')"
-                                href="#">
-                                <i class="fa fa fa-eye fa-2x fa-lg text-dark" aria-hidden="true"></i>
-                            </a>
-                        </td>
-                        <td></td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta6" id="comentario_dta6" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_6','vinc')">{{ data_get($mensajes_dta, 'msn_vincu6', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="color-texto">g</td>
-                        <td class="color-texto">Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.</td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion7" id="yes_req7" value="si" {{($v_radios[0]['doc_7'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion7" id="no_req7" value="no" {{($v_radios[0]['doc_7'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$v_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion7" id="na_req7" value="no_aplica" {{($v_radios[0]['doc_7'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req7" id="comentario_req7" rows="1" cols="30">{{ $v_radios[0]['doc_txt7'] ?? '' }}</textarea>
-                        </td>
-                        <td>
-                            {{-- Subir recibo--}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="
-                            @if(($search_docs['anio_curso'] == '2023' || $search_docs['anio_curso'] == '2024') && $search_docs['validRecibo'] != 'digital')
-                                @if($search_docs['tipo_curso'] == 'EXO')
+                            </td>
+                            <td></td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta6" id="comentario_dta6" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_6','vinc')">{{ data_get($mensajes_dta, 'msn_vincu6', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="color-texto">g</td>
+                            <td class="color-texto">Copia del recibo oficial de la cuota de recuperación expedido por la Delegación Administrativa y comprobante de depósito o transferencia Bancaria.</td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion7" id="yes_req7" value="si" {{($v_radios[0]['doc_7'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion7" id="no_req7" value="no" {{($v_radios[0]['doc_7'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$v_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion7" id="na_req7" value="no_aplica" {{($v_radios[0]['doc_7'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req7" id="comentario_req7" rows="1" cols="30">{{ $v_radios[0]['doc_txt7'] ?? '' }}</textarea>
+                            </td>
+                            <td>
+                                {{-- Subir recibo--}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc7" class="
+                                @if(($search_docs['anio_curso'] == '2023' || $search_docs['anio_curso'] == '2024') && $search_docs['validRecibo'] != 'digital')
+                                    @if($search_docs['tipo_curso'] == 'EXO')
+                                        d-none
+                                    @endif
+                                @else
                                     d-none
                                 @endif
-                            @else
-                                d-none
-                            @endif
-                            ">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc7" style="display: none;" onchange="checkIcon('iconCheck7', 'pdfInputDoc7')">
-                                    <input type="hidden" name="" id="txt_folio_recibo" value="">
-                                    <input type="hidden" name="" id="txt_folio_fecha" value="">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc7').click();">Archivo
-                                    <div id="iconCheck7" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
-                                </div>
-                            </form>
-                            {{-- @endif --}}
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc7']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="
-                                    @if ($search_docs['validRecibo'] == 'digital')
-                                        {{-- {{ route('grupos.recibos.descargar', ['folio_recibo' => $search_docs['urldoc7']]) }} --}}
-                                        {{$search_docs['urldoc7']}}
-                                    @else
-                                        {{$path_files.$search_docs['urldoc7']}}
-                                    @endif
-                                    " target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td>
-                            {{-- Eliminar si se encuentra la ruta del archivo --}}
-                            @if ($search_docs['validRecibo'] != 'digital' && !empty($search_docs['urldoc7']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion7',
-                                    '{{$path_files.$search_docs['urldoc7']}}',
-                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta7" id="comentario_dta7" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_7','vinc')">{{ data_get($mensajes_dta, 'msn_vincu7', '')}}</textarea>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                                ">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc7" style="display: none;" onchange="checkIcon('iconCheck7', 'pdfInputDoc7')">
+                                        <input type="hidden" name="" id="txt_folio_recibo" value="">
+                                        <input type="hidden" name="" id="txt_folio_fecha" value="">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc7').click();">Archivo
+                                        <div id="iconCheck7" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                                {{-- @endif --}}
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc7']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="
+                                        @if ($search_docs['validRecibo'] == 'digital')
+                                            {{-- {{ route('grupos.recibos.descargar', ['folio_recibo' => $search_docs['urldoc7']]) }} --}}
+                                            {{$search_docs['urldoc7']}}
+                                        @else
+                                            {{$path_files.$search_docs['urldoc7']}}
+                                        @endif
+                                        " target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td>
+                                {{-- Eliminar si se encuentra la ruta del archivo --}}
+                                @if ($search_docs['validRecibo'] != 'digital' && !empty($search_docs['urldoc7']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion7',
+                                        '{{$path_files.$search_docs['urldoc7']}}',
+                                        {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta7" id="comentario_dta7" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_7','vinc')">{{ data_get($mensajes_dta, 'msn_vincu7', '')}}</textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
                 {{-- Boton de guardar vinculacion y generar pdf--}}
                 @if ($array_rol['rol'] == 1)
                     @if ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO')
@@ -852,789 +854,792 @@
             {{-- tabla academico --}}
             <div class="col-12 px-0 mt-3" id="academico">
                 <div class="text-center titulo_tabla">DEPARTAMENTO ACADÉMICO</div>
-                <table class="table-hover">
-                    <thead>
-                    <tr>
-                        <th width = "3%">NO.</th>
-                        <th width = "30%">EVIDENCIAS</th>
-                        <th width = "5%">SI</th>
-                        <th width = "5%">NO</th>
-                        <th width = "8%">NO APLICA</th>
-                        <th width = "15%">OBSERVACIONES</th>
-                        <th width = "7%">SUBIR PDF</th>
-                        <th width = "6%">VER PDF</th>
-                        <th width = "6%">ELIMINAR</th>
-                        <th width ="15">MENSAJE DTA</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>a</td>
-                        <td>Original de memorándum ARC-01, solicitud de Apertura de cursos de capacitación y/o Certificación a la
-                            Dirección Técnica Académica.
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion8" id="yes_req8" value="si" {{($v_radios[1]['doc_8'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion8" id="no_req8" value="no" {{($v_radios[1]['doc_8'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion8" id="na_req8" value="no_aplica" {{($v_radios[1]['doc_8'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req8" id="comentario_req8" rows="1" cols="30">{{ $v_radios[1]['doc_txt8'] ?? '' }}</textarea>
-                        </td>
-                        <td></td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc8']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$path_files.$search_docs['urldoc8']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td></td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta8" id="comentario_dta8" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_8','acad')">{{ data_get($mensajes_dta, 'msn_acad8', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>b</td>
-                        <td>Copia de memorándum de autorización de ARC-01, emitido por la Dirección Técnica Académica.</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion9" id="yes_req9" value="si" {{($v_radios[1]['doc_9'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion9" id="no_req9" value="no" {{($v_radios[1]['doc_9'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion9" id="na_req9" value="no_aplica" {{($v_radios[1]['doc_9'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req9" id="comentario_req9" rows="1" cols="30">{{ $v_radios[1]['doc_txt9'] ?? '' }}</textarea>
-                        </td>
-                        <td></td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc9']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$search_docs['urldoc9']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td></td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta9" id="comentario_dta9" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_9','acad')">{{ data_get($mensajes_dta, 'msn_acad9', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>c</td>
-                        <td>
-                            Original de memorándum ARC-02, solicitud de modificación, reprogramación y/o cancelación de curso a la Dirección Técnica Académica, en caso aplicable.
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion10" id="yes_req10" value="si" {{($v_radios[1]['doc_10'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion10" id="no_req10" value="no" {{($v_radios[1]['doc_10'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion10" id="na_req10" value="no_aplica" {{($v_radios[1]['doc_10'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req10" id="comentario_req10" rows="1" cols="30">{{ $v_radios[1]['doc_txt10'] ?? '' }}</textarea>
-                        </td>
-                        <td></td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc10']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$path_files.$search_docs['urldoc10']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td></td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta10" id="comentario_dta10" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_10','acad')">{{ data_get($mensajes_dta, 'msn_acad10', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>d</td>
-                        <td>Copia de memorándum de autorización de ARC-02, emitido por la Dirección Técnica Académica, en caso aplicable.</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion11" id="yes_req11" value="si" {{($v_radios[1]['doc_11'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion11" id="no_req11" value="no" {{($v_radios[1]['doc_11'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion11" id="na_req11" value="no_aplica" {{($v_radios[1]['doc_11'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req11" id="comentario_req11" rows="1" cols="30">{{ $v_radios[1]['doc_txt11'] ?? '' }}</textarea>
-                        </td>
-                        <td></td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc11']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$search_docs['urldoc11']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td></td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta11" id="comentario_dta11" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_11','acad')">{{ data_get($mensajes_dta, 'msn_acad11', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="color-texto">e</td>
-                        <td class="color-texto">Copia de RIACD-02 Inscripción.</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion12" id="yes_req12" value="si" {{($v_radios[1]['doc_12'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion12" id="no_req12" value="no" {{($v_radios[1]['doc_12'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion12" id="na_req12" value="no_aplica" {{($v_radios[1]['doc_12'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req12" id="comentario_req12" rows="1" cols="30">{{ $v_radios[1]['doc_txt12'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc12">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc12" style="display: none;" onchange="checkIcon('iconCheck12', 'pdfInputDoc12')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc12').click();">Archivo
-                                    <div id="iconCheck12" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                <div class="table-responsive">
+                    <table class="table-hover">
+                        <thead>
+                        <tr>
+                            <th width = "3%">NO.</th>
+                            <th width = "30%">EVIDENCIAS</th>
+                            <th width = "5%">SI</th>
+                            <th width = "5%">NO</th>
+                            <th width = "8%">NO APLICA</th>
+                            <th width = "15%">OBSERVACIONES</th>
+                            <th width = "7%">SUBIR PDF</th>
+                            <th width = "6%">VER PDF</th>
+                            <th width = "6%">ELIMINAR</th>
+                            <th width ="15">MENSAJE DTA</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>a</td>
+                            <td>Original de memorándum ARC-01, solicitud de Apertura de cursos de capacitación y/o Certificación a la
+                                Dirección Técnica Académica.
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion8" id="yes_req8" value="si" {{($v_radios[1]['doc_8'] == 'si') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_12']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_12"
-                                    href="{{$path_files.$json_dptos->academico['doc_12']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_12']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion12',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_12']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta12" id="comentario_dta12" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_12','acad')">{{ data_get($mensajes_dta, 'msn_acad12', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="color-texto">f</td>
-                        <td class="color-texto">Copia de RIACD-02 Acreditación.</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion13" id="yes_req13" value="si" {{($v_radios[1]['doc_13'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion13" id="no_req13" value="no" {{($v_radios[1]['doc_13'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion13" id="na_req13" value="no_aplica" {{($v_radios[1]['doc_13'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req13" id="comentario_req13" rows="1" cols="30">{{ $v_radios[1]['doc_txt13'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc13">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc13" style="display: none;" onchange="checkIcon('iconCheck13', 'pdfInputDoc13')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc13').click();">Archivo
-                                    <div id="iconCheck13" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion8" id="no_req8" value="no" {{($v_radios[1]['doc_8'] == 'no') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_13']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_13"
-                                    href="{{$path_files.$json_dptos->academico['doc_13']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_13']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion13',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_13']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta13" id="comentario_dta13" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_13','acad')">{{ data_get($mensajes_dta, 'msn_acad13', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="color-texto">g</td>
-                        <td class="color-texto">Copia de RIACD-02 Certificación.</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion14" id="yes_req14" value="si" {{($v_radios[1]['doc_14'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion14" id="no_req14" value="no" {{($v_radios[1]['doc_14'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion14" id="na_req14" value="no_aplica" {{($v_radios[1]['doc_14'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req14" id="comentario_req14" rows="1" cols="30">{{ $v_radios[1]['doc_txt14'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc14">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc14" style="display: none;" onchange="checkIcon('iconCheck14', 'pdfInputDoc14')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc14').click();">Archivo
-                                    <div id="iconCheck14" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion8" id="na_req8" value="no_aplica" {{($v_radios[1]['doc_8'] == 'no_aplica') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_14']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_14"
-                                    href="{{$path_files.$json_dptos->academico['doc_14']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_14']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion14',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_14']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta14" id="comentario_dta14" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_14','acad')">{{ data_get($mensajes_dta, 'msn_acad14', '')}}</textarea>
-                        </td>
-                    </tr>
-                    {{-- esto es un extra se formato de entrega de constancias --}}
-                    <tr>
-                        <td class="color-texto">g.1</td>
-                        <td class="color-texto">
-                            Soportes de entrega de constancias de capacitación (si es el caso).
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion25" id="yes_req25" value="si" {{($v_radios[1]['doc_25'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion25" id="no_req25" value="no" {{($v_radios[1]['doc_25'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion25" id="na_req25" value="no_aplica" {{($v_radios[1]['doc_25'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc25">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc25" style="display: none;" onchange="checkIcon('iconCheck25', 'pdfInputDoc25')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc25').click();">Archivo
-                                    <div id="iconCheck25" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req8" id="comentario_req8" rows="1" cols="30">{{ $v_radios[1]['doc_txt8'] ?? '' }}</textarea>
+                            </td>
+                            <td></td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc8']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$path_files.$search_docs['urldoc8']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td></td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta8" id="comentario_dta8" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_8','acad')">{{ data_get($mensajes_dta, 'msn_acad8', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>b</td>
+                            <td>Copia de memorándum de autorización de ARC-01, emitido por la Dirección Técnica Académica.</td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion9" id="yes_req9" value="si" {{($v_radios[1]['doc_9'] == 'si') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_25']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Oficio de entrega de constancias" id="verpdf_25"
-                                    href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="No se encuentra el oficio de entrega de constancias" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                            {{-- Otro soportes --}}
-                            @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
-                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="Ver PDF" id="verpdf_25"
-                                    href="{{$path_files.$json_dptos->academico['doc_25']['url_soporte'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion25',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_soporte'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_25','acad')">{{ data_get($mensajes_dta, 'msn_acad25', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>h</td>
-                        <td>Copia de LAD-04 Lista de Asistencia.</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion15" id="yes_req15" value="si" {{($v_radios[1]['doc_15'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion15" id="no_req15" value="no" {{($v_radios[1]['doc_15'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion15" id="na_req15" value="no_aplica" {{($v_radios[1]['doc_15'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req15" id="comentario_req15" rows="1" cols="30">{{ $v_radios[1]['doc_txt15'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc15" class="{{(!empty($search_docs['urldoc15'])) ? 'd-none' : ''}}">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc15" style="display: none;" onchange="checkIcon('iconCheck15', 'pdfInputDoc15')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc15').click();">Archivo
-                                    <div id="iconCheck15" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion9" id="no_req9" value="no" {{($v_radios[1]['doc_9'] == 'no') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- Mostrar lista de asistencia --}}
-                            @if (!empty($search_docs['urldoc15']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="
-                                    @if (is_numeric($search_docs['urldoc15']))
-                                        {{route('asistencia-pdf', ['id' => $search_docs['urldoc15']])}}
-                                    @else
-                                        {{$search_docs['urldoc15']}}
-                                    @endif
-                                    " target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @elseif(!empty($json_dptos->academico['doc_15']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_15"
-                                    href="{{$path_files.$json_dptos->academico['doc_15']['url_documento']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_15']['url_documento']) && empty($search_docs['urldoc15']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion15',
-                                    '{{$json_dptos->academico['doc_15']['url_documento']}}',
-                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta15" id="comentario_dta15" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_15','acad')">{{ data_get($mensajes_dta, 'msn_acad15', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>i</td>
-                        <td>Copia de RESD-05 Registro de Evaluación por Sub - objetivos.</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion16" id="yes_req16" value="si" {{($v_radios[1]['doc_16'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion16" id="no_req16" value="no" {{($v_radios[1]['doc_16'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion16" id="na_req16" value="no_aplica" {{($v_radios[1]['doc_16'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req16" id="comentario_req16" rows="1" cols="30">{{ $v_radios[1]['doc_txt16'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc16" class="{{(!empty($search_docs['urldoc16'])) ? 'd-none' : ''}}">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc16" style="display: none;" onchange="checkIcon('iconCheck16', 'pdfInputDoc16')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc16').click();">Archivo
-                                    <div id="iconCheck16" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion9" id="na_req9" value="no_aplica" {{($v_radios[1]['doc_9'] == 'no_aplica') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if (!empty($search_docs['urldoc16']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="
-                                    @if (is_numeric($search_docs['urldoc16']))
-                                        {{route('calificacion-pdf', ['id' => $search_docs['urldoc16']])}}
-                                    @else
-                                        {{$search_docs['urldoc16']}}
-                                    @endif
-                                    " target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @elseif(!empty($json_dptos->academico['doc_16']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_16"
-                                    href="{{$path_files.$json_dptos->academico['doc_16']['url_documento']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req9" id="comentario_req9" rows="1" cols="30">{{ $v_radios[1]['doc_txt9'] ?? '' }}</textarea>
+                            </td>
+                            <td></td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc9']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$search_docs['urldoc9']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td></td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta9" id="comentario_dta9" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_9','acad')">{{ data_get($mensajes_dta, 'msn_acad9', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>c</td>
+                            <td>
+                                Original de memorándum ARC-02, solicitud de modificación, reprogramación y/o cancelación de curso a la Dirección Técnica Académica, en caso aplicable.
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion10" id="yes_req10" value="si" {{($v_radios[1]['doc_10'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion10" id="no_req10" value="no" {{($v_radios[1]['doc_10'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion10" id="na_req10" value="no_aplica" {{($v_radios[1]['doc_10'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req10" id="comentario_req10" rows="1" cols="30">{{ $v_radios[1]['doc_txt10'] ?? '' }}</textarea>
+                            </td>
+                            <td></td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc10']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$path_files.$search_docs['urldoc10']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td></td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta10" id="comentario_dta10" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_10','acad')">{{ data_get($mensajes_dta, 'msn_acad10', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>d</td>
+                            <td>Copia de memorándum de autorización de ARC-02, emitido por la Dirección Técnica Académica, en caso aplicable.</td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion11" id="yes_req11" value="si" {{($v_radios[1]['doc_11'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion11" id="no_req11" value="no" {{($v_radios[1]['doc_11'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion11" id="na_req11" value="no_aplica" {{($v_radios[1]['doc_11'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req11" id="comentario_req11" rows="1" cols="30">{{ $v_radios[1]['doc_txt11'] ?? '' }}</textarea>
+                            </td>
+                            <td></td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc11']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$search_docs['urldoc11']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td></td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta11" id="comentario_dta11" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_11','acad')">{{ data_get($mensajes_dta, 'msn_acad11', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="color-texto">e</td>
+                            <td class="color-texto">Copia de RIACD-02 Inscripción.</td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion12" id="yes_req12" value="si" {{($v_radios[1]['doc_12'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion12" id="no_req12" value="no" {{($v_radios[1]['doc_12'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion12" id="na_req12" value="no_aplica" {{($v_radios[1]['doc_12'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req12" id="comentario_req12" rows="1" cols="30">{{ $v_radios[1]['doc_txt12'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc12">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc12" style="display: none;" onchange="checkIcon('iconCheck12', 'pdfInputDoc12')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc12').click();">Archivo
+                                        <div id="iconCheck12" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                {{-- mostrar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_12']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_12"
+                                        href="{{$path_files.$json_dptos->academico['doc_12']['url_documento'] ?? ''}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_12']['url_documento']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion12',
+                                        '{{isset($json_dptos) ? $json_dptos->academico['doc_12']['url_documento'] : ''}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta12" id="comentario_dta12" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_12','acad')">{{ data_get($mensajes_dta, 'msn_acad12', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="color-texto">f</td>
+                            <td class="color-texto">Copia de RIACD-02 Acreditación.</td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion13" id="yes_req13" value="si" {{($v_radios[1]['doc_13'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion13" id="no_req13" value="no" {{($v_radios[1]['doc_13'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion13" id="na_req13" value="no_aplica" {{($v_radios[1]['doc_13'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req13" id="comentario_req13" rows="1" cols="30">{{ $v_radios[1]['doc_txt13'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc13">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc13" style="display: none;" onchange="checkIcon('iconCheck13', 'pdfInputDoc13')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc13').click();">Archivo
+                                        <div id="iconCheck13" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                {{-- mostrar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_13']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_13"
+                                        href="{{$path_files.$json_dptos->academico['doc_13']['url_documento'] ?? ''}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_13']['url_documento']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion13',
+                                        '{{isset($json_dptos) ? $json_dptos->academico['doc_13']['url_documento'] : ''}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta13" id="comentario_dta13" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_13','acad')">{{ data_get($mensajes_dta, 'msn_acad13', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="color-texto">g</td>
+                            <td class="color-texto">Copia de RIACD-02 Certificación.</td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion14" id="yes_req14" value="si" {{($v_radios[1]['doc_14'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion14" id="no_req14" value="no" {{($v_radios[1]['doc_14'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion14" id="na_req14" value="no_aplica" {{($v_radios[1]['doc_14'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req14" id="comentario_req14" rows="1" cols="30">{{ $v_radios[1]['doc_txt14'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc14">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc14" style="display: none;" onchange="checkIcon('iconCheck14', 'pdfInputDoc14')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc14').click();">Archivo
+                                        <div id="iconCheck14" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                {{-- mostrar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_14']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_14"
+                                        href="{{$path_files.$json_dptos->academico['doc_14']['url_documento'] ?? ''}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_14']['url_documento']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion14',
+                                        '{{isset($json_dptos) ? $json_dptos->academico['doc_14']['url_documento'] : ''}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta14" id="comentario_dta14" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_14','acad')">{{ data_get($mensajes_dta, 'msn_acad14', '')}}</textarea>
+                            </td>
+                        </tr>
+                        {{-- esto es un extra se formato de entrega de constancias --}}
+                        <tr>
+                            <td class="color-texto">g.1</td>
+                            <td class="color-texto">
+                                Soportes de entrega de constancias de capacitación (si es el caso).
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion25" id="yes_req25" value="si" {{($v_radios[1]['doc_25'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion25" id="no_req25" value="no" {{($v_radios[1]['doc_25'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion25" id="na_req25" value="no_aplica" {{($v_radios[1]['doc_25'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req25" id="comentario_req25" rows="1" cols="30">{{ $v_radios[1]['doc_txt25'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc25">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc25" style="display: none;" onchange="checkIcon('iconCheck25', 'pdfInputDoc25')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc25').click();">Archivo
+                                        <div id="iconCheck25" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                {{-- mostrar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_25']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                        data-placement="top" title="Oficio de entrega de constancias" id="verpdf_25"
+                                        href="{{$path_files.$json_dptos->academico['doc_25']['url_documento'] ?? ''}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                        data-placement="top" title="No se encuentra el oficio de entrega de constancias" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                                {{-- Otro soportes --}}
+                                @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
+                                    <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
+                                        data-placement="top" title="Ver PDF" id="verpdf_25"
+                                        href="{{$path_files.$json_dptos->academico['doc_25']['url_soporte'] ?? ''}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_25']['url_soporte']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion25',
+                                        '{{isset($json_dptos) ? $json_dptos->academico['doc_25']['url_soporte'] : ''}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta25" id="comentario_dta25" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_25','acad')">{{ data_get($mensajes_dta, 'msn_acad25', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>h</td>
+                            <td>Copia de LAD-04 Lista de Asistencia.</td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion15" id="yes_req15" value="si" {{($v_radios[1]['doc_15'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion15" id="no_req15" value="no" {{($v_radios[1]['doc_15'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion15" id="na_req15" value="no_aplica" {{($v_radios[1]['doc_15'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req15" id="comentario_req15" rows="1" cols="30">{{ $v_radios[1]['doc_txt15'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc15" class="{{(!empty($search_docs['urldoc15'])) ? 'd-none' : ''}}">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc15" style="display: none;" onchange="checkIcon('iconCheck15', 'pdfInputDoc15')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc15').click();">Archivo
+                                        <div id="iconCheck15" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                {{-- Mostrar lista de asistencia --}}
+                                @if (!empty($search_docs['urldoc15']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="
+                                        @if (is_numeric($search_docs['urldoc15']))
+                                            {{route('asistencia-pdf', ['id' => $search_docs['urldoc15']])}}
+                                        @else
+                                            {{$search_docs['urldoc15']}}
+                                        @endif
+                                        " target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @elseif(!empty($json_dptos->academico['doc_15']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_15"
+                                        href="{{$path_files.$json_dptos->academico['doc_15']['url_documento']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_15']['url_documento']) && empty($search_docs['urldoc15']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion15',
+                                        '{{$json_dptos->academico['doc_15']['url_documento']}}',
+                                        {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta15" id="comentario_dta15" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_15','acad')">{{ data_get($mensajes_dta, 'msn_acad15', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>i</td>
+                            <td>Copia de RESD-05 Registro de Evaluación por Sub - objetivos.</td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion16" id="yes_req16" value="si" {{($v_radios[1]['doc_16'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion16" id="no_req16" value="no" {{($v_radios[1]['doc_16'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion16" id="na_req16" value="no_aplica" {{($v_radios[1]['doc_16'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req16" id="comentario_req16" rows="1" cols="30">{{ $v_radios[1]['doc_txt16'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc16" class="{{(!empty($search_docs['urldoc16'])) ? 'd-none' : ''}}">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc16" style="display: none;" onchange="checkIcon('iconCheck16', 'pdfInputDoc16')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc16').click();">Archivo
+                                        <div id="iconCheck16" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                {{-- mostrar pdf --}}
+                                @if (!empty($search_docs['urldoc16']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="
+                                        @if (is_numeric($search_docs['urldoc16']))
+                                            {{route('calificacion-pdf', ['id' => $search_docs['urldoc16']])}}
+                                        @else
+                                            {{$search_docs['urldoc16']}}
+                                        @endif
+                                        " target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @elseif(!empty($json_dptos->academico['doc_16']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_16"
+                                        href="{{$path_files.$json_dptos->academico['doc_16']['url_documento']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado, es necesario cargar el archivo en el modulo correspondiente.')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
 
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_16']['url_documento']) && empty($search_docs['urldoc16']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion16',
-                                    '{{$json_dptos->academico['doc_16']['url_documento']}}',
-                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta16" id="comentario_dta16" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_16','acad')">{{ data_get($mensajes_dta, 'msn_acad16', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="color-texto">j</td>
-                        <td class="color-texto">Originales o Copia de las Evaluaciones y/o Reactivos de aprendizaje del alumno y/o resumen de actividades.</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion17" id="yes_req17" value="si" {{($v_radios[1]['doc_17'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion17" id="no_req17" value="no" {{($v_radios[1]['doc_17'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion17" id="na_req17" value="no_aplica" {{($v_radios[1]['doc_17'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req17" id="comentario_req17" rows="1" cols="30">{{ $v_radios[1]['doc_txt17'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc17">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc17" style="display: none;" onchange="checkIcon('iconCheck17', 'pdfInputDoc17')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc17').click();">Archivo
-                                    <div id="iconCheck17" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_16']['url_documento']) && empty($search_docs['urldoc16']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion16',
+                                        '{{$json_dptos->academico['doc_16']['url_documento']}}',
+                                        {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta16" id="comentario_dta16" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_16','acad')">{{ data_get($mensajes_dta, 'msn_acad16', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="color-texto">j</td>
+                            <td class="color-texto">Originales o Copia de las Evaluaciones y/o Reactivos de aprendizaje del alumno y/o resumen de actividades.</td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion17" id="yes_req17" value="si" {{($v_radios[1]['doc_17'] == 'si') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_17']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_17"
-                                    href="{{$path_files.$json_dptos->academico['doc_17']['url_documento'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_17']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion17',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_17']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta17" id="comentario_dta17" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_17','acad')">{{ data_get($mensajes_dta, 'msn_acad17', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="color-texto">k</td>
-                        <td class="color-texto">Original o Copia de las Evaluaciones al Docente y Evaluación del Curso y/o resumen de actividades.</td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion18" id="yes_req18" value="si" {{($v_radios[1]['doc_18'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion18" id="no_req18" value="no" {{($v_radios[1]['doc_18'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion18" id="na_req18" value="no_aplica" {{($v_radios[1]['doc_18'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req18" id="comentario_req18" rows="1" cols="30">{{ $v_radios[1]['doc_txt18'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir Imagen --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc18">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc18" style="display: none;" onchange="checkIcon('iconCheck18', 'pdfInputDoc18')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc18').click();">Archivo
-                                    <div id="iconCheck18" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion17" id="no_req17" value="no" {{($v_radios[1]['doc_17'] == 'no') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {{-- mostrar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_18']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_18"
-                                    href="{{$path_files.$json_dptos->academico['doc_18']['url_documento']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_18']['url_documento']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion18',
-                                    '{{isset($json_dptos) ? $json_dptos->academico['doc_18']['url_documento'] : ''}}',
-                                    {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta18" id="comentario_dta18" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_18','acad')">{{ data_get($mensajes_dta, 'msn_acad18', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>l</td>
-                        <td>Reporte fotográfico, como mínimo dos fotografías. </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion19" id="yes_req19" value="si" {{($v_radios[1]['doc_19'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion19" id="no_req19" value="no" {{($v_radios[1]['doc_19'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$a_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion19" id="na_req19" value="no_aplica" {{($v_radios[1]['doc_19'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req19" id="comentario_req19" rows="1" cols="30">{{ $v_radios[1]['doc_txt19'] ?? '' }}</textarea>
-                        </td>
-                        <td class="text-center">
-                            {{-- Subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="
-                            {{-- {{(!empty($search_docs['urldoc19']) && $search_docs['anio_curso'] != '2023') ? 'd-none' : ''}} --}}
-                            @if($search_docs['anio_curso'] == '2023' && empty($search_docs['urldoc19']))
-                            @elseif(!empty($search_docs['urldoc19']))
-                                d-none
-                            @endif
-                            ">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc19" style="display: none;" onchange="checkIcon('iconCheck19', 'pdfInputDoc19')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc19').click();">Archivo
-                                    <div id="iconCheck19" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion17" id="na_req17" value="no_aplica" {{($v_radios[1]['doc_17'] == 'no_aplica') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc19']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="
-                                    @if (is_numeric($search_docs['urldoc19']))
-                                        {{route('reportefoto-pdf', ['id' => $search_docs['urldoc19']])}}
-                                    @else
-                                        {{$search_docs['urldoc19']}}
-                                    @endif
-                                    " target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @elseif(!empty($json_dptos->academico['doc_19']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_19"
-                                    href="{{$path_files.$json_dptos->academico['doc_19']['url_documento']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->academico['doc_19']['url_documento']) && empty($search_docs['urldoc19']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion19',
-                                    '{{$json_dptos->academico['doc_19']['url_documento']}}',
-                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta19" id="comentario_dta19" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_19','acad')">{{ data_get($mensajes_dta, 'msn_acad19', '')}}</textarea>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req17" id="comentario_req17" rows="1" cols="30">{{ $v_radios[1]['doc_txt17'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc17">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc17" style="display: none;" onchange="checkIcon('iconCheck17', 'pdfInputDoc17')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc17').click();">Archivo
+                                        <div id="iconCheck17" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                {{-- mostrar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_17']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_17"
+                                        href="{{$path_files.$json_dptos->academico['doc_17']['url_documento'] ?? ''}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_17']['url_documento']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion17',
+                                        '{{isset($json_dptos) ? $json_dptos->academico['doc_17']['url_documento'] : ''}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta17" id="comentario_dta17" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_17','acad')">{{ data_get($mensajes_dta, 'msn_acad17', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="color-texto">k</td>
+                            <td class="color-texto">Original o Copia de las Evaluaciones al Docente y Evaluación del Curso y/o resumen de actividades.</td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion18" id="yes_req18" value="si" {{($v_radios[1]['doc_18'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion18" id="no_req18" value="no" {{($v_radios[1]['doc_18'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion18" id="na_req18" value="no_aplica" {{($v_radios[1]['doc_18'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req18" id="comentario_req18" rows="1" cols="30">{{ $v_radios[1]['doc_txt18'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir Imagen --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc18">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc18" style="display: none;" onchange="checkIcon('iconCheck18', 'pdfInputDoc18')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc18').click();">Archivo
+                                        <div id="iconCheck18" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                {{-- mostrar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_18']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_18"
+                                        href="{{$path_files.$json_dptos->academico['doc_18']['url_documento']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_18']['url_documento']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion18',
+                                        '{{isset($json_dptos) ? $json_dptos->academico['doc_18']['url_documento'] : ''}}',
+                                        {{$array_rol['rol']}}, '{{($data_cursos != null) ? $data_cursos->id : ''}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta18" id="comentario_dta18" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_18','acad')">{{ data_get($mensajes_dta, 'msn_acad18', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>l</td>
+                            <td>Reporte fotográfico, como mínimo dos fotografías. </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion19" id="yes_req19" value="si" {{($v_radios[1]['doc_19'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion19" id="no_req19" value="no" {{($v_radios[1]['doc_19'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$a_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion19" id="na_req19" value="no_aplica" {{($v_radios[1]['doc_19'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req19" id="comentario_req19" rows="1" cols="30">{{ $v_radios[1]['doc_txt19'] ?? '' }}</textarea>
+                            </td>
+                            <td class="text-center">
+                                {{-- Subir pdf --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc19" class="
+                                {{-- {{(!empty($search_docs['urldoc19']) && $search_docs['anio_curso'] != '2023') ? 'd-none' : ''}} --}}
+                                @if($search_docs['anio_curso'] == '2023' && empty($search_docs['urldoc19']))
+                                @elseif(!empty($search_docs['urldoc19']))
+                                    d-none
+                                @endif
+                                ">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc19" style="display: none;" onchange="checkIcon('iconCheck19', 'pdfInputDoc19')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc19').click();">Archivo
+                                        <div id="iconCheck19" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc19']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="
+                                        @if (is_numeric($search_docs['urldoc19']))
+                                            {{route('reportefoto-pdf', ['id' => $search_docs['urldoc19']])}}
+                                        @else
+                                            {{$search_docs['urldoc19']}}
+                                        @endif
+                                        " target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @elseif(!empty($json_dptos->academico['doc_19']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_19"
+                                        href="{{$path_files.$json_dptos->academico['doc_19']['url_documento']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->academico['doc_19']['url_documento']) && empty($search_docs['urldoc19']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion19',
+                                        '{{$json_dptos->academico['doc_19']['url_documento']}}',
+                                        {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta19" id="comentario_dta19" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_19','acad')">{{ data_get($mensajes_dta, 'msn_acad19', '')}}</textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
                 {{-- Boton de guardar Academico y generar PDF--}}
                 @if ($array_rol['rol'] == 2)
                     @if ($array_rol['status_json'] == 'CAPTURA' || $array_rol['status_json'] == 'RETORNADO')
@@ -1649,336 +1654,356 @@
             {{-- tabla administrativo table-bordered para bordes --}}
             <div class="col-12 px-0 mt-3" id="administrativo">
                 <div class="text-center titulo_tabla">DELEGACIÓN ADMINISTRATIVA</div>
-                <table class="table-hover">
-                    <thead>
-                    <tr>
-                        <th width = "3%">NO.</th>
-                        <th width = "30%">EVIDENCIAS</th>
-                        <th width = "5%">SI</th>
-                        <th width = "5%">NO</th>
-                        <th width = "8%">NO APLICA</th>
-                        <th width = "15%">OBSERVACIONES</th>
-                        <th width = "7%">SUBIR PDF</th>
-                        <th width = "6%">VER PDF</th>
-                        <th width = "6%">ELIMINAR</th>
-                        <th width ="15">MENSAJE DTA</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>a</td>
-                        <td>Memorándum de solicitud de Suficiencia Presupuestal.</td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion20" id="yes_req20" value="si" {{($v_radios[2]['doc_20'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion20" id="no_req20" value="no" {{($v_radios[2]['doc_20'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion20" id="na_req20" value="no_aplica" {{($v_radios[2]['doc_20'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req20" id="comentario_req20" rows="1" cols="30">{{ $v_radios[2]['doc_txt20'] ?? '' }}</textarea>
-                        </td>
-                        <td></td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc20']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$search_docs['urldoc20'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado.')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td></td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta20" id="comentario_dta20" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_20','admin')">{{ data_get($mensajes_dta, 'msn_admin20', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>b</td>
-                        <td>Copia de formato de autorización de suficiencia Presupuestal.</td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion21" id="yes_req21" value="si" {{($v_radios[2]['doc_21'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion21" id="no_req21" value="no" {{($v_radios[2]['doc_21'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion21" id="na_req21" value="no_aplica" {{($v_radios[2]['doc_21'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req21" id="comentario_req21" rows="1" cols="30">{{ $v_radios[2]['doc_txt21'] ?? '' }}</textarea>
-                        </td>
-                        <td></td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc21']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$search_docs['urldoc21'] ?? ''}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td></td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta21" id="comentario_dta21" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_21','admin')">{{ data_get($mensajes_dta, 'msn_admin21', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>c</td>
-                        <td>Original de Contrato de prestación de curso de Capacitación y/o Certificación del Instructor externo, con firma autógrafa o firma electrónica.</td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion22" id="yes_req22" value="si" {{($v_radios[2]['doc_22'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion22" id="no_req22" value="no" {{($v_radios[2]['doc_22'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion22" id="na_req22" value="no_aplica" {{($v_radios[2]['doc_22'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
-                        </td>
-                        <td>
-                            {{-- subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc22" class="
-                            {{-- {{(!empty($search_docs['urldoc22'])) ? 'd-none' : ''}} --}}
-                            @if($search_docs['anio_curso'] == '2023')
-                                @if(!empty($search_docs['urldoc22']))
-                                    d-none
-                                @endif
-                            @elseif(!empty($search_docs['urldoc23']))
-                                d-none
-                            @endif
-                            ">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc22" style="display: none;" onchange="checkIcon('iconCheck22', 'pdfInputDoc22')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc22').click();">Archivo
-                                    <div id="iconCheck22" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                <div class="table-responsive">
+                    <table class="table-hover">
+                        <thead>
+                        <tr>
+                            <th width = "3%">NO.</th>
+                            <th width = "30%">EVIDENCIAS</th>
+                            <th width = "5%">SI</th>
+                            <th width = "5%">NO</th>
+                            <th width = "8%">NO APLICA</th>
+                            <th width = "15%">OBSERVACIONES</th>
+                            <th width = "7%">SUBIR PDF</th>
+                            <th width = "6%">VER PDF</th>
+                            <th width = "6%">ELIMINAR</th>
+                            <th width ="15">MENSAJE DTA</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>a</td>
+                            <td>Memorándum de solicitud de Suficiencia Presupuestal.</td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion20" id="yes_req20" value="si" {{($v_radios[2]['doc_20'] == 'si') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc22']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="
-                                    @if (is_numeric($search_docs['urldoc22']))
-                                        {{route('contrato-pdf', ['id' => $search_docs['urldoc22']])}}
-                                    @else
-                                        {{$search_docs['urldoc22']}}
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion20" id="no_req20" value="no" {{($v_radios[2]['doc_20'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion20" id="na_req20" value="no_aplica" {{($v_radios[2]['doc_20'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req20" id="comentario_req20" rows="1" cols="30">{{ $v_radios[2]['doc_txt20'] ?? '' }}</textarea>
+                            </td>
+                            <td></td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc20']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="
+                                        @if (is_numeric($search_docs['urldoc20']))
+                                            {{route('supre-pdf', ['id' => base64_encode($search_docs['urldoc20'])]) }}
+                                        @else
+                                            {{$search_docs['urldoc20']}}
+                                        @endif
+                                        " target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado.')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td></td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta20" id="comentario_dta20" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_20','admin')">{{ data_get($mensajes_dta, 'msn_admin20', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>b</td>
+                            <td>Copia de formato de autorización de suficiencia Presupuestal.</td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion21" id="yes_req21" value="si" {{($v_radios[2]['doc_21'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion21" id="no_req21" value="no" {{($v_radios[2]['doc_21'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion21" id="na_req21" value="no_aplica" {{($v_radios[2]['doc_21'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req21" id="comentario_req21" rows="1" cols="30">{{ $v_radios[2]['doc_txt21'] ?? '' }}</textarea>
+                            </td>
+                            <td></td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc21']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="
+                                        @if (is_numeric($search_docs['urldoc21']))
+                                            {{route('valsupre-pdf', ['id' => base64_encode($search_docs['urldoc21'])]) }}
+                                        @else
+                                            {{$search_docs['urldoc21']}}
+                                        @endif
+                                        " target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td></td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta21" id="comentario_dta21" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_21','admin')">{{ data_get($mensajes_dta, 'msn_admin21', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>c</td>
+                            <td>Original de Contrato de prestación de curso de Capacitación y/o Certificación del Instructor externo, con firma autógrafa o firma electrónica.</td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion22" id="yes_req22" value="si" {{($v_radios[2]['doc_22'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion22" id="no_req22" value="no" {{($v_radios[2]['doc_22'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion22" id="na_req22" value="no_aplica" {{($v_radios[2]['doc_22'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req22" id="comentario_req22" rows="1" cols="30">{{ $v_radios[2]['doc_txt22'] ?? '' }}</textarea>
+                            </td>
+                            <td>
+                                {{-- subir pdf --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc22" class="
+                                {{-- {{(!empty($search_docs['urldoc22'])) ? 'd-none' : ''}} --}}
+                                @if($search_docs['anio_curso'] == '2023')
+                                    @if(!empty($search_docs['urldoc22']))
+                                        d-none
                                     @endif
-                                    " target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @elseif(!empty($json_dptos->administrativo['doc_22']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_22"
-                                    href="{{$path_files.$json_dptos->administrativo['doc_22']['url_documento']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                {{-- <button class="btn-circle btn-circle-sm border-0"><i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i></button> --}}
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td>
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->administrativo['doc_22']['url_documento']) && empty($search_docs['urldoc22']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion22',
-                                    '{{$json_dptos->administrativo['doc_22']['url_documento']}}',
-                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta22" id="comentario_dta22" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_22','admin')">{{ data_get($mensajes_dta, 'msn_admin22', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>d</td>
-                        <td>Copia de memorándum de solicitud de pago al Instructor externo.</td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion23" id="yes_req23" value="si" {{($v_radios[2]['doc_23'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion23" id="no_req23" value="no" {{($v_radios[2]['doc_23'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion23" id="na_req23" value="no_aplica" {{($v_radios[2]['doc_23'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req23" id="comentario_req23" rows="1" cols="30">{{ $v_radios[2]['doc_txt23'] ?? '' }}</textarea>
-                        </td>
-                        <td>
-                            {{-- subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc23" class="
-                            @if($search_docs['anio_curso'] == '2023')
-                                @if(!empty($search_docs['urldoc23']))
+                                @elseif(!empty($search_docs['urldoc23']))
                                     d-none
                                 @endif
-                            @elseif(!empty($search_docs['urldoc23']))
-                                d-none
-                            @endif
-                            ">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc23" style="display: none;" onchange="checkIcon('iconCheck23', 'pdfInputDoc23')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc23').click();">Archivo
-                                    <div id="iconCheck23" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                ">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc22" style="display: none;" onchange="checkIcon('iconCheck22', 'pdfInputDoc22')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc22').click();">Archivo
+                                        <div id="iconCheck22" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc22']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="
+                                        @if (is_numeric($search_docs['urldoc22']))
+                                            {{route('contrato-pdf', ['id' => $search_docs['urldoc22']])}}
+                                        @else
+                                            {{$search_docs['urldoc22']}}
+                                        @endif
+                                        " target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @elseif(!empty($json_dptos->administrativo['doc_22']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_22"
+                                        href="{{$path_files.$json_dptos->administrativo['doc_22']['url_documento']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    {{-- <button class="btn-circle btn-circle-sm border-0"><i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i></button> --}}
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td>
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->administrativo['doc_22']['url_documento']) && empty($search_docs['urldoc22']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion22',
+                                        '{{$json_dptos->administrativo['doc_22']['url_documento']}}',
+                                        {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta22" id="comentario_dta22" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_22','admin')">{{ data_get($mensajes_dta, 'msn_admin22', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>d</td>
+                            <td>Copia de memorándum de solicitud de pago al Instructor externo.</td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion23" id="yes_req23" value="si" {{($v_radios[2]['doc_23'] == 'si') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc23']))
-                                <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$search_docs['urldoc23']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @elseif(!empty($json_dptos->administrativo['doc_23']['url_documento']))
-                                <a class="btn-circle btn-circle-sm" id="verpdf_23"
-                                    href="{{$path_files.$json_dptos->administrativo['doc_23']['url_documento']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </td>
-                        <td>
-                            {{-- eliminar pdf --}}
-                            @if (!empty($json_dptos->administrativo['doc_23']['url_documento']) && empty($search_docs['urldoc23']))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion23',
-                                    '{{$json_dptos->administrativo['doc_23']['url_documento']}}',
-                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta23" id="comentario_dta23" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_23','admin')">{{ data_get($mensajes_dta, 'msn_admin23', '')}}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>e</td>
-                        <td>Comprobante Fiscal Digital por Internet del Instructor externo.</td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion24" id="yes_req24" value="si" {{($v_radios[2]['doc_24'] == 'si') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion24" id="no_req24" value="no" {{($v_radios[2]['doc_24'] == 'no') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="{{$d_class}}">
-                            <div class="form-check d-flex justify-content-center align-items-center">
-                                <input class="form-check-input" type="radio" name="opcion24" id="na_req24" value="no_aplica" {{($v_radios[2]['doc_24'] == 'no_aplica') ? 'checked' : ''}}>
-                            </div>
-                        </td>
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
-                        </td>
-                        <td>
-                            {{-- subir pdf --}}
-                            <form method="POST" enctype="multipart/form-data" action="" id="form_doc24" class="
-                            @if($search_docs['anio_curso'] == '2023' && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
-                            @else
-                                d-none
-                            @endif
-                            ">
-                                <div class="d-flex row justify-content-center">
-                                    <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc24" style="display: none;" onchange="checkIcon('iconCheck24', 'pdfInputDoc24')">
-                                    <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc24').click();">Archivo
-                                    <div id="iconCheck24" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion23" id="no_req23" value="no" {{($v_radios[2]['doc_23'] == 'no') ? 'checked' : ''}}>
                                 </div>
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            @if (!empty($search_docs['urldoc24']))
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion23" id="na_req23" value="no_aplica" {{($v_radios[2]['doc_23'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req23" id="comentario_req23" rows="1" cols="30">{{ $v_radios[2]['doc_txt23'] ?? '' }}</textarea>
+                            </td>
+                            <td>
+                                {{-- subir pdf --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc23" class="
+                                @if($search_docs['anio_curso'] == '2023')
+                                    @if(!empty($search_docs['urldoc23']))
+                                        d-none
+                                    @endif
+                                @elseif(!empty($search_docs['urldoc23']))
+                                    d-none
+                                @endif
+                                ">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc23" style="display: none;" onchange="checkIcon('iconCheck23', 'pdfInputDoc23')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc23').click();">Archivo
+                                        <div id="iconCheck23" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc23']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="
+                                        @if (is_numeric($search_docs['urldoc23']))
+                                            {{route('solpa-pdf', ['id' => $search_docs['urldoc23']])}}
+                                        @else
+                                            {{$search_docs['urldoc23']}}
+                                        @endif
+                                        " target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @elseif(!empty($json_dptos->administrativo['doc_23']['url_documento']))
+                                    <a class="btn-circle btn-circle-sm" id="verpdf_23"
+                                        href="{{$path_files.$json_dptos->administrativo['doc_23']['url_documento']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td>
+                                {{-- eliminar pdf --}}
+                                @if (!empty($json_dptos->administrativo['doc_23']['url_documento']) && empty($search_docs['urldoc23']))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion23',
+                                        '{{$json_dptos->administrativo['doc_23']['url_documento']}}',
+                                        {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta23" id="comentario_dta23" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_23','admin')">{{ data_get($mensajes_dta, 'msn_admin23', '')}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>e</td>
+                            <td>Comprobante Fiscal Digital por Internet del Instructor externo.</td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion24" id="yes_req24" value="si" {{($v_radios[2]['doc_24'] == 'si') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion24" id="no_req24" value="no" {{($v_radios[2]['doc_24'] == 'no') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="{{$d_class}}">
+                                <div class="form-check d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input" type="radio" name="opcion24" id="na_req24" value="no_aplica" {{($v_radios[2]['doc_24'] == 'no_aplica') ? 'checked' : ''}}>
+                                </div>
+                            </td>
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_u}}" {{$msg_uni}} name="comentario_req24" id="comentario_req24" rows="1" cols="30">{{ $v_radios[2]['doc_txt24'] ?? '' }}</textarea>
+                            </td>
+                            <td>
+                                {{-- subir pdf --}}
+                                <form method="POST" enctype="multipart/form-data" action="" id="form_doc24" class="
+                                @if($search_docs['anio_curso'] == '2023' && $search_docs['mod_instructor'] == 'HONORARIOS' && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
+                                @else
+                                    d-none
+                                @endif
+                                ">
+                                    <div class="d-flex row justify-content-center">
+                                        <input type="file" name="pdfFile" accept=".pdf" id="pdfInputDoc24" style="display: none;" onchange="checkIcon('iconCheck24', 'pdfInputDoc24')">
+                                        <button class="btn-outline-primary btn-sm" onclick="event.preventDefault(); document.getElementById('pdfInputDoc24').click();">Archivo
+                                        <div id="iconCheck24" style="display:none;"><i class="fas fa-check-circle"></i></div></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                @if (!empty($search_docs['urldoc24']))
+                                    <a class="btn-circle btn-circle-sm" id=""
+                                        href="{{$search_docs['urldoc24']}}" target="_blank">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a class="btn-circle btn-circle-sm" id="" href="#"
+                                        onclick="showModal(event, 'Archivo no encontrado')">
+                                        <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+
+                                @if ((empty($search_docs['urldoc24']) || empty($search_docs['doc_xml'])) && !empty($json_dptos->administrativo['doc_24']['url_documento']))
                                 <a class="btn-circle btn-circle-sm" id=""
-                                    href="{{$search_docs['urldoc24']}}" target="_blank">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a class="btn-circle btn-circle-sm" id="" href="#"
-                                    onclick="showModal(event, 'Archivo no encontrado')">
-                                    <i class="far fa-file-pdf fa-2x fa-lg text-gray" aria-hidden="true"></i>
-                                </a>
-                            @endif
-
-                            @if ((empty($search_docs['urldoc24']) || empty($search_docs['doc_xml'])) && !empty($json_dptos->administrativo['doc_24']['url_documento']))
-                            <a class="btn-circle btn-circle-sm" id=""
-                                href="{{$path_files.$json_dptos->administrativo['doc_24']['url_documento']}}" target="_blank">
-                                <i class="fa fas fa-file-alt fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                            </a>
-                            @endif
-
-                            @if (!empty($search_docs['doc_xml']))
-                                <a class="btn-circle btn-circle-sm ml-2" id=""
-                                    href="{{$search_docs['doc_xml']}}" target="_blank">
+                                    href="{{$path_files.$json_dptos->administrativo['doc_24']['url_documento']}}" target="_blank">
                                     <i class="fa fas fa-file-alt fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                 </a>
-                            @endif
-                        </td>
-                        <td>
-                             {{-- eliminar pdf --}}
-                             @if (!empty($json_dptos->administrativo['doc_24']['url_documento']) && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
-                                <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion24',
-                                    '{{$json_dptos->administrativo['doc_24']['url_documento']}}',
-                                    {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
-                                    <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        </td>
-                        {{-- observacion dta --}}
-                        <td class="text-center my-0 py-0">
-                            <textarea class="{{$readonly_dta}}" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_24','admin')">{{ data_get($mensajes_dta, 'msn_admin24', '')}}</textarea>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                                @endif
+
+                                @if (!empty($search_docs['doc_xml']))
+                                    <a class="btn-circle btn-circle-sm ml-2" id=""
+                                        href="{{$search_docs['doc_xml']}}" target="_blank">
+                                        <i class="fa fas fa-file-alt fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </td>
+                            <td>
+                                 {{-- eliminar pdf --}}
+                                 @if (!empty($json_dptos->administrativo['doc_24']['url_documento']) && (empty($search_docs['urldoc24']) || empty($search_docs['doc_xml']) ))
+                                    <button class="ml-2 bg-transparent border-0" onclick="delete_pdf(event, 'opcion24',
+                                        '{{$json_dptos->administrativo['doc_24']['url_documento']}}',
+                                        {{$array_rol['rol']}}, '{{$data_cursos->id}}')">
+                                        <i class="fa fa-times fa-2x text-danger" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            {{-- observacion dta --}}
+                            <td class="text-center my-0 py-0">
+                                <textarea class="{{$readonly_dta}}" name="comentario_dta24" id="comentario_dta24" rows="1" cols="30" {{$dta_msg}} onblur="guardarTexto(this.value,'doc_24','admin')">{{ data_get($mensajes_dta, 'msn_admin24', '')}}</textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {{-- APARTADO DEL STATUS DE SEGUIMIENTO Y BOTONES--}}

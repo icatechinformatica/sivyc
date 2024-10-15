@@ -527,6 +527,16 @@ class ExpedienteController extends Controller
         ->where('folio_grupo', '=', $folio)
         ->first();
 
+        $e_solipago = DB::table('folios as fo')->join('tbl_cursos as tc', 'tc.id', '=', 'fo.id_cursos')->join('documentos_firmar as df', 'df.numero_o_clave', '=', 'tc.clave')
+        ->where('tc.folio_grupo', $folio)->where('df.tipo_archivo', 'Solicitud Pago')->where('df.status', 'VALIDADO')->value('fo.id_folios');
+
+        $e_supre = DB::table('folios as fo')->join('tabla_supre as ts', 'ts.id', '=', 'fo.id_supre')->join('tbl_cursos as tc', 'tc.id', '=', 'fo.id_cursos')->join('documentos_firmar as df', 'df.numero_o_clave', '=', 'tc.clave')
+        ->where('tc.folio_grupo', $folio)->where('df.tipo_archivo', 'supre')->where('df.status', 'VALIDADO')->value('fo.id_supre');
+
+        $e_valsupre = DB::table('folios as fo')->join('tabla_supre as ts', 'ts.id', '=', 'fo.id_supre')->join('tbl_cursos as tc', 'tc.id', '=', 'fo.id_cursos')->join('documentos_firmar as df', 'df.numero_o_clave', '=', 'tc.clave')
+        ->where('tc.folio_grupo', $folio)->where('df.tipo_archivo', 'valsupre')->where('df.status', 'VALIDADO')->value('fo.id_supre');
+
+
         //Variables
         $doc2 = $doc5 = $doc6 = $doc7 = $validRec = $doc8 = $doc9 = $doc10 = $doc11 = $doc20 = $doc21 =
         $doc22 = $docAsis = $docFoto = $docCalif = $doc23 = $doc24 = $tipoCurso = $docXml = $anioCurso ='';
@@ -559,8 +569,14 @@ class ExpedienteController extends Controller
         if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '01' || $bddoc789->arc == '02')){$doc9 = $bddoc789->pdf_curso;}
         if(!empty($bddoc789->file_arc02) && ($bddoc789->arc == '02')){$doc10 = $bddoc789->file_arc02;}
         if(!empty($bddoc789->pdf_curso) && ($bddoc789->arc == '02')){$doc11 = $bddoc789->pdf_curso;}
-        if(!empty($bddoc2021->doc_supre)){$doc20 = $bddoc2021->doc_supre;}
-        if(!empty($bddoc2021->doc_validado)){$doc21 = $bddoc2021->doc_validado;}
+
+        //Suficiencia presupuestal
+        if(!empty($e_supre)){$doc20 = $e_supre;}
+        else if(!empty($bddoc2021->doc_supre)){$doc20 = $bddoc2021->doc_supre;}
+
+        //Validación de suficiencia presupuestal
+        if(!empty($e_valsupre)){$doc21 = $e_valsupre;}
+        else if(!empty($bddoc2021->doc_validado)){$doc21 = $bddoc2021->doc_validado;}
 
         //Validamos contrato si no esta entonces enviamos el id del contraro para visualizarlo electronicamente
         if(!empty($bdECont)){$doc22 = $bdECont;}
@@ -581,11 +597,15 @@ class ExpedienteController extends Controller
 
         //Validacion d (delegacion)
         if($mod_insctructor == 'ASIMILADOS A SALARIOS'){
-            if(!empty($bddoc23->arch_solicitud_pago)){$doc23 = $bddoc23->arch_solicitud_pago;}
+            if(!empty($e_solipago)){$doc23 = $e_solipago;}
+            else if(!empty($bddoc23->arch_solicitud_pago)){$doc23 = $bddoc23->arch_solicitud_pago;} //Doc23 Solicitu de pago
 
         }else{
-            if(!empty($bddoc23->arch_pago)){$doc23 = $bddoc23->arch_pago;}
-            else if(!empty($bddoc23->arch_solicitud_pago)){$doc23 = $bddoc23->arch_solicitud_pago;}
+            if(!empty($e_solipago)){$doc23 = $e_solipago;}
+            else{
+                if(!empty($bddoc23->arch_pago)){$doc23 = $bddoc23->arch_pago;}
+                else if(!empty($bddoc23->arch_solicitud_pago)){$doc23 = $bddoc23->arch_solicitud_pago;}
+            }
         }
 
         //Validacion e (delegacion)
@@ -599,7 +619,7 @@ class ExpedienteController extends Controller
             "urldoc2" => $doc2,"urldoc5" => $doc5,"urldoc6" => $doc6,"urldoc7" => $doc7,"urldoc8" => $doc8,"urldoc9" => $doc9,"urldoc10" => $doc10,"urldoc11" => $doc11,
             "urldoc20" => $doc20,"urldoc21" => $doc21,"urldoc22" => $doc22,"urldoc23" =>$doc23,"urldoc24"=>$doc24,
             "urldoc15" =>$docAsis,"urldoc19" => $docFoto, "validRecibo"=>$validRec, "urldoc16"=>$docCalif, "alumnos_req" => $docAlumnos, 'doc_xml' => $docXml, 'anio_curso' => $anioCurso,
-            "tipo_curso" => $tipoCurso
+            "tipo_curso" => $tipoCurso, "mod_instructor" => $mod_insctructor
         );
         //$this->guardarLinks($folio, $url_docs);  #Agregar las url externas a la tabla de expedientes
         $this->proces_documentos($folio, $url_docs);
