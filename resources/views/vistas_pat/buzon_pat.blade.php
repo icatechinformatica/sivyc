@@ -166,6 +166,7 @@
                                     <th scope="col">FECHA DE ENVIO</th>
                                     <th scope="col">STATUS</th>
                                     <th scope="col">PDF</th>
+                                    <th scope="col">TIPO DOCUMENTO</th>
                                     <th scope="col" class="text-center">VER DETALLES</th>
                                     <th scope="col" class="text-center">CANCELAR DOCUMENTO</th>
                                 </tr>
@@ -212,16 +213,18 @@
                                             @else
                                                 <i class="far fa-file-pdf fa-2x fa-lg from-control" style="color: rgb(155, 156, 159);" aria-hidden="true"></i>
                                             @endif
-
-                                            {{-- @if ($data[$i]->fecha_meta['urldoc_firm'] != '')
-                                                <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
-                                                    data-placement="top" title="Ver pdf firmado" id=""
-                                                    href="{{$data[$i]->fecha_meta['urldoc_firm']}}" target="_blank">
-                                                    <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
-                                                </a>
-                                            @else
-                                                <i class="far fa-file-pdf fa-2x fa-lg from-control" style="color: rgb(155, 156, 159);" aria-hidden="true"></i>
-                                            @endif --}}
+                                        </td>
+                                        <td>
+                                            {{-- status documento --}}
+                                            @if ( !empty($data[$i]->fecha_meta['id_efirma']) && $data[$i]->fecha_meta['mod_documento'] == 'efirma' )
+                                                @if ($data[$i]->fecha_meta['status_efirma'] == 'validado')
+                                                    Electronico <br>(SELLADO)
+                                                @else
+                                                    Electronico <br>(EN FIRMA)
+                                                @endif
+                                            @elseif($data[$i]->status_meta['validado'] == '1' &&  !empty($data[$i]->fecha_meta['urldoc_firm']))
+                                                Tradicional
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
@@ -231,7 +234,7 @@
                                             </a>
                                         </td>
                                         <td class="text-center">
-                                            @if ( (!empty($data[$i]->fecha_meta['id_efirma']) && $data[$i]->fecha_meta['mod_documento'] == 'efirma') || !empty($data[$i]->fecha_meta['urldoc_firm']) )
+                                            @if ( (!empty($data[$i]->fecha_meta['id_efirma']) && $data[$i]->fecha_meta['mod_documento'] == 'efirma' && $data[$i]->fecha_meta['status_efirma'] == 'validado') || !empty($data[$i]->fecha_meta['urldoc_firm']) )
                                                 <a class="btn-circle btn-circle-sm"
                                                     onclick="eliminar_documento('meta', '{{$data[$i]->id_org}}', '{{$anio}}')"> <i class="fa fa-times fa-2x mt-2" style="color: rgb(179, 43, 19);" aria-hidden="true"></i>
                                                 </a>
@@ -277,6 +280,7 @@
                                         <th scope="col">FECHA DE ENVIO</th>
                                         <th scope="col">STATUS</th>
                                         <th scope="col">PDF</th>
+                                        <th scope="col">TIPO DOCUMENTO</th>
                                         <th scope="col">VER DETALLES</th>
                                         <th scope="col">PDF DIRECCIÓNES</th>
                                         <th scope="col">CANCELAR DOCUMENTO</th>
@@ -328,6 +332,18 @@
                                                     <i class="far fa-file-pdf fa-2x fa-lg from-control" style="color: rgb(155, 156, 159);" aria-hidden="true"></i>
                                                 @endif
                                             </td>
+                                            <td>
+                                                {{-- status documento --}}
+                                                @if (!empty($data[$i]->fechas_avance[$mes]['id_efirma']) && $data[$i]->fechas_avance[$mes]['mod_documento'] == 'efirma')
+                                                    @if ($data[$i]->fechas_avance[$mes]['status_efirma'] == 'validado')
+                                                        Electronico <br>(SELLADO)
+                                                    @else
+                                                        Electronico <br>(EN FIRMA)
+                                                    @endif
+                                                @elseif($data[$i]->fechas_avance[$mes]['statusmes'] == 'autorizado' &&  !empty($data[$i]->fechas_avance[$mes]['urldoc_firmav']))
+                                                        Tradicional
+                                                @endif
+                                            </td>
                                             <td class="text-center">
                                                 <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                                     data-placement="top" title="Ir a validación" id=""
@@ -344,7 +360,7 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                @if ( (!empty($data[$i]->fechas_avance[$mes]['id_efirma']) && $data[$i]->fechas_avance[$mes]['mod_documento'] == 'efirma') || !empty($data[$i]->fechas_avance[$mes]['urldoc_firmav']) )
+                                                @if ( (!empty($data[$i]->fechas_avance[$mes]['id_efirma']) && $data[$i]->fechas_avance[$mes]['mod_documento'] == 'efirma' && $data[$i]->fechas_avance[$mes]['status_efirma'] == 'validado') || !empty($data[$i]->fechas_avance[$mes]['urldoc_firmav']) )
                                                     <a class="btn-circle btn-circle-sm"
                                                         onclick="eliminar_documento('{{$mes}}', '{{$data[$i]->id_org}}', '{{$anio}}')"> <i class="fa fa-times fa-2x mt-2" style="color: rgb(179, 43, 19);" aria-hidden="true"></i>
                                                     </a>

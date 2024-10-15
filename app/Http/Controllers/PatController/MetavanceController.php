@@ -120,6 +120,8 @@ class MetavanceController extends Controller
         $datos_efirma = $this->datos_firmado_meta($fecha_meta_avance);
         list($consul_efirma, $consul_efirma_avance, $meses_pendientes, $meses_validados) = $datos_efirma;
 
+        // dd($consul_efirma, $consul_efirma_avance, $meses_pendientes, $meses_validados);
+
         //Validacion de avances efirma
         return view('vistas_pat.metas_avances', compact('datos', 'datos_status_meta', 'fecha_meta_avance', 'datos_status_avance',
         'area_org', 'org', 'fechaNow', 'mesGlob', 'array_organismos', 'organismo', 'ejercicio', 'anio_eje', 'consul_efirma','consul_efirma_avance','meses_pendientes','meses_validados'));
@@ -206,11 +208,14 @@ class MetavanceController extends Controller
                     if(!empty($item['id_efirma'])){ //Buscamos el registro del documento y cortamos ciclo para darle prioridad.
                         //Hacer la consulta y dar break
                         $consulta_e_avance = DocumentosFirmar::select('id','cadena_original','obj_documento', 'status')->where('id', $item['id_efirma'])->where('status', 'EnFirma')->first();
-                        $mes_activo = $key;
-                        break;
+                        if(!empty($consulta_e_avance)){
+                            $mes_activo = $key;
+                            break;
+                        }
                     }
                 }
             }
+            // dd($consulta_e_avance);
 
             ## LLenado del array para avances
             if($consulta_e_avance) {
@@ -258,7 +263,7 @@ class MetavanceController extends Controller
                 ## Hacemos recorrido de los meses que ya estan validados pero que no tienen archivos cargados.
                 foreach ($fecha_meta_avance->fechas_avance as $key => $item) {
                     if($item['statusmes'] == 'autorizado' && empty($item['urldoc_firmav']) ){
-                        if( empty($item['id_efirma']) ){
+                        if( empty($item['mod_documento']) ){
                             array_push($meses_pendientes, $key);
                         }
                     }
@@ -270,13 +275,12 @@ class MetavanceController extends Controller
 
             ## OBTENER LOS ID DE LOS DOCUMENTOS FIRMADOS DE AVANCES
             foreach ($fecha_meta_avance->fechas_avance as $key => $value) {
-                if($value['statusmes'] == 'autorizado' && empty($value['urldoc_firmav'])){
-                    if( !empty($value['id_efirma']) && !empty($value['mod_documento'])){
-                        // array_push($meses_validados, $key);
-                        $meses_validados [$key] = $value['id_efirma'];
-                    }
+                if($value['statusmes'] == 'autorizado' && !empty($value['id_efirma']) && !empty($value['mod_documento']) ){
+                    $resul_id = DocumentosFirmar::where('id', $value['id_efirma'])->where('status', 'VALIDADO')->value('id');
+                    if(!empty($resul_id)) $meses_validados [$key] = $resul_id;
                 }
             }
+
 
         }
 
@@ -1670,9 +1674,9 @@ class MetavanceController extends Controller
                 ->where('id_org', $org)
                 ->where('periodo', $anio)
                 ->update([
-                    // 'fecha_meta' => DB::raw("jsonb_set('{mod_documento}', '\"\"')")
-                    'fecha_meta' => DB::raw("jsonb_set(fecha_meta, '{mod_documento}', '\"\"')")
-                    // 'fecha_meta' => DB::raw("jsonb_set(jsonb_set(fecha_meta, '{mod_documento}', '\"\"'), '{id_efirma}', '\"\"')")
+                    // 'fecha_meta' => DB::raw("jsonb_set(fecha_meta, '{mod_documento}', '\"\"')")
+                    // 'fecha_meta' => DB::raw("jsonb_set(jsonb_set(fecha_meta, '{mod_documento}', '\"\"'), '{status_efirma}', '\"\"')")
+                    'fecha_meta' => DB::raw("jsonb_set(jsonb_set(fecha_meta, '{mod_documento}', '\"\"'::jsonb), '{status_efirma}', '\"\"'::jsonb)")
                 ]);
 
                 ##En caso de haber un documento pendiente con firma electronica pasarlo al estado de cancelado.
@@ -1692,7 +1696,13 @@ class MetavanceController extends Controller
                 ->where('id_org', $org)
                 ->where('periodo', $anio)
                 ->update([
-                    'fechas_avance' => DB::raw("jsonb_set(fechas_avance, '{" . $particion_valor[1] . ", mod_documento}', '\"\"')")
+                    // 'fechas_avance' => DB::raw("jsonb_set(fechas_avance, '{" . $particion_valor[1] . ", mod_documento}', '\"\"')")
+                    'fechas_avance' => DB::raw(
+                    "jsonb_set(
+                        jsonb_set(fechas_avance, '{" . $particion_valor[1] . ", mod_documento}', '\"\"'::jsonb),
+                        '{" . $particion_valor[1] . ", status_efirma}', '\"\"'::jsonb
+                    )"
+                )
 
                 ]);
 
@@ -1951,12 +1961,14 @@ class MetavanceController extends Controller
                     if($tipo_efirma == 'META_ANUAL'){
                         $campo = $fecPat->fecha_meta;
                         $campo['mod_documento'] = 'efirma';
+                        $campo['status_efirma'] = 'EnFirma';
                         $campo['id_efirma'] = $idNew;
                         $fecPat->fecha_meta = $campo;
 
                     }else if($tipo_efirma == 'AVANCE_MES'){
                         $campo = $fecPat->fechas_avance;
                         $campo[$mesavance]['mod_documento'] = 'efirma';
+                        $campo[$mesavance]['status_efirma'] = 'EnFirma';
                         $campo[$mesavance]['id_efirma'] = $idNew;
                         $fecPat->fechas_avance = $campo;
                     }
@@ -2739,8 +2751,8 @@ class MetavanceController extends Controller
                 $emailUser1 = $objeto['firmantes']['firmante'][0][0]['_attributes']['email_firmante'];
                 $emailUser2 = $objeto['firmantes']['firmante'][0][1]['_attributes']['email_firmante'];
 
-                $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('correo', $emailUser1)->where('activo', 'true')->value('cargo');
-                $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('correo', $emailUser2)->where('activo', 'true')->value('cargo');
+                $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
+                $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
 
                 if(empty($puesto_firmUno) || empty($puesto_firmDos)){
                     return back()->with('message', '¡No se encontraron los datos del los funcionarios!');
@@ -2780,6 +2792,9 @@ class MetavanceController extends Controller
 
     public function sellar_documento(Request $request){
 
+        $organismo = $request->input('organismo');
+        $ejercicio = $request->input('ejercicio');
+        $tipo_documento = $request->input('tipo_doc');
         $documento = DocumentosFirmar::where('id', $request->input('txtIdFirmado'))->first();
         $xmlBase64 = base64_encode($documento->documento);
 
@@ -2803,6 +2818,26 @@ class MetavanceController extends Controller
                         'documento' => $decode,
                         'cadena_sello' => $response->json()['cadenaSello']
                     ]);
+
+                //Actualizamos status en fechas_pat
+                if(!empty($tipo_documento)){
+                    if($tipo_documento == 'meta'){
+                        DB::table('fechas_pat')
+                        ->where('id_org', $organismo)
+                        ->where('periodo', $ejercicio)
+                        ->update([
+                            'fecha_meta' => DB::raw("jsonb_set(fecha_meta, '{status_efirma}', '\"validado\"'::jsonb)")
+                        ]);
+
+                    }else{
+                        DB::table('fechas_pat')
+                        ->where('id_org', $organismo)
+                        ->where('periodo', $ejercicio)
+                        ->update([
+                            'fechas_avance' => DB::raw("jsonb_set(fechas_avance, '{\"" . $tipo_documento . "\", \"status_efirma\"}', '\"validado\"'::jsonb)")
+                        ]);
+                    }
+                }
                 return back()->with('message', '¡Documento sellado exitosamente!');
 
             } catch (\Throwable $th) {
@@ -2810,13 +2845,20 @@ class MetavanceController extends Controller
             }
 
         } else {
-            $respuesta_icti = ['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']];
-            return back()->with('message', $respuesta_icti);
+            $respuesta_icti = [
+                'uuid' => $response->json()['uuid'],
+                'descripcion' => $response->json()['descripcionError']
+            ];
+            $message = 'UUID: ' . $respuesta_icti['uuid'] . ', Descripción: ' . $respuesta_icti['descripcion'];
+            return back()->with('message', $message);
+
+            // $respuesta_icti = ['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']];
+            // return back()->with('message', $respuesta_icti);
         }
     }
 
     public function sellarFile($xml, $token) {
-        //Sellado de producción
+        // Sellado de producción
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token

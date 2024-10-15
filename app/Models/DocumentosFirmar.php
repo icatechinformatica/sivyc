@@ -8,7 +8,7 @@ class DocumentosFirmar extends Model {
     protected $table = 'documentos_firmar';
 
     protected $fillable = [
-        'obj_documento', 'status', 'link_pdf', 'documento','link_verificacion','num_oficio'
+        'obj_documento', 'status', 'link_pdf', 'documento','link_verificacion','num_oficio', 'body_html'
     ];
 
     protected $casts = [

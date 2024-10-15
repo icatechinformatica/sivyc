@@ -564,6 +564,9 @@
                 <form id="frm_sellar" action="{{route('pat.metavance.sellar.documento')}}" method="post">
                     @csrf
                     <input type="hidden" name="txtIdFirmado" id="txtIdFirmado">
+                    <input type="hidden" name="organismo" value="{{$organismo}}">
+                    <input type="hidden" name="ejercicio" value="{{$anio_eje}}">
+                    <input type="hidden" name="tipo_doc" id="tipo_doc" value="">
                 </form>
             @endif
 
@@ -592,6 +595,7 @@
                                             @endif
 
                                             {{-- Efirma --}}
+                                            {{-- @dd($consul_efirma) --}}
                                             @if (isset($fecha_meta_avance->fecha_meta['mod_documento']) && $fecha_meta_avance->fecha_meta['mod_documento'] == 'efirma')
                                                 @if ($consul_efirma['status_doc'] != 'VALIDADO')
                                                     <b class="">FIRMADO ELECTRONICO DEL CALENDARIZADO ANUAL PAT</b>
@@ -601,7 +605,7 @@
                                                                 <button class="btn btn-info" onclick="openModal()">FIRMAR</button>
                                                             @endif
                                                             @if ($consul_efirma['pos_firm_activo'] == 0 && $consul_efirma['status_doc'] == 'EnFirma' && $consul_efirma['firmado_uno'] == 'SI' && $consul_efirma['firmado_dos'] == 'SI')
-                                                                <button class="btn btn-info" onclick="sellarDocumento('{{$consul_efirma['idEfirmaMeta']}}')">SELLAR</button>
+                                                                <button class="btn btn-info" onclick="sellarDocumento('{{$consul_efirma['idEfirmaMeta']}}', 'meta' )">SELLAR</button>
                                                             @endif
                                                         </div>
                                                         <div class="">
@@ -683,7 +687,7 @@
                                                             <button class="btn btn-info" onclick="openModal()">FIRMAR</button>
                                                         @endif
                                                         @if ($consul_efirma_avance['pos_firm_activo_ava'] == 0 && $consul_efirma_avance['status_doc_ava'] == 'EnFirma' && $consul_efirma_avance['firmado_uno_ava'] == 'SI' && $consul_efirma_avance['firmado_dos_ava'] == 'SI')
-                                                            <button class="btn btn-info" onclick="sellarDocumento('{{$consul_efirma_avance['idEfirmaAvance']}}')">SELLAR</button>
+                                                            <button class="btn btn-info" onclick="sellarDocumento('{{$consul_efirma_avance['idEfirmaAvance']}}', '{{$consul_efirma_avance['mes_activo']}}' )">SELLAR</button>
                                                         @endif
                                                     </div>
                                                     <div class="">
@@ -1648,9 +1652,13 @@
             })
         }
 
-        function sellarDocumento(id) {
+        function sellarDocumento(id, tipoDoc) {
+            // console.log(id, tipoDoc);
+            // return false;
+
             if (confirm("¿Está seguro de sellar el documento?") == true) {
                 $('#txtIdFirmado').val(id);
+                $('#tipo_doc').val(tipoDoc);
                 $('#frm_sellar').submit();
             }
         }

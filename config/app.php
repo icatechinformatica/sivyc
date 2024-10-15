@@ -178,6 +178,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         // Passport
         Laravel\Passport\PassportServiceProvider::class,
+        App\Providers\ReporteRf001Provider::class,
     ],
 
     /*
