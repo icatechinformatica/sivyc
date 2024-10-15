@@ -239,11 +239,13 @@
                                     </button>
                                 @endcan
                                 @endif
-                                @can('supre.validar')
-                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $idh])}}">
-                                            <i class="fa fa-wrench" aria-hidden="true"></i>
-                                        </a>
-                                @endcan
+                                @if(!is_null($itemData->folio_validacion) && $itemData->efirma_status_valsupre != 'VALIDADO')
+                                    @can('supre.validar')
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $idh])}}">
+                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            </a>
+                                    @endcan
+                                @endif
                                 @if ($itemData->permiso_editar)
                                     @can('supre.upload_supre')
                                         <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
