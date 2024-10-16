@@ -284,7 +284,7 @@
                                         @switch($item->estado)
                                             @case('RETORNADO')
                                             @case('GENERADO')
-                                                @can('actualizar.rf001')
+                                                @canany(['solicitud.rf001', 'vobo.rf001'])
                                                     @if ($item->tipo == 'CANCELADO')
                                                         <a class="nav-link pt-0"
                                                             href="{{ route('reporte.rf001.edit', ['id' => $item->id]) }}">
@@ -298,7 +298,7 @@
                                                                 style="padding-right: 12px;" title='EDITAR REGISTROS'></i>
                                                         </a>
                                                     @endif
-                                                @endcan
+                                                @endcanany
                                             @break
 
                                             @case('ENFIRMA' || 'FIRMADO' || 'GENERARDOCUMENTO' || 'SELLADO')
