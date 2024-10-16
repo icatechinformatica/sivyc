@@ -247,67 +247,35 @@ class PagoController extends Controller
             ->orderBy('pagos.created_at', 'desc');
 
         //dd($roles[0]->role_name);
-        switch ($roles[0]->role_name) {
-            case 'admin':
-            break;
-            case 'financiero_verificador':
-                # code...
-                $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad, $mes)
-                    ->WHEREIN('folios.status', ['Contrato_Validado','Verificando_Pago','Pago_Verificado','Pago_Rechazado',
-                                'Finalizado'])
-                    ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
-                    ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
-                    ->WHERE('pagos.status_recepcion', '!=', null)
-                    ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
-                    ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                    ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                    ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                    ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
-                    ->LeftJoin('tbl_cursos_expedientes','tbl_cursos_expedientes.id_curso','tbl_cursos.id')
-                    ->leftJoin('documentos_firmar', function($join) {
-                        $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
-                             ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
-                            //  ->Where('documentos_firmar.status', '=', 'VALIDADO');
-                    })
-                    ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
-                    ->GroupBy('contratos.id_contrato','folios.permiso_editar','folios.status','pagos.recepcion','folios.id_folios', 'folios.id_supre','pagos.status_recepcion','pagos.created_at','pagos.arch_solicitud_pago',
-            'pagos.arch_asistencia','pagos.arch_evidencia','pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo',
-            'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.soportes_instructor',
-            'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tbl_cursos.modinstructor','tabla_supre.doc_validado',
-            'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio',
-            'pagos.updated_at','pagos.status_transferencia','arch_pago','edicion_pago','tbl_cursos_expedientes.id','tbl_cursos.clave')
-                    ->orderBy('pagos.created_at', 'desc');
-                    // ->PAGINATE(50, [
-                    //     'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1','contratos.fecha_status','contratos.arch_contrato',
-                    //     'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.docs','contratos.observacion',
-                    //     'contratos.arch_factura', 'contratos.arch_factura_xml','folios.status','folios.id_folios','folios.id_supre','pagos.recepcion',
-                    //     'folios.permiso_editar','pagos.status_recepcion','pagos.arch_solicitud_pago','pagos.fecha_agenda','pagos.created_at','pagos.arch_asistencia','pagos.arch_evidencia',
-                    //     'pagos.arch_calificaciones','pagos.arch_evidencia','pagos.agendado_extemporaneo','pagos.observacion_rechazo_recepcion',
-                    //     'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso','tbl_cursos.modinstructor','tbl_cursos.soportes_instructor',
-                    //     'tabla_supre.doc_validado','instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine','arch_pago',
-                    //     'tbl_cursos.nombre','pagos.fecha_envio','pagos.updated_at','pagos.status_transferencia','edicion_pago',
-                    //     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
-                    //     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
-                    //     DB::raw("CASE
-                    //         WHEN tbl_cursos_expedientes.id IS NULL
-                    //         OR (jsonb_extract_path_text(tbl_cursos_expedientes.vinculacion, 'status_dpto') IS NULL
-                    //         AND jsonb_extract_path_text(tbl_cursos_expedientes.academico, 'status_dpto') IS NULL
-                    //         AND jsonb_extract_path_text(tbl_cursos_expedientes.administrativo, 'status_dpto') IS NULL)
-                    //         OR (jsonb_extract_path_text(tbl_cursos_expedientes.vinculacion, 'status_dpto') NOT IN ('VALIDADO', 'ENVIADO')
-                    //         AND jsonb_extract_path_text(tbl_cursos_expedientes.academico, 'status_dpto') NOT IN ('VALIDADO', 'ENVIADO')
-                    //         AND jsonb_extract_path_text(tbl_cursos_expedientes.administrativo, 'status_dpto') NOT IN ('VALIDADO', 'ENVIADO'))
-                    //         THEN TRUE
-                    //         ELSE FALSE
-                    //     END as status_dpto_general")
-                    //     // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
-                    // ]);
-                break;
-                default:
-                # code...
-                // obtener unidades
+        if (in_array($roles[0]->role_name, ['financiero_verificador','Financiero Recepcion Digital'])) {
+            $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad, $mes)
+                ->WHEREIN('folios.status', ['Contrato_Validado','Verificando_Pago','Pago_Verificado','Pago_Rechazado',
+                            'Finalizado'])
+                ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+                ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
+                ->WHERE('pagos.status_recepcion', '!=', null)
+                ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
+                ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+                ->LeftJoin('tbl_cursos_expedientes','tbl_cursos_expedientes.id_curso','tbl_cursos.id')
+                ->leftJoin('documentos_firmar', function($join) {
+                    $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
+                            ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
+                        //  ->Where('documentos_firmar.status', '=', 'VALIDADO');
+                })
+                ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
+                ->GroupBy('contratos.id_contrato','folios.permiso_editar','folios.status','pagos.recepcion','folios.id_folios', 'folios.id_supre','pagos.status_recepcion','pagos.created_at','pagos.arch_solicitud_pago',
+                    'pagos.arch_asistencia','pagos.arch_evidencia','pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo',
+                    'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.soportes_instructor',
+                    'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tbl_cursos.modinstructor','tabla_supre.doc_validado',
+                    'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio',
+                    'pagos.updated_at','pagos.status_transferencia','arch_pago','edicion_pago','tbl_cursos_expedientes.id','tbl_cursos.clave')
+                ->orderBy('pagos.created_at', 'desc');
+            } elseif($roles[0]->role_name != 'admin') {
                 $unidadPorUsuario = DB::table('tbl_unidades')->WHERE('id', $unidadUser)->FIRST();
                 $contratos_folios = $contratos_folios->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion);
-                break;
             }
 
             $contratos_folios = $contratos_folios->PAGINATE(50, [
