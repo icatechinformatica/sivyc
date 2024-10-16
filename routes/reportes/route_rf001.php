@@ -8,7 +8,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/reportes/rf001/indice', [Rf001Controller::class, 'dashboard'])->name('reporte.rf001.index');
     Route::get('/reportes/rf001/ingreso-propio', [Rf001Controller::class, 'index'])->middleware('can:solicitud.rf001')->name('reporte.rf001.ingreso-propio');
     Route::post('/reportes/rf001/generar', [Rf001Controller::class, 'store'])->name('reporte.rf001.store');
-    Route::get('/reportes/rf001/generados', [Rf001Controller::class, 'getSentFormat'])->middleware('can:solicitud.rf001')->name('reporte.rf001.sent');
+    Route::get('/reportes/rf001/generados', [Rf001Controller::class, 'getSentFormat'])->middleware(['can:solicitud.rf001','can:vobo.rf001'])->name('reporte.rf001.sent');
     Route::get('/reportes/rf001/detalle/{concentrado}', [Rf001Controller::class, 'index'])->name('reporte.rf001.details');
     Route::get('/reportes/rf001/editar/{id}', [Rf001Controller::class, 'edit'])->name('reporte.rf001.edit');
     Route::put('/reportes/rf001/detalle/actualizar/{id}', [Rf001Controller::class, 'update'])->name('reporte.rf001.update');

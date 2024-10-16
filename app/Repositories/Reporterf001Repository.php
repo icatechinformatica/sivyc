@@ -68,8 +68,8 @@ class Reporterf001Repository implements Reporterf001Interface
                         WHEN tbl_cursos.comprobante_pago <> 'null' THEN concat('uploadFiles',tbl_cursos.comprobante_pago)
                         WHEN tbl_recibos.file_pdf <> 'null' THEN tbl_recibos.file_pdf
                     END as file_pdf"))
-            ->when($numRecibo, function ($query, $numRecibo) {
-                return $query->where('tbl_recibos.num_recibo', '=', $numRecibo);
+            ->when($id, function ($query, $id) {
+                return $query->where('tbl_recibos.id', '=', $id);
             })->first();
 
             $JsonObj = [
