@@ -340,7 +340,7 @@ class Reporterf001Repository implements Reporterf001Interface
         $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
         // checa si el documento está vacio
-        if (!is_null($documentoFirma)) {
+        if (is_null($documentoFirma)) {
             # está vacio
             $bodyHtml = (new ReportService())->createBodyToXml($dataRf, $unidad, $organismoPublico);
             $bodyMemo = $bodyHtml['memorandum'];
