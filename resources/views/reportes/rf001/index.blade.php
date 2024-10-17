@@ -273,7 +273,7 @@
                                     <td>{{ $item->concepto }}</td>
                                     <td>
                                         @php
-                                            $depositos = json_decode($item->depositos, true);
+                                            $depositos = json_decode($item->depositos, true) ?? [];
                                         @endphp
                                         @foreach ($depositos as $k)
                                             {{ $k['folio'] }} &nbsp;
