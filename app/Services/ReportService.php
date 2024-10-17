@@ -97,6 +97,8 @@ class ReportService
         $firmantes = $this->funcionariosUnidades($ubicacion);
         list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
+        $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id);
+
         $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
             ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
@@ -136,9 +138,9 @@ class ReportService
 
         $temp = ['_attributes' =>
             [
-                'curp_firmante' => 'CUMA850521MCSTNN09',
-                'nombre_firmante' => 'WALTER DOMINGUEZ CAMACHO',
-                'email_firmante' => 'w.dominguez.daicatech@gmail.com',
+                'curp_firmante' => $firmanteFinanciero['curp'],
+                'nombre_firmante' => $firmanteFinanciero['funcionario'],
+                'email_firmante' => $firmanteFinanciero['correo'],
                 'tipo_firmante' => 'FM'
             ]
         ];
@@ -232,6 +234,7 @@ class ReportService
             // actualizar registro en modelo Rf001Model
             (new Rf001Model())->where('id', $id)->update([
                 'estado' => 'GENERARDOCUMENTO',
+                'dirigido' => $firmanteFinanciero['funcionario']
             ]);
 
             return TRUE;
@@ -480,7 +483,7 @@ class ReportService
         $htmlBody['memorandum'] = '<div class="contenedor">
             <div class="bloque_dos" align="right" style="font-family: Arial, sans-serif; font-size: 16px;">
                 <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</p>
-                <p class="delet_space_p color_text">OFICIO NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
+                <p class="delet_space_p color_text">MEMORÁNDUM NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
                 <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars(strtoupper($fecha_comp)) . '</span></p>
             </div>
             <br><br><br>
@@ -708,6 +711,8 @@ class ReportService
         $firmantes = $this->funcionariosUnidades($ubicacion);
         list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
+        $financieroFirmante = $this->getFirmanteFinanciero($rf001->id);
+
         $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
             ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
@@ -739,9 +744,9 @@ class ReportService
 
         $temp = ['_attributes' =>
             [
-                'curp_firmante' => 'CUMA850521MCSTNN09',
-                'nombre_firmante' => 'WALTER DOMINGUEZ CAMACHO',
-                'email_firmante' => 'w.dominguez.daicatech@gmail.com',
+                'curp_firmante' => $financieroFirmante['curp'],
+                'nombre_firmante' => $financieroFirmante['funcionario'],
+                'email_firmante' => $financieroFirmante['correo'],
                 'tipo_firmante' => 'FM'
             ]
         ];
@@ -835,6 +840,7 @@ class ReportService
             // actualizar registro en modelo Rf001Model
             (new Rf001Model())->where('id', $id)->update([
                 'estado' => 'GENERARDOCUMENTO',
+                'dirigido' => $financieroFirmante['funcionario']
             ]);
 
             return TRUE;
@@ -906,7 +912,7 @@ class ReportService
         $htmlBody['memorandum'] = '<div class="contenedor">
             <div class="bloque_uno" align="right">
                 <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</p>
-                <p class="delet_space_p color_text">OFICIO NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
+                <p class="delet_space_p color_text">MEMORÁNDUM NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
                 <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars(strtoupper($fecha_comp)) . '</span></p>
             </div>
             <br><br><br>
@@ -984,5 +990,25 @@ class ReportService
 
         // Imprimir el resultado
         return $formattedDates;
+    }
+
+    public function getFirmanteFinanciero($idRf001)
+    {
+        $qry = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
+        ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
+        ->Where('funcionarios.titular', 'false')
+        ->Where('funcionarios.id_org', 12)->get();
+
+        // Acceder a los registros por índice
+        $primerRegistro = $qry->get(0);
+        $segundoRegistro = $qry->get(1);
+
+        if ($idRf001 % 2 == 0) {
+            # EL NÚMERO ES PAR
+            return array('funcionario'=>$primerRegistro->nombre, 'puesto'=>$primerRegistro->cargo, 'correo'=>$primerRegistro->correo, 'curp'=>$primerRegistro->curp);
+        } else {
+            # EL NÚMERO ES NONE
+            return array('funcionario'=>$segundoRegistro->nombre, 'puesto'=>$segundoRegistro->cargo, 'correo'=>$segundoRegistro->correo, 'curp'=>$segundoRegistro->curp);
+        }
     }
 }

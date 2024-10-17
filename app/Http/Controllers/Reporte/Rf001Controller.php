@@ -335,7 +335,8 @@ class Rf001Controller extends Controller
     {
         // si se necesita generar el dato
         // aplicar el filtro sólo para memorandum
-        $data = $this->rfoo1Repository->sentRF001Format($request);
+        $unidad = Auth::user()->unidad;
+        $data = $this->rfoo1Repository->sentRF001Format($unidad);
         return view('reportes.rf001.formatos', compact('data'))->render();
     }
 
@@ -383,12 +384,12 @@ class Rf001Controller extends Controller
         $organismo = Auth::user()->id_organismo;
         $idReporte = base64_encode($id);
         $unidad = $rf001->unidad;
-        $idUnidad = Auth::user()->unidad;
-        $ccp = $this->rfoo1Repository->setCcp($idUnidad);
-        // dd($ccp);
 
-        $data = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
-        $direccion = $data->direccion;
+        $dataunidades = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
+        $idUnidad = Auth::user()->unidad;
+        $ccp = $this->rfoo1Repository->setCcp($dataunidades->id);
+
+        $direccion = $dataunidades->direccion;
         // aplicando distructuración
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
         list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $unidad, $organismo);
