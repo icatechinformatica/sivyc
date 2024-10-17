@@ -628,15 +628,17 @@ class Reporterf001Repository implements Reporterf001Interface
     public function setCcp($idUnidad)
     {
         return \DB::table('tbl_funcionarios as funcionario')
-            ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
-            ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
-            ->where('organismos.id_unidad', $idUnidad)
-            ->where('funcionario.cargo', 'like', 'DELEG%')
-            ->where('funcionario.activo', '=', 'true')
-            ->orWhere('organismos.id_parent', 0)
-            ->orWhere('funcionario.id_org', 13)
-            ->orderBy('funcionario.id_org', 'asc')
-            ->get();
+                ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
+                ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
+                ->where('funcionario.activo', '=', 'true')
+                ->where(function($query) use ($idUnidad) {
+                    $query->where('organismos.id_unidad', $idUnidad)
+                        ->where('funcionario.cargo', 'like', 'DELEG%')
+                        ->orWhere('organismos.id_parent', 0)
+                        ->orWhere('funcionario.id_org', 13);
+                })
+                ->orderBy('funcionario.id_org', 'asc')
+                ->get();
 
     }
 
