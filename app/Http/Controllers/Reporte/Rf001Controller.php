@@ -335,7 +335,8 @@ class Rf001Controller extends Controller
     {
         // si se necesita generar el dato
         // aplicar el filtro sólo para memorandum
-        $data = $this->rfoo1Repository->sentRF001Format($request);
+        $unidad = Auth::user()->unidad;
+        $data = $this->rfoo1Repository->sentRF001Format($unidad);
         return view('reportes.rf001.formatos', compact('data'))->render();
     }
 

@@ -247,7 +247,7 @@ class PagoController extends Controller
             ->orderBy('pagos.created_at', 'desc');
 
         //dd($roles[0]->role_name);
-        if (in_array($roles[0]->role_name, ['financiero_verificador','Financiero Recepcion Digital'])) {
+        if (in_array($roles[0]->role_name, ['financiero_verificador','financiero recepcion digital','financiero_pago'])) {
             $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad, $mes)
                 ->WHEREIN('folios.status', ['Contrato_Validado','Verificando_Pago','Pago_Verificado','Pago_Rechazado',
                             'Finalizado'])
@@ -273,7 +273,7 @@ class PagoController extends Controller
                     'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre','pagos.fecha_envio',
                     'pagos.updated_at','pagos.status_transferencia','arch_pago','edicion_pago','tbl_cursos_expedientes.id','tbl_cursos.clave')
                 ->orderBy('pagos.created_at', 'desc');
-            } elseif($roles[0]->role_name != 'admin') {
+            } elseif(!in_array($roles[0]->role_name, ['financiero_verificador','financiero recepcion digital','financiero_pago','admin'])) {
                 $unidadPorUsuario = DB::table('tbl_unidades')->WHERE('id', $unidadUser)->FIRST();
                 $contratos_folios = $contratos_folios->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion);
             }
