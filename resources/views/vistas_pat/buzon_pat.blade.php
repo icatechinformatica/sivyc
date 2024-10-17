@@ -198,7 +198,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            @if( !empty($data[$i]->fecha_meta['id_efirma']) && $data[$i]->fecha_meta['mod_documento'] == 'efirma' )
+                                            @if( !empty($data[$i]->fecha_meta['id_efirma']) && !empty($data[$i]->fecha_meta['mod_documento']) )
                                             {{-- Ejecutar el documento firmado electronicamente --}}
                                                 <a class="" href="{{route('pat.metavance.pdf.efirma', ['id' => $data[$i]->fecha_meta['id_efirma'] ]) }}" target="_blank">
                                                     <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
@@ -216,7 +216,7 @@
                                         </td>
                                         <td>
                                             {{-- status documento --}}
-                                            @if ( !empty($data[$i]->fecha_meta['id_efirma']) && $data[$i]->fecha_meta['mod_documento'] == 'efirma' )
+                                            @if ( !empty($data[$i]->fecha_meta['id_efirma']) &&  !empty($data[$i]->fecha_meta['mod_documento']) && !empty($data[$i]->fecha_meta['status_efirma']) )
                                                 @if ($data[$i]->fecha_meta['status_efirma'] == 'validado')
                                                     Electronico <br>(SELLADO)
                                                 @else
@@ -234,7 +234,7 @@
                                             </a>
                                         </td>
                                         <td class="text-center">
-                                            @if ( (!empty($data[$i]->fecha_meta['id_efirma']) && $data[$i]->fecha_meta['mod_documento'] == 'efirma' && $data[$i]->fecha_meta['status_efirma'] == 'validado') || !empty($data[$i]->fecha_meta['urldoc_firm']) )
+                                            @if ( (isset($data[$i]->fecha_meta['status_efirma']) && $data[$i]->fecha_meta['status_efirma'] == 'validado') || !empty($data[$i]->fecha_meta['urldoc_firm']) )
                                                 <a class="btn-circle btn-circle-sm"
                                                     onclick="eliminar_documento('meta', '{{$data[$i]->id_org}}', '{{$anio}}')"> <i class="fa fa-times fa-2x mt-2" style="color: rgb(179, 43, 19);" aria-hidden="true"></i>
                                                 </a>
@@ -317,7 +317,7 @@
                                             </td>
                                             <td class="text-center">
 
-                                                @if( !empty($data[$i]->fechas_avance[$mes]['id_efirma']) && $data[$i]->fechas_avance[$mes]['mod_documento'] == 'efirma' )
+                                                @if( !empty($data[$i]->fechas_avance[$mes]['id_efirma']) &&  !empty($data[$i]->fechas_avance[$mes]['mod_documento']) && !empty($data[$i]->fechas_avance[$mes]['status_efirma']))
                                                     {{-- Ejecutar el documento firmado electronicamente --}}
                                                     <a class="" href="{{route('pat.metavance.pdf.efirma', ['id' => $data[$i]->fechas_avance[$mes]['id_efirma'] ]) }}" target="_blank">
                                                         <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
@@ -334,7 +334,7 @@
                                             </td>
                                             <td>
                                                 {{-- status documento --}}
-                                                @if (!empty($data[$i]->fechas_avance[$mes]['id_efirma']) && $data[$i]->fechas_avance[$mes]['mod_documento'] == 'efirma')
+                                                @if (!empty($data[$i]->fechas_avance[$mes]['id_efirma']) && !empty($data[$i]->fechas_avance[$mes]['mod_documento']) && !empty($data[$i]->fechas_avance[$mes]['status_efirma']))
                                                     @if ($data[$i]->fechas_avance[$mes]['status_efirma'] == 'validado')
                                                         Electronico <br>(SELLADO)
                                                     @else
@@ -360,7 +360,7 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                @if ( (!empty($data[$i]->fechas_avance[$mes]['id_efirma']) && $data[$i]->fechas_avance[$mes]['mod_documento'] == 'efirma' && $data[$i]->fechas_avance[$mes]['status_efirma'] == 'validado') || !empty($data[$i]->fechas_avance[$mes]['urldoc_firmav']) )
+                                                @if ( (isset($data[$i]->fechas_avance[$mes]['status_efirma']) && $data[$i]->fechas_avance[$mes]['status_efirma'] == 'validado') || !empty($data[$i]->fechas_avance[$mes]['urldoc_firmav']) )
                                                     <a class="btn-circle btn-circle-sm"
                                                         onclick="eliminar_documento('{{$mes}}', '{{$data[$i]->id_org}}', '{{$anio}}')"> <i class="fa fa-times fa-2x mt-2" style="color: rgb(179, 43, 19);" aria-hidden="true"></i>
                                                     </a>
