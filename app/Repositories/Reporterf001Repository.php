@@ -125,9 +125,9 @@ class Reporterf001Repository implements Reporterf001Interface
         ]);
     }
 
-    public function sentRF001Format($request)
+    public function sentRF001Format($unidad)
     {
-        return (new Rf001Model())->latest()->paginate(10 ?? 5);
+        return (new Rf001Model())->where('id_unidad', '=', $unidad)->paginate(10 ?? 5);
     }
 
     public function getDetailRF001Format($concentrado)
