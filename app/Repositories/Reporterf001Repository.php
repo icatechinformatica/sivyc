@@ -340,7 +340,7 @@ class Reporterf001Repository implements Reporterf001Interface
         $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
         // checa si el documento está vacio
-        if (is_null($documentoFirma)) {
+        if (!is_null($documentoFirma)) {
             # está vacio
             $bodyHtml = (new ReportService())->createBodyToXml($dataRf, $unidad, $organismoPublico);
             $bodyMemo = $bodyHtml['memorandum'];
@@ -631,9 +631,13 @@ class Reporterf001Repository implements Reporterf001Interface
                 ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
                 ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
                 ->where('funcionario.activo', '=', 'true')
+                ->Where('funcionario.titular', true)
                 ->where(function($query) use ($idUnidad) {
                     $query->where('organismos.id_unidad', $idUnidad)
-                        ->where('funcionario.cargo', 'like', 'DELEG%')
+                        ->where(function($moist) use ($idUnidad) {
+                            $moist->where('funcionario.cargo', 'like', 'DELEG%')
+                            ->orWhere('organismos.id_parent',1);
+                        })
                         ->orWhere('organismos.id_parent', 0)
                         ->orWhere('funcionario.id_org', 13);
                 })

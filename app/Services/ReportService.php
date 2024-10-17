@@ -481,19 +481,18 @@ class ReportService
         $importeLetra = (new MyUtility())->letras($importeMemo);
 
         $htmlBody['memorandum'] = '<div class="contenedor">
-            <div class="bloque_dos" align="right" style="font-family: Arial, sans-serif; font-size: 16px;">
-                <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</p>
-                <p class="delet_space_p color_text">MEMORÁNDUM NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
+            <div class="bloque_dos" align="right" style="font-family: Arial, sans-serif; font-size: 14px;">
+                <p class="delet_space_p color_text"><b>UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</b></p>
+                <p class="delet_space_p color_text">MEMORÁNDUM No. ' . htmlspecialchars($data->memorandum) . '</p>
                 <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars(strtoupper($fecha_comp)) . '</span></p>
             </div>
-            <br><br><br>
-            <div class="bloque_dos" align="left" style="font-family: Arial, sans-serif; font-size: 16px;">
-                <p class="delet_space_p color_text">C. ' . htmlspecialchars(strtoupper($dirigido->titulo)) . ' ' . htmlspecialchars(strtoupper($dirigido->nombre)) . '</p>
-                <p class="delet_space_p color_text">' . htmlspecialchars($dirigido->cargo) . '</p>
-                <p class="delet_space_p color_text">PRESENTE.</p>
-            </div>
             <br>
-            <div class="contenido" style="font-family: Arial, sans-serif; font-size: 16px; margin-top: 25px" align="justify">
+            <div class="bloque_dos" align="left" style="font-family: Arial, sans-serif; font-size: 14px;">
+                <p class="delet_space_p color_text"><b>' . htmlspecialchars(strtoupper($dirigido->titulo)) . ' ' . htmlspecialchars(strtoupper($dirigido->nombre)) . '</b></p>
+                <p class="delet_space_p color_text"><b>' . htmlspecialchars($dirigido->cargo) . '</b></p>
+                <p class="delet_space_p color_text"><b>PRESENTE.</b></p>
+            </div>
+            <div class="contenido" style="font-family: Arial, sans-serif; font-size: 14px; margin-top: 25px" align="justify">
                 Por medio del presente, me permito enviar a usted el Concentrado de Ingresos Propios (FORMA RF-001) de la Unidad de Capacitación
                 <span class="color_text"> ' .htmlspecialchars($unidadUbicacion). ' </span>, correspondiente a la semana comprendida '. $this->formatoIntervaloFecha($data->periodo_inicio, $data->periodo_fin) .'
                 El informe refleja un total de $'.number_format($importeMemo, 2, '.', ',').' ('.$importeLetra.'), mismo que se adjunta para su conocimiento y trámite correspondiente.
@@ -502,15 +501,24 @@ class ReportService
             <br>';
 
         $htmlBody['memorandum'] .= '<div class="tabla_alumnos">
-                   <p style="font-family: Arial, sans-serif; font-size: 16px;">Sin otro particular aprovecho la ocasión para saludarlo. </p>
+                   <p style="font-family: Arial, sans-serif; font-size: 14px;">Sin otro particular aprovecho la ocasión para saludarlo. </p>
                     <br>
                 </div>
-            </div>';
+            </div> <br><br>';
 
 
 
         // Inicialización de formato
-        $htmlBody['formatoRf001'] = '<div class="contenedor"><table class="tabla_con_border" style="padding-top: 10px;">
+        $htmlBody['formatoRf001'] = '<div class="contenedor">
+        <div style="text-align: center; font-size: 10px;">
+            <p>
+                FORMA RF-001
+                <br>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS
+                <br>UNIDAD DE CAPACITACIÓN '.htmlspecialchars(strtoupper($unidadUbicacion)).'
+                <br>CONCENTRADO DE INGRESOS PROPIOS
+            </p>
+        </div>
+        <table class="tabla_con_border" style="padding-top: 9px;">
             <tr>
                 <td width="200px">FECHA DE ELABORACIÓN</td>
                 <td width="750px" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;" colspan="8"></td>
@@ -610,8 +618,7 @@ class ReportService
                 <td colspan="3">OBSERVACIONES:</td>
             </tr>
             <tr>
-             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b> <br>
-             <div style="padding-top: 3px;">';
+             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b>';
              foreach ($movimiento as $k) {
                 $htmlBody['formatoRf001'] .= htmlspecialchars($k['folio']) . ',';
              }
@@ -628,7 +635,8 @@ class ReportService
              <td>&nbsp;</td>
              <td>&nbsp;</td>
              <td>&nbsp;</td>
-             </tr></table></div>';
+             </tr></table>
+             <p style="font-size: 8px;">DECLARO BAJO PROTESTA DE DECIR VERDAD, QUE LOS DATOS CONTENIDOS EN ESTE CONCENTRADO SON VERÍDICOS Y MANIFIESTO TENER CONOCIMIENTO DE LAS SANCIONES QUE SE APLICARÁN EN CASO CONTRARIO</p>';
         return $htmlBody;
     }
 

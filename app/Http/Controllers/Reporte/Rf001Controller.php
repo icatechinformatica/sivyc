@@ -391,7 +391,7 @@ class Rf001Controller extends Controller
         $direccion = $dataunidades->direccion;
         // aplicando distructuración
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
-        list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $unidad, $organismo);
+        list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $dataunidades->id, $organismo);
 
         $data = [
             'bodyMemo' => $bodyMemo,
