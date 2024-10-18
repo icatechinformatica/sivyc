@@ -25,7 +25,7 @@ class xlsCursosMultiple implements WithMultipleSheets, WithTitle, FromQuery, Wit
 
         $this->title = $title;
         $this->head = [
-            'CAMPO','CATEGORIA','ESPECIALIDAD','CURSO','HORAS','OBJETIVO',
+            'CAMPO','CATEGORIA','ESPECIALIDAD','CURSO','HORAS','OBJETIVO','FECHA DE VALIDACIÓN','FECHA DE ACTUALIZACIÓN',
             'PERFIL DE INGRESO SUGERIDO','SOLICITUD AUTORIZACION DE RIESGO',
             'TIPO CAPACITACION','MODALIDAD','CLASIFICACION',
             'COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
@@ -60,7 +60,7 @@ class xlsCursosMultiple implements WithMultipleSheets, WithTitle, FromQuery, Wit
         }
 
         $data->join('especialidades','especialidades.id','cursos.id_especialidad')->leftjoin('area', 'area.id', 'especialidades.id_areas')
-            ->select('area.formacion_profesional','categoria','especialidades.nombre','nombre_curso','horas','objetivo','perfil',
+            ->select('area.formacion_profesional','categoria','especialidades.nombre','nombre_curso','horas','objetivo', \DB::raw("to_char(fecha_validacion, 'DD-MM-YYYY') as fecha_val"), \DB::raw("to_char(fecha_actualizacion, 'DD-MM-YYYY') AS fecha_act"),'perfil',
             \DB::raw("(case when cursos.riesgo = 'true' then 'SI' else 'NO' end) as etnia"),'tipo_curso','modalidad','clasificacion','costo',
             'cursos.rango_criterio_pago_minimo',\DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_minimo) as mini"),
             'cursos.rango_criterio_pago_maximo',\DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"),
