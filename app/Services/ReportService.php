@@ -84,16 +84,6 @@ class ReportService
 
         $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
 
-        $movimiento = json_decode($rf001->movimientos, true);
-
-        foreach ($movimiento as $item) {
-            # ciclo para actualizar el estado de todos los registros
-            Recibo::where('folio_recibo', '=', $item['folio'])
-                ->update([
-                    'estado_reportado' => 'CONCENTRADO'
-                ]);
-        }
-
         $firmantes = $this->funcionariosUnidades($ubicacion);
         list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
@@ -236,6 +226,16 @@ class ReportService
                 'estado' => 'GENERARDOCUMENTO',
                 'dirigido' => $firmanteFinanciero['funcionario']
             ]);
+
+            $movimiento = json_decode($rf001->movimientos, true);
+
+            foreach ($movimiento as $item) {
+                # ciclo para actualizar el estado de todos los registros
+                Recibo::where('folio_recibo', '=', $item['folio'])
+                    ->update([
+                        'estado_reportado' => 'CONCENTRADO'
+                    ]);
+            }
 
             return TRUE;
         } else {
