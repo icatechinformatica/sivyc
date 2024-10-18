@@ -421,11 +421,13 @@ class ReportService
         $unidadUbicacion = strtoupper($tblUnidades->ubicacion);
         $municipio = mb_strtoupper($tblUnidades->municipio, 'UTF-8');
         #OBTENEMOS LA FECHA ACTUAL
-        $fechaActual = getdate();
-        $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
-        $dia = ($dia < 10) ? '0'.$dia : $dia;
+        // $fechaActual = getdate();
+        $fechaActual = $data->created_at->format('Y-m-d');
+        $fechaFormateada = $this->formatoFechaCrearMemo($fechaActual);
+        // $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
+        // $dia = ($dia < 10) ? '0'.$dia : $dia;
 
-        $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
+        // $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
         $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
         $conocimiento = \DB::table('tbl_funcionarios')
             ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
@@ -484,7 +486,7 @@ class ReportService
             <div class="bloque_dos" align="right" style="font-family: Arial, sans-serif; font-size: 14px;">
                 <p class="delet_space_p color_text"><b>UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</b></p>
                 <p class="delet_space_p color_text">MEMORÁNDUM No. ' . htmlspecialchars($data->memorandum) . '</p>
-                <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars(strtoupper($fecha_comp)) . '</span></p>
+                <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars($fechaFormateada) . '</span></p>
             </div>
             <br>
             <div class="bloque_dos" align="left" style="font-family: Arial, sans-serif; font-size: 14px;">
@@ -1004,7 +1006,7 @@ class ReportService
     {
         $qry = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
-        ->Where('funcionarios.titular', 'false')
+        ->Where('funcionarios.titular', 0)
         ->Where('funcionarios.id_org', 12)->get();
 
         // Acceder a los registros por índice
@@ -1018,5 +1020,16 @@ class ReportService
             # EL NÚMERO ES NONE
             return array('funcionario'=>$segundoRegistro->nombre, 'puesto'=>$segundoRegistro->cargo, 'correo'=>$segundoRegistro->correo, 'curp'=>$segundoRegistro->curp);
         }
+    }
+
+    protected function formatoFechaCrearMemo($fecha)
+    {
+        //parsear la fecha utilizando Carbon
+        $parserDate = Carbon::parse($fecha);
+        // configurar al idioma español
+        $parserDate->locale('es');
+
+        $formattedDate = $parserDate->translatedFormat('d'). ' DE '. mb_strtoupper($parserDate->translatedFormat('F'), 'UTF-8'). ' DEL '. $parserDate->translatedFormat('Y');
+        return $formattedDate;
     }
 }
