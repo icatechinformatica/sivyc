@@ -97,7 +97,7 @@ class ReportService
         $firmantes = $this->funcionariosUnidades($ubicacion);
         list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
-        $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id);
+        $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id_unidad);
 
         $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
@@ -721,7 +721,7 @@ class ReportService
         $firmantes = $this->funcionariosUnidades($ubicacion);
         list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
-        $financieroFirmante = $this->getFirmanteFinanciero($rf001->id);
+        $financieroFirmante = $this->getFirmanteFinanciero($rf001->id_unidad);
 
         $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
@@ -1002,23 +1002,29 @@ class ReportService
         return $formattedDates;
     }
 
-    public function getFirmanteFinanciero($idRf001)
+    public function getFirmanteFinanciero($idRfUnidad)
     {
+        $UnidadesAtendidasNarj8 = ['CATAZAJA', 'JIQUIPILAS', 'OCOSINGO', 'TAPACHULA', 'VILLAFLORES', 'YAJALON'];
+        $UnidadesAtendidasCucc8 = ['TUXTLA', 'TONALA', 'SAN CRISTOBAL', 'COMITAN', 'REFORMA'];
+
         $qry = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
         ->Where('funcionarios.titular', 0)
-        ->Where('funcionarios.id_org', 12)->get();
+        ->Where('funcionarios.id_org', 12);
 
-        // Acceder a los registros por índice
-        $primerRegistro = $qry->get(0);
-        $segundoRegistro = $qry->get(1);
+        $querygetUnidad = DB::table('tbl_unidades')->select('unidad', 'id', 'cct')->where('id', '=', $idRfUnidad)->first();
 
-        if ($idRf001 % 2 == 0) {
-            # EL NÚMERO ES PAR
-            return array('funcionario'=>$primerRegistro->nombre, 'puesto'=>$primerRegistro->cargo, 'correo'=>$primerRegistro->correo, 'curp'=>$primerRegistro->curp);
-        } else {
-            # EL NÚMERO ES NONE
-            return array('funcionario'=>$segundoRegistro->nombre, 'puesto'=>$segundoRegistro->cargo, 'correo'=>$segundoRegistro->correo, 'curp'=>$segundoRegistro->curp);
+        if (in_array($querygetUnidad->unidad, $UnidadesAtendidasNarj8)) {
+            # se encuentra en la lista nandayapa
+            $qry = $qry->where('funcionarios.correo', '=', 'nandayaparamirez_jj@hotmail.com')->first();
+
+            return array('funcionario'=>$qry->nombre, 'puesto'=>$qry->cargo, 'correo'=>$qry->correo, 'curp'=>$qry->curp);
+
+        } elseif (in_array($querygetUnidad->unidad, $UnidadesAtendidasCucc8)) {
+            # se encuentra en lista chatu
+            $qry = $qry->where('funcionarios.correo', '=', 'chatucr77@hotmail.com')->first();
+
+            return array('funcionario'=>$qry->nombre, 'puesto'=>$qry->cargo, 'correo'=>$qry->correo, 'curp'=>$qry->curp);
         }
     }
 
