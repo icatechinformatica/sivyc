@@ -36,7 +36,7 @@ class Reporterf001Repository implements Reporterf001Interface
             ->where('tbl_unidades.unidad', $unidad)
             ->where(function($query) {
                 $query->whereNull('tbl_recibos.estado_reportado')
-                      ->orWhereIn('tbl_recibos.estado_reportado', ['GENERADO', 'CONCENTRADO']);
+                      ->orWhere('tbl_recibos.estado_reportado', 'GENERADO');
             })
             ->with('concepto:id,concepto')
             ->select('tbl_recibos.*', 'cat_conceptos.concepto', 'tbl_recibos.id as id_recibo', 'tbl_unidades.clave_contrato')
