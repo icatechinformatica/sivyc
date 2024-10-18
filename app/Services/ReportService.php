@@ -97,7 +97,7 @@ class ReportService
         $firmantes = $this->funcionariosUnidades($ubicacion);
         list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
-        $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id);
+        $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id_unidad);
 
         $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
@@ -421,11 +421,13 @@ class ReportService
         $unidadUbicacion = strtoupper($tblUnidades->ubicacion);
         $municipio = mb_strtoupper($tblUnidades->municipio, 'UTF-8');
         #OBTENEMOS LA FECHA ACTUAL
-        $fechaActual = getdate();
-        $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
-        $dia = ($dia < 10) ? '0'.$dia : $dia;
+        // $fechaActual = getdate();
+        $fechaActual = $data->created_at->format('Y-m-d');
+        $fechaFormateada = $this->formatoFechaCrearMemo($fechaActual);
+        // $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
+        // $dia = ($dia < 10) ? '0'.$dia : $dia;
 
-        $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
+        // $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
         $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
         $conocimiento = \DB::table('tbl_funcionarios')
             ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
@@ -481,19 +483,18 @@ class ReportService
         $importeLetra = (new MyUtility())->letras($importeMemo);
 
         $htmlBody['memorandum'] = '<div class="contenedor">
-            <div class="bloque_dos" align="right" style="font-family: Arial, sans-serif; font-size: 16px;">
-                <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</p>
-                <p class="delet_space_p color_text">MEMORÁNDUM NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
-                <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars(strtoupper($fecha_comp)) . '</span></p>
-            </div>
-            <br><br><br>
-            <div class="bloque_dos" align="left" style="font-family: Arial, sans-serif; font-size: 16px;">
-                <p class="delet_space_p color_text">C. ' . htmlspecialchars(strtoupper($dirigido->titulo)) . ' ' . htmlspecialchars(strtoupper($dirigido->nombre)) . '</p>
-                <p class="delet_space_p color_text">' . htmlspecialchars($dirigido->cargo) . '</p>
-                <p class="delet_space_p color_text">PRESENTE.</p>
+            <div class="bloque_dos" align="right" style="font-family: Arial, sans-serif; font-size: 14px;">
+                <p class="delet_space_p color_text"><b>UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</b></p>
+                <p class="delet_space_p color_text">MEMORÁNDUM No. ' . htmlspecialchars($data->memorandum) . '</p>
+                <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars($fechaFormateada) . '</span></p>
             </div>
             <br>
-            <div class="contenido" style="font-family: Arial, sans-serif; font-size: 16px; margin-top: 25px" align="justify">
+            <div class="bloque_dos" align="left" style="font-family: Arial, sans-serif; font-size: 14px;">
+                <p class="delet_space_p color_text"><b>' . htmlspecialchars(strtoupper($dirigido->titulo)) . ' ' . htmlspecialchars(strtoupper($dirigido->nombre)) . '</b></p>
+                <p class="delet_space_p color_text"><b>' . htmlspecialchars($dirigido->cargo) . '</b></p>
+                <p class="delet_space_p color_text"><b>PRESENTE.</b></p>
+            </div>
+            <div class="contenido" style="font-family: Arial, sans-serif; font-size: 14px; margin-top: 25px" align="justify">
                 Por medio del presente, me permito enviar a usted el Concentrado de Ingresos Propios (FORMA RF-001) de la Unidad de Capacitación
                 <span class="color_text"> ' .htmlspecialchars($unidadUbicacion). ' </span>, correspondiente a la semana comprendida '. $this->formatoIntervaloFecha($data->periodo_inicio, $data->periodo_fin) .'
                 El informe refleja un total de $'.number_format($importeMemo, 2, '.', ',').' ('.$importeLetra.'), mismo que se adjunta para su conocimiento y trámite correspondiente.
@@ -502,15 +503,24 @@ class ReportService
             <br>';
 
         $htmlBody['memorandum'] .= '<div class="tabla_alumnos">
-                   <p style="font-family: Arial, sans-serif; font-size: 16px;">Sin otro particular aprovecho la ocasión para saludarlo. </p>
+                   <p style="font-family: Arial, sans-serif; font-size: 14px;">Sin otro particular aprovecho la ocasión para saludarlo. </p>
                     <br>
                 </div>
-            </div>';
+            </div> <br><br>';
 
 
 
         // Inicialización de formato
-        $htmlBody['formatoRf001'] = '<div class="contenedor"><table class="tabla_con_border" style="padding-top: 10px;">
+        $htmlBody['formatoRf001'] = '<div class="contenedor">
+        <div style="text-align: center; font-size: 10px;">
+            <p>
+                FORMA RF-001
+                <br>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS
+                <br>UNIDAD DE CAPACITACIÓN '.htmlspecialchars(strtoupper($unidadUbicacion)).'
+                <br>CONCENTRADO DE INGRESOS PROPIOS
+            </p>
+        </div>
+        <table class="tabla_con_border" style="padding-top: 9px;">
             <tr>
                 <td width="200px">FECHA DE ELABORACIÓN</td>
                 <td width="750px" style="border-top-style: none; border-bottom-style: none; border-left-style: dotted;" colspan="8"></td>
@@ -610,8 +620,7 @@ class ReportService
                 <td colspan="3">OBSERVACIONES:</td>
             </tr>
             <tr>
-             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b> <br>
-             <div style="padding-top: 3px;">';
+             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b>';
              foreach ($movimiento as $k) {
                 $htmlBody['formatoRf001'] .= htmlspecialchars($k['folio']) . ',';
              }
@@ -628,7 +637,8 @@ class ReportService
              <td>&nbsp;</td>
              <td>&nbsp;</td>
              <td>&nbsp;</td>
-             </tr></table></div>';
+             </tr></table>
+             <p style="font-size: 8px;">DECLARO BAJO PROTESTA DE DECIR VERDAD, QUE LOS DATOS CONTENIDOS EN ESTE CONCENTRADO SON VERÍDICOS Y MANIFIESTO TENER CONOCIMIENTO DE LAS SANCIONES QUE SE APLICARÁN EN CASO CONTRARIO</p>';
         return $htmlBody;
     }
 
@@ -711,7 +721,7 @@ class ReportService
         $firmantes = $this->funcionariosUnidades($ubicacion);
         list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
-        $financieroFirmante = $this->getFirmanteFinanciero($rf001->id);
+        $financieroFirmante = $this->getFirmanteFinanciero($rf001->id_unidad);
 
         $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
@@ -992,23 +1002,40 @@ class ReportService
         return $formattedDates;
     }
 
-    public function getFirmanteFinanciero($idRf001)
+    public function getFirmanteFinanciero($idRfUnidad)
     {
+        $UnidadesAtendidasNarj8 = ['CATAZAJA', 'JIQUIPILAS', 'OCOSINGO', 'TAPACHULA', 'VILLAFLORES', 'YAJALON'];
+        $UnidadesAtendidasCucc8 = ['TUXTLA', 'TONALA', 'SAN CRISTOBAL', 'COMITAN', 'REFORMA'];
+
         $qry = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
-        ->Where('funcionarios.titular', 'false')
-        ->Where('funcionarios.id_org', 12)->get();
+        ->Where('funcionarios.titular', 0)
+        ->Where('funcionarios.id_org', 12);
 
-        // Acceder a los registros por índice
-        $primerRegistro = $qry->get(0);
-        $segundoRegistro = $qry->get(1);
+        $querygetUnidad = DB::table('tbl_unidades')->select('unidad', 'id', 'cct')->where('id', '=', $idRfUnidad)->first();
 
-        if ($idRf001 % 2 == 0) {
-            # EL NÚMERO ES PAR
-            return array('funcionario'=>$primerRegistro->nombre, 'puesto'=>$primerRegistro->cargo, 'correo'=>$primerRegistro->correo, 'curp'=>$primerRegistro->curp);
-        } else {
-            # EL NÚMERO ES NONE
-            return array('funcionario'=>$segundoRegistro->nombre, 'puesto'=>$segundoRegistro->cargo, 'correo'=>$segundoRegistro->correo, 'curp'=>$segundoRegistro->curp);
+        if (in_array($querygetUnidad->unidad, $UnidadesAtendidasNarj8)) {
+            # se encuentra en la lista nandayapa
+            $qry = $qry->where('funcionarios.correo', '=', 'nandayaparamirez_jj@hotmail.com')->first();
+
+            return array('funcionario'=>$qry->nombre, 'puesto'=>$qry->cargo, 'correo'=>$qry->correo, 'curp'=>$qry->curp);
+
+        } elseif (in_array($querygetUnidad->unidad, $UnidadesAtendidasCucc8)) {
+            # se encuentra en lista chatu
+            $qry = $qry->where('funcionarios.correo', '=', 'chatucr77@hotmail.com')->first();
+
+            return array('funcionario'=>$qry->nombre, 'puesto'=>$qry->cargo, 'correo'=>$qry->correo, 'curp'=>$qry->curp);
         }
+    }
+
+    protected function formatoFechaCrearMemo($fecha)
+    {
+        //parsear la fecha utilizando Carbon
+        $parserDate = Carbon::parse($fecha);
+        // configurar al idioma español
+        $parserDate->locale('es');
+
+        $formattedDate = $parserDate->translatedFormat('d'). ' DE '. mb_strtoupper($parserDate->translatedFormat('F'), 'UTF-8'). ' DEL '. $parserDate->translatedFormat('Y');
+        return $formattedDate;
     }
 }

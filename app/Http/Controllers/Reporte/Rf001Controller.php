@@ -19,7 +19,6 @@ use Illuminate\Http\Response;
 use PDF;
 use App\Services\ReportService;
 use App\Http\Requests\rf001ComentariosRequest;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tokens_icti;
 use App\Models\Reportes\Rf001Model;
@@ -160,11 +159,8 @@ class Rf001Controller extends Controller
             //siempre trata de ejecutarse el código
             $response = $this->rfoo1Repository->generateRF001Format($request, $logUser);
             if ($response) {
-                $bandera = Crypt::encrypt('solicitud');
-                $encrypted = base64_encode($bandera);
-                $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
                 # si se ejecutó correctamente lo envíamos a una ruta distinta
-                return redirect()->route('reporte.rf001.sent', ['generado' => $encrypted])->with('message', 'Formato de concentrado de ingresos enviado!');
+                return redirect()->route('reporte.rf001.sent')->with('message', 'Formato de concentrado de ingresos enviado!');
             } else {
                 // mandar a una ruta que controle el error
                 return back()->withErrors(['sent' => 'Ocurrió un error al enviar la información'])->withInput();
@@ -286,11 +282,8 @@ class Rf001Controller extends Controller
             $response = $this->rfoo1Repository->updateAndValidateFormatRf001($id, $order);
             if ($response['code'] == 1)
             {
-                $bandera = Crypt::encrypt('solicitud');
-                $encrypted = base64_encode($bandera);
-                $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
                 # si la respuesta es satisfactoria
-                return redirect()->route('reporte.rf001.sent', ['generado' => $encrypted])->with('message', 'Actualización del Memorandum '.$request['consecutivo'].' correctamente!');
+                return redirect()->route('reporte.rf001.sent')->with('message', 'Actualización del Memorandum '.$request['consecutivo'].' correctamente!');
             } else {
                 return back()->withErrors(['error' => $response['message']])->withInput();
             }
@@ -392,7 +385,7 @@ class Rf001Controller extends Controller
         $direccion = $dataunidades->direccion;
         // aplicando distructuración
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
-        list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $unidad, $organismo);
+        list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $dataunidades->id, $organismo);
 
         $data = [
             'bodyMemo' => $bodyMemo,
