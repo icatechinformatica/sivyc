@@ -374,6 +374,26 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade bd-modal-sm" id="modalError" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #cb4335 ; color:#f0f0f0;">
+                    <h5 class="modal-title" id="exampleModalLabel">MENSAJE DE ERROR!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorMessage"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-dismiss="modal">ENTENDIDO</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script_content_js')
     {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
@@ -490,11 +510,21 @@
                     type: 'POST',
                     dataType: "json",
                     success: function(response) {
+                        // console.log(response); return;
                         setTimeout(function() {
                             // Ocultar el loader y mostrar el contenido después de la carga
                             document.getElementById('loader-overlay').style.display =
                                 'none';
-                            if (response.resp) {
+
+                            if (response.resp && response.resp.error === 1) {
+                                // Mostrar el modal de error de Bootstrap
+                                $('#modalError').modal('show'); // Mostrar el modal de error
+
+                                // Insertar el mensaje de error en el modal
+                                $('#errorMessage').text('Error: ' + response.resp.mensaje);
+                                //salir de la función
+                                return;
+                            } else if (response.resp && response.resp === true) {
                                 window.location.href =
                                     "{{ route('reporte.rf001.sent') }}";
                             }
@@ -504,7 +534,7 @@
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     // Maneja el error aquí
                     console.error('Error:', jqXHR);
-                    console.warning('TextStatus:', textStatus);
+                    console.error('TextStatus:', textStatus);
                     console.error('ErrorThrown:', errorThrown);
                     reject(textStatus);
 
