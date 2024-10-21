@@ -284,7 +284,7 @@
                                         @switch($item->estado)
                                             @case('RETORNADO')
                                             @case('GENERADO')
-                                                @can('actualizar.rf001')
+                                                @canany(['solicitud.rf001', 'vobo.rf001'])
                                                     @if ($item->tipo == 'CANCELADO')
                                                         <a class="nav-link pt-0"
                                                             href="{{ route('reporte.rf001.edit', ['id' => $item->id]) }}">
@@ -298,7 +298,7 @@
                                                                 style="padding-right: 12px;" title='EDITAR REGISTROS'></i>
                                                         </a>
                                                     @endif
-                                                @endcan
+                                                @endcanany
                                             @break
 
                                             @case('ENFIRMA' || 'FIRMADO' || 'GENERARDOCUMENTO' || 'SELLADO')
@@ -329,7 +329,7 @@
                                     </td>
                                     <td class="text-left">
                                         <a class="nav-link pt-0"
-                                            href="{{ route('reporte.rf001.set.details', ['id' => $item->id, 'solicitud' => $dato]) }}">
+                                            href="{{ route('reporte.rf001.set.details', ['id' => $item->id]) }}">
                                             <i class="fa fa-eye fa-2x fa-lg text-grey" aria-hidden="true"
                                                 title="MOSTRAR FORMATO RF001"></i>
                                         </a>
@@ -374,13 +374,11 @@
             <div class="row">
                 <div class="col-md-4">
                     {{-- ocutar lo siguiente porque sólo se activa si la bandera trae el dato que necesito --}}
-                    @if ($dato === 'solicitud')
-                        @can('crear.rf001')
+                        @can('solicitud.rf001')
                             <a href="{{ route('reporte.rf001.ingreso-propio') }}" class="btn">
                                 <i class="fas fa-plus"></i> RF001
                             </a>
                         @endcan
-                    @endif
                 </div>
             </div>
         </div>

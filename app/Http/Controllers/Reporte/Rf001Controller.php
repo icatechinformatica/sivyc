@@ -19,7 +19,6 @@ use Illuminate\Http\Response;
 use PDF;
 use App\Services\ReportService;
 use App\Http\Requests\rf001ComentariosRequest;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tokens_icti;
 use App\Models\Reportes\Rf001Model;
@@ -160,11 +159,8 @@ class Rf001Controller extends Controller
             //siempre trata de ejecutarse el código
             $response = $this->rfoo1Repository->generateRF001Format($request, $logUser);
             if ($response) {
-                $bandera = Crypt::encrypt('solicitud');
-                $encrypted = base64_encode($bandera);
-                $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
                 # si se ejecutó correctamente lo envíamos a una ruta distinta
-                return redirect()->route('reporte.rf001.sent', ['generado' => $encrypted])->with('message', 'Formato de concentrado de ingresos enviado!');
+                return redirect()->route('reporte.rf001.sent')->with('message', 'Formato de concentrado de ingresos enviado!');
             } else {
                 // mandar a una ruta que controle el error
                 return back()->withErrors(['sent' => 'Ocurrió un error al enviar la información'])->withInput();
@@ -182,7 +178,7 @@ class Rf001Controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, $solicitud)
+    public function show($id)
     {
         $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
         $getSigner = $this->rfoo1Repository->getSigner(Auth::user()->id);
@@ -223,7 +219,7 @@ class Rf001Controller extends Controller
         });
         $pathFile = $this->path_files;
         $curpFirmante = $getSigner->curp;
-        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'solicitud', 'data', 'token', 'curpFirmante', 'revisionLocal'))->render();
+        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal'))->render();
     }
 
     /**
@@ -276,21 +272,11 @@ class Rf001Controller extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $order = $request->only([
-                'consecutivo',
-                'id_unidad',
-                'periodoInicio',
-                'periodoFIn',
-                'unidad'
-            ]);
-            $response = $this->rfoo1Repository->updateAndValidateFormatRf001($id, $order);
+            $response = $this->rfoo1Repository->updateAndValidateFormatRf001($id, $request);
             if ($response['code'] == 1)
             {
-                $bandera = Crypt::encrypt('solicitud');
-                $encrypted = base64_encode($bandera);
-                $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
                 # si la respuesta es satisfactoria
-                return redirect()->route('reporte.rf001.sent', ['generado' => $encrypted])->with('message', 'Actualización del Memorandum '.$request['consecutivo'].' correctamente!');
+                return redirect()->route('reporte.rf001.sent')->with('message', 'Actualización del Memorandum '.$request->get('consecutivo').' correctamente!');
             } else {
                 return back()->withErrors(['error' => $response['message']])->withInput();
             }
@@ -334,13 +320,10 @@ class Rf001Controller extends Controller
     public function getSentFormat(Request $request)
     {
         // si se necesita generar el dato
-        $encrypted = str_replace(['-', '_'], ['+', '/'], $request->get('generado'));
-        $encrypted = base64_decode($encrypted);
-        $dato = Crypt::decrypt($encrypted);
         // aplicar el filtro sólo para memorandum
-        $data = $this->rfoo1Repository->sentRF001Format($request);
-
-        return view('reportes.rf001.formatos', compact('data', 'dato'))->render();
+        $unidad = Auth::user()->unidad;
+        $data = $this->rfoo1Repository->sentRF001Format($unidad);
+        return view('reportes.rf001.formatos', compact('data'))->render();
     }
 
     public function addComment(rf001ComentariosRequest $request): JsonResponse
@@ -387,15 +370,15 @@ class Rf001Controller extends Controller
         $organismo = Auth::user()->id_organismo;
         $idReporte = base64_encode($id);
         $unidad = $rf001->unidad;
-        $idUnidad = Auth::user()->unidad;
-        $ccp = $this->rfoo1Repository->setCcp($idUnidad);
-        // dd($ccp);
 
-        $data = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
-        $direccion = $data->direccion;
+        $dataunidades = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
+        $idUnidad = Auth::user()->unidad;
+        $ccp = $this->rfoo1Repository->setCcp($dataunidades->id);
+
+        $direccion = $dataunidades->direccion;
         // aplicando distructuración
         $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
-        list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $unidad, $organismo);
+        list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $dataunidades->id, $organismo);
 
         $data = [
             'bodyMemo' => $bodyMemo,

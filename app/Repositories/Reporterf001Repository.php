@@ -68,8 +68,8 @@ class Reporterf001Repository implements Reporterf001Interface
                         WHEN tbl_cursos.comprobante_pago <> 'null' THEN concat('uploadFiles',tbl_cursos.comprobante_pago)
                         WHEN tbl_recibos.file_pdf <> 'null' THEN tbl_recibos.file_pdf
                     END as file_pdf"))
-            ->when($numRecibo, function ($query, $numRecibo) {
-                return $query->where('tbl_recibos.num_recibo', '=', $numRecibo);
+            ->when($id, function ($query, $id) {
+                return $query->where('tbl_recibos.id', '=', $id);
             })->first();
 
             $JsonObj = [
@@ -125,9 +125,9 @@ class Reporterf001Repository implements Reporterf001Interface
         ]);
     }
 
-    public function sentRF001Format($request)
+    public function sentRF001Format($unidad)
     {
-        return (new Rf001Model())->latest()->paginate(10 ?? 5);
+        return (new Rf001Model())->where('id_unidad', '=', $unidad)->paginate(10 ?? 5);
     }
 
     public function getDetailRF001Format($concentrado)
@@ -157,8 +157,8 @@ class Reporterf001Repository implements Reporterf001Interface
                             WHEN tbl_cursos.comprobante_pago <> 'null' THEN concat('uploadFiles',tbl_cursos.comprobante_pago)
                             WHEN tbl_recibos.file_pdf <> 'null' THEN tbl_recibos.file_pdf
                         END as file_pdf"))
-                ->when($numeroRecibo, function ($query, $numeroRecibo) {
-                    return $query->where('tbl_recibos.num_recibo', '=', $numeroRecibo);
+                ->when($id, function ($query, $id) {
+                    return $query->where('tbl_recibos.id', '=', $id);
                 })->first();
 
                 # verdadero
@@ -609,16 +609,16 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function updateAndValidateFormatRf001($id, $request) : array
     {
-        $checkDocumento = (new DocumentosFirmar())->where('numero_o_clave', trim($request['consecutivo']))->first();
+        $checkDocumento = (new DocumentosFirmar())->where('numero_o_clave', trim($request->get('consecutivo')))->first();
         if ($checkDocumento) {
             # se encuentran coincidencias
-            $msg = "EL FORMATO ".$request['consecutivo']." SE ENCUENTRA EN USO Y NO PUEDE SER REMPLAZADO";
+            $msg = "EL FORMATO ".$request->get('consecutivo')." SE ENCUENTRA EN USO Y NO PUEDE SER REMPLAZADO";
             return ['code' => 0, 'message' => $msg];
         } else {
             # no se encuentran incidencias
-            $qry = (new Rf001Model())->where('memorandum', trim($request['consecutivo']))
+            $qry = (new Rf001Model())->where('id', $id)
                 ->update([
-                    'memorandum' => $request['consecutivo'],
+                    'memorandum' => $request->get('consecutivo'),
                 ]);
             return ['code' => 1, 'message' => $qry];
         }
@@ -628,14 +628,21 @@ class Reporterf001Repository implements Reporterf001Interface
     public function setCcp($idUnidad)
     {
         return \DB::table('tbl_funcionarios as funcionario')
-            ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
-            ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
-            ->where('organismos.id_unidad', $idUnidad)
-            ->where('funcionario.cargo', 'like', 'DELEG%')
-            ->orWhere('organismos.id_parent', 0)
-            ->orWhere('funcionario.id_org', 13)
-            ->orderBy('funcionario.id_org', 'asc')
-            ->get();
+                ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
+                ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
+                ->where('funcionario.activo', '=', 'true')
+                ->Where('funcionario.titular', true)
+                ->where(function($query) use ($idUnidad) {
+                    $query->where('organismos.id_unidad', $idUnidad)
+                        ->where(function($moist) use ($idUnidad) {
+                            $moist->where('funcionario.cargo', 'like', 'DELEG%')
+                            ->orWhere('organismos.id_parent',1);
+                        })
+                        ->orWhere('organismos.id_parent', 0)
+                        ->orWhere('funcionario.id_org', 13);
+                })
+                ->orderBy('funcionario.id_org', 'asc')
+                ->get();
 
     }
 

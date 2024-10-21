@@ -184,14 +184,9 @@
     </div>
     {{-- <div class="d-none" id="vHTMLSignature"></div> --}}
     {{-- <input class="d-none" id="token" name="token" type="text" value="{{$token}}"> --}}
-    @php
-        $bandera = Crypt::encrypt('solicitud');
-        $encrypted = base64_encode($bandera);
-        $encrypted = str_replace(['+', '/', '='], ['-', '_', ''], $encrypted);
-    @endphp
     <!-- cabecera -->
     <div class="card-header">
-        <a href="{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}"> Reportes </a> / Reportes RF-001
+        <a href="{{ route('reporte.rf001.sent') }}"> Reportes </a> / Reportes RF-001
     </div>
     <div class="card card-body  p-5" style=" min-height:450px;">
         @if ($errors->any())
@@ -278,7 +273,7 @@
                                     <td>{{ $item->concepto }}</td>
                                     <td>
                                         @php
-                                            $depositos = json_decode($item->depositos, true);
+                                            $depositos = json_decode($item->depositos, true) ?? [];
                                         @endphp
                                         @foreach ($depositos as $k)
                                             {{ $k['folio'] }} &nbsp;
@@ -346,9 +341,11 @@
                         {!! Form::close() !!}
                         <div class="col-auto mt-4">
                             @if ($getConcentrado)
-                                <a id="enviar" class="btn btn-danger">
-                                    GENERAR DOCUMENTO
-                                </a>
+                                @can('solicitud.rf001')
+                                    <a id="enviar" class="btn btn-danger">
+                                        GENERAR DOCUMENTO
+                                    </a>
+                                @endcan
                             @endif
                         </div>
                     </div>
@@ -373,6 +370,26 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn" id="corfirmarEfirma">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-modal-sm" id="modalError" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #cb4335 ; color:#f0f0f0;">
+                    <h5 class="modal-title" id="exampleModalLabel">MENSAJE DE ERROR!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorMessage"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-dismiss="modal">ENTENDIDO</button>
                 </div>
             </div>
         </div>
@@ -493,13 +510,23 @@
                     type: 'POST',
                     dataType: "json",
                     success: function(response) {
+                        // console.log(response); return;
                         setTimeout(function() {
                             // Ocultar el loader y mostrar el contenido después de la carga
                             document.getElementById('loader-overlay').style.display =
                                 'none';
-                            if (response.resp) {
+
+                            if (response.resp && response.resp.error === 1) {
+                                // Mostrar el modal de error de Bootstrap
+                                $('#modalError').modal('show'); // Mostrar el modal de error
+
+                                // Insertar el mensaje de error en el modal
+                                $('#errorMessage').text('Error: ' + response.resp.mensaje);
+                                //salir de la función
+                                return;
+                            } else if (response.resp && response.resp === true) {
                                 window.location.href =
-                                    "{{ route('reporte.rf001.sent', ['generado' => $encrypted]) }}";
+                                    "{{ route('reporte.rf001.sent') }}";
                             }
                         }, 2500); // 2 segundos de tiempo simulado
 
@@ -507,7 +534,7 @@
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     // Maneja el error aquí
                     console.error('Error:', jqXHR);
-                    console.warning('TextStatus:', textStatus);
+                    console.error('TextStatus:', textStatus);
                     console.error('ErrorThrown:', errorThrown);
                     reject(textStatus);
 
@@ -522,22 +549,6 @@
                 console.error(error.statusText);
                 document.getElementById('loader-overlay').style.display = 'none';
             }
-
-
-            // let form = $(document.createElement('form'));
-            // $(form).attr("action", URL);
-            // $(form).attr("method", "POST");
-
-            // // Añadir el token CSRF como un campo oculto dentro del formulario
-            // let csrfToken = "{{ csrf_token() }}";
-            // let input = $(document.createElement('input'));
-            // $(input).attr("type", "hidden");
-            // $(input).attr("name", "_token");
-            // $(input).attr("value", csrfToken);
-            // $(form).append(input);
-
-            // $('body').append(form);
-            // $(form).submit();
         });
 
         function generarToken() {

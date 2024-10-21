@@ -6,15 +6,17 @@
     <style>
         /* @page {margin: 0px 15px 15px 15px; } */
         .contenedor {
-            margin-left: 1cm;
-            margin-right: 1cm;
+            margin-left: 10px;
+            margin-right: 10px;
         }
 
         body {
             /* margin-top: 70px; */
             /* margin-bottom: -120px; */
-            padding-top: 45px;
+            /* padding-top: 5px; */
             padding-bottom: 60px;
+            margin-left: -10px;
+            margin-right: -10px;
             /* background-color: aqua; */
         }
 
@@ -26,9 +28,9 @@
         }
 
         .bloque_dos {
-            font-weight: bold;
-            font-size: 12px;
-            font: bold;
+            /* font-weight: bold; */
+            font-size: 10px;
+            /* font: bold; */
         }
 
         .contenido {
@@ -238,8 +240,20 @@
             @if ($loop->first)
                 <!-- Código para la primera iteración -->
                 {{ $v->nombre }}. {{ $v->cargo }} . Para su conocimiento. <br>
-            @else
+            @elseif(!str_contains($v->cargo, 'DIRECTOR') && !str_contains($v->cargo, 'DIRECTORA') && !str_contains($v->cargo, 'ENCARGADO DE LA UNIDAD') && !str_contains($v->cargo, 'ENCARGADA DE LA UNIDAD'))
+                @if($k == 1) Archivo / Minutario. <br> @endif
                 {{ $v->nombre }}. {{ $v->cargo }} . Mismo fin. <br>
+            @endif
+        @endforeach
+        <br>
+        @foreach ($ccp as $k => $v) <!-- Valido y elaboro -->
+            @if(str_contains($v->cargo, 'DIRECTOR') || str_contains($v->cargo, 'DIRECTORA') || str_contains($v->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($v->cargo, 'ENCARGADA DE LA UNIDAD'))
+                Validó: {{ $v->nombre }}. {{ $v->cargo }} . <br>
+            @endif
+        @endforeach
+        @foreach ($ccp as $k => $v) <!-- Valido y elaboro -->
+            @if(str_contains($v->cargo, 'DELEG'))
+                Elaboró: {{ $v->nombre }}. {{ $v->cargo }} . <br>
             @endif
         @endforeach
     </div>
