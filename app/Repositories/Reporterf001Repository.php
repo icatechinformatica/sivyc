@@ -609,16 +609,16 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function updateAndValidateFormatRf001($id, $request) : array
     {
-        $checkDocumento = (new DocumentosFirmar())->where('numero_o_clave', trim($request['consecutivo']))->first();
+        $checkDocumento = (new DocumentosFirmar())->where('numero_o_clave', trim($request->get('consecutivo')))->first();
         if ($checkDocumento) {
             # se encuentran coincidencias
-            $msg = "EL FORMATO ".$request['consecutivo']." SE ENCUENTRA EN USO Y NO PUEDE SER REMPLAZADO";
+            $msg = "EL FORMATO ".$request->get('consecutivo')." SE ENCUENTRA EN USO Y NO PUEDE SER REMPLAZADO";
             return ['code' => 0, 'message' => $msg];
         } else {
             # no se encuentran incidencias
-            $qry = (new Rf001Model())->where('memorandum', trim($request['consecutivo']))
+            $qry = (new Rf001Model())->where('id', $id)
                 ->update([
-                    'memorandum' => $request['consecutivo'],
+                    'memorandum' => $request->get('consecutivo'),
                 ]);
             return ['code' => 1, 'message' => $qry];
         }

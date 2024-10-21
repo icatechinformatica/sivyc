@@ -272,18 +272,11 @@ class Rf001Controller extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $order = $request->only([
-                'consecutivo',
-                'id_unidad',
-                'periodoInicio',
-                'periodoFIn',
-                'unidad'
-            ]);
-            $response = $this->rfoo1Repository->updateAndValidateFormatRf001($id, $order);
+            $response = $this->rfoo1Repository->updateAndValidateFormatRf001($id, $request);
             if ($response['code'] == 1)
             {
                 # si la respuesta es satisfactoria
-                return redirect()->route('reporte.rf001.sent')->with('message', 'Actualización del Memorandum '.$request['consecutivo'].' correctamente!');
+                return redirect()->route('reporte.rf001.sent')->with('message', 'Actualización del Memorandum '.$request->get('consecutivo').' correctamente!');
             } else {
                 return back()->withErrors(['error' => $response['message']])->withInput();
             }
