@@ -558,8 +558,8 @@ class ReportService
         $htmlBody['formatoRf001'] .= '<table class="tabla_con_border" style="width: 100%; table-layout: fixed; border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th style="text-align: center; width: 20%; word-wrap: break-word;"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
-                    <th style="text-align: center; width: 20%; word-wrap: break-word;" ><b>N°. RECIBO Y/O FACTURA</b></th>
+                    <th style="text-align: center; width: 20%; word-wrap: break-word;"><b>N°. RECIBO Y/O FACTURA</th>
+                    <th style="text-align: center; width: 20%; word-wrap: break-word;" ><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></b></th>
                     <th style="text-align: center; width: 45%; word-wrap: break-word;">CONCEPTO DE COBRO</th>
                     <th style="text-align: center; width: 15%; word-wrap: break-word;">IMPORTE</th>
                 </tr>
@@ -572,6 +572,7 @@ class ReportService
             $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
 
             $htmlBody['formatoRf001'] .= '<tr>
+                <td style="text-align: center;  word-wrap: break-word;">' . htmlspecialchars($item['folio']) . '</td>
                 <td style="text-align: center;  word-wrap: break-word;">';
 
                 // Iterar sobre los depósitos
@@ -587,7 +588,6 @@ class ReportService
                 }
 
             $htmlBody['formatoRf001'] .= '</td>
-                <td style="text-align: center;  word-wrap: break-word;">' . htmlspecialchars($item['folio']) . '</td>
                 <td style="text-align: left; font-size: 9px;  word-wrap: break-word;">';
 
             // Mostrar curso o descripción
