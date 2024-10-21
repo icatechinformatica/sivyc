@@ -660,7 +660,7 @@
                 <div class="row">
                     <div class="col-6">
                     </div>
-                    <div class="col-4 d-flex justify-content-end">
+                    <div class="col-2 d-flex justify-content-end">
                         @if (is_array($revisionLocal) && count($revisionLocal) > 0)
                             @if ($getConcentrado->estado == 'ENFIRMA' && $getConcentrado->tipo != 'CANCELADO')
                                 @if (!empty($data['cadenaOriginal']))
@@ -689,6 +689,13 @@
                             @canany(['solicitud.rf001', 'vobo.rf001'])
                                 <a href="javascript:;" class="btn" id="enviarRevision">ENVIAR A REVISIÓN</a>
                             @endcanany
+                        @endif
+                    </div>
+                    <div class="col-2 justified-content-end">
+                        @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
+                            @can('solicitud.rf001')
+                                <a href="{{ route('reporte.rf001.details', ['concentrado' => $id ]) }}" class="btn btn-info" id="enviarRevision">EDITAR CONTENTRADO</a>
+                            @endcan
                         @endif
                     </div>
                 </div>

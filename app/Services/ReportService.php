@@ -624,11 +624,11 @@ class ReportService
                 <td colspan="3">OBSERVACIONES:</td>
             </tr>
             <tr>
-             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b>';
+             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN RECIBO OFICIAL:</b>';
              foreach ($movimiento as $k) {
                 $htmlBody['formatoRf001'] .= htmlspecialchars($k['folio']) . ',';
              }
-             $htmlBody['formatoRf001'] .= '<p><b>RECIBO OFICIAL: &nbsp;</b>';
+             $htmlBody['formatoRf001'] .= '<p><b>FICHAS DE DEPOSITO: &nbsp;</b>';
              foreach ($movimiento as $v) {
                 $deposito = isset($v['depositos']) ? json_decode($v['depositos'], true) : [];
                 foreach ($deposito as $j) {
