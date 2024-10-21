@@ -572,7 +572,6 @@ class ReportService
             $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
 
             $htmlBody['formatoRf001'] .= '<tr>
-                <td style="text-align: center;  word-wrap: break-word;">' . htmlspecialchars($item['folio']) . '</td>
                 <td style="text-align: center;  word-wrap: break-word;">';
 
                 // Iterar sobre los depósitos
@@ -588,6 +587,7 @@ class ReportService
                 }
 
             $htmlBody['formatoRf001'] .= '</td>
+                <td style="text-align: center;  word-wrap: break-word;">' . htmlspecialchars($item['folio']) . '</td>
                 <td style="text-align: left; font-size: 9px;  word-wrap: break-word;">';
 
             // Mostrar curso o descripción
