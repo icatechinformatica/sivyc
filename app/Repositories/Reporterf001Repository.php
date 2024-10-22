@@ -619,6 +619,8 @@ class Reporterf001Repository implements Reporterf001Interface
             $qry = (new Rf001Model())->where('id', $id)
                 ->update([
                     'memorandum' => $request->get('consecutivo'),
+                    'periodo_inicio' => $request->get('periodoInicio'),
+                    'periodo_fin' => $request->get('periodoFIn'),
                 ]);
             return ['code' => 1, 'message' => $qry];
         }
