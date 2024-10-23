@@ -315,7 +315,7 @@ class supreController extends Controller
 
         $agenda = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','o.id_parent')
             ->Join('tbl_funcionarios AS f', 'f.id_org','o.id')
-            ->Where('o.id_unidad',$unidadsel->id)
+            ->Where('o.id_unidad',$unidadsel->id)->where('f.titular', true)
             ->Get();
 
         Foreach($agenda as $moist) {

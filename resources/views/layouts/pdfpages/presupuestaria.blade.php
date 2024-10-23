@@ -140,7 +140,7 @@
             <br><br><h6><small><b>C.c.p. {{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Mismo Fin</b></small></h6>
             <h6><small><b>C.c.p. {{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo.<b></small></h6>
-            <br><small><b>Valido: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
+            <br><small><b>Validó: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
             <br><small><b>Elaboró: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
         </div>
     </body>
