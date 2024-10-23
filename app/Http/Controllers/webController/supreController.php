@@ -121,7 +121,8 @@ class supreController extends Controller
             ->OrderBy('tabla_supre.status','ASC')
             ->OrderBy('tabla_supre.updated_at','DESC')
             ->GroupBy('tabla_supre.id','folios.permiso_editar','clave')
-            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado')],'pagos.status_recepcion');
+            // ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion']);
+            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion']);
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
