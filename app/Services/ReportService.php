@@ -472,12 +472,16 @@ class ReportService
         $nombreMesCreacion = $dateCreacion->translatedFormat('F');
 
         // documento rf001
-        $unidad = tbl_unidades::where('id', $unidad)->first();
+        $getUnidad = tbl_unidades::where('id', $unidad)->first();
         $instituto = DB::table('tbl_instituto')->first();
-        $direccion = $unidad->direccion;
+        $direccion = $getUnidad->direccion;
         // Decodificar el campo cuentas_bancarias
         $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
-        $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
+        $cuenta = $cuentas_bancarias[$getUnidad->unidad]['BBVA'];
+
+        #modificaciones ccp
+        $ccp = $this->setCcp($getUnidad->id);
+        $count = 0;
 
         foreach ($movimiento as $key) {
             // Acumular el importe total
@@ -511,6 +515,34 @@ class ReportService
                     <br>
                 </div>
             </div> <br><br>';
+
+        $htmlBody['memorandum'] .= '<div class="ccp"> C.c.p ';
+        foreach ($ccp as $key => $value) {
+            # director primera iteración
+            if ($count === 0) {
+               $htmlBody['memorandum'] .=  htmlspecialchars($value->nombre).'. '.htmlspecialchars($value->cargo).'. Para su conocimiento. <br>';
+            } elseif (!str_contains($value->cargo, 'DIRECTOR') && !str_contains($value->cargo, 'DIRECTORA') && !str_contains($value->cargo, 'ENCARGADO DE LA UNIDAD') && !str_contains($value->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                if ($key == 1) {
+                    # archivo minutario
+                    $htmlBody['memorandum'] .= 'Archivo / Minutario. <br>';
+                }
+                $htmlBody['memorandum'] .= htmlspecialchars($value->nombre).'. '.htmlspecialchars($value->cargo).'. Mismo fin. <br>';
+            }
+            $count++;
+        }
+        $htmlBody['memorandum'] .= '<br>';
+        foreach ($ccp as $k => $v) {
+            # validar y elaborar
+            if (str_contains($v->cargo, 'DIRECTOR') || str_contains($v->cargo, 'DIRECTORA') || str_contains($v->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($v->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                $htmlBody['memorandum'] .= 'Validó: '.htmlspecialchars($v->nombre).'. '.htmlspecialchars($v->cargo).'. <br>';
+            }
+        }
+        foreach ($ccp as $ke => $val) {
+            if (str_contains($val->cargo, 'DELEG')) {
+                $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+            }
+        }
+        $htmlBody['memorandum'] .= '</div>';
 
 
 
@@ -1061,5 +1093,25 @@ class ReportService
 
         $formattedDate = $parserDate->translatedFormat('d'). ' DE '. mb_strtoupper($parserDate->translatedFormat('F'), 'UTF-8'). ' DEL '. $parserDate->translatedFormat('Y');
         return $formattedDate;
+    }
+
+    protected function setCcp($idUnidad)
+    {
+        return \DB::table('tbl_funcionarios as funcionario')
+        ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
+        ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
+        ->where('funcionario.activo', '=', 'true')
+        ->Where('funcionario.titular', true)
+        ->where(function($query) use ($idUnidad) {
+            $query->where('organismos.id_unidad', $idUnidad)
+                ->where(function($moist) use ($idUnidad) {
+                    $moist->where('funcionario.cargo', 'like', 'DELEG%')
+                    ->orWhere('organismos.id_parent',1);
+                })
+                ->orWhere('organismos.id_parent', 0)
+                ->orWhere('funcionario.id_org', 13);
+        })
+        ->orderBy('funcionario.id_org', 'asc')
+        ->get();
     }
 }
