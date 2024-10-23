@@ -652,7 +652,7 @@ class ReportService
             // arreglo
             $firmanteNoUno = $firmanteNoDos = [];
             // delegado administrativo
-            $query = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
+            $query = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo', 'funcionarios.incapacidad')
                         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
                         ->Join('tbl_unidades AS unidades', 'unidades.id', 'tblOrganismo.id_unidad')
                         ->Where('funcionarios.activo', 'true')
@@ -666,6 +666,21 @@ class ReportService
 
             if(!$director || !$delegado){
                 return "Error en la busqueda de firmantes";
+            }
+
+            //procesamos las incapacidades, si es que las hay
+            if (!empty($director->incapacidad)) {
+                $incapacidadFirmante = $this->incapacidad(json_decode($director->incapacidad), $director->nombre);
+                if ($incapacidadFirmante != false) {
+                    $firmanteNoUno = $incapacidadFirmante;
+                }
+            }
+
+            if (!empty($delegado->incapacidad)) {
+                $incapacidadFirmanteDelegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre);
+                if ($incapacidadFirmanteDelegado != false) {
+                    $firmanteNoDos = $incapacidadFirmanteDelegado;
+                }
             }
             // proceso en el cuál se generan los arreglos de los firmantes
             $firmanteNoUno = array('funcionario'=>$director->nombre, 'puesto'=>$director->cargo, 'correo'=>$director->correo, 'curp'=>$director->curp);
