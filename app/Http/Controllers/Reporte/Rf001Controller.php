@@ -373,7 +373,6 @@ class Rf001Controller extends Controller
 
         $dataunidades = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
         $idUnidad = Auth::user()->unidad;
-        $ccp = $this->rfoo1Repository->setCcp($dataunidades->id);
 
         $direccion = $dataunidades->direccion;
         // aplicando distructuración
@@ -390,7 +389,6 @@ class Rf001Controller extends Controller
             'qrCodeBase64' => $qrCodeBase64,
             'unidad' => $unidad,
             'bodyRf001' => $bodyRf001,
-            'ccp' => $ccp
         ];
 
         // generar el PDF
