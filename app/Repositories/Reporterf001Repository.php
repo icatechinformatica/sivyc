@@ -621,6 +621,7 @@ class Reporterf001Repository implements Reporterf001Interface
                     'memorandum' => $request->get('consecutivo'),
                     'periodo_inicio' => $request->get('periodoInicio'),
                     'periodo_fin' => $request->get('periodoFIn'),
+                    'created_at' => Carbon::now(),
                 ]);
             return ['code' => 1, 'message' => $qry];
         }
