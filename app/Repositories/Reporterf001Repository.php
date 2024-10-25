@@ -81,7 +81,6 @@ class Reporterf001Repository implements Reporterf001Interface
                 'importe' => $query->importe,
                 'importe_letra' => $query->importe_letra,
                 'depositos' => $query->depositos,
-                'descripcion' => $query->descripcion,
             ];
             $dataAdd[] = $JsonObj;
 
@@ -173,6 +172,7 @@ class Reporterf001Repository implements Reporterf001Interface
                     'documento' => $qry->file_pdf,
                     'importe' => $qry->importe,
                     'importe_letra' => $qry->importe_letra,
+                    'depositos' => $qry->depositos
                 ];
                 // Add a new Json Object to existing Array
                 $datosExistentes[] = $JsonObj;

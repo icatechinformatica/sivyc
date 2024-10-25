@@ -590,7 +590,7 @@
                                     <th style="text-align: center;" style="width: 15%;">FOLIO</th>
                                     <th style="text-align: center;">CURSO</th>
                                     <th style="text-align: center;">CONCEPTO</th>
-                                    <th style="text-align: center;">FOLIOS</th>
+                                    <th style="text-align: center;">MOVIMIENTO BANCARIO</th>
                                     <th style="text-align: center;">RECIBO DE PAGO</th>
                                     <th style="text-align: center;">IMPORTES</th>
                                     <th style="text-align: center;">COMENTARIOS</th>
@@ -600,9 +600,7 @@
                                 @foreach ($movimiento as $item)
                                     @php
 
-                                        $depositos = isset($item['depositos'])
-                                            ? json_decode($item['depositos'], true)
-                                            : [];
+                                        $depositos = json_decode($item['depositos'], true) ?? [];
 
                                         $observaciones = isset($item['observaciones'])
                                             ? json_decode($item['observaciones'], true)
