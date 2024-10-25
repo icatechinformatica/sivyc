@@ -704,19 +704,20 @@ class ReportService
             if (!empty($director->incapacidad)) {
                 $incapacidadFirmante = $this->incapacidad(json_decode($director->incapacidad), $director->nombre);
                 if ($incapacidadFirmante != false) {
-                    $firmanteNoUno = $incapacidadFirmante;
+                    $firmanteNoUno = array('funcionario' => $incapacidadFirmante->funcionario, 'puesto' =>$incapacidadFirmante->cargo, 'correo' => $incapacidadFirmante->correo, 'curp' => $incapacidadFirmante->curp);
                 }
+            } else {
+                $firmanteNoUno = array('funcionario'=>$director->nombre, 'puesto'=>$director->cargo, 'correo'=>$director->correo, 'curp'=>$director->curp);
             }
 
             if (!empty($delegado->incapacidad)) {
                 $incapacidadFirmanteDelegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre);
                 if ($incapacidadFirmanteDelegado != false) {
-                    $firmanteNoDos = $incapacidadFirmanteDelegado;
+                    $firmanteNoDos = array('funcionario' => $incapacidadFirmanteDelegado->funcionario, 'puesto' => $incapacidadFirmanteDelegado->cargo, 'correo' => $incapacidadFirmanteDelegado->correo, 'curp' => $incapacidadFirmanteDelegado->curp);
                 }
+            } else {
+                $firmanteNoDos = array('funcionario'=>$delegado->nombre, 'puesto'=>$delegado->cargo, 'correo'=>$delegado->correo, 'curp'=>$delegado->curp);
             }
-            // proceso en el cuál se generan los arreglos de los firmantes
-            $firmanteNoUno = array('funcionario'=>$director->nombre, 'puesto'=>$director->cargo, 'correo'=>$director->correo, 'curp'=>$director->curp);
-            $firmanteNoDos = array('funcionario'=>$delegado->nombre, 'puesto'=>$delegado->cargo, 'correo'=>$delegado->correo, 'curp'=>$delegado->curp);
 
             return [$firmanteNoUno, $firmanteNoDos];
         } catch (\Throwable $th) {
