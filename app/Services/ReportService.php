@@ -241,6 +241,7 @@ class ReportService
 
                 return TRUE;
             } else {
+                \Log::error('Error en json: ' . $response->json());
                 # TODO: realizar cambios al momento de retornar
                 return ['error' => 1, 'mensaje' => 'Error en el proceso: ' . $response];
                 // return FALSE;
