@@ -492,6 +492,7 @@ class ReportService
         #modificaciones ccp
         $ccp = $this->setCcp($getUnidad->id);
         $count = 0;
+        $bandera = false;
 
         foreach ($movimiento as $key) {
             // Acumular el importe total
@@ -548,10 +549,14 @@ class ReportService
             }
         }
         foreach ($ccp as $ke => $val) {
-            if (str_contains($val->cargo, 'DELEG')) {
-                $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
-            } elseif (str_contains($v->cargo, 'DIRECTOR') || str_contains($v->cargo, 'DIRECTORA') || str_contains($v->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($v->cargo, 'ENCARGADA DE LA UNIDAD')) {
-                $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($v->nombre).'. '.htmlspecialchars($v->cargo).'. <br>';
+            if (!$bandera) {
+                if (str_contains($val->cargo, 'DELEG')) {
+                    $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                    $bandera = true;
+                } elseif (str_contains($val->cargo, 'DIRECTOR') || str_contains($val->cargo, 'DIRECTORA') || str_contains($val->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($val->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                    $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                    $bandera = true;
+                }
             }
         }
         $htmlBody['memorandum'] .= '</div>';
