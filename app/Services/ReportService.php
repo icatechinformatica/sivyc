@@ -610,6 +610,18 @@ class ReportService
 
         // Iterar sobre los movimientos
         $counter = 0;
+
+        // Ordenar el array $movimiento de menor a mayor en base al número del campo 'folio'
+        usort($movimiento, function($a, $b) {
+            // Extraer el número después del prefijo en el campo 'folio'
+            preg_match('/\d+/', $a['folio'], $matchA);
+            preg_match('/\d+/', $b['folio'], $matchB);
+            $numA = isset($matchA[0]) ? (int) $matchA[0] : 0;
+            $numB = isset($matchB[0]) ? (int) $matchB[0] : 0;
+
+            return $numA <=> $numB;
+        });
+
         foreach ($movimiento as $item) {
             $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
 
