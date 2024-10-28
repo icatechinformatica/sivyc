@@ -597,6 +597,17 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    usort($movimiento, function($a, $b) {
+                                        // Extraer el número después del prefijo en el campo 'folio'
+                                        preg_match('/\d+/', $a['folio'], $matchA);
+                                        preg_match('/\d+/', $b['folio'], $matchB);
+                                        $numA = isset($matchA[0]) ? (int) $matchA[0] : 0;
+                                        $numB = isset($matchB[0]) ? (int) $matchB[0] : 0;
+
+                                        return $numA <=> $numB;
+                                    });
+                                @endphp
                                 @foreach ($movimiento as $item)
                                     @php
                                         $depositos = isset($item['depositos'])
@@ -693,7 +704,7 @@
                     <div class="col-2 justified-content-end">
                         @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
                             @can('solicitud.rf001')
-                                <a href="{{ route('reporte.rf001.details', ['concentrado' => $id ]) }}" class="btn btn-info" id="enviarRevision">EDITAR CONTENTRADO</a>
+                                <a href="{{ route('reporte.rf001.details', ['concentrado' => $id ]) }}" class="btn btn-info" id="enviarRevision">EDITAR CONCENTRADO</a>
                             @endcan
                         @endif
                     </div>

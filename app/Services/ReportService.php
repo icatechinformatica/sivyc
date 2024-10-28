@@ -492,6 +492,7 @@ class ReportService
         #modificaciones ccp
         $ccp = $this->setCcp($getUnidad->id);
         $count = 0;
+        $bandera = false;
 
         foreach ($movimiento as $key) {
             // Acumular el importe total
@@ -548,8 +549,14 @@ class ReportService
             }
         }
         foreach ($ccp as $ke => $val) {
-            if (str_contains($val->cargo, 'DELEG')) {
-                $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+            if (!$bandera) {
+                if (str_contains($val->cargo, 'DELEG')) {
+                    $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                    $bandera = true;
+                } elseif (str_contains($val->cargo, 'DIRECTOR') || str_contains($val->cargo, 'DIRECTORA') || str_contains($val->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($val->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                    $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                    $bandera = true;
+                }
             }
         }
         $htmlBody['memorandum'] .= '</div>';
@@ -610,6 +617,18 @@ class ReportService
 
         // Iterar sobre los movimientos
         $counter = 0;
+
+        // Ordenar el array $movimiento de menor a mayor en base al número del campo 'folio'
+        usort($movimiento, function($a, $b) {
+            // Extraer el número después del prefijo en el campo 'folio'
+            preg_match('/\d+/', $a['folio'], $matchA);
+            preg_match('/\d+/', $b['folio'], $matchB);
+            $numA = isset($matchA[0]) ? (int) $matchA[0] : 0;
+            $numB = isset($matchB[0]) ? (int) $matchB[0] : 0;
+
+            return $numA <=> $numB;
+        });
+
         foreach ($movimiento as $item) {
             $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
 
@@ -1121,6 +1140,11 @@ class ReportService
                 })
                 ->orWhere('organismos.id_parent', 0)
                 ->orWhere('funcionario.id_org', 13);
+        })
+        ->where(function($query){
+            $query->whereNull('funcionario.incapacidad')
+                ->orwhere('funcionario.incapacidad', '{}')
+                ->orWhereNull(\DB::raw("funcionario.incapacidad->>'id_firmante'"));
         })
         ->orderBy('funcionario.id_org', 'asc')
         ->get();
