@@ -322,7 +322,7 @@ class asignarfoliosController extends Controller
         // $data = $this->datos_firmantes($curso->id_unidad);
 
         $nameFileOriginal = 'Constancia Alumno '.$folio.'.pdf';
-        $numOficio = 'CONSTANCIA_ALUMNO-'.$folio;
+        $numOficio = $folio;
         $numFirmantes = '2';
 
         $arrayFirmantes = [];
@@ -353,8 +353,8 @@ class asignarfoliosController extends Controller
         $ArrayXml = [
             'emisor' => [
                 '_attributes' => [
-                    'nombre_emisor' => $academico->name,
-                    'cargo_emisor' => $academico->puesto,
+                    'nombre_emisor' => $academico->funcionario,
+                    'cargo_emisor' => $academico->cargo,
                     'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
                     // 'curp_emisor' => $dataEmisor->curp
                 ],
@@ -516,47 +516,35 @@ class asignarfoliosController extends Controller
     private function datos_firmantes($id_unidad){
         $firm_academico = $firm_director = null;
 
-        try {
-            $firm_academico = DB::Table('tbl_organismos AS org')
-            ->Select('fun.id as id_fun','org.id', 'fun.nombre AS funcionario','fun.curp', 'us.name',
-            'fun.cargo','fun.correo', 'us.puesto', 'fun.incapacidad')
-                ->join('tbl_funcionarios AS fun', 'fun.id_org','org.id')
-                ->join('tbl_cursos as tc', 'tc.id_unidad','org.id_unidad')
-                ->join('users as us', 'us.email','fun.correo')
-                ->where('org.nombre', 'LIKE', '%ACADEMICO%')
-                ->where('tc.id_unidad', '=', $id_unidad)
-                ->where('fun.activo', '=', 'true')
-                ->first();
-            if($firm_academico == null){return "NO SE ENCONTRON DATOS DEL ACADEMICO!";}
-        } catch (\Throwable $th) {
-            return back()->with('message', 'Error firmante academico '.$th->getMessage());
+        $firm_director = DB::table('tbl_organismos as o')
+        ->select('fun.id as id_funcionario','fun.cargo','fun.nombre as funcionario', 'fun.correo', 'fun.curp', 'fun.incapacidad', 'fun.titulo')
+        ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
+        ->where('o.id_unidad', $id_unidad)
+        ->where('o.id_parent', 1)
+        ->where('fun.activo', 'true')
+        ->where('fun.titular', true)->first();
+
+        $firm_academico = DB::table('tbl_organismos as o')
+        ->select('fun.id as id_funcionario','fun.cargo','fun.nombre as funcionario', 'fun.correo', 'fun.curp', 'fun.incapacidad', 'fun.titulo')
+        ->Join('tbl_funcionarios as fun', 'fun.id_org', '=', 'o.id')
+        ->where('o.id_unidad', $id_unidad)
+        ->where('fun.cargo', 'like', '%ACADÉMICO%')
+        ->where('fun.activo', 'true')
+        ->where('fun.titular', true)->first();
+
+        //Validar la incapacidad
+        if(!empty($firm_director->incapacidad)) {
+            $incapacidadFirmante = $this->valid_incapacidad(json_decode($firm_director->incapacidad), $firm_director->id_funcionario);
+            if($incapacidadFirmante != false) {
+                $firm_director = $incapacidadFirmante;
+            }
         }
 
-        try {
-            $firm_director = DB::Table('tbl_organismos AS org')
-            ->Select('fun.id as id_fun','org.id', 'fun.nombre AS funcionario','fun.curp', 'us.name',
-            'fun.cargo','fun.correo', 'us.puesto', 'fun.incapacidad')
-                ->join('tbl_funcionarios AS fun', 'fun.id_org','org.id')
-                ->join('tbl_cursos as tc', 'tc.id_unidad','org.id_unidad')
-                ->join('users as us', 'us.email','fun.correo')
-                ->where('org.nombre', 'LIKE', '%UNIDAD DE CAPACITACIÓN%')
-                ->where('tc.id_unidad', '=', $id_unidad)
-                ->where('fun.activo', '=', 'true')
-                ->first();
-            if($firm_director == null){return "NO SE ENCONTRON DATOS DEL DIRECTOR!";}
-        } catch (\Throwable $th) {
-            return back()->with('message', 'Error firmante director de unidad '.$th->getMessage());
-        }
-
-
-        $val_incap = $this->valid_incapacidad($firm_academico);
-        if ($val_incap != null) {
-            $firm_academico = $val_incap;
-        }
-
-        $val_incap = $this->valid_incapacidad($firm_director);
-        if ($val_incap != null) {
-            $firm_director = $val_incap;
+        if(!empty($firm_academico->incapacidad)) {
+            $incapacidadFirmante = $this->valid_incapacidad(json_decode($firm_academico->incapacidad), $firm_academico->id_funcionario);
+            if($incapacidadFirmante != false) {
+                $firm_academico = $incapacidadFirmante;
+            }
         }
 
         return $data = [$firm_academico, $firm_director];
@@ -607,68 +595,36 @@ class asignarfoliosController extends Controller
     }
 
     ## VALIDACIÓN DE LA INCAPACIDAD DEL FIRMANTE
-    private function valid_incapacidad($dataFirmante){
-        $result = null;
-        $status_campos = false;
-        if($dataFirmante->incapacidad != null){
-            $dataArray = json_decode($dataFirmante->incapacidad, true);
+    private function valid_incapacidad($incapacidad, $id_incapacitado){
+        $fechaActual = now();
+        if(!is_null($incapacidad->fecha_inicio)) {
+            $fechaInicio = Carbon::parse($incapacidad->fecha_inicio);
+            $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
+            if ($fechaActual->between($fechaInicio, $fechaTermino)) {
+                // La fecha de hoy está dentro del rango
+                $firmanteIncapacidad = DB::Table('tbl_funcionarios AS fun')->Select('fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo', 'fun.titulo', 'fun.incapacidad')
+                    ->where('fun.id', $incapacidad->id_firmante)->where('fun.activo', 'true')
+                    ->First();
 
-            ##Validamos los campos json
-            if(isset($dataArray['fecha_inicio']) && isset($dataArray['fecha_termino'])
-            && isset($dataArray['id_firmante']) && isset($dataArray['historial'])){
+                return($firmanteIncapacidad);
+            } else {
+                // La fecha de hoy NO está dentro del rango
+                if($fechaTermino->isPast()) {
+                    $newIncapacidadHistory = 'Ini:'.$incapacidad->fecha_inicio.'/Fin:'.$incapacidad->fecha_termino.'/IdFun:'.$incapacidad->id_firmante;
+                    array_push($incapacidad->historial, $newIncapacidadHistory);
+                    $incapacidad->fecha_inicio = $incapacidad->fecha_termino = $incapacidad->id_firmante = null;
+                    $incapacidad = json_encode($incapacidad);
 
-                if($dataArray['fecha_inicio'] != '' && $dataArray['fecha_termino'] != '' && $dataArray['id_firmante'] != ''){
-                    $fecha_ini = $dataArray['fecha_inicio'];
-                    $fecha_fin = $dataArray['fecha_termino'];
-                    $id_firmante = $dataArray['id_firmante'];
-                    $historial = $dataArray['historial'];
-                    $status_campos = true;
+                    DB::Table('tbl_funcionarios')->Where('nombre',$id_incapacitado)
+                        ->Update([
+                            'incapacidad' => $incapacidad
+                    ]);
                 }
-            }else{
-                return "LA ESTRUCTURA DEL JSON DE LA INCAPACIDAD NO ES VALIDA!";
+
+                return false;
             }
-
-            ##Validar si esta vacio
-            if($status_campos == true){
-                ##Validar las fechas
-                $fechaActual = date("Y-m-d");
-                $fecha_nowObj = new DateTime($fechaActual);
-                $fecha_iniObj = new DateTime($fecha_ini);
-                $fecha_finObj = new DateTime($fecha_fin);
-
-                if($fecha_nowObj >= $fecha_iniObj && $fecha_nowObj <= $fecha_finObj){
-                    ###Realizamos la consulta del nuevo firmante
-                    $dataIncapacidad = DB::Table('tbl_organismos AS org')
-                    ->Select('org.id', 'fun.nombre AS funcionario','fun.curp', 'us.name',
-                    'fun.cargo','fun.correo', 'us.puesto', 'fun.incapacidad')
-                    ->join('tbl_funcionarios AS fun', 'fun.id','org.id')
-                    ->join('users as us', 'us.email','fun.correo')
-                    ->where('fun.id', $id_firmante)
-                    ->first();
-
-                    if ($dataIncapacidad != null) {$result = $dataIncapacidad;}
-                    else{return "NO SE ENCONTRON DATOS DE LA PERSONA QUE TOMARÁ EL LUGAR DEL ACADEMICO!";}
-                }else{
-                    ##Historial
-                    $fecha_busqueda = 'Ini:'. $fecha_ini .'/Fin:'. $fecha_fin .'/IdFun:'. $id_firmante;
-                    $clave_ar = array_search($fecha_busqueda, $historial);
-
-                    if($clave_ar === false){ ##No esta en el historial entonces guardamos
-                        $historial[] = $fecha_busqueda;
-                        ##guardar en la bd el nuevo array en el campo historial del json
-                        try {
-                            $jsonHistorial = json_encode($historial);
-                            DB::update('UPDATE tbl_funcionarios SET incapacidad = jsonb_set(incapacidad, \'{historial}\', ?) WHERE id = ?', [$jsonHistorial, $dataFirmante->id_fun]);
-                        } catch (\Throwable $th) {
-                            return "Error: " . $th->getMessage();
-                        }
-
-                    }
-                }
-            }
-
         }
-        return $result;
+        return false;
     }
 
     public function generarToken() {

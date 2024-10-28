@@ -187,7 +187,7 @@
                         @foreach ($cont_tematico as $tema)
                             <tr>
                                 <td>
-                                    <p style="font-size:12px; padding-bottom: 0px; padding-top: 0px; margin-top: 0px; margin-bottom: 0px;">{{$tema['nombre_modulo']}}</p>
+                                    <p style="font-size:12px; padding-bottom: 0px; padding-top: 0px; margin-top: 0px; margin-bottom: 0px;">{{mb_strtoupper($tema['nombre_modulo'])}}</p>
                                 </td>
                                 <td style="text-align: center;"><p style="font-size:12px; padding-bottom: 0px; padding-top: 0px; margin-top: 0px; margin-bottom: 0px;">{{strtoupper($tema['hora']).' '.$tema['tipo']}}</p></td>
                             </tr>

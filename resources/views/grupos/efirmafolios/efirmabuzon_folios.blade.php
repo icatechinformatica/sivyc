@@ -122,7 +122,7 @@
             {{-- regresar --}}
             <div style="position: absolute;  right: 4%;">
                 <div class="d-flex justify-content-end">
-                    <a href="{{ url('/') }}" class="btn btn-danger">Regresar</a>
+                    <a href="{{ url('/') }}" class="btn btn-info">Regresar</a>
                 </div>
             </div>
             {{-- Filtrados --}}
@@ -141,7 +141,7 @@
                     </select>
                     <input type="text" class="form-control" name="txtclave" id="txtclave" placeholder="FOLIO O CLAVE" value="{{$clave_e ?? ''}}">
                     <input type="text" class="form-control" name="txtmatricula" id="txtmatricula" placeholder="MATRICULA" value="{{$matricula ?? ''}}">
-                    <button class="btn btn-success" id="btnBuscar">BUSCAR</button>
+                    <button class="btn" style="background: #12322b; color:#fff;" id="btnBuscar">BUSCAR</button>
                     <button class="btn btn-info" id="btnLimpiar">LIMPIAR</button>
 
                 </div>
@@ -163,22 +163,22 @@
             <div class="mt-4">
                 @if (count($data) > 0)
                     {{-- Botones de firmado --}}
-                    @if (($existcurp == true && $existmail == true) || $slug == 'admin')
+                    @if (!empty($curpf) || $slug == 'admin')
                         @if ($filtro_e == 'EnFirma')
                             <div class="d-flex justify-content-end mb-2">
-                                @if ($existfirma == false)
-                                    <button class="btn-sm btn-info mr-1" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal({{json_encode($cad_original)}})">Firmar {{count($data) >= 2 ? 'Todo' : ''}}</button>
+                                @if ($existcurp == true && $existfirma == false)
+                                    <button class="btn-sm btn-danger mr-1 font-weight-bold" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal({{json_encode($cad_original)}})">Firmar {{count($data) >= 2 ? 'Todo' : ''}}</button>
                                 @endif
-                                <button class="btn-sm btn-danger modal_cancelar">Cancelar {{count($data) >= 2 ? 'Todo' : ''}}</button>
+                                <button class="btn-sm btn-warning modal_cancelar font-weight-bold">Cancelar {{count($data) >= 2 ? 'Todo' : ''}}</button>
                             </div>
-                        @elseif($filtro_e == 'firmado' && $slug != 'director_unidad')
+                        @elseif($existcurp == true && $filtro_e == 'firmado' && $slug != 'director_unidad')
                             <div class="d-flex justify-content-end mb-2">
-                                <button class="btn-sm btn-info mr-1" data-toggle="modal" data-target="#modalsellar">Sellar {{count($data) >= 2 ? 'Todo' : ''}}</button>
-                                <button class="btn-sm btn-danger modal_cancelar">Cancelar {{count($data) >= 2 ? 'Todo' : ''}}</button>
+                                <button class="btn-sm btn-danger mr-1 font-weight-bold" data-toggle="modal" data-target="#modalsellar">Sellar {{count($data) >= 2 ? 'Todo' : ''}}</button>
+                                <button class="btn-sm btn-warning modal_cancelar font-weight-bold">Cancelar {{count($data) >= 2 ? 'Todo' : ''}}</button>
                             </div>
                         @elseif($filtro_e == 'sellado')
                             <div class="d-flex justify-content-end mb-2">
-                                <button class="btn-sm btn-danger modal_cancelar">Anular {{count($data) >= 2 ? 'Todo' : ''}}</button>
+                                <button class="btn-sm btn-danger modal_cancelar font-weight-bold">Anular {{count($data) >= 2 ? 'Todo' : ''}}</button>
                             </div>
                         @endif
                     @endif
