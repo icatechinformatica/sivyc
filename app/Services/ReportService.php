@@ -298,40 +298,40 @@ class ReportService
     protected function getCadenaOriginal($xmlBase64, $token)
     {
         // api producción
-        // return Http::withHeaders([
-        //     'Accept' => 'application/json',
-        //     'Authorization' => 'Bearer '.$token,
-        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
-        //     'xml_OriginalBase64' => $xmlBase64
-        // ]);
-
-        // api prueba
         return Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$token,
-        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
             'xml_OriginalBase64' => $xmlBase64
         ]);
+
+        // api prueba
+        // return Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Authorization' => 'Bearer '.$token,
+        // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        //     'xml_OriginalBase64' => $xmlBase64
+        // ]);
     }
 
     // obtener el token
     public function generarToken()
     {
         // Token Producción
-        // $resToken = Http::withHeaders([
-        //     'Accept' => 'application/json'
-        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'SISTEM_IVINCAP',
-        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
-        // ]);
-
-        // Token Prueba
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'FirmaElectronica',
-            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+            'nombre' => 'SISTEM_IVINCAP',
+            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         ]);
+
+        // Token Prueba
+        // $resToken = Http::withHeaders([
+        //     'Accept' => 'application/json'
+        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+        //     'nombre' => 'FirmaElectronica',
+        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        // ]);
 
         $token = $resToken->json();
 
