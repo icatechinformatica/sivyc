@@ -137,11 +137,16 @@
                 @else
                 @endif
             @endif
-            <br><br><h6><small><b>C.c.p. {{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Mismo Fin</b></small></h6>
-            <h6><small><b>C.c.p. {{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo Fin</b></small></h6>
-            <h6><small><b>Archivo.<b></small></h6>
-            <br><small><b>Validó: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
-            <br><small><b>Elaboró: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></h6>
+            {{-- aqui usar el fi --}}
+            @if(!is_null($bodyCcp))
+                {!!$bodyCcp!!}
+            @else
+                <br><br><small><b>C.c.p. {{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Para su conocimiento</b></small>
+                <br><small><b>C.c.p. {{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo Fin</b></small>
+                <br><small><b>Archivo.<b></small>
+                <br><br><small><small><b>Validó: {{$funcionarios['director']}}.- {{$funcionarios['directorp']}}</b></small></small>
+                <br><small><small><b>Elaboró: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}</b></small></small>
+            @endif
         </div>
     </body>
 </html>
