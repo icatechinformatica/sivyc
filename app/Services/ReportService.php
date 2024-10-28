@@ -550,6 +550,8 @@ class ReportService
         foreach ($ccp as $ke => $val) {
             if (str_contains($val->cargo, 'DELEG')) {
                 $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+            } elseif (str_contains($v->cargo, 'DIRECTOR') || str_contains($v->cargo, 'DIRECTORA') || str_contains($v->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($v->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($v->nombre).'. '.htmlspecialchars($v->cargo).'. <br>';
             }
         }
         $htmlBody['memorandum'] .= '</div>';
@@ -1133,6 +1135,11 @@ class ReportService
                 })
                 ->orWhere('organismos.id_parent', 0)
                 ->orWhere('funcionario.id_org', 13);
+        })
+        ->where(function($query){
+            $query->whereNull('funcionario.incapacidad')
+                ->orwhere('funcionario.incapacidad', '{}')
+                ->orWhereNull(\DB::raw("funcionario.incapacidad->>'id_firmante'"));
         })
         ->orderBy('funcionario.id_org', 'asc')
         ->get();
