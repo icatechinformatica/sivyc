@@ -653,7 +653,7 @@
                     </div>
                     <div class="col-2 d-flex justify-content-end">
                         <div class="padre">
-                            @can('firma.validacion.rf001')
+                            @can('validacion.rf001')
                                 @if ($getConcentrado->estado == 'PARASELLAR')
                                     {{-- Usar el componente creado --}}
                                     <x-firma-administrativo :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
@@ -663,7 +663,7 @@
                         </div>
                     </div>
                     <div class="col-2 justify-content-end">
-                        @can('retornar.rf001')
+                        @can('validacion.rf001')
                             @if ($getConcentrado->estado == 'REVISION')
                                 <a type="button" class="btn btn-danger btn-xs sendReviewBack">
                                     <i class="fas fa-undo"></i>

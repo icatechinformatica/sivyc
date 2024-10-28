@@ -59,197 +59,207 @@ class ReportService
 
     public function xmlFormat($id, $organismo, $unidad, $usuario)
     {
-        $htmlBody = array();
-        $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
-        // checar si el documento se encuentra en la tabla documentos_firmar
-        $documentoFirmar = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->First();
-        if ($documentoFirmar) {
-            # TODO: se encuentra se tiene que eliminar y por ende volver a generar
-            $documentoFirmar->delete();
-        }
+        try {
+            $htmlBody = array();
+            $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+            // checar si el documento se encuentra en la tabla documentos_firmar
+            $documentoFirmar = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->First();
+            if ($documentoFirmar) {
+                $doctoFirma = DocumentosFirmar::findOrFail($documentoFirmar->id);
+                $doctoFirma->delete();
+            }
 
-        $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
-        // elaboro y puesto de elaboración
-        $nombreElaboro = $usuario->name;
-        $puestoElaboro = $usuario->puesto;
+            $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+            // elaboro y puesto de elaboración
+            $nombreElaboro = $usuario->name;
+            $puestoElaboro = $usuario->puesto;
 
-        $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
+            $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
-        $body = $this->createBodyToXml($rf001, $unidad, $organismoPublico);
+            $body = $this->createBodyToXml($rf001, $unidad, $organismoPublico);
 
-        if (is_null($body)) {
-            $error = ['error' => 1];
-            return $error;
-        }
+            if (is_null($body)) {
+                $error = ['error' => 1];
+                return $error;
+            }
 
-        $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
+            $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
 
-        $movimiento = json_decode($rf001->movimientos, true);
+            $firmantes = $this->funcionariosUnidades($ubicacion);
+            list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
-        foreach ($movimiento as $item) {
-            # ciclo para actualizar el estado de todos los registros
-            Recibo::where('folio_recibo', '=', $item['folio'])
-                ->update([
-                    'estado_reportado' => 'CONCENTRADO'
-                ]);
-        }
+            $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id_unidad);
 
-        $firmantes = $this->funcionariosUnidades($ubicacion);
-        list($firmanteNoUno, $firmanteNoDos) = $firmantes;
-
-        $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id);
-
-        $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
-            ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
-            ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
-            ->Where('org.id_parent',1)
-            ->Where('fun.activo', 'true')
-            ->Where('u.unidad', $ubicacion)
-            ->First();
+            $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+                ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
+                ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
+                ->Where('org.id_parent',1)
+                ->Where('fun.activo', 'true')
+                ->Where('u.unidad', $ubicacion)
+                ->First();
 
 
-        $nameFileOriginal = 'concentrado '.$rf001->memorandum.'.pdf';
-        $numOficio = "concentrado-".$rf001->memorandum;
-        $numFirmantes = '3'; // 1 o 2
+            $nameFileOriginal = 'concentrado '.$rf001->memorandum.'.pdf';
+            $numOficio = "concentrado-".$rf001->memorandum;
+            $numFirmantes = '3'; // 1 o 2
 
-        $arrayFirmantes = [];
-        // director
-        $temp = ['_attributes' =>
-            [
-                'curp_firmante' => $firmanteNoUno['curp'],
-                'nombre_firmante' => $firmanteNoUno['funcionario'],
-                'email_firmante' => $firmanteNoUno['correo'],
-                'tipo_firmante' => 'FM',
-            ]
-        ];
-        array_push($arrayFirmantes, $temp);
+            $arrayFirmantes = [];
+            // director
+            $temp = ['_attributes' =>
+                [
+                    'curp_firmante' => $firmanteNoUno['curp'],
+                    'nombre_firmante' => $firmanteNoUno['funcionario'],
+                    'email_firmante' => $firmanteNoUno['correo'],
+                    'tipo_firmante' => 'FM',
+                ]
+            ];
+            array_push($arrayFirmantes, $temp);
 
-        // delegado
-        $temp = ['_attributes' =>
-            [
-                'curp_firmante' => $firmanteNoDos['curp'],
-                'nombre_firmante' => $firmanteNoDos['funcionario'],
-                'email_firmante' => $firmanteNoDos['correo'],
-                'tipo_firmante' => 'FM'
-            ]
-        ];
+            // delegado
+            $temp = ['_attributes' =>
+                [
+                    'curp_firmante' => $firmanteNoDos['curp'],
+                    'nombre_firmante' => $firmanteNoDos['funcionario'],
+                    'email_firmante' => $firmanteNoDos['correo'],
+                    'tipo_firmante' => 'FM'
+                ]
+            ];
 
-        array_push($arrayFirmantes, $temp);
+            array_push($arrayFirmantes, $temp);
 
-        $temp = ['_attributes' =>
-            [
-                'curp_firmante' => $firmanteFinanciero['curp'],
-                'nombre_firmante' => $firmanteFinanciero['funcionario'],
-                'email_firmante' => $firmanteFinanciero['correo'],
-                'tipo_firmante' => 'FM'
-            ]
-        ];
-        array_push($arrayFirmantes, $temp);
+            $temp = ['_attributes' =>
+                [
+                    'curp_firmante' => $firmanteFinanciero['curp'],
+                    'nombre_firmante' => $firmanteFinanciero['funcionario'],
+                    'email_firmante' => $firmanteFinanciero['correo'],
+                    'tipo_firmante' => 'FM'
+                ]
+            ];
+            array_push($arrayFirmantes, $temp);
 
 
-        $joinBody = strip_tags($body['memorandum']).'/n'.strip_tags($body['formatoRf001']);
+            $joinBody = strip_tags($body['memorandum']).'/n'.strip_tags($body['formatoRf001']);
 
-        //Creacion de array para pasarlo a XML
-        $ArrayXml = [
-            'emisor' => [
+            //Creacion de array para pasarlo a XML
+            $ArrayXml = [
+                'emisor' => [
+                    '_attributes' => [
+                        'nombre_emisor' => $usuario->name,
+                        'cargo_emisor' => $usuario->puesto,
+                        'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                    ],
+                ],
+                'archivo' => [
+                    '_attributes' => [
+                        'nombre_archivo' => $nameFileOriginal,
+                    ],
+                    'cuerpo' => [$joinBody],
+                ],
+                'firmantes' => [
+                    '_attributes' => [
+                        'num_firmantes' => $numFirmantes
+                    ],
+                    'firmante' => [
+                        $arrayFirmantes
+                    ],
+                ],
+            ];
+
+            //Creacion de estampa de hora exacta de creacion
+            $date = Carbon::now();
+            $month = $date->month < 10 ? '0'.$date->month : $date->month;
+            $day = $date->day < 10 ? '0'.$date->day : $date->day;
+            $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
+            $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
+            $second = $date->second < 10 ? '0'.$date->second : $date->second;
+            $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
+
+            $resultado = ArrayToXml::convert($ArrayXml, [
+                'rootElementName' => 'DocumentoChis',
                 '_attributes' => [
-                    'nombre_emisor' => $usuario->name,
-                    'cargo_emisor' => $usuario->puesto,
-                    'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                    'version' => '2.0',
+                    'fecha_creacion' => $dateFormat,
+                    'no_oficio' => $numOficio,
+                    'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                    'asunto_docto' => 'Concentrado de Ingresos Propios',
+                    'tipo_docto' => 'OFC',
+                    'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
                 ],
-            ],
-            'archivo' => [
-                '_attributes' => [
-                    'nombre_archivo' => $nameFileOriginal,
-                ],
-                'cuerpo' => [$joinBody],
-            ],
-            'firmantes' => [
-                '_attributes' => [
-                    'num_firmantes' => $numFirmantes
-                ],
-                'firmante' => [
-                    $arrayFirmantes
-                ],
-            ],
-        ];
+            ]);
 
-        //Creacion de estampa de hora exacta de creacion
-        $date = Carbon::now();
-        $month = $date->month < 10 ? '0'.$date->month : $date->month;
-        $day = $date->day < 10 ? '0'.$date->day : $date->day;
-        $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
-        $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
-        $second = $date->second < 10 ? '0'.$date->second : $date->second;
-        $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
-
-        $resultado = ArrayToXml::convert($ArrayXml, [
-            'rootElementName' => 'DocumentoChis',
-            '_attributes' => [
-                'version' => '2.0',
-                'fecha_creacion' => $dateFormat,
-                'no_oficio' => $numOficio,
-                'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                'asunto_docto' => 'Concentrado de Ingresos Propios',
-                'tipo_docto' => 'OFC',
-                'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
-            ],
-        ]);
-
-        //generación de la cadena única mediante el ICTI
-        $xmlBase64 = base64_encode($resultado);
-        $getToken = Tokens_icti::all()->last();
-        if ($getToken) {
-            # registros
-            $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
-            if ($response->json() == null) {
-                # token
+            //generación de la cadena única mediante el ICTI
+            $xmlBase64 = base64_encode($resultado);
+            $getToken = Tokens_icti::all()->last();
+            if ($getToken) {
+                # registros
+                $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
+                if ($response->json() == null) {
+                    # token
+                    $token = $this->generarToken();
+                    $response = $this->getCadenaOriginal($xmlBase64, $token);
+                }
+            } else {
+                # no hay registros
                 $token = $this->generarToken();
                 $response = $this->getCadenaOriginal($xmlBase64, $token);
             }
-        } else {
-            # no hay registros
-            $token = $this->generarToken();
-            $response = $this->getCadenaOriginal($xmlBase64, $token);
-        }
+            // guardando cadena única
+            if ($response->json()['cadenaOriginal'] != null) {
 
-        // guardando cadena única
-        if ($response->json()['cadenaOriginal'] != null) {
+                $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->First();
+                if (is_null($dataInsert)) {
+                    $dataInsert = new DocumentosFirmar();
+                }
+                $dataInsert->body_html = json_encode($body);
+                $dataInsert->obj_documento = json_encode($ArrayXml);
+                $dataInsert->status = 'EnFirma';
+                $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
+                $dataInsert->tipo_archivo = 'Concentrado de Ingresos Propios';
+                $dataInsert->numero_o_clave = $rf001->memorandum;
+                $dataInsert->nombre_archivo = $nameFileOriginal;
+                $dataInsert->documento = $resultado;
+                $dataInsert->documento_interno = $resultado;
+                $dataInsert->save();
 
-            $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->First();
-            if (is_null($dataInsert)) {
-                $dataInsert = new DocumentosFirmar();
+                // actualizar registro en modelo Rf001Model
+                (new Rf001Model())->where('id', $id)->update([
+                    'estado' => 'GENERARDOCUMENTO',
+                    'dirigido' => $firmanteFinanciero['funcionario']
+                ]);
+
+                $movimiento = json_decode($rf001->movimientos, true);
+
+                foreach ($movimiento as $item) {
+                    # ciclo para actualizar el estado de todos los registros
+                    Recibo::where('folio_recibo', '=', $item['folio'])
+                        ->update([
+                            'estado_reportado' => 'CONCENTRADO'
+                        ]);
+                }
+
+                return TRUE;
+            } else {
+                # TODO: realizar cambios al momento de retornar
+                return ['error' => 1, 'mensaje' => 'Error en el proceso: ' . $response];
+                // return FALSE;
             }
-            $dataInsert->body_html = json_encode($body);
-            $dataInsert->obj_documento = json_encode($ArrayXml);
-            $dataInsert->status = 'EnFirma';
-            $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
-            $dataInsert->tipo_archivo = 'Concentrado de Ingresos Propios';
-            $dataInsert->numero_o_clave = $rf001->memorandum;
-            $dataInsert->nombre_archivo = $nameFileOriginal;
-            $dataInsert->documento = $resultado;
-            $dataInsert->documento_interno = $resultado;
-            $dataInsert->save();
-
-            // actualizar registro en modelo Rf001Model
-            (new Rf001Model())->where('id', $id)->update([
-                'estado' => 'GENERARDOCUMENTO',
-                'dirigido' => $firmanteFinanciero['funcionario']
-            ]);
-
-            return TRUE;
-        } else {
-            return FALSE;
+        } catch (\Exception $e) {
+            \Log::error('Error en xmlFormat: ' . $e->getMessage());
+            return [
+                'error' => 1,
+                'mensaje' => 'Error en el proceso en una excepción: ' . $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ];
         }
-
     }
 
-    private function incapacidad($incapacidad, $incapacitado)
+    protected function incapacidad($incapacidad, $incapacitado)
     {
-        $fechaActual = now();
+        $fechaActual = Carbon::now();
         if(!is_null($incapacidad->fecha_inicio)) {
-            $fechaInicio = \Carbon::parse($incapacidad->fecha_inicio);
-            $fechaTermino = \Carbon::parse($incapacidad->fecha_termino)->endOfDay();
+            $fechaInicio = Carbon::parse($incapacidad->fecha_inicio);
+            $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
             if ($fechaActual->between($fechaInicio, $fechaTermino)) {
                 // La fecha de hoy está dentro del rango
                 $firmanteIncapacidad = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
@@ -261,6 +271,13 @@ class ReportService
             } else {
                 // La fecha de hoy NO está dentro del rango
                 if($fechaTermino->isPast()) {
+                    if (is_string($incapacidad->historial)) {
+                        $incapacidad->historial = json_decode($incapacidad->historial, true) ?? [];
+                    }
+
+                    if (!is_array($incapacidad->historial)) {
+                        $incapacidad->historial = [];
+                    }
                     $newIncapacidadHistory = 'Ini:'.$incapacidad->fecha_inicio.'/Fin:'.$incapacidad->fecha_termino.'/IdFun:'.$incapacidad->id_firmante;
                     array_push($incapacidad->historial, $newIncapacidadHistory);
                     $incapacidad->fecha_inicio = $incapacidad->fecha_termino = $incapacidad->id_firmante = null;
@@ -321,6 +338,7 @@ class ReportService
         Tokens_icti::Where('sistema','sivyc')->update([
             'token' => $token
         ]);
+        // Tokens_icti::create(['token' => $token]);
         return $token;
     }
 
@@ -421,13 +439,9 @@ class ReportService
         $unidadUbicacion = strtoupper($tblUnidades->ubicacion);
         $municipio = mb_strtoupper($tblUnidades->municipio, 'UTF-8');
         #OBTENEMOS LA FECHA ACTUAL
-        // $fechaActual = getdate();
         $fechaActual = $data->created_at->format('Y-m-d');
         $fechaFormateada = $this->formatoFechaCrearMemo($fechaActual);
-        // $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
-        // $dia = ($dia < 10) ? '0'.$dia : $dia;
 
-        // $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
         $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
         $conocimiento = \DB::table('tbl_funcionarios')
             ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
@@ -468,12 +482,16 @@ class ReportService
         $nombreMesCreacion = $dateCreacion->translatedFormat('F');
 
         // documento rf001
-        $unidad = tbl_unidades::where('id', $unidad)->first();
-        $instituto = DB::table('tbl_instituto')->first();
-        $direccion = $unidad->direccion;
+        $getUnidad = tbl_unidades::where('id', $unidad)->first();
+        $instituto = \DB::table('tbl_instituto')->first();
+        $direccion = $getUnidad->direccion;
         // Decodificar el campo cuentas_bancarias
         $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
-        $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
+        $cuenta = $cuentas_bancarias[$getUnidad->unidad]['BBVA'];
+
+        #modificaciones ccp
+        $ccp = $this->setCcp($getUnidad->id);
+        $count = 0;
 
         foreach ($movimiento as $key) {
             // Acumular el importe total
@@ -507,6 +525,34 @@ class ReportService
                     <br>
                 </div>
             </div> <br><br>';
+
+        $htmlBody['memorandum'] .= '<div class="ccp"> C.c.p ';
+        foreach ($ccp as $key => $value) {
+            # director primera iteración
+            if ($count === 0) {
+               $htmlBody['memorandum'] .=  htmlspecialchars($value->nombre).'. '.htmlspecialchars($value->cargo).'. Para su conocimiento. <br>';
+            } elseif (!str_contains($value->cargo, 'DIRECTOR') && !str_contains($value->cargo, 'DIRECTORA') && !str_contains($value->cargo, 'ENCARGADO DE LA UNIDAD') && !str_contains($value->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                if ($key == 1) {
+                    # archivo minutario
+                    $htmlBody['memorandum'] .= 'Archivo / Minutario. <br>';
+                }
+                $htmlBody['memorandum'] .= htmlspecialchars($value->nombre).'. '.htmlspecialchars($value->cargo).'. Mismo fin. <br>';
+            }
+            $count++;
+        }
+        $htmlBody['memorandum'] .= '<br>';
+        foreach ($ccp as $k => $v) {
+            # validar y elaborar
+            if (str_contains($v->cargo, 'DIRECTOR') || str_contains($v->cargo, 'DIRECTORA') || str_contains($v->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($v->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                $htmlBody['memorandum'] .= 'Validó: '.htmlspecialchars($v->nombre).'. '.htmlspecialchars($v->cargo).'. <br>';
+            }
+        }
+        foreach ($ccp as $ke => $val) {
+            if (str_contains($val->cargo, 'DELEG')) {
+                $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+            }
+        }
+        $htmlBody['memorandum'] .= '</div>';
 
 
 
@@ -554,8 +600,8 @@ class ReportService
         $htmlBody['formatoRf001'] .= '<table class="tabla_con_border" style="width: 100%; table-layout: fixed; border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th style="text-align: center; width: 20%; word-wrap: break-word;"><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></th>
-                    <th style="text-align: center; width: 20%; word-wrap: break-word;" ><b>N°. RECIBO Y/O FACTURA</b></th>
+                    <th style="text-align: center; width: 20%; word-wrap: break-word;"><b>N°. RECIBO Y/O FACTURA</th>
+                    <th style="text-align: center; width: 20%; word-wrap: break-word;" ><b>MOVTO BANCARIO Y/O <br> NÚMERO DE FOLIO</b></b></th>
                     <th style="text-align: center; width: 45%; word-wrap: break-word;">CONCEPTO DE COBRO</th>
                     <th style="text-align: center; width: 15%; word-wrap: break-word;">IMPORTE</th>
                 </tr>
@@ -620,11 +666,11 @@ class ReportService
                 <td colspan="3">OBSERVACIONES:</td>
             </tr>
             <tr>
-             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b>';
+             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN RECIBO OFICIAL:</b>';
              foreach ($movimiento as $k) {
                 $htmlBody['formatoRf001'] .= htmlspecialchars($k['folio']) . ',';
              }
-             $htmlBody['formatoRf001'] .= '<p><b>RECIBO OFICIAL: &nbsp;</b>';
+             $htmlBody['formatoRf001'] .= '<p><b>FICHAS DE DEPOSITO: &nbsp;</b>';
              foreach ($movimiento as $v) {
                 $deposito = isset($v['depositos']) ? json_decode($v['depositos'], true) : [];
                 foreach ($deposito as $j) {
@@ -648,7 +694,7 @@ class ReportService
             // arreglo
             $firmanteNoUno = $firmanteNoDos = [];
             // delegado administrativo
-            $query = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
+            $query = \DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo', 'funcionarios.incapacidad')
                         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
                         ->Join('tbl_unidades AS unidades', 'unidades.id', 'tblOrganismo.id_unidad')
                         ->Where('funcionarios.activo', 'true')
@@ -663,9 +709,25 @@ class ReportService
             if(!$director || !$delegado){
                 return "Error en la busqueda de firmantes";
             }
-            // proceso en el cuál se generan los arreglos de los firmantes
-            $firmanteNoUno = array('funcionario'=>$director->nombre, 'puesto'=>$director->cargo, 'correo'=>$director->correo, 'curp'=>$director->curp);
-            $firmanteNoDos = array('funcionario'=>$delegado->nombre, 'puesto'=>$delegado->cargo, 'correo'=>$delegado->correo, 'curp'=>$delegado->curp);
+
+            //procesamos las incapacidades, si es que las hay
+            if (!empty($director->incapacidad)) {
+                $incapacidadFirmante = $this->incapacidad(json_decode($director->incapacidad), $director->nombre);
+                if ($incapacidadFirmante != false) {
+                    $firmanteNoUno = array('funcionario' => $incapacidadFirmante->funcionario, 'puesto' =>$incapacidadFirmante->cargo, 'correo' => $incapacidadFirmante->correo, 'curp' => $incapacidadFirmante->curp);
+                }
+            } else {
+                $firmanteNoUno = array('funcionario'=>$director->nombre, 'puesto'=>$director->cargo, 'correo'=>$director->correo, 'curp'=>$director->curp);
+            }
+
+            if (!empty($delegado->incapacidad)) {
+                $incapacidadFirmanteDelegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre);
+                if ($incapacidadFirmanteDelegado != false) {
+                    $firmanteNoDos = array('funcionario' => $incapacidadFirmanteDelegado->funcionario, 'puesto' => $incapacidadFirmanteDelegado->cargo, 'correo' => $incapacidadFirmanteDelegado->correo, 'curp' => $incapacidadFirmanteDelegado->curp);
+                }
+            } else {
+                $firmanteNoDos = array('funcionario'=>$delegado->nombre, 'puesto'=>$delegado->cargo, 'correo'=>$delegado->correo, 'curp'=>$delegado->curp);
+            }
 
             return [$firmanteNoUno, $firmanteNoDos];
         } catch (\Throwable $th) {
@@ -694,173 +756,180 @@ class ReportService
 
     public function genXmlFormato($id, $organismo, $unidad, $usuario)
     {
-        $htmlBody = array();
-        $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
-        $documentoFirmar = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->First();
-        if ($documentoFirmar) {
-            # TODO: se encuentra se tiene que eliminar y por ende volver a generar
-            $documentoFirmar->delete();
-        }
-        //checa si existe
-        $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
-        // elaboro y puesto de elaboración
-        $nombreElaboro = $usuario->name;
-        $puestoElaboro = $usuario->puesto;
+        try {
+            $htmlBody = array();
+            $rf001 = (new Rf001Model())->findOrFail($id); // obtener RF001 por id
+            $documentoFirmar = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->First();
+            if ($documentoFirmar) {
+                $doctoFirma = DocumentosFirmar::findOrFail($documentoFirmar->id);
+                $doctoFirma->delete();
+            }
+            //checa si existe
+            $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+            // elaboro y puesto de elaboración
+            $nombreElaboro = $usuario->name;
+            $puestoElaboro = $usuario->puesto;
 
-        $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
+            $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
-        $body = $this->htmlToXml($rf001, $unidad, $organismoPublico); //cambiar este formato
+            $body = $this->htmlToXml($rf001, $unidad, $organismoPublico); //cambiar este formato
 
-        if (is_null($body)) {
-            $error = ['error' => 1];
-            return $error;
-        }
+            if (is_null($body)) {
+                $error = ['error' => 1];
+                return $error;
+            }
 
-        $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
+            $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
 
-        $firmantes = $this->funcionariosUnidades($ubicacion);
-        list($firmanteNoUno, $firmanteNoDos) = $firmantes;
+            $firmantes = $this->funcionariosUnidades($ubicacion);
+            list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
-        $financieroFirmante = $this->getFirmanteFinanciero($rf001->id);
+            $financieroFirmante = $this->getFirmanteFinanciero($rf001->id_unidad);
 
-        $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
-            ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
-            ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
-            ->Where('org.id_parent',1)
-            ->Where('fun.activo', 'true')
-            ->Where('u.unidad', $ubicacion)
-            ->First();
-
-
-        $nameFileOriginal = 'concentrado cancelacion'.$rf001->memorandum.'.pdf';
-        $numOficio = "cancelacion-rf001-".$rf001->memorandum;
-        $numFirmantes = '2'; // 1 o 2
-
-        $arrayFirmantes = [];
-
-        // TODO: solo firma el delegado
-
-        // delegado
-        $temp = ['_attributes' =>
-            [
-                'curp_firmante' => $firmanteNoDos['curp'],
-                'nombre_firmante' => $firmanteNoDos['funcionario'],
-                'email_firmante' => $firmanteNoDos['correo'],
-                'tipo_firmante' => 'FM'
-            ]
-        ];
-
-        array_push($arrayFirmantes, $temp);
-
-        $temp = ['_attributes' =>
-            [
-                'curp_firmante' => $financieroFirmante['curp'],
-                'nombre_firmante' => $financieroFirmante['funcionario'],
-                'email_firmante' => $financieroFirmante['correo'],
-                'tipo_firmante' => 'FM'
-            ]
-        ];
-        array_push($arrayFirmantes, $temp);
+            $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
+                ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
+                ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
+                ->Where('org.id_parent',1)
+                ->Where('fun.activo', 'true')
+                ->Where('u.unidad', $ubicacion)
+                ->First();
 
 
-        $joinBody = strip_tags($body['memorandum']);
+            $nameFileOriginal = 'concentrado cancelacion'.$rf001->memorandum.'.pdf';
+            $numOficio = "cancelacion-rf001-".$rf001->memorandum;
+            $numFirmantes = '2'; // 1 o 2
 
-        //Creacion de array para pasarlo a XML
-        $ArrayXml = [
-            'emisor' => [
+            $arrayFirmantes = [];
+
+            // TODO: solo firma el delegado
+
+            // delegado
+            $temp = ['_attributes' =>
+                [
+                    'curp_firmante' => $firmanteNoDos['curp'],
+                    'nombre_firmante' => $firmanteNoDos['funcionario'],
+                    'email_firmante' => $firmanteNoDos['correo'],
+                    'tipo_firmante' => 'FM'
+                ]
+            ];
+
+            array_push($arrayFirmantes, $temp);
+
+            $temp = ['_attributes' =>
+                [
+                    'curp_firmante' => $financieroFirmante['curp'],
+                    'nombre_firmante' => $financieroFirmante['funcionario'],
+                    'email_firmante' => $financieroFirmante['correo'],
+                    'tipo_firmante' => 'FM'
+                ]
+            ];
+            array_push($arrayFirmantes, $temp);
+
+
+            $joinBody = strip_tags($body['memorandum']);
+
+            //Creacion de array para pasarlo a XML
+            $ArrayXml = [
+                'emisor' => [
+                    '_attributes' => [
+                        'nombre_emisor' => $usuario->name,
+                        'cargo_emisor' => $usuario->puesto,
+                        'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                    ],
+                ],
+                'archivo' => [
+                    '_attributes' => [
+                        'nombre_archivo' => $nameFileOriginal,
+                    ],
+                    'cuerpo' => [$joinBody],
+                ],
+                'firmantes' => [
+                    '_attributes' => [
+                        'num_firmantes' => $numFirmantes
+                    ],
+                    'firmante' => [
+                        $arrayFirmantes
+                    ],
+                ],
+            ];
+
+            //Creacion de estampa de hora exacta de creacion
+            $date = Carbon::now();
+            $month = $date->month < 10 ? '0'.$date->month : $date->month;
+            $day = $date->day < 10 ? '0'.$date->day : $date->day;
+            $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
+            $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
+            $second = $date->second < 10 ? '0'.$date->second : $date->second;
+            $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
+
+            $resultado = ArrayToXml::convert($ArrayXml, [
+                'rootElementName' => 'DocumentoChis',
                 '_attributes' => [
-                    'nombre_emisor' => $usuario->name,
-                    'cargo_emisor' => $usuario->puesto,
-                    'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                    'version' => '2.0',
+                    'fecha_creacion' => $dateFormat,
+                    'no_oficio' => $numOficio,
+                    'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                    'asunto_docto' => 'Concentrado de Ingresos Propios',
+                    'tipo_docto' => 'OFC',
+                    'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
                 ],
-            ],
-            'archivo' => [
-                '_attributes' => [
-                    'nombre_archivo' => $nameFileOriginal,
-                ],
-                'cuerpo' => [$joinBody],
-            ],
-            'firmantes' => [
-                '_attributes' => [
-                    'num_firmantes' => $numFirmantes
-                ],
-                'firmante' => [
-                    $arrayFirmantes
-                ],
-            ],
-        ];
+            ]);
 
-        //Creacion de estampa de hora exacta de creacion
-        $date = Carbon::now();
-        $month = $date->month < 10 ? '0'.$date->month : $date->month;
-        $day = $date->day < 10 ? '0'.$date->day : $date->day;
-        $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
-        $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
-        $second = $date->second < 10 ? '0'.$date->second : $date->second;
-        $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
-
-        $resultado = ArrayToXml::convert($ArrayXml, [
-            'rootElementName' => 'DocumentoChis',
-            '_attributes' => [
-                'version' => '2.0',
-                'fecha_creacion' => $dateFormat,
-                'no_oficio' => $numOficio,
-                'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                'asunto_docto' => 'Concentrado de Ingresos Propios',
-                'tipo_docto' => 'OFC',
-                'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
-            ],
-        ]);
-
-        //generación de la cadena única mediante el ICTI
-        $xmlBase64 = base64_encode($resultado);
-        $getToken = Tokens_icti::all()->last();
-        if ($getToken) {
-            # registros
-            $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
-            if ($response->json() == null) {
-                # token
+            //generación de la cadena única mediante el ICTI
+            $xmlBase64 = base64_encode($resultado);
+            $getToken = Tokens_icti::all()->last();
+            if ($getToken) {
+                # registros
+                $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
+                if ($response->json() == null) {
+                    # token
+                    $token = $this->generarToken();
+                    $response = $this->getCadenaOriginal($xmlBase64, $token);
+                }
+            } else {
+                # no hay registros
                 $token = $this->generarToken();
                 $response = $this->getCadenaOriginal($xmlBase64, $token);
             }
-        } else {
-            # no hay registros
-            $token = $this->generarToken();
-            $response = $this->getCadenaOriginal($xmlBase64, $token);
-        }
 
-        // guardando cadena única
-        if ($response->json()['cadenaOriginal'] != null) {
+            // guardando cadena única
+            if ($response->json()['cadenaOriginal'] != null) {
 
-            $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->first();
-            if (is_null($dataInsert)) {
-                $dataInsert = new DocumentosFirmar();
-                $dataInsert->body_html = json_encode($body);
-                $dataInsert->obj_documento = json_encode($ArrayXml);
-                $dataInsert->status = 'EnFirma';
-                $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
-                $dataInsert->tipo_archivo = 'Concentrado de Ingresos Propios';
-                $dataInsert->numero_o_clave = $rf001->memorandum;
-                $dataInsert->nombre_archivo = $nameFileOriginal;
-                $dataInsert->documento = $resultado;
-                $dataInsert->documento_interno = $resultado;
-                $dataInsert->save();
+                $dataInsert = DocumentosFirmar::Where('numero_o_clave', $rf001->memorandum)->first();
+                if (is_null($dataInsert)) {
+                    $dataInsert = new DocumentosFirmar();
+                    $dataInsert->body_html = json_encode($body);
+                    $dataInsert->obj_documento = json_encode($ArrayXml);
+                    $dataInsert->status = 'EnFirma';
+                    $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
+                    $dataInsert->tipo_archivo = 'Concentrado de Ingresos Propios';
+                    $dataInsert->numero_o_clave = $rf001->memorandum;
+                    $dataInsert->nombre_archivo = $nameFileOriginal;
+                    $dataInsert->documento = $resultado;
+                    $dataInsert->documento_interno = $resultado;
+                    $dataInsert->save();
+                }
+
+                // actualizar registro en modelo Rf001Model
+                (new Rf001Model())->where('id', $id)->update([
+                    'estado' => 'GENERARDOCUMENTO',
+                    'dirigido' => $financieroFirmante['funcionario']
+                ]);
+
+                return TRUE;
+            } else {
+                // return FALSE;
+                return ['error' => 1, 'mensaje' => 'Error en el proceso: ' . $response];
             }
-
-            // actualizar registro en modelo Rf001Model
-            (new Rf001Model())->where('id', $id)->update([
-                'estado' => 'GENERARDOCUMENTO',
-                'dirigido' => $financieroFirmante['funcionario']
-            ]);
-
-            return TRUE;
-        } else {
-            return FALSE;
+        } catch (\Exception $e) {
+            \Log::error('Error en xmlFormat: ' . $e->getMessage());
+            return ['error' => 1, 'mensaje' => 'Error en el proceso: ' . $e->getMessage()];
         }
     }
 
     public function htmlToXml($data, $unidad, $organismo)
     {
+        // TODO: MEJORAR LA CREACION DEL XML
         $htmlBody = [];
         // memorandum crear primer documento
         $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -868,11 +937,9 @@ class ReportService
         $unidadUbicacion = strtoupper($tblUnidades->ubicacion);
         $municipio = mb_strtoupper($tblUnidades->municipio, 'UTF-8');
         #OBTENEMOS LA FECHA ACTUAL
-        $fechaActual = getdate();
-        $anio = $fechaActual['year']; $mes = $fechaActual['mon']; $dia = $fechaActual['mday'];
-        $dia = ($dia < 10) ? '0'.$dia : $dia;
+        $fechaActual = $data->created_at->format('Y-m-d');
+        $fecha_comp = $this->formatoFechaCrearMemo($fechaActual);
 
-        $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
         $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
         $conocimiento = \DB::table('tbl_funcionarios')
             ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
@@ -923,7 +990,7 @@ class ReportService
             <div class="bloque_uno" align="right">
                 <p class="delet_space_p color_text">UNIDAD DE CAPACITACIÓN ' . htmlspecialchars(strtoupper($unidadUbicacion)) . '</p>
                 <p class="delet_space_p color_text">MEMORÁNDUM NÚM. ' . htmlspecialchars($data->memorandum) . '</p>
-                <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars(strtoupper($fecha_comp)) . '</span></p>
+                <p class="delet_space_p color_text">' . htmlspecialchars($municipio) . ', CHIAPAS; <span class="color_text">' . htmlspecialchars($fecha_comp) . '</span></p>
             </div>
             <br><br><br>
             <div class="bloque_dos" align="left">
@@ -1002,23 +1069,29 @@ class ReportService
         return $formattedDates;
     }
 
-    public function getFirmanteFinanciero($idRf001)
+    public function getFirmanteFinanciero($idRfUnidad)
     {
+        $UnidadesAtendidasNarj8 = ['CATAZAJA', 'JIQUIPILAS', 'OCOSINGO', 'TAPACHULA', 'VILLAFLORES', 'YAJALON'];
+        $UnidadesAtendidasCucc8 = ['TUXTLA', 'TONALA', 'SAN CRISTOBAL', 'COMITAN', 'REFORMA'];
+
         $qry = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
         ->Where('funcionarios.titular', 0)
-        ->Where('funcionarios.id_org', 12)->get();
+        ->Where('funcionarios.id_org', 12);
 
-        // Acceder a los registros por índice
-        $primerRegistro = $qry->get(0);
-        $segundoRegistro = $qry->get(1);
+        $querygetUnidad = DB::table('tbl_unidades')->select('unidad', 'id', 'cct')->where('id', '=', $idRfUnidad)->first();
 
-        if ($idRf001 % 2 == 0) {
-            # EL NÚMERO ES PAR
-            return array('funcionario'=>$primerRegistro->nombre, 'puesto'=>$primerRegistro->cargo, 'correo'=>$primerRegistro->correo, 'curp'=>$primerRegistro->curp);
-        } else {
-            # EL NÚMERO ES NONE
-            return array('funcionario'=>$segundoRegistro->nombre, 'puesto'=>$segundoRegistro->cargo, 'correo'=>$segundoRegistro->correo, 'curp'=>$segundoRegistro->curp);
+        if (in_array($querygetUnidad->unidad, $UnidadesAtendidasNarj8)) {
+            # se encuentra en la lista nandayapa
+            $qry = $qry->where('funcionarios.correo', '=', 'nandayaparamirez_jj@hotmail.com')->first();
+
+            return array('funcionario'=>$qry->nombre, 'puesto'=>$qry->cargo, 'correo'=>$qry->correo, 'curp'=>$qry->curp);
+
+        } elseif (in_array($querygetUnidad->unidad, $UnidadesAtendidasCucc8)) {
+            # se encuentra en lista chatu
+            $qry = $qry->where('funcionarios.correo', '=', 'chatucr77@hotmail.com')->first();
+
+            return array('funcionario'=>$qry->nombre, 'puesto'=>$qry->cargo, 'correo'=>$qry->correo, 'curp'=>$qry->curp);
         }
     }
 
@@ -1031,5 +1104,25 @@ class ReportService
 
         $formattedDate = $parserDate->translatedFormat('d'). ' DE '. mb_strtoupper($parserDate->translatedFormat('F'), 'UTF-8'). ' DEL '. $parserDate->translatedFormat('Y');
         return $formattedDate;
+    }
+
+    protected function setCcp($idUnidad)
+    {
+        return \DB::table('tbl_funcionarios as funcionario')
+        ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
+        ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
+        ->where('funcionario.activo', '=', 'true')
+        ->Where('funcionario.titular', true)
+        ->where(function($query) use ($idUnidad) {
+            $query->where('organismos.id_unidad', $idUnidad)
+                ->where(function($moist) use ($idUnidad) {
+                    $moist->where('funcionario.cargo', 'like', 'DELEG%')
+                    ->orWhere('organismos.id_parent',1);
+                })
+                ->orWhere('organismos.id_parent', 0)
+                ->orWhere('funcionario.id_org', 13);
+        })
+        ->orderBy('funcionario.id_org', 'asc')
+        ->get();
     }
 }

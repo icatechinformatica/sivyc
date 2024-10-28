@@ -212,18 +212,21 @@
                     {{ Form::select('unidad', $datos['unidades'], $getConcentrado ? $getConcentrado->unidad : '', ['id' => 'unidad', 'placeholder' => '- UNIDAD -', 'class' => 'form-control  mr-sm-2']) }}
                 </div>
                 <div class="form-group col-md-3">
-                    <b>Periodo Del {{ $dateInit->day }} de {{ $monthNameInit }} al {{ $dateEnd->day }} de
-                        {{ $monthNameEnd }}</b>
+                    @if (!$getConcentrado)
+                    <b>
+                        Periodo Del {{ $dateInit->day }} de {{ $monthNameInit }} al {{ $dateEnd->day }} de {{ $monthNameEnd }}
+                    </b>
+                    @endif
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaInicio', 'Fecha Inicio', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaInicio', '', ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
+                    {{ Form::date('fechaInicio', $fechaInicio , ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaFin', 'Fecha Fecha Fin', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaFin', '', ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
+                    {{ Form::date('fechaFin', $fechaFin , ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('folio_grupo', 'N°. Recibo', ['class' => 'awesome']) }}
@@ -290,6 +293,7 @@
                                                 <input class="form-check-input inputCurso" type="checkbox"
                                                     value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id . '_' . $getConcentrado->id . '_' . $item->folio_recibo }}"
                                                     id="seleccionar_{{ $item->folio_recibo }}"
+                                                    @if ($item->estado_reportado === 'GENERADO' && !in_array($item->folio_recibo, $foliosMovimientos)) disabled @endif
                                                     @if (in_array($item->folio_recibo, $foliosMovimientos)) checked @endif name="seleccionados[]">
                                             </div>
                                         @else
@@ -297,7 +301,7 @@
                                                 <input class="form-check-input concentrado-checkbox" type="checkbox"
                                                     value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
                                                     id="seleccionar_{{ $item->folio_recibo }}" name="seleccionados[]"
-                                                    @if (in_array($item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id, $selectedCheckboxes)) checked @endif>
+                                                    @if (in_array($item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id, $selectedCheckboxes)) checked @endif @if ($item->estado_reportado === 'GENERADO') checked disabled @endif>
                                             </div>
                                         @endif
                                     </td>
@@ -370,6 +374,26 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn" id="corfirmarEfirma">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-modal-sm" id="modalError" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #cb4335 ; color:#f0f0f0;">
+                    <h5 class="modal-title" id="exampleModalLabel">MENSAJE DE ERROR!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorMessage"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-dismiss="modal">ENTENDIDO</button>
                 </div>
             </div>
         </div>
@@ -490,11 +514,21 @@
                     type: 'POST',
                     dataType: "json",
                     success: function(response) {
+                        // console.log(response); return;
                         setTimeout(function() {
                             // Ocultar el loader y mostrar el contenido después de la carga
                             document.getElementById('loader-overlay').style.display =
                                 'none';
-                            if (response.resp) {
+
+                            if (response.resp && response.resp.error === 1) {
+                                // Mostrar el modal de error de Bootstrap
+                                $('#modalError').modal('show'); // Mostrar el modal de error
+
+                                // Insertar el mensaje de error en el modal
+                                $('#errorMessage').text('Error: ' + response.resp.mensaje);
+                                //salir de la función
+                                return;
+                            } else if (response.resp && response.resp === true) {
                                 window.location.href =
                                     "{{ route('reporte.rf001.sent') }}";
                             }
@@ -504,7 +538,7 @@
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     // Maneja el error aquí
                     console.error('Error:', jqXHR);
-                    console.warning('TextStatus:', textStatus);
+                    console.error('TextStatus:', textStatus);
                     console.error('ErrorThrown:', errorThrown);
                     reject(textStatus);
 

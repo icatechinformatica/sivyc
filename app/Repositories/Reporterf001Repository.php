@@ -81,7 +81,6 @@ class Reporterf001Repository implements Reporterf001Interface
                 'importe' => $query->importe,
                 'importe_letra' => $query->importe_letra,
                 'depositos' => $query->depositos,
-                'descripcion' => $query->descripcion,
             ];
             $dataAdd[] = $JsonObj;
 
@@ -173,6 +172,7 @@ class Reporterf001Repository implements Reporterf001Interface
                     'documento' => $qry->file_pdf,
                     'importe' => $qry->importe,
                     'importe_letra' => $qry->importe_letra,
+                    'depositos' => $qry->depositos
                 ];
                 // Add a new Json Object to existing Array
                 $datosExistentes[] = $JsonObj;
@@ -609,16 +609,19 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function updateAndValidateFormatRf001($id, $request) : array
     {
-        $checkDocumento = (new DocumentosFirmar())->where('numero_o_clave', trim($request['consecutivo']))->first();
+        $checkDocumento = (new DocumentosFirmar())->where('numero_o_clave', trim($request->get('consecutivo')))->first();
         if ($checkDocumento) {
             # se encuentran coincidencias
-            $msg = "EL FORMATO ".$request['consecutivo']." SE ENCUENTRA EN USO Y NO PUEDE SER REMPLAZADO";
+            $msg = "EL FORMATO ".$request->get('consecutivo')." SE ENCUENTRA EN USO Y NO PUEDE SER REMPLAZADO";
             return ['code' => 0, 'message' => $msg];
         } else {
             # no se encuentran incidencias
-            $qry = (new Rf001Model())->where('memorandum', trim($request['consecutivo']))
+            $qry = (new Rf001Model())->where('id', $id)
                 ->update([
-                    'memorandum' => $request['consecutivo'],
+                    'memorandum' => $request->get('consecutivo'),
+                    'periodo_inicio' => $request->get('periodoInicio'),
+                    'periodo_fin' => $request->get('periodoFIn'),
+                    'created_at' => Carbon::now(),
                 ]);
             return ['code' => 1, 'message' => $qry];
         }

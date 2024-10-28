@@ -137,6 +137,7 @@
                                     <th scope="col">MEMORANDUM</th>
                                     <th scope="col">UNIDAD</th>
                                     <th scope="col">PERIODO</th>
+                                    <th scope="col">ASIGNADO</th>
                                     <th scope="col">ACCIONES</th>
                                     <th scope="col">DETALLES</th>
                                     <th scope="col">SELLADO</th>
@@ -177,6 +178,7 @@
                                         <td class="text-left">
                                             {{ $formatoInicio . ' - ' . $formatoFin }}
                                         </td>
+                                        <td class="text-left">{{ $item->dirigido }}</td>
                                         <td class="text-left">
                                             @switch($item->estado)
                                                 @case('GENERADO')
