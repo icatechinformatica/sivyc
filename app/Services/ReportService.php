@@ -189,7 +189,6 @@ class ReportService
 
             //generación de la cadena única mediante el ICTI
             $xmlBase64 = base64_encode($resultado);
-            // return ['error' => 1, 'mensaje' => 'Error en el proceso: ' . $xmlBase64]; exit;
             $getToken = Tokens_icti::all()->last();
             if ($getToken) {
                 # registros
@@ -204,7 +203,6 @@ class ReportService
                 $token = $this->generarToken();
                 $response = $this->getCadenaOriginal($xmlBase64, $token);
             }
-
             // guardando cadena única
             if ($response->json()['cadenaOriginal'] != null) {
 
@@ -241,23 +239,27 @@ class ReportService
 
                 return TRUE;
             } else {
-                \Log::error('Error en json: ' . $response->json());
                 # TODO: realizar cambios al momento de retornar
                 return ['error' => 1, 'mensaje' => 'Error en el proceso: ' . $response];
                 // return FALSE;
             }
         } catch (\Exception $e) {
             \Log::error('Error en xmlFormat: ' . $e->getMessage());
-            return ['error' => 1, 'mensaje' => 'Error en el proceso: ' . $e->getMessage()];
+            return [
+                'error' => 1,
+                'mensaje' => 'Error en el proceso en una excepción: ' . $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ];
         }
     }
 
-    private function incapacidad($incapacidad, $incapacitado)
+    protected function incapacidad($incapacidad, $incapacitado)
     {
-        $fechaActual = now();
+        $fechaActual = Carbon::now();
         if(!is_null($incapacidad->fecha_inicio)) {
-            $fechaInicio = \Carbon::parse($incapacidad->fecha_inicio);
-            $fechaTermino = \Carbon::parse($incapacidad->fecha_termino)->endOfDay();
+            $fechaInicio = Carbon::parse($incapacidad->fecha_inicio);
+            $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
             if ($fechaActual->between($fechaInicio, $fechaTermino)) {
                 // La fecha de hoy está dentro del rango
                 $firmanteIncapacidad = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
@@ -269,6 +271,13 @@ class ReportService
             } else {
                 // La fecha de hoy NO está dentro del rango
                 if($fechaTermino->isPast()) {
+                    if (is_string($incapacidad->historial)) {
+                        $incapacidad->historial = json_decode($incapacidad->historial, true) ?? [];
+                    }
+
+                    if (!is_array($incapacidad->historial)) {
+                        $incapacidad->historial = [];
+                    }
                     $newIncapacidadHistory = 'Ini:'.$incapacidad->fecha_inicio.'/Fin:'.$incapacidad->fecha_termino.'/IdFun:'.$incapacidad->id_firmante;
                     array_push($incapacidad->historial, $newIncapacidadHistory);
                     $incapacidad->fecha_inicio = $incapacidad->fecha_termino = $incapacidad->id_firmante = null;
@@ -289,40 +298,40 @@ class ReportService
     protected function getCadenaOriginal($xmlBase64, $token)
     {
         // api producción
-        return Http::withHeaders([
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer '.$token,
-        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
-            'xml_OriginalBase64' => $xmlBase64
-        ]);
-
-        // api prueba
         // return Http::withHeaders([
         //     'Accept' => 'application/json',
         //     'Authorization' => 'Bearer '.$token,
-        // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
         //     'xml_OriginalBase64' => $xmlBase64
         // ]);
+
+        // api prueba
+        return Http::withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token,
+        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+            'xml_OriginalBase64' => $xmlBase64
+        ]);
     }
 
     // obtener el token
     public function generarToken()
     {
         // Token Producción
-        $resToken = Http::withHeaders([
-            'Accept' => 'application/json'
-        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'SISTEM_IVINCAP',
-            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
-        ]);
-
-        // Token Prueba
         // $resToken = Http::withHeaders([
         //     'Accept' => 'application/json'
         // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'FirmaElectronica',
-        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        //     'nombre' => 'SISTEM_IVINCAP',
+        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         // ]);
+
+        // Token Prueba
+        $resToken = Http::withHeaders([
+            'Accept' => 'application/json'
+        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+            'nombre' => 'FirmaElectronica',
+            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        ]);
 
         $token = $resToken->json();
 
@@ -474,7 +483,7 @@ class ReportService
 
         // documento rf001
         $getUnidad = tbl_unidades::where('id', $unidad)->first();
-        $instituto = DB::table('tbl_instituto')->first();
+        $instituto = \DB::table('tbl_instituto')->first();
         $direccion = $getUnidad->direccion;
         // Decodificar el campo cuentas_bancarias
         $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
@@ -685,7 +694,7 @@ class ReportService
             // arreglo
             $firmanteNoUno = $firmanteNoDos = [];
             // delegado administrativo
-            $query = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo', 'funcionarios.incapacidad')
+            $query = \DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo', 'funcionarios.incapacidad')
                         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
                         ->Join('tbl_unidades AS unidades', 'unidades.id', 'tblOrganismo.id_unidad')
                         ->Where('funcionarios.activo', 'true')
