@@ -729,8 +729,11 @@ class ReportService
                 return "Error en la busqueda de firmantes";
             }
 
+            $directorJson = json_decode($director->incapacidad, true);
+            $delegadoJson = json_decode($delegado->incapacidad, true);
+
             //procesamos las incapacidades, si es que las hay
-            if (!empty($director->incapacidad)) {
+            if (!empty($director->incapacidad) && $directorJson['id_firmante'] !== null) {
                 $incapacidadFirmante = $this->incapacidad(json_decode($director->incapacidad), $director->nombre);
                 if ($incapacidadFirmante != false) {
                     $firmanteNoUno = array('funcionario' => $incapacidadFirmante->funcionario, 'puesto' =>$incapacidadFirmante->cargo, 'correo' => $incapacidadFirmante->correo, 'curp' => $incapacidadFirmante->curp);
@@ -739,7 +742,7 @@ class ReportService
                 $firmanteNoUno = array('funcionario'=>$director->nombre, 'puesto'=>$director->cargo, 'correo'=>$director->correo, 'curp'=>$director->curp);
             }
 
-            if (!empty($delegado->incapacidad)) {
+            if (!empty($delegado->incapacidad) && $delegadoJson['id_firmante'] !== null) {
                 $incapacidadFirmanteDelegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre);
                 if ($incapacidadFirmanteDelegado != false) {
                     $firmanteNoDos = array('funcionario' => $incapacidadFirmanteDelegado->funcionario, 'puesto' => $incapacidadFirmanteDelegado->cargo, 'correo' => $incapacidadFirmanteDelegado->correo, 'curp' => $incapacidadFirmanteDelegado->curp);
