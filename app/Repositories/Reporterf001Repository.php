@@ -39,7 +39,7 @@ class Reporterf001Repository implements Reporterf001Interface
                       ->orWhere('tbl_recibos.estado_reportado', 'GENERADO');
             })
             ->with('concepto:id,concepto')
-            ->select('tbl_recibos.*', 'cat_conceptos.concepto', 'tbl_recibos.id as id_recibo', 'tbl_unidades.clave_contrato')
+            ->select('tbl_recibos.*', 'cat_conceptos.concepto', 'tbl_recibos.id as id_recibo', 'tbl_unidades.clave_contrato', 'tbl_cursos.curso as concepto_curso')
             ->addSelect(\DB::raw("
                     CASE
                         WHEN tbl_cursos.comprobante_pago <> 'null' THEN concat('uploadFiles',tbl_cursos.comprobante_pago)
