@@ -69,7 +69,7 @@ class BuzonFoliosController extends Controller
         if(!is_null($ejercicio_e) && !is_null($filtro_e) && !is_null($clave_e)){
             try {
                 $data = DB::table('efolios_alumnos as ef')
-                ->select('ef.id','ef.matricula','ef.efolio','ef.fecha_creacion','ef.status_doc','tf.nombre','tf.motivo','tf.movimiento','ef.obj_documento', 'ef.cadena_original')
+                ->select('ef.id','ef.matricula','ef.efolio','ef.fecha_creacion','ef.status_doc','tf.nombre','tf.motivo','tf.movimiento','ef.obj_documento', 'ef.cadena_original','ef.id_curso')
                 ->join('tbl_cursos as tc', 'tc.id', '=', 'ef.id_curso')
                 ->join('tbl_folios as tf', 'tf.folio', '=', 'ef.efolio')
                 ->whereYear('ef.fecha_creacion', $ejercicio_e);
@@ -112,24 +112,26 @@ class BuzonFoliosController extends Controller
             if ($getToken) {$token = $getToken->token;}
 
             ##Validamos los firmantes del documento
-            // dd(isset($obj['firmantes']['firmante'][0][0]['_attributes']['firma_firmante']));
-            foreach ($data as $key => $datos) {
-                $obj = json_decode($datos->obj_documento, true);
+                $obj = json_decode($data[0]->obj_documento, true);
+                $cursoId = $data[0]->id_curso;
                 $firmantes = $obj['firmantes']['firmante'][0];
                 foreach ($firmantes as $value) {
                     $curp = $value['_attributes']['curp_firmante'];
-                    $email = $value['_attributes']['email_firmante'];
+                    // $email = $value['_attributes']['email_firmante'];
                     if($curpf == $curp){
                         $existcurp = true;
-                        if(isset($value['_attributes']['firma_firmante'])){$existfirma = true;}
+                        $countFirma = DB::table('efolios_alumnos')
+                        ->selectRaw('COUNT(*) AS count_firma_firmante')
+                        ->whereRaw("jsonb_path_exists(obj_documento, '$.firmantes.firmante[*] ? (@._attributes.curp_firmante == \"$curp\") ._attributes.firma_firmante')")
+                        ->where('id_curso', $cursoId)
+                        ->where(function($query) {
+                            $query->where('status_doc', 'EnFirma')
+                                  ->orWhere('status_doc', 'EnFirmaUno');
+                        })
+                        ->value('count_firma_firmante');
+                        if($countFirma == count($data)){$existfirma = true;}
                     }
-                    if($emailf == $email){$existmail = true;}
                 }
-                // Terminamos
-                if ($existcurp == true && $existmail == true) {
-                    break;
-                }
-            }
         }
 
         // $token =$this->generarToken();
@@ -138,6 +140,7 @@ class BuzonFoliosController extends Controller
         return view('grupos.efirmafolios.efirmabuzon_folios', compact('ubicacion','estados','ejercicio_e','filtro_e','clave_e',
         'data','ids','matricula','token', 'cad_original', 'array_firm', 'curpf','existcurp','existmail','slug', 'existfirma'));
     }
+
 
     ##Cancelar documento
     public function cancelar_doc(Request $request)
@@ -307,11 +310,24 @@ class BuzonFoliosController extends Controller
                             'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
                         ],
                     ]);
-                    if($status_doc == 'EnFirma'){$status_doc = 'EnFirmaUno';}
-                    else if($status_doc == 'EnFirmaUno'){$status_doc = 'firmado';}
+
 
                     EfoliosAlumnos::where('id', $res['idCadena'])
-                    ->update(['obj_documento' => json_encode($obj_documento),'documento_xml' => $result, 'status_doc' => $status_doc]);
+                    ->update(['obj_documento' => json_encode($obj_documento),'documento_xml' => $result]);
+
+                    //Conteo de firmas
+                    $countFirmas = DB::table('efolios_alumnos')->where('id', $res['idCadena'])
+                    ->selectRaw("jsonb_array_length(
+                        jsonb_path_query_array(obj_documento, '$.firmantes.firmante[*]._attributes.firma_firmante')
+                    ) as firma_firmante_count")->value('firma_firmante_count');
+
+                    if($countFirmas == 1){$status_doc = 'EnFirmaUno';}
+                    else if($countFirmas == 2){$status_doc = 'firmado';}
+
+                    EfoliosAlumnos::where('id', $res['idCadena'])
+                    ->update(['status_doc' => $status_doc]);
+
+
 
                 } catch (\Throwable $th) {
                     return redirect('grupos/efirma/buzon')->with(['message'=> 'Error: '.$th->getMessage(), 'clave_e' => $clave, 'matricula' => $matricula]);

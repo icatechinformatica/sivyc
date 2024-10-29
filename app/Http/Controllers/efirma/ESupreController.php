@@ -36,7 +36,8 @@ class ESupreController extends Controller
         $numOficioBuilder = explode('/',$info->no_memo);
         $position = count($numOficioBuilder) - 2;
         array_splice($numOficioBuilder, $position, 0, $numDocs);
-        $numOficio = implode('/',$numOficioBuilder);
+        $numOficioInterno = implode('/',$numOficioBuilder);
+        $numOficio = $info->no_memo;
 
 
         $body = $this->create_body($id_supre, $info->no_memo); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
@@ -100,8 +101,8 @@ class ESupreController extends Controller
                     // 'md5_archivo' => $md5
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
-                // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body['supre'])]
+                // reemplazar los <br> por /n
+                'cuerpo' => [strip_tags(str_replace('<br>', "\n", $body['supre'])."\n".strip_tags(str_replace('<br>', "\n", $body['ccp'])))]
             ],
             'anexos' => [
                 '_attributes' => [
@@ -186,7 +187,7 @@ class ESupreController extends Controller
             $dataInsert->nombre_archivo = $nameFileOriginal;
             $dataInsert->documento = $result;
             $dataInsert->documento_interno = $result;
-            $dataInsert->num_oficio = $numOficio;
+            $dataInsert->num_oficio = $numOficioInterno;
             $dataInsert->save();
 
             return TRUE;
@@ -302,7 +303,9 @@ class ESupreController extends Controller
             $body_html['supre'] =  $body_html['supre'] . '</tbody>
         </table>
         <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
-        <br><p class="text-left"><p>Atentamente.</p></p>';
+        <br><p class="text-left"><p>Atentamente.</p></p>
+        <br><b> C. '. $funcionarios['director']. '</b>
+        <br><b>'. $funcionarios['directorp'].'</b>';
 
         $body_html['tabla'] = '<div align=center><b><h6>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
             <br>DIRECCIÓN DE PLANEACIÓN
@@ -374,7 +377,18 @@ class ESupreController extends Controller
                         </tr>';
                     }
                     $body_html['tabla'] = $body_html['tabla'].'</tbody>
-            </table>';
+            </table>
+            <div align=center> <b>SOLICITA
+                <br>
+                <br><small>C. '. $funcionarios['director']. '</small>
+                <br><small>'. $funcionarios['directorp']. '</small>
+            </div>';
+
+            $body_html['ccp'] = '<br><br><small><b>C.c.p. '. $funcionarios['ccp1']. '.- '. $funcionarios['ccp1p']. '.-Para su conocimiento</b></small>
+                <br><small><b>C.c.p. '. $funcionarios['ccp2']. '.- '. $funcionarios['ccp2p']. '.-Mismo Fin</b></small>
+                <br><small><b>Archivo.<b></small>
+                <br><br><small><small><b>Validó: '. $funcionarios['director']. '.- '. $funcionarios['directorp']. '</b></small></small>
+                <br><small><small><b>Elaboró: '. $funcionarios['delegado']. '.- '. $funcionarios['delegadop']. '</b></small></small>';
 
         //Generación de MD5 al anexo
         $uuid = null;
@@ -560,5 +574,35 @@ class ESupreController extends Controller
         ];
 
         return $funcionarios;
+    }
+
+    public function update_body() {
+        set_time_limit(0);
+        $supres = DocumentosFirmar::Where('tipo_archivo','supre')->Select('id')->Get();
+        foreach($supres as $dcSupre_id) {
+            $supre = DocumentosFirmar::Where('id', $dcSupre_id->id)->First();
+            $body_html = json_decode($supre->obj_documento_interno);
+            $unidad_supre = DB::Table('tbl_cursos AS tc')
+                ->Join('folios AS f', 'f.id_cursos', 'tc.id')
+                ->Join('tabla_supre AS ts', 'ts.id', 'f.id_supre')
+                ->Where('tc.clave', $supre->numero_o_clave)
+                ->Value('ts.unidad_capacitacion');
+            $funcionarios = $this->funcionarios_supre($unidad_supre);
+            $body_html->supre = $body_html->supre .
+                '<br><b> C. '. $funcionarios['director']. '</b>
+                <br><b>'. $funcionarios['directorp'].'</b>';
+            $body_html->tabla = $body_html->tabla .
+                '<div align=center> <b>SOLICITA
+                    <br>
+                    <br><small>C. '. $funcionarios['director']. '</small>
+                    <br><small>'. $funcionarios['directorp']. '</small>
+                </div>';
+            // $body = $this->create_body($id_supre);
+            // $body_html->ccp = $body['ccp'];
+
+            $supre->obj_documento_interno = json_encode($body_html);
+            $supre->save();
+        }
+        dd('complete');
     }
 }

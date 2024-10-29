@@ -110,10 +110,12 @@
              <div class="form-group col-md-2">
                     {{ Form::text('matricula', $matricula, ['id'=>'matricula', 'class' => 'form-control', 'placeholder' => 'MATRICULA', 'aria-label' => 'MATRICULA', 'size' => 15]) }}
             </div>
-            <div class="form-group col-md-2" style="display: none;">
-                {{ Form::checkbox('efirma', true, $efirma, ['id' => 'efirma', 'class' => 'form-control form-check-input']) }}
-                <label for="efirma" class="efirma"> EFIRMA</label>
-            </div>
+            @can('casilla.efirma.asignacion.folios')
+                <div class="form-group col-md-2">
+                    {{ Form::checkbox('efirma', true, $efirma, ['id' => 'efirma', 'class' => 'form-control form-check-input']) }}
+                    <label for="efirma" class="efirma"> EFIRMA</label>
+                </div>
+            @endcan
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['class' => 'btn', 'type' => 'submit']) }}
             </div>

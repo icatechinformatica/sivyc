@@ -212,18 +212,21 @@
                     {{ Form::select('unidad', $datos['unidades'], $getConcentrado ? $getConcentrado->unidad : '', ['id' => 'unidad', 'placeholder' => '- UNIDAD -', 'class' => 'form-control  mr-sm-2']) }}
                 </div>
                 <div class="form-group col-md-3">
-                    <b>Periodo Del {{ $dateInit->day }} de {{ $monthNameInit }} al {{ $dateEnd->day }} de
-                        {{ $monthNameEnd }}</b>
+                    @if (!$getConcentrado)
+                    <b>
+                        Periodo Del {{ $dateInit->day }} de {{ $monthNameInit }} al {{ $dateEnd->day }} de {{ $monthNameEnd }}
+                    </b>
+                    @endif
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaInicio', 'Fecha Inicio', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaInicio', '', ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
+                    {{ Form::date('fechaInicio', $fechaInicio , ['class' => 'form-control mr-sm-2', 'id' => 'fechaInicio']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('fechaFin', 'Fecha Fecha Fin', ['class' => 'awesome']) }}
-                    {{ Form::date('fechaFin', '', ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
+                    {{ Form::date('fechaFin', $fechaFin , ['class' => 'form-control mr-sm-2', 'id' => 'fechaFin']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {{ Form::label('folio_grupo', 'N°. Recibo', ['class' => 'awesome']) }}
@@ -290,6 +293,7 @@
                                                 <input class="form-check-input inputCurso" type="checkbox"
                                                     value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id . '_' . $getConcentrado->id . '_' . $item->folio_recibo }}"
                                                     id="seleccionar_{{ $item->folio_recibo }}"
+                                                    @if ($item->estado_reportado === 'GENERADO' && !in_array($item->folio_recibo, $foliosMovimientos)) disabled @endif
                                                     @if (in_array($item->folio_recibo, $foliosMovimientos)) checked @endif name="seleccionados[]">
                                             </div>
                                         @else
@@ -297,7 +301,7 @@
                                                 <input class="form-check-input concentrado-checkbox" type="checkbox"
                                                     value="{{ $item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id }}"
                                                     id="seleccionar_{{ $item->folio_recibo }}" name="seleccionados[]"
-                                                    @if (in_array($item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id, $selectedCheckboxes)) checked @endif>
+                                                    @if (in_array($item->clave_contrato . '_' . $item->num_recibo . '_' . $item->id, $selectedCheckboxes)) checked @endif @if ($item->estado_reportado === 'GENERADO') checked disabled @endif>
                                             </div>
                                         @endif
                                     </td>
