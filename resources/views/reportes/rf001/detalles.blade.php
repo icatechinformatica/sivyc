@@ -672,7 +672,7 @@
                     </div>
                     <div class="col-2 d-flex justify-content-end">
                         @if (is_array($revisionLocal) && count($revisionLocal) > 0)
-                            @if ($getConcentrado->estado == 'ENFIRMA' && $getConcentrado->tipo != 'CANCELADO')
+                            @if ($getConcentrado->estado == 'ENFIRMA' || $getConcentrado->estado == 'APROBADO' && $getConcentrado->tipo != 'CANCELADO')
                                 @if (!empty($data['cadenaOriginal']))
                                     <div class="padre">
                                         @can('vobo.rf001')
@@ -686,10 +686,9 @@
                         @else
                             @if (!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO')
                                 <div class="padre">
-                                    @can('solicitud.rf001')
-                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                            :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
-                                    @endcan
+                                    @canany(['solicitud.rf001', 'vobo.rf001'])
+                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']" :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                    @endcanany
                                 </div>
                             @endif
                         @endif
