@@ -30,6 +30,8 @@ class ESupreController extends Controller
                 ->Where('tabla_supre.id',$id_supre)
                 ->First();
 
+        $func = $this->funcionarios_supre($info->ubicacion);
+
         $nameFileOriginal = 'solicitud de suficiencia presupuestal '.$info->clave.'.pdf';
         $numDocs = DocumentosFirmar::Where('tipo_archivo', 'supre')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
         $numDocs = '0'.($numDocs+1);
@@ -89,11 +91,21 @@ class ESupreController extends Controller
         $ArrayXml = [
             'emisor' => [
                 '_attributes' => [
-                    'nombre_emisor' => Auth::user()->name,
-                    'cargo_emisor' => Auth::user()->puesto,
+                    'nombre_emisor' => $func['director'],
+                    'cargo_emisor' => $func['directorp'],
                     'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
                     // 'curp_emisor' => $dataEmisor->curp
                 ],
+            ],
+            'receptores' => [
+                'receptor' => [
+                    '_attributes' => [
+                        'nombre_receptor' => $func['destino'],
+                        'cargo_receptor' => $func['destinop'],
+                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                        'tipo_receptor' => 'JDP'
+                    ]
+                ]
             ],
             'archivo' => [
                 '_attributes' => [
@@ -437,20 +449,20 @@ class ESupreController extends Controller
     //obtener el token
     public function generarToken() {
 
-        $resToken = Http::withHeaders([
-            'Accept' => 'application/json'
-        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'SISTEM_IVINCAP',
-            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
-        ]);
-
-        // Token Prueba
         // $resToken = Http::withHeaders([
         //     'Accept' => 'application/json'
         // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'FirmaElectronica',
-        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        //     'nombre' => 'SISTEM_IVINCAP',
+        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         // ]);
+
+        // Token Prueba
+        $resToken = Http::withHeaders([
+            'Accept' => 'application/json'
+        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+            'nombre' => 'FirmaElectronica',
+            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        ]);
 
         $token = $resToken->json();
 
@@ -463,20 +475,20 @@ class ESupreController extends Controller
     // obtener la cadena original
     public function getCadenaOriginal($xmlBase64, $token) {
 
-        $response1 = Http::withHeaders([
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer '.$token,
-        ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
-            'xml_OriginalBase64' => $xmlBase64
-        ]);
-
-        // api prueba
         // $response1 = Http::withHeaders([
         //     'Accept' => 'application/json',
         //     'Authorization' => 'Bearer '.$token,
-        // ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+        // ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
         //     'xml_OriginalBase64' => $xmlBase64
         // ]);
+
+        // api prueba
+        $response1 = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token,
+        ])->post('https://apiprueba.firma.chiapas.gob.mx/FEA/v2/Tools/generar_cadena_original', [
+            'xml_OriginalBase64' => $xmlBase64
+        ]);
 
         return $response1;
     }
@@ -574,35 +586,5 @@ class ESupreController extends Controller
         ];
 
         return $funcionarios;
-    }
-
-    public function update_body() {
-        set_time_limit(0);
-        $supres = DocumentosFirmar::Where('tipo_archivo','supre')->Select('id')->Get();
-        foreach($supres as $dcSupre_id) {
-            $supre = DocumentosFirmar::Where('id', $dcSupre_id->id)->First();
-            $body_html = json_decode($supre->obj_documento_interno);
-            $unidad_supre = DB::Table('tbl_cursos AS tc')
-                ->Join('folios AS f', 'f.id_cursos', 'tc.id')
-                ->Join('tabla_supre AS ts', 'ts.id', 'f.id_supre')
-                ->Where('tc.clave', $supre->numero_o_clave)
-                ->Value('ts.unidad_capacitacion');
-            $funcionarios = $this->funcionarios_supre($unidad_supre);
-            $body_html->supre = $body_html->supre .
-                '<br><b> C. '. $funcionarios['director']. '</b>
-                <br><b>'. $funcionarios['directorp'].'</b>';
-            $body_html->tabla = $body_html->tabla .
-                '<div align=center> <b>SOLICITA
-                    <br>
-                    <br><small>C. '. $funcionarios['director']. '</small>
-                    <br><small>'. $funcionarios['directorp']. '</small>
-                </div>';
-            // $body = $this->create_body($id_supre);
-            // $body_html->ccp = $body['ccp'];
-
-            $supre->obj_documento_interno = json_encode($body_html);
-            $supre->save();
-        }
-        dd('complete');
     }
 }
