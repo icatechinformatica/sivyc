@@ -718,6 +718,7 @@ class ReportService
                         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
                         ->Join('tbl_unidades AS unidades', 'unidades.id', 'tblOrganismo.id_unidad')
                         ->Where('funcionarios.activo', 'true')
+                        ->where('funcionarios.titular', true)
                         ->Where('unidades.unidad', $unidadObtenida);
             //director de la unidad
             $directorQuery = clone $query;
