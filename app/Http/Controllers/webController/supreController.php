@@ -1484,11 +1484,16 @@ class supreController extends Controller
         if(is_null($documento)) { //cambiarlo al final de pruebas
             $firma_electronica = false;
             $supreController = new EValsupreController();
-            $body_html = $supreController->create_body($id);
+            $array_html = $supreController->create_body($id);
+            $body_html = $array_html['body'];
+            $ccp_html = $array_html['ccp'];
         } else {
             $firma_electronica = true;
-            $body_html = json_decode($documento->obj_documento_interno);
+            $array_html = json_decode($documento->obj_documento_interno);
+            $body_html = $array_html->body;
+            $ccp_html = $array_html->ccp;
         }
+
 
         if(isset($documento->uuid_sellado)){
             $objeto = json_decode($documento->obj_documento,true);
@@ -1525,7 +1530,7 @@ class supreController extends Controller
             }
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('distintivo','funcionarios','body_html','uuid','objeto','puestos','qrCodeBase64'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('distintivo','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
     }
