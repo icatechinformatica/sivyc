@@ -491,6 +491,7 @@ class ReportService
 
         #modificaciones ccp
         $ccp = $this->setCcp($getUnidad->id);
+        $ccpDelegado = $this->setCcpFuncionario($getUnidad->id);
         $count = 0;
         $bandera = false;
 
@@ -548,9 +549,9 @@ class ReportService
                 $htmlBody['memorandum'] .= 'Validó: '.htmlspecialchars($v->nombre).'. '.htmlspecialchars($v->cargo).'. <br>';
             }
         }
-        foreach ($ccp as $ke => $val) {
+        foreach ($ccpDelegado as $ke => $val) {
             if (!$bandera) {
-                if (str_contains($val->cargo, 'DELEG')) {
+                if (str_contains($val->cargo, 'DELEGADO') || str_contains($val->cargo, 'DELEGADA')) {
                     $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
                     $bandera = true;
                 } elseif (str_contains($val->cargo, 'DIRECTOR') || str_contains($val->cargo, 'DIRECTORA') || str_contains($val->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($val->cargo, 'ENCARGADA DE LA UNIDAD')) {
@@ -1151,5 +1152,28 @@ class ReportService
         })
         ->orderBy('funcionario.id_org', 'asc')
         ->get();
+    }
+
+    protected function setCcpFuncionario($idUnidad)
+    {
+        return \DB::table('tbl_funcionarios AS funcionario')
+            ->join('tbl_organismos AS organismos', 'funcionario.id_org', '=', 'organismos.id')
+            ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
+            ->where('funcionario.activo', '=', 'true')  // true sin comillas para booleano
+            ->where('funcionario.titular', true) // true sin comillas para booleano
+            ->where(function($query) use ($idUnidad) {
+                $query->where('organismos.id_unidad', $idUnidad)
+                    ->where(function($moist) use ($idUnidad) {
+                        $moist->where('funcionario.cargo', 'like', 'DELEG%')
+                        ->orWhere('organismos.id_parent',1);
+                    });
+            })
+            ->where(function($query) {
+                $query->whereNull('funcionario.incapacidad')
+                    ->orWhere('funcionario.incapacidad', '{}') // Para JSON vacío
+                    ->orWhereNull(DB::raw("funcionario.incapacidad->>'id_firmante'")); // Para JSONB
+            })
+            ->orderBy('funcionario.id_org', 'desc') // Ordenar en orden descendente
+            ->get();
     }
 }
