@@ -170,6 +170,7 @@
                                                         $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docFirmar->obj_documento, true);
+                                                        if(!isset($obj['archivo'])) {dd($docFirmar);}
                                                         $nameArchivo = $obj['archivo']['_attributes']['nombre_archivo'];
 
                                                         foreach ($obj['firmantes']['firmante'][0] as $value) {

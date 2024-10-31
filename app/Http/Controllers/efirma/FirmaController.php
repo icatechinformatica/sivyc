@@ -194,15 +194,21 @@ class FirmaController extends Controller {
         // $array2['DocumentoChis']['firmantes'] = $obj_documento_interno['firmantes'];
 
         ##By Jose Luis Moreno/ Creamos nuevo array para ordenar el xml
+        $ArrayXml['emisor'] = $obj_documento['emisor'];
+
+        if(isset($obj_documento['receptores'])){  
+            $ArrayXml['receptores'] = $obj_documento['receptores']; 
+        } 
+        
+        $ArrayXml["archivo"] = $obj_documento['archivo']; 
+            
         if(isset($obj_documento['anexos'])){
-            $ArrayXml = [
-                "emisor" => $obj_documento['emisor'],
-                "archivo" => $obj_documento['archivo'],
-                "anexos" => $obj_documento['anexos'],
-                "firmantes" => $obj_documento['firmantes'],
-            ];
-            $obj_documento = $ArrayXml;
+            $ArrayXml["anexos"] = $obj_documento['anexos'];
         }
+
+        $ArrayXml["firmantes"] = $obj_documento['firmantes'];
+
+        $obj_documento = $ArrayXml;
 
         $result = ArrayToXml::convert($obj_documento, [
             'rootElementName' => 'DocumentoChis',
