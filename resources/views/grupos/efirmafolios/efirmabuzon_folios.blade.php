@@ -557,7 +557,8 @@
                         const objeto = {
                             certificado: element.certificated,
                             no_seriefirmante: element.certifiedSeries,
-                            fechafirma: element.date,
+                            //fechafirma: element.date, //Prueba
+                            fechafirma: element.date_sign, //Producción
                             firma_cadena: element.sign,
                             idCadena: element.idCadena
                         };
@@ -565,7 +566,8 @@
                         correctos ++;
                     }else{
                         errores ++;
-                        message += `Respuesta ${index + 1}  Status: ${element.statusResponse}   Código: ${element.codeResponse}  Mensaje: ${element.messageResponse}\n`;
+                        message += `Respuesta ${index + 1}  Status: ${element.statusResponse}   Código: ${element.codeResponse}  Mensaje: ${element.descriptionResponse}\n`;
+                        //prueba element.messageResponse /  Producción element.descriptionResponse
                     }
 
                 });
@@ -602,11 +604,6 @@
                 console.log("No hay registros");
             }
         }
-
-
-
-
-
 
     </script>
 @endsection
