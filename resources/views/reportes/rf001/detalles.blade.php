@@ -684,7 +684,7 @@
                                 @endif
                             @endif
                         @else
-                            @if (!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO')
+                            @if (!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO' || $getConcentrado->estado == 'ENFIRMA')
                                 <div class="padre">
                                     @canany(['solicitud.rf001', 'vobo.rf001'])
                                         <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']" :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
