@@ -97,7 +97,11 @@ class Rf001Controller extends Controller
 
 
         $data->when(!empty($fechaInicio) && !empty($fechaFin), function ($query) use ($fechaInicio, $fechaFin) {
-            return $query->whereBetween('tbl_recibos.fecha_expedicion', [$fechaInicio, $fechaFin]);
+            return $query->whereRaw("EXISTS (
+                        SELECT 1
+                        FROM jsonb_array_elements(tbl_recibos.depositos) AS deposito
+                        WHERE (deposito->>'fecha')::date BETWEEN ? AND ?
+                    ) ", [$fechaInicio, $fechaFin]);
         });
 
         $data->when($request->filled('unidad'), function ($query) use ($request) {
