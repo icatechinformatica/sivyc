@@ -1219,7 +1219,7 @@ class ContratoController extends Controller
 
         $uni = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
         //validacion de unidad del usuario y el contrato. con esto evitamos que lo vea cualquier usuario fuera de la unidad correcta
-        if($user_data->ubicacion != $uni->ubicacion && !in_array($user_data->role_id, ['1','9','10'])) {
+        if($user_data->ubicacion != $uni->ubicacion && !in_array($user_data->role_id, ['1','9','10','12','27'])) {
             return redirect()->route('contrato-inicio')->with('warning','Acceso denegado para visualizar este contrato.');
         }
         //fin
