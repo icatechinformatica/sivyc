@@ -244,7 +244,7 @@ class MetavanceController extends Controller
                         if($value['_attributes']['curp_firmante'] == $consul_efirma['curp_activo']){
                             if(!empty($json_documento['firmantes']['firmante'][0][$key]['_attributes']['firma_firmante'])){
                                 $consul_efirma_avance['status_firma_ava'] = 'FIRMADO';
-                                $consul_efirma_avance['pos_firm_activo_ava'] = $key;
+                                $consul_efirma_avance['pos_firm_activo_ava'] = 0;
                             }else{
                                 $consul_efirma_avance['status_firma'] = '';
                                 $consul_efirma_avance['pos_firm_activo_ava'] = '';
@@ -2731,6 +2731,13 @@ class MetavanceController extends Controller
     public function show_pdf_efirma($id_registro){
         $cadena_html_meta  = $qrCodeBase64 = $uuid = $cadena_sello = $fecha_sello = $no_oficio = '';
         $firmantes = [];
+        $id_organismo = $_SESSION['id_organsmog'];
+        // dd($_SESSION['id_organsmog']);
+        $ids_org = DB::table('tbl_organismos as o')
+        ->join('tbl_organismos as p', 'o.id_parent', '=', 'p.id')
+        ->where('o.id', $id_organismo)
+        ->select('p.id as id_direccion', 'o.id as id_depto')
+        ->first();
 
         ##Consulta de firma electronica
         $firma_electronica = DocumentosFirmar::where('id', $id_registro)->whereIn('status', ['EnFirma', 'VALIDADO'])->first();
@@ -2751,8 +2758,14 @@ class MetavanceController extends Controller
                 $emailUser1 = $objeto['firmantes']['firmante'][0][0]['_attributes']['email_firmante'];
                 $emailUser2 = $objeto['firmantes']['firmante'][0][1]['_attributes']['email_firmante'];
 
-                $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
-                $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
+                if($ids_org->id_direccion == 1){
+                    //Cuando es de Dirección
+                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->where('id_org', '!=', $ids_org->id_depto)->value('cargo');
+                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->where('id_org', $ids_org->id_depto)->value('cargo');
+                }else{
+                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->where('id_org', $ids_org->id_depto)->value('cargo');
+                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->where('id_org', $ids_org->id_direccion)->value('cargo');
+                }
 
                 if(empty($puesto_firmUno) || empty($puesto_firmDos)){
                     return back()->with('message', '¡No se encontraron los datos del los funcionarios!');
