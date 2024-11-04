@@ -610,25 +610,4 @@ class EValsupreController extends Controller
 
         return $funcionarios;
     }
-
-    public function update_body() {
-        set_time_limit(0);
-        $valsupres = DocumentosFirmar::Where('tipo_archivo','valsupre')->Select('id')->Get();
-        foreach($valsupres as $dcValsupre_id) {
-            $valsupre = DocumentosFirmar::Where('id', $dcValsupre_id->id)->First();
-            $body_html = json_decode($valsupre->obj_documento_interno);
-            $id_supre = DB::Table('tbl_cursos AS tc')
-                ->Join('folios AS f', 'f.id_cursos', 'tc.id')
-                ->Join('tabla_supre AS ts', 'ts.id', 'f.id_supre')
-                ->Where('tc.clave', $valsupre->numero_o_clave)
-                ->Value('ts.id');
-            $body = $this->create_body($id_supre);
-            $array_html['body'] = $body_html;
-            $array_html['ccp'] = $body['ccp'];
-
-            $valsupre->obj_documento_interno = json_encode($array_html);
-            $valsupre->save();
-        }
-        dd('complete');
-    }
 }
