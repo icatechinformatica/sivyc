@@ -138,7 +138,7 @@
                         </div>                        
                     </div>                     
                 @endif
-                @if($data->editar)
+                
                     <h4 class="pt-2 pb-2">DEL RECIBO</h4>                     
                     <div class="form-row bg-light p-5">                        
                         <div class="form-group col-md-12">
@@ -163,7 +163,9 @@
                                         <input type="date" class="form-control mr-3" id="fecha_deposito1" name="fecha_deposito[1]" placeholder ="DIA/MES/AÑO">
                                     @endif
                                 </div>
-                                <button type="button" class="btn form-inline bg-info" onclick="addTextBox()" title="MÁS" style="font-size: 20px; padding:0 5px 0 5px;">+</button>                            
+                                @if($data->editar)
+                                    <button type="button" class="btn form-inline bg-info" onclick="addTextBox()" title="MÁS" style="font-size: 20px; padding:0 5px 0 5px;">+</button>    
+                                @endif                        
                             </div>
                             <hr/>
                         </div>                        
@@ -180,12 +182,12 @@
                             {{ Form::text('recibio', $data->recibio, ['id'=>'recibio', 'class' => 'form-control', 'placeholder' => 'RECIBIÓ', 'title' => 'RECIBIÓ', 'disabled'=>'true']) }}
                         </div>
                         <div class="form-group col-md-2 m-1 "> <br/>
-                        @if($data->status_folio != 'CANCELADO')
+                        @if($data->editar)
                              {{ Form::button('GUARDAR CAMBIOS', ['id'=>'modificar','class' => 'btn', 'value'=> route('grupos.recibos.modificar')]) }}
                         @endif
                         </div>
                     </div>                     
-                @endif
+                
                 <div class="row w-100 form-inline justify-content-end mt-4">                    
                     <h5 class="bg-light p-2">RECIBO No. <span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</b>&nbsp;</span></h5>
                     @if($data->file_pdf)
@@ -219,12 +221,13 @@
                             {{ Form::select('status_recibo', $status_recibo, '', ['id'=>'status_recibo','class' => 'form-control', 'title'=>'ESTATUS'] ) }}
                             {{ Form::button('ASIGNAR', ['id'=>'asignar','class' => 'btn btn-danger', 'value'=> route('grupos.recibos.asignar')]) }}
                     @else                        
-                        @if(!in_array($data->status_folio, ['IMPRENTA','DISPONIBLE','ENVIADO','CANCELADO']) OR (!$data->status_curso AND $data->id_concepto==1)) 
+                        
+                        @if($data->editar)
                                 {{ Form::button('GENERAR RECIBO', ['id'=>'pdfRecibo','class' => 'btn', 'value' => route('grupos.recibos.pdf')]) }}
                         @endif
-                            @if($data->status_folio == "CARGADO") 
-                                {{ Form::button('ENVIAR', ['id'=>'enviar','class' => 'btn btn-danger', 'value'=> route('grupos.recibos.enviar')]) }}
-                            @endif
+                        @if($data->status_folio == "CARGADO") 
+                            {{ Form::button('ENVIAR', ['id'=>'enviar','class' => 'btn btn-danger', 'value'=> route('grupos.recibos.enviar')]) }}
+                         @endif
                     @endif
                         
                 </div>
