@@ -267,7 +267,7 @@ class AsistenciaController extends Controller
                         ->Where('tipo_archivo','Lista de asistencia')
                         ->first();
 
-                    if(!is_null($documento)) {
+                    if(is_null($documento)) {
                         $body = $this->create_body($curso->clave);
                         $body_html = $body['body_html'];
                         $header = $body['header'];
