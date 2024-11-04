@@ -432,8 +432,7 @@ class recibosController extends Controller
 
                         DB::raw("(
                             CASE
-                                WHEN tc.status_curso IS NULL AND tr.status_folio IS NOT NULL THEN true
-                                WHEN  tc.status_curso IS NOT NULL AND tr.status_folio IS NOT NULL AND tr.status_folio<>'ENVIADO'  THEN true
+                                WHEN tc.status_curso IS NULL AND tr.status_folio IS NOT NULL THEN true                                
                                 WHEN  tr.status_folio='ACEPTADO'  THEN true
                                 ELSE false
                             END) as editar")
