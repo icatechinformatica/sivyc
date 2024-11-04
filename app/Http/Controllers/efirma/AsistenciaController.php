@@ -267,7 +267,7 @@ class AsistenciaController extends Controller
                         ->Where('tipo_archivo','Lista de asistencia')
                         ->first();
 
-                    if(is_null($documento)) {
+                    if(!is_null($documento)) {
                         $body = $this->create_body($curso->clave);
                         $body_html = $body['body_html'];
                         $header = $body['header'];
@@ -513,71 +513,61 @@ class AsistenciaController extends Controller
                                 $i = $i+15;
 
                                 $array_html['body_html'] = $array_html['body_html']. '<table class="tabla">
-                                    <thead>
-                                        <tr>
-                                            <td';
-                                                if (explode('-', $mes['ultimoDia'])[2] == 28) {
-                                                    $array_html['body_html'] = $array_html['body_html']. 'colspan="33"';
-                                                } elseif (explode('-', $mes['ultimoDia'])[2] == 29) {
-                                                    $array_html['body_html'] = $array_html['body_html']. 'colspan="34"';
-                                                } elseif (explode('-', $mes['ultimoDia'])[2] == 30) {
-                                                    $array_html['body_html'] = $array_html['body_html']. 'colspan="35"';
-                                                } else {
-                                                    $array_html['body_html'] = $array_html['body_html']. 'colspan="36"';
-                                                }
-                                                $array_html['body_html'] = $array_html['body_html']. '>
-                                                <div id="curso">
-                                                    UNIDAD DE CAPACITACIÓN:
-                                                    <span class="tab">'. $curso->plantel. ' '. $curso->unidad. '</span>
-                                                    CLAVE CCT: <span class="tab">'. $curso->cct. '</span>
-                                                    CICLO ESCOLAR: <span class="tab">'. $curso->ciclo. '</span>
-                                                    GRUPO: <span class="tab">'. $curso->grupo. '</span>
-                                                    MES: <span class="tab">'. $mes['mes']. '</span>
-                                                    AÑO: &nbsp;&nbsp;'. $mes['year'].
-                                                    '<br />
-                                                    AREA: <span class="tab1">'. $curso->area. '</span>
-                                                    ESPECIALIDAD: <span class="tab1">'. $curso->espe. '</span>
-                                                    CURSO: <span class="tab1">'. $curso->curso. '</span>
-                                                    CLAVE: &nbsp;&nbsp;'. $curso->clave.
-                                                    '<br />
-                                                    FECHA INICIO: <span class="tab1">'. $curso->fechaini. '</span>
-                                                    FECHA TERMINO: <span class="tab1">'. $curso->fechafin. '</span>
-                                                    HORARIO: <span class="tab2">'. $curso->dia. ' DE '. $curso->hini. ' A '. $curso->hfin. '</span>
-                                                    CURP: &nbsp;&nbsp;'. $curso->curp.
-                                                '</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th';
-                                                if (explode('-', $mes['ultimoDia'])[2] == 28) {
-                                                    $array_html['body_html'] = $array_html['body_html']. 'colspan="33"';
-                                                } elseif (explode('-', $mes['ultimoDia'])[2] == 29) {
-                                                    $array_html['body_html'] = $array_html['body_html']. 'colspan="34"';
-                                                } elseif (explode('-', $mes['ultimoDia'])[2] == 30) {
-                                                    $array_html['body_html'] = $array_html['body_html']. 'colspan="35"';
-                                                } else {
-                                                    $array_html['body_html'] = $array_html['body_html']. 'colspan="36"';
-                                                }
-                                                $array_html['body_html'] = $array_html['body_html']. 'style="border-left: white; border-right: white;">
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th width="15px" rowspan="2">N<br />U<br />M</th>
-                                            <th width="100px" rowspan="2">NÚMERO DE <br />CONTROL</th>
-                                            <th width="280px">NOMBRE DEL ALUMNO</th>';
-                                            foreach ($mes['dias'] as $keyD => $dia) {
-                                                $counting = $keyD+1;
-                                                $array_html['body_html'] = $array_html['body_html']. '<th width="10px" rowspan="2"><b>'. $counting. '</b></th>';
-                                            }
-                                            $array_html['body_html'] = $array_html['body_html']. '<th colspan="2"><b>TOTAL</b></th>
-                                        </tr>
-                                        <tr>
-                                            <th>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
-                                            <th> A </th>
-                                            <th> I </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>';
+                                <thead>
+                                    <tr>
+                                        <td ';
+                                            if (explode('-', $mes['ultimoDia'])[2] == 28) { $array_html['body_html'] = $array_html['body_html']. 'colspan="33"'; }
+                                            elseif (explode('-', $mes['ultimoDia'])[2] == 29) { $array_html['body_html'] = $array_html['body_html']. 'colspan="34"';}
+                                            elseif (explode('-', $mes['ultimoDia'])[2] == 30) { $array_html['body_html'] = $array_html['body_html']. 'colspan="35"';}
+                                            else { $array_html['body_html'] = $array_html['body_html']. 'colspan="36"';}
+                                            $array_html['body_html'] = $array_html['body_html']. '>
+                                            <div id="curso">
+                                                UNIDAD DE CAPACITACIÓN:
+                                                <span class="tab">'. $curso->plantel. ' '. $curso->unidad. '</span>
+                                                CLAVE CCT: <span class="tab">'. $curso->cct. '</span>
+                                                CICLO ESCOLAR: <span class="tab">'. $curso->ciclo. '</span>
+                                                GRUPO: <span class="tab">'. $curso->grupo. '</span>
+                                                MES: <span class="tab">'. $mes['mes']. '</span>
+                                                AÑO: &nbsp;&nbsp;'. $mes['year']. '
+                                                <br />
+                                                AREA: <span class="tab1">'. $curso->area. '</span>
+                                                ESPECIALIDAD: <span class="tab1">'. $curso->espe. '</span>
+                                                CURSO: <span class="tab1">'. $curso->curso. '</span>
+                                                CLAVE: &nbsp;&nbsp;'. $curso->clave .'
+                                                <br />
+                                                FECHA INICIO: <span class="tab1">'. $curso->fechaini. '</span>
+                                                FECHA TERMINO: <span class="tab1">'. $curso->fechafin. '</span>
+                                                HORARIO: '. $curso->dia. ' DE '. $curso->hini. ' A '. $curso->hfin. '&nbsp;&nbsp;&nbsp;
+                                                CURP: &nbsp;&nbsp;'. $curso->curp. ' &nbsp;&nbsp;&nbsp;
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th ';
+                                            if (explode('-', $mes['ultimoDia'])[2] == 28) {$array_html['body_html'] = $array_html['body_html']. 'colspan="33"';}
+                                            elseif (explode('-', $mes['ultimoDia'])[2] == 29){$array_html['body_html'] = $array_html['body_html']. 'colspan="34"';}
+                                            elseif (explode('-', $mes['ultimoDia'])[2] == 30){$array_html['body_html'] = $array_html['body_html']. 'colspan="35"';}
+                                            else{ $array_html['body_html'] = $array_html['body_html']. 'colspan="36"';}
+                                            $array_html['body_html'] = $array_html['body_html']. 'style="border-left: white; border-right: white;">
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th width="15px" rowspan="2">N<br />U<br />M</th>
+                                        <th width="100px" rowspan="2">NÚMERO DE <br />CONTROL</th>
+                                        <th width="280px">NOMBRE DEL ALUMNO</th>';
+                                        foreach ($mes['dias'] as $keyD => $dia) {
+                                            $counting = $keyD+1;
+                                            $array_html['body_html'] = $array_html['body_html']. '<th width="10px" rowspan="2"><b>'. $counting . "</b></th>\n";
+                                        }
+                                        $array_html['body_html'] = $array_html['body_html']. '<th colspan="2"><b>TOTAL</b></th>
+                                    </tr>
+                                    <tr>
+                                        <th>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
+                                        <th> A </th>
+                                        <th> I </th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
                             }
                         }
                         $array_html['body_html'] = $array_html['body_html']. '</tbody>
