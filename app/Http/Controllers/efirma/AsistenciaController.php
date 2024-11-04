@@ -421,7 +421,7 @@ class AsistenciaController extends Controller
         $array_html['body_html'] = null;
         if (isset($meses)) {
             foreach ($meses as $key => $mes) {
-                $consec = 1;
+                $consec = 0;
                 $array_html['body_html'] = $array_html['body_html']. '<table class="tabla">
                     <thead>
                         <tr>
@@ -680,7 +680,7 @@ class AsistenciaController extends Controller
 
     public function update_body() {
         set_time_limit(0);
-        $asistencias = DocumentosFirmar::Where('tipo_archivo','Lista de asistencia')->Select('id')->Get();
+        $asistencias = DocumentosFirmar::Where('tipo_archivo','Lista de asistencia')->Select('id')->orderBy('id','desc')->Get();
         foreach($asistencias as $dcAsistencia_id) {
             $asistencia = DocumentosFirmar::Where('id', $dcAsistencia_id->id)->First();
             $body = $this->create_body($asistencia->numero_o_clave);
