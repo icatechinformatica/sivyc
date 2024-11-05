@@ -200,7 +200,7 @@
                                         <td>
                                             @if( !empty($data[$i]->fecha_meta['id_efirma']) && !empty($data[$i]->fecha_meta['mod_documento']) )
                                             {{-- Ejecutar el documento firmado electronicamente --}}
-                                                <a class="" href="{{route('pat.metavance.pdf.efirma', ['id' => $data[$i]->fecha_meta['id_efirma'] ]) }}" target="_blank">
+                                                <a class="" href="{{route('pat.buzon.pdf.efirma', ['id' => $data[$i]->fecha_meta['id_efirma'], 'org'=> $data[$i]->id_org ]) }}" target="_blank">
                                                     <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                                 </a>
 
@@ -319,7 +319,7 @@
 
                                                 @if( !empty($data[$i]->fechas_avance[$mes]['id_efirma']) &&  !empty($data[$i]->fechas_avance[$mes]['mod_documento']) && !empty($data[$i]->fechas_avance[$mes]['status_efirma']))
                                                     {{-- Ejecutar el documento firmado electronicamente --}}
-                                                    <a class="" href="{{route('pat.metavance.pdf.efirma', ['id' => $data[$i]->fechas_avance[$mes]['id_efirma'] ]) }}" target="_blank">
+                                                    <a class="" href="{{route('pat.buzon.pdf.efirma', ['id' => $data[$i]->fechas_avance[$mes]['id_efirma'], 'org'=> $data[$i]->id_org]) }}" target="_blank">
                                                         <i class="far fa-file-pdf  fa-2x fa-lg text-danger from-control" aria-hidden="true"></i>
                                                     </a>
                                                 @elseif ($data[$i]->fechas_avance[$mes]['statusmes'] == 'autorizado' &&  !empty($data[$i]->fechas_avance[$mes]['urldoc_firmav']) )

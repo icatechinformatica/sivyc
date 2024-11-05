@@ -99,6 +99,8 @@ Route::get('/vista/pat/buzon/index/', 'PatController\BuzonController@index')->na
 Route::get('/vista/pat/buzon/pdf/general/{mes}/{opcion}', 'PatController\BuzonController@pdforg_direc')->name('pat.buzon.pdf.general');
 //Eliminar o cancelar documento tradicionar y con efirma
 Route::post('/vista/pat/buzon/delete', 'PatController\BuzonController@cancelar_documento')->name('pat.buzon.cancel.doc');
+//Visualizar documento electronico pat planeación
+Route::get('/vista/pat/buzon/pdf/firma/{id?}/{org?}', 'PatController\BuzonController@ver_docfirmado')->name('pat.buzon.pdf.efirma');
 
 
 
