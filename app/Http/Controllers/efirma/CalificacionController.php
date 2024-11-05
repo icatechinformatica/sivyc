@@ -23,161 +23,162 @@ class CalificacionController extends Controller
         $this->mes = ["01" => "ENERO", "02" => "FEBRERO", "03" => "MARZO", "04" => "ABRIL", "05" => "MAYO", "06" => "JUNIO", "07" => "JULIO", "08" => "AGOSTO", "09" => "SEPTIEMBRE", "10" => "OCTUBRE", "11" => "NOVIEMBRE", "12" => "DICIEMBRE"];
     }
 
-    public function generar_xml(Request $request) {
-        $info = DB::Table('tbl_cursos')->Select('tbl_unidades.*','tbl_cursos.clave','tbl_cursos.nombre','tbl_cursos.curp','instructores.correo')
-                ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
-                ->join('instructores','instructores.id','tbl_cursos.id_instructor')
-                ->Where('tbl_cursos.id',$request->txtIdValidado)
-                ->First();
+    // ELIMINAR DESPUES DEL 01/01/2025
+    // public function generar_xml(Request $request) {
+    //     $info = DB::Table('tbl_cursos')->Select('tbl_unidades.*','tbl_cursos.clave','tbl_cursos.nombre','tbl_cursos.curp','instructores.correo')
+    //             ->Join('tbl_unidades','tbl_unidades.unidad','tbl_cursos.unidad')
+    //             ->join('instructores','instructores.id','tbl_cursos.id_instructor')
+    //             ->Where('tbl_cursos.id',$request->txtIdValidado)
+    //             ->First();
 
-        $body = $this->create_body($request->txtIdValidado,$info); //creacion de body
-        // dd($body);
-        // $body = str_replace(["\r", "\n", "\f"], ' ', $body);
+    //     $body = $this->create_body($request->txtIdValidado,$info); //creacion de body
+    //     // dd($body);
+    //     // $body = str_replace(["\r", "\n", "\f"], ' ', $body);
 
-        $nameFileOriginal = 'Lista de calificaciones '.$info->clave.'.pdf';
-        $numOficio = 'RESD-05-'.$info->clave;
-        $numFirmantes = '2';
+    //     $nameFileOriginal = 'Lista de calificaciones '.$info->clave.'.pdf';
+    //     $numOficio = 'RESD-05-'.$info->clave;
+    //     $numFirmantes = '2';
 
-        $arrayFirmantes = [];
+    //     $arrayFirmantes = [];
 
-        $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo',
-        'org.nombre', 'fun.incapacidad', 'fun.id as id_fun')
-                            ->Join('tbl_funcionarios AS fun','fun.id','org.id')
-                            ->Where('org.id', Auth::user()->id_organismo)
-                            ->Where('fun.titular', true)
-                            ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADÉMICO%')
-                            ->OrWhere('org.id_parent', Auth::user()->id_organismo)
-                            // ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
-                            ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADÉMICO%')
-                            ->First();
-        if($dataFirmante->curp == null)
-        {
-            return redirect()->route('firma.inicio')->with('Danger', 'Error: La curp de un firmante no se encuentra');
-        }
-
-
-        if($dataFirmante == null){
-            return redirect()->route('firma.inicio')->with('danger', 'NO SE ENCONTRARON DATOS DEL FIRMANTE AL REALIZAR LA CONSULTA');
-        }
-        ##Incapacidad
-        $val_inca = $this->valid_incapacidad($dataFirmante);
-        if ($val_inca != null) {
-            $dataFirmante = $val_inca;
-        }
+    //     $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo',
+    //     'org.nombre', 'fun.incapacidad', 'fun.id as id_fun')
+    //                         ->Join('tbl_funcionarios AS fun','fun.id','org.id')
+    //                         ->Where('org.id', Auth::user()->id_organismo)
+    //                         ->Where('fun.titular', true)
+    //                         ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADÉMICO%')
+    //                         ->OrWhere('org.id_parent', Auth::user()->id_organismo)
+    //                         // ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
+    //                         ->Where('org.nombre', 'LIKE', 'DEPARTAMENTO ACADÉMICO%')
+    //                         ->First();
+    //     if($dataFirmante->curp == null)
+    //     {
+    //         return redirect()->route('firma.inicio')->with('Danger', 'Error: La curp de un firmante no se encuentra');
+    //     }
 
 
-        //Llenado de funcionarios firmantes
-        $temp = ['_attributes' =>
-            [
-                'curp_firmante' => $info->curp,
-                'nombre_firmante' => $info->nombre,
-                'email_firmante' => $info->correo,
-                'tipo_firmante' => 'FM'
-            ]
-        ];
-        array_push($arrayFirmantes, $temp);
+    //     if($dataFirmante == null){
+    //         return redirect()->route('firma.inicio')->with('danger', 'NO SE ENCONTRARON DATOS DEL FIRMANTE AL REALIZAR LA CONSULTA');
+    //     }
+    //     ##Incapacidad
+    //     $val_inca = $this->valid_incapacidad($dataFirmante);
+    //     if ($val_inca != null) {
+    //         $dataFirmante = $val_inca;
+    //     }
 
-        $temp = ['_attributes' =>
-            [
-                'curp_firmante' => $dataFirmante->curp,
-                'nombre_firmante' => $dataFirmante->funcionario,
-                'email_firmante' => $dataFirmante->correo,
-                'tipo_firmante' => 'FM'
-            ]
-        ];
-        array_push($arrayFirmantes, $temp);
 
-        $ArrayXml = [
-            'emisor' => [
-                '_attributes' => [
-                    'nombre_emisor' => Auth::user()->name,
-                    'cargo_emisor' => Auth::user()->puesto,
-                    'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
-                    // 'curp_emisor' => $dataEmisor->curp
-                ],
-            ],
-            'archivo' => [
-                '_attributes' => [
-                    'nombre_archivo' => $nameFileOriginal
-                    // 'md5_archivo' => $md5
-                    // 'checksum_archivo' => utf8_encode($text)
-                ],
-                // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [$body]
-            ],
-            'firmantes' => [
-                '_attributes' => [
-                    'num_firmantes' => $numFirmantes
-                ],
-                'firmante' => [
-                    $arrayFirmantes
-                ]
-            ],
-        ];
-        //Creacion de estampa de hora exacta de creacion
-        $date = Carbon::now();
-        $month = $date->month < 10 ? '0'.$date->month : $date->month;
-        $day = $date->day < 10 ? '0'.$date->day : $date->day;
-        $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
-        $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
-        $second = $date->second < 10 ? '0'.$date->second : $date->second;
-        $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
+    //     //Llenado de funcionarios firmantes
+    //     $temp = ['_attributes' =>
+    //         [
+    //             'curp_firmante' => $info->curp,
+    //             'nombre_firmante' => $info->nombre,
+    //             'email_firmante' => $info->correo,
+    //             'tipo_firmante' => 'FM'
+    //         ]
+    //     ];
+    //     array_push($arrayFirmantes, $temp);
 
-        $result = ArrayToXml::convert($ArrayXml, [
-            'rootElementName' => 'DocumentoChis',
-            '_attributes' => [
-                'version' => '2.0',
-                'fecha_creacion' => $dateFormat,
-                'no_oficio' => $numOficio,
-                'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                'asunto_docto' => 'Registro de evalucación por subobjetivos RESD-05',
-                'tipo_docto' => 'OFC',
-                'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
-            ],
-        ]);
-        //Generacion de cadena unica mediante el ICTI
-        $xmlBase64 = base64_encode($result);
-        $getToken = Tokens_icti::Where('sistema', 'sivyc')->First();
-        if ($getToken) {
-            $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
-            if ($response->json() == null) {
-                $token = $this->generarToken();
-                $response = $this->getCadenaOriginal($xmlBase64, $token);
-            }
-        } else {// no hay registros
+    //     $temp = ['_attributes' =>
+    //         [
+    //             'curp_firmante' => $dataFirmante->curp,
+    //             'nombre_firmante' => $dataFirmante->funcionario,
+    //             'email_firmante' => $dataFirmante->correo,
+    //             'tipo_firmante' => 'FM'
+    //         ]
+    //     ];
+    //     array_push($arrayFirmantes, $temp);
 
-            $token = $this->generarToken();
-            $response = $this->getCadenaOriginal($xmlBase64, $token);
-        }
+    //     $ArrayXml = [
+    //         'emisor' => [
+    //             '_attributes' => [
+    //                 'nombre_emisor' => Auth::user()->name,
+    //                 'cargo_emisor' => Auth::user()->puesto,
+    //                 'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
+    //                 // 'curp_emisor' => $dataEmisor->curp
+    //             ],
+    //         ],
+    //         'archivo' => [
+    //             '_attributes' => [
+    //                 'nombre_archivo' => $nameFileOriginal
+    //                 // 'md5_archivo' => $md5
+    //                 // 'checksum_archivo' => utf8_encode($text)
+    //             ],
+    //             // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
+    //             'cuerpo' => [$body]
+    //         ],
+    //         'firmantes' => [
+    //             '_attributes' => [
+    //                 'num_firmantes' => $numFirmantes
+    //             ],
+    //             'firmante' => [
+    //                 $arrayFirmantes
+    //             ]
+    //         ],
+    //     ];
+    //     //Creacion de estampa de hora exacta de creacion
+    //     $date = Carbon::now();
+    //     $month = $date->month < 10 ? '0'.$date->month : $date->month;
+    //     $day = $date->day < 10 ? '0'.$date->day : $date->day;
+    //     $hour = $date->hour < 10 ? '0'.$date->hour : $date->hour;
+    //     $minute = $date->minute < 10 ? '0'.$date->minute : $date->minute;
+    //     $second = $date->second < 10 ? '0'.$date->second : $date->second;
+    //     $dateFormat = $date->year.'-'.$month.'-'.$day.'T'.$hour.':'.$minute.':'.$second;
 
-        //Guardado de cadena unica
-        if ($response->json()['cadenaOriginal'] != null) {
-            // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFileOriginal);
-            // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFile);
-            // $datas = explode('*',$urlFile);
+    //     $result = ArrayToXml::convert($ArrayXml, [
+    //         'rootElementName' => 'DocumentoChis',
+    //         '_attributes' => [
+    //             'version' => '2.0',
+    //             'fecha_creacion' => $dateFormat,
+    //             'no_oficio' => $numOficio,
+    //             'dependencia_origen' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+    //             'asunto_docto' => 'Registro de evalucación por subobjetivos RESD-05',
+    //             'tipo_docto' => 'OFC',
+    //             'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
+    //         ],
+    //     ]);
+    //     //Generacion de cadena unica mediante el ICTI
+    //     $xmlBase64 = base64_encode($result);
+    //     $getToken = Tokens_icti::Where('sistema', 'sivyc')->First();
+    //     if ($getToken) {
+    //         $response = $this->getCadenaOriginal($xmlBase64, $getToken->token);
+    //         if ($response->json() == null) {
+    //             $token = $this->generarToken();
+    //             $response = $this->getCadenaOriginal($xmlBase64, $token);
+    //         }
+    //     } else {// no hay registros
 
-            $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Lista de calificaciones')->First();
-            if(is_null($dataInsert)) {
-                $dataInsert = new DocumentosFirmar();
-            }
-            $dataInsert->obj_documento = json_encode($ArrayXml);
-            $dataInsert->obj_documento_interno = json_encode($ArrayXml);
-            $dataInsert->status = 'EnFirma';
-            // $dataInsert->link_pdf = $urlFile;
-            $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
-            $dataInsert->tipo_archivo = 'Lista de calificaciones';
-            $dataInsert->numero_o_clave = $info->clave;
-            $dataInsert->nombre_archivo = $nameFileOriginal;
-            $dataInsert->documento = $result;
-            $dataInsert->documento_interno = $result;
-            // $dataInsert->md5_file = $md5;
-            $dataInsert->save();
+    //         $token = $this->generarToken();
+    //         $response = $this->getCadenaOriginal($xmlBase64, $token);
+    //     }
 
-            return redirect()->route('firma.inicio')->with('success', 'Lista de Calificaciones Validado Exitosamente!');
-        } else {
-            return redirect()->route('firma.inicio')->with('danger', 'Hubo un Error al Validar. Intente Nuevamente en unos Minutos.');
-        }
-    }
+    //     //Guardado de cadena unica
+    //     if ($response->json()['cadenaOriginal'] != null) {
+    //         // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFileOriginal);
+    //         // $urlFile = $this->uploadFileServer($request->file('doc'), $nameFile);
+    //         // $datas = explode('*',$urlFile);
+
+    //         $dataInsert = DocumentosFirmar::Where('numero_o_clave',$info->clave)->Where('tipo_archivo','Lista de calificaciones')->First();
+    //         if(is_null($dataInsert)) {
+    //             $dataInsert = new DocumentosFirmar();
+    //         }
+    //         $dataInsert->obj_documento = json_encode($ArrayXml);
+    //         $dataInsert->obj_documento_interno = json_encode($ArrayXml);
+    //         $dataInsert->status = 'EnFirma';
+    //         // $dataInsert->link_pdf = $urlFile;
+    //         $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
+    //         $dataInsert->tipo_archivo = 'Lista de calificaciones';
+    //         $dataInsert->numero_o_clave = $info->clave;
+    //         $dataInsert->nombre_archivo = $nameFileOriginal;
+    //         $dataInsert->documento = $result;
+    //         $dataInsert->documento_interno = $result;
+    //         // $dataInsert->md5_file = $md5;
+    //         $dataInsert->save();
+
+    //         return redirect()->route('firma.inicio')->with('success', 'Lista de Calificaciones Validado Exitosamente!');
+    //     } else {
+    //         return redirect()->route('firma.inicio')->with('danger', 'Hubo un Error al Validar. Intente Nuevamente en unos Minutos.');
+    //     }
+    // }
 
     ### BY JOSE LUIS / VALIDACIÓN DE INCAPACIDAD
     public function valid_incapacidad($dataFirmante){
@@ -266,27 +267,44 @@ class CalificacionController extends Controller
             // if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')->first();
             if($curso) {
-                $consec_curso = $curso->id_curso;
-                $fecha_termino = $curso->inicio;
-                $alumnos = DB::table('tbl_inscripcion as i')->select(
-                        'i.matricula',
-                        'i.alumno',
-                        'i.calificacion'
-                    )->where('i.id_curso',$curso->id)
-                    ->where('i.status','INSCRITO')
-                    ->groupby('i.matricula','i.alumno','i.calificacion')
-                    ->orderby('i.alumno')
-                    ->get();
-                if(count($alumnos)==0){
-                    return "NO HAY ALUMNOS INSCRITOS";
-                    exit;
+                $documento = DocumentosFirmar::where('numero_o_clave', $curso->clave)
+                    ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
+                    ->Where('tipo_archivo','Lista de calificaciones')
+                    ->first();
+
+                if(is_null($documento)) {
+                    $body_html = $this->create_body($curso->clave);
+                    $header = $body_html['header'];
+                    $body = $body_html['body'];
+                } else {
+                    $body_html = json_decode($documento->obj_documento_interno);
+                    $header = $body_html->header;
+                    $body = $body_html->body;
                 }
 
-                //firmas electronicas
-                $documento = DocumentosFirmar::where('numero_o_clave', $curso->clave)
-                ->Where('tipo_archivo','Lista de calificaciones')
-                ->Where('status','VALIDADO')
-                ->first();
+                // ELIMINAR DESPUES  DEL 01/01/2025
+                // $consec_curso = $curso->id_curso;
+                // $fecha_termino = $curso->inicio;
+                // $alumnos = DB::table('tbl_inscripcion as i')->select(
+                //         'i.matricula',
+                //         'i.alumno',
+                //         'i.calificacion'
+                //     )->where('i.id_curso',$curso->id)
+                //     ->where('i.status','INSCRITO')
+                //     ->groupby('i.matricula','i.alumno','i.calificacion')
+                //     ->orderby('i.alumno')
+                //     ->get();
+                // if(count($alumnos)==0){
+                //     return "NO HAY ALUMNOS INSCRITOS";
+                //     exit;
+                // }
+
+            //firmas electronicas
+            $documento = DocumentosFirmar::where('numero_o_clave', $curso->clave)
+            ->Where('tipo_archivo','Lista de calificaciones')
+            ->Where('status','VALIDADO')
+            ->first();
+
             if(isset($documento->uuid_sellado)){
                 $objeto = json_decode($documento->obj_documento,true);
                 $no_oficio = json_decode(json_encode(simplexml_load_string($documento['documento_interno'], "SimpleXMLElement", LIBXML_NOCDATA),true));
@@ -299,6 +317,7 @@ class CalificacionController extends Controller
                 $tipo_archivo = $documento->tipo_archivo;
                 $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
 
+                // ELIMINAR DESPUES  DEL 01/01/2025
                 // $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre')
                 //         ->Join('tbl_funcionarios AS fun','fun.id','org.id')
                 //         ->Where('org.id', Auth::user()->id_organismo)
@@ -336,12 +355,13 @@ class CalificacionController extends Controller
                 // Fin de Generacion
             }
 
-            if(!is_null($documento)){
-                $EFolio = $documento->num_oficio;
-            }
+            // ELIMINAR DESPUES  DEL 01/01/2025
+            // if(!is_null($documento)){
+            //     $EFolio = $documento->num_oficio;
+            // }
 
                 $consec = 1;
-                $pdf = PDF::loadView('layouts.FirmaElectronica.pdfCalificaciones', compact('curso','alumnos','consec','objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64','EFolio'));
+                $pdf = PDF::loadView('layouts.FirmaElectronica.pdfCalificaciones', compact('header','body','objeto','dataFirmante','uuid','cadena_sello','fecha_sello','qrCodeBase64'));
                 $pdf->setPaper('Letter', 'landscape');
                 $file = "CALIFICACIONES_$curso->clave.PDF";
                 return $pdf->stream($file);
@@ -350,14 +370,14 @@ class CalificacionController extends Controller
         return "Clave no v&aacute;lida";
     }
 
-    private function create_body($id, $firmantes) {
+    private function create_body($clave) {
         $curso = DB::table('tbl_cursos')->select(
             'tbl_cursos.*',
             DB::raw('right(clave,4) as grupo'),
             DB::raw("to_char(inicio, 'DD/MM/YYYY') as fechaini"),
             DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),
             'u.plantel'
-        )->where('tbl_cursos.id',$id);
+        )->where('tbl_cursos.clave',$clave);
         // if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
         $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')->first();
         if($curso) {
@@ -372,18 +392,101 @@ class CalificacionController extends Controller
                 ->groupby('i.matricula','i.alumno','i.calificacion')
                 ->orderby('i.alumno')
                 ->get();
-            $consec = 1;
-            $body = "SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR \n".
-            "DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO \n".
-            "REGISTRO DE EVALUACIÓN POR SUBOBJETIVOS \n".
-            "(RESD-05) ".
-            "UNIDAD DE CAPACITACIÓN: ". $curso->plantel. ' '.   $curso->unidad. ' CLAVE CCT: '. $curso->cct. ' AREA: '. $curso->area. ' ESPECIALIDAD: '. $curso->espe.
-            "\n CURSO: ". $curso->curso. ' CLAVE: '. $curso->clave. ' CICLO ESCOLAR: '. $curso->ciclo. ' FECHA INICIO: '. $curso->fechaini. ' FECHA TERMINO: '. $curso->fechafin.
-            "\n GRUPO: ". $curso->grupo. ' HORARIO: '. $curso->dia. ' DE '. $curso->hini. ' A '. $curso->hfin. ' CURP: '. $curso->curp.
-            "\n NUM NúMERO DE CONTROL NOMBRE DEL ALUMNO PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S) CLAVE DE CADA SUBOBJETIVO RESULTADO RESULTADO FINAL";
-                    foreach ($alumnos as $a) {
-                        $body = $body. "\n". ($consec++). ' '. $a->matricula. ' '. $a->alumno. ' '. $a->calificacion;
-                    }
+            $consec = 0;
+
+            $body['header'] = '<header>
+                <img src="img/reportes/sep.png" alt="sep" width="16%"
+                    style="position:fixed; left:0; margin: -170px 0 0 20px;" />
+                <h6>SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR</h6>
+                <h6>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO</h6>
+                <h6>REGISTRO DE EVALUACIÓN POR SUBOBJETIVOS</h6>
+                <h6>(RESD-05)</h6>
+                <div id="curso">
+                    UNIDAD DE CAPACITACIÓN: <span class="tab">'. $curso->plantel. $curso->unidad. '</span>
+                    CLAVE CCT: <span class="tab">'. $curso->cct. '</span>
+                    AREA: <span class="tab">'. $curso->area. '</span>
+                    ESPECIALIDAD: &nbsp;&nbsp;'. $curso->espe. '<br />
+                    CURSO: <span class="tab1">'.  $curso->curso. '</span>
+                    CLAVE: <span class="tab1">'. $curso->clave. '</span>
+                    CICLO ESCOLAR: <span class="tab1">'. $curso->ciclo. '</span>
+                    FECHA INICIO: <span class="tab1">'. $curso->fechaini. '</span>
+                    FECHA TERMINO: &nbsp;&nbsp;'. $curso->fechafin. '<br />
+                    GRUPO: <span class="tab2">'. $curso->grupo. '</span>
+                    HORARIO: '. $curso->dia. ' DE '. $curso->hini. ' A '. $curso->hfin. '&nbsp;&nbsp;&nbsp;
+                    CURP: &nbsp;&nbsp;'. $curso->curp. '&nbsp;&nbsp;&nbsp;
+                </div>
+            </header>';
+
+            $body['body'] = '<main>
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th width="15px" rowspan="2">N<br />U<br />M</th>
+                            <th width="90px" rowspan="2">NÚMERO DE <br />CONTROL</th>
+                            <th width="300px">NOMBRE DEL ALUMNO</th>
+                            <th colspan="17" width="380"><b>CLAVE DE CADA SUBOBJETIVO</b></th>
+                            <th rowspan="2"><b>RESULTADO FINAL</b></th>
+
+                        </tr>
+                        <tr>
+                            <th>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
+                            <th colspan="17">RESULTADO</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                        $i = 16;
+                        foreach ($alumnos as $a) {
+                            $consec = $consec+1;
+                            $body['body'] = $body['body']. '<tr width="10 px;">
+                                <td>'. $consec. '</td>
+                                <td>'. $a->matricula. '</td>
+                                <td>'. $a->alumno. '</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>'. $a->calificacion. '</td>
+                            </tr>';
+                            if($consec > $i && isset($alumnos[$consec]->alumno)) {
+                                $body['body'] = $body['body']. '</tbody>
+                                </table>
+                                <br><br><br>
+                                <div class="page-break"></div>';
+                                $i = $i+15;
+                                $body['body'] = $body['body']. '<table class="tabla">
+                                <thead>
+                                    <tr>
+                                        <th width="15px" rowspan="2">N<br />U<br />M</th>
+                                        <th width="90px" rowspan="2">NÚMERO DE <br />CONTROL</th>
+                                        <th width="300px">NOMBRE DEL ALUMNO</th>
+                                        <th colspan="17" width="380"><b>CLAVE DE CADA SUBOBJETIVO</b></th>
+                                        <th rowspan="2"><b>RESULTADO FINAL</b></th>
+
+                                    </tr>
+                                    <tr>
+                                        <th>PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
+                                        <th colspan="17">RESULTADO</th>
+                                    </tr>
+                                </thead>
+                                    <tbody>';
+                            }
+                        }
+                    $body['body'] = $body['body']. '</tbody>
+                </table>
+            </main>';
             return $body;
         } else return "Curso no válido para esta Unidad";
     }
@@ -435,5 +538,22 @@ class CalificacionController extends Controller
         // ]);
 
         return $response1;
+    }
+
+    public function update_body() {
+        set_time_limit(0);
+        $calificaciones = DocumentosFirmar::Where('tipo_archivo','Lista de calificaciones')->Select('id')
+        ->orderBy('id','desc')
+        ->Get();
+        foreach($calificaciones as $dcCalificacion_id) {
+            $calificacion = DocumentosFirmar::Where('id', $dcCalificacion_id->id)->First();
+            $body = $this->create_body($calificacion->numero_o_clave);
+            $array_html['header'] = $body['header'];
+            $array_html['body'] = $body['body'];
+
+            $calificacion->obj_documento_interno = json_encode($array_html);
+            $calificacion->save();
+        }
+        dd('complete');
     }
 }
