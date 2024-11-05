@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use ZipArchive;
 use Illuminate\Support\Facades\Storage;
+use App\Models\DocumentosFirmar;
+use PHPQRCode\QRcode;
 
 class BuzonController extends Controller
 {
@@ -542,6 +544,90 @@ class BuzonController extends Controller
             'organismo' => $organismo,
             'tipo' => $tipo
         ]);
+    }
+
+
+    //Ver documentos electronicos
+    public function ver_docfirmado($id_registro, $id_org){
+        // dd($id_registro, $id_org);
+        $cadena_html_meta  = $qrCodeBase64 = $uuid = $cadena_sello = $fecha_sello = $no_oficio = '';
+        $firmantes = [];
+        $id_organismo = $id_org;
+        // dd($_SESSION['id_organsmog']);
+        $ids_org = DB::table('tbl_organismos as o')
+        ->join('tbl_organismos as p', 'o.id_parent', '=', 'p.id')
+        ->where('o.id', $id_organismo)
+        ->select('p.id as id_direccion', 'o.id as id_depto')
+        ->first();
+
+        ##Consulta de firma electronica
+        $firma_electronica = DocumentosFirmar::where('id', $id_registro)->whereIn('status', ['EnFirma', 'VALIDADO'])->first();
+
+        if(!empty($firma_electronica)){
+            if($firma_electronica->status == 'VALIDADO'){
+                $objeto = json_decode($firma_electronica->obj_documento,true);
+                $no_oficio = $firma_electronica->num_oficio;
+                $uuid = $firma_electronica->uuid_sellado;
+                $cadena_sello = $firma_electronica->cadena_sello;
+                $fecha_sello = $firma_electronica->fecha_sellado;
+                // $folio = $firma_electronica->nombre_archivo;
+                // $tipo_archivo = $firma_electronica->tipo_archivo;
+                // $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
+
+                $curpUser1 = $objeto['firmantes']['firmante'][0][0]['_attributes']['curp_firmante'];
+                $curpUser2 = $objeto['firmantes']['firmante'][0][1]['_attributes']['curp_firmante'];
+                $emailUser1 = $objeto['firmantes']['firmante'][0][0]['_attributes']['email_firmante'];
+                $emailUser2 = $objeto['firmantes']['firmante'][0][1]['_attributes']['email_firmante'];
+
+                //Nuevo algoritmo de busqueda de funcionarios
+                if($ids_org->id_direccion == 1){
+                    if($curpUser1 == $curpUser2){
+                        //Si un usuario tiene a cargo dos deparamentos
+                        $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->where('id_org', '!=', $ids_org->id_depto)->value('cargo');
+                        $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->where('id_org', $ids_org->id_depto)->value('cargo');
+                    }else{
+                        $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
+                        $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
+                    }
+                }else{
+                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
+                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
+                }
+
+                if(empty($puesto_firmUno) || empty($puesto_firmDos)){
+                    return back()->with('message', '¡No se encontraron los datos del los funcionarios!');
+                }
+
+                $arrayfirmantes  = $objeto['firmantes']['firmante'][0];
+                foreach ($arrayfirmantes as $key => $value) {
+                    $nombre = $value['_attributes']['nombre_firmante'];
+                    $firma = $value['_attributes']['firma_firmante'];
+                    $fechafirm = $value['_attributes']['fecha_firmado_firmante'];
+                    $seriefirm = $value['_attributes']['no_serie_firmante'];
+                    if($key == 0) $puesto = $puesto_firmUno;
+                    else $puesto = $puesto_firmDos;
+                    $firmantes[] = ['nombre' => $nombre,'firma' => $firma,'fecha_firma' => $fechafirm,'serie' => $seriefirm, 'puesto' => $puesto];
+                }
+
+
+                //Generacion de QR
+                // $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$no_oficio";
+                ob_start();
+                QRcode::png($verificacion);
+                $qrCodeData = ob_get_contents();
+                ob_end_clean();
+                $qrCodeBase64 = base64_encode($qrCodeData);
+
+            }
+            $cadena_html_meta = $firma_electronica->body_html;
+            $pdf = PDF::loadView('vistas_pat.pdf_efirma_pat', compact('cadena_html_meta', 'firmantes', 'qrCodeBase64', 'uuid', 'cadena_sello', 'fecha_sello', 'no_oficio'));
+            $pdf->setpaper('letter', 'landscape');
+            return $pdf->stream('PAT-ICATECH-002.pdf');
+
+        }else{
+            return back()->with('message', '¡No se encuentra el documento!');
+        }
     }
 
     // public function pdforg_direc($mes_get, $opcion_get){
