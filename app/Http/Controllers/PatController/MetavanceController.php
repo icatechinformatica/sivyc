@@ -2758,13 +2758,19 @@ class MetavanceController extends Controller
                 $emailUser1 = $objeto['firmantes']['firmante'][0][0]['_attributes']['email_firmante'];
                 $emailUser2 = $objeto['firmantes']['firmante'][0][1]['_attributes']['email_firmante'];
 
+                //Nuevo algoritmo de busqueda de funcionarios
                 if($ids_org->id_direccion == 1){
-                    //Cuando es de Dirección
-                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->where('id_org', '!=', $ids_org->id_depto)->value('cargo');
-                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->where('id_org', $ids_org->id_depto)->value('cargo');
+                    if($curpUser1 == $curpUser2){
+                        //Si un usuario tiene a cargo dos deparamentos
+                        $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->where('id_org', '!=', $ids_org->id_depto)->value('cargo');
+                        $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->where('id_org', $ids_org->id_depto)->value('cargo');
+                    }else{
+                        $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
+                        $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
+                    }
                 }else{
-                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->where('id_org', $ids_org->id_depto)->value('cargo');
-                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->where('id_org', $ids_org->id_direccion)->value('cargo');
+                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
+                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
                 }
 
                 if(empty($puesto_firmUno) || empty($puesto_firmDos)){
