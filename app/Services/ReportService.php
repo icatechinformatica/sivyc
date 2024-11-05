@@ -516,14 +516,14 @@ class ReportService
             </div>
             <div class="contenido" style="font-family: Arial, sans-serif; font-size: 14px; margin-top: 25px" align="justify">
                 Por medio del presente, me permito enviar a usted el Concentrado de Ingresos Propios (FORMA RF-001) de la Unidad de Capacitación
-                <span class="color_text"> ' .htmlspecialchars($unidadUbicacion). ' </span>, correspondiente a la semana comprendida '. $this->formatoIntervaloFecha($data->periodo_inicio, $data->periodo_fin) .'
+                <span class="color_text"> ' .htmlspecialchars($unidadUbicacion). ', </span> correspondiente a la semana comprendida '. $this->formatoIntervaloFecha($data->periodo_inicio, $data->periodo_fin) .'.
                 El informe refleja un total de $'.number_format($importeMemo, 2, '.', ',').' ('.$importeLetra.'), mismo que se adjunta para su conocimiento y trámite correspondiente.
                 <br>
             </div>
             <br>';
 
         $htmlBody['memorandum'] .= '<div class="tabla_alumnos">
-                   <p style="font-family: Arial, sans-serif; font-size: 14px;">Sin otro particular aprovecho la ocasión para saludarlo. </p>
+                   <p style="font-family: Arial, sans-serif; font-size: 14px;">Sin otro particular, aprovecho la ocasión para saludarlo. </p>
                     <br>
                 </div>
             </div> <br><br>';
@@ -653,10 +653,10 @@ class ReportService
                 <td style="text-align: left; font-size: 9px;  word-wrap: break-word;">';
 
             // Mostrar curso o descripción
-            if ($item['curso'] != null) {
+            if ($item['concepto'] === 'CURSO DE CAPACITACIÓN O CERTIFICACIÓN') {
                 $htmlBody['formatoRf001'] .= htmlspecialchars($item['curso']);
             } else {
-                $htmlBody['formatoRf001'] .= htmlspecialchars($item['descripcion']);
+                $htmlBody['formatoRf001'] .= htmlspecialchars($item['concepto']);
             }
 
             $htmlBody['formatoRf001'] .= '</td>
