@@ -667,4 +667,29 @@ class Reporterf001Repository implements Reporterf001Interface
                 ]);
         }
     }
+
+    public function generarPdfMasivo($id)
+    {
+        $newId = base64_decode($id);
+        $referenciaRf001 = (new Rf001Model())->findOrFail($newId); // obtener RF001 por id
+        $movimiento = json_decode($referenciaRf001->movimientos, true);
+        $path = config('app.url') . '/storage/';
+        $documentos = [];
+
+        usort($movimiento, function($a, $b) {
+            // Extraer el número después del prefijo en el campo 'folio'
+            preg_match('/\d+/', $a['folio'], $matchA);
+            preg_match('/\d+/', $b['folio'], $matchB);
+            $numA = isset($matchA[0]) ? (int) $matchA[0] : 0;
+            $numB = isset($matchB[0]) ? (int) $matchB[0] : 0;
+
+            return $numA <=> $numB;
+        });
+
+        foreach ($movimiento as $item) {
+            array_push($documentos, $path.$item['documento']);
+        }
+
+        return $documentos;
+    }
 }
