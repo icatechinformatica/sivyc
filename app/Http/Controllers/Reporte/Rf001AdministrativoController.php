@@ -12,6 +12,9 @@ use App\Models\Tokens_icti;
 use App\Services\ReportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use setasign\Fpdi\Fpdi;
+use Illuminate\Support\Facades\Http;
+use setasign\Fpdi\PdfParser\StreamReader;
 
 class Rf001AdministrativoController extends Controller
 {
@@ -180,5 +183,56 @@ class Rf001AdministrativoController extends Controller
             'resp' => $this->rf001Repository->actualizarEstado($id, $estado),
             'message' => 'Documento Aprobado para proceso de efirma!',
         ], Response::HTTP_CREATED);
+    }
+
+    public function generarMasivo($id)
+    {
+        try {
+            $data = $this->rf001Repository->generarPdfMasivo($id);
+            $pdf = new Fpdi();
+            foreach ($data as $key) {
+                // $rutaLocal = str_replace("https://sivyc.icatech.gob.mx/storage", storage_path('app/public'), $key);
+                // if (!file_exists($rutaLocal)) {
+                //     return response()->json(['error' => "El documento PDF en la ruta ". $key ." no se encontró"], 404);
+                // }
+
+                $response = Http::get($key);
+
+                // $pdf->setSourceFile($rutaLocal);
+                // $totalPaginas = $pdf->setSourceFile($key);
+
+                // // Importar cada página del documento PDF
+                // for ($i = 1; $i <= $totalPaginas; $i++) {
+                //     $pdf->AddPage();
+                //     $paginaId = $pdf->importPage($i);
+                //     $pdf->useTemplate($paginaId, 10, 10, 190); // Ajusta la posición y tamaño según necesites
+                // }
+
+                if ($response->ok()) {
+                    $pdfContent = $response->body();
+
+                    // Cargar el contenido PDF en FPDI usando StreamReader
+                    $pdf->setSourceFile(StreamReader::createByString($pdfContent));
+                    $totalPaginas = $pdf->setSourceFile(StreamReader::createByString($pdfContent));
+
+                    // Importar cada página del PDF
+                    for ($i = 1; $i <= $totalPaginas; $i++) {
+                        $pdf->AddPage();
+                        $paginaId = $pdf->importPage($i);
+                        $pdf->useTemplate($paginaId, 10, 10, 190); // Ajusta la posición y tamaño si es necesario
+                    }
+                } else {
+                    return response()->json(['error' => "No se pudo cargar el archivo desde la URL: $url"], 404);
+                }
+            }
+
+             // Salida del PDF combinado
+            return response()->make($pdf->Output('S'), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="documento_concentrado_recibos_Rf001.pdf"',
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Ocurrió un error al generar el documento masivo: '.$th);
+        }
     }
 }
