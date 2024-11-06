@@ -66,11 +66,15 @@
         <div class="row">
             <div class="col">
                 @if ($message = Session::get('warning'))
+                    <div class="alert alert-warning">
+                        <p>{{ $message }}</p>
+                    </div>
+                @endif
+                @if ($message = Session::get('success'))
                     <div class="alert alert-info">
                         <p>{{ $message }}</p>
                     </div>
                 @endif
-
                 @if ($message = Session::get('danger'))
                     <div class="alert alert-danger">
                         @if(isset($message['descripcion']))
@@ -820,7 +824,7 @@
         }
 
         function firmarDocumento(token) {
-            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '30', token);
+            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '87', token);
             // el sistema 87 es el de produccion 30 es de pruebas
             console.log(curp)
             return vresponseSignature;
