@@ -19,7 +19,7 @@
 @endsection
 @section('content')
     @php
-        $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = null;
+        $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = $id_gvulnerable= $checked = null;
         if(isset($grupo)){
             $turnado = $grupo->turnado_grupo;
             $hini = $grupo->hini;
@@ -28,8 +28,12 @@
             $termino = $grupo->termino;
             $nombre_curso = $grupo->nombre_curso;
             $organismo = $grupo->depen;
+            $id_gvulnerable = $grupo->id_gvulnerable;
+            //if($id_gvulnerable == 0 and $grupo->plantel) $es_vulnerable = false;
+            if(($grupo->plantel and $id_gvulnerable) OR !$grupo->plantel) $checked = 'checked';            
+            
         }
-        if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
+        if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;        
         $consec = 1;
     @endphp
     <div class="card-header">
@@ -156,14 +160,13 @@
                         {!! Form::text('repre_tel', $grupo->depen_telrepre ?? '', ['id'=>'repre_tel', 'class'=>'form-control col-md-10']) !!}
                     </div>
                     <div class="form-group col-md-4">
-                        @if ($es_vulnerable==true)
-                            <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" checked>&nbsp;&nbsp;GRUPO VULNERABLE</label>
-                            {{ Form::select('grupo_vulnerable', $grupo_vulnerable, $grupo->id_vulnerable ?? '', ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
+                        @if($es_vulnerable==true)
+                            <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" {{ $checked }} >&nbsp;&nbsp;GRUPO VULNERABLE</label>
+                            {{ Form::select('grupo_vulnerable', $grupo_vulnerable, $grupo->id_gvulnerable ?? '', ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
                         @else
                             <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($grupo->id_gvulnerable ?? ''){{'checked'}}@endif disabled>&nbsp;&nbsp;GRUPO VULNERABLE</label>
                             {{ Form::select('grupo_vulnerable', $grupo_vulnerable, '', ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
-                        @endif
-                        
+                        @endif                        
                     </div>
                     <div class="form-group col-md-6">
                         <label>DOMICILIO, LUGAR O ESPACIO FÍSICO:</label>
@@ -223,7 +226,7 @@
                         </select>
                     </div>
                 </div>
-                @if ($folio_grupo)
+                @if($folio_grupo)
                     <div class="form-row">
                         <div class="form-group col-md-2">
                             <label for="">NUMERO DE RECIBO DE PAGO:</label>

@@ -216,7 +216,7 @@ class grupoController extends Controller
                 DB::raw('COALESCE(tc.termino, ar.termino) as termino'),
                 DB::raw('COALESCE(tc.clave_localidad, ar.clave_localidad) as clave_localidad'),
                 DB::raw('COALESCE(tc.unidad, ar.unidad) as unidad'),
-                DB::raw('COALESCE(tc.id_gvulnerable, ar.id_vulnerable) as id_vulnerable'),
+                DB::raw('COALESCE(tc.id_gvulnerable, null) as id_gvulnerable'),                
                 DB::raw('COALESCE(tc.efisico, ar.efisico) as efisico'),
                 DB::raw('COALESCE(tc.medio_virtual, ar.medio_virtual) as medio_virtual'),
                 DB::raw('COALESCE(tc.link_virtual, ar.link_virtual) as link_virtual'),
@@ -279,7 +279,7 @@ class grupoController extends Controller
             })
             ->leftjoin('cursos as c','c.id','ar.id_curso')
             ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')
-            ->orderby('ar.id_vulnerable','DESC')
+            //->orderby('ar.id_vulnerable','DESC')
             ->first();
 //dd($grupo);
     $alumnos = Alumno::busqueda($folio_grupo,'grupo')->get();

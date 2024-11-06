@@ -590,16 +590,26 @@
                                     <th style="text-align: center;" style="width: 15%;">FOLIO</th>
                                     <th style="text-align: center;">CURSO</th>
                                     <th style="text-align: center;">CONCEPTO</th>
-                                    <th style="text-align: center;">FOLIOS</th>
+                                    <th style="text-align: center;">MOVIMIENTO BANCARIO</th>
                                     <th style="text-align: center;">RECIBO DE PAGO</th>
                                     <th style="text-align: center;">IMPORTES</th>
                                     <th style="text-align: center;">COMENTARIOS</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    usort($movimiento, function($a, $b) {
+                                        // Extraer el número después del prefijo en el campo 'folio'
+                                        preg_match('/\d+/', $a['folio'], $matchA);
+                                        preg_match('/\d+/', $b['folio'], $matchB);
+                                        $numA = isset($matchA[0]) ? (int) $matchA[0] : 0;
+                                        $numB = isset($matchB[0]) ? (int) $matchB[0] : 0;
+
+                                        return $numA <=> $numB;
+                                    });
+                                @endphp
                                 @foreach ($movimiento as $item)
                                     @php
-
                                         $depositos = isset($item['depositos'])
                                             ? json_decode($item['depositos'], true)
                                             : [];
@@ -660,9 +670,9 @@
                 <div class="row">
                     <div class="col-6">
                     </div>
-                    <div class="col-4 d-flex justify-content-end">
+                    <div class="col-2 d-flex justify-content-end">
                         @if (is_array($revisionLocal) && count($revisionLocal) > 0)
-                            @if ($getConcentrado->estado == 'ENFIRMA' && $getConcentrado->tipo != 'CANCELADO')
+                            @if ($getConcentrado->estado == 'ENFIRMA' || $getConcentrado->estado == 'APROBADO' && $getConcentrado->tipo != 'CANCELADO')
                                 @if (!empty($data['cadenaOriginal']))
                                     <div class="padre">
                                         @can('vobo.rf001')
@@ -674,12 +684,11 @@
                                 @endif
                             @endif
                         @else
-                            @if (!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO')
+                            @if (!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO' || $getConcentrado->estado == 'ENFIRMA')
                                 <div class="padre">
-                                    @can('solicitud.rf001')
-                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                            :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
-                                    @endcan
+                                    @canany(['solicitud.rf001', 'vobo.rf001'])
+                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']" :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                    @endcanany
                                 </div>
                             @endif
                         @endif
@@ -689,6 +698,13 @@
                             @canany(['solicitud.rf001', 'vobo.rf001'])
                                 <a href="javascript:;" class="btn" id="enviarRevision">ENVIAR A REVISIÓN</a>
                             @endcanany
+                        @endif
+                    </div>
+                    <div class="col-2 justified-content-end">
+                        @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
+                            @can('solicitud.rf001')
+                                <a href="{{ route('reporte.rf001.details', ['concentrado' => $id ]) }}" class="btn btn-info" id="enviarRevision">EDITAR CONCENTRADO</a>
+                            @endcan
                         @endif
                     </div>
                 </div>

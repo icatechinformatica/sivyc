@@ -1285,7 +1285,7 @@ class supreController extends Controller
 
     public function supre_pdf($id){
         $id = base64_decode($id);
-        $uuid = $objeto = $qrCodeBase64 = null;
+        $uuid = $objeto = $qrCodeBase64 = $bodyCcp = null;
         $user_data = DB::Table('users')->Select('ubicacion','role_user.role_id')
             ->Join('tbl_unidades','tbl_unidades.id','users.unidad')
             ->Join('role_user','role_user.user_id','users.id')
@@ -1322,12 +1322,14 @@ class supreController extends Controller
             $supreController = new ESupreController();
             $body_html = $supreController->create_body($id);
             $bodySupre = $body_html['supre'];
+            $bodyCcp = $body_html['ccp'];
             $bodyTabla = $body_html['tabla'];
         } else {
             $firma_electronica = true;
             $body_html = json_decode($documento->obj_documento_interno);
             $bodySupre = $body_html->supre;
             $bodyTabla = $body_html->tabla;
+            $bodyCcp = $body_html->ccp;
         }
 
 
@@ -1370,7 +1372,7 @@ class supreController extends Controller
         // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','distintivo','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
         // return $pdf2->stream("prueba.pdf");
 
-        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','distintivo','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))->output();
+        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','distintivo','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))->output();
         $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','distintivo','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))
             ->setPaper('a4', 'landscape')  // Configurar tamaño y orientación
             ->output();
@@ -1482,11 +1484,16 @@ class supreController extends Controller
         if(is_null($documento)) { //cambiarlo al final de pruebas
             $firma_electronica = false;
             $supreController = new EValsupreController();
-            $body_html = $supreController->create_body($id);
+            $array_html = $supreController->create_body($id);
+            $body_html = $array_html['body'];
+            $ccp_html = $array_html['ccp'];
         } else {
             $firma_electronica = true;
-            $body_html = json_decode($documento->obj_documento_interno);
+            $array_html = json_decode($documento->obj_documento_interno);
+            $body_html = $array_html->body;
+            $ccp_html = $array_html->ccp;
         }
+
 
         if(isset($documento->uuid_sellado)){
             $objeto = json_decode($documento->obj_documento,true);
@@ -1523,7 +1530,7 @@ class supreController extends Controller
             }
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('distintivo','funcionarios','body_html','uuid','objeto','puestos','qrCodeBase64'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('distintivo','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
     }

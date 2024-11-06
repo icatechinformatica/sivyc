@@ -30,13 +30,16 @@ class ESupreController extends Controller
                 ->Where('tabla_supre.id',$id_supre)
                 ->First();
 
+        $func = $this->funcionarios_supre($info->ubicacion);
+
         $nameFileOriginal = 'solicitud de suficiencia presupuestal '.$info->clave.'.pdf';
         $numDocs = DocumentosFirmar::Where('tipo_archivo', 'supre')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
         $numDocs = '0'.($numDocs+1);
         $numOficioBuilder = explode('/',$info->no_memo);
         $position = count($numOficioBuilder) - 2;
         array_splice($numOficioBuilder, $position, 0, $numDocs);
-        $numOficio = implode('/',$numOficioBuilder);
+        $numOficioInterno = implode('/',$numOficioBuilder);
+        $numOficio = $info->no_memo;
 
 
         $body = $this->create_body($id_supre, $info->no_memo); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
@@ -88,11 +91,21 @@ class ESupreController extends Controller
         $ArrayXml = [
             'emisor' => [
                 '_attributes' => [
-                    'nombre_emisor' => Auth::user()->name,
-                    'cargo_emisor' => Auth::user()->puesto,
+                    'nombre_emisor' => $func['director'],
+                    'cargo_emisor' => $func['directorp'],
                     'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
                     // 'curp_emisor' => $dataEmisor->curp
                 ],
+            ],
+            'receptores' => [
+                'receptor' => [
+                    '_attributes' => [
+                        'nombre_receptor' => $func['destino'],
+                        'cargo_receptor' => $func['destinop'],
+                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                        'tipo_receptor' => 'JDP'
+                    ]
+                ]
             ],
             'archivo' => [
                 '_attributes' => [
@@ -100,8 +113,8 @@ class ESupreController extends Controller
                     // 'md5_archivo' => $md5
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
-                // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body['supre'])]
+                // reemplazar los <br> por /n
+                'cuerpo' => [strip_tags(str_replace('<br>', "\n", $body['supre'])."\n".strip_tags(str_replace('<br>', "\n", $body['ccp'])))]
             ],
             'anexos' => [
                 '_attributes' => [
@@ -186,7 +199,7 @@ class ESupreController extends Controller
             $dataInsert->nombre_archivo = $nameFileOriginal;
             $dataInsert->documento = $result;
             $dataInsert->documento_interno = $result;
-            $dataInsert->num_oficio = $numOficio;
+            $dataInsert->num_oficio = $numOficioInterno;
             $dataInsert->save();
 
             return TRUE;
@@ -302,7 +315,9 @@ class ESupreController extends Controller
             $body_html['supre'] =  $body_html['supre'] . '</tbody>
         </table>
         <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
-        <br><p class="text-left"><p>Atentamente.</p></p>';
+        <br><p class="text-left"><p>Atentamente.</p></p>
+        <br><b> C. '. $funcionarios['director']. '</b>
+        <br><b>'. $funcionarios['directorp'].'</b>';
 
         $body_html['tabla'] = '<div align=center><b><h6>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
             <br>DIRECCIÓN DE PLANEACIÓN
@@ -374,7 +389,18 @@ class ESupreController extends Controller
                         </tr>';
                     }
                     $body_html['tabla'] = $body_html['tabla'].'</tbody>
-            </table>';
+            </table>
+            <div align=center> <b>SOLICITA
+                <br>
+                <br><small>C. '. $funcionarios['director']. '</small>
+                <br><small>'. $funcionarios['directorp']. '</small>
+            </div>';
+
+            $body_html['ccp'] = '<br><br><small><b>C.c.p. '. $funcionarios['ccp1']. '.- '. $funcionarios['ccp1p']. '.-Para su conocimiento</b></small>
+                <br><small><b>C.c.p. '. $funcionarios['ccp2']. '.- '. $funcionarios['ccp2p']. '.-Mismo Fin</b></small>
+                <br><small><b>Archivo.<b></small>
+                <br><br><small><small><b>Validó: '. $funcionarios['director']. '.- '. $funcionarios['directorp']. '</b></small></small>
+                <br><small><small><b>Elaboró: '. $funcionarios['delegado']. '.- '. $funcionarios['delegadop']. '</b></small></small>';
 
         //Generación de MD5 al anexo
         $uuid = null;

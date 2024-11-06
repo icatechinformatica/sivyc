@@ -30,6 +30,7 @@ class EValsupreController extends Controller
                 ->join('instructores','instructores.id','tbl_cursos.id_instructor')
                 ->Where('tabla_supre.id',$id_supre)
                 ->First();
+        $func = $this->funcionarios_valsupre($info->ubicacion);
 
         $nameFileOriginal = 'validacion de suficiencia presupuestal '.$info->clave.'.pdf';
         $numDocs = DocumentosFirmar::Where('tipo_archivo', 'valsupre')->Where('numero_o_clave', $info->clave)->WhereIn('status',['CANCELADO','CANCELADO ICTI'])->Get()->Count();
@@ -37,7 +38,9 @@ class EValsupreController extends Controller
         $numOficioBuilder = explode('/',$info->folio_validacion);
         $position = count($numOficioBuilder) - 2;
         array_splice($numOficioBuilder, $position, 0, $numDocs);
-        $numOficio = implode('/',$numOficioBuilder);
+        $numOficioInterno = implode('/',$numOficioBuilder);
+        $numOficio = $info->folio_validacion;
+
 
         $body = $this->create_body($id_supre, $info->folio_validacion); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
         if(is_null($body))
@@ -78,11 +81,21 @@ class EValsupreController extends Controller
         $ArrayXml = [
             'emisor' => [
                 '_attributes' => [
-                    'nombre_emisor' => Auth::user()->name,
-                    'cargo_emisor' => Auth::user()->puesto,
+                    'nombre_emisor' => $func['remitente'],
+                    'cargo_emisor' => $func['remitentep'],
                     'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
                     // 'curp_emisor' => $dataEmisor->curp
                 ],
+            ],
+            'receptores' => [
+                'receptor' => [
+                    '_attributes' => [
+                        'nombre_receptor' => $func['director'],
+                        'cargo_receptor' => $func['directorp'],
+                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                        'tipo_receptor' => 'DIR'
+                    ]
+                ]
             ],
             'archivo' => [
                 '_attributes' => [
@@ -91,7 +104,7 @@ class EValsupreController extends Controller
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
                 // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body)]
+                'cuerpo' => [strip_tags($body['body']).strip_tags($body['ccp'])]
             ],
             'firmantes' => [
                 '_attributes' => [
@@ -171,7 +184,7 @@ class EValsupreController extends Controller
             $dataInsert->nombre_archivo = $nameFileOriginal;
             $dataInsert->documento = $result;
             $dataInsert->documento_interno = $result;
-            $dataInsert->num_oficio = $numOficio;
+            $dataInsert->num_oficio = $numOficioInterno;
             // $dataInsert->md5_file = $md5;
             $dataInsert->save();
 
@@ -312,104 +325,112 @@ class EValsupreController extends Controller
                     el área administrativa solicitante, es responsable de la correcta aplicación de los recursos públicos validados, en tal sentido el ejercicio y comprobación del gasto, deberá sujetarse a las disposiciones legales aplicables para tal efecto.<br/></font>
                 </div>
             <br>
-        </div>
-        <div class="form-row">
-            <table width="700"  class="table table-striped" id="table-one">
-                <thead>
-                    <tr class="active">
-                        <td width="10px"><small style="font-size: 8px;">No. DE SUFICIENCIA</small></td>
-                        <td scope="col" ><small style="font-size: 8px;">FECHA</small></td>
-                        <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR EXTERNO</small></td>
-                        <td width="10px"><small style="font-size: 8px;">UNIDAD/ ACCION MOVIL</small></td>
-                        <td scope="col" style="width: 12px"><small style="font-size: 8px;">CURSO/ CERTIFCACION</small></td>
-                        <td scope="col" style="width: 100px;"><small style="font-size: 8px;">NOMBRE</small></td>
-                        <td scope="col"><small style="font-size: 8px;">CLAVE DEL GRUPO</small></td>
-                        <td scope="col" style="width: 10px;"><small style="font-size: 8px;">ZONA ECÓNOMICA</small></td>
-                        <td scope="col" style="width: 20px"><small style="font-size: 8px;">HSM (horas)</small></td>';
-                        if($data[0]['fecha_apertura'] <  '2023-10-12') {
-                            $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">IMPORTE POR HORA</small></td>';
-                            if($data[0]->modinstructor == 'HONORARIOS') {
-                                $body_html = $body_html . '<td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>';
-                            }
-                            $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
-                            <td scope="col"><small style="font-size: 8px;">IMPORTE</small></td>';
-                        } else {
-                            $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">COSTO POR HORA</small></td>
-                            <td scope="col"><small style="font-size: 8px;">TOTAL IMPORTE</small></td>
-                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>';
-                        }
-                        $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
-                        <td width="140px" ><small style="font-size: 8px;">OBSERVACION</small></td>
-                    </tr>
-                </thead>
-                <tbody>';
-                    foreach ($data as $key=>$item) {
-                        $body_html = $body_html .'<tr>
-                            <td><small style="font-size: 8px;">'.$item->folio_unidad.'</small></td>
-                            <td><small style="font-size: 8px;">'.$item->fecha.'</small></td>
-                            <td><small style="font-size: 8px;">'.$item->nombre.' '.$item->apellidoPaterno.' '.$item->apellidoMaterno.'</small></td>
-                            <td><small style="font-size: 8px;">'.$item->unidad.'</small></td>';
-                            if ($item->tipo_curso=='CERTIFICACION') {
-                                $body_html = $body_html .'<td><small style="font-size: 8px;">CERTIFICACIÓN</small></td>';
-                            } else {
-                                $body_html = $body_html .'<td><small style="font-size: 8px;">CURSO</small></td>';
-                            }
-                            $body_html = $body_html .'<td><small style="font-size: 8px;">'.$item->curso_nombre.'</small></td>
-                            <td><small style="font-size: 8px;">'.$item->clave.'</small></td>
-                            <td><small style="font-size: 8px;">'.$item->ze.'</small></td>
-                            <td><small style="font-size: 8px;">'.$item->dura.'</small></td>';
+            </div>
+            <div class="form-row">
+                <table width="700"  class="table table-striped" id="table-one">
+                    <thead>
+                        <tr class="active">
+                            <td width="10px"><small style="font-size: 8px;">No. DE SUFICIENCIA</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">FECHA</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR EXTERNO</small></td>
+                            <td width="10px"><small style="font-size: 8px;">UNIDAD/ ACCION MOVIL</small></td>
+                            <td scope="col" style="width: 12px"><small style="font-size: 8px;">CURSO/ CERTIFCACION</small></td>
+                            <td scope="col" style="width: 100px;"><small style="font-size: 8px;">NOMBRE</small></td>
+                            <td scope="col"><small style="font-size: 8px;">CLAVE DEL GRUPO</small></td>
+                            <td scope="col" style="width: 10px;"><small style="font-size: 8px;">ZONA ECÓNOMICA</small></td>
+                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">HSM (horas)</small></td>';
                             if($data[0]['fecha_apertura'] <  '2023-10-12') {
-                                $body_html = $body_html .'<td><small style="font-size: 8px;">'.number_format($item->importe_hora, 2, '.', ',').'</small></td>';
-                                if($item->modinstructor == 'HONORARIOS') {
-                                    $body_html = $body_html .'<td><small style="font-size: 8px;">'.number_format($item->iva, 2, '.', ',').'</small></td>';
+                                $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">IMPORTE POR HORA</small></td>';
+                                if($data[0]->modinstructor == 'HONORARIOS') {
+                                    $body_html = $body_html . '<td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>';
                                 }
-                                $body_html = $body_html ."<input id='hombre".$key."' ".'name="hombre" hidden value="'.$item->hombre.'">
-                                <input id="mujer'.$key.'" name="mujer" hidden value="'.$item->mujer.'">
-                                <td><small style="font-size: 8px;">';
-                                if($item->modinstructor == 'HONORARIOS') {
-                                    $body_html = $body_html .'12101 Honorarios';
-                                } else {
-                                    $body_html = $body_html .'12101 Asimilados a Salarios';
-                                }
-                                $body_html = $body_html .'</small></td>
-                                <td><small style="font-size: 8px;">'.number_format($item->importe_total, 2, '.', ',').'</small></td>';
+                                $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
+                                <td scope="col"><small style="font-size: 8px;">IMPORTE</small></td>';
                             } else {
-                                $body_html = $body_html .'<td><small style="font-size: 8px;">'.number_format($criterio->monto, 2, '.', ',').'</small></td>
-                                <td><small style="font-size: 8px;">'.number_format($item->importe_total, 2, '.', ',').'</small></td>
-                                <input id="hombre'.$key.'" name="hombre" hidden value="'.$item->hombre.'">
-                                <input id="mujer'.$key.'" name="mujer" hidden value="'.$item->mujer.'">
-                                <td><small style="font-size: 8px;">';
-                                if($item->modinstructor == 'HONORARIOS') {
-                                    $body_html = $body_html .'12101 Honorarios';
-                                } else {
-                                    $body_html = $body_html .'12101 Asimilados a Salarios';
-                                }
-                                $body_html = $body_html .'</small></td>';
+                                $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">COSTO POR HORA</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TOTAL IMPORTE</small></td>
+                                <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>';
                             }
-                            $body_html = $body_html .'<td style="text-align: center; font-size: 10px;"><small>';
-                                if($data[0]->financiamiento == NULL) {
-                                    $body_html = $body_html .'Federal';
-                                } else if($data[0]->financiamiento == 'FEDERAL Y ESTATAL') {
-                                    $body_html = $body_html .'Federal '.$data[0]->porcentaje_financiamiento['federal'].'%<br>
-                                    Estatal '.$data[0]->porcentaje_financiamiento['estatal'].'%';
-                                }else {
-                                    $body_html = $body_html .$data[0]->financiamiento;
+                            $body_html = $body_html .'<td scope="col" style="width: 20px"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
+                            <td width="140px" ><small style="font-size: 8px;">OBSERVACION</small></td>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                        foreach ($data as $key=>$item) {
+                            $body_html = $body_html .'<tr>
+                                <td><small style="font-size: 8px;">'.$item->folio_unidad.'</small></td>
+                                <td><small style="font-size: 8px;">'.$item->fecha.'</small></td>
+                                <td><small style="font-size: 8px;">'.$item->nombre.' '.$item->apellidoPaterno.' '.$item->apellidoMaterno.'</small></td>
+                                <td><small style="font-size: 8px;">'.$item->unidad.'</small></td>';
+                                if ($item->tipo_curso=='CERTIFICACION') {
+                                    $body_html = $body_html .'<td><small style="font-size: 8px;">CERTIFICACIÓN</small></td>';
+                                } else {
+                                    $body_html = $body_html .'<td><small style="font-size: 8px;">CURSO</small></td>';
                                 }
-                                $body_html = $body_html .'</small></td>
-                            <td><small style="font-size: 8px;">'.$item->comentario.'</small></td>
-                        </tr>';
-                    }
-                    $body_html = $body_html .'</tbody>
-            </table>
-        </div>
-    </div>';
-    if(!is_null($data[0]->observacion_validacion)) {
-        $body_html = $body_html .'<div class="d">
-            <small><small><b>Observación del Departamento de Programación y Presupuesto:</b> '.$data[0]->observacion_validacion.'</small></small>
-        </div><br>';
-    }
+                                $body_html = $body_html .'<td><small style="font-size: 8px;">'.$item->curso_nombre.'</small></td>
+                                <td><small style="font-size: 8px;">'.$item->clave.'</small></td>
+                                <td><small style="font-size: 8px;">'.$item->ze.'</small></td>
+                                <td><small style="font-size: 8px;">'.$item->dura.'</small></td>';
+                                if($data[0]['fecha_apertura'] <  '2023-10-12') {
+                                    $body_html = $body_html .'<td><small style="font-size: 8px;">'.number_format($item->importe_hora, 2, '.', ',').'</small></td>';
+                                    if($item->modinstructor == 'HONORARIOS') {
+                                        $body_html = $body_html .'<td><small style="font-size: 8px;">'.number_format($item->iva, 2, '.', ',').'</small></td>';
+                                    }
+                                    $body_html = $body_html ."<input id='hombre".$key."' ".'name="hombre" hidden value="'.$item->hombre.'">
+                                    <input id="mujer'.$key.'" name="mujer" hidden value="'.$item->mujer.'">
+                                    <td><small style="font-size: 8px;">';
+                                    if($item->modinstructor == 'HONORARIOS') {
+                                        $body_html = $body_html .'12101 Honorarios';
+                                    } else {
+                                        $body_html = $body_html .'12101 Asimilados a Salarios';
+                                    }
+                                    $body_html = $body_html .'</small></td>
+                                    <td><small style="font-size: 8px;">'.number_format($item->importe_total, 2, '.', ',').'</small></td>';
+                                } else {
+                                    $body_html = $body_html .'<td><small style="font-size: 8px;">'.number_format($criterio->monto, 2, '.', ',').'</small></td>
+                                    <td><small style="font-size: 8px;">'.number_format($item->importe_total, 2, '.', ',').'</small></td>
+                                    <input id="hombre'.$key.'" name="hombre" hidden value="'.$item->hombre.'">
+                                    <input id="mujer'.$key.'" name="mujer" hidden value="'.$item->mujer.'">
+                                    <td><small style="font-size: 8px;">';
+                                    if($item->modinstructor == 'HONORARIOS') {
+                                        $body_html = $body_html .'12101 Honorarios';
+                                    } else {
+                                        $body_html = $body_html .'12101 Asimilados a Salarios';
+                                    }
+                                    $body_html = $body_html .'</small></td>';
+                                }
+                                $body_html = $body_html .'<td style="text-align: center; font-size: 10px;"><small>';
+                                    if($data[0]->financiamiento == NULL) {
+                                        $body_html = $body_html .'Federal';
+                                    } else if($data[0]->financiamiento == 'FEDERAL Y ESTATAL') {
+                                        $body_html = $body_html .'Federal '.$data[0]->porcentaje_financiamiento['federal'].'%<br>
+                                        Estatal '.$data[0]->porcentaje_financiamiento['estatal'].'%';
+                                    }else {
+                                        $body_html = $body_html .$data[0]->financiamiento;
+                                    }
+                                    $body_html = $body_html .'</small></td>
+                                <td><small style="font-size: 8px;">'.$item->comentario.'</small></td>
+                            </tr>';
+                        }
+                        $body_html = $body_html .'</tbody>
+                </table>
+            </div>
+        </div>';
+        if(!is_null($data[0]->observacion_validacion)) {
+            $body_html = $body_html .'<div class="d">
+                <small><small><b>Observación del Departamento de Programación y Presupuesto:</b> '.$data[0]->observacion_validacion.'</small></small>
+            </div><br>';
+        }
+        $array_html['body'] = $body_html;
+        $array_html['ccp'] = '<div>
+                <FONT SIZE=0><b>C.c.p. </b>'. $funcionarios['ccp1']. '.-'. $funcionarios['ccp1p']. '.-Para su conocimiento</FONT><br/>
+                <FONT SIZE=0><b>C.c.p. </b>'. $funcionarios['ccp2']. '.-'. $funcionarios['ccp2p']. '.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p. </b>'. $funcionarios['ccp3']. '.-'. $funcionarios['ccp3p']. '.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p. </b>'. $funcionarios['delegado']. '.-'. $funcionarios['delegadop']. '.-mismo fin</FONT><br>
+                <FONT SIZE=0><b>C.c.p. </b>Archivo</FONT>
+            </div>';
 
-        return $body_html;
+        return $array_html;
     }
 
     private function incapacidad($incapacidad, $incapacitado) {

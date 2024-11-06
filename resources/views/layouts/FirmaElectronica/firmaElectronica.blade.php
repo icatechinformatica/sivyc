@@ -66,11 +66,15 @@
         <div class="row">
             <div class="col">
                 @if ($message = Session::get('warning'))
+                    <div class="alert alert-warning">
+                        <p>{{ $message }}</p>
+                    </div>
+                @endif
+                @if ($message = Session::get('success'))
                     <div class="alert alert-info">
                         <p>{{ $message }}</p>
                     </div>
                 @endif
-
                 @if ($message = Session::get('danger'))
                     <div class="alert alert-danger">
                         @if(isset($message['descripcion']))
@@ -170,6 +174,7 @@
                                                         $firmantes = [];
                                                         $nameArchivo = '';
                                                         $obj = json_decode($docFirmar->obj_documento, true);
+                                                        if(!isset($obj['archivo'])) {dd($docFirmar);}
                                                         $nameArchivo = $obj['archivo']['_attributes']['nombre_archivo'];
 
                                                         foreach ($obj['firmantes']['firmante'][0] as $value) {

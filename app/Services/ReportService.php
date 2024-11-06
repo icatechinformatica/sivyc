@@ -189,7 +189,6 @@ class ReportService
 
             //generación de la cadena única mediante el ICTI
             $xmlBase64 = base64_encode($resultado);
-            // return ['error' => 1, 'mensaje' => 'Error en el proceso: ' . $xmlBase64]; exit;
             $getToken = Tokens_icti::all()->last();
             if ($getToken) {
                 # registros
@@ -204,7 +203,6 @@ class ReportService
                 $token = $this->generarToken();
                 $response = $this->getCadenaOriginal($xmlBase64, $token);
             }
-
             // guardando cadena única
             if ($response->json()['cadenaOriginal'] != null) {
 
@@ -247,16 +245,21 @@ class ReportService
             }
         } catch (\Exception $e) {
             \Log::error('Error en xmlFormat: ' . $e->getMessage());
-            return ['error' => 1, 'mensaje' => 'Error en el proceso: ' . $e->getMessage()];
+            return [
+                'error' => 1,
+                'mensaje' => 'Error en el proceso en una excepción: ' . $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ];
         }
     }
 
-    private function incapacidad($incapacidad, $incapacitado)
+    protected function incapacidad($incapacidad, $incapacitado)
     {
-        $fechaActual = now();
+        $fechaActual = Carbon::now();
         if(!is_null($incapacidad->fecha_inicio)) {
-            $fechaInicio = \Carbon::parse($incapacidad->fecha_inicio);
-            $fechaTermino = \Carbon::parse($incapacidad->fecha_termino)->endOfDay();
+            $fechaInicio = Carbon::parse($incapacidad->fecha_inicio);
+            $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
             if ($fechaActual->between($fechaInicio, $fechaTermino)) {
                 // La fecha de hoy está dentro del rango
                 $firmanteIncapacidad = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
@@ -268,6 +271,13 @@ class ReportService
             } else {
                 // La fecha de hoy NO está dentro del rango
                 if($fechaTermino->isPast()) {
+                    if (is_string($incapacidad->historial)) {
+                        $incapacidad->historial = json_decode($incapacidad->historial, true) ?? [];
+                    }
+
+                    if (!is_array($incapacidad->historial)) {
+                        $incapacidad->historial = [];
+                    }
                     $newIncapacidadHistory = 'Ini:'.$incapacidad->fecha_inicio.'/Fin:'.$incapacidad->fecha_termino.'/IdFun:'.$incapacidad->id_firmante;
                     array_push($incapacidad->historial, $newIncapacidadHistory);
                     $incapacidad->fecha_inicio = $incapacidad->fecha_termino = $incapacidad->id_firmante = null;
@@ -472,12 +482,18 @@ class ReportService
         $nombreMesCreacion = $dateCreacion->translatedFormat('F');
 
         // documento rf001
-        $unidad = tbl_unidades::where('id', $unidad)->first();
-        $instituto = DB::table('tbl_instituto')->first();
-        $direccion = $unidad->direccion;
+        $getUnidad = tbl_unidades::where('id', $unidad)->first();
+        $instituto = \DB::table('tbl_instituto')->first();
+        $direccion = $getUnidad->direccion;
         // Decodificar el campo cuentas_bancarias
         $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
-        $cuenta = $cuentas_bancarias[$unidad->unidad]['BBVA'];
+        $cuenta = $cuentas_bancarias[$getUnidad->unidad]['BBVA'];
+
+        #modificaciones ccp
+        $ccp = $this->setCcp($getUnidad->id);
+        $ccpDelegado = $this->setCcpFuncionario($getUnidad->id);
+        $count = 0;
+        $bandera = false;
 
         foreach ($movimiento as $key) {
             // Acumular el importe total
@@ -500,17 +516,51 @@ class ReportService
             </div>
             <div class="contenido" style="font-family: Arial, sans-serif; font-size: 14px; margin-top: 25px" align="justify">
                 Por medio del presente, me permito enviar a usted el Concentrado de Ingresos Propios (FORMA RF-001) de la Unidad de Capacitación
-                <span class="color_text"> ' .htmlspecialchars($unidadUbicacion). ' </span>, correspondiente a la semana comprendida '. $this->formatoIntervaloFecha($data->periodo_inicio, $data->periodo_fin) .'
+                <span class="color_text"> ' .htmlspecialchars($unidadUbicacion). ', </span> correspondiente a la semana comprendida '. $this->formatoIntervaloFecha($data->periodo_inicio, $data->periodo_fin) .'.
                 El informe refleja un total de $'.number_format($importeMemo, 2, '.', ',').' ('.$importeLetra.'), mismo que se adjunta para su conocimiento y trámite correspondiente.
                 <br>
             </div>
             <br>';
 
         $htmlBody['memorandum'] .= '<div class="tabla_alumnos">
-                   <p style="font-family: Arial, sans-serif; font-size: 14px;">Sin otro particular aprovecho la ocasión para saludarlo. </p>
+                   <p style="font-family: Arial, sans-serif; font-size: 14px;">Sin otro particular, aprovecho la ocasión para saludarlo. </p>
                     <br>
                 </div>
             </div> <br><br>';
+
+        $htmlBody['memorandum'] .= '<div class="ccp"> C.c.p ';
+        foreach ($ccp as $key => $value) {
+            # director primera iteración
+            if ($count === 0) {
+               $htmlBody['memorandum'] .=  htmlspecialchars($value->nombre).'. '.htmlspecialchars($value->cargo).'. Para su conocimiento. <br>';
+            } elseif (!str_contains($value->cargo, 'DIRECTOR') && !str_contains($value->cargo, 'DIRECTORA') && !str_contains($value->cargo, 'ENCARGADO DE LA UNIDAD') && !str_contains($value->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                if ($key == 1) {
+                    # archivo minutario
+                    $htmlBody['memorandum'] .= 'Archivo / Minutario. <br>';
+                }
+                $htmlBody['memorandum'] .= htmlspecialchars($value->nombre).'. '.htmlspecialchars($value->cargo).'. Mismo fin. <br>';
+            }
+            $count++;
+        }
+        $htmlBody['memorandum'] .= '<br>';
+        foreach ($ccp as $k => $v) {
+            # validar y elaborar
+            if (str_contains($v->cargo, 'DIRECTOR') || str_contains($v->cargo, 'DIRECTORA') || str_contains($v->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($v->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                $htmlBody['memorandum'] .= 'Validó: '.htmlspecialchars($v->nombre).'. '.htmlspecialchars($v->cargo).'. <br>';
+            }
+        }
+        foreach ($ccpDelegado as $ke => $val) {
+            if (!$bandera) {
+                if (str_contains($val->cargo, 'DELEGADO') || str_contains($val->cargo, 'DELEGADA')) {
+                    $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                    $bandera = true;
+                } elseif (str_contains($val->cargo, 'DIRECTOR') || str_contains($val->cargo, 'DIRECTORA') || str_contains($val->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($val->cargo, 'ENCARGADA DE LA UNIDAD')) {
+                    $htmlBody['memorandum'] .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                    $bandera = true;
+                }
+            }
+        }
+        $htmlBody['memorandum'] .= '</div>';
 
 
 
@@ -568,6 +618,18 @@ class ReportService
 
         // Iterar sobre los movimientos
         $counter = 0;
+
+        // Ordenar el array $movimiento de menor a mayor en base al número del campo 'folio'
+        usort($movimiento, function($a, $b) {
+            // Extraer el número después del prefijo en el campo 'folio'
+            preg_match('/\d+/', $a['folio'], $matchA);
+            preg_match('/\d+/', $b['folio'], $matchB);
+            $numA = isset($matchA[0]) ? (int) $matchA[0] : 0;
+            $numB = isset($matchB[0]) ? (int) $matchB[0] : 0;
+
+            return $numA <=> $numB;
+        });
+
         foreach ($movimiento as $item) {
             $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
 
@@ -591,10 +653,10 @@ class ReportService
                 <td style="text-align: left; font-size: 9px;  word-wrap: break-word;">';
 
             // Mostrar curso o descripción
-            if ($item['curso'] != null) {
+            if ($item['concepto'] === 'CURSO DE CAPACITACIÓN O CERTIFICACIÓN') {
                 $htmlBody['formatoRf001'] .= htmlspecialchars($item['curso']);
             } else {
-                $htmlBody['formatoRf001'] .= htmlspecialchars($item['descripcion']);
+                $htmlBody['formatoRf001'] .= htmlspecialchars($item['concepto']);
             }
 
             $htmlBody['formatoRf001'] .= '</td>
@@ -624,11 +686,11 @@ class ReportService
                 <td colspan="3">OBSERVACIONES:</td>
             </tr>
             <tr>
-             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN FICHAS DE DEPOSITO:</b>';
+             <td colspan="3" style=" vertical-align: text-top;"><b>SE ENVIAN RECIBO OFICIAL:</b>';
              foreach ($movimiento as $k) {
                 $htmlBody['formatoRf001'] .= htmlspecialchars($k['folio']) . ',';
              }
-             $htmlBody['formatoRf001'] .= '<p><b>RECIBO OFICIAL: &nbsp;</b>';
+             $htmlBody['formatoRf001'] .= '<p><b>FICHAS DE DEPOSITO: &nbsp;</b>';
              foreach ($movimiento as $v) {
                 $deposito = isset($v['depositos']) ? json_decode($v['depositos'], true) : [];
                 foreach ($deposito as $j) {
@@ -652,10 +714,11 @@ class ReportService
             // arreglo
             $firmanteNoUno = $firmanteNoDos = [];
             // delegado administrativo
-            $query = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
+            $query = \DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo', 'funcionarios.incapacidad')
                         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
                         ->Join('tbl_unidades AS unidades', 'unidades.id', 'tblOrganismo.id_unidad')
                         ->Where('funcionarios.activo', 'true')
+                        ->where('funcionarios.titular', true)
                         ->Where('unidades.unidad', $unidadObtenida);
             //director de la unidad
             $directorQuery = clone $query;
@@ -667,9 +730,28 @@ class ReportService
             if(!$director || !$delegado){
                 return "Error en la busqueda de firmantes";
             }
-            // proceso en el cuál se generan los arreglos de los firmantes
-            $firmanteNoUno = array('funcionario'=>$director->nombre, 'puesto'=>$director->cargo, 'correo'=>$director->correo, 'curp'=>$director->curp);
-            $firmanteNoDos = array('funcionario'=>$delegado->nombre, 'puesto'=>$delegado->cargo, 'correo'=>$delegado->correo, 'curp'=>$delegado->curp);
+
+            $directorJson = json_decode($director->incapacidad, true);
+            $delegadoJson = json_decode($delegado->incapacidad, true);
+
+            //procesamos las incapacidades, si es que las hay
+            if (!empty($director->incapacidad) && $directorJson['id_firmante'] !== null) {
+                $incapacidadFirmante = $this->incapacidad(json_decode($director->incapacidad), $director->nombre);
+                if ($incapacidadFirmante != false) {
+                    $firmanteNoUno = array('funcionario' => $incapacidadFirmante->funcionario, 'puesto' =>$incapacidadFirmante->cargo, 'correo' => $incapacidadFirmante->correo, 'curp' => $incapacidadFirmante->curp);
+                }
+            } else {
+                $firmanteNoUno = array('funcionario'=>$director->nombre, 'puesto'=>$director->cargo, 'correo'=>$director->correo, 'curp'=>$director->curp);
+            }
+
+            if (!empty($delegado->incapacidad) && $delegadoJson['id_firmante'] !== null) {
+                $incapacidadFirmanteDelegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre);
+                if ($incapacidadFirmanteDelegado != false) {
+                    $firmanteNoDos = array('funcionario' => $incapacidadFirmanteDelegado->funcionario, 'puesto' => $incapacidadFirmanteDelegado->cargo, 'correo' => $incapacidadFirmanteDelegado->correo, 'curp' => $incapacidadFirmanteDelegado->curp);
+                }
+            } else {
+                $firmanteNoDos = array('funcionario'=>$delegado->nombre, 'puesto'=>$delegado->cargo, 'correo'=>$delegado->correo, 'curp'=>$delegado->curp);
+            }
 
             return [$firmanteNoUno, $firmanteNoDos];
         } catch (\Throwable $th) {
@@ -1046,5 +1128,53 @@ class ReportService
 
         $formattedDate = $parserDate->translatedFormat('d'). ' DE '. mb_strtoupper($parserDate->translatedFormat('F'), 'UTF-8'). ' DEL '. $parserDate->translatedFormat('Y');
         return $formattedDate;
+    }
+
+    protected function setCcp($idUnidad)
+    {
+        return \DB::table('tbl_funcionarios as funcionario')
+        ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
+        ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
+        ->where('funcionario.activo', '=', 'true')
+        ->Where('funcionario.titular', true)
+        ->where(function($query) use ($idUnidad) {
+            $query->where('organismos.id_unidad', $idUnidad)
+                ->where(function($moist) use ($idUnidad) {
+                    $moist->where('funcionario.cargo', 'like', 'DELEG%')
+                    ->orWhere('organismos.id_parent',1);
+                })
+                ->orWhere('organismos.id_parent', 0)
+                ->orWhere('funcionario.id_org', 13);
+        })
+        ->where(function($query){
+            $query->whereNull('funcionario.incapacidad')
+                ->orwhere('funcionario.incapacidad', '{}')
+                ->orWhereNull(\DB::raw("funcionario.incapacidad->>'id_firmante'"));
+        })
+        ->orderBy('funcionario.id_org', 'asc')
+        ->get();
+    }
+
+    protected function setCcpFuncionario($idUnidad)
+    {
+        return \DB::table('tbl_funcionarios AS funcionario')
+            ->join('tbl_organismos AS organismos', 'funcionario.id_org', '=', 'organismos.id')
+            ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
+            ->where('funcionario.activo', '=', 'true')  // true sin comillas para booleano
+            ->where('funcionario.titular', true) // true sin comillas para booleano
+            ->where(function($query) use ($idUnidad) {
+                $query->where('organismos.id_unidad', $idUnidad)
+                    ->where(function($moist) use ($idUnidad) {
+                        $moist->where('funcionario.cargo', 'like', 'DELEG%')
+                        ->orWhere('organismos.id_parent',1);
+                    });
+            })
+            ->where(function($query) {
+                $query->whereNull('funcionario.incapacidad')
+                    ->orWhere('funcionario.incapacidad', '{}') // Para JSON vacío
+                    ->orWhereNull(DB::raw("funcionario.incapacidad->>'id_firmante'")); // Para JSONB
+            })
+            ->orderBy('funcionario.id_org', 'desc') // Ordenar en orden descendente
+            ->get();
     }
 }

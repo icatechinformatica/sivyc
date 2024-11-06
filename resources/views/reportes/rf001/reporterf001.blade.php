@@ -233,30 +233,6 @@
             </div>
         </div>
     @endif
-    <div class="ccp">
-        {{-- {{ $ccp  }} --}}
-        C.c.p.
-        @foreach ($ccp as $k => $v)
-            @if ($loop->first)
-                <!-- Código para la primera iteración -->
-                {{ $v->nombre }}. {{ $v->cargo }} . Para su conocimiento. <br>
-            @elseif(!str_contains($v->cargo, 'DIRECTOR') && !str_contains($v->cargo, 'DIRECTORA') && !str_contains($v->cargo, 'ENCARGADO DE LA UNIDAD') && !str_contains($v->cargo, 'ENCARGADA DE LA UNIDAD'))
-                @if($k == 1) Archivo / Minutario. <br> @endif
-                {{ $v->nombre }}. {{ $v->cargo }} . Mismo fin. <br>
-            @endif
-        @endforeach
-        <br>
-        @foreach ($ccp as $k => $v) <!-- Valido y elaboro -->
-            @if(str_contains($v->cargo, 'DIRECTOR') || str_contains($v->cargo, 'DIRECTORA') || str_contains($v->cargo, 'ENCARGADO DE LA UNIDAD') || str_contains($v->cargo, 'ENCARGADA DE LA UNIDAD'))
-                Validó: {{ $v->nombre }}. {{ $v->cargo }} . <br>
-            @endif
-        @endforeach
-        @foreach ($ccp as $k => $v) <!-- Valido y elaboro -->
-            @if(str_contains($v->cargo, 'DELEG'))
-                Elaboró: {{ $v->nombre }}. {{ $v->cargo }} . <br>
-            @endif
-        @endforeach
-    </div>
     <div class="page-break"></div>
     @php
         $html_sin_saltos = str_replace(["\r", "\n"], '', $bodyRf001);

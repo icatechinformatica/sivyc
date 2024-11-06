@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Tokens_icti;
 use App\Models\Reportes\Rf001Model;
 use setasign\Fpdi\Fpdi;
+use App\Http\Requests\Rf001StoreRequest;
 
 class Rf001Controller extends Controller
 {
@@ -60,7 +61,7 @@ class Rf001Controller extends Controller
             $periodoFin = ($request->get('fechaFin') !== null && $request->get('fechaFin') !== '')? $request->get('fechaFin') : $getConcentrado->periodo_fin;
 
             $fechaInicio = ($request->get('fechaInicio') !== null && $request->get('fechaInicio') !== '') ? $request->get('fechaInicio') : $getConcentrado->periodo_inicio;
-            $fechaFin = ($request->get('fechaFin') !== null && $request->get('fechaFin') !== '') ? $request->get('fechaFin') : $getConcentrado->periodo_fin;
+            $fechaFin = ($request->get('fechaFin') !== null && $request->get('fechaFin') !== '')? $request->get('fechaFin') : $getConcentrado->periodo_fin;
         }
         else {
             $getConcentrado = null;
@@ -96,7 +97,11 @@ class Rf001Controller extends Controller
 
 
         $data->when(!empty($fechaInicio) && !empty($fechaFin), function ($query) use ($fechaInicio, $fechaFin) {
-            return $query->whereBetween('tbl_recibos.fecha_expedicion', [$fechaInicio, $fechaFin]);
+            return $query->whereRaw("EXISTS (
+                        SELECT 1
+                        FROM jsonb_array_elements(tbl_recibos.depositos) AS deposito
+                        WHERE (deposito->>'fecha')::date BETWEEN ? AND ?
+                    ) ", [$fechaInicio, $fechaFin]);
         });
 
         $data->when($request->filled('unidad'), function ($query) use ($request) {
@@ -150,7 +155,7 @@ class Rf001Controller extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Rf001StoreRequest $request)
     {
         // manejar error de consulta con try catch
         try {
@@ -373,7 +378,6 @@ class Rf001Controller extends Controller
 
         $dataunidades = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
         $idUnidad = Auth::user()->unidad;
-        $ccp = $this->rfoo1Repository->setCcp($dataunidades->id);
 
         $direccion = $dataunidades->direccion;
         // aplicando distructuración
@@ -390,7 +394,6 @@ class Rf001Controller extends Controller
             'qrCodeBase64' => $qrCodeBase64,
             'unidad' => $unidad,
             'bodyRf001' => $bodyRf001,
-            'ccp' => $ccp
         ];
 
         // generar el PDF

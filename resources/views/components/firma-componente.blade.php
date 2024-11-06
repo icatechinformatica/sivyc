@@ -82,9 +82,11 @@
 
     {{-- link de prueba signature-spv021_doctos-prueba --}}
     {{-- <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-2.1/signature-spv021_doctos-prueba.js"></script> --}}
-    <script
+    {{-- <script
         src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic-prueba/js/firmado_prueba.js">
-    </script>
+    </script> --}}
+
+    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic/js/firmado_produccion.js"></script>
 
     <script type="text/javascript">
         var arrayCadenasG = [];

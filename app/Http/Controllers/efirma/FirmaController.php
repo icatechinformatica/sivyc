@@ -159,6 +159,12 @@ class FirmaController extends Controller {
     }
 
     public function update(Request $request) {
+        // dd($request->serieFirmante);
+        //verificacion de firmado, debe ser con firma del SAT, de lo contratio se abortara la firma y regresara al modulo anterior
+        if(strlen($request->serieFirmante) != 20){
+            return redirect()->route('firma.inicio')->with('warning', 'Error: El proceso de firma ha sido rechazado. Por favor, firme el documento utilizando su firma del SAT. (5)');
+        }
+
         $documento = DocumentosFirmar::where('id', $request->idFile)->first();
         // dd($documento);
 
@@ -194,15 +200,21 @@ class FirmaController extends Controller {
         // $array2['DocumentoChis']['firmantes'] = $obj_documento_interno['firmantes'];
 
         ##By Jose Luis Moreno/ Creamos nuevo array para ordenar el xml
-        if(isset($obj_documento['anexos'])){
-            $ArrayXml = [
-                "emisor" => $obj_documento['emisor'],
-                "archivo" => $obj_documento['archivo'],
-                "anexos" => $obj_documento['anexos'],
-                "firmantes" => $obj_documento['firmantes'],
-            ];
-            $obj_documento = $ArrayXml;
+        $ArrayXml['emisor'] = $obj_documento['emisor'];
+
+        if(isset($obj_documento['receptores'])){
+            $ArrayXml['receptores'] = $obj_documento['receptores'];
         }
+
+        $ArrayXml["archivo"] = $obj_documento['archivo'];
+
+        if(isset($obj_documento['anexos'])){
+            $ArrayXml["anexos"] = $obj_documento['anexos'];
+        }
+
+        $ArrayXml["firmantes"] = $obj_documento['firmantes'];
+
+        $obj_documento = $ArrayXml;
 
         $result = ArrayToXml::convert($obj_documento, [
             'rootElementName' => 'DocumentoChis',
@@ -238,7 +250,7 @@ class FirmaController extends Controller {
                 // 'documento_interno' => $result2
             ]);
 
-        return redirect()->route('firma.inicio')->with('warning', 'Documento firmado exitosamente!');
+        return redirect()->route('firma.inicio')->with('success', 'Documento firmado exitosamente!');
     }
 
     public function sellar(Request $request) {

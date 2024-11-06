@@ -179,7 +179,7 @@
             </div>
             <div style="display: inline-block; width: 15%;">
                 {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                <img style="position: fixed; width: 13%; top: 48%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                <img style="position: fixed; width: 13%; top: 47%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
             </div>
         @else
             <div align=center>
@@ -189,14 +189,7 @@
             </div>
             <br><br><br><br><br><br>
         @endif
-            <div>
-                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['ccp1']}}.-{{$funcionarios['ccp1p']}}.-Para su conocimiento</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['ccp2']}}.-{{$funcionarios['ccp2p']}}.-mismo fin</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['ccp3']}}.-{{$funcionarios['ccp3p']}}.-mismo fin</FONT><br/>
-                {{-- <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br> --}}
-                <FONT SIZE=0><b>C.c.p.</b>{{$funcionarios['delegado']}}.-{{$funcionarios['delegadop']}}.-mismo fin</FONT><br>
-                <FONT SIZE=0><b>C.c.p.</b>Archivo</FONT>
-            </div>
+            {!!$ccp_html!!}
         </div>
     </body>
 </html>
