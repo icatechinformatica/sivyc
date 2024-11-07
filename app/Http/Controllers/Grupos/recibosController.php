@@ -41,7 +41,7 @@ class recibosController extends Controller
         $movimientos = [];
         if(session('folio_grupo'))$request->folio_grupo = session('folio_grupo');  
         if(session('id_concepto'))$request->id_concepto = session('id_concepto');  
-        //if(!$request->id_concepto) $request->id_concepto = 1;        
+        if(!$request->id_concepto) $request->id_concepto = 1;        
         
         [$data , $message] = $this->data($request);
         if(session('message')) $message = session('message');
@@ -64,14 +64,14 @@ class recibosController extends Controller
     public function buscar(Request $request){// dd($request->id_concepto);
         $data = $message = [];
         if(!$request->ejercicio)$request->ejercicio = date('Y');        
-        //if(!$request->id_concepto) $request->id_concepto = 1;
+        if(!$request->id_concepto) $request->id_concepto = 1;
         
-        //switch($request->id_concepto){
-         //   case 1:  /// PAGO DE CURSO
+        switch($request->id_concepto){
+            case 1: /// PAGO DE CURSO
                 if(!$request->status and !$request->folio_grupo) $request->status = "PENDIENTE";
                 $data = DB::table('tbl_cursos as tc')             
                     ->select('tc.id as id_curso','tc.curso','tc.nombre','tc.hombre','tc.mujer', 'tc.costo','tc.inicio','tc.termino','tc.hini','tc.hfin','tc.folio_grupo','tr.status_recibo',
-                        DB::raw('tr.id_concepto'),'tr.id as id_recibo',
+                        DB::raw('COALESCE(tr.id_concepto,1) as id_concepto'),'tr.id as id_recibo',
                         DB::raw("CASE 
                             WHEN tc.clave ='0' and tc.status_curso IS NULL THEN 'EN TRAMITE UNIDAD' 
                             WHEN tc.clave ='0' and tc.status_curso IS NOT NULL  and tc.status_curso !='CANCELADO' THEN 'EN TRAMITE DTA' 
@@ -102,7 +102,7 @@ class recibosController extends Controller
                         END as file_pdf"),                                            
                         DB::raw("(
                             CASE
-                                WHEN tr.status_folio IS NOT NULL AND tr.status_folio<>'ENVIADO' THEN true
+                                WHEN tr.status_folio IS NOT NULL AND tr.status_folio<>'ENVIADO' THEN true                                        
                             ELSE false
                             END) as editar"),
                         'tu.unidad','tr.id');         
@@ -139,12 +139,11 @@ class recibosController extends Controller
                 }            
                 $data = $data->where('tc.tipo','!=','EXO');
                 $data = $data->leftjoin('tbl_recibos as tr', function ($join) {                    
-                        $join->on('tc.folio_grupo','=','tr.folio_grupo');//->where('tr.id_concepto','1'); 
+                        $join->on('tc.folio_grupo','=','tr.folio_grupo')->where('tr.id_concepto','1'); 
                 })
-                ->join('cat_conceptos as cc','cc.id','=','tr.id_concepto')
                 ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')            
                 ->paginate(15); 
-            /*break;
+            break;
             default: 
                 if($request->status == "PENDIENTE") $request->status = null;
                 $data = DB::table('tbl_recibos as tr')->where('id_concepto','>',1)->join('cat_conceptos as cc','cc.id','=','tr.id_concepto')
@@ -175,8 +174,8 @@ class recibosController extends Controller
                 }
                 $data = $data->join('tbl_unidades as tu','tr.unidad', '=', 'tu.unidad') ->wherein('tu.unidad',$this->unidades)
                     ->where('tr.id_concepto',$request->id_concepto)->paginate(15); 
-            break;*/
-       // }
+            break;
+        }
 
         $data->appends($request->except('page'));     //dd($data);
         $path_files = $this->path_files;
@@ -433,7 +432,7 @@ class recibosController extends Controller
 
                         DB::raw("(
                             CASE                                
-                                WHEN tc.status_curso IS NULL AND tr.status_folio IS DISTINCT FROM 'CANCELADO' THEN true
+                                 WHEN tc.status_curso IS NULL AND tr.status_folio IS DISTINCT FROM 'CANCELADO' THEN true
                                 WHEN  tr.status_folio='ACEPTADO'  THEN true
                                 ELSE false
                             END) as editar")
