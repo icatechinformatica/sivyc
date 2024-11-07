@@ -66,11 +66,15 @@
         <div class="row">
             <div class="col">
                 @if ($message = Session::get('warning'))
+                    <div class="alert alert-warning">
+                        <p>{{ $message }}</p>
+                    </div>
+                @endif
+                @if ($message = Session::get('success'))
                     <div class="alert alert-info">
                         <p>{{ $message }}</p>
                     </div>
                 @endif
-
                 @if ($message = Session::get('danger'))
                     <div class="alert alert-danger">
                         @if(isset($message['descripcion']))
