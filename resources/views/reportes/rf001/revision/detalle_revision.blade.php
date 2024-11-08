@@ -480,6 +480,12 @@
             /* IMPORTANTE */
             text-align: center;
         }
+
+        .btn-amber {
+            background-color: #FFBF00;
+            /* Código hexadecimal para color ámbar */
+            color: white;
+        }
     </style>
 @endsection
 @section('title', 'Revisión del formato RF001 por parte de Dirección Administrativa | SIVyC Icatech')
@@ -503,13 +509,9 @@
                 {{ session('message') }}
             </div>
         @endif
-        @if ($errors->any())
+        @if(session('error'))
             <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                {{ session('error') }}
             </div>
         @endif
         <div class="row">
@@ -661,27 +663,31 @@
                     <div class="col d-flex justify-content-end">
                         <div class="d-flex gap-1">
 
-                            <a type="button" href="{{ route('administrativo.rf001.masivo', ['id' => base64_encode($id) ]) }}" target="_blank" class="btn btn-warning btn-xs ml-2" style="height: 41px;"><i class="fas fa-file-pdf"></i> RECIBOS</a>
+                            <a type="button"
+                                href="{{ route('administrativo.rf001.masivo', ['id' => base64_encode($id)]) }}"
+                                target="_blank" class="btn btn-amber btn-xs ml-2" style="height: 41px;"><i
+                                    class="fas fa-file-pdf"></i> RECIBOS</a>
                             <div class="padre">
                                 @can('validacion.rf001')
                                     @if ($getConcentrado->estado == 'PARASELLAR')
-                                    {{-- Usar el componente creado --}}
-                                    <x-firma-administrativo :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                        :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-administrativo>
+                                        {{-- Usar el componente creado --}}
+                                        <x-firma-administrativo :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
+                                            :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-administrativo>
                                     @endif
                                 @endcan
                             </div>
 
                             @can('validacion.rf001')
                                 @if ($getConcentrado->estado == 'REVISION')
-                                <a type="button" class="btn btn-danger btn-xs sendReviewBack ml-2" style="height: 41px;">
-                                    <i class="fas fa-undo"></i> REGRESAR
-                                </a>
+                                    <a type="button" class="btn btn-danger btn-xs sendReviewBack ml-2" style="height: 41px;">
+                                        <i class="fas fa-undo"></i> REGRESAR
+                                    </a>
                                 @endif
                             @endcan
 
                             @if ($getConcentrado->estado == 'REVISION')
-                            <a href="javascript:;" class="btn ml-2" style="height: 41px;" id="enviarAprobracion">APROBAR</a>
+                                <a href="javascript:;" class="btn ml-2" style="height: 41px;"
+                                    id="enviarAprobracion">APROBAR</a>
                             @endif
                         </div>
                     </div>
