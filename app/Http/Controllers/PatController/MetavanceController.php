@@ -1781,7 +1781,7 @@ class MetavanceController extends Controller
             $conta_folio = $totalFolios + 1;
             $totalFolios = str_pad($conta_folio, 2, '0', STR_PAD_LEFT);
             $numOficio = $clave_plane.'-'.'CAPAT'.'-'.'F01'.'-'.$clave_org.'-'.$totalFolios.'-'.$ejercicio;
-            $nameFileOriginal = 'reporte '.$nombre_oficio.'.pdf';
+            $nameFileOriginal = 'Reporte Anual Pat '.$numOficio.'.pdf';
             $cont_html = $this->render_html('meta', $organismo, $numOficio); //html del pdf
 
             $body = $this->body_doc_efirma($organismo, $ejercicio, $tipo_efirma, $numOficio, '');
@@ -1803,7 +1803,7 @@ class MetavanceController extends Controller
             $conta_folio = $totalFolios + 1;
             $totalFolios = str_pad($conta_folio, 2, '0', STR_PAD_LEFT);
             $numOficio = $clave_plane.'-'.'AMPAT'.'-'.'F02'.'-'.$clave_org.'-'.$totalFolios.'-'.$cut_mes.'-'.$ejercicio;
-            $nameFileOriginal = 'reporte '.$nombre_oficio.'.pdf';
+            $nameFileOriginal = 'Reporte Mensual Pat '.$numOficio.'.pdf';
             $cont_html = $this->render_html('avances_'.$mesavance, $organismo, $numOficio);
 
             $body = $this->body_doc_efirma($organismo, $ejercicio, $tipo_efirma, $numOficio, $mesavance);
@@ -1813,6 +1813,18 @@ class MetavanceController extends Controller
         if(empty($firmanteUno->curp) || empty($firmanteDos->curp) || empty($firmanteUno->correo) || empty($firmanteDos->correo)){
             return redirect()->route('pat.metavance.mostrar', ['idorg' => $organismo])->with('message', 'No se encontró la curp del firmante');
         }
+
+        //Obtener emisor y receptor
+        $receptor = clone $emisor = DB::table('tbl_funcionarios')->select('cargo','nombre as funcionario', 'correo', 'curp', 'incapacidad', 'titulo')
+        ->where('activo', 'true')->where('titular', true);
+
+        $emisor = $emisor->where('id_org', $organismo)->first();
+        $receptor = $receptor->where('id_org', 8)->first();
+
+        if(empty($emisor) || empty($receptor)){
+            return redirect()->route('pat.metavance.mostrar', ['idorg' => $organismo])->with('message', 'No se encontró la información del emisor y receptor');
+        }
+
 
         $numFirmantes = '2';
         $arrayFirmantes = [];
@@ -1843,11 +1855,21 @@ class MetavanceController extends Controller
         $ArrayXml = [
             'emisor' => [
                 '_attributes' => [
-                    'nombre_emisor' => $firmanteUno->funcionario,
-                    'cargo_emisor' => $firmanteUno->cargo,
+                    'nombre_emisor' => $emisor->funcionario,
+                    'cargo_emisor' => $emisor->cargo,
                     'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
                     // 'curp_emisor' => $dataEmisor->curp
                 ],
+            ],
+            'receptores' => [
+                'receptor' => [
+                    '_attributes' => [
+                        'nombre_receptor' => $receptor->funcionario,
+                        'cargo_receptor' => $receptor->cargo,
+                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                        'tipo_receptor' => 'JDP'
+                    ]
+                ]
             ],
             'archivo' => [
                 '_attributes' => [
@@ -2680,9 +2702,14 @@ class MetavanceController extends Controller
     ##Firmar de manera electronica
     public function firmar_documento(Request $request){
         // dd($request->all());
-        $documento = DocumentosFirmar::where('id', $request->idDoc)->first();
 
+        $documento = DocumentosFirmar::where('id', $request->idDoc)->first();
         $obj_documento = json_decode($documento->obj_documento, true);
+
+        ##Validación de firma SAT
+        if(strlen($request->serieFirmante) != 20){
+            return redirect()->route('pat.metavance.mostrar', ['idorg' => $documento->numero_o_clave])->with('message', 'Error: El proceso de firma ha sido rechazado. Por favor, firme el documento utilizando su firma del SAT.');
+        }
 
         if (empty($obj_documento['archivo']['_attributes']['md5_archivo'])) {
             $obj_documento['archivo']['_attributes']['md5_archivo'] = $documento->md5_file;
@@ -2700,6 +2727,20 @@ class MetavanceController extends Controller
 
         $array = XmlToArray::convert($documento->documento);
         $array['DocumentoChis']['firmantes'] = $obj_documento['firmantes'];
+
+        ##By Jose Luis Moreno/ Creamos nuevo array para ordenar el xml
+        $ArrayXml['emisor'] = $obj_documento['emisor'];
+
+        if(isset($obj_documento['receptores'])){$ArrayXml['receptores'] = $obj_documento['receptores'];}
+
+        $ArrayXml["archivo"] = $obj_documento['archivo'];
+
+        if(isset($obj_documento['anexos'])){$ArrayXml["anexos"] = $obj_documento['anexos'];}
+
+        $ArrayXml["firmantes"] = $obj_documento['firmantes'];
+
+        $obj_documento = $ArrayXml;
+
 
         $result = ArrayToXml::convert($obj_documento, [
             'rootElementName' => 'DocumentoChis',
