@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 use setasign\Fpdi\Fpdi;
 use Illuminate\Support\Facades\Http;
 use setasign\Fpdi\PdfParser\StreamReader;
+use App\Extensions\FPDIWithRotation;
 
 class Rf001AdministrativoController extends Controller
 {
@@ -189,40 +190,49 @@ class Rf001AdministrativoController extends Controller
     {
         try {
             $data = $this->rf001Repository->generarPdfMasivo($id);
-            $pdf = new Fpdi();
+            $pdf = new FPDIWithRotation();
+             // Configuración de la marca de agua
+            $marcaDeAguaTexto = "SIVyC";    // Texto de la marca de agua
+            $marcaDeAguaColor = [200, 200, 200]; // Color gris claro para emular transparencia
+            $marcaDeAguaAngulo = 45;            // Ángulo de la marca de agua
+            $marcaDeAguaTamaño = 250;            // Tamaño de la fuente
+
+
+             // Dimensiones de la página en milímetros (A4: 210 x 297)
+            $pageWidth = 210;
+            $pageHeight = 297;
+
             foreach ($data as $key) {
-                // $rutaLocal = str_replace("https://sivyc.icatech.gob.mx/storage", storage_path('app/public'), $key);
-                // if (!file_exists($rutaLocal)) {
-                //     return response()->json(['error' => "El documento PDF en la ruta ". $key ." no se encontró"], 404);
-                // }
 
                 $response = Http::get($key);
-
-                // $pdf->setSourceFile($rutaLocal);
-                // $totalPaginas = $pdf->setSourceFile($key);
-
-                // // Importar cada página del documento PDF
-                // for ($i = 1; $i <= $totalPaginas; $i++) {
-                //     $pdf->AddPage();
-                //     $paginaId = $pdf->importPage($i);
-                //     $pdf->useTemplate($paginaId, 10, 10, 190); // Ajusta la posición y tamaño según necesites
-                // }
 
                 if ($response->ok()) {
                     $pdfContent = $response->body();
 
                     // Cargar el contenido PDF en FPDI usando StreamReader
-                    $pdf->setSourceFile(StreamReader::createByString($pdfContent));
                     $totalPaginas = $pdf->setSourceFile(StreamReader::createByString($pdfContent));
 
                     // Importar cada página del PDF
                     for ($i = 1; $i <= $totalPaginas; $i++) {
                         $pdf->AddPage();
                         $paginaId = $pdf->importPage($i);
-                        $pdf->useTemplate($paginaId, 10, 10, 190); // Ajusta la posición y tamaño si es necesario
+                        $pdf->useTemplate($paginaId, 0, 0, $pageWidth, $pageHeight); // Ajusta la posición y tamaño si es necesario
+
+                         // Configurar la fuente y color para la marca de agua
+                        $pdf->SetFont('Arial', 'B', $marcaDeAguaTamaño);
+                        $pdf->SetTextColor($marcaDeAguaColor[0], $marcaDeAguaColor[1], $marcaDeAguaColor[2], 3);
+
+                        // Calcular la posición central para el texto de la marca de agua
+                        $xPos = $pageWidth / 2;
+                        $yPos = $pageHeight - 30;
+
+                        // Aplicar rotación y posicionar el texto de la marca de agua en el centro
+                        $pdf->SetAlpha(0.3);
+                        $pdf->Text(230, $yPos, $marcaDeAguaTexto); // Ajusta la posición si es necesario
+
                     }
                 } else {
-                    return response()->json(['error' => "No se pudo cargar el archivo desde la URL: $url"], 404);
+                    return response()->json(['error' => "No se pudo cargar el archivo desde la URL: " . $key], 404);
                 }
             }
 
@@ -232,7 +242,7 @@ class Rf001AdministrativoController extends Controller
                 'Content-Disposition' => 'inline; filename="documento_concentrado_recibos_Rf001.pdf"',
             ]);
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Ocurrió un error al generar el documento masivo: '.$th);
+            return redirect()->back()->with('error', 'Ocurrió un error al generar el documento masivo: '.$th->getMessage());
         }
     }
 }
