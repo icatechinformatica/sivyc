@@ -41,7 +41,7 @@ trait catUnidades
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
             ->WHERE('role_user.user_id', '=', $id_user)
             ->value('roles.slug');
-        if($rol <>'admin' && $rol <>'direccion.general' && $rol <>'unidad.ejecutiva'){
+        if($rol <>'admin' && $rol <>'direccion.general' && $rol <>'unidad.ejecutiva' && $id_user<>278 ){
             $uni = DB::table('tbl_unidades')->select(DB::raw('SUBSTR(cct,1,5) as clave'),DB::raw('SUBSTR(cct,6,10) as cct'),'ubicacion','unidad')->where('id',$id_unidad)->first();
             $unidades = DB::table('tbl_unidades')->where('ubicacion',$uni->unidad)->orderby('unidad','ASC')->pluck('unidad','unidad');
             if(count($unidades)==0)$unidades = DB::table('tbl_unidades')->where('unidad',$uni->unidad)->orderby('unidad','ASC')->pluck('unidad','unidad');
