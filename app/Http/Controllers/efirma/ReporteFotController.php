@@ -38,37 +38,56 @@ class ReporteFotController extends Controller
 
     ##Generacion de PDF en caso de que haya firma, mostralas.
     public function repofotoPdf($id){
-        // $path_files = $this->path_files;
-        $path_files = 'https://www.sivyc.icatech.gob.mx/storage/uploadFiles';
-        $array_fotos = [];
         $id_curso = $id;
-        $fechapdf = "";
-        $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 = $EFolio =  null;
-
-        #Distintivo
-        $leyenda = DB::table('tbl_instituto')->value('distintivo');
-
-        #Unidad de capacitacion
-        $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-
         $cursopdf = tbl_curso::select('nombre', 'curso', 'tcapacitacion', 'inicio', 'termino', 'evidencia_fotografica',
         'clave', 'hini', 'hfin', 'tbl_cursos.unidad', 'uni.dunidad', 'uni.ubicacion', 'uni.direccion', 'uni.municipio')
         ->join('tbl_unidades as uni', 'uni.unidad', 'tbl_cursos.unidad')
         ->where('tbl_cursos.id', '=', $id_curso)->first();
 
-        if ($cursopdf == null) {
-            return redirect()->route('firma.inicio')->with('danger', 'Error al consultar el curso de este documento!');
+        $direccion = $cursopdf->direccion;
+
+        $documento = DocumentosFirmar::where('numero_o_clave', $cursopdf->clave)
+            ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
+            ->Where('tipo_archivo','Reporte fotografico')
+            ->first();
+
+        if(is_null($documento)) {
+            $body_html = $this->create_body($id);
+            $body['header'] = $body_html['header'];
+            $body['footer'] = $body_html['footer'];
+            $body['body'] = $body_html['body'];
+        } else {
+            $body_html = json_decode($documento->obj_documento_interno);
+            $body['header'] = $body_html->header;
+            $body['footer'] = $body_html->footer;
+            $body['body'] = $body_html->body;
         }
 
+        // $path_files = $this->path_files;
+        $path_files = 'https://www.sivyc.icatech.gob.mx/storage/uploadFiles';
+        $array_fotos = [];
+        $fechapdf = "";
+        $objeto = $dataFirmante = $uuid = $cadena_sello = $fecha_sello = $qrCodeBase64 = $EFolio =  null;
 
-        if (isset($cursopdf->evidencia_fotografica["fecha_envio"])) {
-            $fechapdf = $cursopdf->evidencia_fotografica["fecha_envio"];
-            $fechaCarbon = Carbon::createFromFormat('Y-m-d', $fechapdf);
-            $dia = ($fechaCarbon->day) < 10 ? '0'.$fechaCarbon->day : $fechaCarbon->day;
-            $fechapdf = $dia.' DE '.$meses[$fechaCarbon->month-1].' DE '.$fechaCarbon->year;
-        }else{
-            $fechapdf = '';
-        }
+        #Distintivo
+        // $leyenda = DB::table('tbl_instituto')->value('distintivo');
+
+        #Unidad de capacitacion
+        // $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+
+        // if ($cursopdf == null) {
+        //     return redirect()->route('firma.inicio')->with('danger', 'Error al consultar el curso de este documento!');
+        // }
+
+
+        // if (isset($cursopdf->evidencia_fotografica["fecha_envio"])) {
+        //     $fechapdf = $cursopdf->evidencia_fotografica["fecha_envio"];
+        //     $fechaCarbon = Carbon::createFromFormat('Y-m-d', $fechapdf);
+        //     $dia = ($fechaCarbon->day) < 10 ? '0'.$fechaCarbon->day : $fechaCarbon->day;
+        //     $fechapdf = $dia.' DE '.$meses[$fechaCarbon->month-1].' DE '.$fechaCarbon->year;
+        // }else{
+        //     $fechapdf = '';
+        // }
 
         ##Procesar fotos
         if (isset($cursopdf->evidencia_fotografica['url_fotos'])){
@@ -155,12 +174,12 @@ class ReporteFotController extends Controller
             }
         }
 
-        if(!is_null($documento)){
-            $EFolio = $documento->num_oficio;
-        }
+        // if(!is_null($documento)){
+        //     $EFolio = $documento->num_oficio;
+        // }
 
-        $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('cursopdf', 'leyenda', 'fechapdf', 'objeto','dataFirmante',
-        'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos', 'EFolio'));
+        $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('body', 'objeto','dataFirmante','direccion',
+        'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos'));
         $pdf->setPaper('Letter', 'portrait');
         $file = "REPORTE_FOTOGRAFICO_$id_curso.PDF";
         return $pdf->stream($file);
@@ -189,6 +208,113 @@ class ReporteFotController extends Controller
             'status' => 200,
             'id_curso' => $id_curso
         ]);
+    }
+
+    #Crear Cuerpo
+    private function create_body($id, $firmantes = null) {
+
+        $path_files = 'https://www.sivyc.icatech.gob.mx/storage/uploadFiles';
+        $array_fotos = [];
+        $id_curso = $id;
+        $fechapdf = "";
+
+        #Distintivo
+        $leyenda = DB::Connection('pgsql')->table('tbl_instituto')->value('distintivo');
+
+        #Unidad de capacitacion
+        $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+
+        $cursopdf = tbl_curso::select('nombre', 'curso', 'tcapacitacion', 'inicio', 'termino', 'evidencia_fotografica',
+        'clave', 'hini', 'hfin', 'tbl_cursos.unidad', 'uni.dunidad', 'uni.ubicacion', 'uni.direccion', 'uni.municipio')
+        ->join('tbl_unidades as uni', 'uni.unidad', 'tbl_cursos.unidad')
+        ->where('tbl_cursos.id', '=', $id_curso)->first();
+
+        if (isset($cursopdf->evidencia_fotografica["fecha_envio"])) {
+            $fechapdf = $cursopdf->evidencia_fotografica["fecha_envio"];
+            $fechaCarbon = Carbon::createFromFormat('Y-m-d', $fechapdf);
+            $dia = ($fechaCarbon->day) < 10 ? '0'.$fechaCarbon->day : $fechaCarbon->day;
+            $fechapdf = $dia.' DE '.$meses[$fechaCarbon->month-1].' DE '.$fechaCarbon->year;
+        }else{
+            $fechapdf = '';
+        }
+
+        $body['header'] = '<header>
+            <img src="img/instituto_oficial.png" alt="Logo Izquierdo" width="30%" style="position:fixed; left:0; top:0;" />
+            <img src="img/chiapas.png" alt="Logo Derecho" width="25%" style="position:fixed; right:0; top:0;" />
+        </header>';
+
+        $body['footer'] = '<footer>
+            <div style="position: absolute; top: 5px;">
+                <img style="" src="img/formatos/footer_vertical.jpeg" width="100%">';
+                if ($cursopdf) {
+                    $direccion = explode("*", $cursopdf->direccion);
+                    $body['footer'] = $body['footer']. '<p class="direccion"><b>';
+                    foreach($direccion as $point => $ari) {
+                        if($point != 0) { $body['footer'] = $body['footer']. '<br>'; } $body['footer'] = $body['footer']. $ari;
+                    }
+                    $body['footer'] = $body['footer']. '</b></p>';
+                }
+                $body['footer'] = $body['footer']. '</div>
+        </footer>';
+
+        $body['body'] = '<div style="margin-top: -9%; margin-bottom: 4%;">
+            <h6 style="text-align: center;">'; if (isset($leyenda)) { $body['body'] = $body['body'].$leyenda;} $body['body'] = $body['body']. '</h6>
+        </div>
+        <div style="text-align:center;">
+            <span style="text-align: center;">REPORTE FOTOGRÁFICO DE INSTRUCTOR EXTERNO</span>
+        </div>
+        <div style="text-align: right;">
+            <p style="font-size: 14px; margin-bottom: 5px;">';
+            if ($cursopdf->ubicacion != $cursopdf->unidad) {
+                $body['body'] = $body['body']. 'UNIDAD DE CAPACITACIÓN '. $cursopdf->ubicacion. ', CENTRO DE TRABAJO ACCIÓN MÓVIL '. $cursopdf->unidad. '.';
+            } else {
+                $body['body'] = $body['body']. 'UNIDAD DE CAPACITACIÓN '. $cursopdf->ubicacion. '.';
+            }
+            $body['body'] = $body['body']. '</p>
+            <p style="font-size: 14px; margin-top: 0px; margin-bottom: 25px;">'. mb_strtoupper($cursopdf->municipio, 'UTF-8'). ', CHIAPAS. A '. $fechapdf. '</p>
+        </div>
+        <table border="1" class="estilo_tabla" width="100%">
+            <tbody>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum" colspan="2"><b>CURSO: </b>'. $cursopdf->curso. '</td>
+                </tr>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum" colspan="2"><b>TIPO: </b>'. $cursopdf->tcapacitacion. '</td>
+                </tr>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum"><b>FECHA DE INICIO: </b>'. $cursopdf->inicio. '</td>
+                    <td class="estilo_colum"><b>FECHA DE TÉRMINO: </b>'. $cursopdf->termino. '</td>
+                </tr>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum"><b>CLAVE: </b>'. $cursopdf->clave. '</td>
+                    <td class="estilo_colum"><b>HORARIO: </b>'. $cursopdf->hini. ' A '. $cursopdf->hfin. '</td>
+                </tr>
+                <tr class="estilo_colum">
+                    <td class="estilo_colum"><b>NOMBRE DEL TITULAR DE LA U.C: </b>'. $cursopdf->dunidad. '</td>
+                    <td class="estilo_colum"><b>NOMBRE DEL INSTRUCTOR: </b>'. $cursopdf->nombre. '</td>
+                </tr>
+            </tbody>
+        </table>';
+
+        return $body;
+    }
+
+    public function update_body() {
+        set_time_limit(0);
+        $reportes = DocumentosFirmar::Where('tipo_archivo','Reporte fotografico')->Select('id')
+        ->orderBy('id','desc')
+        ->Get();
+        foreach($reportes as $dcReporte_id) {
+            $reporte = DocumentosFirmar::Where('id', $dcReporte_id->id)->First();
+            $id_curso = DB::Table('tbl_cursos')->Where('clave',$reporte->numero_o_clave)->Value('id');
+            $body = $this->create_body($id_curso);
+            $array_html['header'] = $body['header'];
+            $array_html['footer'] = $body['footer'];
+            $array_html['body'] = $body['body'];
+            $reporte->obj_documento_interno = json_encode($array_html);
+            $reporte->save();
+        }
+        dd('complete');
     }
 
 }

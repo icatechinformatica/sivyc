@@ -26,7 +26,7 @@ Route::get('/contrato/historial/validado/{id}', 'webController\ContratoControlle
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
 Route::get('/prueba', 'webController\PagoController@prueba');
-Route::get('/update/body/calificacion', 'efirma\CalificacionController@update_body');
+Route::get('/update/body/repofot', 'efirma\ReporteFotController@update_body');
 Route::get('/contrato/reiniciar/{id}', 'webController\ContratoController@contractRestart')->name('reiniciar-contrato');
 
 //Ruta Manual
