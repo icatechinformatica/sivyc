@@ -432,8 +432,8 @@ class recibosController extends Controller
 
                         DB::raw("(
                             CASE                                
-                                 WHEN tc.status_curso IS NULL AND tr.status_folio IS DISTINCT FROM 'CANCELADO' THEN true
-                                WHEN  tr.status_folio='ACEPTADO'  THEN true
+                                WHEN tc.status_curso IS NULL AND tr.status_folio IS DISTINCT FROM 'CANCELADO' THEN true
+                                WHEN tr.status_folio IN ('ACEPTADO', 'ASIGNADO') THEN true
                                 ELSE false
                             END) as editar")
                     );
