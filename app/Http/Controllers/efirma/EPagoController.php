@@ -37,7 +37,8 @@ class EPagoController extends Controller
         $numOficioBuilder = explode('/',$info->no_memo);
         $position = count($numOficioBuilder) - 2;
         array_splice($numOficioBuilder, $position, 0, $numDocs);
-        $numOficio = implode('/',$numOficioBuilder);
+        $numOficioInterno = implode('/',$numOficioBuilder);
+        $numOficio = $info->no_memo;
 
 
 
@@ -169,7 +170,7 @@ class EPagoController extends Controller
             $dataInsert->nombre_archivo = $nameFileOriginal;
             $dataInsert->documento = $result;
             $dataInsert->documento_interno = $result;
-            $dataInsert->num_oficio = $numOficio;
+            $dataInsert->num_oficio = $numOficioInterno;
             // $dataInsert->md5_file = $md5;
             $dataInsert->save();
 
