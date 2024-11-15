@@ -218,21 +218,23 @@ class supreController extends Controller
             foreach ($request->addmore as $key => $value)
             {
                 // dd($value);
+                $clavecurso = new Request(['valor' => $value['clavecurso']]);
+                $datos = json_decode($this->getcursostats($clavecurso));
                 $folio = new folio();
                 $folio->folio_validacion = strtoupper($value['folio']);
-                $folio->iva = $value['iva'];
+                $folio->iva = $datos->iva;
                 $folio->comentario = $value['comentario'];
                 $clave = strtoupper($value['clavecurso']);
                 $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
                         ->WHERE('tbl_cursos.clave', '=', $clave)
                         ->FIRST();
-                if($value['iva'] == 0)
+                if($datos->iva == 0)
                 {
-                    $importe = $value['importe'];
+                    $importe = $datos->importe_total;
                 }
                 else
                 {
-                    $importe = $value['importe']/1.16;
+                    $importe = $datos->importe_total/1.16;
                 }
                 $X = $hora->dura;
                 if ($X != NULL)
@@ -248,7 +250,7 @@ class supreController extends Controller
                     }
                     $importe_hora = floatval(number_format($importe / $horas, 2, '.', ''));
                     $folio->importe_hora = $importe_hora;
-                    $folio->importe_total = $value['importe'];
+                    $folio->importe_total = $datos->importe_total;
                     $folio->id_supre = $id;
                     $folio->id_cursos = $hora->id;
                     $folio->status = 'En_Proceso';
@@ -397,25 +399,26 @@ class supreController extends Controller
 
         //Guarda Folios
         $value = $request->addmore[0];
-
+        $clavecurso = new Request(['valor' => $value['clavecurso']]);
+        $datos = json_decode($this->getcursostats($clavecurso));
             $folio->folio_validacion = $value['folio'];
-            $folio->iva = $value['iva'];
+            $folio->iva = $datos->iva;
             $folio->comentario = $value['comentario'];
             $clave = $value['clavecurso'];
             $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id','tbl_cursos.modinstructor')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
-            if($value['iva'] == 0)
+            if($datos->iva == 0)
             {
-                $importe = $value['importe'];
+                $importe = $datos->importe_total;
             }
             else
             {
-                $importe = $value['importe']/1.16;
+                $importe = $datos->importe_total/1.16;
             }
             $importe_hora = $importe / $hora->dura;
             $folio->importe_hora = $importe_hora;
-            $folio->importe_total = $value['importe'];
+            $folio->importe_total = $datos->importe_total;
             $folio->id_supre = $request->id_supre;
             $folio->id_cursos = $hora->id;
             $folio->status = 'En_Proceso';
