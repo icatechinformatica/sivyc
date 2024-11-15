@@ -324,7 +324,7 @@ class supreController extends Controller
                 $funcionarios['director'] = $moist->nombre;
                 $funcionarios['directorp'] = $moist->cargo;
             }
-            if(str_contains($moist->cargo, 'ADMINISTRATIVO')) {
+            if(str_contains($moist->cargo, 'ADMINISTRATIVO') || str_contains($moist->cargo, 'ADMINISTRATIVA')) {
                 $funcionarios['delegado'] = $moist->nombre;
                 $funcionarios['delegadop'] = $moist->cargo;
             }

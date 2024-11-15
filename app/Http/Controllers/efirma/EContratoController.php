@@ -71,6 +71,7 @@ class EContratoController extends Controller
                     ]
                 ];
                 array_push($arrayFirmantes, $temp);
+                $emisor = [ 'nombre' => $dataFirmante->nombre, 'cargo' => $dataFirmante->cargo];
             }
         }
 
@@ -103,7 +104,6 @@ class EContratoController extends Controller
                     ]
                 ];
                 array_push($arrayFirmantes, $temp);
-                $emisor = [ 'nombre' => $dataFirmante->nombre, 'cargo' => $dataFirmante->cargo];
             }
         }
 
@@ -154,21 +154,21 @@ class EContratoController extends Controller
         $ArrayXml = [
             'emisor' => [
                 '_attributes' => [
-                    'nombre_emisor' => $emisor->nombre,
-                    'cargo_emisor' => $emisor->cargo,
+                    'nombre_emisor' => $emisor['nombre'],
+                    'cargo_emisor' => $emisor['cargo'],
                     'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
                     // 'curp_emisor' => $dataEmisor->curp
                 ],
             ],
-            'receptores' => [
-                'receptor' => [
-                    '_attributes' => [
-                        'nombre_receptor' => $info->nombre,
-                        'cargo_receptor' => 'Instructor Externo',
-                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
-                    ]
-                ]
-            ],
+            // 'receptores' => [
+            //     'receptor' => [
+            //         '_attributes' => [
+            //             'nombre_receptor' => $info->nombre,
+            //             'cargo_receptor' => 'Instructor Externo',
+            //             'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
+            //         ]
+            //     ]
+            // ],
             'archivo' => [
                 '_attributes' => [
                     'nombre_archivo' => $nameFileOriginal
