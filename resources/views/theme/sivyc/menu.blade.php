@@ -36,7 +36,7 @@
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Preinscripci&oacute;n
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                            
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('alumnos.index')
                                 <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
                             @endcan
@@ -52,7 +52,7 @@
                 @endcan
                 @canany(['solicitud.apertura', 'solicitud.exoneracion', 'supre.index', 'contratos.index', 'pagos.inicio',
                     'prevalidar_index-instructor', 'metasavances.index', 'solicitud.rf001','vobo.rf001'])
-                    <li class="nav-item g-mx-5--lg dropdown">                        
+                    <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitud
                         </a>
@@ -82,10 +82,10 @@
                             @can('metasavances.index')
                                 <a class="dropdown-item" href="{{ route('pat.metavance.mostrar') }}">Registro de Metas y Avances PAT</a>
                             @endcan
-                            @can('efirma.index')                                
+                            @can('efirma.index')
                                 <a class="dropdown-item" href="{{ route('firma.inicio') }}">eFirma Instructores</a>
                             @endcan
-                            @canany(['solicitud.rf001','vobo.rf001'])                            
+                            @canany(['solicitud.rf001','vobo.rf001'])
                                 <a class="dropdown-item" href="{{ route('reporte.rf001.sent') }}">Solicitud RF001</a>
                             @endcanany
                             @can('buzon.efirma.constancias')
@@ -117,7 +117,7 @@
                             @endcan
                             @can('grupos.recibos')
                                 <a class="dropdown-item" href="{{ route('grupos.recibos.buscar') }}">Buscar Recibo de Pago</a>
-                            @endcan                            
+                            @endcan
                             @can('expedientes.unicos.index')
                                 <a class="dropdown-item" href="{{ route('expunico.principal.mostrar.get') }}">Registro de Expedientes Unicos</a>
                             @endcan
@@ -133,7 +133,7 @@
                             Formatos T
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
-                            @can('vista.formatot.unidades.indice')                                
+                            @can('vista.formatot.unidades.indice')
                                 <a class="dropdown-item" href="{{ route('vista_formatot') }}">Generación y Envío de FormatoT</a>
                             @endcan
                             <a class="dropdown-item" href="{{ route('formatot.consulta.index') }}">Consulta de FormatoT</a>
@@ -148,7 +148,7 @@
                             @endcan
                             @can('vista.validacion.direccion.dta')
                                 <a class="dropdown-item" href="{{ route('indice.dta.aperturado.indice') }}">Formato T Aperturado</a>
-                            @endcan                            
+                            @endcan
                             @can('vista.validacion.direccion.dta')
                                 <a href="{{ route('checar.memorandum.dta.mes') }}" class="dropdown-item">Memorandums Para la Dirección de Técnica Acádemica</a>
                             @endcan
@@ -168,7 +168,7 @@
                             @endcan
                             @can('vista.revision.validacion.planeacion.indice')
                                 <a href="{{ route('cursos.reportados.historico.planeacion.index') }}" class="dropdown-item">Cursos Reportados de Meses Anteriores Para la Unidad</a>
-                            @endcan --}}                            
+                            @endcan --}}
                             {{-- <a class="dropdown-item" href="{{route('reportes.formatoT')}}">Reporte de Formato T</a>                         --}}
                             <a class="dropdown-item" href="{{ route('seguimento.avance.unidades.formatot.ejecutiva.index') }}">Seguimiento Ejecutivo</a>
                         </div>
@@ -277,7 +277,7 @@
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Reportes
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                            
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('reportes.cursos')
                                 <a class="dropdown-item" href="{{ route('reportes.cursos.index') }}">Cursos Autorizados</a>
                             @endcan
@@ -301,9 +301,9 @@
                             @can('reportes.rcdod11')
                                 <a class="dropdown-item" href="{{ route('reportes.rcdod11.index') }}">RCDOD-11</a>
                             @endcan
-                            @can('reportes.rf001')
+                            {{-- @can('reportes.rf001')
                                 <a class="dropdown-item" href="{{ route('reportes.concentradoingresos') }}">RF-001</a>
-                            @endcan
+                            @endcan --}}
                             @can('financieros.reportevalrec')
                                 <a class="dropdown-item" href="{{ route('docummentospago.reporte') }}">Trámites Recepcionados</a>
                             @endcan
@@ -315,7 +315,7 @@
                             @endcan
                             @can('reportes.dpa')
                                 <a class="dropdown-item" href="{{ route('reportes.dpa') }}">DPA - Nómina de Instructores</a>
-                            @endcan                            
+                            @endcan
                         </div>
                     </li>
                 @endcanany
@@ -362,7 +362,7 @@
                                 <a class="dropdown-item" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
                             @endcan
                             @can('consulta.bolsa.trabajo')
-                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a> 
+                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
                             @endcan
                         </div>
                     </li>
