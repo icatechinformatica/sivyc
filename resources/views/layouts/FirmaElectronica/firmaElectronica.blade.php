@@ -824,7 +824,7 @@
         }
 
         function firmarDocumento(token) {
-            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '87', token);
+            var vresponseSignature = sign(cadena, curp, $('#txtpassword').val(), '30', token);
             // el sistema 87 es el de produccion 30 es de pruebas
             console.log(curp)
             return vresponseSignature;
