@@ -24,4 +24,5 @@ interface Reporterf001Interface {
     public function setCcp($idUnidad);
     public function actualizarRecibo($id);
     public function regresarEstadoRecibo($id);
+    public function generarPdfMasivo($id);
 }
