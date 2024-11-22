@@ -482,45 +482,6 @@
                                                                         <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
                                                                     </a>
                                                                 @break
-                                                                @case('Solicitud Pago')
-                                                                    <a href="{{route('solpa-pdf', ['id' => $docValidado->id_folios])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('supre')
-                                                                    @php $ids =  base64_encode($docValidado->id_supre) @endphp
-                                                                    <a href="{{route('supre-pdf', ['id' => $ids])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('valsupre')
-                                                                    @php $ids =  base64_encode($docValidado->id_supre) @endphp
-                                                                    <a href="{{route('valsupre-pdf', ['id' => $ids])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('Solicitud Pago')
-                                                                    <a href="{{route('solpa-pdf', ['id' => $docValidado->id_folios])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('supre')
-                                                                    @php $ids =  base64_encode($docValidado->id_supre) @endphp
-                                                                    <a href="{{route('supre-pdf', ['id' => $ids])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('valsupre')
-                                                                    @php $ids =  base64_encode($docValidado->id_supre) @endphp
-                                                                    <a href="{{route('valsupre-pdf', ['id' => $ids])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('Solicitud Pago')
-                                                                    <a href="{{route('solpa-pdf', ['id' => $docValidado->id_folios])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
                                                                 @case('supre')
                                                                     @php $ids =  base64_encode($docValidado->id_supre) @endphp
                                                                     <a href="{{route('supre-pdf', ['id' => $ids])}}" target="_blank">

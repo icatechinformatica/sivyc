@@ -104,6 +104,7 @@ class EContratoController extends Controller
                     ]
                 ];
                 array_push($arrayFirmantes, $temp);
+                $emisor = [ 'nombre' => $dataFirmante->nombre, 'cargo' => $dataFirmante->cargo];
             }
         }
 
@@ -160,15 +161,16 @@ class EContratoController extends Controller
                     // 'curp_emisor' => $dataEmisor->curp
                 ],
             ],
-            // 'receptores' => [
-            //     'receptor' => [
-            //         '_attributes' => [
-            //             'nombre_receptor' => $info->nombre,
-            //             'cargo_receptor' => 'Instructor Externo',
-            //             'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
-            //         ]
-            //     ]
-            // ],
+            'receptores' => [
+                'receptor' => [
+                    '_attributes' => [
+                        'nombre_receptor' => $info->nombre,
+                        'cargo_receptor' => 'Instructor Externo',
+                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                        'tipo_receptor' => 'IEX'
+                    ]
+                ]
+            ],
             'archivo' => [
                 '_attributes' => [
                     'nombre_archivo' => $nameFileOriginal
