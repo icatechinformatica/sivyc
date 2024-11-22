@@ -85,40 +85,40 @@ class EPagoController extends Controller
                 ],
             ],
             'receptores' => [
-                // 'receptor' => [
-                //     '_attributes' => [
-                //         'nombre_receptor' => $funcionarios['destino'],
-                //         'cargo_receptor' => $funcionarios['destinop']. '.- Presente',
-                //         'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                //         'tipo_receptor' => 'JDP'
-                //     ]
-                // ]
                 'receptor' => [
-                    0 => ['_attributes' => [
-                            'nombre_receptor' => $funcionarios['destino'],
-                            'cargo_receptor' => $funcionarios['destinop']. '.- Presente',
-                            'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                            'tipo_receptor' => 'JDP'
-                    ]],
-                    1 => ['_attributes' => [
-                        'nombre_receptor' => $funcionarios['ccp1'],
-                        'cargo_receptor' => $funcionarios['ccp1p']. '.- Para su conocimiento',
+                    '_attributes' => [
+                        'nombre_receptor' => $funcionarios['destino'],
+                        'cargo_receptor' => $funcionarios['destinop'],
                         'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                        'tipo_receptor' => 'CC'
-                    ]],
-                    2 => ['_attributes' => [
-                        'nombre_receptor' => $funcionarios['ccp2'],
-                        'cargo_receptor' => $funcionarios['ccp2p']. '.- Mismo fin',
-                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                        'tipo_receptor' => 'CC'
-                    ]],
-                    3 => ['_attributes' => [
-                        'nombre_receptor' => $funcionarios['delegado'],
-                        'cargo_receptor' => $funcionarios['delegadop']. '.- Mismo fin',
-                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-                        'tipo_receptor' => 'CC'
-                    ]]
+                        'tipo_receptor' => 'JDP'
+                    ]
                 ]
+                // 'receptor' => [
+                //     0 => ['_attributes' => [
+                //             'nombre_receptor' => $funcionarios['destino'],
+                //             'cargo_receptor' => $funcionarios['destinop']. '.- Presente',
+                //             'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                //             'tipo_receptor' => 'JDP'
+                //     ]],
+                //     1 => ['_attributes' => [
+                //         'nombre_receptor' => $funcionarios['ccp1'],
+                //         'cargo_receptor' => $funcionarios['ccp1p']. '.- Para su conocimiento',
+                //         'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                //         'tipo_receptor' => 'CC'
+                //     ]],
+                //     2 => ['_attributes' => [
+                //         'nombre_receptor' => $funcionarios['ccp2'],
+                //         'cargo_receptor' => $funcionarios['ccp2p']. '.- Mismo fin',
+                //         'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                //         'tipo_receptor' => 'CC'
+                //     ]],
+                //     3 => ['_attributes' => [
+                //         'nombre_receptor' => $funcionarios['delegado'],
+                //         'cargo_receptor' => $funcionarios['delegadop']. '.- Mismo fin',
+                //         'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                //         'tipo_receptor' => 'CC'
+                //     ]]
+                // ]
             ],
             'archivo' => [
                 '_attributes' => [
@@ -127,7 +127,7 @@ class EPagoController extends Controller
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
                 // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body['header']). strip_tags($body['body']).strip_tags($body['footer'])]
+                'cuerpo' => [strip_tags($body['header']). strip_tags($body['body']).strip_tags($body['ccp']).strip_tags($body['footer'])]
             ],
             'firmantes' => [
                 '_attributes' => [
