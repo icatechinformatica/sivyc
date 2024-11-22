@@ -299,22 +299,4 @@ class ReporteFotController extends Controller
         return $body;
     }
 
-    public function update_body() {
-        set_time_limit(0);
-        $reportes = DocumentosFirmar::Where('tipo_archivo','Reporte fotografico')->Select('id')
-        ->orderBy('id','desc')
-        ->Get();
-        foreach($reportes as $dcReporte_id) {
-            $reporte = DocumentosFirmar::Where('id', $dcReporte_id->id)->First();
-            $id_curso = DB::Table('tbl_cursos')->Where('clave',$reporte->numero_o_clave)->Value('id');
-            $body = $this->create_body($id_curso);
-            $array_html['header'] = $body['header'];
-            $array_html['footer'] = $body['footer'];
-            $array_html['body'] = $body['body'];
-            $reporte->obj_documento_interno = json_encode($array_html);
-            $reporte->save();
-        }
-        dd('complete');
-    }
-
 }

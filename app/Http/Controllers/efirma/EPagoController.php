@@ -43,10 +43,10 @@ class EPagoController extends Controller
 
 
         $body = $this->create_body($info->id_folios, $info->no_memo); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
-
         $numFirmantes = '1';
         $arrayFirmantes = [];
 
+        $funcionarios = $this->funcionarios($info->ubicacion);
         $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
             ->Join('tbl_unidades AS u', 'u.id', 'org.id_unidad')
@@ -78,11 +78,47 @@ class EPagoController extends Controller
         $ArrayXml = [
             'emisor' => [
                 '_attributes' => [
-                    'nombre_emisor' => Auth::user()->name,
-                    'cargo_emisor' => Auth::user()->puesto,
+                    'nombre_emisor' => $funcionarios['director'],
+                    'cargo_emisor' => $funcionarios['directorp'],
                     'dependencia_emisor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas'
                     // 'curp_emisor' => $dataEmisor->curp
                 ],
+            ],
+            'receptores' => [
+                // 'receptor' => [
+                //     '_attributes' => [
+                //         'nombre_receptor' => $funcionarios['destino'],
+                //         'cargo_receptor' => $funcionarios['destinop']. '.- Presente',
+                //         'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                //         'tipo_receptor' => 'JDP'
+                //     ]
+                // ]
+                'receptor' => [
+                    0 => ['_attributes' => [
+                            'nombre_receptor' => $funcionarios['destino'],
+                            'cargo_receptor' => $funcionarios['destinop']. '.- Presente',
+                            'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                            'tipo_receptor' => 'JDP'
+                    ]],
+                    1 => ['_attributes' => [
+                        'nombre_receptor' => $funcionarios['ccp1'],
+                        'cargo_receptor' => $funcionarios['ccp1p']. '.- Para su conocimiento',
+                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                        'tipo_receptor' => 'CC'
+                    ]],
+                    2 => ['_attributes' => [
+                        'nombre_receptor' => $funcionarios['ccp2'],
+                        'cargo_receptor' => $funcionarios['ccp2p']. '.- Mismo fin',
+                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                        'tipo_receptor' => 'CC'
+                    ]],
+                    3 => ['_attributes' => [
+                        'nombre_receptor' => $funcionarios['delegado'],
+                        'cargo_receptor' => $funcionarios['delegadop']. '.- Mismo fin',
+                        'dependencia_receptor' => 'Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
+                        'tipo_receptor' => 'CC'
+                    ]]
+                ]
             ],
             'archivo' => [
                 '_attributes' => [
@@ -91,13 +127,14 @@ class EPagoController extends Controller
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
                 // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body)]
+                'cuerpo' => [strip_tags($body['header']). strip_tags($body['body']).strip_tags($body['footer'])]
             ],
             'firmantes' => [
                 '_attributes' => [
                     'num_firmantes' => $numFirmantes
                 ],
-                'firmante' => [
+                'firmante' =>
+                [
                     $arrayFirmantes
                 ]
             ],
@@ -161,7 +198,7 @@ class EPagoController extends Controller
             }
 
             $dataInsert->obj_documento = json_encode($ArrayXml);
-            $dataInsert->obj_documento_interno = json_encode($body);
+            // $dataInsert->obj_documento_interno = json_encode($body);
             $dataInsert->status = 'EnFirma';
             // $dataInsert->link_pdf = $urlFile;
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
@@ -170,10 +207,11 @@ class EPagoController extends Controller
             $dataInsert->nombre_archivo = $nameFileOriginal;
             $dataInsert->documento = $result;
             $dataInsert->documento_interno = $result;
-            $dataInsert->num_oficio = $numOficioInterno;
+            $dataInsert->num_oficio = $numOficio;
+            $dataInsert->body_html = json_encode($body);
+            // dd($dataInsert);
             // $dataInsert->md5_file = $md5;
             $dataInsert->save();
-
             return TRUE;
         } else {
             return FALSE;
@@ -184,7 +222,7 @@ class EPagoController extends Controller
     public function create_body($id_folio, $numOficio = NULL) {
         $body_html = NULL;
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso','tbl_cursos.instructor_mespecialidad',
-                'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','tbl_unidades.ubicacion','instructores.nombre',
+                'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','tbl_unidades.ubicacion','tbl_cursos.soportes_instructor','instructores.nombre',
                 'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
                 'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                 'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
@@ -198,12 +236,13 @@ class EPagoController extends Controller
             ->Join('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
             ->FIRST();
 
-        $para = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo')
-            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('o.id',13)
-            ->Where('f.activo', 'true')
-            ->Where('f.titular', true)
-            ->First();
+            $data->soportes_instructor = json_decode($data->soportes_instructor);
+
+        $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
+        $funcionarios = $this->funcionarios($data->ubicacion);
+
+        $direccion = DB::Table('tbl_unidades')->WHERE('unidad',$data->ubicacion)->VALUE('direccion');
+        $direccion = explode("*", $direccion);
 
         if($data->solicitud_fecha == NULL)
         {
@@ -235,23 +274,28 @@ class EPagoController extends Controller
             $memoContrato = $data->numero_contrato;
         // }
 
-        $body_html = '<div align=right>
+        $body_html['header']  = '  <header>
+            <img class="izquierda" src="'. public_path('img/formatos/bannerhorizontal.jpeg'). '">
+            <br><h6>'. $distintivo. '</h6>
+        </header>';
+
+        $body_html['body'] = '<div align=right>
             <b>Unidad de Capacitación '.$data->unidad_capacitacion.'.</b>
         </div>
         <div align=right>
             <b>Memorandum No. ';
             if(is_null($numOficio)) {
-                $body_html = $body_html . $data->no_memo;
+                $body_html['body'] = $body_html['body'] . $data->no_memo;
             } else {
-                $body_html = $body_html . $numOficio;
+                $body_html['body'] = $body_html['body'] . $numOficio;
             }
-            $body_html = $body_html . '.</b>
+            $body_html['body'] = $body_html['body'] . '.</b>
         </div>
         <div align=right>
             <b>'.$data->unidad_capacitacion.', Chiapas '.$D.' de '.$M.' del '.$Y.'.</b>
         </div>
-        <b>'.$para->nombre.'.</b>
-        <br>'.$para->cargo.'.
+        <b>'.$funcionarios['destino'].'.</b>
+        <br>'.$funcionarios['destinop'].'.
         <br>Presente.
         <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura <font style="text-transform:lowercase;"> '.$tipo.'</font> y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente, que se detalla a continuación:</p>
         <div align=center>
@@ -319,24 +363,46 @@ class EPagoController extends Controller
                     <td><small>Clabe Interbancaria: NO APLICA</small></td>
                 </tr>'
             :   '<tr>
-                    <td><small>Banco: '.$data->banco.'</small></td>
+                    <td><small>Banco: '.$data->soportes_instructor->banco.'</small></td>
                 </tr>
                 <tr>
-                    <td><small>Número de Cuenta: '.$data->no_cuenta.'</small></td>
+                    <td><small>Número de Cuenta: '.$data->soportes_instructor->no_cuenta.'</small></td>
                 </tr>
                 <tr>
-                    <td><small>Clabe Interbancaria: '.$data->interbancaria.'</small></td>
+                    <td><small>Clabe Interbancaria: '.$data->soportes_instructor->interbancaria.'</small></td>
                 </tr>')) .
             '</tbody>
         </table>
         <p class="text-left"><p>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;">'.$tipo.'</font>, obra en poder de la Unidad de Capacitación.</p></p>';
 
+        $body_html['ccp'] = '<p style="line-height:0.8em;">
+            <b><small>C.c.p. '. $funcionarios['ccp1']. '.- '. $funcionarios['ccp1p']. '.-Para su conocimiento.</small></b><br/>
+            <b><small>C.c.p. '. $funcionarios['ccp2']. '.- '. $funcionarios['ccp2p']. '.-Mismo fin.</small></b><br/>
+            <b><small>C.c.p. '. $funcionarios['delegado']. '.- '. $funcionarios['delegadop']. '.-Mismo fin.</small></b><br/>
+            <b><small>Archivo/ Minutario<small></b><br/>
+            <b><small>Validó: '. $funcionarios['director']. '.- '. $funcionarios['directorp']. '.</small></b><br/>
+            <b><small>Elaboró: '. $funcionarios['delegado']. '.- '.$funcionarios['delegadop']. '.</small></b>
+        </p>';
+
+        $body_html['footer'] = '<footer>
+            <img class="izquierdabot" src="'. public_path('img/formatos/footer_horizontal.jpeg'). '">
+            <p class="direccion"><b>';
+            foreach($direccion as $point => $ari) {
+                if($point != 0) {
+                    $body_html['footer'] = $body_html['footer']. '<br>';
+                }
+                $body_html['footer'] = $body_html['footer']. $ari;
+            }
+            $body_html['footer'] = $body_html['footer']. '</b></p>
+        </footer>';
+
         return $body_html;
     }
 
     private function incapacidad($incapacidad, $incapacitado) {
+
         $fechaActual = now();
-        if(!is_null($incapacidad->fecha_inicio)) {
+        if(!is_null($incapacidad) && !is_null($incapacidad->fecha_inicio)) {
             $fechaInicio = Carbon::parse($incapacidad->fecha_inicio);
             $fechaTermino = Carbon::parse($incapacidad->fecha_termino)->endOfDay();
             if ($fechaActual->between($fechaInicio, $fechaTermino)) {
@@ -464,5 +530,77 @@ class EPagoController extends Controller
         $part[0] = number_format($part['0']);
         $cadwell = implode(".", $part);
         return ($cadwell);
+    }
+
+    public function funcionarios($unidad) {
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
+            ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
+            ->Where('f.activo', 'true')
+            ->Where('f.titular', true);
+
+        $direc = $direc->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.id_parent',1)
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $destino = $destino->Where('o.id',13)->First();
+        $ccp1 = $ccp1->Where('o.id',1)->First();
+        $ccp2 = $ccp2->Where('o.id',12)->First();
+        $delegado = $delegado->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('o.nombre','LIKE','DELEG%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $academico = $academico->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('f.cargo','LIKE','%ACADÉMICO%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        $vinculacion = $vinculacion->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+            ->Where('f.cargo','LIKE','%VINCULACIÓN%')
+            ->Where('u.unidad', $unidad)
+            ->First();
+
+        //parte de checado de incapacidad
+        $direc = $this->incapacidad(json_decode($direc->incapacidad), $direc->nombre) ?: $direc;
+        $delegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre) ?: $delegado;
+
+        $funcionarios = [
+            'director' => $direc->nombre,
+            'directorp' => $direc->cargo,
+            'destino' => $destino->nombre,
+            'destinop' => $destino->cargo,
+            'ccp1' => $ccp1->nombre,
+            'ccp1p' => $ccp1->cargo,
+            'ccp2' => $ccp2->nombre,
+            'ccp2p' => $ccp2->cargo,
+            'delegado' => $delegado->nombre,
+            'delegadop' => $delegado->cargo,
+            'academico' => $academico->nombre,
+            'academicop' => $academico->cargo,
+            'elabora' => strtoupper(Auth::user()->name),
+            'elaborap' => strtoupper(Auth::user()->puesto)
+        ];
+
+        return $funcionarios;
+    }
+
+    public function update_body() {
+        set_time_limit(0);
+        $solpas = DocumentosFirmar::Where('tipo_archivo','Solicitud Pago')->Select('id')
+        ->orderBy('id','desc')
+        ->Get();
+        foreach($solpas as $dcSolpa_id) {
+            $solpa = DocumentosFirmar::Where('id', $dcSolpa_id->id)->First();
+            $id_folio = DB::Table('tbl_cursos')->Join('folios','folios.id_cursos','tbl_cursos.id')->Where('clave',$solpa->numero_o_clave)->Value('folios.id_folios');
+            $body = $this->create_body($id_folio);
+            $array_html['header'] = $body['header'];
+            $array_html['footer'] = $body['footer'];
+            $array_html['body'] = $body['body'];
+            $array_html['ccp'] = $body['ccp'];
+            $solpa->body_html = $array_html;
+            $solpa->save();
+        }
+        dd('complete');
     }
 }
