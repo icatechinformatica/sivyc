@@ -480,6 +480,12 @@
             /* IMPORTANTE */
             text-align: center;
         }
+
+        .btn-amber {
+            background-color: #FFBF00;
+            /* Código hexadecimal para color ámbar */
+            color: white;
+        }
     </style>
 @endsection
 @section('title', 'Revisión del formato RF001 por parte de Dirección Administrativa | SIVyC Icatech')
@@ -501,6 +507,11 @@
         @if (session('message'))
             <div class="alert alert-success" role="alert">
                 {{ session('message') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
             </div>
         @endif
         <div class="row">
@@ -649,35 +660,39 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
-                    </div>
-                    <div class="col-2 d-flex justify-content-end">
-                        <div class="padre">
+                    <div class="col d-flex justify-content-end">
+                        <div class="d-flex gap-1">
+
+                            <a type="button"
+                                href="{{ route('administrativo.rf001.masivo', ['id' => base64_encode($id)]) }}"
+                                target="_blank" class="btn btn-amber btn-xs ml-2" style="height: 41px;"><i
+                                    class="fas fa-file-pdf"></i> RECIBOS</a>
+                            <div class="padre">
+                                @can('validacion.rf001')
+                                    @if ($getConcentrado->estado == 'PARASELLAR')
+                                        {{-- Usar el componente creado --}}
+                                        <x-firma-administrativo :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
+                                            :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-administrativo>
+                                    @endif
+                                @endcan
+                            </div>
+
                             @can('validacion.rf001')
-                                @if ($getConcentrado->estado == 'PARASELLAR')
-                                    {{-- Usar el componente creado --}}
-                                    <x-firma-administrativo :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                        :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-administrativo>
+                                @if ($getConcentrado->estado == 'REVISION')
+                                    <a type="button" class="btn btn-danger btn-xs sendReviewBack ml-2" style="height: 41px;">
+                                        <i class="fas fa-undo"></i> REGRESAR
+                                    </a>
                                 @endif
                             @endcan
+
+                            @if ($getConcentrado->estado == 'REVISION')
+                                <a href="javascript:;" class="btn ml-2" style="height: 41px;"
+                                    id="enviarAprobracion">APROBAR</a>
+                            @endif
                         </div>
                     </div>
-                    <div class="col-2 justify-content-end">
-                        @can('validacion.rf001')
-                            @if ($getConcentrado->estado == 'REVISION')
-                                <a type="button" class="btn btn-danger btn-xs sendReviewBack">
-                                    <i class="fas fa-undo"></i>
-                                    REGRESAR
-                                </a>
-                            @endif
-                        @endcan
-                    </div>
-                    <div class="col-2 justify-content-end">
-                        @if ($getConcentrado->estado == 'REVISION')
-                        <a href="javascript:;" class="btn" id="enviarAprobracion">APROBAR</a>
-                        @endif
-                    </div>
                 </div>
+
                 <input type="hidden" name="idRf001" id="idRf001" value="{{ $id }}" />
             </div>
         </div>

@@ -208,6 +208,17 @@
                                                 </button>
                                             @endcan
                                     @endif
+                                    @if(!in_array($itemData->status_recepcion, ['VALIDADO', 'En Espera']) || $itemData->permiso_editar)
+                                        @can('supre.restart')
+                                            <button type="button" style="padding-left: 5px; background-color:transparent; border-color:transparent;"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#restartModal"
+                                                data-id='{{$itemData->id}}'
+                                                title="Rechazar Solicitud y Validación de Suficiencia Presupuestal">
+                                                <i class="fa fa-history fa-2x fa-lg text-danger"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                 @else
                                     @if(!in_array($itemData->status_recepcion, ['VALIDADO', 'En Espera']) || $itemData->permiso_editar)
                                         @can('supre.restart')

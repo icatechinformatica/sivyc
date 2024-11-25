@@ -82,13 +82,14 @@
         </style>
     </head>
     <body>
-        <header>
+        {{-- <header>
             <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
             <br><h6>{{$distintivo}}</h6>
-        </header>
+        </header> --}}
+        {!! $body_html['header'] !!}
         <div class= "container g-pt-30">
             <div id="content">
-                {!! $body_html !!}
+                {!! $body_html['body'] !!}
                 <table class="table1">
                     <tr>
                         <td><p align="center">Atentamente</p></td>
@@ -135,19 +136,21 @@
                         <img style="position: fixed; width: 20%; top: 52%; left: 73%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                     </div>
                 @endif
-                <p style="line-height:0.8em;">
+                {!! $body_html['ccp'] !!}
+                {{-- <p style="line-height:0.8em;">
                     <b><small>C.c.p.{{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Para su conocimiento.</small></b><br/>
                     <b><small>C.c.p.{{$funcionarios['ccp2']}}.- {{$funcionarios['ccp2p']}}.-Mismo fin.</small></b><br/>
                     <b><small>C.c.p.{{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.-Mismo fin.</small></b><br/>
                     <b><small>Archivo/ Minutario<small></b><br/>
                     <b><small>Validó: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.</small></b><br/>
                     <b><small>Elaboró: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.</small></b>
-                </p>
+                </p> --}}
             </div>
         </div>
-        <footer>
+        {!! $body_html['footer'] !!}
+        {{-- <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
-        </footer>
+        </footer> --}}
     </body>
 </html>

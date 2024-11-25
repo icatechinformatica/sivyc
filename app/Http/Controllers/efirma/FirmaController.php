@@ -410,12 +410,12 @@ class FirmaController extends Controller {
         ]);
 
         // Token Prueba
-        // $resToken = Http::withHeaders([
-        //     'Accept' => 'application/json'
-        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'FirmaElectronica',
-        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
-        // ]);
+        $resToken = Http::withHeaders([
+            'Accept' => 'application/json'
+        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+            'nombre' => 'FirmaElectronica',
+            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        ]);
 
         $token = $resToken->json();
         Tokens_icti::Where('sistema','sivyc')->update([
