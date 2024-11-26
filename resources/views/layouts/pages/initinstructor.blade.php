@@ -91,7 +91,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data as $itemData)
+                @foreach ($data as $key => $itemData)
                     <tr>
                     <th scope="row">{{$itemData->numero_control}}</th>
                         <td>{{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}} {{$itemData->nombre}}</td>
@@ -146,12 +146,18 @@
                             @endif
                         </td>
                         <td class="text-center">
-                            @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')
-                                    @if($itemData->archivo_alta == NULL)
-                                        <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
-                                    @else
-                                        <a href="{{$itemData->archivo_alta}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
-                                    @endif
+                            @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION' || $itemData->status == 'BAJA')
+                                @php
+                                    $hvalidacion = json_decode($itemData->hvalidacion);
+                                    if(!is_null($hvalidacion)) {
+                                        $hvalidacion = end($hvalidacion);
+                                    }
+                                @endphp
+                                @if(isset($hvalidacion->arch_val))
+                                    <a href="{{$hvalidacion->arch_val}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                @elseif(!is_null($hvalidacion))
+                                    <a href="{{$hvalidacion->arch_baja}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                @endif
 
                             @endif
                         </td>
