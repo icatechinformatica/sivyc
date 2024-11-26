@@ -89,7 +89,7 @@ class InstructorController extends Controller
             //->WHERE('especialidad_instructores','especialidad_instructores.status','VALIDADO')
             ->WHEREIN('estado', [true,false])
             ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'hvalidacion',
                 'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado', DB::raw('min(fecha_validacion) as fecha_validacion'),
                 DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
                 DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia")
