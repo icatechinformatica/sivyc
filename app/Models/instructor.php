@@ -71,7 +71,7 @@ class instructor extends Model
 
     public function scopeSearchInstructor($query, $tipo, $buscar, $tipo_status, $tipo_especialidad)
     {
-        $query->GROUPBY('instructores.id','instructores.nombre');
+        $query->GROUPBY('instructores.id','instructores.nombre','hvalidacion');
         $query->ORDERBY('status','DESC');
         $query->ORDERBY('fecha_validacion','ASC');
 
