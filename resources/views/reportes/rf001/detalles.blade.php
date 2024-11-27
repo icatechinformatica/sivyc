@@ -598,7 +598,7 @@
                             </thead>
                             <tbody>
                                 @php
-                                    usort($movimiento, function($a, $b) {
+                                    usort($movimiento, function ($a, $b) {
                                         // Extraer el número después del prefijo en el campo 'folio'
                                         preg_match('/\d+/', $a['folio'], $matchA);
                                         preg_match('/\d+/', $b['folio'], $matchB);
@@ -619,6 +619,17 @@
                                             : [];
 
                                         $jsonString = (string) json_encode($observaciones);
+                                        // SECCION DE CREACIÓN CONSULTA PHP
+                                        $fileCancelled = \DB::table('tbl_recibos AS tr')
+                                            ->where('tr.status_recibo', 'PAGADO')
+                                            ->where('tr.folio_recibo', $item['folio'])
+                                            ->select('tr.*')
+                                            ->addSelect(
+                                                \DB::raw("CASE
+                                                    WHEN tr.status_folio='CANCELADO' THEN concat('".$pathCancelado ."', tr.folio_recibo)
+                                                    END as file_pdf")
+                                            )
+                                            ->first();
                                     @endphp
                                     <tr>
                                         <td style="width: 6em;">{{ $item['folio'] }}</td>
@@ -636,11 +647,19 @@
                                             @endforeach
                                         </td>
                                         <td style="text-align: center;">
-                                            <a class="nav-link pt-0" href="{{ $pathFile }}{{ $item['documento'] }}"
-                                                target="_blank">
-                                                <i class="far fa-file-pdf  fa-2x {{ $item['documento'] === null || empty($item['documento']) ? 'text-gray' : 'text-danger' }}"
-                                                    title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
-                                            </a>
+                                            @if ($fileCancelled->file_pdf !== null)
+                                                <a class="nav-link pt-0"
+                                                    href="{{ $fileCancelled->file_pdf }}" target="_blank">
+                                                    <i class="far fa-file-pdf  fa-2x {{ $fileCancelled->file_pdf === null || empty($fileCancelled->file_pdf) ? 'text-gray' : 'text-danger' }}"
+                                                        title='DESCARGAR RECIBO DE PAGO CANCELADO OFICIALIZADO.'></i>
+                                                </a>
+                                            @else
+                                                <a class="nav-link pt-0"
+                                                    href="{{ $pathFile }}{{ $item['documento'] }}" target="_blank">
+                                                    <i class="far fa-file-pdf  fa-2x {{ $item['documento'] === null || empty($item['documento']) ? 'text-gray' : 'text-danger' }}"
+                                                        title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
+                                                </a>
+                                            @endif
                                         </td>
                                         <td style="text-align: end;">
                                             $ {{ number_format($item['importe'], 2, '.', ',') }}
@@ -672,7 +691,9 @@
                     </div>
                     <div class="col-2 d-flex justify-content-end">
                         @if (is_array($revisionLocal) && count($revisionLocal) > 0)
-                            @if ($getConcentrado->estado == 'ENFIRMA' || $getConcentrado->estado == 'APROBADO' && $getConcentrado->tipo != 'CANCELADO')
+                            @if (
+                                $getConcentrado->estado == 'ENFIRMA' ||
+                                    ($getConcentrado->estado == 'APROBADO' && $getConcentrado->tipo != 'CANCELADO'))
                                 @if (!empty($data['cadenaOriginal']))
                                     <div class="padre">
                                         @can('vobo.rf001')
@@ -684,10 +705,11 @@
                                 @endif
                             @endif
                         @else
-                            @if (!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO' || $getConcentrado->estado == 'ENFIRMA')
+                            @if ((!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO') || $getConcentrado->estado == 'ENFIRMA')
                                 <div class="padre">
                                     @canany(['solicitud.rf001', 'vobo.rf001'])
-                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']" :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
+                                            :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
                                     @endcanany
                                 </div>
                             @endif
@@ -703,7 +725,8 @@
                     <div class="col-2 justified-content-end">
                         @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
                             @can('solicitud.rf001')
-                                <a href="{{ route('reporte.rf001.details', ['concentrado' => $id ]) }}" class="btn btn-info" id="enviarRevision">EDITAR CONCENTRADO</a>
+                                <a href="{{ route('reporte.rf001.details', ['concentrado' => $id]) }}" class="btn btn-info"
+                                    id="enviarRevision">EDITAR CONCENTRADO</a>
                             @endcan
                         @endif
                     </div>

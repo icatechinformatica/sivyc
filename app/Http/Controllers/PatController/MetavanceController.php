@@ -120,9 +120,7 @@ class MetavanceController extends Controller
         $datos_efirma = $this->datos_firmado_meta($fecha_meta_avance);
         list($consul_efirma, $consul_efirma_avance, $meses_pendientes, $meses_validados) = $datos_efirma;
 
-        // dd($consul_efirma, $consul_efirma_avance, $meses_pendientes, $meses_validados);
 
-        //Validacion de avances efirma
         return view('vistas_pat.metas_avances', compact('datos', 'datos_status_meta', 'fecha_meta_avance', 'datos_status_avance',
         'area_org', 'org', 'fechaNow', 'mesGlob', 'array_organismos', 'organismo', 'ejercicio', 'anio_eje', 'consul_efirma','consul_efirma_avance','meses_pendientes','meses_validados'));
     }
@@ -1753,6 +1751,21 @@ class MetavanceController extends Controller
         $firmantes = $this->datos_firmantes($organismo, 'efirma');
         list($firmanteUno, $firmanteDos) = $firmantes;
 
+        ##Array de funcionarios para guardarlos de manera independiente
+        // $arrayFuncionarios = [
+        //     [
+        //         'funcionario'=>$firmanteUno->funcionario,
+        //         'cargo'=>$firmanteUno->cargo,
+        //         'curp'=>$firmanteUno->curp,
+        //         'titulo'=>$firmanteUno->titulo
+        //     ],
+        //     [   'funcionario'=>$firmanteDos->funcionario,
+        //         'cargo'=>$firmanteDos->cargo,
+        //         'curp'=>$firmanteDos->curp,
+        //         'titulo'=>$firmanteDos->titulo
+        //     ]
+        // ];
+
         ## Obtenemos la clave que le pertenece al organismo para construir el numero de oficio
         $clave_org = DB::table('tbl_organismos')->where('id', $organismo)->where('activo', 'true')->value('clave');
         $clave_plane = DB::table('tbl_organismos')->where('id', 8)->where('activo', 'true')->value('clave'); //Planeacion organizacion y evaluación
@@ -1817,8 +1830,16 @@ class MetavanceController extends Controller
         //Obtener emisor y receptor
         $receptor = clone $emisor = DB::table('tbl_funcionarios')->select('cargo','nombre as funcionario', 'correo', 'curp', 'incapacidad', 'titulo')
         ->where('activo', 'true')->where('titular', true);
+        //Validar si es accion movil
+        // $emisor = DB::table('tbl_organismos')->select('acc_movil')->where('id', $organismo)->where('activo', 'true');
+        $acc_org = DB::table('tbl_organismos')->where('id', $organismo)->where('activo', 'true')->value('acc_movil');
+        if(!empty($acc_org)){
+            $org_emisor = $acc_org;
+        }else{
+            $org_emisor = $organismo;
+        }
 
-        $emisor = $emisor->where('id_org', $organismo)->first();
+        $emisor = $emisor->where('id_org', $org_emisor)->first();
         $receptor = $receptor->where('id_org', 8)->first();
 
         if(empty($emisor) || empty($receptor)){
@@ -2177,7 +2198,12 @@ class MetavanceController extends Controller
         $id_dpto_direc = DB::table('tbl_organismos as o')
         ->join('tbl_organismos as p', 'o.id_parent', '=', 'p.id')
         ->where('o.id', $organismo)
-        ->select('p.id as id_direccion', 'o.id as id_depto')
+        ->select(
+            'p.id as id_direccion',
+            'p.nombre as nom_direc',
+            DB::raw('COALESCE(o.acc_movil, o.id) as id_depto'),
+            'o.nombre as nom_depto'
+            )
         ->first();
 
         if($id_dpto_direc->id_direccion == 1){ //Auxiliar
@@ -2186,6 +2212,7 @@ class MetavanceController extends Controller
                 $dataUno = DB::table('tbl_funcionarios as fun')->select('fun.cargo','fun.nombre as funcionario', 'fun.correo', 'fun.curp', 'fun.incapacidad', 'fun.titulo')
                 ->join('users as us', 'us.email', '=', 'fun.correo')
                 ->where('fun.activo', 'true')->where('fun.correo', Auth::user()->email)->first();
+
                 if(empty($dataUno)){return redirect()->route('pat.metavance.mostrar', ['idorg' => $organismo])->with('message', 'El usuario '.Auth::user()->name.' no esta dado de alta para firmar de manera electronica');}
 
             }else if($tipo_doc == 'tradicional'){
@@ -2194,10 +2221,7 @@ class MetavanceController extends Controller
                 ->join('users as us', 'us.email', '=', 'fun.correo')
                 ->where('fun.activo', 'true')->where('fun.correo', Auth::user()->email)->first();
 
-                if(empty($dataUno)){
-                    $dataUno = DB::table('users')->select('name as funcionario', 'puesto as cargo', DB::raw("'' as titulo"))->where('email', Auth::user()->email)->first();
-                    // $dataUno = array('funcionario'=>Auth::user()->name, 'puesto'=>Auth::user()->puesto);
-                }
+                if(empty($dataUno)){$dataUno = DB::table('users')->select('name as funcionario', 'puesto as cargo', DB::raw("'' as titulo"))->where('email', Auth::user()->email)->first();}
             }
 
             $dataDos = DB::table('tbl_organismos as o')->select('fun.cargo','fun.nombre as funcionario', 'fun.correo', 'fun.curp', 'fun.incapacidad', 'fun.titulo')
@@ -2802,7 +2826,7 @@ class MetavanceController extends Controller
                 //Nuevo algoritmo de busqueda de funcionarios
                 if($ids_org->id_direccion == 1){
                     if($curpUser1 == $curpUser2){
-                        //Si un usuario tiene a cargo dos deparamentos
+                        //Si un usuario tiene a cargo dos departamentos
                         $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->where('id_org', '!=', $ids_org->id_depto)->value('cargo');
                         $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->where('id_org', $ids_org->id_depto)->value('cargo');
                     }else{
@@ -2810,8 +2834,8 @@ class MetavanceController extends Controller
                         $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
                     }
                 }else{
-                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
-                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
+                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('correo', $emailUser1)->where('activo', 'true')->value('cargo');
+                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('correo', $emailUser2)->where('activo', 'true')->value('cargo');
                 }
 
                 if(empty($puesto_firmUno) || empty($puesto_firmDos)){
