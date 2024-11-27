@@ -21,10 +21,12 @@ class Rf001AdministrativoController extends Controller
 {
     private Reporterf001Interface $rf001Repository;
     private $path_files;
+    protected $path_files_cancelled;
     public function __construct(Reporterf001Interface $rf001Repository)
     {
         $this->rf001Repository = $rf001Repository;
         $this->path_files = env("APP_URL").'/storage/';
+        $this->path_files_cancelled = env("APP_URL").'/grupos/recibo/descargar?folio_recibo=';
     }
     /**
      * Display a listing of the resource.
@@ -72,7 +74,7 @@ class Rf001AdministrativoController extends Controller
         $getFirmante = $this->rf001Repository->getSigner(Auth::user()->id);
         $memorandum = $getConcentrado->memorandum;
         $cadenaOriginal = DB::table('documentos_firmar')->select('cadena_original', 'id', 'documento')->where('numero_o_clave', $memorandum)->first();
-
+        $pathCancelado = $this->path_files_cancelled;
         // crear un arreglo
 
         if ($cadenaOriginal) {
@@ -104,7 +106,7 @@ class Rf001AdministrativoController extends Controller
         });
         $pathFile = $this->path_files;
         $curpFirmante = $getFirmante->curp;
-        return view('reportes.rf001.revision.detalle_revision', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal'))->render();
+        return view('reportes.rf001.revision.detalle_revision', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal', 'pathCancelado'))->render();
     }
 
     /**
