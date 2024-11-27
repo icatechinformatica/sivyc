@@ -1634,7 +1634,7 @@
         console.log(id);
 
         document.getElementById('id_contrato_agenda').value = id[0];
-        if(id[14] != 1) {
+        if(id[14] == 1) {
             $('#guardarenviar').hide();
         } else {
             $('#guardarenviar').show();
@@ -1725,7 +1725,7 @@
         document.getElementById('id_contrato_agendac').value = id[0];
         setAnchorHrefs(id, false, false);
 
-        if(id[14] != 1) {
+        if(id[14] == 1) {
             $('#guardarenviar').hide();
         } else {
             $('#guardarenviar').show();
