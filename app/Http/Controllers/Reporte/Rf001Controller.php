@@ -34,7 +34,7 @@ class Rf001Controller extends Controller
     {
         $this->rfoo1Repository = $rfoo1Repository;
         $this->path_files = env("APP_URL").'/storage/';
-        $this->path_files_cancelled = env("APP_URL").'grupos/recibo/descargar?folio_recibo=';
+        $this->path_files_cancelled = env("APP_URL").'/grupos/recibo/descargar?folio_recibo=';
     }
     /**
      * Display a listing of the resource.

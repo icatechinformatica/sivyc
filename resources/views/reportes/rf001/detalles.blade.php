@@ -627,7 +627,7 @@
                                             ->addSelect(
                                                 \DB::raw("CASE
                                                     WHEN tr.status_folio='CANCELADO' THEN concat('".$pathCancelado ."', tr.folio_recibo)
-                                                    END as file_pdf",),
+                                                    END as file_pdf")
                                             )
                                             ->first();
                                     @endphp
