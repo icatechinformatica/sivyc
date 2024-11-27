@@ -89,10 +89,14 @@ class InstructorController extends Controller
             //->WHERE('especialidad_instructores','especialidad_instructores.status','VALIDADO')
             ->WHEREIN('estado', [true,false])
             ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno', 'hvalidacion',
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
                 'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado', DB::raw('min(fecha_validacion) as fecha_validacion'),
                 DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
-                DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia")
+                DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia"),
+                DB::raw('(SELECT hvalidacion FROM especialidad_instructores
+                  WHERE especialidad_instructores.id_instructor = instructores.id
+                  AND especialidad_instructores.status = \'VALIDADO\'
+                  ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
             ]);
 
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
