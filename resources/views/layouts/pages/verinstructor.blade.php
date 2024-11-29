@@ -635,9 +635,9 @@
                                 $hvalidacion = json_decode($latest->hvalidacion);
                                 if(!is_null($hvalidacion)) {
                                     $hvalidacion = end($hvalidacion);
-                                    if(is_null($dataVal)) {
+                                    if(is_null($dataVal) && !isset($hvalidacion->memo_baja)) {
                                         $dataVal = $hvalidacion;
-                                    } else if (!is_null($hvalidacion->memo_val) && $hvalidacion->fecha_val > $dataVal->fecha_val) {
+                                    } elseif (isset($hvalidacion->memo_val) && !is_null($hvalidacion->memo_val) && $hvalidacion->fecha_val > $dataVal->fecha_val) {
                                         $dataVal = $hvalidacion;
                                     }
                                 }
