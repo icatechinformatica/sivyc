@@ -199,7 +199,7 @@
                 const curp = document.getElementById('curp').value;
                 const password = document.getElementById('txtpassword').value;
                 const token = document.getElementById('token').value;
-                const version = "39";
+                const version = "87";
                 return await sign(cadena, curp, password, version, token);
             } catch (error) {
                 console.error("Error en sign:", error);
