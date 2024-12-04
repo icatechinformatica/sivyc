@@ -491,4 +491,15 @@ class Rf001Controller extends Controller
         );
     }
 
+    public function retornarFinanciero($id)
+    {
+        $estado = true;
+        return response()->json(
+            [
+                'payload' => $this->rfoo1Repository->retornarFinanciero($id, $estado)
+            ],
+            Response::HTTP_CREATED
+        );
+    }
+
 }
