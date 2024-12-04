@@ -438,7 +438,7 @@
                         } else {
                             alert('Error: ' + textStatus);
                         }
-                    });;
+                    });
                 } catch (error) {
                     console.error(error.statusText);
                     document.getElementById('loader-overlay').style.display = 'none';

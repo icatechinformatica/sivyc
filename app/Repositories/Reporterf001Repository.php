@@ -692,4 +692,12 @@ class Reporterf001Repository implements Reporterf001Interface
 
         return $documentos;
     }
+
+    public function retornarFinanciero($id, $estado)
+    {
+        return (new Rf001Model())->where('id', $id)->update([
+            'confirmed' => $estado,
+            'estado' => 'REVISION',
+        ]);
+    }
 }

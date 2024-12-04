@@ -625,9 +625,13 @@
                                             ->where('tr.folio_recibo', $item['folio'])
                                             ->select('tr.*')
                                             ->addSelect(
-                                                \DB::raw("CASE
-                                                    WHEN tr.status_folio='CANCELADO' THEN concat('".$pathCancelado ."', tr.folio_recibo)
-                                                    END as file_pdf")
+                                                \DB::raw(
+                                                    "CASE
+                                                    WHEN tr.status_folio='CANCELADO' THEN concat('" .
+                                                        $pathCancelado .
+                                                        "', tr.folio_recibo)
+                                                    END as file_pdf",
+                                                ),
                                             )
                                             ->first();
                                     @endphp
@@ -648,8 +652,8 @@
                                         </td>
                                         <td style="text-align: center;">
                                             @if ($fileCancelled->file_pdf !== null)
-                                                <a class="nav-link pt-0"
-                                                    href="{{ $fileCancelled->file_pdf }}" target="_blank">
+                                                <a class="nav-link pt-0" href="{{ $fileCancelled->file_pdf }}"
+                                                    target="_blank">
                                                     <i class="far fa-file-pdf  fa-2x {{ $fileCancelled->file_pdf === null || empty($fileCancelled->file_pdf) ? 'text-gray' : 'text-danger' }}"
                                                         title='DESCARGAR RECIBO DE PAGO CANCELADO OFICIALIZADO.'></i>
                                                 </a>
@@ -687,48 +691,51 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
-                    </div>
-                    <div class="col-2 d-flex justify-content-end">
-                        @if (is_array($revisionLocal) && count($revisionLocal) > 0)
-                            @if (
-                                $getConcentrado->estado == 'ENFIRMA' ||
-                                    ($getConcentrado->estado == 'APROBADO' && $getConcentrado->tipo != 'CANCELADO'))
-                                @if (!empty($data['cadenaOriginal']))
+                    <div class="col d-flex justify-content-end">
+                        <div class="d-flex gap-1">
+                            @if (is_array($revisionLocal) && count($revisionLocal) > 0)
+                                @if (
+                                    $getConcentrado->estado == 'ENFIRMA' ||
+                                        ($getConcentrado->estado == 'APROBADO' && $getConcentrado->tipo != 'CANCELADO'))
+                                    @if (!empty($data['cadenaOriginal']))
+                                        <div class="padre">
+                                            @can('vobo.rf001')
+                                                {{-- Usar el componente creado --}}
+                                                <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
+                                                    :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                            @endcan
+                                        </div>
+                                    @endif
+                                @endif
+                            @else
+                                @if ((!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO') || $getConcentrado->estado == 'ENFIRMA')
                                     <div class="padre">
-                                        @can('vobo.rf001')
-                                            {{-- Usar el componente creado --}}
+                                        @canany(['solicitud.rf001', 'vobo.rf001'])
                                             <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
                                                 :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
-                                        @endcan
+                                        @endcanany
                                     </div>
                                 @endif
                             @endif
-                        @else
-                            @if ((!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO') || $getConcentrado->estado == 'ENFIRMA')
-                                <div class="padre">
-                                    @canany(['solicitud.rf001', 'vobo.rf001'])
-                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                            :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
-                                    @endcanany
-                                </div>
+
+                            @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
+                                @canany(['solicitud.rf001', 'vobo.rf001'])
+                                    <a href="javascript:;" class="btn" id="enviarRevision">ENVIAR A REVISIÓN</a>
+                                @endcanany
                             @endif
-                        @endif
-                    </div>
-                    <div class="col-2 justify-content-end">
-                        @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
-                            @canany(['solicitud.rf001', 'vobo.rf001'])
-                                <a href="javascript:;" class="btn" id="enviarRevision">ENVIAR A REVISIÓN</a>
-                            @endcanany
-                        @endif
-                    </div>
-                    <div class="col-2 justified-content-end">
-                        @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
-                            @can('solicitud.rf001')
-                                <a href="{{ route('reporte.rf001.details', ['concentrado' => $id]) }}" class="btn btn-info"
-                                    id="enviarRevision">EDITAR CONCENTRADO</a>
-                            @endcan
-                        @endif
+
+                            @if ($getConcentrado->estado == 'GENERARDOCUMENTO')
+                                @can('solicitud.rf001')
+                                    <a href="{{ route('reporte.rf001.details', ['concentrado' => $id]) }}" class="btn btn-info"
+                                        id="enviarRevision">EDITAR CONCENTRADO</a>
+                                @endcan
+                            @endif
+                            @if ($getConcentrado->estado == 'APROBADO')
+                                @can('solicitud.rf001')
+                                    <a href="javascript:;" class="btn btn-danger openModalPlaneacion btn-xs ml-2" id="retornoPlaneacion" data-memo="{{ $getConcentrado->memorandum }}">RETORNO PLANEACIÓN</a>
+                                @endcan
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -737,6 +744,7 @@
 @endsection
 {{-- incluir modal de inserción --}}
 @include('reportes.rf001.modal.showComment', ['estado' => $getConcentrado->estado])
+@include('reportes.rf001.modal.retornoPlaneacionModal')
 @section('script_content_js')
     <!-- jQuery Validate -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -924,6 +932,59 @@
                             alert('Error: ' + textStatus);
                         }
                     });;
+                } catch (error) {
+                    console.error(error.statusText);
+                    document.getElementById('loader-overlay').style.display = 'none';
+                }
+            });
+
+            $('.openModalPlaneacion').on('click', function() {
+                const memo = $(this).data('memo');
+                $("#memorandum").html(memo);
+                $('#modalPlaneacion').modal('show');
+            });
+
+            $('.actionClosePlaneacion').click(function () {
+                $('#modalPlaneacion').modal('hide');
+            });
+
+            $("#retornoPlaneacion").click(async function(event){
+                let URL = "{{ route('reporte.rf001.estado.retorna.financieros', ['id' => $getConcentrado->id]) }}";
+                try {
+                    document.getElementById('loader-overlay').style.display = 'block';
+                    $.ajax({
+                        url: URL,
+                        type: 'GET',
+                        dataType: 'json',
+                        beforeSend: function() {
+                            $('#modalPlaneacion').modal('hide');
+                        },
+                        success: function(resp)
+                        {
+                             // console.log(response); return;
+                            setTimeout(function() {
+                                // Ocultar el loader y mostrar el contenido después de la carga
+                                document.getElementById('loader-overlay').style.display ='none';
+                                if (resp.payload) {
+                                    window.location.href =
+                                        "{{ route('reporte.rf001.sent') }}";
+                                }
+                            }, 2500); // 2 segundos de tiempo simulado
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown){
+                        // Maneja el error aquí
+                        console.error('Error:', jqXHR);
+                        console.warning('TextStatus:', textStatus);
+                        console.error('ErrorThrown:', errorThrown);
+                        // reject(textStatus);
+
+                        // Si deseas mostrar un mensaje de error más detallado
+                        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                            alert('Error: ' + jqXHR.responseJSON.message);
+                        } else {
+                            alert('Error: ' + textStatus);
+                        }
+                    })
                 } catch (error) {
                     console.error(error.statusText);
                     document.getElementById('loader-overlay').style.display = 'none';
