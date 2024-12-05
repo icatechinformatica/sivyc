@@ -237,7 +237,7 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(ti.curp, ar.curp) as curp'),
                 DB::raw('COALESCE(ti.matricula, ar.no_control) as matricula'),
                 DB::raw("COALESCE(ti.alumno, concat(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre)) as alumno"),
-                DB::raw('COALESCE(substring(ti.curp,11,1), substring(ar.curp,11,1)) as sexo'),                
+                DB::raw('COALESCE(substring(ti.curp,11,1), substring(ar.curp,11,1)) as sexo'),
                 DB::raw("(CONCAT(
                             CASE
                                 WHEN SUBSTRING( COALESCE(ti.curp, ar.curp), 5, 2) > TO_CHAR(NOW(), 'YY') THEN CONCAT('19', SUBSTRING(COALESCE(ti.curp, ar.curp), 5, 2))
@@ -262,7 +262,7 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(ti.nacionalidad, ap.nacionalidad) as nacionalidad'),
                 DB::raw('COALESCE(ti.tinscripcion, ar.tinscripcion) as tinscripcion'),
                 DB::raw('COALESCE(ti.costo, ar.costo) as costo'),
-                DB::raw("COALESCE(ti.requisitos::jsonb, COALESCE(ar.requisitos::jsonb, ap.requisitos::jsonb)) as requisitos"), 
+                DB::raw("COALESCE(ti.requisitos::jsonb, COALESCE(ar.requisitos::jsonb, ap.requisitos::jsonb)) as requisitos"),
                 DB::raw("CASE WHEN  id_folio is not null and ti.status='EDICION' THEN  'CANCELAR FOLIO' ELSE ti.status END status"),
                 DB::raw("CASE WHEN ti.id IS NULL AND '$grupo->clave' !='0' AND '$grupo->status_curso' ='AUTORIZADO' AND '$grupo->status' = 'NO REPORTADO' THEN 'INSERT'
                             ELSE  'VIEW ' END as mov")
@@ -412,7 +412,7 @@ class aperturaController extends Controller
                         'sexo'=> $a->sexo,
                         'lgbt' => $a->lgbt,
                         'curp'=> $a->curp,
-                        'empleado'=>$a->empleado,                        
+                        'empleado'=>$a->empleado,
                         'id_gvulnerable' => $a->id_gvulnerable,
                         'requisitos'=>json_decode($a->requisitos)
                         ]);
@@ -945,9 +945,11 @@ class aperturaController extends Controller
 
         ##Procesar folios
         $rango_folios = [];
+        $letra_folios = [];
         foreach ($tabla_contenido as $cursos){
             $rango = $this->process_folios($cursos->all_folios);
-            $rango_folios[] = $rango;
+            $letra_folios[] = $rango[1];
+            $rango_folios[] = $rango[0];
         }
 
         #RANGO DE MESES
@@ -979,7 +981,7 @@ class aperturaController extends Controller
         $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
 
         $pdf = PDF::loadView('reportes.soporte_entrega_constancia',compact('distintivo', 'direccion', 'data', 'unidad', 'organismo', 'numficio',
-        'partes_titu', 'municipio', 'fecha_comp', 'tabla_contenido', 'rango_mes', 'total_cursos', 'total_folios', 'dta_certificacion','rango_folios'));
+        'partes_titu', 'municipio', 'fecha_comp', 'tabla_contenido', 'rango_mes', 'total_cursos', 'total_folios', 'dta_certificacion','rango_folios','letra_folios'));
         return $pdf->stream('Soporte de Entrega');
     }
 
@@ -990,9 +992,13 @@ class aperturaController extends Controller
         $elementos = explode(",", $cadena);
         $rangos = [];
         $numeros = [];
+        $letras_folio = [];
         foreach ($elementos as $key => $elemento) {
-            $numero = (int)str_replace("A", "", $elemento); // Elimina la letra "A" y convierte a entero
+            // $numero = (int)str_replace("A", "", $elemento); // Elimina la letra "A" y convierte a entero
+            $numero = (int)preg_replace('/[A-Za-z]/', '', $elemento);
+            $letras = preg_replace('/[^A-Za-z]/', '', $elemento);
             $numeros[] = $numero;
+            $letras_folio[] = $letras;
         }
 
         $resultado = [];
@@ -1011,7 +1017,7 @@ class aperturaController extends Controller
                 }
             }
         }
-        return $resultado;
+        return [$resultado, $letras];
     }
 
 
