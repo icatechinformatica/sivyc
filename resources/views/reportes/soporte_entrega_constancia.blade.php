@@ -133,7 +133,7 @@
                         <td align="center">
                             @php
                                 $numerosUnicos = $numerosDuplicados = [];
-                                foreach ($rango_folios[$key] as $numero) {
+                                foreach ($rango_folios[$key] as $index => $numero) {
                                     if (in_array($numero, $numerosUnicos)) { // Si el número ya está en el array de números únicos, lo movemos al array de duplicados
                                         $numerosDuplicados[] = $numero;
                                         continue;
@@ -143,11 +143,11 @@
                             @endphp
                             @foreach ($numerosUnicos as $indice => $num)
                                 @if (!in_array($num, $numerosDuplicados))
-                                    @if ($indice % 2 == 0) {{'A'.$num.' - ' }} @else {{'A'.$num }} @endif
+                                    @if ($indice % 2 == 0) {{$letra_folios[$key].str_pad($num, 6, '0', STR_PAD_LEFT).' - ' }} @else {{$letra_folios[$key].str_pad($num, 6, '0', STR_PAD_LEFT) }} @endif
                                 @endif
                             @endforeach
                             @foreach ($numerosDuplicados as $ind => $dup)
-                                @if ($ind == 0) {{'A'.$dup}} @else {{','.'A'.$dup}} @endif
+                                @if ($ind == 0) {{$letra_folios[$key].str_pad($dup, 6, '0', STR_PAD_LEFT)}} @else {{','.$letra_folios[$key].str_pad($dup, 6, '0', STR_PAD_LEFT)}} @endif
                             @endforeach
                         </td>
                         <td>{{$curso->cantidad_folios}}</td>
