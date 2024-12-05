@@ -25,5 +25,5 @@ interface Reporterf001Interface {
     public function actualizarRecibo($id);
     public function regresarEstadoRecibo($id);
     public function generarPdfMasivo($id);
-    public function retornarFinanciero($id, $estado);
+    public function retornarFinanciero($request, $estado);
 }

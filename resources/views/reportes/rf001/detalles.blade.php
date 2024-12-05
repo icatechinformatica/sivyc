@@ -732,7 +732,9 @@
                             @endif
                             @if ($getConcentrado->estado == 'APROBADO')
                                 @can('solicitud.rf001')
-                                    <a href="javascript:;" class="btn btn-danger openModalPlaneacion btn-xs ml-2" id="retornoPlaneacion" data-memo="{{ $getConcentrado->memorandum }}">RETORNO PLANEACIÓN</a>
+                                    <a href="javascript:;" class="btn btn-danger openModalPlaneacion btn-xs ml-2"
+                                        id="retornoPlaneacion" data-memo="{{ $getConcentrado->memorandum }}" data-idrf001={{ $getConcentrado->id }}>RETORNO
+                                        PLANEACIÓN</a>
                                 @endcan
                             @endif
                         </div>
@@ -939,55 +941,85 @@
             });
 
             $('.openModalPlaneacion').on('click', function() {
-                const memo = $(this).data('memo');
+                let memo = $(this).data('memo');
+                let idRf001 = $(this).data('idrf001');
                 $("#memorandum").html(memo);
+                $('#idRf001').val(idRf001);
                 $('#modalPlaneacion').modal('show');
             });
 
-            $('.actionClosePlaneacion').click(function () {
+            $('.actionClosePlaneacion').click(function() {
                 $('#modalPlaneacion').modal('hide');
+                // Limpia el formulario completo
+                $('#formPlaneacion')[0].reset();
+
+                // Elimina los errores de validación si existen
+                $("#formPlaneacion").validate().resetForm();
+                $("#formPlaneacion .error").removeClass("error"); // Elimina las clases de error
             });
 
-            $("#retornoPlaneacion").click(async function(event){
-                let URL = "{{ route('reporte.rf001.estado.retorna.financieros', ['id' => $getConcentrado->id]) }}";
-                try {
-                    document.getElementById('loader-overlay').style.display = 'block';
-                    $.ajax({
-                        url: URL,
-                        type: 'GET',
-                        dataType: 'json',
-                        beforeSend: function() {
-                            $('#modalPlaneacion').modal('hide');
-                        },
-                        success: function(resp)
-                        {
-                             // console.log(response); return;
-                            setTimeout(function() {
-                                // Ocultar el loader y mostrar el contenido después de la carga
-                                document.getElementById('loader-overlay').style.display ='none';
-                                if (resp.payload) {
-                                    window.location.href =
-                                        "{{ route('reporte.rf001.sent') }}";
-                                }
-                            }, 2500); // 2 segundos de tiempo simulado
-                        }
-                    }).fail(function(jqXHR, textStatus, errorThrown){
-                        // Maneja el error aquí
-                        console.error('Error:', jqXHR);
-                        console.warning('TextStatus:', textStatus);
-                        console.error('ErrorThrown:', errorThrown);
-                        // reject(textStatus);
+            $("#formPlaneacion").validate({
+                rules: {
+                    observacion: {
+                        required: true, // Campo obligatorio
+                        minlength: 10, // Mínimo 10 caracteres
+                    },
+                },
+                messages: {
+                    observacion: {
+                        required: "Por favor, ingrese una observación.",
+                        minlength: "La observación debe tener al menos 10 caracteres.",
+                    },
+                },
+                submitHandler: async function(form, event) {
+                    event.preventDefault();
+                    // Obteniendo los datos del formulario como un arreglo de objetos
+                    const formData = $(form).serializeArray();
+                    let URL = "{{ route('reporte.rf001.estado.retorna.financieros') }}";
+                    try {
+                        document.getElementById('loader-overlay').style.display = 'block';
+                        $.ajax({
+                            url: URL,
+                            type: 'POST',
+                            contentType: 'application/json; charset=utf-8', // Indica que el contenido es JSON
+                            dataType: 'json',
+                            data: JSON.stringify(formData),
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content // Token CSRF para Laravel
+                            },
+                            beforeSend: function() {
+                                $('#modalPlaneacion').modal('hide');
+                            },
+                            success: function(resp)
+                            {
+                                // console.log(response); return;
+                                setTimeout(function() {
+                                    // Ocultar el loader y mostrar el contenido después de la carga
+                                    document.getElementById('loader-overlay').style.display ='none';
+                                    if (resp.payload) {
+                                        window.location.href =
+                                            "{{ route('reporte.rf001.sent') }}";
+                                    }
+                                }, 2500); // 2 segundos de tiempo simulado
+                            }
+                        }).fail(function(jqXHR, textStatus, errorThrown){
+                            // Maneja el error aquí
+                            console.error('Error:', jqXHR);
+                            console.warning('TextStatus:', textStatus);
+                            console.error('ErrorThrown:', errorThrown);
+                            // reject(textStatus);
 
-                        // Si deseas mostrar un mensaje de error más detallado
-                        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                            alert('Error: ' + jqXHR.responseJSON.message);
-                        } else {
-                            alert('Error: ' + textStatus);
-                        }
-                    })
-                } catch (error) {
-                    console.error(error.statusText);
-                    document.getElementById('loader-overlay').style.display = 'none';
+                            // Si deseas mostrar un mensaje de error más detallado
+                            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                                alert('Error: ' + jqXHR.responseJSON.message);
+                            } else {
+                                alert('Error: ' + textStatus);
+                            }
+                        })
+                    } catch (error) {
+                        console.error(error.statusText);
+                        document.getElementById('loader-overlay').style.display = 'none';
+                    }
                 }
             });
         });

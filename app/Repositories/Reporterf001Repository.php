@@ -693,11 +693,15 @@ class Reporterf001Repository implements Reporterf001Interface
         return $documentos;
     }
 
-    public function retornarFinanciero($id, $estado)
+    public function retornarFinanciero($request, $estado)
     {
+        $id = $request->firstWhere('name', 'idRf001')['value'];
+        $observaciones = $request->firstWhere('name', 'observacion')['value'];
+
         return (new Rf001Model())->where('id', $id)->update([
             'confirmed' => $estado,
             'estado' => 'REVISION',
+            'observacion' =>  e($observaciones),
         ]);
     }
 }

@@ -28,6 +28,7 @@ class Rf001Model extends Model
         'movimiento',
         'tipo',
         'confirmed',
+        'observacion',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
