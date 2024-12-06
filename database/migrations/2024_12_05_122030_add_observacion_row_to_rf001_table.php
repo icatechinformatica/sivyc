@@ -15,7 +15,7 @@ class AddObservacionRowToRf001Table extends Migration
     {
         Schema::table('tbl_rf001', function (Blueprint $table) {
             //
-            $table->text('observacion')->nullable();
+            $table->json('observacion')->nullable();
         });
     }
 
@@ -28,6 +28,7 @@ class AddObservacionRowToRf001Table extends Migration
     {
         Schema::table('tbl_rf001', function (Blueprint $table) {
             //
+            $table->dropColumn('observacion');
         });
     }
 }
