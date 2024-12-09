@@ -142,10 +142,11 @@
 
 
 <body>
-    <header>
+    {{-- <header>
         <img src="img/instituto_oficial.png" alt="Logo Izquierdo" width="30%" style="position:fixed; left:0; top:0;" />
         <img src="img/chiapas.png" alt="Logo Derecho" width="25%" style="position:fixed; right:0; top:0;" />
-    </header>
+    </header> --}}
+    {!! $body['header'] !!}
     <footer>
         @if(!is_null($uuid))
             <div style="position: absolute; top: -35px; left: 15px; font-size:10px; text-align:justify">
@@ -155,22 +156,23 @@
         {{-- position: relative; top:-76% --}}
         <div style="position: absolute; top: 5px;">
             <img style="" src="img/formatos/footer_vertical.jpeg" width="100%">
-            @if ($cursopdf)
-                @php $direccion = explode("*", $cursopdf->direccion);  @endphp
+            {{-- @if ($cursopdf) --}}
+                @php $direccion = explode("*", $direccion);  @endphp
                 <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
-            @endif
+            {{-- @endif --}}
         </div>
     </footer>
-    <div style="margin-top: -9%; margin-bottom: 4%;">
+    {!! $body['body'] !!}
+    {{-- <div style="margin-top: -9%; margin-bottom: 4%;">
         <h6 style="text-align: center;">{{isset($leyenda) ? $leyenda : ''}}</h6>
     </div>
     <div style="text-align:center;">
         <span style="text-align: center;">REPORTE FOTOGRÁFICO DE INSTRUCTOR EXTERNO</span>
-    </div>
+    </div> --}}
     {{-- <h6 style="text-align: center;">{{isset($leyenda) ? $leyenda : ''}}</h6> --}}
     {{-- tabla --}}
-    @if ($cursopdf)
-        {{-- Lugar y fecha --}}
+    {{-- @if ($cursopdf)
+        {{-- Lugar y fecha
         <div style="text-align: right;">
             <p style="font-size: 14px; margin-bottom: 5px;">
             @if ($cursopdf->ubicacion != $cursopdf->unidad)
@@ -181,7 +183,7 @@
             </p>
             {{-- @if(!is_null($EFolio))
                 <p>EFOLIO: {{$EFolio}}</p>
-            @endif --}}
+            @endif
             <p style="font-size: 14px; margin-top: 0px; margin-bottom: 25px;">{{mb_strtoupper($cursopdf->municipio, 'UTF-8')}}, CHIAPAS. A {{$fechapdf}}.</p>
         </div>
 
@@ -208,7 +210,7 @@
             </tbody>
         </table>
 
-    @endif
+    @endif --}}
     <br>
      {{-- Mostrar imagenes --}}
      @if (count($base64Images) > 0)

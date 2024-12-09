@@ -629,11 +629,25 @@
                         <td id="center" width="100px">
                             <H5><small><small>Alta de Instructor</small></small></H5>
                         </td>
+                        @php
+                            $dataVal = null;
+                            foreach($validado as $point => $latest) {
+                                $hvalidacion = json_decode($latest->hvalidacion);
+                                if(!is_null($hvalidacion)) {
+                                    $hvalidacion = end($hvalidacion);
+                                    if(is_null($dataVal) && !isset($hvalidacion->memo_baja)) {
+                                        $dataVal = $hvalidacion;
+                                    } elseif (isset($hvalidacion->memo_val) && !is_null($hvalidacion->memo_val) && $hvalidacion->fecha_val > $dataVal->fecha_val) {
+                                        $dataVal = $hvalidacion;
+                                    }
+                                }
+                            }
+                        @endphp
                         <td id="center" width="50px">
-                            @if($datainstructor->archivo_alta == NULL)
+                            @if(is_null($dataVal))
                                 <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a href={{$datainstructor->archivo_alta}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a href={{$dataVal->arch_val}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                     </tr>
@@ -3092,6 +3106,7 @@
             var button = $(event.relatedTarget);
             var id = button.data('id');
             console.log(id)
+            id = id.reverse();
 
             var selectL = document.getElementById('validacionpdf'),
             option,

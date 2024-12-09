@@ -12,15 +12,21 @@ use App\Models\Tokens_icti;
 use App\Services\ReportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use setasign\Fpdi\Fpdi;
+use Illuminate\Support\Facades\Http;
+use setasign\Fpdi\PdfParser\StreamReader;
+use App\Extensions\FPDIWithRotation;
 
 class Rf001AdministrativoController extends Controller
 {
     private Reporterf001Interface $rf001Repository;
     private $path_files;
+    protected $path_files_cancelled;
     public function __construct(Reporterf001Interface $rf001Repository)
     {
         $this->rf001Repository = $rf001Repository;
         $this->path_files = env("APP_URL").'/storage/';
+        $this->path_files_cancelled = env("APP_URL").'/grupos/recibo/descargar?folio_recibo=';
     }
     /**
      * Display a listing of the resource.
@@ -68,7 +74,7 @@ class Rf001AdministrativoController extends Controller
         $getFirmante = $this->rf001Repository->getSigner(Auth::user()->id);
         $memorandum = $getConcentrado->memorandum;
         $cadenaOriginal = DB::table('documentos_firmar')->select('cadena_original', 'id', 'documento')->where('numero_o_clave', $memorandum)->first();
-
+        $pathCancelado = $this->path_files_cancelled;
         // crear un arreglo
 
         if ($cadenaOriginal) {
@@ -100,7 +106,7 @@ class Rf001AdministrativoController extends Controller
         });
         $pathFile = $this->path_files;
         $curpFirmante = $getFirmante->curp;
-        return view('reportes.rf001.revision.detalle_revision', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal'))->render();
+        return view('reportes.rf001.revision.detalle_revision', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal', 'pathCancelado'))->render();
     }
 
     /**
@@ -180,5 +186,65 @@ class Rf001AdministrativoController extends Controller
             'resp' => $this->rf001Repository->actualizarEstado($id, $estado),
             'message' => 'Documento Aprobado para proceso de efirma!',
         ], Response::HTTP_CREATED);
+    }
+
+    public function generarMasivo($id)
+    {
+        try {
+            $data = $this->rf001Repository->generarPdfMasivo($id);
+            $pdf = new FPDIWithRotation();
+             // Configuración de la marca de agua
+            $marcaDeAguaTexto = "SIVyC";    // Texto de la marca de agua
+            $marcaDeAguaColor = [200, 200, 200]; // Color gris claro para emular transparencia
+            $marcaDeAguaAngulo = 45;            // Ángulo de la marca de agua
+            $marcaDeAguaTamaño = 250;            // Tamaño de la fuente
+
+
+             // Dimensiones de la página en milímetros (A4: 210 x 297)
+            $pageWidth = 210;
+            $pageHeight = 297;
+
+            foreach ($data as $key) {
+
+                $response = Http::get($key);
+
+                if ($response->ok()) {
+                    $pdfContent = $response->body();
+
+                    // Cargar el contenido PDF en FPDI usando StreamReader
+                    $totalPaginas = $pdf->setSourceFile(StreamReader::createByString($pdfContent));
+
+                    // Importar cada página del PDF
+                    for ($i = 1; $i <= $totalPaginas; $i++) {
+                        $pdf->AddPage();
+                        $paginaId = $pdf->importPage($i);
+                        $pdf->useTemplate($paginaId, 0, 0, $pageWidth, $pageHeight); // Ajusta la posición y tamaño si es necesario
+
+                         // Configurar la fuente y color para la marca de agua
+                        $pdf->SetFont('Arial', 'B', $marcaDeAguaTamaño);
+                        $pdf->SetTextColor($marcaDeAguaColor[0], $marcaDeAguaColor[1], $marcaDeAguaColor[2], 3);
+
+                        // Calcular la posición central para el texto de la marca de agua
+                        $xPos = $pageWidth / 2;
+                        $yPos = $pageHeight - 30;
+
+                        // Aplicar rotación y posicionar el texto de la marca de agua en el centro
+                        $pdf->SetAlpha(0.3);
+                        $pdf->Text(230, $yPos, $marcaDeAguaTexto); // Ajusta la posición si es necesario
+
+                    }
+                } else {
+                    return response()->json(['error' => "No se pudo cargar el archivo desde la URL: " . $key], 404);
+                }
+            }
+
+             // Salida del PDF combinado
+            return response()->make($pdf->Output('S'), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="documento_concentrado_recibos_Rf001.pdf"',
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Ocurrió un error al generar el documento masivo: '.$th->getMessage());
+        }
     }
 }

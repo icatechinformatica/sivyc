@@ -138,7 +138,7 @@
                         </div>                        
                     </div>                     
                 @endif
-                
+                @unless($data->status_folio === 'DISPONIBLE')
                     <h4 class="pt-2 pb-2">DEL RECIBO</h4>                     
                     <div class="form-row bg-light p-5">                        
                         <div class="form-group col-md-12">
@@ -187,7 +187,7 @@
                         @endif
                         </div>
                     </div>                     
-                
+                @endunless
                 <div class="row w-100 form-inline justify-content-end mt-4">                    
                     <h5 class="bg-light p-2">RECIBO No. <span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</b>&nbsp;</span></h5>
                     @if($data->file_pdf)

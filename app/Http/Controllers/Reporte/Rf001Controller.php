@@ -29,10 +29,12 @@ class Rf001Controller extends Controller
 {
     private $path_files;
     private Reporterf001Interface $rfoo1Repository;
+    protected $path_files_cancelled;
     public function __construct(Reporterf001Interface $rfoo1Repository)
     {
         $this->rfoo1Repository = $rfoo1Repository;
         $this->path_files = env("APP_URL").'/storage/';
+        $this->path_files_cancelled = env("APP_URL").'/grupos/recibo/descargar?folio_recibo=';
     }
     /**
      * Display a listing of the resource.
@@ -189,6 +191,7 @@ class Rf001Controller extends Controller
         $getSigner = $this->rfoo1Repository->getSigner(Auth::user()->id);
         $memorandum = $getConcentrado->memorandum;
         $cadenaOriginal = DB::table('documentos_firmar')->select('cadena_original', 'id', 'documento')->where('numero_o_clave', $memorandum)->first();
+        $pathCancelado = $this->path_files_cancelled;
         // crear un arreglo
 
         if ($cadenaOriginal) {
@@ -224,7 +227,7 @@ class Rf001Controller extends Controller
         });
         $pathFile = $this->path_files;
         $curpFirmante = $getSigner->curp;
-        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal'))->render();
+        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal', 'pathCancelado'))->render();
     }
 
     /**
@@ -483,6 +486,17 @@ class Rf001Controller extends Controller
         return response()->json(
             [
                 'data' => $this->rfoo1Repository->actualizarEstado($id, $estado)
+            ],
+            Response::HTTP_CREATED
+        );
+    }
+
+    public function retornarFinanciero($id)
+    {
+        $estado = true;
+        return response()->json(
+            [
+                'payload' => $this->rfoo1Repository->retornarFinanciero($id, $estado)
             ],
             Response::HTTP_CREATED
         );

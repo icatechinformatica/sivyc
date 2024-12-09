@@ -539,21 +539,4 @@ class CalificacionController extends Controller
 
         return $response1;
     }
-
-    public function update_body() {
-        set_time_limit(0);
-        $calificaciones = DocumentosFirmar::Where('tipo_archivo','Lista de calificaciones')->Select('id')
-        ->orderBy('id','desc')
-        ->Get();
-        foreach($calificaciones as $dcCalificacion_id) {
-            $calificacion = DocumentosFirmar::Where('id', $dcCalificacion_id->id)->First();
-            $body = $this->create_body($calificacion->numero_o_clave);
-            $array_html['header'] = $body['header'];
-            $array_html['body'] = $body['body'];
-
-            $calificacion->obj_documento_interno = json_encode($array_html);
-            $calificacion->save();
-        }
-        dd('complete');
-    }
 }
