@@ -1177,4 +1177,37 @@ class ReportService
             ->orderBy('funcionario.id_org', 'desc') // Ordenar en orden descendente
             ->get();
     }
+
+    public function getFirmantes($unidad)
+    {
+        $query = \DB::table('tbl_organismos AS tblOrganismo')->distinct()
+                    ->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo', 'funcionarios.incapacidad')
+                    ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
+                    ->Join('tbl_unidades AS unidades', 'unidades.id', 'tblOrganismo.id_unidad')
+                    ->where(function($q){
+                        $q->where('funcionarios.cargo', 'LIKE', '%DELEGA%')
+                        ->orWhere('tblOrganismo.id_parent', '=', 1);
+                    })
+                    ->Where('funcionarios.activo', 'true')
+                    ->where('funcionarios.titular', true)
+                    ->Where('unidades.unidad', $unidad)
+                    ->get();
+
+        $informacion = [];
+        $numero_firmantes = 0;
+
+        foreach ($query as $registro) {
+            if (!empty($registro->incapacidad)) {
+                $datoJson = json_decode($registro->incapacidad, true);
+                if (isset($datoJson['id_firmante']) && $datoJson['id_firmante'] !== null) {
+                    // $informacion[] = ['INCAPACIDAD' => $datoJson, 'NOMBRE' => $registro->nombre];
+                    $this->incapacidad(json_decode($registro->incapacidad), $registro->nombre);
+                }
+            } else {
+                $numero_firmantes = $numero_firmantes + 1;
+                $informacion[] = ['INCAPACIDAD' => null, 'NOMBRE' => $registro->nombre, 'PUESTO' => $registro->cargo, 'CORREO' => $registro->correo, 'CURP '=> $registro->curp];
+            }
+        }
+        return ['INFO' => $informacion, 'FIRMANTES' => $numero_firmantes];
+    }
 }
