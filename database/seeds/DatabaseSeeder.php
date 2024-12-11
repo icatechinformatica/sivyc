@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // PermissionsTableSeeder::class,
             // RoleTableSeeder::class
-            CalendarioFormatotSeeder::class,
+            // CalendarioFormatotSeeder::class,
+            CatCargosSeeder::class,
         ]);
     }
 }
