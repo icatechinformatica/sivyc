@@ -17,7 +17,8 @@ class FirmaComponente extends Component
     public $tokenData;
     public $id;
     public $curpFirmante;
-    public function __construct($indice, $cadenaOriginal, $baseXml, $tokenData, $id, $curpFirmante)
+    public $duplicado;
+    public function __construct($indice, $cadenaOriginal, $baseXml, $tokenData, $id, $curpFirmante, $duplicado)
     {
         //
         $this->indice = $indice;
@@ -26,6 +27,7 @@ class FirmaComponente extends Component
         $this->tokenData = $tokenData;
         $this->id = $id;
         $this->curpFirmante = $curpFirmante;
+        $this->duplicado = $duplicado;
     }
 
     /**

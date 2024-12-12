@@ -85,8 +85,15 @@ class ReportService
 
             $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
 
-            $firmantes = $this->funcionariosUnidades($ubicacion);
-            list($firmanteNoUno, $firmanteNoDos) = $firmantes;
+            // modificar la forma en traer firmantes
+            $getDataFirmantes = $this->getFirmantes($ubicacion);
+
+            //obtener firmantes
+            $metaDataFirmantes = $getDataFirmantes['FIRMANTES'];
+            $metaDataNumFirmante = $getDataFirmantes['NUMEROFIRMANTES'];
+
+            // $firmantes = $this->funcionariosUnidades($ubicacion);
+            // list($firmanteNoUno, $firmanteNoDos) = $firmantes;
 
             $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id_unidad);
 
@@ -104,28 +111,47 @@ class ReportService
             $numFirmantes = '3'; // 1 o 2
 
             $arrayFirmantes = [];
+
+            // return count($metaDataFirmantes); exit;
+
+            while (count($metaDataFirmantes) < 2) {
+                $metaDataFirmantes[] = $metaDataFirmantes[0];
+            }
+
+            for ($i=0; $i < $metaDataNumFirmante; $i++) {
+                # ciclo para obtener información
+                $temp = ['_attributes' =>
+                    [
+                        'curp_firmante' => $metaDataFirmantes[$i]['curp'],
+                        'nombre_firmante' => $metaDataFirmantes[$i]['funcionario'],
+                        'email_firmante' => $metaDataFirmantes[$i]['correo'],
+                        'tipo_firmante' => 'FM',
+                    ]
+                ];
+                array_push($arrayFirmantes, $temp);
+            }
             // director
-            $temp = ['_attributes' =>
-                [
-                    'curp_firmante' => $firmanteNoUno['curp'],
-                    'nombre_firmante' => $firmanteNoUno['funcionario'],
-                    'email_firmante' => $firmanteNoUno['correo'],
-                    'tipo_firmante' => 'FM',
-                ]
-            ];
-            array_push($arrayFirmantes, $temp);
+            // $temp = ['_attributes' =>
+            //     [
+            //         'curp_firmante' => $firmanteNoUno['curp'],
+            //         'nombre_firmante' => $firmanteNoUno['funcionario'],
+            //         'email_firmante' => $firmanteNoUno['correo'],
+            //         'tipo_firmante' => 'FM',
+            //     ]
+            // ];
+            // array_push($arrayFirmantes, $temp);
 
             // delegado
-            $temp = ['_attributes' =>
-                [
-                    'curp_firmante' => $firmanteNoDos['curp'],
-                    'nombre_firmante' => $firmanteNoDos['funcionario'],
-                    'email_firmante' => $firmanteNoDos['correo'],
-                    'tipo_firmante' => 'FM'
-                ]
-            ];
+            // $temp = ['_attributes' =>
+            //     [
+            //         'curp_firmante' => $firmanteNoDos['curp'],
+            //         'nombre_firmante' => $firmanteNoDos['funcionario'],
+            //         'email_firmante' => $firmanteNoDos['correo'],
+            //         'tipo_firmante' => 'FM'
+            //     ]
+            // ];
 
-            array_push($arrayFirmantes, $temp);
+            // array_push($arrayFirmantes, $temp);
 
             $temp = ['_attributes' =>
                 [
@@ -318,20 +344,20 @@ class ReportService
     public function generarToken()
     {
         // Token Producción
-        $resToken = Http::withHeaders([
-            'Accept' => 'application/json'
-        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'SISTEM_IVINCAP',
-            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
-        ]);
-
-        // Token Prueba
         // $resToken = Http::withHeaders([
         //     'Accept' => 'application/json'
         // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'FirmaElectronica',
-        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        //     'nombre' => 'SISTEM_IVINCAP',
+        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         // ]);
+
+        // Token Prueba
+        $resToken = Http::withHeaders([
+            'Accept' => 'application/json'
+        ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+            'nombre' => 'FirmaElectronica',
+            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        ]);
 
         $token = $resToken->json();
 
@@ -1194,20 +1220,16 @@ class ReportService
                     ->get();
 
         $informacion = [];
-        $numero_firmantes = 0;
+        $numero_firmantes = 2;
 
         foreach ($query as $registro) {
-            if (!empty($registro->incapacidad)) {
-                $datoJson = json_decode($registro->incapacidad, true);
-                if (isset($datoJson['id_firmante']) && $datoJson['id_firmante'] !== null) {
-                    // $informacion[] = ['INCAPACIDAD' => $datoJson, 'NOMBRE' => $registro->nombre];
-                    $this->incapacidad(json_decode($registro->incapacidad), $registro->nombre);
-                }
+            $datoJson = json_decode($registro->incapacidad, true);
+            if (isset($datoJson['id_firmante']) && $datoJson['id_firmante'] !== null) {
+                $this->incapacidad(json_decode($registro->incapacidad), $registro->nombre);
             } else {
-                $numero_firmantes = $numero_firmantes + 1;
-                $informacion[] = ['INCAPACIDAD' => null, 'NOMBRE' => $registro->nombre, 'PUESTO' => $registro->cargo, 'CORREO' => $registro->correo, 'CURP '=> $registro->curp];
+                $informacion[] = ['curp'=> $registro->curp, 'funcionario' => $registro->nombre, 'correo' => $registro->correo, 'puesto' => $registro->cargo, 'incapacidad' => null];
             }
         }
-        return ['INFO' => $informacion, 'FIRMANTES' => $numero_firmantes];
+        return ['FIRMANTES' => $informacion, 'NUMEROFIRMANTES' => $numero_firmantes];
     }
 }

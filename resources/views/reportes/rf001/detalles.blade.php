@@ -702,7 +702,7 @@
                                             @can('vobo.rf001')
                                                 {{-- Usar el componente creado --}}
                                                 <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                                    :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                                    :token-data="$token" :id="$id" :curp-firmante="$curpFirmante" :duplicado="$data['controlduplicado']"></x-firma-componente>
                                             @endcan
                                         </div>
                                     @endif
@@ -712,7 +712,7 @@
                                     <div class="padre">
                                         @canany(['solicitud.rf001', 'vobo.rf001'])
                                             <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                                :token-data="$token" :id="$id" :curp-firmante="$curpFirmante"></x-firma-componente>
+                                                :token-data="$token" :id="$id" :curp-firmante="$curpFirmante" :duplicado="$data['controlduplicado']"></x-firma-componente>
                                         @endcanany
                                     </div>
                                 @endif
