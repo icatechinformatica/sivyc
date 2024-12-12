@@ -9,6 +9,7 @@
     {{-- <input class="d-none" value="{{ $curpFirmante }}" name="curp" id="curp" type="text"> --}}
     <input class="d-none" value="{{ $curpFirmante }}" name="curp" id="curp" type="text">
     <input class="d-none" value="{{ $id }}" name="idRf001" id="idRf001" type="text">
+    <input class="d-none" value="{{ $duplicado }}" type="text" name="controldplicados" id="controldplicados">
 
     <form id="formSign" action="{{ route('firma.store.update') }}" method="post">
         @csrf
@@ -19,6 +20,7 @@
         <input class="d-none" id="getIdFile" name="getIdFile" type="text">
         <input class="d-none" id="certificado" name="certificado" type="text">
         <input class="d-none" id="idRf" name="idRf" type="text">
+        <input class="d-none" id="controldplicados" name="controldplicados" type="text">
     </form>
 </div>
 
@@ -86,7 +88,8 @@
         src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic-prueba/js/firmado_prueba.js">
     </script> --}}
 
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic/js/firmado_produccion.js"></script>
+    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic/js/firmado_produccion.js">
+    </script>
 
     <script type="text/javascript">
         var arrayCadenasG = [];
@@ -170,26 +173,33 @@
         }
         // funcion firmar
         function firmarElectronica() {
-            firmarDocumento($('#token').val()).then(signature => {
-                if (signature.codeResponse == '114') {
-                    generarToken().then((value) => {
-                        firmarDocumento(value).then(response => {
-                            continueProcess(response);
-                        }).catch(err => {
+            let duplicados = document.getElementById('controldplicados').value;
+            let boolduplicadosValue = duplicados === 'true';
+            const repeticiones = boolduplicadosValue ? 2 : 1;
+
+            for (let i = 0; index < repeticiones; i++) {
+                console.log(`Ejecutando la función, iteración ${i + 1}`);
+                firmarDocumento($('#token').val()).then(signature => {
+                    if (signature.codeResponse == '114') {
+                        generarToken().then((value) => {
+                            firmarDocumento(value).then(response => {
+                                continueProcess(response);
+                            }).catch(err => {
+                                continueProcess(response);
+                            });
+
+                        }).catch((error) => {
                             continueProcess(response);
                         });
-
-                    }).catch((error) => {
-                        continueProcess(response);
-                    });
-                } else if (signature.codeResponse !== '00') {
-                    console.log(signature)
-                } else {
-                    continueProcess(signature);
-                }
-            }).catch(error => {
-                console.error("Error:", error);
-            });
+                    } else if (signature.codeResponse !== '00') {
+                        console.log(signature)
+                    } else {
+                        continueProcess(signature);
+                    }
+                }).catch(error => {
+                    console.error("Error:", error);
+                });
+            }
         }
 
         // firmar documentos
