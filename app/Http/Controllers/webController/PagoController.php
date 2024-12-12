@@ -28,7 +28,7 @@ use ZipArchive;
 use setasign\Fpdi\Fpdi;
 use File;
 use App\Interfaces\DocumentacionPagoInstructorInterface;
-use App\Extensions\FPDIWithRotation;
+use App\extensions\FPDIWithRotation;
 use Illuminate\Support\Facades\Http;
 use setasign\Fpdi\PdfParser\StreamReader;
 
