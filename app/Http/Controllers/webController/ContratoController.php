@@ -1339,7 +1339,7 @@ class ContratoController extends Controller
         $direccion = DB::Table('tbl_unidades')->WHERE('unidad',$data->ubicacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','objeto','puesto','qrCodeBase64'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','qrCodeBase64','objeto','puesto','distintivo','direccion'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 

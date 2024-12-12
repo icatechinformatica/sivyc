@@ -27,9 +27,20 @@ use App\Exports\ExportExcel;
 use ZipArchive;
 use setasign\Fpdi\Fpdi;
 use File;
+use App\Interfaces\DocumentacionPagoInstructorInterface;
+use App\Extensions\FPDIWithRotation;
+use Illuminate\Support\Facades\Http;
+use setasign\Fpdi\PdfParser\StreamReader;
 
 class PagoController extends Controller
 {
+    private DocumentacionPagoInstructorInterface $docValidadoPagoRepository;
+    private $path_files;
+    public function __construct(DocumentacionPagoInstructorInterface $docValidadoPagoRepository)
+    {
+        $this->docValidadoPagoRepository = $docValidadoPagoRepository;
+        $this->path_files = env("APP_URL").'/storage/';
+    }
     public function expediente_pagos_merge()
     {
         set_time_limit(0);
@@ -38,14 +49,14 @@ class PagoController extends Controller
         $archivosFull = DB::Table('tbl_cursos')->Select('tbl_cursos.id','tbl_cursos.clave','id_instructor','instructor_mespecialidad',
             'contratos.id_contrato','arch_solicitud_pago', DB::raw("soportes_instructor->>'archivo_bancario' as archivo_bancario"),
             'tbl_cursos.pdf_curso','tabla_supre.doc_validado','pagos.arch_asistencia','pagos.arch_evidencia','contratos.arch_contrato',
-            'pagos.arch_pago', DB::raw("soportes_instructor->>'archivo_ine' as archivo_ine"))
+            'pagos.arch_pago', 'folios.id_supre','folios.id_folios',DB::raw("soportes_instructor->>'archivo_ine' as archivo_ine"))
             ->Join('pagos','pagos.id_curso','tbl_cursos.id')
             ->Join('folios','folios.id_cursos','tbl_cursos.id')
             ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
             ->Join('contratos','contratos.id_contrato','pagos.id_contrato')
             ->Where('status_transferencia','PAGADO')
             ->whereDate('tbl_cursos.inicio', '>=', '2024-01-01')
-            ->whereDate('pagos.fecha_transferencia', '>=', '2024-08-01')->whereDate('fecha_transferencia', '<=', '2024-08-31')
+            ->whereDate('pagos.fecha_transferencia', '>=', '2024-11-29')->whereDate('fecha_transferencia', '<=', '2024-12-31')
             // ->Where('pagos.id_curso', '242260259')
             // ->First();
             ->Get();
@@ -54,19 +65,19 @@ class PagoController extends Controller
         foreach($archivosFull as $pointer => $archivos)
         {
 
-            if($pointer == 244) {
+            if($pointer > 107) {
             // 239, 244
-            if($pointer == 4) {echo 'a';}
+            // if($pointer == 4) {echo 'a';}
             $memoval = especialidad_instructor::WHERE('id_instructor',$archivos->id_instructor) // obtiene la validacion del instructor
                 ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
-                if(isset($memoval)) {
-                    foreach($memoval as $me) {
-                        if(isset($me['memo_val']) && $me['memo_val'] == $archivos->instructor_mespecialidad) {
-                            $validacion_ins = $me['arch_val'];
-                            break;
-                        }
+            if(isset($memoval)) {
+                foreach($memoval as $me) {
+                    if(isset($me['memo_val']) && $me['memo_val'] == $archivos->instructor_mespecialidad) {
+                        $validacion_ins = $me['arch_val'];
+                        break;
                     }
                 }
+            }
 
         // }
 
@@ -86,19 +97,40 @@ class PagoController extends Controller
                 $contrato_pdf = $archivos->arch_contrato;
             } else {
                 $contratoController = new ContratoController();
-                $contrato_pdf = $contratoController->contrato_pdf($archivos->id_contrato,true);
+                $contrato_pdf = $contratoController->contrato_pdf($archivos->id_contrato);
+            }
+
+            $check_valsupre_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','valsupre')->Where('status','VALIDADO')->value('id');
+            if(is_null($check_valsupre_efirma)) {
+                $valsupre_pdf = $archivos->doc_validado;
+            } else {
+                $valsupreController = new supreController();
+                $valsupre_pdf = $valsupreController->valsupre_pdf(base64_encode($archivos->id_supre));
+            }
+
+            $check_solpa_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','Solicitud Pago')->Where('status','VALIDADO')->value('id');
+            if(is_null($check_solpa_efirma)) {
+                $solpa_pdf = $archivos->arch_solicitud_pago;
+            } else {
+                $pagoController = new ContratoController();
+                $solpa_pdf = $pagoController->solicitudpago_pdf($archivos->id_folios);
+            }
+
+            if(!str_contains($archivos->arch_pago, 'sivyc.')){
+                $arch_pago = 'https://sivyc.icatech.gob.mx'.$archivos->arch_pago;
+            } else {
+                $arch_pago = $archivos->arch_pago;
             }
 
                 $pdf = new FPDI();
-                $arch_pago = 'https://sivyc.icatech.gob.mx'.$archivos->arch_pago;
 
                 $fileUrls = [
                     $arch_pago,
-                    $archivos->arch_solicitud_pago,
+                    $solpa_pdf,
                     $archivos->archivo_bancario,
                     // $validacion_ins,
                     $archivos->pdf_curso,
-                    $archivos->doc_validado,
+                    $valsupre_pdf,
                     // $asistencia_pdf,
                     // $reporte_pdf,
                     $contrato_pdf,
@@ -1526,6 +1558,71 @@ class PagoController extends Controller
             return response()->download(storage_path($zipFileName))->deleteFileAfterSend(true);
         } else {
             return 'No se pudo crear el archivo ZIP';
+        }
+    }
+
+    public function download_pdf_masivo($id) {
+        try {
+            $data = $this->docValidadoPagoRepository->generarPdfMasivo($id);
+            $pdf = new FPDIWithRotation();
+             // Configuración de la marca de agua
+             $marcaDeAguaTexto = "SIVyC";    // Texto de la marca de agua
+             $marcaDeAguaColor = [200, 200, 200]; // Color gris claro para emular transparencia
+             $marcaDeAguaAngulo = 45;            // Ángulo de la marca de agua
+             $marcaDeAguaTamaño = 250;            // Tamaño de la fuente
+              // Dimensiones de la página en milímetros (A4: 210 x 297)
+            $pageWidth = 210;
+            $pageHeight = 297;
+
+            foreach ($data as $key) {
+                if(!method_exists($key, 'status')){
+                    $response = Http::get($key);
+
+                    if ($response->ok()) {
+                        $pdfContent = $response->body();
+                    } else {
+                        return response()->json(['error' => "No se pudo cargar el archivo desde la URL: " . $key], 404);
+                    }
+                }
+                else {
+                    $pdfContent = $key->content();
+                    // dd($key->content(), $pdfContent);
+                }
+
+
+                // Cargar el contenido PDF en FPDI usando StreamReader
+                $totalPaginas = $pdf->setSourceFile(StreamReader::createByString($pdfContent));
+
+                // Importar cada página del PDF
+                for ($i = 1; $i <= $totalPaginas; $i++) {
+                    $paginaId = $pdf->importPage($i);
+                    $size = $pdf->getTemplateSize($paginaId);
+                    $orientation = ($size['width'] > $size['height']) ? 'L' : 'P';
+                    $pdf->AddPage($orientation, [$size['width'], $size['height']]); // Ajusta la posición y tamaño si es necesario
+                    $pdf->useTemplate($paginaId);
+
+                    // Configurar la fuente y color para la marca de agua
+                    $pdf->SetFont('Arial', 'B', $marcaDeAguaTamaño);
+                    $pdf->SetTextColor($marcaDeAguaColor[0], $marcaDeAguaColor[1], $marcaDeAguaColor[2], 3);
+
+                    // Calcular la posición central para el texto de la marca de agua
+                    $xPos = $pageWidth / 2;
+                    $yPos = $pageHeight - 30;
+
+                    // Aplicar rotación y posicionar el texto de la marca de agua en el centro
+                    $pdf->SetAlpha(0.3);
+                    $pdf->Text(230, $yPos, $marcaDeAguaTexto); // Ajusta la posición si es necesario
+
+                }
+            }
+
+             // Salida del PDF combinado
+             return response()->make($pdf->Output('S'), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="documento_concentrado.pdf"',
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Ocurrió un error al generar el documento masivo: '.$th->getMessage());
         }
     }
 
