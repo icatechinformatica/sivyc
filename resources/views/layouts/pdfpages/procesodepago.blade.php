@@ -82,11 +82,11 @@
         </style>
     </head>
     <body>
-        {{-- <header>
+        <header>
             <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
             <br><h6>{{$distintivo}}</h6>
-        </header> --}}
-        {!! $body_html['header'] !!}
+        </header>
+        {{-- {!! $body_html['header'] !!} --}}
         <div class= "container g-pt-30">
             <div id="content">
                 {!! $body_html['body'] !!}
@@ -147,10 +147,10 @@
                 </p> --}}
             </div>
         </div>
-        {!! $body_html['footer'] !!}
-        {{-- <footer>
+        {{-- {!! $body_html['footer'] !!} --}}
+        <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
-        </footer> --}}
+        </footer>
     </body>
 </html>

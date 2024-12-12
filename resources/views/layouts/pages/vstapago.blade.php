@@ -79,6 +79,11 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
+        @if ($message = Session::get('error'))
+            <div class="alert alert-warning">
+                <p>{{ $message }}</p>
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -381,7 +386,10 @@
                                 <a class="btn btn-success" id="verdocs" name="verdocs" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}","{{$itemData->status_recepcion}}","{{$itemData->modinstructor}}"]'>
                                     Ver
                                 </a>
-                                <a class="btn btn-success" title="Descargar Documentación" href="{{route('downloadRarPagos', ['id_contrato' => $itemData->id_contrato])}}">
+                                {{-- <a class="btn btn-success" title="Descargar Documentación" href="{{route('downloadRarPagos', ['id_contrato' => $itemData->id_contrato])}}">
+                                    <i class="fas fa-download"></i>
+                                </a> --}}
+                                <a class="btn btn-success" title="Descargar Documentación" target="_blank" href="{{route('download-pdf-masivo', ['id_contrato' => $itemData->id_contrato])}}">
                                     <i class="fas fa-download"></i>
                                 </a>
                             </td>
