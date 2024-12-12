@@ -1602,16 +1602,16 @@ class PagoController extends Controller
                     $pdf->useTemplate($paginaId);
 
                     // Configurar la fuente y color para la marca de agua
-                    $pdf->SetFont('Arial', 'B', $marcaDeAguaTamaño);
-                    $pdf->SetTextColor($marcaDeAguaColor[0], $marcaDeAguaColor[1], $marcaDeAguaColor[2], 3);
+                    // $pdf->SetFont('Arial', 'B', $marcaDeAguaTamaño);
+                    // $pdf->SetTextColor($marcaDeAguaColor[0], $marcaDeAguaColor[1], $marcaDeAguaColor[2], 3);
 
                     // Calcular la posición central para el texto de la marca de agua
-                    $xPos = $pageWidth / 2;
-                    $yPos = $pageHeight - 30;
+                    // $xPos = $pageWidth / 2;
+                    // $yPos = $pageHeight - 30;
 
                     // Aplicar rotación y posicionar el texto de la marca de agua en el centro
-                    $pdf->SetAlpha(0.3);
-                    $pdf->Text(230, $yPos, $marcaDeAguaTexto); // Ajusta la posición si es necesario
+                    // $pdf->SetAlpha(0.3);
+                    // $pdf->Text(230, $yPos, $marcaDeAguaTexto); // Ajusta la posición si es necesario
 
                 }
             }
