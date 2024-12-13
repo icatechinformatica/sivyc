@@ -9,7 +9,7 @@
     {{-- <input class="d-none" value="{{ $curpFirmante }}" name="curp" id="curp" type="text"> --}}
     <input class="d-none" value="{{ $curpFirmante }}" name="curp" id="curp" type="text">
     <input class="d-none" value="{{ $id }}" name="idRf001" id="idRf001" type="text">
-    <input class="d-none" value="{{ $duplicado }}" type="text" name="controldplicados" id="controldplicados">
+    <input class="d-none" value="{{ $duplicado }}" name="duplicados" id="duplicados" type="text">
 
     <form id="formSign" action="{{ route('firma.store.update') }}" method="post">
         @csrf
@@ -20,7 +20,7 @@
         <input class="d-none" id="getIdFile" name="getIdFile" type="text">
         <input class="d-none" id="certificado" name="certificado" type="text">
         <input class="d-none" id="idRf" name="idRf" type="text">
-        <input class="d-none" id="controldplicados" name="controldplicados" type="text">
+        <input class="d-none" id="duplicidad" name="duplicidad" type="text">
     </form>
 </div>
 
@@ -98,10 +98,13 @@
             idfile = '',
             curp = '',
             xmlBase64 = '',
-            idRf001 = '';
+            idRf001 = '',
+            duplicidad = false;
         let res = '';
 
         $(document).ready(function() {
+            HTMLSignature();
+            initElements();
             let folio = '';
             $('#btnsignature').attr('onclick', 'firmarElectronica();'); //boton firma modal
 
@@ -115,6 +118,7 @@
             curp = $('#curp').val();
             idfile = $('#idFile').val();
             idRf001 = $('#idRf001').val();
+            duplicidad = $('#duplicados').val();
         }
 
         // Función para generar el array de cadenas
@@ -165,6 +169,7 @@
                 $('#certificado').val(response.certificated)
                 $('#getIdFile').val(idfile);
                 $('#idRf').val(idRf001);
+                $('#duplicidad').val(duplicidad);
                 $('#formSign').submit();
             } else {
                 confirm(response.messageResponse + ' ' + response.descriptionResponse)
@@ -173,33 +178,26 @@
         }
         // funcion firmar
         function firmarElectronica() {
-            let duplicados = document.getElementById('controldplicados').value;
-            let boolduplicadosValue = duplicados === 'true';
-            const repeticiones = boolduplicadosValue ? 2 : 1;
-
-            for (let i = 0; index < repeticiones; i++) {
-                console.log(`Ejecutando la función, iteración ${i + 1}`);
-                firmarDocumento($('#token').val()).then(signature => {
-                    if (signature.codeResponse == '114') {
-                        generarToken().then((value) => {
-                            firmarDocumento(value).then(response => {
-                                continueProcess(response);
-                            }).catch(err => {
-                                continueProcess(response);
-                            });
-
-                        }).catch((error) => {
+            firmarDocumento($('#token').val()).then(signature => {
+                if (signature.codeResponse == '114') {
+                    generarToken().then((value) => {
+                        firmarDocumento(value).then(response => {
+                            continueProcess(response);
+                        }).catch(err => {
                             continueProcess(response);
                         });
-                    } else if (signature.codeResponse !== '00') {
-                        console.log(signature)
-                    } else {
-                        continueProcess(signature);
-                    }
-                }).catch(error => {
-                    console.error("Error:", error);
-                });
-            }
+
+                    }).catch((error) => {
+                        continueProcess(response);
+                    });
+                } else if (signature.codeResponse !== '00') {
+                    console.log(signature)
+                } else {
+                    continueProcess(signature);
+                }
+            }).catch(error => {
+                console.error("Error:", error);
+            });
         }
 
         // firmar documentos
@@ -210,6 +208,7 @@
                 const password = document.getElementById('txtpassword').value;
                 const token = document.getElementById('token').value;
                 const version = "87";
+                // const version = "30";
                 return await sign(cadena, curp, password, version, token);
             } catch (error) {
                 console.error("Error en sign:", error);
@@ -228,5 +227,5 @@
     <link rel="stylesheet" type="text/css"
         href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" />
     <link rel="stylesheet" type="text/css"
-        href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic-prueba/css/firma.css">
+        href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic/css/firma.css">
 @endpush

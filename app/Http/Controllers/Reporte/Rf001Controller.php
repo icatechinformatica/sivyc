@@ -209,20 +209,21 @@ class Rf001Controller extends Controller
 
         $duplicados = [];
         $dataDuplicados = false;
+        $countDuplicidad = 0;
         foreach ($procesados as $firmante) {
             // Usar un array para llevar un control de los firmantes ya procesados
             $key = $firmante['curp_firmante']. $firmante['nombre_firmante'] . $firmante['email_firmante'];
             if (isset($duplicados[$key])) {
                 // Si el firmante ya está en el array de duplicados, se marca como repetido
                 $dataDuplicados = true;
+                $countDuplicidad = 1;
                 break;
             } else {
                 // Si no es duplicado, se agrega al array de control
                 $duplicados[$key] = true;
+                $countDuplicidad = 0;
             }
         }
-
-        dd($dataDuplicados); exit;
 
         // crear un arreglo
 
@@ -231,7 +232,7 @@ class Rf001Controller extends Controller
                 'cadenaOriginal' => $cadenaOriginal->cadena_original,
                 'indice' => $cadenaOriginal->id,
                 'baseXml' => base64_decode($cadenaOriginal->documento),
-                'controlduplicado' => $dataDuplicados
+                'controlduplicado' => $countDuplicidad
             ];
         } else {
             $data = [

@@ -60,7 +60,6 @@ class Rf001ReporteController extends Controller
         $date = Carbon::now();
 
         $obj_documento = json_decode($documento->obj_documento, true);
-        // dd($obj_documento['firmantes']['firmante'][0]);
 
         if (empty($obj_documento['archivo']['_attributes']['md5_archivo'])) {
             $obj_documento['archivo']['_attributes']['md5_archivo'] = $documento->md5_file;
@@ -117,16 +116,20 @@ class Rf001ReporteController extends Controller
         $rf001 = (new Rf001Model())->findOrFail($request->idRf);
         $fechaUnica = $this->rfoo1Repository->getDate($date);
 
-        switch ($rf001->estado) {
-            case 'APROBADO':
-                $estado = 'ENFIRMA';
-                break;
-            case 'FIRMADO':
-                $estado = 'SELLADO';
-                break;
-            case 'ENFIRMA':
-                $estado = 'FIRMADO';
-                break;
+        if ($request->duplicidad == 1) {
+            $estado = 'FIRMADO';
+        } else {
+            switch ($rf001->estado) {
+                case 'APROBADO':
+                    $estado = 'ENFIRMA';
+                    break;
+                case 'FIRMADO':
+                    $estado = 'SELLADO';
+                    break;
+                case 'ENFIRMA':
+                    $estado = 'FIRMADO';
+                    break;
+            }
         }
 
         // Obtener el campo JSON y decodificarlo
