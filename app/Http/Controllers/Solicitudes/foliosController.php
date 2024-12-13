@@ -71,7 +71,7 @@ class foliosController extends Controller
                         
                 $total = $num_fin-$num_inicio+1;
     
-                if($total>0){
+                if($total>=0){
                     ///Validación que no exista el rango de folio en la misma Unidad y modalida.
                     $valido = DB::table('tbl_banco_folios')->where('mod',$request->mod);
                         if($id)$valido = $valido->where('id','<>',$id);
