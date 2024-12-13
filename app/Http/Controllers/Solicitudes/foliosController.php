@@ -60,7 +60,7 @@ class foliosController extends Controller
             
             
             if(!$request->publicar) $request->publicar=false;
-            if($num_fin>$num_inicio){
+            if($num_fin>=$num_inicio){
                 $folio_inicial = $folio_final = NULL;
                 if($request->mod=="EXT") $prefijo = "D";
                 elseif($request->mod=="CAE") $prefijo = "C";
@@ -71,7 +71,7 @@ class foliosController extends Controller
                         
                 $total = $num_fin-$num_inicio+1;
     
-                if($total>=0){
+                if($total>0){
                     ///Validación que no exista el rango de folio en la misma Unidad y modalida.
                     $valido = DB::table('tbl_banco_folios')->where('mod',$request->mod);
                         if($id)$valido = $valido->where('id','<>',$id);
