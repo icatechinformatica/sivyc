@@ -46,7 +46,4 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/reportes/rf001/administrativo/aprobar', [Rf001AdministrativoController::class, 'aprobar'])->name('administrativo.rf001.aprobar');
     Route::get('/reportes/rf001/administrativo/masivo/pdf/{id}', [Rf001AdministrativoController::class, 'generarMasivo'])->name('administrativo.rf001.masivo');
 
-    // Route::get('/reporte/rf001/funcionarios/unidades/{unidad}', [Rf001AdministrativoController::class, 'getFuncionarios']);
-
-
 });
