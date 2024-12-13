@@ -38,7 +38,7 @@ class ReportService
         $dia = ($dia < 10) ? '0'.$dia : $dia;
 
         $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
-        $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
+        $dirigido = \DB::table('tbl_funcionarios')->where('id', 114)->first();
         $conocimiento = \DB::table('tbl_funcionarios')
             ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
             ->where('tbl_organismos.id', 13)
@@ -92,9 +92,6 @@ class ReportService
             $metaDataFirmantes = $getDataFirmantes['FIRMANTES'];
             $metaDataNumFirmante = $getDataFirmantes['NUMEROFIRMANTES'];
 
-            // $firmantes = $this->funcionariosUnidades($ubicacion);
-            // list($firmanteNoUno, $firmanteNoDos) = $firmantes;
-
             $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id_unidad);
 
             $dataFirmantes = \DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
@@ -130,28 +127,6 @@ class ReportService
                 ];
                 array_push($arrayFirmantes, $temp);
             }
-            // director
-            // $temp = ['_attributes' =>
-            //     [
-            //         'curp_firmante' => $firmanteNoUno['curp'],
-            //         'nombre_firmante' => $firmanteNoUno['funcionario'],
-            //         'email_firmante' => $firmanteNoUno['correo'],
-            //         'tipo_firmante' => 'FM',
-            //     ]
-            // ];
-            // array_push($arrayFirmantes, $temp);
-
-            // delegado
-            // $temp = ['_attributes' =>
-            //     [
-            //         'curp_firmante' => $firmanteNoDos['curp'],
-            //         'nombre_firmante' => $firmanteNoDos['funcionario'],
-            //         'email_firmante' => $firmanteNoDos['correo'],
-            //         'tipo_firmante' => 'FM'
-            //     ]
-            // ];
-
-            // array_push($arrayFirmantes, $temp);
 
             $temp = ['_attributes' =>
                 [
@@ -344,20 +319,20 @@ class ReportService
     public function generarToken()
     {
         // Token Producción
-        // $resToken = Http::withHeaders([
-        //     'Accept' => 'application/json'
-        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'SISTEM_IVINCAP',
-        //     'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
-        // ]);
-
-        // Token Prueba
         $resToken = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-            'nombre' => 'FirmaElectronica',
-            'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+            'nombre' => 'SISTEM_IVINCAP',
+            'key' => 'B8F169E9-C9F6-482A-84D8-F5CB788BC306'
         ]);
+
+        // Token Prueba
+        // $resToken = Http::withHeaders([
+        //     'Accept' => 'application/json'
+        // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
+        //     'nombre' => 'FirmaElectronica',
+        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        // ]);
 
         $token = $resToken->json();
 
@@ -468,7 +443,7 @@ class ReportService
         $fechaActual = $data->created_at->format('Y-m-d');
         $fechaFormateada = $this->formatoFechaCrearMemo($fechaActual);
 
-        $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
+        $dirigido = \DB::table('tbl_funcionarios')->where('id', 114)->first();
         $conocimiento = \DB::table('tbl_funcionarios')
             ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
             ->where('tbl_organismos.id', 13)

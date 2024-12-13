@@ -401,6 +401,7 @@ class Reporterf001Repository implements Reporterf001Interface
         return User::select('tbl_funcionarios.curp', 'tbl_funcionarios.correo')
             ->join('tbl_funcionarios', 'tbl_funcionarios.correo', '=', 'users.email')
             ->where('users.id', $idUser)
+            ->where('tbl_funcionarios.activo', '=' ,'true')
             ->first();
     }
 
