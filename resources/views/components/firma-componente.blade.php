@@ -9,6 +9,7 @@
     {{-- <input class="d-none" value="{{ $curpFirmante }}" name="curp" id="curp" type="text"> --}}
     <input class="d-none" value="{{ $curpFirmante }}" name="curp" id="curp" type="text">
     <input class="d-none" value="{{ $id }}" name="idRf001" id="idRf001" type="text">
+    <input class="d-none" value="{{ $duplicado }}" name="duplicados" id="duplicados" type="text">
 
     <form id="formSign" action="{{ route('firma.store.update') }}" method="post">
         @csrf
@@ -19,6 +20,7 @@
         <input class="d-none" id="getIdFile" name="getIdFile" type="text">
         <input class="d-none" id="certificado" name="certificado" type="text">
         <input class="d-none" id="idRf" name="idRf" type="text">
+        <input class="d-none" id="duplicidad" name="duplicidad" type="text">
     </form>
 </div>
 
@@ -86,7 +88,8 @@
         src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic-prueba/js/firmado_prueba.js">
     </script> --}}
 
-    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic/js/firmado_produccion.js"></script>
+    <script src="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic/js/firmado_produccion.js">
+    </script>
 
     <script type="text/javascript">
         var arrayCadenasG = [];
@@ -95,10 +98,13 @@
             idfile = '',
             curp = '',
             xmlBase64 = '',
-            idRf001 = '';
+            idRf001 = '',
+            duplicidad = false;
         let res = '';
 
         $(document).ready(function() {
+            HTMLSignature();
+            initElements();
             let folio = '';
             $('#btnsignature').attr('onclick', 'firmarElectronica();'); //boton firma modal
 
@@ -112,6 +118,7 @@
             curp = $('#curp').val();
             idfile = $('#idFile').val();
             idRf001 = $('#idRf001').val();
+            duplicidad = $('#duplicados').val();
         }
 
         // Función para generar el array de cadenas
@@ -162,6 +169,7 @@
                 $('#certificado').val(response.certificated)
                 $('#getIdFile').val(idfile);
                 $('#idRf').val(idRf001);
+                $('#duplicidad').val(duplicidad);
                 $('#formSign').submit();
             } else {
                 confirm(response.messageResponse + ' ' + response.descriptionResponse)
@@ -200,6 +208,7 @@
                 const password = document.getElementById('txtpassword').value;
                 const token = document.getElementById('token').value;
                 const version = "87";
+                // const version = "30";
                 return await sign(cadena, curp, password, version, token);
             } catch (error) {
                 console.error("Error en sign:", error);
@@ -218,5 +227,5 @@
     <link rel="stylesheet" type="text/css"
         href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/plugins/jasny-bootstrap4/css/jasny-bootstrap.min.css" />
     <link rel="stylesheet" type="text/css"
-        href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic-prueba/css/firma.css">
+        href="https://firmaelectronica.shyfpchiapas.gob.mx:8443/tools/library/signedjs-generic/css/firma.css">
 @endpush
