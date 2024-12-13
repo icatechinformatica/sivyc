@@ -247,13 +247,4 @@ class Rf001AdministrativoController extends Controller
             return redirect()->back()->with('error', 'Ocurrió un error al generar el documento masivo: '.$th->getMessage());
         }
     }
-
-    public function getFuncionarios($unidad)
-    {
-        $getUnidad = (new ReportService())->getFirmantes($unidad);
-        return response()->json([
-            'resp' => $getUnidad,
-            'message' => 'DATOS DE FIRMANTES FIRMA ELECTRONICA POR UNIDAD',
-        ], Response::HTTP_CREATED);
-    }
 }
