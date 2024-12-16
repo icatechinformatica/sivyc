@@ -318,7 +318,8 @@ class PlaneacionController extends Controller {
                     // $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
                     // $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
                     $funcionarios = $this->funcionarios('TUXTLA');
-                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_satisfactorio_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'mesReport', 'leyenda', 'anio','funcionarios' ));
+                    $direccion = explode("*",$funcionarios['dacademico']['direccion']);
+                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_satisfactorio_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'mesReport', 'leyenda', 'anio','funcionarios','direccion'));
                     return $pdf->stream('Memorandum_respuesta_satisfactorio_planeacion.pdf');
                     break;
                 case 'memorandumNegativo':
@@ -369,7 +370,8 @@ class PlaneacionController extends Controller {
                     // $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
                     // $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
                     $funcionarios = $this->funcionarios('TUXTLA');
-                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_negativo_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'mesReport', 'leyenda', 'anio','funcionarios'));
+                    $direccion = explode("*",$funcionarios['dacademico']['direccion']);
+                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_negativo_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'mesReport', 'leyenda', 'anio','funcionarios','direccion'));
                     return $pdf->stream('Memorandum_termino_negativo_planeacion.pdf');
                     break;
                 default:

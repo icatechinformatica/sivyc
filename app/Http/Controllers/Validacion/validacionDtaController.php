@@ -440,9 +440,10 @@ class validacionDtaController extends Controller {
                                 $leyenda = Instituto::first();
                                 $leyenda = $leyenda->distintivo;
                                 $funcionarios = $this->funcionarios($unidadSeleccionada);
+                                $direccion = explode("*",$funcionarios['dacademico']['direccion']);
                                 // $direccion = DB::table('tbl_unidades')->WHERE('unidad',$unidadSeleccionada)->VALUE('direccion');
                                 // $direccion = explode("*", $direccion);
-                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional','fecha_envio','funcionarios'));
+                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional','fecha_envio','funcionarios','direccion'));
                                 return $pdf->stream('Memo_Unidad.pdf');
                             } else {
                                 return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
@@ -805,9 +806,10 @@ class validacionDtaController extends Controller {
             $leyenda = Instituto::first();
             $leyenda = $leyenda->distintivo;
             $funcionarios = $this->funcionarios('TUXTLA');
+            $direccion = explode("*",$funcionarios['dacademico']['direccion']);
             // $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
             // $direccion = explode("*", $direccion);
-            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity', 'totalCursos', 'leyenda','funcionarios'));
+            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity', 'totalCursos', 'leyenda','funcionarios','direccion'));
             // return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
             return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
         } else {
@@ -1824,9 +1826,10 @@ class validacionDtaController extends Controller {
         $unidad = DB::Table('tbl_unidades')->Where('unidad', $request->unidad_reporte)->FIRST();
         // $elabora = ['nombre' => $elabora = Auth::user()->name, 'puesto' => $elabora = Auth::user()->puesto];
         $funcionarios = $this->funcionarios($unidad->unidad);
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
         // $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
         // $direccion = explode("*", $direccion);
-        $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','funcionarios'));
+        $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','funcionarios','direccion'));
         return $pdf->Stream('Memo_unidad_para_DTA.pdf');
     }
 
