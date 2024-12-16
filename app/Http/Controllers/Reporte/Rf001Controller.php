@@ -190,21 +190,56 @@ class Rf001Controller extends Controller
         $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
         $getSigner = $this->rfoo1Repository->getSigner(Auth::user()->id);
         $memorandum = $getConcentrado->memorandum;
-        $cadenaOriginal = DB::table('documentos_firmar')->select('cadena_original', 'id', 'documento')->where('numero_o_clave', $memorandum)->first();
+        $cadenaOriginal = DB::table('documentos_firmar')->select('cadena_original', 'id', 'documento', 'obj_documento')->where('numero_o_clave', $memorandum)->first();
         $pathCancelado = $this->path_files_cancelled;
+        $firmantes = json_decode($cadenaOriginal->obj_documento, true);
+        $dataFirmantes = $firmantes['firmantes']['firmante'];
+
+
+        $procesados = [];
+        foreach ($dataFirmantes as $grupoFirmantes) {
+            foreach ($grupoFirmantes as $firmante) {
+                $procesados[] = [
+                    'curp_firmante' => $firmante['_attributes']['curp_firmante'],
+                    'nombre_firmante' => $firmante['_attributes']['nombre_firmante'],
+                    'email_firmante' => $firmante['_attributes']['email_firmante'],
+                ];
+            }
+        }
+
+        $duplicados = [];
+        $dataDuplicados = false;
+        $countDuplicidad = 0;
+        foreach ($procesados as $firmante) {
+            // Usar un array para llevar un control de los firmantes ya procesados
+            $key = $firmante['curp_firmante']. $firmante['nombre_firmante'] . $firmante['email_firmante'];
+            if (isset($duplicados[$key])) {
+                // Si el firmante ya está en el array de duplicados, se marca como repetido
+                $dataDuplicados = true;
+                $countDuplicidad = 1;
+                break;
+            } else {
+                // Si no es duplicado, se agrega al array de control
+                $duplicados[$key] = true;
+                $countDuplicidad = 0;
+            }
+        }
+
         // crear un arreglo
 
         if ($cadenaOriginal) {
             $data = [
                 'cadenaOriginal' => $cadenaOriginal->cadena_original,
                 'indice' => $cadenaOriginal->id,
-                'baseXml' => base64_decode($cadenaOriginal->documento)
+                'baseXml' => base64_decode($cadenaOriginal->documento),
+                'controlduplicado' => $countDuplicidad
             ];
         } else {
             $data = [
                 'cadenaOriginal' => null,
                 'indice' => null,
                 'baseXml' => null,
+                'controlduplicado' => null
             ];
         }
 
