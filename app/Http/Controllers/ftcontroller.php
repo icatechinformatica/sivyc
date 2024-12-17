@@ -407,8 +407,9 @@ class ftcontroller extends Controller {
                     $leyenda = $leyenda->distintivo;
 
                     $funcionarios = $this->funcionarios($unidad);
+                    $direccion = explode("*",$funcionarios['dunidad']['direccion']);
 
-                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'leyenda','funcionarios'));
+                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'leyenda','funcionarios','direccion'));
                     return $pdf->stream('Memo_unidad_para_DTA.pdf');
                     /**
                      * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
