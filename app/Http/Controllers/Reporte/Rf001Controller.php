@@ -49,6 +49,7 @@ class Rf001Controller extends Controller
         if ($concentrado) {
             $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($concentrado);
             $idRf001 = $concentrado;
+            $this->rfoo1Repository->regresarEstadoRecibo($idRf001);
 
             // Decodificar el JSON
             $data = json_decode($getConcentrado, true);
