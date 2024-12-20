@@ -49,6 +49,22 @@
                           </div>
 
                         </div>
+                        {{-- Campos telefono y curp --}}
+                        <div class="row">
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                <label class="form-control-label" for="curpInput">CURP</label>
+                                <input type="text" id="curpInput" name="curpInput" class="form-control">
+                              </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                <label class="form-control-label" for="telInput">Teléfono</label>
+                                <input type="text" id="telInput" name="telInput" class="form-control" >
+                              </div>
+                            </div>
+                        </div>
                         <div class="row">
                           <div class="col-lg-6">
                             <div class="form-group">
@@ -123,6 +139,14 @@
                         required: true,
                         minlength: 3
                     },
+                    curpInput: {
+                        required: true,
+                        minlength: 18
+                    },
+                    telInput: {
+                        required: true,
+                        minlength: 10
+                    },
                     passwordInput: {
                         required: true,
                     },
@@ -143,6 +167,12 @@
                     },
                     nameInput: {
                         required: 'Por favor ingrese el nombre completo'
+                    },
+                    curpInput: {
+                        required: 'Por favor ingrese una curp valida'
+                    },
+                    telInput: {
+                        required: 'Por favor ingrese un número de teléfono valido'
                     },
                     passwordInput: {
                         required: 'Por favor Ingresé la contraseña',

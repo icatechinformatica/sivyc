@@ -48,11 +48,26 @@ class userController extends Controller
     {
         //checar que no exista un usario con el correo electrónico que se piensa introducir
         $user = User::where('email', '=', $request->get('emailInput'))->first();
+        $curpuser = User::where('curp', '=', $request->get('curpInput'))->first();
+
+        if($user){
+            return redirect()->back()->withErrors([
+                sprintf('EL CORREO ELECTRÓNICO %s YA SE ENCUENTRA REGISTRADO EN EL SISTEMA', $request->get('emailInput'))
+            ]);
+        }
+        if($curpuser){
+            return redirect()->back()->withErrors([
+                sprintf('LA CURP %s YA SE ENCUENTRA REGISTRADO EN EL SISTEMA', $request->get('curpInput'))
+            ]);
+        }
         //dd($user);
-        if (!$user) {
+        if (!$user && !$curpuser) {
             # usuario no encontrado
             User::create([
                 'name' => trim($request->get('nameInput')),
+                'curp' => trim($request->get('curpInput')),
+                'telefono' => trim($request->get('telInput')),
+                'activo' => (bool) true,
                 'email' => trim($request->get('emailInput')),
                 'password' => Hash::make(trim($request->get('passwordInput'))),
                 'puesto' => trim($request->get('puestoInput')),
@@ -60,9 +75,6 @@ class userController extends Controller
             ]);
             // si funciona redireccionamos
             return redirect()->route('usuario_permisos.index')->with('success', 'NUEVO USUARIO AGREGADO!');
-        } else {
-            # usuario encontrado
-            return redirect()->back()->withErrors([sprintf('EL CORREO ELECTRÓNICO %s A ESTA CUENTA YA SE ENCUENTRA EN LA BASE DE DATOS', $request->get('emailInput'))]);
         }
 
     }
@@ -117,6 +129,8 @@ class userController extends Controller
                 # si no está vacio se agrega
                 $arrayUser = [
                     'name' => trim($request->inputNameUpdate),
+                    'curp' => trim($request->inputCurpUpdate),
+                    'telefono' => trim($request->inputTelUpdate),
                     'password' => Hash::make(trim($request->get('inputPasswordUpdate'))),
                     'puesto' => trim($request->get('inputPuestoUpdate')),
                     'unidad' => (int)trim($request->get('inputCapacitacionUpdate'))
@@ -125,6 +139,8 @@ class userController extends Controller
                 # si está vacio no se agrega al arreglo
                 $arrayUser = [
                     'name' => trim($request->inputNameUpdate),
+                    'curp' => trim($request->inputCurpUpdate),
+                    'telefono' => trim($request->inputTelUpdate),
                     'puesto' => trim($request->get('inputPuestoUpdate')),
                     'unidad' => (int)$request->inputCapacitacionUpdate
                 ];

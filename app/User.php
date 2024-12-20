@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'unidad', 'puesto','unidades','status'
+        'name', 'email', 'password', 'unidad', 'puesto','unidades','status','telefono', 'curp', 'activo'
     ];
 
     /**
@@ -67,7 +67,8 @@ class User extends Authenticatable
                         break;
                     case 'nombres':
                         # code...
-                        return $query->where(\DB::raw("upper(name)"), 'LIKE', "%$buscar%");
+                        // return $query->where(\DB::raw("upper(name)"), 'LIKE', "%$buscar%");
+                        return $query->where(\DB::raw("upper(concat(name, ' ', curp, ' ', email))"), 'LIKE', '%'.strtoupper($buscar).'%');
                         break;
                     default:
                         # code...
