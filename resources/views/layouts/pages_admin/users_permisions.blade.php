@@ -87,7 +87,7 @@
                         <option value="nombres">NOMBRE COMPLETO</option>
                     </select>--}}
 
-                    {!! Form::text('busquedaPersonal', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'NOMBRE', 'aria-label' => 'BUSCAR']) !!}
+                    {!! Form::text('busquedaPersonal', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'NOMBRE / CURP / EMAIL', 'aria-label' => 'BUSCAR']) !!}
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                 {!! Form::close() !!}
                 <br>
