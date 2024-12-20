@@ -60,7 +60,7 @@ class foliosController extends Controller
             
             
             if(!$request->publicar) $request->publicar=false;
-            if($num_fin>$num_inicio){
+            if($num_fin>=$num_inicio){
                 $folio_inicial = $folio_final = NULL;
                 if($request->mod=="EXT") $prefijo = "D";
                 elseif($request->mod=="CAE") $prefijo = "C";

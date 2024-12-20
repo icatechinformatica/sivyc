@@ -38,7 +38,7 @@ class ReportService
         $dia = ($dia < 10) ? '0'.$dia : $dia;
 
         $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
-        $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
+        $dirigido = \DB::table('tbl_funcionarios')->where('id', 114)->first();
         $conocimiento = \DB::table('tbl_funcionarios')
             ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
             ->where('tbl_organismos.id', 13)
@@ -85,8 +85,12 @@ class ReportService
 
             $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
 
-            $firmantes = $this->funcionariosUnidades($ubicacion);
-            list($firmanteNoUno, $firmanteNoDos) = $firmantes;
+            // modificar la forma en traer firmantes
+            $getDataFirmantes = $this->getFirmantes($ubicacion);
+
+            //obtener firmantes
+            $metaDataFirmantes = $getDataFirmantes['FIRMANTES'];
+            $metaDataNumFirmante = $getDataFirmantes['NUMEROFIRMANTES'];
 
             $firmanteFinanciero = $this->getFirmanteFinanciero($rf001->id_unidad);
 
@@ -104,28 +108,25 @@ class ReportService
             $numFirmantes = '3'; // 1 o 2
 
             $arrayFirmantes = [];
-            // director
-            $temp = ['_attributes' =>
-                [
-                    'curp_firmante' => $firmanteNoUno['curp'],
-                    'nombre_firmante' => $firmanteNoUno['funcionario'],
-                    'email_firmante' => $firmanteNoUno['correo'],
-                    'tipo_firmante' => 'FM',
-                ]
-            ];
-            array_push($arrayFirmantes, $temp);
 
-            // delegado
-            $temp = ['_attributes' =>
-                [
-                    'curp_firmante' => $firmanteNoDos['curp'],
-                    'nombre_firmante' => $firmanteNoDos['funcionario'],
-                    'email_firmante' => $firmanteNoDos['correo'],
-                    'tipo_firmante' => 'FM'
-                ]
-            ];
+            // return count($metaDataFirmantes); exit;
 
-            array_push($arrayFirmantes, $temp);
+            while (count($metaDataFirmantes) < 2) {
+                $metaDataFirmantes[] = $metaDataFirmantes[0];
+            }
+
+            for ($i=0; $i < $metaDataNumFirmante; $i++) {
+                # ciclo para obtener información
+                $temp = ['_attributes' =>
+                    [
+                        'curp_firmante' => $metaDataFirmantes[$i]['curp'],
+                        'nombre_firmante' => $metaDataFirmantes[$i]['funcionario'],
+                        'email_firmante' => $metaDataFirmantes[$i]['correo'],
+                        'tipo_firmante' => 'FM',
+                    ]
+                ];
+                array_push($arrayFirmantes, $temp);
+            }
 
             $temp = ['_attributes' =>
                 [
@@ -442,7 +443,7 @@ class ReportService
         $fechaActual = $data->created_at->format('Y-m-d');
         $fechaFormateada = $this->formatoFechaCrearMemo($fechaActual);
 
-        $dirigido = \DB::table('tbl_funcionarios')->where('id', 12)->first();
+        $dirigido = \DB::table('tbl_funcionarios')->where('id', 114)->first();
         $conocimiento = \DB::table('tbl_funcionarios')
             ->leftjoin('tbl_organismos', 'tbl_organismos.id', '=', 'tbl_funcionarios.id_org')
             ->where('tbl_organismos.id', 13)
@@ -1176,5 +1177,34 @@ class ReportService
             })
             ->orderBy('funcionario.id_org', 'desc') // Ordenar en orden descendente
             ->get();
+    }
+
+    public function getFirmantes($unidad)
+    {
+        $query = \DB::table('tbl_organismos AS tblOrganismo')->distinct()
+                    ->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo', 'funcionarios.incapacidad')
+                    ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
+                    ->Join('tbl_unidades AS unidades', 'unidades.id', 'tblOrganismo.id_unidad')
+                    ->where(function($q){
+                        $q->where('funcionarios.cargo', 'LIKE', '%DELEGA%')
+                        ->orWhere('tblOrganismo.id_parent', '=', 1);
+                    })
+                    ->Where('funcionarios.activo', 'true')
+                    ->where('funcionarios.titular', true)
+                    ->Where('unidades.unidad', $unidad)
+                    ->get();
+
+        $informacion = [];
+        $numero_firmantes = 2;
+
+        foreach ($query as $registro) {
+            $datoJson = json_decode($registro->incapacidad, true);
+            if (isset($datoJson['id_firmante']) && $datoJson['id_firmante'] !== null) {
+                $this->incapacidad(json_decode($registro->incapacidad), $registro->nombre);
+            } else {
+                $informacion[] = ['curp'=> $registro->curp, 'funcionario' => $registro->nombre, 'correo' => $registro->correo, 'puesto' => $registro->cargo, 'incapacidad' => null];
+            }
+        }
+        return ['FIRMANTES' => $informacion, 'NUMEROFIRMANTES' => $numero_firmantes];
     }
 }

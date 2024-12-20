@@ -1454,7 +1454,6 @@ class supreController extends Controller
     }
 
     public function valsupre_pdf($id){
-        // dd($id);
         $puestos = array();
         $uuid = $objeto = $qrCodeBase64 = NULL;
         $user_data = DB::Table('users')->Select('ubicacion','role_user.role_id')

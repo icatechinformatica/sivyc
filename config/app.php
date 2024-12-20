@@ -179,6 +179,7 @@ return [
         // Passport
         Laravel\Passport\PassportServiceProvider::class,
         App\Providers\ReporteRf001Provider::class,
+        App\Providers\DocumentacionPagoInstructorProvider::class,
     ],
 
     /*

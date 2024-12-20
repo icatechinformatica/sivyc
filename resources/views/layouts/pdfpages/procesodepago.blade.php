@@ -82,28 +82,14 @@
         </style>
     </head>
     <body>
-        {{-- <header>
+        <header>
             <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
             <br><h6>{{$distintivo}}</h6>
-        </header> --}}
-        {!! $body_html['header'] !!}
+        </header>
+        {{-- {!! $body_html['header'] !!} --}}
         <div class= "container g-pt-30">
             <div id="content">
                 {!! $body_html['body'] !!}
-                <table class="table1">
-                    <tr>
-                        <td><p align="center">Atentamente</p></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><div align="center">{{$funcionarios['director']}}</td></div>
-                    </tr>
-                    <tr>
-                        <td><div align="center">{{$funcionarios['directorp']}}</td></div>
-                    </tr>
-                </table>
                 @if(!is_null($objeto))
                     {{-- <div style="display: inline-block; width: 85%;"> --}}
                         <table style="width: 85%; font-size: 8px; border-collapse: collapse; border: none;">
@@ -133,8 +119,23 @@
                     {{-- </div> --}}
                     <div style="display: inline-block; width: 15%;">
                         {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                        <img style="position: fixed; width: 20%; top: 52%; left: 73%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                        <img style="position: fixed; width: 20%; top: 43%; left: 73%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                     </div>
+                @else
+                    <table class="table1">
+                        <tr>
+                            <td><p align="center">Atentamente</p></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><div align="center">{{$funcionarios['director']}}</td></div>
+                        </tr>
+                        <tr>
+                            <td><div align="center">{{$funcionarios['directorp']}}</td></div>
+                        </tr>
+                    </table>
                 @endif
                 {!! $body_html['ccp'] !!}
                 {{-- <p style="line-height:0.8em;">
@@ -147,10 +148,10 @@
                 </p> --}}
             </div>
         </div>
-        {!! $body_html['footer'] !!}
-        {{-- <footer>
+        {{-- {!! $body_html['footer'] !!} --}}
+        <footer>
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
-        </footer> --}}
+        </footer>
     </body>
 </html>

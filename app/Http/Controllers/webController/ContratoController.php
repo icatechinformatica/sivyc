@@ -1267,7 +1267,7 @@ class ContratoController extends Controller
     }
 
     public function solicitudpago_pdf($id){
-        $objeto = $puesto = $qrCodeBase64 = NULL;
+        $objeto = $puesto = $qrCodeBase64 = $funcionarios = NULL;
 
         $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso','tbl_cursos.instructor_mespecialidad',
@@ -1289,7 +1289,6 @@ class ContratoController extends Controller
         // $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
         // $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
         if(!is_null($data->elabora)) {$data->elabora = json_decode($data->elabora);}
-        $funcionarios = $this->funcionarios($data->ubicacion);
 
         $documento = DocumentosFirmar::where('numero_o_clave', $data->clave)
             ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
@@ -1299,6 +1298,7 @@ class ContratoController extends Controller
             $firma_electronica = false;
             $pagoController = new EPagoController();
             $body_html = $pagoController->create_body($id);
+            $funcionarios = $this->funcionarios($data->ubicacion);
         } else {
             // dd('a');
             $firma_electronica = true;
@@ -1339,7 +1339,7 @@ class ContratoController extends Controller
         $direccion = DB::Table('tbl_unidades')->WHERE('unidad',$data->ubicacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','objeto','puesto','qrCodeBase64'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','qrCodeBase64','objeto','puesto','distintivo','direccion'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 

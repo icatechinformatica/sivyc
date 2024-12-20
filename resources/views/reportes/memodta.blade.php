@@ -1,23 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>FORMATO T</title>
-
+@extends('theme.formatos.vlayout2025')
+@section('title', 'Formato T | SIVyC Icatech')
+@section('content_script_css')
     <style>
-        body{font-family: sans-serif}
-        @page {margin: 20px 50px 110px 50px;size: letter;}
-        header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;}
-        img.izquierda {float: left;width: 100%;height: 60px;}
-        img.izquierdabot {
-            float: inline-end;
-            width: 712px;
-            height: 100px;
-        }
-        img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
-        img.derecha {float: right;width: 50%;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
         /* agregamos a 3 el padding para que no salte a la otra pagina y la deje en blanco */
         .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;}
@@ -26,26 +10,12 @@
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
         .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
         .tablag tr td { font-size: 8px; padding: 0px;}
-        footer {position:fixed;left:0px;bottom:0px;width:100%;}
-        footer .page:after { content: counter(page, sans-serif);}
         .contenedor {
         position:RELATIVE;
         top:120px;
         width:100%;
         margin:auto;
-
         /* Propiedad que ha sido agreda*/
-
-        }
-    .direccion
-        {
-            text-align: left;
-            position: absolute;
-            bottom: 835px; /*820*/
-            left: 20px;
-            font-size: 7.5px;
-            color: white;
-            line-height: 1;
         }
     </style>
 
@@ -55,20 +25,8 @@
             .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
         </style>
     @endif
-</head>
-<body>
-    <header>
-            <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-            <h6><small><small>{{$leyenda}}</small></small></h6><p class='direccion'>
-    </header>
-    <footer>
-        <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        <p class='direccion'><b>
-            @php $direccion = explode("*",$funcionarios['dunidad']['direccion']) @endphp
-            @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-            {{-- <br>Teléfono: {{$funcionarios['dacademico']['telefono']}} Correo: {{$funcionarios['dacademico']['correo']}} --}}
-        </b></p>
-    </footer>
+@endsection
+@section('content')
     <div class="contenedor" style="margin-bottom: 100px;">
         {{-- crear un div para encerrar todo lo que lleva al inicio --}}
         <div>
@@ -154,10 +112,6 @@
             </div>
 
     </div>
-</body>
-</html>
-
-
-
-
-
+@endsection
+@section('script_content_js')
+@endsection

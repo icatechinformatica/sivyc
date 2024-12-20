@@ -401,6 +401,7 @@ class Reporterf001Repository implements Reporterf001Interface
         return User::select('tbl_funcionarios.curp', 'tbl_funcionarios.correo')
             ->join('tbl_funcionarios', 'tbl_funcionarios.correo', '=', 'users.email')
             ->where('users.id', $idUser)
+            ->where('tbl_funcionarios.activo', '=' ,'true')
             ->first();
     }
 
@@ -695,9 +696,20 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function retornarFinanciero($id, $estado)
     {
+        $id = $request->firstWhere('name', 'idRf001')['value'];
+        $observaciones = $request->firstWhere('name', 'observacion')['value'];
+        $registro = (new Rf001Model())->find($id);
+        $comentario = json_decode($registro->observacion, true);
+        $comentarioObjet = [
+            'comentario' => e($observaciones)
+        ];
+        // Agrega el nuevo comentario
+        $comentario[] = $comentarioObjet;
+
         return (new Rf001Model())->where('id', $id)->update([
             'confirmed' => $estado,
             'estado' => 'REVISION',
+            'observacion' =>  json_encode($comentario, JSON_UNESCAPED_UNICODE),
         ]);
     }
 }
