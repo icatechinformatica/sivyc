@@ -1094,6 +1094,7 @@ class CursosController extends Controller
     }
 
     public function carta_descriptiva_pdf($id) {
+
         $carta_descriptiva = DB::Table('tbl_carta_descriptiva')->Where('id_curso',$id)->First();
         $carta_descriptiva->datos_generales = json_decode($carta_descriptiva->datos_generales);
         $carta_descriptiva->rec_didacticos = json_decode($carta_descriptiva->rec_didacticos);
@@ -1122,6 +1123,38 @@ class CursosController extends Controller
         $pdf = PDF::loadView('layouts.pdfpages.cartaDescriptiva',compact('carta_descriptiva','contenido_tematico','data_curso','ejercicio'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('medium.pdf');
+    }
+
+    public function dividirHtml($html, $particion = 2) {
+        // Crear un objeto DOMDocument para parsear el HTML
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true); // Para ignorar errores en el HTML mal formado
+        $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+        libxml_clear_errors();
+
+        // Obtener todos los elementos de la página
+        $body = $dom->getElementsByTagName('body')->item(0);
+        $elementos = iterator_to_array($body->childNodes);
+
+        // Determinar el punto de corte
+        $mitad = ceil(count($elementos) / $particion);
+
+        // Dividir los elementos en dos partes
+        $parte1 = array_slice($elementos, 0, $mitad);
+        $parte2 = array_slice($elementos, $mitad);
+
+        // Convertir ambas partes de nuevo en HTML
+        $parte1_html = '';
+        foreach ($parte1 as $node) {
+            $parte1_html .= $dom->saveHTML($node);
+        }
+
+        $parte2_html = '';
+        foreach ($parte2 as $node) {
+            $parte2_html .= $dom->saveHTML($node);
+        }
+
+        return [$parte1_html, $parte2_html];
     }
 
 
