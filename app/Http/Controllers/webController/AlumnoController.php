@@ -30,7 +30,7 @@ class AlumnoController extends Controller {
     public function index(Request $request) {
         if(session('curp')) $buscar_aspirante = session('curp');
         else $buscar_aspirante = $request->get('busqueda_aspirantepor');
-        
+
         $tipo=null;
         if(isset($buscar_aspirante)) {
             if(ctype_alpha($buscar_aspirante)) {
@@ -49,10 +49,10 @@ class AlumnoController extends Controller {
         $retrieveAlumnos = Alumnopre::busquedapor($tipo, $buscar_aspirante)
         ->leftjoin('users','users.id','iduser_updated')
         ->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')
-        ->PAGINATE(25, ['alumnos_pre.id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso','matricula','curso_extra',
-            DB::raw("requisitos->>'documento' as documento"),'name','alumnos_pre.updated_at']); 
+        ->PAGINATE(25, ['alumnos_pre.id', 'nombre', 'apellido_paterno', 'apellido_materno', 'alumnos_pre.curp', 'es_cereso','matricula','curso_extra',
+            DB::raw("requisitos->>'documento' as documento"),'name','alumnos_pre.updated_at']);
         //dd($retrieveAlumnos);
-        $contador = $retrieveAlumnos->count(); 
+        $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador','buscar_aspirante'));
     }
 
@@ -267,12 +267,12 @@ class AlumnoController extends Controller {
         $AspiranteId = DB::table('alumnos_pre')->where('curp',$curp)->value('id');
         $url_documento = '';
         if (isset($request->customFile)) {
-            $arc = $request->file('customFile');             
-            $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos'); 
-           
+            $arc = $request->file('customFile');
+            $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos');
+
         }
         if($AspiranteId){ //GUARDANDO REQUISITOS
-            $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => 
+            $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' =>
                 DB::raw("
                     jsonb_build_object(
                         'chk_curp',  COALESCE('$request->chk_curp', 'false'),
@@ -280,9 +280,9 @@ class AlumnoController extends Controller {
                         'chk_escolaridad', COALESCE('$request->chk_escolaridad', 'false'),
                         'chk_acta_nacimiento', COALESCE('$request->chk_acta', 'false'),
                         'chk_comprobante_migracion', COALESCE('$request->chk_comprobante_migratorio', 'false'),
-                        'fecha_expedicion_curp', CASE  WHEN '$request->chk_curp' != '' THEN '$request->fecha_expedicion_curp' ELSE 'null' END,                                                
+                        'fecha_expedicion_curp', CASE  WHEN '$request->chk_curp' != '' THEN '$request->fecha_expedicion_curp' ELSE 'null' END,
                         'fecha_expedicion_acta_nacimiento', CASE  WHEN '$request->chk_acta' != '' THEN '$request->fecha_expedicion_acta_nacimiento' ELSE 'null' END,
-                        'fecha_vigencia_migratorio', CASE  WHEN '$request->chk_comprobante_migratorio' != '' THEN '$request->fecha_vigencia_migratorio' ELSE 'null' END                     
+                        'fecha_vigencia_migratorio', CASE  WHEN '$request->chk_comprobante_migratorio' != '' THEN '$request->fecha_vigencia_migratorio' ELSE 'null' END
                     )
                 ")
             ]);
@@ -1766,8 +1766,8 @@ class AlumnoController extends Controller {
         $soporte = [];
         $curp = $request->curpo;
         $message = "La acción no se ejecuto correctamente";
-        if ($request->motivo) {           
-            $result = DB::table('alumnos_pre')->where('curp',$curp)->update(['curso_extra'=>true,                    
+        if ($request->motivo) {
+            $result = DB::table('alumnos_pre')->where('curp',$curp)->update(['curso_extra'=>true,
                 'movimientos' => DB::raw("
                 COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
                     jsonb_build_object(
@@ -1780,9 +1780,9 @@ class AlumnoController extends Controller {
                     ")
                 ]);
                 if ($result) $message = "Operación exitosa!";
-               
-        } else $message = "La operación no ha sido ejecutada, por favor describa la justificación.";           
-        
+
+        } else $message = "La operación no ha sido ejecutada, por favor describa la justificación.";
+
         return redirect()->route('alumnos.index')->with('success',$message);
     }
 
