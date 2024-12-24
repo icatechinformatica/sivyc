@@ -1378,7 +1378,10 @@ class InstructorController extends Controller
                                     $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
                                     $retorno_firma = TRUE;
                                 }
-                                unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+
+                                if(isset($especialidades[$space]->hvalidacion)) {
+                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                                }
                             break;
                         }
                         if(isset($especialidades[$space]->hvalidacion) && $especialidades[$space]->hvalidacion == []) {
