@@ -632,7 +632,11 @@
                         @php
                             $dataVal = null;
                             foreach($validado as $point => $latest) {
-                                $hvalidacion = json_decode($latest->hvalidacion);
+                                if(isset($latest->hvalidacion)){
+                                    $hvalidacion = json_decode($latest->hvalidacion);
+                                } else {
+                                    $hvalidacion = null;
+                                }
                                 if(!is_null($hvalidacion)) {
                                     $hvalidacion = end($hvalidacion);
                                     if(is_null($dataVal) && !isset($hvalidacion->memo_baja)) {

@@ -100,13 +100,13 @@
         @endif
         <form action="{{ url('/instructor/guardar') }}" method="post" id="reginstructor" enctype="multipart/form-data">
             @csrf
-            <div class="switch-container">
+            {{-- <div class="switch-container">
                 <label class="switch">
-                  <input type="checkbox" id="toggleAcordeon">
-                  <span class="slider round"></span>
+                    <input type="checkbox" id="toggleAcordeon">
+                    <span class="slider round"></span>
                 </label>
                 <span class="switch-text">Instructor Alfa</span>
-              </div>
+            </div>   --}}
 
             <!-- Acordeón -->
             <div id="acordeonInstructor" class="panel-group acordeon-borde" style="display: none;">
@@ -825,7 +825,7 @@
         });
 
     </script>
-    <script>
+    {{-- <script>
         document.getElementById('toggleAcordeon').addEventListener('change', function() {
           var acordeon = document.getElementById('acordeonInstructor');
           if (this.checked) {
@@ -848,6 +848,6 @@
                 select.setAttribute('hidden', true);  // Oculta el select cuando el checkbox no está marcado
             }
         }
-    </script>
+    </script> --}}
 @endsection
 
