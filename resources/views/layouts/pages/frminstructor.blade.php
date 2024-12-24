@@ -15,6 +15,79 @@
             padding:0px;
         }
 
+        .switch-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .switch-text {
+            margin-left: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .acordeon-borde {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        input:checked + .slider {
+            background-color: #28a745; /* Color verde */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .checkbox {
+            margin-top: 5px;
+        }
+
     </style>
     <div class="card-header">
         Registro Instructor
@@ -27,6 +100,158 @@
         @endif
         <form action="{{ url('/instructor/guardar') }}" method="post" id="reginstructor" enctype="multipart/form-data">
             @csrf
+            <div class="switch-container">
+                <label class="switch">
+                  <input type="checkbox" id="toggleAcordeon">
+                  <span class="slider round"></span>
+                </label>
+                <span class="switch-text">Instructor Alfa</span>
+              </div>
+
+            <!-- Acordeón -->
+            <div id="acordeonInstructor" class="panel-group acordeon-borde" style="display: none;">
+                <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                    <p data-toggle="collapse" href="#collapse1">Información del Instructor Alfa</p>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+                    <div class="panel-body" style="border: 1px solid red;">
+                        <div class="form-row">
+                            <label class=" col-form-label">Hispanohablante:</label>
+                            <div class="col-sm-1" style="padding-top: 9px;">
+                                <label class="radio-inline">
+                                <input type="radio" name="hispanohablante" value="si"> Sí
+                                </label>&nbsp;&nbsp;
+                                <label class="radio-inline">
+                                <input type="radio" name="hispanohablante" value="no"> No
+                                </label>
+                            </div>
+                            <!-- Lengua indígena -->
+                            <label class="col-form-label">Lengua indígena:</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" placeholder="Especificar">
+                            </div>
+                            <!-- Etnia/Lengua (MIB) -->
+                            <label class="col-form-label">Etnia / Lengua (MIB):</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" placeholder="Especificar">
+                            </div>
+                            <!-- Número de hijos -->
+                            <label class="col-form-label">N° de Hijos:</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" maxlength="3" placeholder="0">
+                            </div>
+                        </div>
+                        <!-- Subproyecto -->
+                        @php $puestos = ['Seleccione Puesto','Titular','Lider Comunitario','Conscriptos','Recién Egresado','Integrante de Familia','Promotora','Efectivos','Educación Indigena','En Servicio','Jubilado'] @endphp
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-group" style="border: solid 1px green;">
+                                    <label><strong>Subproyecto:</strong></label>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="oportunidades" onclick="puestoOnOff(this, 'oportunidades_puesto')"> Oportunidades</label>
+                                        <select class="form-control col-md-4" name="oportunidades_puesto" id="oportunidades_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="conafe" onclick="puestoOnOff(this, 'conafe_puesto')"> CONAFE</label>
+                                        <select class="form-control col-md-4" name="conafe_puesto" id="conafe_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="sedena" onclick="puestoOnOff(this, 'sedena_puesto')"> SEDENA</label>
+                                        <select class="form-control col-md-4" name="sedena_puesto" id="sedena_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="profesores" onclick="puestoOnOff(this, 'profesores_puesto')"> Profesores</label>
+                                        <select class="form-control col-md-4" name="profesores_puesto" id="profesores_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="becarios" onclick="puestoOnOff(this, 'becarios_puesto')"> Jóvenes Becarios</label>
+                                        <select class="form-control col-md-4" name="becarios_puesto" id="becarios_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="osc" onclick="puestoOnOff(this, 'osc_puesto')"> Organizaciones de la Sociedad Civil (OSC)</label>
+                                        <select class="form-control col-md-4" name="osc_puesto" id="osc_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" style="border: solid 1px blue;">
+                                    <label style="opacity: 0.0;"><strong>Subproyecto:</strong></label>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="ipf" onclick="puestoOnOff(this, 'ipf_puesto')"> Instituciones Públicas Federales</label>
+                                        <select class="form-control col-md-4" name="ipf_puesto" id="ipf_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="programas federales" onclick="puestoOnOff(this, 'programas federales_puesto')"> Programas Federales</label>
+                                        <select class="form-control col-md-4" name="programas federales_puesto" id="programas federales_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="conevyt" onclick="puestoOnOff(this, 'convevyt_puesto')"> Certificación CONEVyT (Empresas)</label>
+                                        <select class="form-control col-md-4" name="conevyt_puesto" id="conevyt_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="instituciones academicas" onclick="puestoOnOff(this, 'instituciones academcas_puesto')"> Instituciones Académicas</label>
+                                        <select class="form-control col-md-4" name="instituciones academicas_puesto" id="instituciones academicas_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="subproyecto[]" value="otro" onclick="puestoOnOff(this, 'otrosub_puesto')"> Otro Subproyecto</label>
+                                        <input type="text" class="form-control col-md-4" hidden name="otrosub" id="otrosub">
+                                        <select class="form-control col-md-4" name="otrosub_puesto" id="otrosub_puesto" hidden>
+                                            @foreach ($puestos as $puesto)
+                                                <option value="{{$puesto}}">{{$puesto}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <br>
             <div>
                 <label><h2>Datos Personales</h2></label>
             </div>
@@ -343,22 +568,6 @@
                     </tr>
                 </tbody>
             </table>
-            {{-- <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="extracurricular"><h3>Registro de Capacitador Externo STPS</h3></label>
-                    <textarea name="stps" id="stps" cols="6" rows="4" class="form-control"></textarea>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="extracurricular"><h3>Estandar CONOCER</h3></label>
-                    <textarea name="conocer" id="conocer" cols="6" rows="4" class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="extracurricular"><h3>Datos Extracurriculares</h3></label>
-                    <textarea name="extracurricular" id="extracurricular" cols="6" rows="10" class="form-control"></textarea>
-                </div>
-            </div> --}}
             <br>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
@@ -615,6 +824,30 @@
             }
         });
 
+    </script>
+    <script>
+        document.getElementById('toggleAcordeon').addEventListener('change', function() {
+          var acordeon = document.getElementById('acordeonInstructor');
+          if (this.checked) {
+            acordeon.style.display = 'block';  // Muestra el acordeón
+            $('#collapse1').collapse('show'); // Expande el acordeón automáticamente
+          } else {
+            acordeon.style.display = 'none';  // Oculta el acordeón
+            $('#collapse1').collapse('hide'); // Colapsa el acordeón
+          }
+        });
+
+        function puestoOnOff(checkbox, selectId) {
+            var select = document.getElementById(selectId);  // Obtener el select por su ID
+
+            if()
+
+            if (checkbox.checked) {
+                select.removeAttribute('hidden');  // Muestra el select cuando el checkbox está marcado
+            } else {
+                select.setAttribute('hidden', true);  // Oculta el select cuando el checkbox no está marcado
+            }
+        }
     </script>
 @endsection
 
