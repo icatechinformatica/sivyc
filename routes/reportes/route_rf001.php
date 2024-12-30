@@ -45,5 +45,6 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/reportes/rf001/administrativo/sellar', [Rf001AdministrativoController::class, 'sellado'])->name('administrativo.rf001.sellado');
     Route::post('/reportes/rf001/administrativo/aprobar', [Rf001AdministrativoController::class, 'aprobar'])->name('administrativo.rf001.aprobar');
     Route::get('/reportes/rf001/administrativo/masivo/pdf/{id}', [Rf001AdministrativoController::class, 'generarMasivo'])->name('administrativo.rf001.masivo');
+    Route::post('/reportes/rf001/administrativo/cancelar/concentrado', [Rf001AdministrativoController::class, 'cancelarConcentrado'])->name('cancenlar.documento.concetrado');
 
 });

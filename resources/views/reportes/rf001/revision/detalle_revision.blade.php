@@ -696,7 +696,7 @@
 
                             @can('validacion.rf001')
                                 @if ($getConcentrado->estado == 'REVISION')
-                                    <a type="button" class="btn btn-danger btn-xs sendReviewBack ml-2" style="height: 41px;">
+                                    <a type="button" class="btn btn-warning btn-xs sendReviewBack ml-2" style="height: 41px;">
                                         <i class="fas fa-undo"></i> REGRESAR
                                     </a>
                                 @endif
@@ -706,6 +706,14 @@
                                 <a href="javascript:;" class="btn ml-2" style="height: 41px;"
                                     id="enviarAprobracion">APROBAR</a>
                             @endif
+
+                            @can('validacion.rf001')
+                                @if ($getConcentrado->estado == 'SELLADO')
+                                    <a type="button" class="btn btn-danger btn-xs ml-2 btn-cancelar" style="height: 41px;" data-memorandum="{{ $getConcentrado->memorandum }}">
+                                        <i class="fas fa-ban"></i> CANCELAR
+                                    </a>
+                                @endif
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -717,6 +725,7 @@
 @endsection
 {{-- incluir modal de inserción --}}
 @include('reportes.rf001.modal.showComment', ['estado' => $getConcentrado->estado])
+@include('reportes.rf001.modal.motivoCancelacionModal')
 @section('script_content_js')
     <!-- jQuery Validate -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -839,7 +848,7 @@
                             contentType: false,
                             data: fD,
                             beforeSend: function() {
-                                $('#sendComment_').attr('disabled',
+                                $('#sendComment').attr('disabled',
                                     'disabled');
                                 $('#exampleModal').modal('hide');
                             },
@@ -938,6 +947,74 @@
                         console.log(error);
                     }
                 });
+            });
+
+            $('.btn-cancelar').on('click', function(){
+                let commentCancel = $(this).data('memorandum');
+                $('#memocancelar').html(commentCancel);
+                $('#memoCancelacion').val(commentCancel);
+                $('#cancelacionModal').modal('show'); // Muestra el modal
+
+                const form = $("#cancelComment");
+                form.validate({
+                    // debug: true,
+                    errorClass: "error",
+                    rules: {
+                        motivoCancelar: "required"
+                    },
+                    messages: {
+                        motivoCancelar: {
+                            required: "Por favor, agregar Motivo."
+                        }
+                    },
+                    highlight: function(element, errorClass) {
+                        $(element).addClass(errorClass);
+                    },
+                    submitHandler: function(form, event) {
+                        event.preventDefault();
+                        const URLCancel = "{{ route('cancenlar.documento.concetrado') }}";
+                        let formData = new FormData();
+                        formData.append('motivoCancelacion', $('#motivoCancelar').val());
+                        formData.append('memoCancelacion', $('#memoCancelacion').val());
+                        formData.append('_token', $('input[name=_token]')
+                            .val()); // Añadir el token CSRF
+                        $.ajax({
+                            url: URLCancel,
+                            method: "POST",
+                            dataType: "json",
+                            processData: false,
+                            contentType: false,
+                            data: formData,
+                            beforeSend: function() {
+                                $('#cancelComment').attr('disabled',
+                                    'disabled');
+                                $('#cancelacionModal').modal('hide');
+                            },
+                            success: function(response) {
+                                // console.log(response.resp); return;
+                                if (response.resp === 1) {
+                                    $('#cancelComment')?.trigger("reset");
+                                    $('#cancelacionModal').modal('hide'); // Cierra el modal
+                                    window.location.href =
+                                        "{{ route('administrativo.index') }}?message=Cancelación%20realizada"; // redirect
+                                }
+                            },
+                            error: function(xhr, textStatus, error) {
+                                // manejar errores
+                                console.log('DATOS1' + xhr.statusText);
+                                console.log('DATOS2' + xhr.responseText);
+                                console.log('DATOS3' + xhr.status);
+                                console.log(textStatus);
+                                console.log(error);
+                            }
+                        });
+                        return;
+                    }
+                });
+            });
+
+            $(document).on('click', '.btn-cancelar', function () {
+                $('#cancelacionModal').modal('hide'); // Cierra el modal
             });
         });
     </script>

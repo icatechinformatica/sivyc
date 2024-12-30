@@ -247,4 +247,21 @@ class Rf001AdministrativoController extends Controller
             return redirect()->back()->with('error', 'Ocurrió un error al generar el documento masivo: '.$th->getMessage());
         }
     }
+
+    public function cancelarConcentrado(Request $request)
+    {
+        // estructurando
+        $data = [
+            'memocancelacion' => $request->get('memoCancelacion'),
+            'motivocancelacion' => $request->get('motivoCancelacion'),
+            'usuario' => Auth::user()->name,
+            'id' => Auth::user()->id,
+            'correo' => Auth::user()->email
+        ];
+        $cancelacion = (new ReportService())->cancelarDocumento($data);
+        return response()->json([
+            'resp' => $cancelacion,
+            'message' => 'Documento Regresado para Corrección!',
+         ], Response::HTTP_CREATED);
+    }
 }
