@@ -87,7 +87,7 @@ class Alumnopre extends Model
                         break;
                     case 'curp_aspirante':
                         # code...
-                        return $query->where('curp', 'ILIKE', $buscar);
+                        return $query->where('alumnos_pre.curp', 'ILIKE', $buscar);
                         break;
                     case 'nombre_aspirante':
                         # code...
