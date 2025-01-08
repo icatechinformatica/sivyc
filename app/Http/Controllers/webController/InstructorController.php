@@ -3726,7 +3726,8 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         $nomemosol = $request->nomemo;
         $fecha_letra = $this->obtenerFechaEnLetra($D);
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios'));
+        $direccion = explode("*",$funcionarios['dunidad']['direccion']);
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
     }
@@ -3840,8 +3841,8 @@ class InstructorController extends Controller
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
-
-        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','instructor','especialidades','unidad','D','M','Y','funcionarios'));
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
+        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','instructor','especialidades','unidad','D','M','Y','funcionarios','direccion'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('validacion_instructor.pdf');
     }
