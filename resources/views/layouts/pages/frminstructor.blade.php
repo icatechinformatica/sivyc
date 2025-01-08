@@ -100,157 +100,447 @@
         @endif
         <form action="{{ url('/instructor/guardar') }}" method="post" id="reginstructor" enctype="multipart/form-data">
             @csrf
-            {{-- <div class="switch-container">
+            <div class="switch-container">
                 <label class="switch">
                     <input type="checkbox" id="toggleAcordeon">
                     <span class="slider round"></span>
                 </label>
                 <span class="switch-text">Instructor Alfa</span>
-            </div>   --}}
+            </div>
 
             <!-- Acordeón -->
             <div id="acordeonInstructor" class="panel-group acordeon-borde" style="display: none;">
                 <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                    <p data-toggle="collapse" href="#collapse1">Información del Instructor Alfa</p>
-                    </h4>
-                </div>
-                <div id="collapse1" class="panel-collapse collapse">
-                    <div class="panel-body" style="border: 1px solid red;">
-                        <div class="form-row">
-                            <label class=" col-form-label">Hispanohablante:</label>
-                            <div class="col-sm-1" style="padding-top: 9px;">
-                                <label class="radio-inline">
-                                <input type="radio" name="hispanohablante" value="si"> Sí
-                                </label>&nbsp;&nbsp;
-                                <label class="radio-inline">
-                                <input type="radio" name="hispanohablante" value="no"> No
-                                </label>
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                        <p data-toggle="collapse" href="#collapse1">Información del Instructor Alfa</p>
+                        </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="form-row">
+                                <label class=" col-form-label">Hispanohablante:</label>
+                                <div class="col-sm-1" style="padding-top: 9px;">
+                                    <label class="radio-inline">
+                                    <input type="radio" name="hispanohablante" value="si"> Sí
+                                    </label>&nbsp;&nbsp;
+                                    <label class="radio-inline">
+                                    <input type="radio" name="hispanohablante" value="no"> No
+                                    </label>
+                                </div>
+                                <!-- Lengua indígena -->
+                                <label class="col-form-label">Lengua indígena:</label>
+                                <div class="col-sm-2">
+                                    <input id="lengua_indigena" name="lengua_indigena" type="text" class="form-control" placeholder="Especificar">
+                                </div>
+                                <!-- Etnia/Lengua (MIB) -->
+                                <label class="col-form-label">Etnia / Lengua (MIB):</label>
+                                <div class="col-sm-2">
+                                    <input id="etnia" name="etnia" type="text" class="form-control" placeholder="Especificar">
+                                </div>
+                                <!-- Número de hijos -->
+                                <label class="col-form-label">N° de Hijos:</label>
+                                <div class="col-sm-1">
+                                    <input id="hijos" name="hijos" type="text" class="form-control" maxlength="3" placeholder="0">
+                                </div>
                             </div>
-                            <!-- Lengua indígena -->
-                            <label class="col-form-label">Lengua indígena:</label>
-                            <div class="col-sm-2">
-                                <input type="text" class="form-control" placeholder="Especificar">
-                            </div>
-                            <!-- Etnia/Lengua (MIB) -->
-                            <label class="col-form-label">Etnia / Lengua (MIB):</label>
-                            <div class="col-sm-2">
-                                <input type="text" class="form-control" placeholder="Especificar">
-                            </div>
-                            <!-- Número de hijos -->
-                            <label class="col-form-label">N° de Hijos:</label>
-                            <div class="col-sm-1">
-                                <input type="text" class="form-control" maxlength="3" placeholder="0">
-                            </div>
-                        </div>
-                        <!-- Subproyecto -->
-                        @php $puestos = ['Seleccione Puesto','Titular','Lider Comunitario','Conscriptos','Recién Egresado','Integrante de Familia','Promotora','Efectivos','Educación Indigena','En Servicio','Jubilado'] @endphp
-                        <div class="form-row">
-                            <div class="col-md-6">
-                                <div class="form-group" style="border: solid 1px green;">
-                                    <label><strong>Subproyecto:</strong></label>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="oportunidades" onclick="puestoOnOff(this, 'oportunidades_puesto')"> Oportunidades</label>
-                                        <select class="form-control col-md-4" name="oportunidades_puesto" id="oportunidades_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
+                            <!-- Subproyecto -->
+                            @php
+                                $puestos = ['Seleccione Puesto','Titular','Lider Comunitario','Conscriptos','Recién Egresado','Integrante de Familia','Promotora','Efectivos','Educación Indigena','En Servicio','Jubilado'];
+                                $sinOcupacion = ['Seleccione','Estudiante','Pensionado','Desempleado'];
+                                $conOcupacion = ['Seleccione','Trabajador Agropecuario','Inspector o Supervisor','Artesano u Obrero','Operador de Maquinaria Fija','Ayudante o Similar','Operador de Trans. o Maq. Mov.',
+                                'Jefe de Actividades Administrativas','Trabajador Administrativo','Comerciante o Dependiente','Trabajador Ambulante','Trabajador en serv. al púb. o pers.','Trabajador Domestico',
+                                'Protección o Vigilante','Personas dedicadas quehaceres hogar','Funcionario o Directivo','Profesionista','Empleado de Gobierno'];
+                            @endphp
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label><strong>Subproyecto:</strong></label>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="oportunidades" onclick="puestoOnOff(this, 'oportunidades_puesto')"> Oportunidades</label>
+                                            <select class="form-control col-md-4" name="oportunidades_puesto" id="oportunidades_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="conafe" onclick="puestoOnOff(this, 'conafe_puesto')"> CONAFE</label>
+                                            <select class="form-control col-md-4" name="conafe_puesto" id="conafe_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="sedena" onclick="puestoOnOff(this, 'sedena_puesto')"> SEDENA</label>
+                                            <select class="form-control col-md-4" name="sedena_puesto" id="sedena_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="profesores" onclick="puestoOnOff(this, 'profesores_puesto')"> Profesores</label>
+                                            <select class="form-control col-md-4" name="profesores_puesto" id="profesores_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="becarios" onclick="puestoOnOff(this, 'becarios_puesto')"> Jóvenes Becarios</label>
+                                            <select class="form-control col-md-4" name="becarios_puesto" id="becarios_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="osc" onclick="puestoOnOff(this, 'osc_puesto')"> Organizaciones de la Sociedad Civil (OSC)</label>
+                                            <select class="form-control col-md-4" name="osc_puesto" id="osc_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="conafe" onclick="puestoOnOff(this, 'conafe_puesto')"> CONAFE</label>
-                                        <select class="form-control col-md-4" name="conafe_puesto" id="conafe_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="sedena" onclick="puestoOnOff(this, 'sedena_puesto')"> SEDENA</label>
-                                        <select class="form-control col-md-4" name="sedena_puesto" id="sedena_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="profesores" onclick="puestoOnOff(this, 'profesores_puesto')"> Profesores</label>
-                                        <select class="form-control col-md-4" name="profesores_puesto" id="profesores_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="becarios" onclick="puestoOnOff(this, 'becarios_puesto')"> Jóvenes Becarios</label>
-                                        <select class="form-control col-md-4" name="becarios_puesto" id="becarios_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="osc" onclick="puestoOnOff(this, 'osc_puesto')"> Organizaciones de la Sociedad Civil (OSC)</label>
-                                        <select class="form-control col-md-4" name="osc_puesto" id="osc_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label style="opacity: 0.0;"><strong>Subproyecto:</strong></label>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="ipf" onclick="puestoOnOff(this, 'ipf_puesto')"> Instituciones Públicas Federales</label>
+                                            <select class="form-control col-md-4" name="ipf_puesto" id="ipf_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="programas federales" onclick="puestoOnOff(this, 'programas federales_puesto')"> Programas Federales</label>
+                                            <select class="form-control col-md-4" name="programas federales_puesto" id="programas federales_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="conevyt" onclick="puestoOnOff(this, 'conevyt_puesto')"> Certificación CONEVyT (Empresas)</label>
+                                            <select class="form-control col-md-4" name="conevyt_puesto" id="conevyt_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="instituciones academicas" onclick="puestoOnOff(this, 'instituciones academicas_puesto')"> Instituciones Académicas</label>
+                                            <select class="form-control col-md-4" name="instituciones academicas_puesto" id="instituciones academicas_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="otro" onclick="puestoOnOff(this, 'otrosub_puesto')"> Otro Subproyecto</label>
+                                            <input type="text" class="form-control col-md-4" hidden name="otrosub" id="otrosub">
+                                            <select class="form-control col-md-4" name="otrosub_puesto" id="otrosub_puesto" hidden>
+                                                @foreach ($puestos as $puesto)
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group" style="border: solid 1px blue;">
-                                    <label style="opacity: 0.0;"><strong>Subproyecto:</strong></label>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="ipf" onclick="puestoOnOff(this, 'ipf_puesto')"> Instituciones Públicas Federales</label>
-                                        <select class="form-control col-md-4" name="ipf_puesto" id="ipf_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
+                            <label><strong>Domicilio</strong></label>
+                            <div class="form-row">
+                                <label class="col-form-label">Vialidad:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="tipo_vialidad" id="tipo_vialidad" type="text" class="form-control" aria-required="true">
+                                    <small class="form-text text-muted" style="text-align: center;">Tipo</small>
+                                </div>
+                                <div class="col-sm-5 form-group">
+                                    <input name="nombre_vialidad" id="nombre_vialidad" type="text" class="form-control" aria-required="true">
+                                    <small class="form-text text-muted" style="text-align: center;">Nombre</small>
+                                </div>
+                                <label class="col-form-label">Número:</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="numero_exterior" id="numero_exterior" type="text" class="form-control" aria-required="true">
+                                    <small class="form-text text-muted" style="text-align: center;">Exterior</small>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <input name="numero_interior" id="numero_interior" type="text" class="form-control" aria-required="true">
+                                    <small class="form-text text-muted" style="text-align: center;">Interior</small>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-form-label">Entre Vialidades:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="entre_vialidad1" id="entre_vialidad1" type="text" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">Y</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="entre_vialidad2" id="entre_vialidad2" type="text" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-form-label">Vialidad Posterior:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="vialidad_posterior" id="vialidad_posterior" type="text" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">Carretera:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="carretera" id="carretera" type="text" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-form-label">Asentamiento Humano:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="tipo_asentamiento_humano" id="tipo_asentamiento_humano" type="text" class="form-control" aria-required="true">
+                                    <small class="form-text text-muted" style="text-align: center;">Tipo</small>
+                                </div>
+                                <div class="col-sm-5 form-group">
+                                    <input name="nombre_asentamiento_humano" id="nombre_asentamiento_humano" type="text" class="form-control" aria-required="true">
+                                    <small class="form-text text-muted" style="text-align: center;">Nombre</small>
+                                </div>
+                                <label class="col-form-label">C.P.</label>
+                                <div class="col-sm-2 form-group">
+                                    <input name="codigo_postal2" id="codigo_postal2" type="text" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-form-label">Descripción de Ubicación:</label>
+                                <div class="col-sm-6 form-group">
+                                    <input name="descripcion_ubicacion" id="descripcion_ubicacion" type="text" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <label><strong>Ocupación:</strong></label>
+                            <div class="form-row">
+                                <label class="col-form-label">Con Ocupación:</label>
+                                <div class="col-sm-2 form-group">
+                                    <select class="form-control" name="ocupacion" id="ocupacion" onchange="toggleOcupacion()">
+                                        <option value="default">Seleccione</option>
+                                        <option value="si">Si</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+                                <label class="col-form-label" id="label_ocupa" hidden>Seleccionar:</label>
+                                <div class="col-sm-2 form-group" id="sin_ocupa" hidden>
+                                    <select class="form-control" name="sin_ocupacion" id="sin_ocupacion">
+                                        @foreach ($sinOcupacion as $variable)
+                                            <option value="{{$variable}}">{{$variable}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-3 form-group" id="con_ocupa" hidden>
+                                    <select class="form-control" name="con_ocupacion" id="con_ocupacion">
+                                        @foreach ($conOcupacion as $variable)
+                                            <option value="{{$variable}}">{{$variable}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <label class="col-form-label" id="ingreso_label" hidden>Ingreso Mensual:</label>
+                                <div class="col-sm-2 form-group" id="ingreso_mensual_div" hidden>
+                                    <input name="ingreso_mensual" id="ingreso_mensual" type="text" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label><strong>Rol (es) de la figura operativa:</strong></label>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo"> Asesor educativo</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo_bilingüe"> Asesor educativo bilingüe</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_grupo"> orientador educativo de grupo</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_discapacidad"> orientador educativo para personas en situación de discapacidad</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="auxiliar_interprete"> auxiliar intérprete</label>
+                                        </div>
                                     </div>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="programas federales" onclick="puestoOnOff(this, 'programas federales_puesto')"> Programas Federales</label>
-                                        <select class="form-control col-md-4" name="programas federales_puesto" id="programas federales_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo"> Enlace educativo</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo_bilingüe"> Enlace educativo bilingüe</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional"> Enlace regional</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional_bilingüe"> Enlace regional bilingüe</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="formador_especializado"> Formador especializado</label>
+                                        </div>
                                     </div>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="conevyt" onclick="puestoOnOff(this, 'convevyt_puesto')"> Certificación CONEVyT (Empresas)</label>
-                                        <select class="form-control col-md-4" name="conevyt_puesto" id="conevyt_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="promotor_comunitaria"> Promotor de una plaza comunitaria</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_tecnico"> Apoyo técnico</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes"> Aplicador de exámenes</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes_bilingüe"> aplicador de exámenes bilingüe</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_plaza"> Enlace de plaza</label>
+                                        </div>
                                     </div>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="instituciones academicas" onclick="puestoOnOff(this, 'instituciones academcas_puesto')"> Instituciones Académicas</label>
-                                        <select class="form-control col-md-4" name="instituciones academicas_puesto" id="instituciones academicas_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_regional"> Apoyo regional de plazas comunitarias</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_especifico"> Enlace o apoyo para determinadas actividades específicas</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="titular_promotor"> Titular promotor</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="tecnico_docente"> Tecnico docente</label>
+                                        </div>
                                     </div>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="subproyecto[]" value="otro" onclick="puestoOnOff(this, 'otrosub_puesto')"> Otro Subproyecto</label>
-                                        <input type="text" class="form-control col-md-4" hidden name="otrosub" id="otrosub">
-                                        <select class="form-control col-md-4" name="otrosub_puesto" id="otrosub_puesto" hidden>
-                                            @foreach ($puestos as $puesto)
-                                                <option value="{{$puesto}}">{{$puesto}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                </div>
+                            </div>
+                            <label><strong>Incorporado a:</strong></label>
+                            <div class="form-row">
+                                <label class="col-form-label">Unidad Operativa:</label>
+                                <div class="col-sm-5 form-group">
+                                    <input name="unidad_operativa" id="unidad_operativa" type="text" class="form-control" aria-required="true">
+                                    {{-- <small class="form-text text-muted" style="text-align: center;">Tipo</small> --}}
+                                </div>
+                                <label class="col-form-label">No. de Círculo de estudio:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="circulo_estudio" id="circulo_estudio" type="text" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-form-label">Responsable del Círculo de estudio:</label>
+                                <div class="col-sm-9 form-group">
+                                    <input name="responsable_circulo" id="responsable_circulo" type="text" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-form-label">Fecha de inicio:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="fecha_inicio" id="fecha_inicio" type="date" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <label><strong>Horario del Círculo de estudio:</strong></label>
+                            <div class="form-row">
+                                <div class="col-sm-3 form-group" style="text-align: center;">
+                                    <label class="col-form-label" style="text-align: center;">Día</label>
+                                </div>
+                                <div class="col-sm-3 form-group" style="text-align: center;">
+                                </div>
+                                <div class="col-sm-3 form-group" style="text-align: center;">
+                                    <label class="col-form-label" style="text-align: center;">Día</label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-form-label">1.-</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="dia1" id="dia1" type="text" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">De</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_inicio1" id="horario_inicio1" type="time" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">a</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_termino1" id="horario_termino1" type="time" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">1.-</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="dia1_2" id="dia1_2" type="text" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">De</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_inicio1_2" id="horario_inicio1_2" type="time" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">a</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_termino1_2" id="horario_termino1_2" type="time" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-form-label">2.-</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="dia2" id="dia2" type="text" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">De</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_inicio2" id="horario_inicio2" type="time" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">a</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_termino2" id="horario_termino2" type="time" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">2.-</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="dia2_2" id="dia2_2" type="text" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">De</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_inicio2_2" id="horario_inicio2_2" type="time" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">a</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_termino2_2" id="horario_termino2_2" type="time" class="form-control" aria-required="true">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-form-label">3.-</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="dia3" id="dia3" type="text" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">De</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_inicio3" id="horario_inicio3" type="time" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">a</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_termino3" id="horario_termino3" type="time" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">3.-</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="dia3_2" id="dia3_2" type="text" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">De</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_inicio3_2" id="horario_inicio3_2" type="time" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">a</label>
+                                <div class="col-sm-1 form-group">
+                                    <input name="horario_termino3_2" id="horario_termino3_2" type="time" class="form-control" aria-required="true">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
             <br>
             <div>
                 <label><h2>Datos Personales</h2></label>
@@ -393,14 +683,14 @@
                     </select>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="form-row" id='form-domicilio'>
                 <div class="form-group col-md-6">
                     <label for="inputbanco">Dirección de Domicilio</label>
                     <input name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputbanco">Codigo Postal</label>
-                    <input name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" required>
+                    <input name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true">
                 </div>
             </div>
             <div class="form-row">
@@ -825,22 +1115,24 @@
         });
 
     </script>
-    {{-- <script>
+    <script>
         document.getElementById('toggleAcordeon').addEventListener('change', function() {
           var acordeon = document.getElementById('acordeonInstructor');
           if (this.checked) {
             acordeon.style.display = 'block';  // Muestra el acordeón
             $('#collapse1').collapse('show'); // Expande el acordeón automáticamente
+            document.getElementById('form-domicilio').setAttribute('hidden', true);
           } else {
             acordeon.style.display = 'none';  // Oculta el acordeón
             $('#collapse1').collapse('hide'); // Colapsa el acordeón
+            document.getElementById('form-domicilio').removeAttribute('hidden');
           }
         });
 
         function puestoOnOff(checkbox, selectId) {
             var select = document.getElementById(selectId);  // Obtener el select por su ID
 
-            if()
+            // if()
 
             if (checkbox.checked) {
                 select.removeAttribute('hidden');  // Muestra el select cuando el checkbox está marcado
@@ -848,6 +1140,35 @@
                 select.setAttribute('hidden', true);  // Oculta el select cuando el checkbox no está marcado
             }
         }
-    </script> --}}
+
+        function toggleOcupacion() {
+            const ocupacion = document.getElementById('ocupacion').value;
+            const labelOcupa = document.getElementById('label_ocupa');
+            const sinOcupa = document.getElementById('sin_ocupa');
+            const conOcupa = document.getElementById('con_ocupa');
+            const ingresoMensual = document.getElementById('ingreso_mensual_div');
+            const ingresoLabel = document.getElementById('ingreso_label');
+
+            if (ocupacion === 'si') {
+                labelOcupa.removeAttribute('hidden');
+                conOcupa.removeAttribute('hidden');
+                ingresoMensual.removeAttribute('hidden');
+                ingresoLabel.removeAttribute('hidden');
+                sinOcupa.setAttribute('hidden', true);
+            } else if (ocupacion === 'no') {
+                labelOcupa.removeAttribute('hidden');
+                sinOcupa.removeAttribute('hidden');
+                conOcupa.setAttribute('hidden', true);
+                ingresoMensual.setAttribute('hidden', true);
+                ingresoLabel.setAttribute('hidden', true);
+            } else {
+                labelOcupa.setAttribute('hidden', true);
+                conOcupa.setAttribute('hidden', true);
+                sinOcupa.setAttribute('hidden', true);
+                ingresoMensual.setAttribute('hidden', true);
+                ingresoLabel.setAttribute('hidden', true);
+            }
+        }
+    </script>
 @endsection
 
