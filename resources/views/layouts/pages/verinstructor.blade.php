@@ -115,6 +115,7 @@
                     <p>{{ $message }}</p>
                 </div>
             @endif
+            @if(!is_null($datainstructor->instructor_alfa) && $datainstructor->instructor->alfa)
             <!-- Acordeón -->
             <div id="acordeonInstructor" class="panel-group acordeon-borde" @if(!$datainstructor->instructor_alfa || is_null($datainstructor->instructor_alfa)) style="display: none;" @endif>
                 <div class="panel panel-default">
@@ -548,6 +549,7 @@
                     </div>
                 </div>
             </div>
+        @endif
             <br>
             <div>
                 <label><h2>Datos Personales</h2></label>
