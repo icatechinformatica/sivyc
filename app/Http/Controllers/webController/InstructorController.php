@@ -3545,8 +3545,9 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
 
         $funcionarios = $this->funcionarios('TUXTLA');
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('entrevista_instructor.pdf');
     }
@@ -3572,8 +3573,9 @@ class InstructorController extends Controller
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('curriculum_icatech_instructor.pdf');
     }
