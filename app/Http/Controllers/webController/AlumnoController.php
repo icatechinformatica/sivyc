@@ -30,7 +30,7 @@ class AlumnoController extends Controller {
     public function index(Request $request) {
         if(session('curp')) $buscar_aspirante = session('curp');
         else $buscar_aspirante = $request->get('busqueda_aspirantepor');
-        
+
         $tipo=null;
         if(isset($buscar_aspirante)) {
             if(ctype_alpha($buscar_aspirante)) {
@@ -49,15 +49,15 @@ class AlumnoController extends Controller {
         $retrieveAlumnos = Alumnopre::busquedapor($tipo, $buscar_aspirante)
         ->leftjoin('users','users.id','iduser_updated')
         ->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')
-        ->PAGINATE(25, ['alumnos_pre.id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso','matricula','curso_extra',
-            DB::raw("requisitos->>'documento' as documento"),'name','alumnos_pre.updated_at']); 
+        ->PAGINATE(25, ['alumnos_pre.id', 'nombre', 'apellido_paterno', 'apellido_materno', 'alumnos_pre.curp', 'es_cereso','matricula','curso_extra',
+            DB::raw("requisitos->>'documento' as documento"),'name','alumnos_pre.updated_at']);
         //dd($retrieveAlumnos);
-        $contador = $retrieveAlumnos->count(); 
+        $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador','buscar_aspirante'));
     }
 
     public function showl(Request $request) {  //EN PRODUCCION vista inscripción aspirante
-        $curp = $sexo = $fnacimiento = $alumno = null;
+        $curp = $sexo = $fnacimiento = $alumno = $datos_alfa = null;
         $grado_estudio = $estados = $estado_civil = $etnias = $gvulnerables = $municipios = $localidades = [];
         $curp = $request->busqueda;//dd($request->all());
         if ($curp) {
@@ -106,11 +106,20 @@ class AlumnoController extends Controller {
             if (isset($alumno)) {
                 $municipios = DB::table('tbl_municipios')->where('id_estado',$alumno->id_estado)->pluck('muni','clave');
                 $localidades = DB::table('tbl_localidades')->where('id_estado',$alumno->id_estado)->where('clave_municipio', $alumno->clave_municipio)->pluck('localidad', 'clave');
+
+                ##Consultar los datos alfa json
+                $datos_alfa = $alumno->datos_alfa;
+                if (!empty($datos_alfa)) {
+                    $datos_alfa= json_decode($datos_alfa);
+                }
             }
         }
         $medio_confirmacion = ["WHATSAPP"=>"WHATSAPP","MENSAJE DE TEXTO"=>"MENSAJE DE TEXTO","CORREO ELECTRÓNICO"=>"CORREO ELECTRÓNICO","FACEBOOK"=>"FACEBOOK","INSTAGRAM"=>"INSTAGRAM","TWITTER"=>"TWITTER","TELEGRAM"=>"TELEGRAM"];
+
+
+
         return view('layouts.pages.valcurp', compact('curp','sexo','fnacimiento','estados','grado_estudio','estado_civil','etnias','alumno','gvulnerables', 'municipios',
-            'localidades','medio_confirmacion'));
+            'localidades','medio_confirmacion','datos_alfa'));
     }
 
     public function showlm(Request $request) { //obtención municipios
@@ -174,6 +183,119 @@ class AlumnoController extends Controller {
      *
      */     //insercción de aspiratntes a alumnos_pre//
     public function store(Request $request) {  // EN PRODUCCION
+
+        ###Alumno alfa###
+
+        //Datos de alumno alfa
+        $alumno_alfa = [
+            'coordzona' => request()->input('coordzona'),
+            'fec_registro' => request()->input('fec_registro'),
+            'dato_rfe' => request()->input('dato_rfe'),
+            'entidad_naci' => request()->input('entidad_naci'),
+            'check_habla_espa' => request()->boolean('check_habla_espa'),
+            'txt_dialecto' => request()->input('txt_dialecto'),
+            'txt_adicional_esp' => request()->input('txt_adicional_esp'),
+            'check_indigena' => request()->boolean('check_indigena'),
+            'check_afrodec' => request()->boolean('check_afrodec'),
+            'txt_tipo_vialidad' => request()->input('txt_tipo_vialidad'),
+            'txt_nom_vialidad' => request()->input('txt_nom_vialidad'),
+            'txt_num_ext' => request()->input('txt_num_ext'),
+            'txt_num_int' => request()->input('txt_num_int'),
+            'txt_tipo_asentamiento' => request()->input('txt_tipo_asentamiento'),
+            'txt_nom_asentamiento' => request()->input('txt_nom_asentamiento'),
+            'txt_tipo_entre_vialidad' => request()->input('txt_tipo_entre_vialidad'),
+            'txt_nom_entre_vialidad' => request()->input('txt_nom_entre_vialidad'),
+            'txt_Ytipo_entre_vialidad' => request()->input('txt_Ytipo_entre_vialidad'),
+            'txt_Ynom_entre_vialidad' => request()->input('txt_Ynom_entre_vialidad'),
+            'txt_Ycp_entre_vialidad' => request()->input('txt_Ycp_entre_vialidad'),
+            'check_equipo_computo' => request()->boolean('check_equipo_computo'),
+            'check_acces_internet' => request()->boolean('check_acces_internet'),
+            'txt_correo_inea' => request()->input('txt_correo_inea'),
+            'check_difi_caminar' => request()->boolean('check_difi_caminar'),
+            'check_difi_oir' => request()->boolean('check_difi_oir'),
+            'check_difi_ver' => request()->boolean('check_difi_ver'),
+            'check_difi_vestir' => request()->boolean('check_difi_vestir'),
+            'check_difi_comunicar' => request()->boolean('check_difi_comunicar'),
+            'check_difi_recordar' => request()->boolean('check_difi_recordar'),
+            'check_difi_mental' => request()->boolean('check_difi_mental'),
+            'check_jubilado' => request()->boolean('check_jubilado'),
+            'check_desempleado' => request()->boolean('check_desempleado'),
+            'check_estudiante' => request()->boolean('check_estudiante'),
+            'txt_otro_trabajo' => request()->input('txt_otro_trabajo'),
+            'check_trabajador' => request()->boolean('check_trabajador'),
+            'check_inspector' => request()->boolean('check_inspector'),
+            'check_artesano' => request()->boolean('check_artesano'),
+            'check_obrero' => request()->boolean('check_obrero'),
+            'check_ayudante' => request()->boolean('check_ayudante'),
+            'check_empleado' => request()->boolean('check_empleado'),
+            'check_operador' => request()->boolean('check_operador'),
+            'check_vendedor' => request()->boolean('check_vendedor'),
+            'check_hogar' => request()->boolean('check_hogar'),
+            'check_vigilancia' => request()->boolean('check_vigilancia'),
+            'check_quehaceres' => request()->boolean('check_quehaceres'),
+            'check_ambulante' => request()->boolean('check_ambulante'),
+            'check_deportista' => request()->boolean('check_deportista'),
+            'check_sinestudios' => request()->boolean('check_sinestudios'),
+            'check_ante_primaria' => request()->boolean('check_ante_primaria'),
+            'txt_grado_primaria' => request()->input('txt_grado_primaria'),
+            'check_ante_secundaria' => request()->boolean('check_ante_secundaria'),
+            'txt_grado_secundaria' => request()->input('txt_grado_secundaria'),
+            'check_nivel_alfa' => request()->boolean('check_nivel_alfa'),
+            'check_nivel_primaria' => request()->boolean('check_nivel_primaria'),
+            'check_nivel_primaria10' => request()->boolean('check_nivel_primaria10'),
+            'check_nivel_secundaria' => request()->boolean('check_nivel_secundaria'),
+            'check_eje_diag' => request()->boolean('check_eje_diag'),
+            'check_exam_diag' => request()->boolean('check_exam_diag'),
+            'check_reco_saberes' => request()->boolean('check_reco_saberes'),
+            'check_aten_educ' => request()->boolean('check_aten_educ'),
+            'check_hispanohabla' => request()->boolean('check_hispanohabla'),
+            'check_hablante_lengua' => request()->boolean('check_hablante_lengua'),
+            'txt_hablante_lengua' => request()->input('txt_hablante_lengua'),
+            'check_motiv_certificado' => request()->boolean('check_motiv_certificado'),
+            'check_motiv_continuar' => request()->boolean('check_motiv_continuar'),
+            'check_motiv_obtempleo' => request()->boolean('check_motiv_obtempleo'),
+            'check_motiv_condlaborales' => request()->boolean('check_motiv_condlaborales'),
+            'check_motiv_ayudar' => request()->boolean('check_motiv_ayudar'),
+            'check_motiv_superacion' => request()->boolean('check_motiv_superacion'),
+            'txt_motiv_otro' => request()->input('txt_motiv_otro'),
+            'check_difu_inea' => request()->boolean('check_difu_inea'),
+            'check_invit_personal' => request()->boolean('check_invit_personal'),
+            'txt_enterar_otro' => request()->input('txt_enterar_otro'),
+            'txt_subproyecto' => request()->input('txt_subproyecto'),
+            'txt_dependencia' => request()->input('txt_dependencia'),
+            'check_doc_fotografia' => request()->boolean('check_doc_fotografia'),
+            'check_doc_legal' => request()->boolean('check_doc_legal'),
+            'check_doc_ficha' => request()->boolean('check_doc_ficha'),
+            'check_doc_certi' => request()->boolean('check_doc_certi'),
+            'check_boletas_primaria' => request()->boolean('check_boletas_primaria'),
+            'txt_boletas_primaria' => request()->input('txt_boletas_primaria'),
+            'check_boletas_secu' => request()->boolean('check_boletas_secu'),
+            'txt_boletas_secu' => request()->input('txt_boletas_secu'),
+            'check_informe_cali' => request()->boolean('check_informe_cali'),
+            'txt_num_const_cap' => request()->input('txt_num_const_cap'),
+            'txt_hr_const_cap' => request()->input('txt_hr_const_cap'),
+            'text_cotejo_doc' => request()->input('text_cotejo_doc'),
+            'txt_fecha_cotejo' => request()->input('txt_fecha_cotejo'),
+            'txt_unidad_operativa' => request()->input('txt_unidad_operativa'),
+            'txt_circulo_estudio' => request()->input('txt_circulo_estudio'),
+            'txt_fecha_llenado' => request()->input('txt_fecha_llenado'),
+            'txt_persona_beneficiaria' => request()->input('txt_persona_beneficiaria'),
+            'txt_nom_tutor' => request()->input('txt_nom_tutor'),
+            'txt_nom_figura' => request()->input('txt_nom_figura'),
+            'txt_nom_coordinador' => request()->input('txt_nom_coordinador'),
+            'txt_nom_responsable_zona' => request()->input('txt_nom_responsable_zona'),
+            'txt_nom_capturista' => request()->input('txt_nom_capturista'),
+        ];
+
+        $json_datos_alfa = json_encode($alumno_alfa);
+        // dd($alumno_alfa);
+
+
+
+//$txt_tipo_entre_vialidad = $request->input('txt_tipo_entre_vialidad');
+// $check_equipo_computo = $request->boolean('check_equipo_computo');
+
+
         $checkPhone = false;
         if($request->chk_bolsa == true){$checkPhone = true;}
 
@@ -261,18 +383,19 @@ class AlumnoController extends Controller {
             'tiene_documentacion'=> true,
             'activo' => true,
             'medio_confirmacion'=>$request->medio_confirmacion,
-            'check_bolsa'=> $checkPhone
+            'check_bolsa'=> $checkPhone,
+            'datos_alfa' => $json_datos_alfa,
         ]);
         //si se pretende cargar nuevos archivos
         $AspiranteId = DB::table('alumnos_pre')->where('curp',$curp)->value('id');
         $url_documento = '';
         if (isset($request->customFile)) {
-            $arc = $request->file('customFile');             
-            $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos'); 
-           
+            $arc = $request->file('customFile');
+            $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos');
+
         }
         if($AspiranteId){ //GUARDANDO REQUISITOS
-            $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => 
+            $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' =>
                 DB::raw("
                     jsonb_build_object(
                         'chk_curp',  COALESCE('$request->chk_curp', 'false'),
@@ -280,9 +403,9 @@ class AlumnoController extends Controller {
                         'chk_escolaridad', COALESCE('$request->chk_escolaridad', 'false'),
                         'chk_acta_nacimiento', COALESCE('$request->chk_acta', 'false'),
                         'chk_comprobante_migracion', COALESCE('$request->chk_comprobante_migratorio', 'false'),
-                        'fecha_expedicion_curp', CASE  WHEN '$request->chk_curp' != '' THEN '$request->fecha_expedicion_curp' ELSE 'null' END,                                                
+                        'fecha_expedicion_curp', CASE  WHEN '$request->chk_curp' != '' THEN '$request->fecha_expedicion_curp' ELSE 'null' END,
                         'fecha_expedicion_acta_nacimiento', CASE  WHEN '$request->chk_acta' != '' THEN '$request->fecha_expedicion_acta_nacimiento' ELSE 'null' END,
-                        'fecha_vigencia_migratorio', CASE  WHEN '$request->chk_comprobante_migratorio' != '' THEN '$request->fecha_vigencia_migratorio' ELSE 'null' END                     
+                        'fecha_vigencia_migratorio', CASE  WHEN '$request->chk_comprobante_migratorio' != '' THEN '$request->fecha_vigencia_migratorio' ELSE 'null' END
                     )
                 ")
             ]);
@@ -1766,8 +1889,8 @@ class AlumnoController extends Controller {
         $soporte = [];
         $curp = $request->curpo;
         $message = "La acción no se ejecuto correctamente";
-        if ($request->motivo) {           
-            $result = DB::table('alumnos_pre')->where('curp',$curp)->update(['curso_extra'=>true,                    
+        if ($request->motivo) {
+            $result = DB::table('alumnos_pre')->where('curp',$curp)->update(['curso_extra'=>true,
                 'movimientos' => DB::raw("
                 COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
                     jsonb_build_object(
@@ -1780,9 +1903,9 @@ class AlumnoController extends Controller {
                     ")
                 ]);
                 if ($result) $message = "Operación exitosa!";
-               
-        } else $message = "La operación no ha sido ejecutada, por favor describa la justificación.";           
-        
+
+        } else $message = "La operación no ha sido ejecutada, por favor describa la justificación.";
+
         return redirect()->route('alumnos.index')->with('success',$message);
     }
 
