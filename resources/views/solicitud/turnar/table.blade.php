@@ -3,32 +3,32 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th scope="col" class="text-center">ID</th>  
+                <th scope="col" class="text-center">ID</th>
                 @if ($status_solicitud=='RETORNO')
                 <th scope="col" class="text-center" colspan="2">OBSERVACION PRELIMINAR</th>
-                @endif   
+                @endif
                 @if (($status_solicitud=='VALIDADO')&&($extemporaneo))
                 <th scope="col" class="text-center" colspan="2">MOTIVO EXTEMPORANEO</th>
-                @endif      
+                @endif
                 <th scope="col" class="text-center" >No. GRUPO</th>
                 <th scope="col" class="text-center" >CLAVE</th>
                 <th scope="col" class="text-center">CURSO /<br/>CERTIFICACIÓN</th>
                 <th scope="col" class="text-center">ESPECIALIDAD</th>
                 <th scope="col" class="text-center">CURSO</th>
-                <th scope="col" class="text-center">INSTRUCTOR</th> 
+                <th scope="col" class="text-center">INSTRUCTOR</th>
                 <th scope="col" class="text-center">MOD</th>
                 <th scope="col" class="text-center">TIPO</th>
                 <th scope="col" class="text-center">DURA</th>
                 <th scope="col" class="text-center">INICIO</th>
                 <th scope="col" class="text-center">TERMINO</th>
-                <th scope="col" class="text-center">HORARIO</th> 
-                <th scope="col" class="text-center">DIAS</th> 
-                <th scope="col" class="text-center">HOMBRES</th> 
-                <th scope="col" class="text-center">MUJERES</th>                 
-                <th scope="col" class="text-center">CPAGO</th> 
-                <th scope="col" class="text-center">MUNICIPIO</th> 
-                <th scope="col" class="text-center">ZE</th> 
-                <th scope="col" class="text-center">DEPENDENCIA</th> 
+                <th scope="col" class="text-center">HORARIO</th>
+                <th scope="col" class="text-center">DIAS</th>
+                <th scope="col" class="text-center">HOMBRES</th>
+                <th scope="col" class="text-center">MUJERES</th>
+                <th scope="col" class="text-center">CPAGO</th>
+                <th scope="col" class="text-center">MUNICIPIO</th>
+                <th scope="col" class="text-center">ZE</th>
+                <th scope="col" class="text-center">DEPENDENCIA</th>
                 <th scope="col" class="text-center">TIPO</th>
                 <th scope="col" class="text-center">TURNADO</th>
                 <th scope="col" class="text-center">SOLICITUD</th>
@@ -38,60 +38,60 @@
                 <th scope="col" class="text-center">AVISO</th>
             </tr>
         </thead>
-        @if(count($grupos)>0) 
-            <tbody>                    
-                <?php 
-                    $consec=1; 
-                    $activar = true; 
-                    $munidad = $grupos[0]->munidad; 
-                    $nmunidad = $grupos[0]->nmunidad; 
+        @if(count($grupos)>0)
+            <tbody>
+                <?php
+                    $consec=1;
+                    $activar = true;
+                    $munidad = $grupos[0]->munidad;
+                    $nmunidad = $grupos[0]->nmunidad;
                     $pdf_curso = $grupos[0]->pdf_curso;
-                    $rojo = null;             
+                    $rojo = null;
                 ?>
                 @foreach($grupos as $g)
                     <?php
-                    $aviso = NULL;                    
-                    if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0')) 
+                    $aviso = NULL;
+                    if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0'))
                         OR ($g->option =='ARC02'
                         AND ( $g->status_solicitud_arc02 == 'AUTORIZADO' OR $g->status_curso!='AUTORIZADO' OR $g->turnado!='UNIDAD' OR $g->status == 'TURNADO_DTA' OR $g->status == 'TURNADO_PLANEACION' OR $g->status == 'REPORTADO'))){
-                        $activar = false;                        
+                        $activar = false;
                         $aviso = "Grupo turnado a ".$g->turnado_solicitud.", Clave de Apertura ".$g->status_curso." y Estatus: ".$g->status;
                     }else if( ($g->status_solicitud_arc02 == 'TURNADO' AND $g->option =='ARC02') OR ($g->status_solicitud == 'TURNADO' AND $g->option =='ARC01') ){
-                        $activar = false;                        
+                        $activar = false;
                         $aviso = "Grupo turnado a revisión";
                     }else if( $g->turnado_solicitud == 'VINCULACION'  ){
                         $activar = false;
-                        $rojo = true; 
-                        $aviso = "GRUPO TURNADO A VINCULACIOÓN"; 
+                        $rojo = true;
+                        $aviso = "GRUPO TURNADO A VINCULACIOÓN";
                     }elseif( $g->option =='ARC01' AND (($g->horas_agenda < $g->dura) or ($g->horas_agenda > $g->dura)) ){
                         $activar = false;
-                        $rojo = true;                         
+                        $rojo = true;
                         $aviso = "HORAS AGENDADAS NO CORRESPONDIENTES A LA DURACIÓN DEL CURSO";
                     }
                     /*else if( $g->option =='ARC01' AND ( $g->soltermino < date('Y-m-d') ) ){
                         $activar = false;
-                        $rojo = true;                         
+                        $rojo = true;
                         $aviso = "EL CURSO HA SOBREPASADO EL LIMITE DE TIEMPO PARA REALIZAR SU SOLICITUD ARC 01";
                     }*/
                     else if( !$g->nombre ){
                         $activar = false;
-                        $rojo = true;                         
+                        $rojo = true;
                         $aviso = "EL NOMBRE DEL INSTRUCTOR NO SE HA REGISTRADO";
-                    }elseif($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion==null OR $g->mexoneracion=='0') AND ($g->depen!='INSTITUTO DE CAPACITACION Y VINCULACION TECNOLOGICA DEL ESTADO DE CHIAPAS')) { 
+                    }elseif($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion==null OR $g->mexoneracion=='0') AND ($g->depen!='INSTITUTO DE CAPACITACION Y VINCULACION TECNOLOGICA DEL ESTADO DE CHIAPAS')) {
                         $activar = false;
-                        $rojo = true;                         
-                        $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN"; 
+                        $rojo = true;
+                        $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN";
                     }elseif($g->status_folio<>'ENVIADO'){
                         if((!$g->comprobante_pago OR !$g->folio_pago OR !$g->fecha_pago ) AND $g->tipo!='EXO') {
                             $activar = false;
-                            $rojo = true;                         
+                            $rojo = true;
                             $aviso = "CARGE EL COMPROBANTE DE PAGO";
                         }
-                    }else $rojo = false;         
-                    
+                    }else $rojo = false;
+
                     if ($g->option =='ARC01'){
                         $id_mextemporaneo = $g->mextemporaneo;
-                        $rextemporaneo = $g->rextemporaneo;                           
+                        $rextemporaneo = $g->rextemporaneo;
                     }else if($g->option =='ARC02'){
                         $id_mextemporaneo = $g->mextemporaneo_arc02;
                         $rextemporaneo = $g->rextemporaneo_arc02;
@@ -104,19 +104,19 @@
                         <td class='text-center'><div style="width: 400px;">{{$g->obspreliminar}}</div></td>
                         @endif
                         @if (($status_solicitud=='VALIDADO')&&($extemporaneo))
-                        <td class='text-center'> 
+                        <td class='text-center'>
                             @if(in_array($g->id, $ids_extemp))
                                 <div style="width:305px;">{!! Form::select('motivo['.$g->id.']',$mextemporaneo,$id_mextemporaneo,['id' =>'motivo['.$g->id.']', 'class' => 'form-control','placeholder' =>'-- SELECCIONAR --']) !!}</div>
-                            @endif                            
+                            @endif
                         </td>
                         <td class='text-center'>
                             @if(in_array($g->id, $ids_extemp))
                                 <div style="width:400px;"> {!! Form::textarea('mrespuesta['.$g->id.']',  $rextemporaneo,['id' =>'mrespuesta['.$g->id.']', 'class' => 'form-control','rows' =>'3']) !!}</div>
                             @endif
-                        </td>      
+                        </td>
                         @endif
                         <td class="text-center"><div style="width:60px;"> {{ $g->folio_grupo}} </div> </td>
-                        <td><div style="width:128px;"> {{ $g->clave}} </div> </td>              
+                        <td><div style="width:128px;"> {{ $g->clave}} </div> </td>
                         <td class="text-center"> {{ $g->tipo_curso }} </td>
                         <td> {{ $g->espe }} </td>
                         <td> <div style="width:200px;">{{ $g->curso }} </div></td>
@@ -131,12 +131,12 @@
                         <td class="text-center"><div style="width:70px;"> {{ $g->hini }} A {{ $g->hfin }}</div> </td>
                         <td class="text-center"> {{ $g->dia }} </td>
                         <td class="text-center"> {{ $g->hombre }} </td>
-                        <td class="text-center"> {{ $g->mujer }} </td>                        
+                        <td class="text-center"> {{ $g->mujer }} </td>
                         <td class="text-center"> {{ $g->cp }} </td>
                         <td> {{ $g->muni }} </td>
                         <td class="text-center"> {{ $g->ze}} </td>
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
-                        <td class="text-center"> {{ $g->tcapacitacion }} </td>                                                
+                        <td class="text-center"> {{ $g->tcapacitacion }} </td>
                         <td class="text-center"> {{ $g->turnado_solicitud }} </td>
                         <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif </td>
                         <td class="text-center"> {{ $g->status }} </td>
@@ -145,13 +145,13 @@
                             <div style="width:650px;">
                                 @if($g->option =='ARC01')  {{ $g->nota }}
                                 @elseif($g->option =='ARC02') {{ $g->observaciones }} @endif
-                            </div>    
+                            </div>
                         </td>
                         <td> <div style="width:200px;"> {{ $aviso }} </div></td>
                     </tr>
-                 @endforeach                       
-            </tbody>                   
-        @else 
+                 @endforeach
+            </tbody>
+        @else
             {{ 'NO REGISTRO DE ALUMNOS'}}
         @endif
     </table>
@@ -168,7 +168,7 @@
             </div>
             <div class="form-group col-md-3">
                 @if ($opt=='ARC01')
-                {{ Form::button('ENVIAR PRELIMINAR ARC 01 >>', ['id'=>'preliminar','class' => 'btn  bg-danger mx-4']) }} 
+                {{ Form::button('ENVIAR PRELIMINAR ARC 01 >>', ['id'=>'preliminar','class' => 'btn  bg-danger mx-4']) }}
                 @else
                 {{ Form::button('ENVIAR PRELIMINAR ARC 02 >>', ['id'=>'preliminar','class' => 'btn  bg-danger mx-4']) }}
                 @endif
@@ -176,7 +176,7 @@
         @else
             @if($activar OR Auth::user()->roles[0]->slug=='admin')
                 <div class="form-group col-md-12 p-2 pl-3 bg-light">
-                    <h5> USUARIO ADMINISTRADOR </h5> 
+                    <h5> USUARIO ADMINISTRADOR </h5>
                 </div>
             @endif
             <div class="form-group col-md-3 mt-3">
@@ -200,19 +200,19 @@
             </div>
         @endif
     @elseif($file)
-        <a href="{{$file}}" target="_blank" class="btn  bg-warning"> SOLICITUD {{$g->option}}</a> 
+        <a href="{{$file}}" target="_blank" class="btn  bg-warning"> SOLICITUD {{$g->option}}</a>
     @endif
-    @if($pdf_curso)  
+    @if($pdf_curso)
         <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">AUTORIZACIÓN</a>
     @endif
-    @if($movimientos)        
-        <div class="form-row col-md-9 justify-content-end">  
+    @if($movimientos)
+        <div class="form-row col-md-9 justify-content-end">
             {{ Form::select('movimiento', $movimientos, '', ['id'=>'movimiento','class' => 'form-control  col-md-4 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }}
             {{ Form::text('motivo', '', ['id'=>'motivo', 'class' => 'form-control col-md-4 m-1 ', 'placeholder' => 'MOTIVO', 'title' => 'MOTIVO', 'style'=>'display:none']) }}
             <div class="custom-file col-md-3 m-1" id="inputFile" style="display:none">
                 <input id="file_autorizacion" type="file" name="file_autorizacion" class="custom-file-input" accept=".pdf" >
                 <label class="custom-file-label" for="file_recibo">PDF</label>
-            </div> 
+            </div>
             {{ Form::button('ENVIAR', ['id'=>'enviar','class' => 'btn btn-danger','style'=>'display:none']) }}
         </div>
     @endif
