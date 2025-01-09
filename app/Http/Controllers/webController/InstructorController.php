@@ -3897,8 +3897,9 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
         // dd($especialidades);
+        $direccion = explode("*",$funcionarios['dunidad']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor.pdf');
     }
@@ -3949,8 +3950,9 @@ class InstructorController extends Controller
         $MS = $this->monthToString(date('m',$datesol));//A
         $YS = date("Y",$datesol);
         // dd($data_unidad);
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor_validacion.pdf');
     }

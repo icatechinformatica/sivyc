@@ -6,44 +6,88 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', '')</title>
     <style>
-        body{font-family: sans-serif;}
-        @page {margin: 20px 30px 20px 30px; size: letter;}
-        /* header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;} */
-        img.izquierda {float: left;width: 100%;height: 60px;}
+        body{
+            font-family: sans-serif;
+        }
+        @page {
+            margin: 20px 30px 20px 30px;
+        }
+        header { position: fixed;
+            left: 0px;
+            top: -100px;
+            padding-left: 45px;
+            height: 70px;
+            width: 85%;
+            background-color: white;
+            color: black;
+            text-align: center;
+            line-height: 60px;
+        }
+        header h1{
+            margin: 10px 0;
+        }
+        header h2{
+            margin: 0 0 10px 0;
+        }
+        footer {
+            position: fixed;
+            left: 0px;
+            bottom: -90px;
+            right: 0px;
+            height: 100px;
+            width: 85%;
+            padding-left: 45px;
+            background-color: white;
+            color: black;
+            text-align: center;
+        }
+        footer .page:after {
+            content: counter(page);
+        }
+        footer table {
+            width: 100%;
+        }
+        footer p {
+            text-align: right;
+        }
+        footer .izq {
+            text-align: left;
+            }
+        img.izquierda {
+            float: left;
+            width: 100%;
+            height: 100%;
+        }
+
         img.izquierdabot {
             float: inline-end;
-            width: 712px;
-            height: 100px;
+            width: 100%;
+            height: 100%;
         }
-        img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
-        img.derecha {float: right;width: 50%;height: 60px;}
-        footer {position:fixed;left:0px;bottom:0px;width:100%;}
-        footer .page:after { content: counter(page, sans-serif);}
-        .direccion
-        {
+
+        .direccion {
             text-align: right;
             position: absolute;
-            top: -100px; /*820*/
-            right: 20px;
+            top: -75%;
+            right: 0%;
             font-size: 10px;
-            color: black;
+            color: rgb(0, 0, 0);
             line-height: 1;
         }
 
-        .direccion_old
-        {
+        .direccion_old {
             text-align: left;
             position: absolute;
-            top: -5%;
-            left: 5%;
+            top: -65%;
+            left: 12%;
             font-size: 8.5px;
             color: rgb(255, 255, 255);
             line-height: 1;
         }
 
         #fondo1 {
-            background-image: url('img/membretado/membretado.jpg');
-            background-size: 105%,120%;
+            background-image: url('img/membretado/membretado horizontal.jpg');
+            background-size: 110%,120%;
             background-position: center;
             /* width: 100%;
             margin: auto;
@@ -51,7 +95,7 @@
         }
 
         #fondo_old {
-            background-image: url('img/membretado/membretado_old.jpg');
+            background-image: url('img/membretado/membretado horizontal_old.jpg');
             background-size: 98%,100%;
             background-position: center;
         }

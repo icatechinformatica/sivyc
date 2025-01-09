@@ -48,7 +48,7 @@
     </style>
 @endsection
 @section('content')
-    <div style="padding-top: 12%;">
+    <div style="padding-top: 12%; font-size: 8px;">
         {!!$body_html!!}
         @if(!is_null($uuid))
             <br><div style="display: inline-block; width: 85%;">
@@ -82,7 +82,7 @@
             <img style="position: fixed; width: 13%; top: 47%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
         </div>
     @else
-        <div align=center>
+        <div align=center style="font-size: 8px;">
             <small><small>C. {{$funcionarios['remitente']}}</small></small>
             <br><small>________________________________________</small><br/>
             <br><small><small>{{$funcionarios['remitentep']}}</small></small></b>

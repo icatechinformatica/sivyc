@@ -1,4 +1,4 @@
-@extends('theme.formatos.hlayout2025')
+@extends('theme.formatos.hlayoutins2025')
 @section('title', 'SOLICITUD DE VALIDACIÓN DE INSTRUCTOR | SIVyC Icatech')
 @section('content_script_css')
     <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
