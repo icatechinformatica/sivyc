@@ -1,12 +1,12 @@
-@extends('theme.formatos.hlayout')
+@extends('theme.formatos.hlayout2025')
 @if($opt=="ARC-02")
     @section('title', 'AUTORIZACIÓN ARC-02 | SIVyC Icatech')
 @else
     @section('title', 'AUTORIZACIÓN ARC-01 | SIVyC Icatech')
 @endif
-@section('css')
+@section('content_script_css')
     <style>
-         @page { margin-bottom: 115px;}
+         /* @page { margin-bottom: 115px;} */
         .tablas{border-collapse: collapse; width: 100%; }
         .tablas tr th {padding:0px;margin:0px; page-break-inside: avoid; }
         .tablas th, .tablas td{page-break-inside: avoid;font-size: 7px; border: gray 1px solid; text-align: center;font-weight:bold;}
@@ -17,15 +17,15 @@
         .tablad tr td{padding: 1px 5px 0 5px; font-size: 7px;}
 
 
-        #titulo { position: fixed; top: 35px; width:100%; }
+        #titulo { position: fixed; top: 50px; width:100%; text-align: center;}
         #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
 
-        body { margin-top: 120px; font-family: sans-serif; font-size: 9px; width:100%; padding:0px; margin-bottom: 5px;}
-        .direccion {position: absolute;  top: 1.35cm; width:400px; margin-left:20px; height:auto; font-family: sans-serif; font-size: 10px; color:#FFF; }
+        .content {font-family: sans-serif; font-size: 9px; padding-top: 115px;}
+        /* .direccion {position: absolute;  top: 1.35cm; width:400px; margin-left:20px; height:auto; font-family: sans-serif; font-size: 10px; color:#FFF; } */
 
     </style>
 @endsection
-@section('header')
+@section('content')
     @php
         if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0"))
             $nombre_unidad = "UNIDAD DE CAPACITACIÓN ";
@@ -59,24 +59,22 @@
     <div id="titulo">
         <h3>AUTORIZACIÓN DE {{$opt}}</h3>
         <br/>
-        <table width="100%">
+        <table width="100%" style="margin-left: -65px;">
             <tr>
-                <td style='text-align:right;font-size:10px;'>
+                <td style='text-align:right;font-size:10px;'><b>
                     DIRECCIÓN TÉCNICA ACADÉMICA<br/>
                     Memorándum No. {{ $memo}} <br/>
-                    Tuxtla Gutiérrez, Chiapas; {{$fecha}}.<br/>
+                    Tuxtla Gutiérrez, Chiapas; {{$fecha}}.</b><br/>
                 </td>
             </tr>
         </table>
     </div>
-@endsection
-@section('body')
     <div id="para">
         PARA: {{ $reg_unidad->dunidad }}.- {{$reg_unidad->pdunidad}} {{$reg_unidad->ubicacion}}<br/>
         DE: {{ $reg_unidad->dacademico }}.- {{$reg_unidad->pdacademico}}<br/>
         ASUNTO: {{ $asunto }}<br/><br/>
     </div>
-
+    <div>
     <p style='text-align:justify; font-size: 10px;'>{{ $det }}</p>
      <table class="tablas">
          <thead>
@@ -189,8 +187,9 @@
      <p style="font-size: 7px;">CCP. {{ $reg_unidad->academico}}.-{{ $reg_unidad->pacademico}} DE LA UNIDAD DE CAPACITACIÓN {{ $reg_unidad->ubicacion}}.<br/>
      ARCHIVO<BR/>
      </p>
+    </div>
 @endsection
-@section('js')
+@section('content_script_js')
 <script type="text/php">
     if ( isset($pdf) ) {
             $pdf->page_script('
