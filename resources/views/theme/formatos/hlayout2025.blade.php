@@ -10,7 +10,7 @@
             font-family: sans-serif;
         }
         @page {
-            margin: 20px 30px 20px 30px;
+            margin: 2px;
         }
         header { position: fixed;
             left: 0px;
@@ -68,7 +68,7 @@
         .direccion {
             text-align: right;
             position: absolute;
-            top: -75%;
+            top: -110%;
             right: 0%;
             font-size: 10px;
             color: rgb(0, 0, 0);
@@ -87,7 +87,7 @@
 
         #fondo1 {
             background-image: url('img/membretado/membretado horizontal.jpg');
-            background-size: 100%,120%;
+            background-size: 100% 100%;
             background-position: center;
             /* width: 100%;
             margin: auto;
@@ -95,26 +95,34 @@
         }
 
         #fondo_old {
+            margin: 20px 30px 20px 30px;
             background-image: url('img/membretado/membretado horizontal_old.jpg');
             background-size: 98%,100%;
             background-position: center;
+        }
+
+        .content {
+            margin: 20px 30px 20px 30px;
+            /* border: 1px solid red; */
         }
     </style>
     @yield("content_script_css")
 </head>
 {{-- cambio prueba --}}
 {{-- @section('content') --}}
-<body @if(!isset($fecha) || $fecha < '08-12-2024') id='fondo1' @else id='fondo_old' @endif >
+<body @if(!isset($fecha) || $fecha > '08-12-2024') id='fondo1' @else id='fondo_old' @endif >
+    <div class="content">
     {{-- <header>
         <h6><small><small>{{$leyenda}}</small></small></h6><p class='direccion'>
     </header> --}}
     <footer>
-        <p @if(!isset($fecha) || $fecha < '07-12-2024') class='direccion' @else class='direccion_old' @endif>
+        <p @if(!isset($fecha) || $fecha > '07-12-2024') class='direccion' @else class='direccion_old' @endif>
             @if(!is_array($direccion)) @php $direccion = explode("*",$direccion) @endphp @endif
             @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
         </p>
     </footer>
     @yield("content")
+    </div>
 
     @yield("script_content_js")
 </body>
