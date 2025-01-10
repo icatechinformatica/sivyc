@@ -222,7 +222,7 @@
                 @endcan
                 @canany(['preinscripcion.alumnos', 'cursos.index', 'instructor.index', 'organismo.inicio',
                     'convenios.index', 'cerss.inicio', 'areas.inicio', 'especialidades.inicio', 'unidades.index',
-                    'exoneraciones.inicio', 'instituto.inicio', 'funproc.pat.index', 'unidades.medida.index'])
+                    'exoneraciones.inicio', 'instituto.inicio', 'funproc.pat.index', 'unidades.medida.index', 'funcionarios.inicio'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Catálogos
@@ -266,6 +266,9 @@
                             @endcan
                             @can('unidades.medida.index')
                                 <a class="dropdown-item" href="{{ route('pat.unidadesmedida.mostrar') }}">Unidades de Medida</a>
+                            @endcan
+                            @can('funcionarios.inicio')
+                                <a class="dropdown-item" href="{{ route('catalogos.funcionarios.inicio') }}">Funcionarios</a>
                             @endcan
                         </div>
                     </li>

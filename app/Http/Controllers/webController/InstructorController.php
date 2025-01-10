@@ -296,7 +296,7 @@ class InstructorController extends Controller
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
-        // dd('hola');
+        // dd($request);
         $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
         if(is_null($verify) == TRUE)
         {
@@ -314,18 +314,118 @@ class InstructorController extends Controller
             unset($instructor->data_especialidad);
             unset($instructor->data_perfil);
 
+            if(isset($request->hispanohablante)) {
+                $subproyectos = [];
+                $instructor->instructor_alfa = true;
+                $instructor->status = 'VALIDADO';
+                foreach($request->subproyecto as $subproyecto) {
+                    switch($subproyecto) {
+                        case 'oportunidades':
+                            $subproyectos[$subproyecto] = $request->oportunidades_puesto;
+                        break;
+                        case 'conafe':
+                            $subproyectos[$subproyecto] = $request->conafe_puesto;
+                        break;
+                        case 'sedena':
+                            $subproyectos[$subproyecto] = $request->sedena_puesto;
+                        break;
+                        case 'profesores':
+                            $subproyectos[$subproyecto] = $request->profesores_puesto;
+                        break;
+                        case 'becarios':
+                            $subproyectos[$subproyecto] = $request->becarios_puesto;
+                        break;
+                        case 'osc':
+                            $subproyectos[$subproyecto] = $request->osc_puesto;
+                        break;
+                        case 'ipf':
+                            $subproyectos[$subproyecto] = $request->ipf_puesto;
+                        break;
+                        case 'programas federales':
+                            $subproyectos[$subproyecto] = $request->input('programas federales_puesto');
+                        break;
+                        case 'conevyt':
+                            $subproyectos[$subproyecto] = $request->conevyt_puesto;
+                        break;
+                        case 'oportunidades':
+                            $subproyectos[$subproyecto] = $request->oportunidades_puesto;
+                        break;
+                        case 'instituciones academicas':
+                            $subproyectos[$subproyecto] = $request->instituciones_academicas_puesto;
+                        break;
+                        case 'otro':
+                            $subproyectos[$subproyecto] = $request->otrosub_puesto;
+                        break;
+                    }
+                }
+
+                $horarios_circulo = [
+                    '1' => ['dia' => $request->dia1, 'inicio' => $request->horario_inicio1, 'termino' => $request->horario_termino1],
+                    '1-2' => ['dia' => $request->dia1_2, 'inicio' => $request->horario_inicio1_2, 'termino' => $request->horario_termino1_2],
+                    '2' => ['dia' => $request->dia2, 'inicio' => $request->horario_inicio2, 'termino' => $request->horario_termino2],
+                    '2-2' => ['dia' => $request->dia2_2, 'inicio' => $request->horario_inicio2_2, 'termino' => $request->horario_termino2_2],
+                    '3' => ['dia' => $request->dia3, 'inicio' => $request->horario_inicio3, 'termino' => $request->horario_termino3],
+                    '3-2' => ['dia' => $request->dia3_2, 'inicio' => $request->horario_inicio3_2, 'termino' => $request->horario_termino3_2]
+                ];
+
+                $datos_alfa = [
+                    'hispanohablante' => $request->hispanohablante,
+                    'lengua_indigena' => $request->lengua_indigena,
+                    'etnia' => $request->etnia,
+                    'hijos' => $request->hijos,
+                    'subproyectos' => $subproyectos,
+                    'tipo_vialidad' => $request->tipo_vialidad,
+                    'nombre_vialidad' => $request->nombre_vialidad,
+                    'numero_exterior' => $request->numero_exterior,
+                    'numero_interior' => $request->numero_interior,
+                    'entre_vialidad1' => $request->entre_vialidad1,
+                    'entre_vialidad2' => $request->entre_vialidad2,
+                    'vialidad_posterior' => $request->vialidad_posterior,
+                    'carretera' => $request->carretera,
+                    'tipo_asentamiento_humano' => $request->tipo_asentamiento_humano,
+                    'nombre_asentamiento_humano' => $request->nombre_asentamiento_humano,
+                    'descripcion_ubicacion' => $request->descripcion_ubicacion,
+                    'ocupacion' => $request->ocupacion,
+                    'sin_ocupacion' => $request->sin_ocupacion,
+                    'con_ocupacion' => $request->con_ocupacion,
+                    'ingreso_mensual' => $request->ingreso_mensual,
+                    'roles' => $request->roles_figura_operativa,
+                    'unidad_operativa' => $request->unidad_operativa,
+                    'circulo_estudio' => $request->circulo_estudio,
+                    'responsable_circulo' => $request->responsable_circulo,
+                    'fecha_inicio' => $request->fecha_inicio,
+                    'horario_circulo' => $horarios_circulo
+                ];
+
+                $instructor->datos_alfa = $datos_alfa;
+                $instructor->codigo_postal = $request->codigo_postal2;
+                $instructor->domicilio = $request->tipo_vialidad . ' '. $request->nombre_vialidad . ' '. $request->numero_exterior. ' ENTRE '. $request->entre_vialidad1. ' Y '.$request->entre_vialidad2. ' '. $request->tipo_asentamiento_humano . ' ' . $request->nombre_asentamiento_humano;
+            } else {
+                $instructor->instructor_alfa = false;
+            }
+
             $pre_instructor  = $this->guardado_ins($save_preinstructor, $request, $id);
             $pre_instructor->id_oficial = $instructor->id;
-            $pre_instructor->registro_activo = TRUE;
+            if(isset($request->hispanohablante)) {
+                $pre_instructor->registro_activo = false;
+            } else {
+                $pre_instructor->registro_activo = TRUE;
+            }
             // dd($instructor);
             $pre_instructor->save();
             $instructor->save();
 
             $newa = (array) $instructor;
-            $this->new_history($newa, $instructor, 'creacion de instructoe por parte de la unidad');
+            $this->new_history($newa, $instructor, 'creacion de instructor por parte de la unidad');
 
-            return redirect()->route('instructor-crear-p2',['id' => $instructor->id])
+            if($instructor->instructor_alfa) {
+                return redirect()->route('instructor-ver',['id' => $instructor->id])
                     ->with('success','Información basica agregada');
+
+            } else {
+                return redirect()->route('instructor-crear-p2',['id' => $instructor->id])
+                    ->with('success','Información basica agregada');
+            }
         }
         else
         {
@@ -1378,7 +1478,10 @@ class InstructorController extends Controller
                                     $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
                                     $retorno_firma = TRUE;
                                 }
-                                unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+
+                                if(isset($especialidades[$space]->hvalidacion)) {
+                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                                }
                             break;
                         }
                         if(isset($especialidades[$space]->hvalidacion) && $especialidades[$space]->hvalidacion == []) {
@@ -1719,7 +1822,7 @@ class InstructorController extends Controller
 
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
-            $datainstructor = NULL;
+            $datainstructor = $subproyectos = NULL;
             $datainstructor = instructor::WHERE('id', '=', $id)->FIRST();
             $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
             $validado = $instructor_perfil->SELECT('especialidades.nombre', 'especialidad_instructores.id as espinid',
@@ -1848,6 +1951,100 @@ class InstructorController extends Controller
         $userId = Auth::user()->id;
         $modInstructor = pre_instructor::find($request->id);
         $extract_inf = instructor::find($request->id);
+        if($extract_inf->instructor_alfa) {
+            $instructor = $this->guardado_ins($extract_inf, $request, $request->id);
+            unset($instructor->data_especialidad);
+            unset($instructor->data_perfil);
+            $subproyectos = [];
+            $instructor->instructor_alfa = true;
+            $instructor->status = 'VALIDADO';
+            foreach($request->subproyecto as $subproyecto) {
+                switch($subproyecto) {
+                    case 'oportunidades':
+                        $subproyectos[$subproyecto] = $request->oportunidades_puesto;
+                    break;
+                    case 'conafe':
+                        $subproyectos[$subproyecto] = $request->conafe_puesto;
+                    break;
+                    case 'sedena':
+                        $subproyectos[$subproyecto] = $request->sedena_puesto;
+                    break;
+                    case 'profesores':
+                        $subproyectos[$subproyecto] = $request->profesores_puesto;
+                    break;
+                    case 'becarios':
+                        $subproyectos[$subproyecto] = $request->becarios_puesto;
+                    break;
+                    case 'osc':
+                        $subproyectos[$subproyecto] = $request->osc_puesto;
+                    break;
+                    case 'ipf':
+                        $subproyectos[$subproyecto] = $request->ipf_puesto;
+                    break;
+                    case 'programas federales':
+                        $subproyectos[$subproyecto] = $request->input('programas federales_puesto');
+                    break;
+                    case 'conevyt':
+                        $subproyectos[$subproyecto] = $request->conevyt_puesto;
+                    break;
+                    case 'oportunidades':
+                        $subproyectos[$subproyecto] = $request->oportunidades_puesto;
+                    break;
+                    case 'instituciones academicas':
+                        $subproyectos[$subproyecto] = $request->instituciones_academicas_puesto;
+                    break;
+                    case 'otro':
+                        $subproyectos[$subproyecto] = $request->otrosub_puesto;
+                    break;
+                }
+            }
+
+            $horarios_circulo = [
+                '1' => ['dia' => $request->dia1, 'inicio' => $request->horario_inicio1, 'termino' => $request->horario_termino1],
+                '1-2' => ['dia' => $request->dia1_2, 'inicio' => $request->horario_inicio1_2, 'termino' => $request->horario_termino1_2],
+                '2' => ['dia' => $request->dia2, 'inicio' => $request->horario_inicio2, 'termino' => $request->horario_termino2],
+                '2-2' => ['dia' => $request->dia2_2, 'inicio' => $request->horario_inicio2_2, 'termino' => $request->horario_termino2_2],
+                '3' => ['dia' => $request->dia3, 'inicio' => $request->horario_inicio3, 'termino' => $request->horario_termino3],
+                '3-2' => ['dia' => $request->dia3_2, 'inicio' => $request->horario_inicio3_2, 'termino' => $request->horario_termino3_2]
+            ];
+
+            $datos_alfa = [
+                'hispanohablante' => $request->hispanohablante,
+                'lengua_indigena' => $request->lengua_indigena,
+                'etnia' => $request->etnia,
+                'hijos' => $request->hijos,
+                'subproyectos' => $subproyectos,
+                'tipo_vialidad' => $request->tipo_vialidad,
+                'nombre_vialidad' => $request->nombre_vialidad,
+                'numero_exterior' => $request->numero_exterior,
+                'numero_interior' => $request->numero_interior,
+                'entre_vialidad1' => $request->entre_vialidad1,
+                'entre_vialidad2' => $request->entre_vialidad2,
+                'vialidad_posterior' => $request->vialidad_posterior,
+                'carretera' => $request->carretera,
+                'tipo_asentamiento_humano' => $request->tipo_asentamiento_humano,
+                'nombre_asentamiento_humano' => $request->nombre_asentamiento_humano,
+                'descripcion_ubicacion' => $request->descripcion_ubicacion,
+                'ocupacion' => $request->ocupacion,
+                'sin_ocupacion' => $request->sin_ocupacion,
+                'con_ocupacion' => $request->con_ocupacion,
+                'ingreso_mensual' => $request->ingreso_mensual,
+                'roles' => $request->roles_figura_operativa,
+                'unidad_operativa' => $request->unidad_operativa,
+                'circulo_estudio' => $request->circulo_estudio,
+                'responsable_circulo' => $request->responsable_circulo,
+                'fecha_inicio' => $request->fecha_inicio,
+                'horario_circulo' => $horarios_circulo
+            ];
+            $instructor->datos_alfa = $datos_alfa;
+            $instructor->codigo_postal = $request->codigo_postal;
+            $instructor->domicilio = $request->tipo_vialidad . ' '. $request->nombre_vialidad . ' '. $request->numero_exterior. ' ENTRE '. $request->entre_vialidad1. ' Y '.$request->entre_vialidad2. ' '. $request->tipo_asentamiento_humano . ' ' . $request->nombre_asentamiento_humano;
+            $instructor->save();
+            return redirect()->route('instructor-ver',['id' => $instructor->id])
+                    ->with('success','Información basica agregada');
+        } else {
+            $extract_inf->status = 'EN CAPTURA';
+        }
         if(!isset($modInstructor))
         {
             $modInstructor = new pre_instructor();
@@ -1869,8 +2066,8 @@ class InstructorController extends Controller
         $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
         $old = $pre_instructor->apellidoPaterno . ' ' . $pre_instructor->apellidoMaterno . ' ' . $pre_instructor->nombre;
 
-        $extract_inf->status = 'EN CAPTURA';
         $extract_inf->save();
+
 
         if($pre_instructor->status == 'RETORNO' || $pre_instructor->status == 'VALIDADO')
         {
@@ -3348,8 +3545,9 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
 
         $funcionarios = $this->funcionarios('TUXTLA');
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('entrevista_instructor.pdf');
     }
@@ -3375,8 +3573,9 @@ class InstructorController extends Controller
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('curriculum_icatech_instructor.pdf');
     }
@@ -3529,7 +3728,8 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         $nomemosol = $request->nomemo;
         $fecha_letra = $this->obtenerFechaEnLetra($D);
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios'));
+        $direccion = explode("*",$funcionarios['dunidad']['direccion']);
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
     }
@@ -3643,8 +3843,8 @@ class InstructorController extends Controller
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
-
-        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','instructor','especialidades','unidad','D','M','Y','funcionarios'));
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
+        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','instructor','especialidades','unidad','D','M','Y','funcionarios','direccion'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('validacion_instructor.pdf');
     }
@@ -3697,8 +3897,9 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
         // dd($especialidades);
+        $direccion = explode("*",$funcionarios['dunidad']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor.pdf');
     }
@@ -3749,8 +3950,9 @@ class InstructorController extends Controller
         $MS = $this->monthToString(date('m',$datesol));//A
         $YS = date("Y",$datesol);
         // dd($data_unidad);
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor_validacion.pdf');
     }

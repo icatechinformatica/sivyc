@@ -6,7 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', '')</title>
     <style>
-        body{font-family: sans-serif}
+        body{
+                font-family: sans-serif;
+                /* border: 1px solid black; */
+                font-size: 1em;
+                /* margin: 10px; */
+            }
         @page {margin: 20px 30px 20px 30px; size: letter;}
         /* header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;} */
         img.izquierda {float: left;width: 100%;height: 60px;}
@@ -43,11 +48,12 @@
 
         #fondo1 {
             background-image: url('img/membretado/membretado.jpg');
-            background-size: 111%,120%;
+            background-size: 106%,150%;
             background-position: center;
             /* width: 100%;
             margin: auto;
             height: 100%; */
+
         }
 
         #fondo_old {
@@ -60,7 +66,7 @@
 </head>
 {{-- cambio prueba --}}
 {{-- @section('content') --}}
-<body @if(!isset($fecha) || $fecha < '08-12-2024') id='fondo1' @else id='fondo_old' @endif >
+<body @if(!isset($fecha) || $fecha < '08-12-2024') id='fondo1' @else id='fondo_old' @endif style="padding-top:70px; padding-bottom:70px; font-size:10px;">
     {{-- <header>
         <h6><small><small>{{$leyenda}}</small></small></h6><p class='direccion'>
     </header> --}}

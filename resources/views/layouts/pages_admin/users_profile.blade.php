@@ -122,6 +122,22 @@
                           </div>
 
                         </div>
+                        {{-- teléfono y curp --}}
+                        <div class="row">
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                <label class="form-control-label" for="inputCurpUpdate">CURP</label>
+                                <input type="text" id="inputCurpUpdate" name="inputCurpUpdate" class="form-control" value="{{ $usuario->curp }}">
+                              </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                <label class="form-control-label" for="inputTelUpdate">Teléfono</label>
+                                <input type="text" id="inputTelUpdate" name="inputTelUpdate" class="form-control" value="{{ $usuario->telefono }}">
+                              </div>
+                            </div>
+                        </div>
                         <div class="row">
                           <div class="col-lg-6">
                             <div class="form-group">
@@ -209,6 +225,14 @@
                         required: true,
                         minlength: 3
                     },
+                    inputCurpUpdate: {
+                        required: true,
+                        minlength: 18
+                    },
+                    inputTelUpdate: {
+                        required: true,
+                        minlength: 10
+                    },
                     // inputPasswordUpdate: {
                     //     required: true,
                     // },
@@ -225,6 +249,12 @@
                 messages: {
                     inputNameUpdate: {
                         required: 'Por favor ingrese el nombre completo'
+                    },
+                    inputCurpUpdate: {
+                        required: 'Por favor ingrese una CURP valida'
+                    },
+                    inputTelUpdate: {
+                        required: 'Por favor ingrese un número de télefono valido'
                     },
                     // inputPasswordUpdate: {
                     //     required: 'Por favor Ingresé la contraseña',

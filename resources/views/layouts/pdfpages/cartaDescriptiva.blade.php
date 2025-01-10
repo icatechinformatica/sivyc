@@ -150,10 +150,10 @@
             <table border="1" class="tableA" style="width: 100%;">
                 <tbody>
                     <tr  style="text-align: center;">
-                        <td><b>Contenido Temático</b></td>
-                        <td><b>Estrategias Didácticas</b></td>
-                        <td><b>Proceso de Evaluación</b></td>
-                        <td width='12%'><b>Duración (EN HORAS)</b></td>
+                        <td width="20%"><b>Contenido Temático</b></td>
+                        <td width="48%"><b>Estrategias Didácticas</b></td>
+                        <td width="22%"><b>Proceso de Evaluación</b></td>
+                        <td width='10%'><b>Duración (EN HORAS)</b></td>
                     </tr>
                     @php
                         $modulo = 0;
@@ -184,7 +184,21 @@
                                         @endforeach
                                     @endif
                                 </td>
-                                <td>{!!$moist->estra_didac!!}</td>
+                                {{-- <td>{!!$moist->estra_didac!!}</td> --}}
+                                @php
+                                    // $longitud = strlen($moist->estra_didac);
+                                    $textoPlano = strip_tags($moist->estra_didac); // Elimina todas las etiquetas HTML
+                                    $textoDecodificado = html_entity_decode($textoPlano);
+                                    $longitud = strlen($textoDecodificado); // Cuenta solo los caracteres visibles
+                                    $parte1 = $parte2 = '';
+                                    if($longitud >= 1550){
+                                        list($parte1, $parte2) = app('App\Http\Controllers\webController\CursosController')->dividirHtml($moist->estra_didac, 2);
+                                    }else{
+                                       $parte1 = $moist->estra_didac;
+                                    }
+                                @endphp
+
+                                <td>{!!$parte1!!}</td>
                                 <td>{!!$moist->process_eval!!}</td>
                                 <td style="text-align: center;">
                                     @if($presencial[0] > 0 || $presencial[1] > 0)
@@ -245,7 +259,19 @@
                                     @endif
                                 </td>
                             </tr>
+                            {{-- Agregar el otro en caso de que haya parte 2 --}}
+                            @if (!empty($parte2))
+                                <div  style="page-break-after: always;"></div>
+                                <tr>
+                                    <td></td>
+                                    <td>{!!$parte2!!}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endif
+
                         @endif
+
                     @endforeach
                 </tbody>
             </table>

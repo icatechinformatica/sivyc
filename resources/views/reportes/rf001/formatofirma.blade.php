@@ -93,6 +93,7 @@
         <a href="">INDICE </a> REVISIÓN FORMATOS RF001 POR UNIDAD
     </div>
     <div class="card card-body  p-5" style=" min-height:450px;">
+
         @if (session('message'))
             <div class="alert alert-success" role="alert">
                 {{ session('message') }}
