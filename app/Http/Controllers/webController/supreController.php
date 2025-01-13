@@ -1295,7 +1295,7 @@ class supreController extends Controller
             ->Where('users.id', Auth::user()->id)
             ->First();
         $supre = new supre();
-        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
+        $leyenda = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data_supre = $supre::WHERE('id', '=', $id)->FIRST(); //cambiar data2 a data_supre en tabla supre
         $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
             ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
@@ -1371,12 +1371,12 @@ class supreController extends Controller
                 }
             }
         }
-        // $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','distintivo','direccion','firma_electronica','uuid'));
-        // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','distintivo','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
+        // $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid'));
+        // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
         // return $pdf2->stream("prueba.pdf");
 
-        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','distintivo','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))->setPaper('letter', 'portrait')->output();
-        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','distintivo','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))
+        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))->setPaper('letter', 'portrait')->output();
+        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))
             ->setPaper('a4', 'landscape')  // Configurar tamaño y orientación
             ->output();
 
@@ -1471,7 +1471,7 @@ class supreController extends Controller
         }
         //fin
 
-        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
+        $leyenda = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $funcionarios = $this->funcionarios_valsupre($data2->unidad_capacitacion);
         $direccion = $funcionarios['remitentedir'];
 
@@ -1533,7 +1533,7 @@ class supreController extends Controller
             }
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('distintivo','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('leyenda','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64','direccion'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
     }
