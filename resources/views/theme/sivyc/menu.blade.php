@@ -1,8 +1,8 @@
 <!--Navbar -->
-<nav class="mb-1 navbar navbar-expand-lg navbar-dark pink darken-4">
-    <a class="navbar-brand" href="#">
-        <h4><b>ICATECH</b></h4>
-    </a>
+<nav class="mb-1 navbar navbar-expand-lg navbar-dark pink2 darken-4">    
+    <a href="https://sivyc.icatech.gob.mx" class="navbar-brand g-text-underline--hover">
+        <img src="{{asset('img/sivyc.png') }}" alt="SIVyC" height="40">
+    </a>    
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
         aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -32,7 +32,7 @@
                 <!--AGREGAR NUEVO ELEMENTO EN EL MENU END-->
                 @can('preinscripcion.grupo')
                     <li class="nav-item g-mx-5--lg dropdown">
-                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink"
+                        <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Preinscripci&oacute;n
                         </a>
@@ -53,7 +53,7 @@
                 @canany(['solicitud.apertura', 'solicitud.exoneracion', 'supre.index', 'contratos.index', 'pagos.inicio',
                     'prevalidar_index-instructor', 'metasavances.index', 'solicitud.rf001','vobo.rf001'])
                     <li class="nav-item g-mx-5--lg dropdown">
-                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitud
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -96,7 +96,7 @@
                 @endcanany
                 @canany(['grupos.calificaciones', 'grupos.recibos', 'expunico.buzon.index', 'expedientes.unicos.index'])
                     <li class="nav-item g-mx-5--lg dropdown">
-                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Grupos
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -129,7 +129,7 @@
                 @endcanany
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
-                        <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a href="#" class="nav-link g-color-2025--hover" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Formatos T
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
@@ -176,7 +176,7 @@
                 @endcan
                 @can('solicitudes')
                     <li class="nav-item g-mx-5--lg dropdown">
-                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink"
+                        <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitudes
                         </a>
@@ -224,7 +224,7 @@
                     'convenios.index', 'cerss.inicio', 'areas.inicio', 'especialidades.inicio', 'unidades.index',
                     'exoneraciones.inicio', 'instituto.inicio', 'funproc.pat.index', 'unidades.medida.index', 'funcionarios.inicio'])
                     <li class="nav-item g-mx-5--lg dropdown">
-                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Catálogos
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -277,7 +277,7 @@
                     'reportes.911', 'reportes.rdcd08', 'reportes.rcdod11', 'reportes.rf001', 'financieros.reportevalrec',
                     'financieros.reportecursos', 'reportes.pat', 'reportes.dpa'])
                     <li class="nav-item g-mx-5--lg dropdown">
-                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Reportes
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -327,7 +327,7 @@
                     'consultas.instructor', 'consultas.instructores.disponibles', 'consultas.poa', 'show.cursos.validados',
                     'consulta.bolsa.trabajo'])
                     <li class="nav-item g-mx-5--lg dropdown">
-                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Consultas
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -372,7 +372,7 @@
                 @endcanany
                 @canany(['estadisticas.ecursos', 'tablero.metas.index'])
                     <li class="nav-item g-mx-5--lg dropdown">
-                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink"
+                        <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Estadísticas
                         </a>
@@ -389,7 +389,7 @@
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5-lg dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
+                    <a class="nav-link g-color-2025--hover dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         Notificaciones
                         @if (count(auth()->user()->unreadNotifications))
@@ -398,7 +398,7 @@
                             </span>
                         @endif
                     </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right g-color-2025--hover">
                         @foreach (auth()->user()->unreadNotifications as $cadwell)
                             <a href={{ $cadwell->data['url'] }} class="dropdown-item">
                                 <i class="fas fa-envelope mr-2"></i> {{ $cadwell->data['titulo'] }}
@@ -413,12 +413,12 @@
                     </div>
                 </li>
                 <li class="nav-item avatar dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-user"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg-right dropdown-secondary"
-                        aria-labelledby="navbarDropdownMenuLink-55">
+                        aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="#">
                             {{ Auth::user()->name }}
                         </a>
