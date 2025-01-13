@@ -1,5 +1,5 @@
-@extends('theme.formatos.vlayoutins2025')
-@section('title', 'VALIDACIÓN DE INSTRUCTOR | SIVyC Icatech')
+@extends('theme.formatos.vlayout2025')
+@section('title', 'VALIDACIÓN DE BAJA DE INSTRUCTOR | SIVyC Icatech')
 @section('content_script_css')
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -15,13 +15,6 @@
             th, td {
             border-style:solid;
             border-color: black;
-            }
-
-            div.content
-            {
-                margin-bottom: 750%;
-                margin-right: -25%;
-                margin-left: 0%;
             }
             .floatleft {
                 float:left;
