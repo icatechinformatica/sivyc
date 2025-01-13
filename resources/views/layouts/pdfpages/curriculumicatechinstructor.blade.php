@@ -59,7 +59,7 @@
         <div>
             @if($data->archivo_fotografia != FALSE)
                 {{-- <img class="derechaf img-thumbnail mb-3" src="{{ asset($data->archivo_fotografia) }}"> --}}
-                <img style="border: 2px solid black; margin-top: -30px; margin-right: 30px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
+                <img style="border: 2px solid black; margin-top: 0px; margin-right: 30px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
             @endif
             <br><br><br><br>
             <table class="tablaz" style="border-color: black">
