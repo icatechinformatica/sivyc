@@ -13,12 +13,12 @@
             margin: 2px;
         }
         header { position: fixed;
-            left: 0px;
-            top: -100px;
+            left: 35px;
+            top: 70px;
             padding-left: 45px;
             height: 70px;
             width: 85%;
-            background-color: white;
+            /* background-color: white; */
             color: black;
             text-align: center;
             line-height: 60px;
@@ -112,9 +112,9 @@
 {{-- @section('content') --}}
 <body @if(!isset($fecha) || $fecha > '08-12-2024') id='fondo1' @else id='fondo_old' @endif >
     <div class="content">
-    {{-- <header>
-        <h6><small><small>{{$leyenda}}</small></small></h6><p class='direccion'>
-    </header> --}}
+    <header>
+        <small>{{$leyenda}}</small>
+    </header>
     <footer>
         <p @if(!isset($fecha) || $fecha > '07-12-2024') class='direccion' @else class='direccion_old' @endif>
             @if(!is_array($direccion)) @php $direccion = explode("*",$direccion) @endphp @endif
