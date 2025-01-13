@@ -1,4 +1,4 @@
-@extends('theme.formatos.vlayoutins2025')
+@extends('theme.formatos.vlayout2025')
 @section('title', 'ENTREVISTA INSTRUCTOR| SIVyC Icatech')
 @section('content_script_css')
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
@@ -10,12 +10,12 @@
             border-style:solid;
             border-color: black;
             }
-            div.content
+            /* div.content
             {
                 margin-bottom: 750%;
                 margin-right: -25%;
                 margin-left: 0%;
-            }
+            } */
             .floatleft {
                 float:left;
             }

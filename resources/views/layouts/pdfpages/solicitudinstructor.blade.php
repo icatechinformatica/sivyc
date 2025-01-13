@@ -1,6 +1,6 @@
 
-@extends('theme.formatos.vlayoutins2025')
-@section('title', 'VALIDACIÓN DE INSTRUCTOR | SIVyC Icatech')
+@extends('theme.formatos.vlayout2025')
+@section('title', 'SOLICITUD DE VALIDACIÓN DE INSTRUCTOR | SIVyC Icatech')
 @section('content_script_css')
     <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -16,12 +16,6 @@
         th, td {
         border-style:solid;
         border-color: black;
-        }
-        div.content
-        {
-            margin-bottom: 750%;
-            margin-right: -25%;
-            margin-left: 0%;
         }
         .floatleft {
             float:left;
@@ -48,6 +42,7 @@
     .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
     .tablag tr td{ font-size: 8px; padding: 1px;}
     .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
+    .content{font-size: 12px;}
         </style>
 @endsection
 @section('content')
@@ -131,7 +126,7 @@
             @foreach ($data as $altmer)
                 @if($altmer->status != 'BAJA EN FIRMA' && $altmer->status!= 'BAJA EN PREVALIDACION')
                     <div class="page-break"></div>
-                    <div align=right> <b>{{$data_unidad->municipio}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
+                    <div align=right style="margin-top: 100px;"> <b>{{$data_unidad->municipio}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
                     <br><br><b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}.</b>
                     <br>{{ $funcionarios['dacademico']['puesto'] }}.
                     <br>Presente.<br>

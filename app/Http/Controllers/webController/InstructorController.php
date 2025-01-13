@@ -3529,7 +3529,7 @@ class InstructorController extends Controller
     public function entrevista_pdf($idins)
     {
         // dd($idins);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $data = pre_instructor::WHERE('id', '=', $idins)->WHERE('registro_activo', TRUE)->FIRST();
         if(!isset($data))
         {
@@ -3547,7 +3547,7 @@ class InstructorController extends Controller
         $funcionarios = $this->funcionarios('TUXTLA');
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','funcionarios','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','leyenda','D','M','Y','userunidad','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('entrevista_instructor.pdf');
     }
@@ -3555,7 +3555,7 @@ class InstructorController extends Controller
     public function curriculumicatech_pdf($idins)
     {
         // dd($idins);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $data = pre_instructor::WHERE('id', '=', $idins)->WHERE('registro_activo', TRUE)->FIRST();
         if(!isset($data))
         {
@@ -3575,7 +3575,7 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y','funcionarios','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('leyenda','data', 'perfiles','D','M','Y','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('curriculum_icatech_instructor.pdf');
     }
@@ -3631,7 +3631,7 @@ class InstructorController extends Controller
             }
         }
         $data = $this->make_collection($arrtemp);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
 
 
         foreach($data as $count => $item)
@@ -3729,7 +3729,7 @@ class InstructorController extends Controller
         $nomemosol = $request->nomemo;
         $fecha_letra = $this->obtenerFechaEnLetra($D);
         $direccion = explode("*",$funcionarios['dunidad']['direccion']);
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('leyenda','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
     }
@@ -3796,7 +3796,7 @@ class InstructorController extends Controller
         $instructor->data_especialidad = $special;
 
         // $elaboro = DB::TABLE('users')->WHERE('id','=', $user)->FIRST();
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $especialidades = $this->make_collection($especialidades);
         $ubicacion = DB::TABLE('tbl_unidades')
                         ->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
@@ -3844,7 +3844,7 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
-        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','instructor','especialidades','unidad','D','M','Y','funcionarios','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('leyenda','instructor','especialidades','unidad','D','M','Y','funcionarios','direccion'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('validacion_instructor.pdf');
     }
@@ -3854,7 +3854,7 @@ class InstructorController extends Controller
         // dd($request);
         $nomesp = $arrtemp = $especialidades = array();
         $instructor = pre_instructor::find($request->idins);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $idesps = especialidad_instructor::SELECT('id')->WHERE('id_instructor', '=', $request->idins)
                                             ->WHERE('status','=','BAJA EN FIRMA')
                                             ->GET();
@@ -3899,7 +3899,7 @@ class InstructorController extends Controller
         // dd($especialidades);
         $direccion = explode("*",$funcionarios['dunidad']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','funcionarios','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('leyenda','instructor','data_unidad','D','M','Y','especialidades','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor.pdf');
     }
@@ -3909,7 +3909,7 @@ class InstructorController extends Controller
         // dd($request);
         $nomesp = $arrtemp = $especialidades = array();
         $instructor = pre_instructor::find($request->idinsbajadocval);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $special = $this->make_collection($instructor->data_especialidad);
         $idesps = especialidad_instructor::SELECT('id','memorandum_validacion')->WHERE('id_instructor', '=', $request->idinsbajadocval)
                                             ->WHERE('status','=','BAJA EN FIRMA')
@@ -3952,7 +3952,7 @@ class InstructorController extends Controller
         // dd($data_unidad);
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('leyenda','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor_validacion.pdf');
     }
