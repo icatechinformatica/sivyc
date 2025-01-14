@@ -12,14 +12,15 @@
         .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; border-collapse: collapse; }
         .tablad tr td{padding: 1px 10px 0 10px;}
 
-        #titulo{ position: fixed; top: 50px; width:100%; text-align: center;}
+        #titulo{ position: fixed; top: 60px; width:100%; text-align: center;}
         #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:bold;}
         #titulo table{position: fixed; top: 100px;}
         #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
         .content {font-family: sans-serif; font-size: 9px; padding-top: 115px;}
+        header {top: 0px; left: 80px; font-size: 11px; font-weight: bold;}
     </style>
-
+@php $arc = true; @endphp
 @endsection
 @section('content')
     @php

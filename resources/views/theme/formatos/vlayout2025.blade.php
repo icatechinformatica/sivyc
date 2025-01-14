@@ -70,6 +70,8 @@
     <header>
         @if(isset($leyenda))
             <small>{{$leyenda}}</small>
+        @elseif(isset($distintivo))
+            <small>{{$distintivo}}</small>
         @endif
     </header>
     <footer>

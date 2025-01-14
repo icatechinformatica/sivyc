@@ -108,7 +108,11 @@ class validacionDtaController extends Controller {
 
         // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
         $terminoExplode = explode('-',$fechaEntregaActual->termino);
-        $mesEntrega = $meses[$terminoExplode[1]];
+        if($terminoExplode[1][0] == '0') {
+            $mesEntrega = $meses[$terminoExplode[1][1]]; //obtenemos el mes de la fecha termino
+        } else {
+            $mesEntrega = $meses[$terminoExplode[1]]; //obtenemos el mes de la fecha termino
+        }
         $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
         $diasParaEntrega = $this->getFechaDiff();
 
@@ -154,7 +158,11 @@ class validacionDtaController extends Controller {
 
         // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
         $terminoExplode = explode('-',$fechaEntregaActual->termino);
-        $mesEntrega = $meses[$terminoExplode[1]];
+        if($terminoExplode[1][0] == '0') {
+            $mesEntrega = $meses[$terminoExplode[1][1]]; //obtenemos el mes de la fecha termino
+        } else {
+            $mesEntrega = $meses[$terminoExplode[1]]; //obtenemos el mes de la fecha termino
+        }
         $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
 
         $diasParaEntrega = $this->getFechaDiff();
