@@ -22,6 +22,7 @@
 
         .content {font-family: sans-serif; font-size: 9px; padding-top: 115px;}
         /* .direccion {position: absolute;  top: 1.35cm; width:400px; margin-left:20px; height:auto; font-family: sans-serif; font-size: 10px; color:#FFF; } */
+        header {top: 0px; left: 80px; font-size: 11px; font-weight: bold;}
 
     </style>
 @endsection

@@ -112,9 +112,13 @@
 {{-- @section('content') --}}
 <body @if(!isset($fecha) || $fecha > '08-12-2024') id='fondo1' @else id='fondo_old' @endif >
     <div class="content">
-    <header>
-        <small>{{$leyenda}}</small>
-    </header>
+        <header>
+            @if(isset($leyenda))
+                <small>{{$leyenda}}</small>
+            @elseif(isset($distintivo))
+                <small>{{$distintivo}}</small>
+            @endif
+        </header>
     <footer>
         <p @if(!isset($fecha) || $fecha > '07-12-2024') class='direccion' @else class='direccion_old' @endif>
             @if(!is_array($direccion)) @php $direccion = explode("*",$direccion) @endphp @endif

@@ -130,7 +130,11 @@ class ftcontroller extends Controller {
 
         // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
         $termino = explode('-',$fechaEntregaActual->termino);
-        $mesEntrega = $meses_[$termino[1]]; //obtenemos el mes de la fecha termino
+        if($termino[1][0] == '0') {
+            $mesEntrega = $meses_[$termino[1][1]]; //obtenemos el mes de la fecha termino
+        } else {
+            $mesEntrega = $meses_[$termino[1]]; //obtenemos el mes de la fecha termino
+        }
         $fechaEntregaFormatoT = $termino[2] . ' DE ' . $mesEntrega . ' DE ' . $termino[0];
         $diasParaEntrega = $this->chkDateToDeliver();
 

@@ -15,6 +15,7 @@
         #titulo table{position: fixed; top: 100px;}
         #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
         .content {font-family: sans-serif; font-size: 9px; padding-top: 115px;}
+        header {top: 0px; left: 80px; font-size: 11px; font-weight: bold;}
     </style>
 @endsection
 @section('content')
