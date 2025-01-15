@@ -1,9 +1,9 @@
 <!--Creado por Julio Alcaraz-->
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Revisón FormatoT DTA | SIVyC Icatech')
+@section('title', 'Cursos enviados a Dirección Técnica Académica | SIVyC Icatech')
+
 @section('content_script_css')
-    <link rel="stylesheet" href="{{asset('css/global.css') }}" />    
     <style>
         #spinner:not([hidden]) {
             position: fixed;
@@ -61,20 +61,18 @@
 @endsection
 
 @section('content')
-    <div class="card-header">
-        FormatoT / Revisión Formato T DTA
-    </div>
-    <div class="card card-body">
+
+    <div class="container-fluid px-5 g-pt-30">
         {{-- información sobre la entrega del formato t para unidades --}}
         @switch($diasParaEntrega)
             @case(1)
-                <div class="alert alert-danger mb-4" role="alert">
+                <div class="alert alert-info " role="alert">
                     <b>LA FECHA LÍMITE DEL PERÍODO DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T DE LAS UNIDADES
                         CORRESPONDIENTES ES EL <strong>{{ $fechaEntregaFormatoT }}</strong>; </b>
                 </div>
             @break
             @case(0)
-                <div class="alert alert-danger mb-4" role="alert">
+                <div class="alert alert-danger " role="alert">
                     <b>LA FECHA LÍMITE DEL PERÍODO DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T DE LAS UNIDADES
                         CORRESPONDIENTES ES EL <strong>{{ $fechaEntregaFormatoT }}</strong>; </b>
                 </div>
@@ -99,6 +97,8 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
+                    <h2>VALIDACIÓN DE CURSOS PARA DIRECCIÓN TÉCNICA ACADÉMICA <strong>(ENLACES)</strong> </h2>
+
                     {!! Form::open(['route' => 'validacion.cursos.enviados.dta', 'method' => 'GET', 'class' => 'form-inline']) !!}
                         <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
                             <option value="all">TODAS LAS UNIDADES</option>
@@ -106,6 +106,7 @@
                                 <option {{$itemUnidades->unidad == $unidad ? 'selected' : ''}} value="{{ $itemUnidades->unidad }}">{{ $itemUnidades->unidad }}</option>
                             @endforeach
                         </select>
+
                         <select name="mesSearchE" id="mesSearchE" class="form-control mr-sm-2">
                             <option value="">-- MES A BUSCAR --</option>
                             <option {{$mesSearch == '01' ? 'selected' : ''}} value="01">ENERO</option>
@@ -122,7 +123,7 @@
                             <option {{$mesSearch == '12' ? 'selected' : ''}} value="12">DICIEMBRE</option>
                         </select>
 
-                    <button class="btn my-2 my-sm-0" type="submit">FILTRAR</button>
+                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">FILTRAR</button>
                     {!! Form::close() !!}
                 </div>
 
@@ -590,7 +591,7 @@
                     @endif
                 </div>
             @endif
-            <h4 class="text-center"><b>NO  SE ENCONTRARON REGISTROS</b></h4>
+            <h2><b>NO  SE ENCONTRARON REGISTROS</b></h2>
         @endif
         <br>
     </div>

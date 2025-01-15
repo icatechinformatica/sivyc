@@ -53,9 +53,8 @@ td{ font-size: 13px; }
 .custom-check { width:22px; height:22px; }
 
 .pink2 { background-color: rgb(211, 194, 180) !important;}
-#navbarDropdownMenuLink { font-size: 15px;  color: #252525; font-weight: 400;}
-.dropdown-menu { background-color: #ecdbcd !important; font-size: 12px;  color: #252525; padding: 0px; margin: 0px}
-.dropdown-menu .dropdown-item { margin: 0px 0px 0px 4px; padding: 0px;}
+#navbarDropdownMenuLink { color: #333333; font-size: 16px; }
+
 
 .g-bg-black-opacity-0_8 { background-color: rgb(0, 152, 133) !important; }
 .g-brd-primary { border-color: #fff !important; }
