@@ -1,10 +1,10 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Consultas | SIVyC Icatech')
 @section("content_script_css")
-<link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
 @endsection
 @section('content')
-    <div class="card-header">Consulta Cursos/Horas, Programado Anual  & Autorizados</div>
+    <div class="card-header">Consultas / Programa Operativo Anual & Autorizado</div>
     <div class="card card-body" >
         @if ($errors->any())
             <div class="alert alert-danger">
