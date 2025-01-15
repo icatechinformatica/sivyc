@@ -152,20 +152,6 @@ class validacionDtaController extends Controller {
         $mesActual = $meses[($fecha->format('n'))];
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
         // $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-<<<<<<< HEAD
-        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
-
-        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
-        $terminoExplode = explode('-',$fechaEntregaActual->termino);
-        if($terminoExplode[1][0] == '0') {
-            $mesEntrega = $meses[$terminoExplode[1][1]]; //obtenemos el mes de la fecha termino
-        } else {
-            $mesEntrega = $meses[$terminoExplode[1]]; //obtenemos el mes de la fecha termino
-        }
-        $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
-
-        $diasParaEntrega = $this->getFechaDiff();
-=======
         
         $mesInformar = $mesEntrega = $fechaEntregaFormatoT = $diasParaEntrega= null;
         if(isset($fechaEntregaActual)){  
@@ -174,7 +160,6 @@ class validacionDtaController extends Controller {
             $terminoExplode = explode('-',$fechaEntregaActual->termino);
             $mesEntrega = $meses[$terminoExplode[1]*1];
             $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
->>>>>>> ece7a21f7 (nueva identidad modulos2)
 
             $diasParaEntrega = $this->getFechaDiff();
         }
