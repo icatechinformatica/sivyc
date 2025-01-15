@@ -7,7 +7,7 @@
     <title>@yield('title', '')</title>
     <style>
         body{font-family: sans-serif; padding: 100px 50px 100px 30px;  }
-        @page {margin: 2px; size: letter; border: 1px solid red;}
+        @page {margin: 2px; size: letter;}
         /* header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;} */
         header { position: fixed; left: 0px; top: 70px; right: 0px;text-align: center;width:100%;line-height: 30px;}
         img.izquierda {float: left;width: 100%;height: 60px;}
@@ -59,7 +59,7 @@
 
         .content {
 
-            border: 1px solid blue;
+            /* border: 1px solid blue; */
         }
     </style>
     @yield("content_script_css")
