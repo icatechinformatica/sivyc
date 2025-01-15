@@ -265,7 +265,7 @@ function dataFormatoT($unidad, $turnado=null, $fecha=null, $mesSearch=null, $sta
             $var_cursos = $var_cursos->WHEREIN('c.turnado', $turnado);
         }
 
-        if ($unidad != 'all' && $unidad != 'ALL') {dd('a');
+        if ($unidad != 'all' && $unidad != 'ALL') {
             $var_cursos2 = $var_cursos->WHERE('u.ubicacion', '=', $unidad)->get();
         } else {
             $var_cursos2 = $var_cursos->get();
