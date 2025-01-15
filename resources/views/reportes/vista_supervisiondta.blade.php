@@ -1,8 +1,9 @@
 <!--Creado por Julio Alcaraz-->
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Cursos enviados a Dirección Técnica Académica | SIVyC Icatech')
+@section('title', 'Validación FormatoT DTA | SIVyC Icatech')
 @section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         #spinner:not([hidden]) {
             position: fixed;
@@ -58,11 +59,13 @@
 
     </style>
 @endsection
-<!--seccion-->
 @section('content')
-    <div class="container-fluid px-5 g-pt-30">
+    <div class="card-header">
+        FormatoT / Validación Formato T DTA
+    </div>
+    <div class="card card-body">
         {{-- información sobre la entrega del formato t para unidades --}}
-        <div class="alert {{ $diasParaEntrega <= 5 ? 'alert-warning' : 'alert-info' }}" role="alert">
+        <div class="alert {{ $diasParaEntrega <= 5 ? 'alert-warning' : 'alert-info' }} mb-4" role="alert">
             <b>LA FECHA LÍMITE DEL PERÍODO DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T DE LAS UNIDADES
                 CORRESPONDIENTES ES EL <strong>{{ $fechaEntregaFormatoT }}</strong>; FALTAN
                 <strong>{{ $diasParaEntrega }}</strong> DÍAS</b>
@@ -81,8 +84,6 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>VALIDACIÓN DE CURSOS DE DIRECCIÓN TÉCNICA ACADÉMICA <strong>(DIRECCIÓN)</strong></h2>
-
                     {!! Form::open(['route' => 'validacion.dta.revision.cursos.indice', 'method' => 'GET', 'class' => 'form-inline']) !!}
                         <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
                             <option value="all">TODAS LAS UNIDADES</option>
@@ -107,7 +108,7 @@
                             <option {{$mesSearch == '12' ? 'selected' : ''}} value="12">DICIEMBRE</option>
                         </select>
 
-                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">FILTRAR</button>
+                    <button class="btn my-2 my-sm-0" type="submit">FILTRAR</button>
                     @if (isset($mesSearch))
                         <div>
                             <a class="btn btn-danger" id="resumen_unidad" name="resumen_unidad" data-toggle="modal" data-placement="top" data-target="#resumenUnidadModal" data-id='["{{$mesSearch}}","{{$unidades_busqueda}}"]'>
@@ -557,7 +558,8 @@
                 <input type="hidden" name="unidad_busqueda" id="unidad_busqueda" value="{{ $unidades_busqueda }}">
             </form>
         @else
-            <h2 class="mt-5"><b>NO SE ENCONTRARON REGISTROS</b></h2><br>
+            <hr class="mt-5"/>
+            <h4 class="text-center"><b>NO SE ENCONTRARON REGISTROS</b></h4><br>
 
         @endif
         <br>

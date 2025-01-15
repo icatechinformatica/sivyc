@@ -1,8 +1,9 @@
 <!--Creado por Julio Alcaraz-->
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'APERTURAS | SIVyC Icatech')
+@section('title', 'Cursos Aperturados | SIVyC Icatech')
 @section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
         .content {
@@ -20,8 +21,10 @@
 @endsection
 <!--seccion-->
 @section('content')
-
-    <div class="container g-pt-40 content">
+    <div class="card-header">
+        FormatoT / Cursos Aperturados
+    </div>
+    <div class="card card-body">    
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
@@ -29,21 +32,13 @@
         @endif
 
         {{-- información sobre la entrega del formato t para unidades --}}
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-danger mb-5" role="alert">
             <b>LA FECHA LÍMITE DEL MES DE PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL
                 <strong>{{$fechaEntregaFormatoT}}</strong> FALTAN
                 <strong>{{ $diasParaEntrega }}</strong> DÍAS.
             </b>
         </div>
         {{-- información sobre la entrega del formato t para unidades END --}}
-
-        <div class="row">
-            <div class="col-lg-8 margin-tb">
-                <div>
-                    <h3><b>REPORTE DE CURSOS APERTURADOS</b></h3>
-                </div>
-            </div>
-        </div>
 
         <hr style="border-color:dimgray">
         <div class="container">

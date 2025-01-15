@@ -104,17 +104,15 @@ class validacionDtaController extends Controller {
         $mesActual = $meses[($fecha->format('n'))];
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
         // $dateNow = $fechaEntregaActual->termino . "-" . $anioActual;
-        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
-
-        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
-        $terminoExplode = explode('-',$fechaEntregaActual->termino);
-        if($terminoExplode[1][0] == '0') {
-            $mesEntrega = $meses[$terminoExplode[1][1]]; //obtenemos el mes de la fecha termino
-        } else {
-            $mesEntrega = $meses[$terminoExplode[1]]; //obtenemos el mes de la fecha termino
+        $mesInformar = $mesComparador = $mesEntrega = $fechaEntregaFormatoT = $diasParaEntrega= null;
+        if(isset($fechaEntregaActual)){  
+            $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
+            // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
+            $terminoExplode = explode('-',$fechaEntregaActual->termino);
+            $mesEntrega = $meses[$terminoExplode[1]*1];
+            $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
+            $diasParaEntrega = $this->getFechaDiff();
         }
-        $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
-        $diasParaEntrega = $this->getFechaDiff();
 
         return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad', 'fechaEntregaFormatoT', 'mesInformar', 'unidad', 'diasParaEntrega', 'mesSearch', 'formato_respuesta'));
     }
@@ -154,6 +152,7 @@ class validacionDtaController extends Controller {
         $mesActual = $meses[($fecha->format('n'))];
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
         // $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
+<<<<<<< HEAD
         $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
 
         // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
@@ -166,7 +165,19 @@ class validacionDtaController extends Controller {
         $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
 
         $diasParaEntrega = $this->getFechaDiff();
+=======
+        
+        $mesInformar = $mesEntrega = $fechaEntregaFormatoT = $diasParaEntrega= null;
+        if(isset($fechaEntregaActual)){  
+            $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
+            // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
+            $terminoExplode = explode('-',$fechaEntregaActual->termino);
+            $mesEntrega = $meses[$terminoExplode[1]*1];
+            $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
+>>>>>>> ece7a21f7 (nueva identidad modulos2)
 
+            $diasParaEntrega = $this->getFechaDiff();
+        }
         return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'unidades_busqueda', 'diasParaEntrega', 'mesInformar', 'fechaEntregaFormatoT', 'diasParaEntrega', 'mesSearch', 'formato_respuesta'));
     }
 
@@ -1038,13 +1049,14 @@ class validacionDtaController extends Controller {
         $anioActual = Carbon::now()->year;
         $mesActual = $meses[($fecha->format('n')) - 1];
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
-        $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-        $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
-        $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
-        $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
-
-        $diasParaEntrega = $this->getFechaDiff();
-
+        $fechaEntregaFormatoT = $diasParaEntrega = null;
+        if(isset($fechaEntregaActual->fecha_entrega)){
+            $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
+            $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
+            $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
+            $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
+            $diasParaEntrega = $this->getFechaDiff();
+        }
         return view('reportes.reportes_aperturado', compact('fechaEntregaFormatoT', 'diasParaEntrega'));
     }
 

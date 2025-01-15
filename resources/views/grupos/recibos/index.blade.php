@@ -1,4 +1,6 @@
 <!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
+@extends('theme.sivyc.layout')
+@section('title', 'Grupos- Recibos de Pago | SIVyC Icatech')
 @section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
     <style>
@@ -14,9 +16,7 @@
         }
     </style>
 @endsection
-@extends('theme.sivyc.layout')
-@section('title', 'Grupos- Recibos de Pago | SIVyC Icatech')
-@section('content')       
+@section('content')
     <div class="card-header">
         Grupos / Recibos de Pago        
     </div>
