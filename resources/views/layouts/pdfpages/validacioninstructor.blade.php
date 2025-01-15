@@ -1,5 +1,5 @@
-@extends('theme.formatos.hlayoutins2025')
-@section('title', 'SOLICITUD DE VALIDACIÓN DE INSTRUCTOR | SIVyC Icatech')
+@extends('theme.formatos.hlayout2025')
+@section('title', 'VALIDACIÓN DE INSTRUCTOR | SIVyC Icatech')
 @section('content_script_css')
     <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -33,12 +33,6 @@
             border-style:solid;
             border-color: black;
             }
-            div.content
-            {
-                margin-bottom: 750%;
-                margin-right: -25%;
-                margin-left: 0%;
-            }
             .floatleft {
                 float:left;
             }
@@ -63,6 +57,7 @@
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
+        .content { margin-top: 12%;}
         </style>
     @endsection
     @section('content')
@@ -183,7 +178,7 @@
                         </table>
                     </div>
                 </div>
-                <div>
+                <div style="font-size: 10px;">
                     “Este documento es de uso interno y no tiene validez jurídica ni contractual, se extiende únicamente con fines académicos. Estos datos y resultados son considerados confidenciales por lo que se prohíbe su reproducción parcial o total para fines distintos al uso interno de la Dirección Técnica Académica y las Unidades de Capacitación”.
                     <br><br>
                     <small><small>C.c.p. {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }} .- {{ $funcionarios['gestionacademica']['puesto'] }}. – Para su conocimiento - Edificio.</small></small>

@@ -5,13 +5,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
-        div.content
+        /* div.content
         {
             margin-top: 60%;
             margin-bottom: 70%;
             margin-right: 25%;
             margin-left: 0%;
-        }
+        } */
     </style>
 @endsection
 @section('content')

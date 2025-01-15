@@ -1,8 +1,8 @@
-@extends('theme.formatos.hlayout')
+@extends('theme.formatos.hlayout2025')
 @section('title', 'Solicitud ARC-01 | SIVyC Icatech')
-@section('css')
+@section('content_script_css')
     <style>
-         body { margin-top: 140px;  margin-bottom: 36px;}
+         /* body { margin-top: 140px;  margin-bottom: 36px;} */
         .tablas{border-collapse: collapse; width: 100%; margin-top:1px; }
         .tablas tr th {padding:1px;margin:0px;}
         .tablas th, .tablas td{font-size: 7px; border: gray 1px solid; text-align: center;font-weight:bold;}
@@ -12,15 +12,17 @@
         .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; border-collapse: collapse; }
         .tablad tr td{padding: 1px 10px 0 10px;}
 
-        #titulo{position: fixed; top: 45px; width:100%;}
+        #titulo{ position: fixed; top: 60px; width:100%; text-align: center;}
         #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:bold;}
         #titulo table{position: fixed; top: 100px;}
-        #para {position: relative; top: -30px; height:auto; width:60%; font-size: 9px; font-weight:bold; margin-bottom:-25px;}
+        #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
+        .content {font-family: sans-serif; font-size: 9px; padding-top: 115px;}
+        header {top: 0px; left: 80px; font-size: 11px; font-weight: bold;}
     </style>
-
+@php $arc = true; @endphp
 @endsection
-@section('header')
+@section('content')
     @php
         if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0"))
             $nombre_unidad = "UNIDAD DE CAPACITACIÓN ";
@@ -32,24 +34,22 @@
         <h4>DEPARTAMENTO ACADÉMICO</h4>
         <h4>ARC-01</h4>
 
-        <table width="100%">
+        <table width="100%" table width="100%" style="margin-left: -65px;">
             <tr>
-                <td style='text-align:right;font-size: 9px;'>
+                <td style='text-align:right;font-size: 9px;'> <b>
                     {{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}<br/>
                     MEMORÁNDUM NO. {{ $memo_apertura }} <br/>
-                    {{ $reg_unidad->municipio }}, Chiapas; {{$fecha_memo }}.<br/>
+                    {{ $reg_unidad->municipio }}, Chiapas; {{$fecha_memo }}.</b><br/>
                 </td>
             </tr>
         </table>
     </div>
-@endsection
-@section('body')
     <div id="para">
         PARA: {{ $reg_unidad->dacademico }}, {{$reg_unidad->pdacademico}}<br/>
         DE: {{ $reg_unidad->dunidad }}, {{$reg_unidad->pdunidad}} {{$reg_unidad->ubicacion}}<br/>
         ASUNTO: SOLICITUD DE APERTURA<br/><br/>
         CC. ARCHIVO
-    </div>
+    </div><br><br>
 
     <table class="tablas">
         <thead>
@@ -161,7 +161,7 @@
         </table>
 
 @endsection
-@section('js')
+@section('content_script_css')
 <script type="text/php">
     if ( isset($pdf) ) {
             $pdf->page_script('

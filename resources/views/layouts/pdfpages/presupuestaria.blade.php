@@ -5,12 +5,12 @@
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-wfSDFE50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <style>
-            div.content
+            /* div.content
             {
                 margin-bottom: 750%;
                 margin-right: 0%;
                 margin-left: 0%;
-            }
+            } */
             .landscape {
                 page: landscape;
                 size: landscape;
@@ -21,14 +21,13 @@
             .page-break-non {
                 page-break-after: avoid;
             }
-            .contenedor {
+            /* .contenedor {
                 position:RELATIVE;
                 top:120px;
                 width:100%;
-                /* margin:auto; */
+                margin:auto;
                 font-size: 12px;
-                /* Propiedad que ha sido agreda*/
-            }
+            } */
         </style>
 @endsection
 @section('content')

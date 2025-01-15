@@ -1,34 +1,31 @@
-<html>
-
-<head>
-    <title>REPORTE FOTOGRAFICO</title>
+@extends('theme.formatos.vlayout2025')
+@section('title', 'REPORTE FOTOGRAFICO | SIVyC Icatech')
+@section('content_script_css')
     <style>
-        body {
+        /* body {
             font-family: sans-serif;
             margin-top: 15%;
             margin-bottom: 4%;
-        }
+        } */
 
-        @page {
-            /* margin: 100px 25px 170px 25px; */
-            /* margin: 35px 30px 40px 30px; */
+        /* @page {
             margin: 35px 30px 150px 30px;
-        }
+        } */
 
-        header {
+        /* header {
             position: fixed;
             left: 0px;
             top: -80px;
             right: 0px;
             text-align: center;
-        }
+        } */
 
-        header h6 {
+        /* header h6 {
             height: 0;
             line-height: 14px;
             padding: 8px;
             margin: 0;
-        }
+        } */
 
         /* table #curso {
             font-size: 8px;
@@ -71,13 +68,13 @@
             margin-right: 20px;
         }
 
-        footer {
+        /* footer {
             position: fixed;
             left: 0px;
             bottom: -170px;
             height: 150px;
             width: 100%;
-        }
+        } */
 
         footer .page:after {
             content: counter(page, sans-serif);
@@ -125,7 +122,7 @@
             font-size: 12px;
         }
 
-        .direccion {
+        /* .direccion {
             top: 1.3cm;
             text-align: left;
             position: absolute;
@@ -135,33 +132,22 @@
             color:#FFF;
             font-weight: bold;
             line-height: 1;
+        } */
+
+        .content {
+            margin-top: 15%;
+            margin-bottom: 4%;
         }
 
     </style>
-</head>
-
-
-<body>
+    @php $reporte_fotografico = true; @endphp
+@endsection
+@section('content')
     {{-- <header>
         <img src="img/instituto_oficial.png" alt="Logo Izquierdo" width="30%" style="position:fixed; left:0; top:0;" />
         <img src="img/chiapas.png" alt="Logo Derecho" width="25%" style="position:fixed; right:0; top:0;" />
     </header> --}}
-    {!! $body['header'] !!}
-    <footer>
-        @if(!is_null($uuid))
-            <div style="position: absolute; top: -35px; left: 15px; font-size:10px; text-align:justify">
-                <span style="">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas.</span>
-            </div>
-        @endif
-        {{-- position: relative; top:-76% --}}
-        <div style="position: absolute; top: 5px;">
-            <img style="" src="img/formatos/footer_vertical.jpeg" width="100%">
-            {{-- @if ($cursopdf) --}}
-                @php $direccion = explode("*", $direccion);  @endphp
-                <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
-            {{-- @endif --}}
-        </div>
-    </footer>
+    {{-- {!! $body['header'] !!} --}}
     {!! $body['body'] !!}
     {{-- <div style="margin-top: -9%; margin-bottom: 4%;">
         <h6 style="text-align: center;">{{isset($leyenda) ? $leyenda : ''}}</h6>
@@ -214,20 +200,20 @@
     <br>
      {{-- Mostrar imagenes --}}
      @if (count($base64Images) > 0)
-     <div class="" style="text-align: center;">
+     {{-- <div class="" style="text-align: center; border: 1px solid red;"> --}}
          @foreach($base64Images as $key => $base64)
-            <div style= @if ($objeto == null && $key == (count($base64Images)-1)) @else "page-break-after: always;" @endif>
-                <img style="width: auto; height: auto; max-width: 95%; max-height:95%;" src="data:image/jpeg;base64,{{$base64}}" alt="Foto">
-                <small style="text-align: right; display:block; max-width: 95%; margin-top:2px;">{{basename($array_fotos[$key])}}</small>
+            <div @if ($objeto == null && $key == (count($base64Images)-1)) @else @if($key != 0) style= "page-break-after: always; text-align: center; margin-top: 15%;" @else  style= "page-break-after: always; text-align: center;" @endif @endif>
+                <img style="width: auto; height: auto; max-width: 70%; max-height:70%;" src="data:image/jpeg;base64,{{$base64}}" alt="Foto">
+                <small style="text-align: right; display:block; max-width: 70%; margin-top:2px;">{{basename($array_fotos[$key])}}</small>
             </div>
          @endforeach
-     </div>
+     {{-- </div> --}}
      @endif
 
     {{-- Apartado de mostrar firmas --}}
     <div>
         @if(!is_null($objeto))
-            <div style="display: inline-block; width: 85%; margin-left: 12px; margin-top: 3%;">
+            <div style="display: inline-block; width: 85%; margin-left: 12px; margin-top: 15%;">
                 <table style="width: 100%;">
                     @foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist)
                         <tr style="">
@@ -260,10 +246,8 @@
                     <img style="position: fixed; width: 19%; top: 62%; left: 75%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                 </div>
             </div>
-
         @endif
     </div>
         {{-- <img style="position: fixed; width: 18%; top: 30%; left: 75%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-</body>
-
-</html>
+@endsection
+@section('script_content_js')

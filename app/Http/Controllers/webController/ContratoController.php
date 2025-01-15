@@ -1269,7 +1269,7 @@ class ContratoController extends Controller
     public function solicitudpago_pdf($id){
         $objeto = $puesto = $qrCodeBase64 = $funcionarios = NULL;
 
-        $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
+        $leyenda= DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso','tbl_cursos.instructor_mespecialidad',
                               'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','instructores.nombre',
                               'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
@@ -1339,7 +1339,7 @@ class ContratoController extends Controller
         $direccion = DB::Table('tbl_unidades')->WHERE('unidad',$data->ubicacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','qrCodeBase64','objeto','puesto','distintivo','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','qrCodeBase64','objeto','puesto','leyenda','direccion'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 
