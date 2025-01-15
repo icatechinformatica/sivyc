@@ -43,15 +43,8 @@
 
             img.derechaf { float: right; width: 2.5cm; height: 3.0cm;}
 
-            .tablas{border-collapse: collapse;width: 990px;}
-        .tablas tr{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
-        .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
-        .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
-        .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
         .tablad { border-collapse: collapse;font-size: 10px; width: 100%; border-color: black; border: black 1px solid; border-bottom-color: black; border-top-color: black; text-align: center; padding:0.5px;}
         .tablaz { border-collapse: collapse;font-size: 10px;border: black 1px solid; text-align: center; padding:0.5px; margin-right: 0px; margin-left: auto;}
-        .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
-        .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
         </style>
  @endsection
