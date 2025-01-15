@@ -152,23 +152,6 @@ class validacionDtaController extends Controller {
         $mesActual = $meses[($fecha->format('n'))];
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
         // $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
-
-        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
-        $terminoExplode = explode('-',$fechaEntregaActual->termino);
-        if($terminoExplode[1][0] == '0') {
-            $mesEntrega = $meses[$terminoExplode[1][1]]; //obtenemos el mes de la fecha termino
-        } else {
-            $mesEntrega = $meses[$terminoExplode[1]]; //obtenemos el mes de la fecha termino
-        }
-        $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
-
-        $diasParaEntrega = $this->getFechaDiff();
-=======
->>>>>>> cc462d75066362e6481997ee57e139069a5f39a1
         
         $mesInformar = $mesEntrega = $fechaEntregaFormatoT = $diasParaEntrega= null;
         if(isset($fechaEntregaActual)){  
@@ -177,11 +160,6 @@ class validacionDtaController extends Controller {
             $terminoExplode = explode('-',$fechaEntregaActual->termino);
             $mesEntrega = $meses[$terminoExplode[1]*1];
             $fechaEntregaFormatoT = $terminoExplode[2] . ' DE ' . $mesEntrega . ' DE ' . $terminoExplode[0];
-<<<<<<< HEAD
-=======
->>>>>>> ece7a21f7 (nueva identidad modulos2)
->>>>>>> cc462d75066362e6481997ee57e139069a5f39a1
-
             $diasParaEntrega = $this->getFechaDiff();
         }
         return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'unidades_busqueda', 'diasParaEntrega', 'mesInformar', 'fechaEntregaFormatoT', 'diasParaEntrega', 'mesSearch', 'formato_respuesta'));
