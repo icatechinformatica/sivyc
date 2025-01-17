@@ -9,13 +9,13 @@
         .tablaf { border-collapse: collapse; width: 100%;}
         .tablaf td { font-size: 8px; text-align: center; padding: 0px;}
 
-        #titulo{ position: fixed; top: 50px; width:100%; text-align: center;}
+        #titulo{ position: fixed; top: 80px; width:100%; text-align: center;}
         #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:bold;}
         #titulo table{position: fixed; top: 100px;}
         #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
         .content {font-family: sans-serif; font-size: 9px; padding-top: 115px;}
-        header {top: 0px; left: 80px; font-size: 11px; font-weight: bold;}
+        header {top: 40px; left: 90px; font-size: 11px; font-weight: bold; line-height: 1;}
     </style>
 @endsection
 @section('content')
