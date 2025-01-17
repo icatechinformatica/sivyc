@@ -8,6 +8,8 @@
     <style>
         body{
             font-family: sans-serif;
+            padding: 100px 50px 20px 50px;
+            /* border: 1px solid red; */
         }
         @page {
             margin: 2px;
@@ -102,7 +104,7 @@
         }
 
         .content {
-            margin: 20px 30px 20px 30px;
+            margin-bottom: 120px;
             /* border: 1px solid red; */
         }
     </style>
@@ -114,10 +116,14 @@
     <div class="content">
         <header>
             @if(isset($leyenda))
-                <small>{{$leyenda}}</small>
-            @elseif(isset($distintivo))
-                <small>{{$distintivo}}</small>
-            @endif
+            @if(!is_array($leyenda)) @php $leyenda = explode("*",$leyenda) @endphp @endif
+             <p><small style="line-height: 1;">@foreach($leyenda as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small></p>
+            {{-- <small>{{$leyenda}}</small> --}}
+        @elseif(isset($distintivo))
+            @if(!is_array($distintivo)) @php $distintivo = explode("*",$distintivo) @endphp @endif
+            <small>@foreach($distintivo as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small>
+            {{-- <small>{{$distintivo}}</small> --}}
+        @endif
         </header>
     <footer>
         <p @if(!isset($fecha) || $fecha > '07-12-2024') class='direccion' @else class='direccion_old' @endif>

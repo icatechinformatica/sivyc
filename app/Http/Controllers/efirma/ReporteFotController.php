@@ -238,6 +238,8 @@ class ReporteFotController extends Controller
             $fechapdf = '';
         }
 
+        if(isset($leyenda)) { $leyenda = explode("*",$leyenda); }
+
         $body['header'] = '<header>
             <img src="img/instituto_oficial.png" alt="Logo Izquierdo" width="30%" style="position:fixed; left:0; top:0;" />
             <img src="img/chiapas.png" alt="Logo Derecho" width="25%" style="position:fixed; right:0; top:0;" />
@@ -257,8 +259,11 @@ class ReporteFotController extends Controller
                 $body['footer'] = $body['footer']. '</div>
         </footer>';
 
-        $body['body'] = '<div style="margin-top: -9%; margin-bottom: 4%;">
-            <h6 style="text-align: center;">'; if (isset($leyenda)) { $body['body'] = $body['body'].$leyenda;} $body['body'] = $body['body']. '</h6>
+        $body['body'] = '<div style="margin-top: -22%; margin-bottom: 4%;">
+            <h6 style="text-align: center;">'; if (isset($leyenda)) {
+                foreach($leyenda as $keys => $part){ if($keys != 0) { $body['body'] = $body['body'].'<br>'; } $body['body'] = $body['body'].$part; }
+            }
+                $body['body'] = $body['body']. '</h6>
         </div>
         <div style="text-align:center;">
             <span style="text-align: center;">REPORTE FOTOGRÁFICO DE INSTRUCTOR EXTERNO</span>

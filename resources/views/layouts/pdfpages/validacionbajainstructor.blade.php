@@ -58,10 +58,10 @@
                 <table class="tablad" style="border-color: black">
                     <thead>
                         <tr>
-                            <th style="border-color: black; width: 110px;">INSTRUCTOR</th>
-                            <th style="border-color: black; width: 150px;">NO. MEMORANDUM</th>
-                            <th style="border-color: black; width: 310px;">ESPECIALIDAD</th>720
-                            <th style="border-color: black; width: 150px">MOTIVO</th>
+                            <th style="border-color: black; width: 10%;">INSTRUCTOR</th>
+                            <th style="border-color: black; width: 10%;">NO. MEMORANDUM</th>
+                            <th style="border-color: black; width: 10%;">ESPECIALIDAD</th>720
+                            <th style="border-color: black; width: 10%">MOTIVO</th>
                         </tr>
                     </thead>
                     <tbody>
