@@ -61,7 +61,7 @@
         </style>
     @endsection
     @section('content')
-        <div>
+        <div style="margin-top: -120px;">
             @php $cont=0; foreach($especialidades AS $ari){if($ari->status != 'BAJA EN FIRMA'){$cont++;}} @endphp
                 <div align=right> <b>Dirección Técnica Académica</b></div>
                 <div align=right> <b>Memorandum No. @if($especialidades[0]->status != 'BAJA EN FIRMA') {{$especialidades[0]->memorandum_validacion}} @else {{$especialidades[0]->memorandum_baja}} @endif</b></div>
@@ -69,7 +69,7 @@
                 <b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
                 <br>{{ $funcionarios['dunidad']['puesto'] }}.
                 <br>Presente.
-                <br><br>Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.
+                <br><br style="line-height: 0.5">Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.
                 <div class="table table-responsive">
                     <table class="tablad" style="border-color: black; font-size: 7;">
                         <tbody>
@@ -82,7 +82,7 @@
                                 <td style='width: 360px;' colspan="2">{{$instructor->numero_control}}</td>
                             </tr>
                             <tr>
-                                <td style='width: 180px;' rowspan="{{$cont}}">Especialidad y Clave de la Especialidad:</td>
+                                <td style='width: 180px;' rowspan="3">Especialidad y Clave de la Especialidad:</td>
                                 @foreach ($especialidades AS $wort => $cadwell)
                                     @if ($cadwell->status != 'BAJA EN FIRMA')
                                         <td style='width: 360px;'>{{$cadwell->nombre}}</td>

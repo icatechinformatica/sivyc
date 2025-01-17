@@ -314,10 +314,10 @@ class ESupreController extends Controller
                 }
             $body_html['supre'] =  $body_html['supre'] . '</tbody>
         </table>
-        <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
-        <br><p class="text-left"><p>Atentamente.</p></p>
-        <br><b> C. '. $funcionarios['director']. '</b>
-        <br><b>'. $funcionarios['directorp'].'</b>';
+        <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>';
+        // <br><p class="text-left"><p>Atentamente.</p></p>
+        // <br><b> C. '. $funcionarios['director']. '</b>
+        // <br><b>'. $funcionarios['directorp'].'</b>';
 
         $body_html['tabla'] = '<div align=center><b><h6>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
             <br>DIRECCIÓN DE PLANEACIÓN
@@ -389,12 +389,12 @@ class ESupreController extends Controller
                         </tr>';
                     }
                     $body_html['tabla'] = $body_html['tabla'].'</tbody>
-            </table>
-            <div align=center> <b>SOLICITA
-                <br>
-                <br><small>C. '. $funcionarios['director']. '</small>
-                <br><small>'. $funcionarios['directorp']. '</small>
-            </div>';
+            </table>';
+            // <div align=center> <b>SOLICITA
+            //     <br>
+            //     <br><small>C. '. $funcionarios['director']. '</small>
+            //     <br><small>'. $funcionarios['directorp']. '</small>
+            // </div>';
 
             $body_html['ccp'] = '<br><br><small><b>C.c.p. '. $funcionarios['ccp1']. '.- '. $funcionarios['ccp1p']. '.-Para su conocimiento</b></small>
                 <br><small><b>C.c.p. '. $funcionarios['ccp2']. '.- '. $funcionarios['ccp2p']. '.-Mismo Fin</b></small>

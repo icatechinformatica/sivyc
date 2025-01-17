@@ -40,12 +40,13 @@
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
+        header {left: 25px;}
 
         </style>
 @endsection
 @section('content')
         <div>
-            <div align=center><b>Formato de Entrevista para Candidatos a Instructores</b></div>
+            <div style="text-align: center;"><b>Formato de Entrevista para Candidatos a Instructores</b></div>
             <p style="margin-right:-250px; text-align:right;"><b>{{$D}} de {{$M}} del {{$Y}}</b></p>
             <b>Nombre del entrevistado: {{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</b>
             <br><b>Unidad de capacitación: {{$userunidad->ubicacion}}</b>
@@ -53,8 +54,8 @@
                 <table class="tablad" style="border-color: black">
                     <thead>
                         <tr>
-                            <td width="360px"><b>PREGUNTA</b></td>
-                            <td width="360px"><b>RESPUESTA</b></td>
+                            <td width="10%"><b>PREGUNTA</b></td>
+                            <td width="10%"><b>RESPUESTA</b></td>
                         </tr>
                     </thead>
                     <tbody style="font-size:8;">

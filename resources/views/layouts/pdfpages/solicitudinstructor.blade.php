@@ -60,10 +60,10 @@
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <th style="border-color: black; width: 90px;">INSTRUCTOR</th>
+                            <th style="border-color: black; width: 15%;">INSTRUCTOR</th>
                             <th style="border-color: black; width: 100px;">ESPECIALIDAD</th>
                             <th style="border-color: black">CURSOS A IMPARTIR</th>
-                            <th style="border-color: black; width: 120px">OBSERVACIONES</th>
+                            <th style="border-color: black; width: 120px;">OBSERVACIONES</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,7 +77,7 @@
                                 @else
                                     @foreach($cold as $moist => $cadwell)
                                         <ul style="margin-left: -30px; line-height:80%;">
-                                            <small><li style="text-align:left; margin: -1; padding: -0.2em;">{{$cadwell->nombre_curso}}.</small></li>
+                                            <small><li style="text-align:left; margin: -1; padding: -0.2em;">{{$cadwell->nombre_curso}} {{$moist}}.</small></li>
                                         </ul>
                                         @if($moist == $i)
                                             </td>
@@ -126,7 +126,7 @@
             @foreach ($data as $altmer)
                 @if($altmer->status != 'BAJA EN FIRMA' && $altmer->status!= 'BAJA EN PREVALIDACION')
                     <div class="page-break"></div>
-                    <div align=right style="margin-top: 100px;"> <b>{{$data_unidad->municipio}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
+                    <div align=right> <b>{{$data_unidad->municipio}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
                     <br><br><b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}.</b>
                     <br>{{ $funcionarios['dacademico']['puesto'] }}.
                     <br>Presente.<br>

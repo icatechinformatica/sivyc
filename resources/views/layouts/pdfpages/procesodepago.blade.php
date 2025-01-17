@@ -25,11 +25,12 @@
             small {
                 font-size: .7em
             }
+            header {left: 25px;}
         </style>
 @endsection
 @section('content')
         {{-- {!! $body_html['header'] !!} --}}
-        <div class= "container g-pt-30">
+        {{-- <div class= "container g-pt-30"> --}}
             <div id="content">
                 {!! $body_html['body'] !!}
                 @if(!is_null($objeto))
@@ -42,7 +43,7 @@
                             </tr>
                             <tr>
                                 <td style="vertical-align: top; font-size: 8px; border: none;"><b>Firma Electrónica:</b></td>
-                                <td style="font-size: 8px; border: none;">{{ wordwrap($moist['_attributes']['firma_firmante'], 105, "\n", true) }}</td>
+                                <td style="font-size: 8px; border: none;">{{ wordwrap($moist['_attributes']['firma_firmante'], 100, "\n", true) }}</td>
                             </tr>
                             <tr>
                                 <td style="font-size: 8px; border: none;"><b>Puesto:</b></td>
@@ -61,7 +62,7 @@
                     {{-- </div> --}}
                     <div style="display: inline-block; width: 15%;">
                         {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                        <img style="position: fixed; width: 15%; top: 54%; left: 77%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                        <img style="position: fixed; width: 15%; top: 56%; left: 79%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                     </div>
                 @else
                     <table class="table1">
@@ -89,7 +90,7 @@
                     <b><small>Elaboró: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.</small></b>
                 </p> --}}
             </div>
-        </div>
+        {{-- </div> --}}
         {{-- {!! $body_html['footer'] !!} --}}
 @endsection
 @section('script_content_js')
