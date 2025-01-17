@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', '')</title>
     <style>
-        body{font-family: sans-serif; padding: 100px 50px 100px 30px;  }
+        body{font-family: sans-serif; padding: 110px 50px 100px 100px;  }
         @page {margin: 2px; size: letter;}
         /* header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;} */
         header { position: fixed; left: 0px; top: 70px; right: 0px;text-align: center;width:100%;line-height: 30px;}
@@ -67,11 +67,15 @@
 {{-- cambio prueba --}}
 {{-- @section('content') --}}
 <body @if(!isset($fecha) || $fecha < '08-12-2024') id='fondo1' @else id='fondo_old' @endif >
-    <header  >
+    <header>
         @if(isset($leyenda))
-            <small>{{$leyenda}}</small>
+            @if(!is_array($leyenda)) @php $leyenda = explode("*",$leyenda) @endphp @endif
+             <p><small style="line-height: 1;">@foreach($leyenda as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small></p>
+            {{-- <small>{{$leyenda}}</small> --}}
         @elseif(isset($distintivo))
-            <small>{{$distintivo}}</small>
+            @if(!is_array($distintivo)) @php $distintivo = explode("*",$distintivo) @endphp @endif
+            <small>@foreach($distintivo as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small>
+            {{-- <small>{{$distintivo}}</small> --}}
         @endif
     </header>
     <footer>

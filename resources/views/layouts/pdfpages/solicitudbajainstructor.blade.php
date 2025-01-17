@@ -38,7 +38,7 @@
         .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
         .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
         .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
-        .tablad { border-collapse: collapse;font-size: 12px;border: black 1px solid; text-align: center; padding:0.5px;}
+        .tablad { border-collapse: collapse;font-size: 12px;border: black 1px solid; text-align: center;}
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
@@ -56,20 +56,20 @@
 
             <br><p class="text-justify">Por medio de la presente, me dirijo a usted para solicitar la baja operativa del instructor externo de la unidad {{$data_unidad->ubicacion}} que a continuación se menciona:</p>
             <div class="table table-responsive">
-                <table class="tablad" style="border-color: black">
+                <table class="tablad">
                     <thead>
                         <tr>
-                            <th style="border-color: black; width: 110px;">INSTRUCTOR</th>
-                            <th style="border-color: black; width: 150px;">NO. MEMORANDUM</th>
-                            <th style="border-color: black; width: 310px;">ESPECIALIDAD</th>720
-                            <th style="border-color: black; width: 150px">MOTIVO</th>
+                            <th style="border-color: black; width: 10%;">INSTRUCTOR</th>
+                            <th style="border-color: black; width: 10%;">NO. MEMORANDUM</th>
+                            <th style="border-color: black; width: 10%;">ESPECIALIDAD</th>720
+                            <th style="border-color: black; width: 10%;">MOTIVO</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             @php foreach ($especialidades AS $cc => $watt){} $cc++; @endphp
                             <td rowspan="{{$cc}}"><small>{{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}}</small></td>
-                        @foreach($especialidades AS $key => $cold)
+                            @foreach($especialidades AS $key => $cold)
                             @if($key != 0)
                                 <tr>
                             @endif
@@ -89,7 +89,7 @@
                                 <td><small>{{$cold->especialidad}}</small></td>
                                 <td><small>{{$instructor->motivo}}</small></td>
                             </tr>
-                        @endforeach
+                            @endforeach
                     </tbody>
                 </table>
             </div>
