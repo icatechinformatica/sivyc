@@ -1,19 +1,18 @@
 @extends('theme.sivyc.layout')
-<!--llamar a la plantilla -->
-@section('title', 'Organismos Publicos | SIVyC Icatech')
-
+@section('title', 'Organismos Públicos | SIVyC Icatech')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />    
+@endsection
 @section('content')
-    <div class="container-fluid g-pt-30 px-5">
+    <div class="card-header">
+        Catálogos / Nuevo Convenio
+    </div>
+    <div class="card card-body">    
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
             </div>
-        @endif
-        <div class="row my-3">
-            <div class="col">
-                <h1>ORGANISMOS</h1>
-            </div>
-        </div>
+        @endif       
         <div class="row">
             <div class="col">
                 {!! Form::open(['route' => 'organismos.index', 'method' => 'GET', 'class' => 'form-inline']) !!}
@@ -30,7 +29,7 @@
             @can('organismo.agregar')
                 <div class="col">
                     <div class="pull-right">
-                        <a class="btn btn-success btn-lg" href="{{ route('organismos.agregar') }}">Agregar</a>
+                        <a class="btn " href="{{ route('organismos.agregar') }}">Agregar</a>
                     </div>
                 </div>
             @endcan
@@ -66,10 +65,10 @@
                         @endif
                         @can('organismo.agregar')
                             <td>
-                                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
+                                <a class="nav-link pt-0" data-toggle="tooltip"
                                         data-placement="top" title="EDITAR ORGANISMOS"
                                         href="{{ route('organismos.agregar', ['id' => base64_encode($og->id)]) }}">
-                                        <i class="fas fa-pencil-alt fa-2x mt-2" aria-hidden="true"></i>
+                                        <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
                                     </a>
                             </td>
                         @endcan
