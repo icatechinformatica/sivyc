@@ -82,7 +82,7 @@
                                 <td style='width: 360px;' colspan="2">{{$instructor->numero_control}}</td>
                             </tr>
                             <tr>
-                                <td style='width: 180px;' rowspan="3">Especialidad y Clave de la Especialidad:</td>
+                                <td style='width: 180px;' rowspan="{{$cont}}">Especialidad y Clave de la Especialidad:</td>
                                 @foreach ($especialidades AS $wort => $cadwell)
                                     @if ($cadwell->status != 'BAJA EN FIRMA')
                                         <td style='width: 360px;'>{{$cadwell->nombre}}</td>
