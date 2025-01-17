@@ -58,10 +58,10 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('solicitud.apertura')
-                                <a class="dropdown-item" href="{{ route('solicitud.apertura') }}">Clave de Apertura ARC01</a>
-                                <a class="dropdown-item" href="{{ route('solicitud.apertura.search') }}">Busqueda Clave de Apertura ARC01</a>
-                                <a class="dropdown-item" href="{{ route('solicitud.apertura.modificar') }}">Modificaci&oacute;n Apertura ARC02</a>
-                                <a class="dropdown-item" href="{{ route('solicitud.apertura.turnar') }}">Turnar Solicitud ARC</a>
+                                <a class="dropdown-item" href="{{ route('solicitud.apertura') }}">Clave de Apertura ARC01</a>                                
+                                <a class="dropdown-item" href="{{ route('solicitud.apertura.modificar') }}">Modificaci&oacute;n Apertura ARC02</a>                                
+                                <a class="dropdown-item" href="{{ route('solicitud.apertura.turnar') }}">Turnar  Solicitud ARC</a>
+                                <a class="dropdown-item" href="{{ route('solicitud.apertura.search') }}">Buscar ARC01</a>
                             @endcan
                             @can('solicitud.exoneracion')
                                 <a class="dropdown-item" href="{{ route('solicitud.exoneracion') }}">Exoneración / Reducción de Cuotas</a>
@@ -110,7 +110,7 @@
                                 <a class="dropdown-item" href="{{ route('grupos.cancelacionfolios') }}">Cancelar Folios</a>
                             @endcan
                             @can('grupos.consultas')
-                                <a class="dropdown-item" href="{{ route('grupos.consultas') }}">B&uacute;squeda</a>
+                                <a class="dropdown-item" href="{{ route('grupos.consultas') }}">Buscar Grupo</a>
                             @endcan
                             @can('grupos.recibos')
                                 <a class="dropdown-item" href="{{ route('grupos.recibos') }}">Asignar Recibo de Pago</a>
@@ -130,31 +130,26 @@
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a href="#" class="nav-link g-color-2025--hover" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Formatos T
+                            FormatoT
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
                             @can('vista.formatot.unidades.indice')
-                                <a class="dropdown-item" href="{{ route('vista_formatot') }}">Generación y Envío de FormatoT</a>
+                                <a class="dropdown-item" href="{{ route('vista_formatot') }}">Gestión de FormatoT</a>
                             @endcan
-                            <a class="dropdown-item" href="{{ route('formatot.consulta.index') }}">Consulta de FormatoT</a>
+                            <a class="dropdown-item" href="{{ route('formatot.consulta.index') }}">Consulta FormatoT</a>
                             @can('vista.validacion.enlaces.dta')
-                                <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión de Cursos Formato T</a>
+                                <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión FormatoT</a>
                             @endcan
                             @can('vista.validacion.direccion.dta')
-                                <a class="dropdown-item" href="{{ route('validacion.dta.revision.cursos.indice') }}">Validación de Cursos Formato T DTA</a>
+                                <a class="dropdown-item" href="{{ route('validacion.dta.revision.cursos.indice') }}">Validación FormatoT DTA</a>
+                                <a class="dropdown-item" href="{{ route('indice.dta.aperturado.indice') }}">Cursos Aperturado FormatoT</a>
                             @endcan
                             @can('vista.revision.validacion.planeacion.indice')
-                                <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Revisión y Validación Final Formato T</a>
-                            @endcan
-                            @can('vista.validacion.direccion.dta')
-                                <a class="dropdown-item" href="{{ route('indice.dta.aperturado.indice') }}">Formato T Aperturado</a>
-                            @endcan
-                            @can('vista.validacion.direccion.dta')
-                                <a href="{{ route('checar.memorandum.dta.mes') }}" class="dropdown-item">Memorandums Para la Dirección de Técnica Acádemica</a>
-                            @endcan
-                            @can('vista.validacion.enlaces.dta')
-                                <a href="{{ route('checar.memorandum.dta.mes') }}" class="dropdown-item">Memorandums Enviados a DTA</a>
-                            @endcan
+                                <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Validación FormatoT DP</a>
+                            @endcan                           
+                            @canany(['vista.validacion.direccion.dta','vista.validacion.enlaces.dta'])
+                                <a href="{{ route('checar.memorandum.dta.mes') }}" class="dropdown-item">Memos Turnados a DTA</a>
+                            @endcanany
 
                             {{-- agregar nuevo elemento a menu END --}}
                             {{-- @can('vista.formatot.unidades.indice')

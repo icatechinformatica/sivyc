@@ -125,17 +125,16 @@ class ftcontroller extends Controller {
         // $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
         $fechaEntregaActual = \DB::Table('calendario_formatot')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
         // $dateNow = $fechaEntregaActual->fecha_entrega."-".$anioActual;
-        $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1]; // obtenemos del array meses el mes de reporte a entregar
-        $mesComparador = Carbon::now()->month;
+        $mesInformar = $mesComparador = $termino = $mesEntrega = $fechaEntregaFormatoT = null;
+        if(isset($fechaEntregaActual)){
+            $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1]; // obtenemos del array meses el mes de reporte a entregar
+            $mesComparador = Carbon::now()->month;
 
-        // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
-        $termino = explode('-',$fechaEntregaActual->termino);
-        if($termino[1][0] == '0') {
-            $mesEntrega = $meses_[$termino[1][1]]; //obtenemos el mes de la fecha termino
-        } else {
-            $mesEntrega = $meses_[$termino[1]]; //obtenemos el mes de la fecha termino
+            // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
+            $termino = explode('-',$fechaEntregaActual->termino);
+            $mesEntrega = $meses_[$termino[1]*1]; //obtenemos el mes de la fecha termino
+            $fechaEntregaFormatoT = $termino[2] . ' DE ' . $mesEntrega . ' DE ' . $termino[0];
         }
-        $fechaEntregaFormatoT = $termino[2] . ' DE ' . $mesEntrega . ' DE ' . $termino[0];
         $diasParaEntrega = $this->chkDateToDeliver();
 
         return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar', 'diasParaEntrega', 'unidad', 'mesComparador'));
@@ -551,9 +550,11 @@ class ftcontroller extends Controller {
     protected function chkDateToDeliver() {
         $fechaActual = Carbon::now();
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino')->whereDate('inicio', '<=', $fechaActual)->whereDate('termino', '>=', $fechaActual)->first();
-
-        $fechaTermino = Carbon::parse($fechaEntregaActual->termino); // Convertir la fecha de término a Carbon
-        $dias = $fechaActual->diffInDays($fechaTermino, false)+1; // Calcula la diferencia en días
+        $fechaTermino = $dias = null;
+        if(isset($fechaEntregaActual)){
+            $fechaTermino = Carbon::parse($fechaEntregaActual->termino); // Convertir la fecha de término a Carbon
+            $dias = $fechaActual->diffInDays($fechaTermino, false)+1; // Calcula la diferencia en días
+        }
 
         return $dias;
     }

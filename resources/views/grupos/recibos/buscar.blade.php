@@ -11,7 +11,7 @@
     <div class="card-header">
         Grupos / Buscar Recibos de Pago        
     </div>
-    <div class="card card-body  p-5" style=" min-height:450px;">
+    <div class="card card-body" style=" min-height:450px;">
         @if(count($message)>0)
             <div class="row ">
                 <div @if(isset($message["ERROR"])) class="col-md-12 alert alert-danger" @else class="col-md-12 alert alert-success"  @endif>

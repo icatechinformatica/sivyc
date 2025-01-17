@@ -1,8 +1,8 @@
 <!--Creado por Julio Alcaraz-->
 @extends('theme.sivyc.layout')
-<!--llamar a la plantilla -->
-@section('title', 'APERTURAS | SIVyC Icatech')
+@section('title', 'Generación FormatoT | SIVyC Icatech')
 @section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
     <style>
         #spinner:not([hidden]) {
             position: fixed;
@@ -35,25 +35,15 @@
                 transform: rotate(360deg);
             }
         }
-
-        .content {
-            padding: 0 20px 20px 17px;
-            margin-top: 0;
-        }
-
-        @media (min-width: 1200px) {
-            .container {
-                width: 1400px;
-            }
-        }
-
     </style>
 @endsection
-<!--seccion-->
 @section('content')
-    <div class="container-fluid px-5 g-pt-30">
+    <div class="card-header">
+        FormatoT / Generación y Envío de FormatoT
+    </div>
+    <div class="card card-body">
         {{-- información sobre la entrega del formato t para unidades --}}
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning mb-4" role="alert">
             <b>LA FECHA LÍMITE DEL MES DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL
                 <strong>{{ $fechaEntregaFormatoT }}</strong>; FALTAN <strong>{{ $diasParaEntrega }}</strong> DÍAS</b>
         </div>
@@ -70,14 +60,6 @@
             </div>
         @endif
 
-        <div class="row">
-            <div class="col-lg-8 margin-tb">
-                <div>
-                    <h3><b>GENERACIÓN DEL FORMATO T</b></h3>
-                </div>
-            </div>
-        </div>
-
         {{-- {{ Form::open(['route' => 'vista_formatot', 'method' => 'post', 'enctype' => 'multipart/form-data']) }}
             <div class="form-row">
                 <div class="form-group col-md-4">
@@ -92,7 +74,7 @@
                     {{ Form::text('anio', null , ['class' => 'form-control  mr-sm-1', 'placeholder' => 'AÑO A REPORTAR']) }}
                 </div>
                 <div class="form-group col-md-4">
-                    {!! Form::submit( 'FILTRAR', ['id'=>'formatot', 'class' => 'btn btn-outline-info my-2 my-sm-0 waves-effect waves-light', 'name' => 'submitbutton'])!!}
+                    {!! Form::submit( 'FILTRAR', ['id'=>'formatot', 'class' => 'btn my-2 my-sm-0 waves-effect waves-light', 'name' => 'submitbutton'])!!}
                 </div>
 
             </div>
@@ -546,7 +528,8 @@
                 </div>
             </form>
         @else
-            <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
+            <hr class="mt-5"/>
+            <h4 class="text-center"><b>NO HAY REGISTROS PARA MOSTRAR</b></h4>
         @endif
         <br>
     </div>

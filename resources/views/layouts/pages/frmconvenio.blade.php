@@ -1,18 +1,21 @@
 @extends("theme.sivyc.layout")
 <!--llamar la plantilla -->
-@section('title', 'Formulario de Convenio | Sivyc Icatech')
+@section('title', 'Nuevo de Convenio | Sivyc Icatech')
 
 @section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
 @endsection
-
-{{-- contenido --}}
-@section('content')
+@section('content')       
+    <div class="card-header">
+        Catálogos / Nuevo Convenio
+    </div>
+    <div class="card card-body">
     <?php
         $id_organismo = null;
     ?>
-    <div class="container g-pt-10">
+    
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -27,14 +30,6 @@
         <form method="POST" action="{{ route('convenios.store') }}" id="frmConvenio" enctype="multipart/form-data"
             autocomplete="off">
             @csrf
-
-            {{-- titulo --}}
-            <div style="text-align: center">
-                <label for="tituloagregar_convenio">
-                    <h1>NUEVO CONVENIO</h1>
-                </label>
-            </div>
-
             <div class="form-row">
                 {{-- no convenio --}}
                 <div class="form-group col-md-6">
@@ -205,16 +200,9 @@
 
             <!--botones de enviar y retroceder-->
             <div class="row mt-5">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
-                        {{--<a class="btn btn-danger" id="tbn">Regresar</a>--}}
-
-                    </div>
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-                </div>
+                <a class="btn " href="{{ URL::previous() }}">< Regresar</a>
+                <button type="submit" class="btn btn-danger">Guardar</button>
+                
             </div>
         </form>
         <br>
