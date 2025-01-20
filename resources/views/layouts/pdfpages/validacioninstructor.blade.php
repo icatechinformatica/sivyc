@@ -164,11 +164,11 @@
                         <table style="border-collapse:initial;font-size: 12px; color:white; border: black 1px solid; text-align: center; padding:0.5px;">
                             <thead>
                                 <tr>
-                                    <td>
-                                        <b>REVISÓ</b><br><br>
-                                        <b><br>_________________________</b>
-                                        <br>alguien1<br>
-                                        <b>111</b>
+                                    <td width="173px"  >
+                                        <b>&nbsp;</b><br><br>
+                                        <b><br>&nbsp;</b>
+                                        <br>&nbsp;<br>
+                                        <b>&nbsp;</b>
                                         <br>
                                     </td>
                                 </tr>
