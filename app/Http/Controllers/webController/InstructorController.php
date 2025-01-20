@@ -1769,6 +1769,9 @@ class InstructorController extends Controller
 
                 if(isset($ges->cursos_impartir))
                 {
+                    if(!is_array($ges->cursos_impartir)) {
+                        $ges->cursos_impartir = json_decode($ges->cursos_impartir, true);
+                    }
                     $cursos = curso::SELECT('nombre_curso')->WHEREIN('id', $ges->cursos_impartir)->GET();
                     foreach($cursos as $llavesita => $ari)
                     {
@@ -1850,10 +1853,18 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
 
-        // verificacion de datos alfa. si es nulo o se construye array nulo para evitar errores
+        // verificacion de datos alfa. si es nulo o se construye array nulo para evitar errores y otros arreglos de json a array
         if($datainstructor->instructor_alfa != true) {
             $datainstructor->datos_alfa = $this->instructor_alfa_nulo();
         }
+
+        if(!is_array($datainstructor->exp_docente)) {
+            $datainstructor->exp_docente = json_decode($datainstructor->exp_docente);
+        }
+        if(!is_array($datainstructor->exp_laboral)) {
+            $datainstructor->exp_laboral = json_decode($datainstructor->exp_laboral);
+        }
+        //fin
         return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen','paises'));
     }
 
