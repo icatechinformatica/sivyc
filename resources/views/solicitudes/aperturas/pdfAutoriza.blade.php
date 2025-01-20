@@ -17,13 +17,12 @@
         .tablad tr td{padding: 1px 5px 0 5px; font-size: 7px;}
 
 
-        #titulo { position: fixed; top: 50px; width:100%; text-align: center;}
+        #titulo{ position: fixed; top: 80px; width:100%; text-align: center;}
         #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
 
         .content {font-family: sans-serif; font-size: 9px; padding-top: 115px;}
         /* .direccion {position: absolute;  top: 1.35cm; width:400px; margin-left:20px; height:auto; font-family: sans-serif; font-size: 10px; color:#FFF; } */
-        header {top: 0px; left: 80px; font-size: 11px; font-weight: bold;}
-
+        header {top: 40px; left: 90px; font-size: 11px; font-weight: bold; line-height: 1;}
     </style>
 @endsection
 @section('content')
