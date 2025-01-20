@@ -1205,6 +1205,9 @@
                                     $hvalidacion = null;
                                 }
                                 if(!is_null($hvalidacion)) {
+                                    if(!is_array($hvalidacion)) {
+                                        $hvalidacion = json_decode($hvalidacion);
+                                    }
                                     $hvalidacion = end($hvalidacion);
                                     if(is_null($dataVal) && !isset($hvalidacion->memo_baja)) {
                                         $dataVal = $hvalidacion;
