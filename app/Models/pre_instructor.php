@@ -17,7 +17,7 @@ class pre_instructor extends Model
     'archivo_otraid','id_especialidad','archivo_rfc','estado','lastUserId','stps','conocer','clave_loc','localidad',
     'tipo_identificacion','expiracion_identificacion','solicito','turnado','nacionalidad','entidad_nacimiento',
     'municipio_nacimiento','localidad_nacimiento','clave_loc_nacimiento','codigo_postal','telefono_casa','curriculum',
-    'id_oficial','registro_activo','archivo_curriculum_personal','tipo_instructor','data_especialidad'];
+    'id_oficial','registro_activo','archivo_curriculum_personal','tipo_instructor','data_especialidad','instructor_alfa','datos_alfa'];
 
     protected $casts = [
         'unidades_disponible' => 'array',
@@ -25,7 +25,8 @@ class pre_instructor extends Model
         'exp_laboral' => 'array',
         'exp_docente' => 'array',
         'data_perfil' => 'array',
-        'data_especialidad' => 'array'
+        'data_especialidad' => 'array',
+        'datos_alfa' => 'array'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

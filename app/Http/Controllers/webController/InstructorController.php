@@ -25,6 +25,7 @@ use App\Models\Calificacion;
 use App\Models\tbl_curso;
 use App\Models\Banco;
 use App\Models\pago;
+use App\Models\pais;
 use App\Models\contratos;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -289,8 +290,9 @@ class InstructorController extends Controller
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $bancos = Banco::all();
         $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
+        $paises = pais::all();
 
-        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos','lista_regimen'));
+        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos','lista_regimen','paises'));
     }
 
     #----- instructor/guardar -----#
@@ -314,103 +316,10 @@ class InstructorController extends Controller
             unset($instructor->data_especialidad);
             unset($instructor->data_perfil);
 
-            if(isset($request->hispanohablante)) {
-                $subproyectos = [];
-                $instructor->instructor_alfa = true;
-                $instructor->status = 'VALIDADO';
-                foreach($request->subproyecto as $subproyecto) {
-                    switch($subproyecto) {
-                        case 'oportunidades':
-                            $subproyectos[$subproyecto] = $request->oportunidades_puesto;
-                        break;
-                        case 'conafe':
-                            $subproyectos[$subproyecto] = $request->conafe_puesto;
-                        break;
-                        case 'sedena':
-                            $subproyectos[$subproyecto] = $request->sedena_puesto;
-                        break;
-                        case 'profesores':
-                            $subproyectos[$subproyecto] = $request->profesores_puesto;
-                        break;
-                        case 'becarios':
-                            $subproyectos[$subproyecto] = $request->becarios_puesto;
-                        break;
-                        case 'osc':
-                            $subproyectos[$subproyecto] = $request->osc_puesto;
-                        break;
-                        case 'ipf':
-                            $subproyectos[$subproyecto] = $request->ipf_puesto;
-                        break;
-                        case 'programas federales':
-                            $subproyectos[$subproyecto] = $request->input('programas federales_puesto');
-                        break;
-                        case 'conevyt':
-                            $subproyectos[$subproyecto] = $request->conevyt_puesto;
-                        break;
-                        case 'oportunidades':
-                            $subproyectos[$subproyecto] = $request->oportunidades_puesto;
-                        break;
-                        case 'instituciones academicas':
-                            $subproyectos[$subproyecto] = $request->instituciones_academicas_puesto;
-                        break;
-                        case 'otro':
-                            $subproyectos[$subproyecto] = $request->otrosub_puesto;
-                        break;
-                    }
-                }
-
-                $horarios_circulo = [
-                    '1' => ['dia' => $request->dia1, 'inicio' => $request->horario_inicio1, 'termino' => $request->horario_termino1],
-                    '1-2' => ['dia' => $request->dia1_2, 'inicio' => $request->horario_inicio1_2, 'termino' => $request->horario_termino1_2],
-                    '2' => ['dia' => $request->dia2, 'inicio' => $request->horario_inicio2, 'termino' => $request->horario_termino2],
-                    '2-2' => ['dia' => $request->dia2_2, 'inicio' => $request->horario_inicio2_2, 'termino' => $request->horario_termino2_2],
-                    '3' => ['dia' => $request->dia3, 'inicio' => $request->horario_inicio3, 'termino' => $request->horario_termino3],
-                    '3-2' => ['dia' => $request->dia3_2, 'inicio' => $request->horario_inicio3_2, 'termino' => $request->horario_termino3_2]
-                ];
-
-                $datos_alfa = [
-                    'hispanohablante' => $request->hispanohablante,
-                    'lengua_indigena' => $request->lengua_indigena,
-                    'etnia' => $request->etnia,
-                    'hijos' => $request->hijos,
-                    'subproyectos' => $subproyectos,
-                    'tipo_vialidad' => $request->tipo_vialidad,
-                    'nombre_vialidad' => $request->nombre_vialidad,
-                    'numero_exterior' => $request->numero_exterior,
-                    'numero_interior' => $request->numero_interior,
-                    'entre_vialidad1' => $request->entre_vialidad1,
-                    'entre_vialidad2' => $request->entre_vialidad2,
-                    'vialidad_posterior' => $request->vialidad_posterior,
-                    'carretera' => $request->carretera,
-                    'tipo_asentamiento_humano' => $request->tipo_asentamiento_humano,
-                    'nombre_asentamiento_humano' => $request->nombre_asentamiento_humano,
-                    'descripcion_ubicacion' => $request->descripcion_ubicacion,
-                    'ocupacion' => $request->ocupacion,
-                    'sin_ocupacion' => $request->sin_ocupacion,
-                    'con_ocupacion' => $request->con_ocupacion,
-                    'ingreso_mensual' => $request->ingreso_mensual,
-                    'roles' => $request->roles_figura_operativa,
-                    'unidad_operativa' => $request->unidad_operativa,
-                    'circulo_estudio' => $request->circulo_estudio,
-                    'responsable_circulo' => $request->responsable_circulo,
-                    'fecha_inicio' => $request->fecha_inicio,
-                    'horario_circulo' => $horarios_circulo
-                ];
-
-                $instructor->datos_alfa = $datos_alfa;
-                $instructor->codigo_postal = $request->codigo_postal2;
-                $instructor->domicilio = $request->tipo_vialidad . ' '. $request->nombre_vialidad . ' '. $request->numero_exterior. ' ENTRE '. $request->entre_vialidad1. ' Y '.$request->entre_vialidad2. ' '. $request->tipo_asentamiento_humano . ' ' . $request->nombre_asentamiento_humano;
-            } else {
-                $instructor->instructor_alfa = false;
-            }
-
             $pre_instructor  = $this->guardado_ins($save_preinstructor, $request, $id);
             $pre_instructor->id_oficial = $instructor->id;
-            if(isset($request->hispanohablante)) {
-                $pre_instructor->registro_activo = false;
-            } else {
-                $pre_instructor->registro_activo = TRUE;
-            }
+            $pre_instructor->registro_activo = TRUE;
+
             // dd($instructor);
             $pre_instructor->save();
             $instructor->save();
@@ -418,14 +327,9 @@ class InstructorController extends Controller
             $newa = (array) $instructor;
             $this->new_history($newa, $instructor, 'creacion de instructor por parte de la unidad');
 
-            if($instructor->instructor_alfa) {
-                return redirect()->route('instructor-ver',['id' => $instructor->id])
-                    ->with('success','Información basica agregada');
+            return redirect()->route('instructor-crear-p2',['id' => $instructor->id])
+                ->with('success','Información basica agregada');
 
-            } else {
-                return redirect()->route('instructor-crear-p2',['id' => $instructor->id])
-                    ->with('success','Información basica agregada');
-            }
         }
         else
         {
@@ -452,6 +356,7 @@ class InstructorController extends Controller
                         ->ORDERBY('muni','ASC')->GET();
         $bancos = Banco::all();
         $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
+        $paises = pais::all();
 
         if(isset($idestnac->id))
         {
@@ -520,8 +425,13 @@ class InstructorController extends Controller
         {
             $nrevisionlast = 0;
         }
+
+        // verificacion de datos alfa. si es nulo o se construye array nulo para evitar errores
+        if($datainstructor->instructor_alfa != true) {
+            $datainstructor->datos_alfa = $this->instructor_alfa_nulo();
+        }
         // dd($nrevisionlast);
-        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos','lista_regimen'));
+        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos','lista_regimen','paises'));
     }
 
     public function send_to_dta(Request $request)
@@ -1031,7 +941,6 @@ class InstructorController extends Controller
 
     public function validar(Request $request)
     {
-        // dd($request);
         $movimientoesp = $movimientoper = $mvalidacion = NULL;
         $saveInstructor = pre_instructor::find($request->idinsvalidar);
         $regimen_actual = instructor::Where('id',$saveInstructor->id)->Value('tipo_honorario');
@@ -1819,6 +1728,7 @@ class InstructorController extends Controller
         $instructor_perfil = new InstructorPerfil();
         $bancos = Banco::all();
         $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
+        $paises = pais::all();
 
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
@@ -1940,7 +1850,11 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
 
-        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen'));
+        // verificacion de datos alfa. si es nulo o se construye array nulo para evitar errores
+        if($datainstructor->instructor_alfa != true) {
+            $datainstructor->datos_alfa = $this->instructor_alfa_nulo();
+        }
+        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen','paises'));
     }
 
     public function save_ins(Request $request)
@@ -1951,100 +1865,6 @@ class InstructorController extends Controller
         $userId = Auth::user()->id;
         $modInstructor = pre_instructor::find($request->id);
         $extract_inf = instructor::find($request->id);
-        if($extract_inf->instructor_alfa) {
-            $instructor = $this->guardado_ins($extract_inf, $request, $request->id);
-            unset($instructor->data_especialidad);
-            unset($instructor->data_perfil);
-            $subproyectos = [];
-            $instructor->instructor_alfa = true;
-            $instructor->status = 'VALIDADO';
-            foreach($request->subproyecto as $subproyecto) {
-                switch($subproyecto) {
-                    case 'oportunidades':
-                        $subproyectos[$subproyecto] = $request->oportunidades_puesto;
-                    break;
-                    case 'conafe':
-                        $subproyectos[$subproyecto] = $request->conafe_puesto;
-                    break;
-                    case 'sedena':
-                        $subproyectos[$subproyecto] = $request->sedena_puesto;
-                    break;
-                    case 'profesores':
-                        $subproyectos[$subproyecto] = $request->profesores_puesto;
-                    break;
-                    case 'becarios':
-                        $subproyectos[$subproyecto] = $request->becarios_puesto;
-                    break;
-                    case 'osc':
-                        $subproyectos[$subproyecto] = $request->osc_puesto;
-                    break;
-                    case 'ipf':
-                        $subproyectos[$subproyecto] = $request->ipf_puesto;
-                    break;
-                    case 'programas federales':
-                        $subproyectos[$subproyecto] = $request->input('programas federales_puesto');
-                    break;
-                    case 'conevyt':
-                        $subproyectos[$subproyecto] = $request->conevyt_puesto;
-                    break;
-                    case 'oportunidades':
-                        $subproyectos[$subproyecto] = $request->oportunidades_puesto;
-                    break;
-                    case 'instituciones academicas':
-                        $subproyectos[$subproyecto] = $request->instituciones_academicas_puesto;
-                    break;
-                    case 'otro':
-                        $subproyectos[$subproyecto] = $request->otrosub_puesto;
-                    break;
-                }
-            }
-
-            $horarios_circulo = [
-                '1' => ['dia' => $request->dia1, 'inicio' => $request->horario_inicio1, 'termino' => $request->horario_termino1],
-                '1-2' => ['dia' => $request->dia1_2, 'inicio' => $request->horario_inicio1_2, 'termino' => $request->horario_termino1_2],
-                '2' => ['dia' => $request->dia2, 'inicio' => $request->horario_inicio2, 'termino' => $request->horario_termino2],
-                '2-2' => ['dia' => $request->dia2_2, 'inicio' => $request->horario_inicio2_2, 'termino' => $request->horario_termino2_2],
-                '3' => ['dia' => $request->dia3, 'inicio' => $request->horario_inicio3, 'termino' => $request->horario_termino3],
-                '3-2' => ['dia' => $request->dia3_2, 'inicio' => $request->horario_inicio3_2, 'termino' => $request->horario_termino3_2]
-            ];
-
-            $datos_alfa = [
-                'hispanohablante' => $request->hispanohablante,
-                'lengua_indigena' => $request->lengua_indigena,
-                'etnia' => $request->etnia,
-                'hijos' => $request->hijos,
-                'subproyectos' => $subproyectos,
-                'tipo_vialidad' => $request->tipo_vialidad,
-                'nombre_vialidad' => $request->nombre_vialidad,
-                'numero_exterior' => $request->numero_exterior,
-                'numero_interior' => $request->numero_interior,
-                'entre_vialidad1' => $request->entre_vialidad1,
-                'entre_vialidad2' => $request->entre_vialidad2,
-                'vialidad_posterior' => $request->vialidad_posterior,
-                'carretera' => $request->carretera,
-                'tipo_asentamiento_humano' => $request->tipo_asentamiento_humano,
-                'nombre_asentamiento_humano' => $request->nombre_asentamiento_humano,
-                'descripcion_ubicacion' => $request->descripcion_ubicacion,
-                'ocupacion' => $request->ocupacion,
-                'sin_ocupacion' => $request->sin_ocupacion,
-                'con_ocupacion' => $request->con_ocupacion,
-                'ingreso_mensual' => $request->ingreso_mensual,
-                'roles' => $request->roles_figura_operativa,
-                'unidad_operativa' => $request->unidad_operativa,
-                'circulo_estudio' => $request->circulo_estudio,
-                'responsable_circulo' => $request->responsable_circulo,
-                'fecha_inicio' => $request->fecha_inicio,
-                'horario_circulo' => $horarios_circulo
-            ];
-            $instructor->datos_alfa = $datos_alfa;
-            $instructor->codigo_postal = $request->codigo_postal;
-            $instructor->domicilio = $request->tipo_vialidad . ' '. $request->nombre_vialidad . ' '. $request->numero_exterior. ' ENTRE '. $request->entre_vialidad1. ' Y '.$request->entre_vialidad2. ' '. $request->tipo_asentamiento_humano . ' ' . $request->nombre_asentamiento_humano;
-            $instructor->save();
-            return redirect()->route('instructor-ver',['id' => $instructor->id])
-                    ->with('success','Información basica agregada');
-        } else {
-            $extract_inf->status = 'EN CAPTURA';
-        }
         if(!isset($modInstructor))
         {
             $modInstructor = new pre_instructor();
@@ -4024,7 +3844,7 @@ class InstructorController extends Controller
 
     private function guardado_ins($saveInstructor,$request,$id)
     {
-        // dd($saveInstructor);
+        // dd($request);
         $arresp = $arrper = $arrtemp = array();
         $perfiles = InstructorPerfil::WHERE('numero_control',$id)->GET();
         $especialidades = especialidad_instructor::WHERE('id_instructor', '=', $id)->GET();
@@ -4073,6 +3893,7 @@ class InstructorController extends Controller
         $saveInstructor->interbancaria = $request->clabe;
         $saveInstructor->no_cuenta = $request->numero_cuenta;
         $saveInstructor->tipo_instructor = $request->tipo_instructor;
+        $saveInstructor->nacionalidad = $request->pais_nacimiento;
         if(isset($request->numero_control))
         {
             $saveInstructor->numero_control = $request->numero_control;
@@ -4266,6 +4087,108 @@ class InstructorController extends Controller
             }
             $saveInstructor->data_especialidad = $arresp;
         }
+
+        if(isset($request->hispanohablante)) {
+            $subproyectos = [];
+            $saveInstructor->instructor_alfa = true;
+            foreach($request->subproyecto as $subproyecto) {
+                switch($subproyecto) {
+                    case 'oportunidades':
+                        $subproyectos[$subproyecto] = $request->oportunidades_puesto;
+                    break;
+                    case 'conafe':
+                        $subproyectos[$subproyecto] = $request->conafe_puesto;
+                    break;
+                    case 'sedena':
+                        $subproyectos[$subproyecto] = $request->sedena_puesto;
+                    break;
+                    case 'profesores':
+                        $subproyectos[$subproyecto] = $request->profesores_puesto;
+                    break;
+                    case 'becarios':
+                        $subproyectos[$subproyecto] = $request->becarios_puesto;
+                    break;
+                    case 'osc':
+                        $subproyectos[$subproyecto] = $request->osc_puesto;
+                    break;
+                    case 'ipf':
+                        $subproyectos[$subproyecto] = $request->ipf_puesto;
+                    break;
+                    case 'programas federales':
+                        $subproyectos[$subproyecto] = $request->input('programas federales_puesto');
+                    break;
+                    case 'conevyt':
+                        $subproyectos[$subproyecto] = $request->conevyt_puesto;
+                    break;
+                    case 'oportunidades':
+                        $subproyectos[$subproyecto] = $request->oportunidades_puesto;
+                    break;
+                    case 'instituciones academicas':
+                        $subproyectos[$subproyecto] = $request->instituciones_academicas_puesto;
+                    break;
+                    case 'chiapas puede':
+                        $subproyectos[$subproyecto] = $request->chiapas_puede_puesto;
+                    break;
+                    case 'otro':
+                        $subproyectos[$subproyecto] = $request->otrosub_puesto;
+                    break;
+                }
+            }
+
+            $urlalfa = null;
+            if ($request->file('arch_alfa') != null)
+            {
+                $otraid = $request->file('arch_alfa'); # obtenemos el archivo
+                $urlalfa = $this->pdf_upload($otraid, $id, 'archivo_alfa'); # invocamos el método
+            }
+
+            // $horarios_circulo = [
+            //     '1' => ['dia' => $request->dia1, 'inicio' => $request->horario_inicio1, 'termino' => $request->horario_termino1],
+            //     '1-2' => ['dia' => $request->dia1_2, 'inicio' => $request->horario_inicio1_2, 'termino' => $request->horario_termino1_2],
+            //     '2' => ['dia' => $request->dia2, 'inicio' => $request->horario_inicio2, 'termino' => $request->horario_termino2],
+            //     '2-2' => ['dia' => $request->dia2_2, 'inicio' => $request->horario_inicio2_2, 'termino' => $request->horario_termino2_2],
+            //     '3' => ['dia' => $request->dia3, 'inicio' => $request->horario_inicio3, 'termino' => $request->horario_termino3],
+            //     '3-2' => ['dia' => $request->dia3_2, 'inicio' => $request->horario_inicio3_2, 'termino' => $request->horario_termino3_2]
+            // ];
+
+            $datos_alfa = [
+                'hispanohablante' => $request->hispanohablante,
+                'lengua_indigena' => $request->lengua_indigena,
+                'etnia' => $request->etnia,
+                'hijos' => $request->hijos,
+                'subproyectos' => $subproyectos,
+                'tipo_vialidad' => $request->tipo_vialidad,
+                'nombre_vialidad' => $request->nombre_vialidad,
+                'numero_exterior' => $request->numero_exterior,
+                'numero_interior' => $request->numero_interior,
+                'entre_tipo_vialidad1' => $request->entre_tipo_vialidad1,
+                'entre_vialidad1' => $request->entre_vialidad1,
+                'entre_tipo_vialidad2' => $request->entre_tipo_vialidad2,
+                'entre_vialidad2' => $request->entre_vialidad2,
+                'vialidad_posterior' => $request->vialidad_posterior,
+                'carretera' => $request->carretera,
+                'tipo_asentamiento_humano' => $request->tipo_asentamiento_humano,
+                'nombre_asentamiento_humano' => $request->nombre_asentamiento_humano,
+                'descripcion_ubicacion' => $request->descripcion_ubicacion,
+                'ocupacion' => $request->ocupacion,
+                'sin_ocupacion' => $request->sin_ocupacion,
+                'con_ocupacion' => $request->con_ocupacion,
+                'ingreso_mensual' => $request->ingreso_mensual,
+                'roles' => $request->roles_figura_operativa,
+                'unidad_operativa' => $request->unidad_operativa,
+                'circulo_estudio' => $request->circulo_estudio,
+                'responsable_circulo' => $request->responsable_circulo,
+                'fecha_inicio' => $request->fecha_inicio,
+                'archivo_alfa' => $urlalfa,
+                'pais_residencia' => $request->pais,
+                // 'pais_residecia' = $request->
+                // 'horario_circulo' => $horarios_circulo,
+
+            ];
+
+            $saveInstructor->datos_alfa = $datos_alfa;
+        }
+
         return $saveInstructor;
     }
 
@@ -4648,6 +4571,7 @@ class InstructorController extends Controller
 
     private function guardado_oficial($saveInstructor)
     {
+        // dd($saveInstructor);
         // INICIO DE GUARDADO OFICIAL
         $instructor = instructor::find($saveInstructor->id);
         $instructor->nombre = trim($saveInstructor->nombre);
@@ -4705,6 +4629,9 @@ class InstructorController extends Controller
         $instructor->telefono_casa = $saveInstructor->telefono_casa;
         $instructor->curriculum = $saveInstructor->curriculum;
         $instructor->clave_loc_nacimiento = $saveInstructor->clave_loc_nacimiento;
+        $instructor->instructor_alfa = $saveInstructor->instructor_alfa;
+        $instructor->datos_alfa = $saveInstructor->datos_alfa;
+        $instructor->nacionalidad = $saveInstructor->nacionalidad;
         $instructor->save();
 
         $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
@@ -4853,6 +4780,41 @@ class InstructorController extends Controller
         ];
 
         return $funcionarios;
+    }
+
+    private function instructor_alfa_nulo()
+    {
+        $datos_null = [
+            "etnia" => null,
+            "hijos" => null,
+            "roles" => null,
+            "carretera" => null,
+            "ocupacion" => null,
+            "archivo_alfa" => null,
+            "fecha_inicio" => null,
+            "subproyectos" => null,
+            "con_ocupacion" => null,
+            "sin_ocupacion" => null,
+            "tipo_vialidad" => null,
+            "circulo_estudio" => null,
+            "entre_vialidad1" => null,
+            "entre_vialidad2" => null,
+            "hispanohablante" => null,
+            "ingreso_mensual" => null,
+            "lengua_indigena" => null,
+            "nombre_vialidad" => null,
+            "numero_exterior" => null,
+            "numero_interior" => null,
+            "unidad_operativa" => null,
+            "vialidad_posterior" => null,
+            "responsable_circulo" => null,
+            "entre_tipo_vialidad1" => null,
+            "entre_tipo_vialidad2" => null,
+            "descripcion_ubicacion" => null,
+            "tipo_asentamiento_humano" => null,
+            "nombre_asentamiento_humano" => null
+        ];
+        return $datos_null;
     }
 }
 
