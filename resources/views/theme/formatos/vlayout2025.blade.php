@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', '')</title>
     <style>
-        body{font-family: sans-serif; padding: 110px 50px 100px 100px;  }
-        @page {margin: 2px; size: letter;}
+        body{font-family: sans-serif; padding: 160px 50px 145px 80px;  }
+        @page {margin: 0px; size: letter; padding-left: 300px;}
         /* header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;} */
-        header { position: fixed; left: 0px; top: 70px; right: 0px;text-align: center;width:100%;line-height: 30px;}
-        img.izquierda {float: left;width: 100%;height: 60px;}
+        header { position: fixed; left: 20px; top: 120px; right: 0px;text-align: center;width:100%;line-height: 30px;}
+        img.izquierda {float: left;width: 100%;height: 70px;}
         img.izquierdabot {
             float: inline-end;
             width: 712px;
@@ -24,7 +24,7 @@
         {
             text-align: right;
             position: absolute;
-            top: -90px; /*820*/
+            top: -120px; /*820*/
             right: 40px;
             font-size: 10px;
             color: black;
