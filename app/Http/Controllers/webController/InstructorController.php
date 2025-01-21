@@ -3419,10 +3419,10 @@ class InstructorController extends Controller
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
         //revision de json a array
-        if(!is_array($data->exp_docente)); {
+        if(!is_array($data->exp_docente)) {
             $data->exp_docente = json_decode($data->exp_docente, true);
         }
-        if(!is_array($data->exp_laboral)); {
+        if(!is_array($data->exp_laboral)) {
             $data->exp_laboral = json_decode($data->exp_laboral, true);
         }
         // fin
