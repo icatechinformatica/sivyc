@@ -4,8 +4,8 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            background-color: #ffffff;
-        }
+            background-color: #ffffff;           
+        }    
         .table-responsive {
             height:500px;
             overflow:scroll;
@@ -16,43 +16,43 @@
     <table class="table table-bordered table-striped">
     <thead class="thead-light">
         <tr>
-            <th rowspan='2' class="text-center">
+            <th rowspan='2' class="text-center border border-dark">
                 UNIDAD/ACC.MÓVIL/ZONA
             </th>
-            <th colspan='6' class="text-center">
+            <th colspan='6' class="text-center border border-dark">
                 CURSOS
             </th>
-            <th colspan='3' class="text-center">
+            <th colspan='3' class="text-center border border-dark">
                 HORAS
             </th>
-            <th colspan='4' class="text-center">
+            <th colspan='4' class="text-center border border-dark">
                 COSTOS
             </th>
-            <th colspan='4' class="text-center">
+            <th colspan='5' class="text-center border border-dark">
                 REPORTADO EN FORMATO T
             </th>
         </tr>
         <tr>
-            <th>POA</th>
-            <th>AUTORIZADOS</th>
-            <th>DIFER.</td>
-            <th>SUFIC.AUT.</th>
-            <th>RECEP.FINAN</th>
-            <th>VALID.FINAN</th>
+            <th class="text-center border border-dark">POA</th>
+            <th class="text-center border border-dark">AUTORIZADOS</th>
+            <th class="text-center border border-dark">DIFER.</td>
+            <th class="text-center border border-dark">SUFIC.AUT.</th>
+            <th class="text-center border border-dark">RECEP.FINAN</th>
+            <th class="text-center border border-dark">VALID.FINAN</th>
             
 
-            <th>PROG.ANUAL</th>
-            <th>AUTORIZADAS</th>
-            <th>DIFER.</th>            
-            <th>APERTURADOS</th>
-            <th>SUFIC.AUT.</th>
-            <th>DIFER.</th>
-            <th>PAGADO</th>
-            <th>CURSOS</th>
-            <th>INSCRITOS</th>
-            <th>EGRESADOS</th>
-            <th>DESERCIÓN</th>
-            <th>HORAS</th>
+            <th class="text-center border border-dark">PROG.ANUAL</th>
+            <th class="text-center border border-dark">AUTORIZADAS</th>
+            <th class="text-center border border-dark">DIFER.</th>            
+            <th class="text-center border border-dark">APERTURADOS</th>
+            <th class="text-center border border-dark">SUFIC.AUT.</th>
+            <th class="text-center border border-dark">DIFER.</th>
+            <th class="text-center border border-dark">PAGADO</th>
+            <th class="text-center border border-dark">CURSOS</th>
+            <th class="text-center border border-dark">INSCRITOS</th>
+            <th class="text-center border border-dark">EGRESADOS</th>
+            <th class="text-center border border-dark">DESERCIÓN</th>
+            <th class="text-center border border-dark">HORAS</th>
         </tr>
     </thead>
         @isset($data)

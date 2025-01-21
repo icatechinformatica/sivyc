@@ -1,23 +1,12 @@
 
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('theme.formatos.vlayout2025')
+@section('title', 'CURRICULUM ICATECH| SIVyC Icatech')
+@section('content_script_css')
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style>
         /* *{border: 1px solid red;} */
-            body{
-                font-family: sans-serif;
-                /* border: 1px solid black; */
-                font-size: 1.3em;
-                /* margin: 10px; */
-            }
-            @page {
-                margin: 20px 30px 20px;
-
-            }
             .ftr{
                 position: fixed;
                 top: 85%;
@@ -25,59 +14,17 @@
                 left: 0;
                 height: 60px;
             }
-            header {
-            position: fixed;
-            left: 0px;
-            top: 0px;
-            right: 0px;
-            color: black;
-            text-align: center;
-            line-height: 60px;
-            height: 60px;
-            }
-            header h1{
-            margin: 10px 0;
-            }
-            header h2{
-            margin: 0 0 10px 0;
-            }
             th, td {
             border-style:solid;
             border-color: black;
             }
-            footer {
-            position: fixed;
-            /* left: 0px; */
-            bottom: 70px;
-            /* right: 0px; */
-            /* height: 60px; */
-            /* text-align: center; */
-            /* line-height: 60px; */
-            border: 1px solid white;
-            }
-            img.izquierda {
-                float: left;
-                width: 300px;
-                height: 60px;
-            }
 
-            img.izquierdabot {
-                float: inline-end;
-                width: 100%;
-                height: 90px;
-            }
-
-            img.derecha {
-                float: right;
-                width: 200px;
-                height: 60px;
-            }
-            div.content
+            /* div.content
             {
                 margin-bottom: 750%;
                 margin-right: -25%;
                 margin-left: 0%;
-            }
+            } */
             .floatleft {
                 float:left;
             }
@@ -96,51 +43,17 @@
 
             img.derechaf { float: right; width: 2.5cm; height: 3.0cm;}
 
-            .tablas{border-collapse: collapse;width: 990px;}
-        .tablas tr{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
-        .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
-        .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
-        .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
         .tablad { border-collapse: collapse;font-size: 10px; width: 100%; border-color: black; border: black 1px solid; border-bottom-color: black; border-top-color: black; text-align: center; padding:0.5px;}
         .tablaz { border-collapse: collapse;font-size: 10px;border: black 1px solid; text-align: center; padding:0.5px; margin-right: 0px; margin-left: auto;}
-        .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
-        .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
-        .direccion
-        {
-            text-align: left;
-            position: absolute;
-            /* bottom: 0px; */
-            top: 45px;
-            left: 15px;
-            font-size: 8.5px;
-            color: white;
-            line-height: 1;
-        }
+        header {left: 25px;}
         </style>
-    </head>
-    <body style="margin-top:90px; margin-bottom:70px; border: 1px">
-        <header>
-            <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
-            <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <div style="clear:both;">
-                <h6>{{$distintivo}}</h6>
-            </div>
-        </header>
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>
-                @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
-                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-                <br>
-                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
-                @if(!is_null($funcionarios['dacademico']['correo'])) Correo: {{$funcionarios['dacademico']['correo']}} @endif
-            </b></p>
-        </footer>
+ @endsection
+ @section('content')
         <div>
             @if($data->archivo_fotografia != FALSE)
                 {{-- <img class="derechaf img-thumbnail mb-3" src="{{ asset($data->archivo_fotografia) }}"> --}}
-                <img style="border: 2px solid black; margin-top: -5px; margin-right: 30px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
+                <img style="border: 2px solid black; margin-top: 0px; margin-right: 30px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
             @endif
             <br><br><br><br>
             <table class="tablaz" style="border-color: black">
@@ -155,15 +68,15 @@
                     </tr>
                 </thead>
             </table>
-            <b><small>I. DATOS PERSONALES</small></b>
+            <p style="margin-top: -12px;"><b><small>I. DATOS PERSONALES</small></b></p>
             <br>
-            <div class="table table-responsive">
+            <div class="table table-responsive" style="margin-top: -30px;">
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td width="240px"><b>APELIDO PATERNO</b></td>
-                            <td width="240px"><b>APELLIDO MATERNO</b></td>
-                            <td width="240px"><b>NOMBRE(S)</b></td>
+                            <td width="10%;"><b>APELIDO PATERNO</b></td>
+                            <td width="10%;"><b>APELLIDO MATERNO</b></td>
+                            <td width="10%;"><b>NOMBRE(S)</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -175,12 +88,12 @@
                     </tbody>
                 </table>
             </div>
-            <div class="table table-responsive">
+            <div class="table table-responsive" style="margin-top: -12px;">
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td width="360px"><b>CURP</b></td>
-                            <td width="360px"><b>RFC CON HOMOCLAVE</b></td>
+                            <td width="10%;"><b>CURP</b></td>
+                            <td width="10%;"><b>RFC CON HOMOCLAVE</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -191,13 +104,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="table table-responsive">
+            <div class="table table-responsive" style="margin-top: -12px;">
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td width="240px"><b>SEXO</b></td>
-                            <td width="240px"><b>ESTADO CIVIL</b></td>
-                            <td width="240px"><b>FECHA DE NACIMIENTO</b></td>
+                            <td width="10%;"><b>SEXO</b></td>
+                            <td width="10%;"><b>ESTADO CIVIL</b></td>
+                            <td width="10%;"><b>FECHA DE NACIMIENTO</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -209,12 +122,12 @@
                     </tbody>
                 </table>
             </div>
-            <div class="table table-responsive">
+            <div class="table table-responsive" style="margin-top: -12px;">
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td width="360px"><b>LUGAR DE NACIMIENTO</b></td>
-                            <td width="360px"><b>NACIONALIDAD</b></td>
+                            <td width="10%;"><b>LUGAR DE NACIMIENTO</b></td>
+                            <td width="10%;"><b>NACIONALIDAD</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -225,12 +138,12 @@
                     </tbody>
                 </table>
             </div>
-            <div class="table table-responsive">
+            <div class="table table-responsive" style="margin-top: -12px;">
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td width="360px"><b>LUGAR DE RESIDENCIA</b></td>
-                            <td width="360px"><b>CODIGO POSTAL</b></td>
+                            <td width="10%;"><b>LUGAR DE RESIDENCIA</b></td>
+                            <td width="10%;"><b>CODIGO POSTAL</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -241,12 +154,12 @@
                     </tbody>
                 </table>
             </div>
-            <div class="table table-responsive">
+            <div class="table table-responsive" style="margin-top: -12px;">
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td colspan="2" width="360px"><b>NUMERO DE TELEFONO</b></td>
-                            <td width="360px"><b>CORREO ELECTRONICO PERSONAL</b></td>
+                            <td colspan="2" width="10%;"><b>NUMERO DE TELEFONO</b></td>
+                            <td width="10%;"><b>CORREO ELECTRONICO PERSONAL</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -262,21 +175,21 @@
                     </tbody>
                 </table>
             </div>
-            <b><small>II. FORMACIÓN ACADÉMICA Y EN CURSO</small></b>
+            <p style="margin-top: -12px;"><b><small>II. FORMACIÓN ACADÉMICA Y EN CURSO</small></b></p>
             <br>
-            <div class="table table-responsive">
+            <div class="table table-responsive" style="margin-top: -30px;">
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td width="80px"><small><small><b>NIVEL EDUCATIVO</b></small></small></td>
-                            <td width="80px"><small><small><b>INSTITUCIÓN</b></small></small></td>
-                            <td width="80px"><small><small><b>ÁREA DE LA CARRERA</b></small></small></td>
-                            <td width="80px"><small><small><b>CARRERA</b></small></small></td>
-                            <td width="80px"><small><small><b>PERIODO</b></small></small></td>
-                            <td width="80px"><small><small><b>REALIZADO EN</b></small></small></td>
-                            <td width="80px"><small><small><b>DOCUMENTO</b></small></small></td>
-                            <td width="80px"><small><small><b>FECHA DE EXPEDICIÓN</b></small></small></td>
-                            <td width="80px"><small><small><b>FOLIO DOCUMENTO</b></small></small></td>
+                            <td width="10%;"><small><small><b>NIVEL EDUCATIVO</b></small></small></td>
+                            <td width="10%;"><small><small><b>INSTITUCIÓN</b></small></small></td>
+                            <td width="10%;"><small><small><b>ÁREA DE LA CARRERA</b></small></small></td>
+                            <td width="10%;"><small><small><b>CARRERA</b></small></small></td>
+                            <td width="10%;"><small><small><b>PERIODO</b></small></small></td>
+                            <td width="10%;"><small><small><b>REALIZADO EN</b></small></small></td>
+                            <td width="10%;"><small><small><b>DOCUMENTO</b></small></small></td>
+                            <td width="10%;"><small><small><b>FECHA DE EXPEDICIÓN</b></small></small></td>
+                            <td width="10%;"><small><small><b>FOLIO DOCUMENTO</b></small></small></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -298,16 +211,15 @@
                     </tbody>
                 </table>
             </div>
-            <b><small>III. EXPERIENCIA DOCENTE (ANTERIOR Y ACTUAL)</small></b>
-            <br>
-            <div class="table table-responsive">
+            <p style="margin-top: -12px;"><b><small>III. EXPERIENCIA DOCENTE (ANTERIOR Y ACTUAL)</small></b></p>
+            <div class="table table-responsive" style="margin-top: -12px;">
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td width="180px"><b>ASIGNATURA</b></td>
-                            <td width="180px"><b>INSTITUCIÓN</b></td>
-                            <td width="180px"><b>FUNCIÓN</b></td>
-                            <td width="180px"><b>PERIODO</b></td>
+                            <td width="10%;"><b>ASIGNATURA</b></td>
+                            <td width="10%;"><b>INSTITUCIÓN</b></td>
+                            <td width="10%;"><b>FUNCIÓN</b></td>
+                            <td width="10%;"><b>PERIODO</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -324,15 +236,14 @@
                     </tbody>
                 </table>
             </div>
-            <b><small>IV. EXPERIENCIA LABORAL (ANTERIOR Y ACTUAL)</small></b>
-            <br>
-            <div class="table table-responsive" style="margin-bottom: 2px;">
+            <p style="margin-top: -12px;"><b><small>IV. EXPERIENCIA LABORAL (ANTERIOR Y ACTUAL)</small></b></p>
+            <div class="table table-responsive" style="margin-bottom: 2px; margin-top: -12px;">
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <td width="220px"><b>PUESTO</b></td>
-                            <td width="160px"><b>PERIODO</b></td>
-                            <td width="280px"><b>INSTITUCIÓN</b></td>
+                            <td width="10%;"><b>PUESTO</b></td>
+                            <td width="10%;"><b>PERIODO</b></td>
+                            <td width="10%;"><b>INSTITUCIÓN</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -361,5 +272,6 @@
             </div>
 
         </div>
-    </body>
-</html>
+        @endsection
+        @section('script_content_js')
+        @endsection

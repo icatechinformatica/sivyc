@@ -1,137 +1,51 @@
 
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <style>
-            body{
-                font-family: sans-serif;
-                /* border: 1px solid black; */
-                font-size: 1.3em;
-                /* margin: 10px; */
-            }
-            @page {
-                margin: 20px 30px 40px;
-                padding: 5px;
-                /* border: 1px solid red; */
-
-            }
-            .ftr{
-                position: fixed;
-                top: 85%;
-                bottom: 0;
-                left: 0;
-                height: 60px;
-            }
-            header {
+@extends('theme.formatos.vlayout2025')
+@section('title', 'SOLICITUD DE VALIDACIÓN DE INSTRUCTOR | SIVyC Icatech')
+@section('content_script_css')
+    <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .ftr{
             position: fixed;
-            left: 0px;
-            top: -10px;
-            right: 0px;
-            color: black;
-            text-align: center;
-            line-height: 60px;
+            top: 85%;
+            bottom: 0;
+            left: 0;
             height: 60px;
-            }
-            header h1{
-            margin: 10px 0;
-            }
-            header h2{
-            margin: 0 0 10px 0;
-            }
-            th, td {
-            border-style:solid;
-            border-color: black;
-            }
-            footer {
-            position: fixed;
-            /* left: 0px; */
-            bottom: 70px;
-            /* right: 0px; */
-            /* height: 60px; */
-            /* text-align: center; */
-            /* line-height: 60px; */
-            border: 1px solid white;
-            }
-            img.izquierda {
-                float: left;
-                width: 100%;
-                height: 80px;
-            }
-
-            img.izquierdabot {
-                float: inline-end;
-                width: 100%;
-                height: 90px;
-            }
-
-            img.derecha {
-                float: right;
-                width: 200px;
-                height: 60px;
-            }
-            div.content
-            {
-                margin-bottom: 750%;
-                margin-right: -25%;
-                margin-left: 0%;
-            }
-            .floatleft {
-                float:left;
-            }
-            .page-break {
-                page-break-after: always;
-            }
-            .page-break-non {
-                page-break-after: avoid;
-            }
-            .table1, .table1 td {
-                border:0px ;
-            }
-            .table1 td {
-                padding:5px;
-            }
-            .tablas{border-collapse: collapse;width: 990px;}
-        .tablas tr{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
-        .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
-        .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
-        .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
-        .tablad { border-collapse: collapse;font-size: 10px;border: black 1px solid; text-align: center; padding:0.5px; }
-        /* .tablad tr {page-break-after: always; page-break-before: always;} */
-        .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
-        .tablag tr td{ font-size: 8px; padding: 1px;}
-        .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
-        .direccion
-        {
-            text-align: left;
-            position: absolute;
-            /* bottom: 0px; */
-            top: 45px;
-            left: 15px;
-            font-size: 8.5px;
-            color: white;
-            line-height: 1;
         }
+        th, td {
+        border-style:solid;
+        border-color: black;
+        }
+        .floatleft {
+            float:left;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        .page-break-non {
+            page-break-after: avoid;
+        }
+        .table1, .table1 td {
+            border:0px ;
+        }
+        .table1 td {
+            padding:5px;
+        }
+        .tablas{border-collapse: collapse;width: 990px;}
+    .tablas tr{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
+    .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
+    .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
+    .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
+    .tablad { border-collapse: collapse;font-size: 10px;border: black 1px solid; text-align: center; padding:0.5px; }
+    /* .tablad tr {page-break-after: always; page-break-before: always;} */
+    .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
+    .tablag tr td{ font-size: 8px; padding: 1px;}
+    .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
+    .content{font-size: 12px;}
         </style>
-    </head>
-    <body style="margin-top:90px; margin-bottom:70px;">
-        <header>
-            <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-            <br><h6>{{$distintivo}}</h6>
-        </header>
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>
-                @php $direccion = explode("*",$funcionarios['dunidad']['direccion']) @endphp
-                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-                <br>
-                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
-                @if(!is_null($funcionarios['dunidad']['correo'])) Correo: {{$funcionarios['dunidad']['correo']}} @endif
-            </b></p>
-        </footer>
+@endsection
+@section('content')
         <div>
             <div align=right> <b>Unidad de Capacitación {{$daesp}}</b> </div>
             <div align=right> <b>Memorandum No. @if($nomemosol != null){{$nomemosol}} @else BORRADOR @endif</b></div>
@@ -146,10 +60,10 @@
                 <table class="tablad">
                     <thead>
                         <tr>
-                            <th style="border-color: black; width: 90px;">INSTRUCTOR</th>
+                            <th style="border-color: black; width: 15%;">INSTRUCTOR</th>
                             <th style="border-color: black; width: 100px;">ESPECIALIDAD</th>
                             <th style="border-color: black">CURSOS A IMPARTIR</th>
-                            <th style="border-color: black; width: 120px">OBSERVACIONES</th>
+                            <th style="border-color: black; width: 120px;">OBSERVACIONES</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -163,7 +77,7 @@
                                 @else
                                     @foreach($cold as $moist => $cadwell)
                                         <ul style="margin-left: -30px; line-height:80%;">
-                                            <small><li style="text-align:left; margin: -1; padding: -0.2em;">{{$cadwell->nombre_curso}}.</small></li>
+                                            <small><li style="text-align:left; margin: -1; padding: -0.2em;">{{$cadwell->nombre_curso}} {{$moist}}.</small></li>
                                         </ul>
                                         @if($moist == $i)
                                             </td>
@@ -242,9 +156,10 @@
                     </table>
                     <h6><small><b>Archivo<b></small></h6>
                     <small><small><b>Valido: {{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.- {{ $funcionarios['dunidad']['puesto'] }}.</b></small></small>
-                    <br><small><small><b>Elaboró: C. {{ $funcionarios['elabora']['nombre'] }}.- {{ $funcionarios['elabora']['puesto'] }}.</b></small></small>
+                    <br><small><small><b>Elaboró: {{ $funcionarios['dacademico_unidad']['titulo'] }} {{ $funcionarios['dacademico_unidad']['nombre'] }}.- {{ $funcionarios['dacademico_unidad']['puesto'] }}.</b></small></small>
                 @endif
             @endforeach
         </div>
-    </body>
-</html>
+@endsection
+@section('script_content_js')
+@endsection

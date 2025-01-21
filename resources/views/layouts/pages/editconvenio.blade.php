@@ -1,15 +1,15 @@
 @extends("theme.sivyc.layout")
-<!--llamar la plantilla -->
-
+@section('title', 'Catálogos- Editar Convenio | SIVyC Icatech')
 @section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
 @endsection
-
-@section('content')
-    <!--empieza aquí-->
-
-    <div class="container g-pt-30">
+@section('content')       
+    <div class="card-header">
+        Catálogos / Editar Convenio
+    </div>
+    <div class="card card-body">        
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -24,16 +24,6 @@
             id="conveniosForm" enctype="multipart/form-data" autocomplete="off">
             @csrf
             @method('PUT')
-
-            <div style="text-align: center">
-                <label for="tituloagregar_convenio">
-                    <h1>EDITAR CONVENIO</h1>
-                </label>
-            </div>
-
-            <hr>
-
-
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="no_convenio" class="control-label">N° CONVENIO</label>
@@ -270,17 +260,13 @@
             </div>
 
             <!--botones de enviar y retroceder-->
-            <div class="row mt-5">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
+            <div class="row mt-5 col-12">
+                <a class="btn text-start" href="{{ URL::previous() }}">< Regresar</a>                
+                @can('convenios.update')
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-danger">Modificar</button>                
                     </div>
-                    @can('convenios.update')
-                        <div class="pull-right">
-                            <button type="submit" class="btn btn-primary">Modificar</button>
-                        </div>
-                    @endcan
-                </div>
+                @endcan
             </div>
         </form>
         <br>

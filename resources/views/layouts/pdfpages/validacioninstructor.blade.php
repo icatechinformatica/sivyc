@@ -1,21 +1,10 @@
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <style>
-            body{
-                font-family: sans-serif;
-                /* border: 1px solid black; */
-                font-size: 1.2em;
-                /* margin: 10px; */
-            }
-            @page {
-                margin: 20px 30px;
-
-            }
+@extends('theme.formatos.hlayout2025')
+@section('title', 'VALIDACIÓN DE INSTRUCTOR | SIVyC Icatech')
+@section('content_script_css')
+    <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
             .row {
             margin-left:-10px;
             margin-right:30px;
@@ -40,58 +29,9 @@
                 left: 0;
                 height: 60px;
             }
-            header {
-            position: fixed;
-            left: 0px;
-            top: 0px;
-            right: 0px;
-            color: black;
-            text-align: center;
-            line-height: 60px;
-            height: 60px;
-            }
-            header h1{
-            margin: 10px 0;
-            }
-            header h2{
-            margin: 0 0 10px 0;
-            }
             th, td {
             border-style:solid;
             border-color: black;
-            }
-            footer {
-            position: fixed;
-            /* left: 0px; */
-            bottom: 80px;
-            /* right: 0px; */
-            /* height: 60px; */
-            /* text-align: center; */
-            /* line-height: 60px; */
-            border: 1px solid white;
-            }
-            img.izquierda {
-                float: left;
-                width: 100%;
-                height: 90px;
-            }
-
-            img.izquierdabot {
-                float: inline-end;
-                width: 100%;
-                height: 80px;
-            }
-
-            img.derecha {
-                float: right;
-                width: 200px;
-                height: 60px;
-            }
-            div.content
-            {
-                margin-bottom: 750%;
-                margin-right: -25%;
-                margin-left: 0%;
             }
             .floatleft {
                 float:left;
@@ -117,34 +57,11 @@
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
-        .direccion
-            {
-                text-align: left;
-                position: absolute;
-                bottom: 10px;
-                left: 15px;
-                font-size: 8.5px;
-                color: rgb(255, 255, 255);
-                line-height: 1;
-            }
+        .content { margin-top: 12%;}
         </style>
-    </head>
-    <body style="margin-top:90px; margin-bottom:70px;">
-        <header>
-            <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-            <br><h6>{{$distintivo}}</h6>
-        </header>
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>
-                @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
-                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-                <br>
-                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
-                @if(!is_null($funcionarios['dacademico']['correo'])) Correo: {{$funcionarios['dacademico']['correo']}} @endif
-            </b></p>
-        </footer>
-        <div>
+    @endsection
+    @section('content')
+        <div style="margin-top: -120px;">
             @php $cont=0; foreach($especialidades AS $ari){if($ari->status != 'BAJA EN FIRMA'){$cont++;}} @endphp
                 <div align=right> <b>Dirección Técnica Académica</b></div>
                 <div align=right> <b>Memorandum No. @if($especialidades[0]->status != 'BAJA EN FIRMA') {{$especialidades[0]->memorandum_validacion}} @else {{$especialidades[0]->memorandum_baja}} @endif</b></div>
@@ -152,7 +69,7 @@
                 <b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
                 <br>{{ $funcionarios['dunidad']['puesto'] }}.
                 <br>Presente.
-                <br><br>Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.
+                <br><br style="line-height: 0.5">Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.
                 <div class="table table-responsive">
                     <table class="tablad" style="border-color: black; font-size: 7;">
                         <tbody>
@@ -247,11 +164,11 @@
                         <table style="border-collapse:initial;font-size: 12px; color:white; border: black 1px solid; text-align: center; padding:0.5px;">
                             <thead>
                                 <tr>
-                                    <td>
-                                        <b>REVISÓ</b><br><br>
-                                        <b><br>_________________________</b>
-                                        <br>alguien1<br>
-                                        <b>111</b>
+                                    <td width="173px"  >
+                                        <b>&nbsp;</b><br><br>
+                                        <b><br>&nbsp;</b>
+                                        <br>&nbsp;<br>
+                                        <b>&nbsp;</b>
                                         <br>
                                     </td>
                                 </tr>
@@ -261,12 +178,13 @@
                         </table>
                     </div>
                 </div>
-                <div>
+                <div style="font-size: 10px;">
                     “Este documento es de uso interno y no tiene validez jurídica ni contractual, se extiende únicamente con fines académicos. Estos datos y resultados son considerados confidenciales por lo que se prohíbe su reproducción parcial o total para fines distintos al uso interno de la Dirección Técnica Académica y las Unidades de Capacitación”.
                     <br><br>
                     <small><small>C.c.p. {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }} .- {{ $funcionarios['gestionacademica']['puesto'] }}. – Para su conocimiento - Edificio.</small></small>
                     <br><small><small>Archivo</small></small>
                 </div>
         </div>
-    </body>
-</html>
+        @endsection
+        @section('script_content_js')
+        @endsection

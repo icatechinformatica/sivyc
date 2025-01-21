@@ -1,53 +1,10 @@
-<!DOCTYPE HTML>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('theme.formatos.vlayout2025')
+@section('title', 'SOLICITUD DE PAGO DE INSTRUCTOR | SIVyC Icatech')
+@section('content_script_css')
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-wfSDFE50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <style>
-            body{
-                font-family: sans-serif;
-                font-size: 1.3em;
-                margin: 10px;
-            }
-            @page {
-                margin: 110px 40px 110px;
-            }
-            header { position: fixed;
-                left: 0px;
-                top: -100px;
-                padding-left: 45px;
-                height: 70px;
-                width: 85%;
-                background-color: white;
-                color: black;
-                text-align: center;
-                line-height: 60px;
-            }
-            footer {
-                position: fixed;
-                left: 0px;
-                bottom: -90px;
-                right: 0px;
-                height: 100px;
-                width: 85%;
-                padding-left: 45px;
-                background-color: white;
-                color: black;
-                text-align: center;
-            }
-            img.izquierda {
-                float: left;
-                width: 100%;
-                height: 100%;
-            }
-
-            img.izquierdabot {
-                float: inline-end;
-                width: 100%;
-                height: 100%;
-            }
             table, td {
               border:1px solid black;
             }
@@ -68,26 +25,12 @@
             small {
                 font-size: .7em
             }
-            .direccion
-            {
-                text-align: left;
-                position: absolute;
-                bottom: 0px;
-                left: 65px;
-                font-size: 8.5px;
-                color: rgb(255, 255, 255);
-                line-height: 1;
-            }
-
+            header {left: 25px;}
         </style>
-    </head>
-    <body>
-        <header>
-            <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-            <br><h6>{{$distintivo}}</h6>
-        </header>
+@endsection
+@section('content')
         {{-- {!! $body_html['header'] !!} --}}
-        <div class= "container g-pt-30">
+        {{-- <div class= "container g-pt-30"> --}}
             <div id="content">
                 {!! $body_html['body'] !!}
                 @if(!is_null($objeto))
@@ -100,7 +43,7 @@
                             </tr>
                             <tr>
                                 <td style="vertical-align: top; font-size: 8px; border: none;"><b>Firma Electrónica:</b></td>
-                                <td style="font-size: 8px; border: none;">{{ wordwrap($moist['_attributes']['firma_firmante'], 105, "\n", true) }}</td>
+                                <td style="font-size: 8px; border: none;">{{ wordwrap($moist['_attributes']['firma_firmante'], 100, "\n", true) }}</td>
                             </tr>
                             <tr>
                                 <td style="font-size: 8px; border: none;"><b>Puesto:</b></td>
@@ -119,7 +62,7 @@
                     {{-- </div> --}}
                     <div style="display: inline-block; width: 15%;">
                         {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                        <img style="position: fixed; width: 20%; top: 43%; left: 73%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                        <img style="position: fixed; width: 15%; top: 56%; left: 79%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                     </div>
                 @else
                     <table class="table1">
@@ -147,11 +90,7 @@
                     <b><small>Elaboró: {{$funcionarios['delegado']}}.- {{$funcionarios['delegadop']}}.</small></b>
                 </p> --}}
             </div>
-        </div>
+        {{-- </div> --}}
         {{-- {!! $body_html['footer'] !!} --}}
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
-        </footer>
-    </body>
-</html>
+@endsection
+@section('script_content_js')

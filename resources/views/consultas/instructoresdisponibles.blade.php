@@ -1,7 +1,7 @@
 @extends('theme.sivyc.layout')  {{--AGC--}}
 @section('title', 'Consultas | SIVyC Icatech')
 @section('content')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         table tr th .nav-link {padding: 0; margin: 0;}
     </style>

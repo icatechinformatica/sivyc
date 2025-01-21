@@ -1295,7 +1295,7 @@ class supreController extends Controller
             ->Where('users.id', Auth::user()->id)
             ->First();
         $supre = new supre();
-        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
+        $leyenda = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data_supre = $supre::WHERE('id', '=', $id)->FIRST(); //cambiar data2 a data_supre en tabla supre
         $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
             ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
@@ -1371,12 +1371,12 @@ class supreController extends Controller
                 }
             }
         }
-        // $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','distintivo','direccion','firma_electronica','uuid'));
-        // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','distintivo','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
+        // $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid'));
+        // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
         // return $pdf2->stream("prueba.pdf");
 
-        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','distintivo','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))->output();
-        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','distintivo','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))
+        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))->setPaper('letter', 'portrait')->output();
+        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))
             ->setPaper('a4', 'landscape')  // Configurar tamaño y orientación
             ->output();
 
@@ -1391,7 +1391,7 @@ class supreController extends Controller
 
         // Combinar los PDFs usando FPDI
         $pdf = new Fpdi();
-        $pdf->AddPage();
+        $pdf->AddPage('P', 'Letter');
         $pageCount1 = $pdf->setSourceFile($file1);
         $tplIdx1 = $pdf->importPage(1);
         $pdf->useTemplate($tplIdx1);
@@ -1471,8 +1471,9 @@ class supreController extends Controller
         }
         //fin
 
-        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
+        $leyenda = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $funcionarios = $this->funcionarios_valsupre($data2->unidad_capacitacion);
+        $direccion = $funcionarios['remitentedir'];
 
          //body en firma electronica
         $clave = DB::table('folios')->Where('folios.id_supre',$id)
@@ -1532,7 +1533,7 @@ class supreController extends Controller
             }
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('distintivo','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('leyenda','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64','direccion'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
     }
@@ -1913,7 +1914,7 @@ class supreController extends Controller
     }
 
     public function funcionarios_valsupre($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $ccp3 = clone $delegado = clone $remitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $ccp3 = clone $delegado = clone $remitente = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad','o.direccion')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true')
             ->Where('f.titular', true);
@@ -1939,8 +1940,10 @@ class supreController extends Controller
         $funcionarios = [
             'director' => $direc->nombre,
             'directorp' => $direc->cargo,
+            'directordir' => $direc->direccion,
             'remitente' => $remitente->nombre,
             'remitentep' => $remitente->cargo,
+            'remitentedir' => $remitente->direccion,
             'ccp1' => $ccp1->nombre,
             'ccp1p' => $ccp1->cargo,
             'ccp2' => $ccp2->nombre,
@@ -1949,6 +1952,7 @@ class supreController extends Controller
             'ccp3p' => $ccp3->cargo,
             'delegado' => $delegado->nombre,
             'delegadop' => $delegado->cargo,
+            'delegadodir' => $delegado->direccion,
             'elabora' => strtoupper(Auth::user()->name),
             'elaborap' => strtoupper(Auth::user()->puesto)
         ];

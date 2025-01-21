@@ -6323,6 +6323,12 @@ svg.g-transition--linear polygon {
   color: #b09a5b !important;
 }
 
+.g-color-2025--hover:hover {  
+  text-shadow: 1px 1px 2px #fff;
+  border-color: #12322b;
+}
+
+
 /* Black Colors */
 .g-color-black {
   color: #000 !important;

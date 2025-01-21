@@ -1207,4 +1207,57 @@ class ReportService
         }
         return ['FIRMANTES' => $informacion, 'NUMEROFIRMANTES' => $numero_firmantes];
     }
+
+    public function cancelarDocumento(array $data)
+    {
+        // destructuracion
+        ['memocancelacion' => $memocancelacion, 'motivocancelacion' => $motivoCancelacion, 'usuario' => $usuario, 'id' => $id, 'correo' => $correo] = $data;
+        $date = date('Y-m-d H:i:s');
+        if ($motivoCancelacion != null) {
+            # se trabaja en la cancelación del documento
+            $docFirmar = DocumentosFirmar::Where('numero_o_clave', $memocancelacion)->First();
+            // arreglo de datos motivo de cancelación
+            $data = [
+                'usuario' => $usuario,
+                'id' => $id,
+                'motivo' => $motivoCancelacion,
+                'fecha' => $date,
+                'correo' => $correo
+            ];
+            if ($docFirmar->status == 'VALIDADO') {
+                # modificaciones del estado
+                $rfValidado = (new Rf001Model())->where('memorandum', '=', $memocancelacion)->where('estado', '=', 'SELLADO')->first();
+                if ($rfValidado) {
+                    # si existe mandamos un nuevo estado
+                    $estadoNuevo = 'CANCELADO ICTI';
+                }
+
+            } else {
+                $estadoNuevo = 'CANCELADO ICTI';
+            }
+
+            DocumentosFirmar::where('id', $docFirmar->id)
+                ->update([
+                    'status' => $estadoNuevo,
+                    'cancelacion' => $data
+                ]);
+
+            if ($estadoNuevo == 'CANCELADO ICTI') {
+                # actualizar los registros los folios
+                $movimiento = json_decode($rfValidado->movimientos, true);
+                foreach ($movimiento as $item) {
+                    Recibo::where('folio_recibo', '=', $item['folio'])
+                        ->update([
+                            'estado_reportado' => ''
+                        ]);
+                }
+
+                (new Rf001Model())->where('id', $rfValidado->id)->update([
+                    'estado' => $estadoNuevo
+                ]);
+            }
+
+            return 1;
+        }
+    }
 }

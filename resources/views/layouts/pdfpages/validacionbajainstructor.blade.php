@@ -1,22 +1,10 @@
-
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('theme.formatos.vlayout2025')
+@section('title', 'VALIDACIÓN DE BAJA DE INSTRUCTOR | SIVyC Icatech')
+@section('content_script_css')
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style>
-            body{
-                font-family: sans-serif;
-                /* border: 1px solid black; */
-                font-size: 1.2em;
-                /* margin: 10px; */
-            }
-            @page {
-                margin: 20px 30px 40px;
-                padding: 5px;
-            }
             .ftr{
                 position: fixed;
                 top: 85%;
@@ -24,58 +12,9 @@
                 left: 0;
                 height: 60px;
             }
-            header {
-            position: fixed;
-            left: 0px;
-            top: -10px;
-            right: 0px;
-            color: black;
-            text-align: center;
-            line-height: 60px;
-            height: 60px;
-            }
-            header h1{
-            margin: 10px 0;
-            }
-            header h2{
-            margin: 0 0 10px 0;
-            }
             th, td {
             border-style:solid;
             border-color: black;
-            }
-            footer {
-            position: fixed;
-            /* left: 0px; */
-            bottom: 70px;
-            /* right: 0px; */
-            /* height: 60px; */
-            /* text-align: center; */
-            /* line-height: 60px; */
-            border: 1px solid white;
-            }
-            img.izquierda {
-                float: left;
-                width: 100%;
-                height: 80px;
-            }
-
-            img.izquierdabot {
-                float: inline-end;
-                width: 100%;
-                height: 90px;
-            }
-
-            img.derecha {
-                float: right;
-                width: 200px;
-                height: 60px;
-            }
-            div.content
-            {
-                margin-bottom: 750%;
-                margin-right: -25%;
-                margin-left: 0%;
             }
             .floatleft {
                 float:left;
@@ -101,34 +40,10 @@
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
-        .direccion
-        {
-            text-align: left;
-            position: absolute;
-            /* bottom: 0px; */
-            top: 45px;
-            left: 15px;
-            font-size: 8.5px;
-            color: white;
-            line-height: 1;
-        }
         </style>
     </head>
-    <body style="margin-top:90px; margin-bottom:70px;">
-        <header>
-            <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-            <br><h6>{{$distintivo}}</h6>
-        </header>
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>
-                @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
-                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-                <br>
-                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
-                @if(!is_null($funcionarios['dacademico']['correo'])) Correo: {{$funcionarios['dacademico']['correo']}} @endif
-            </b></p>
-        </footer>
+    @endsection
+    @section('content')
         <div>
             <div align=right> <b>Dirección Técnica Académica</b> </div>
             <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_baja}}</b></div>
@@ -143,10 +58,10 @@
                 <table class="tablad" style="border-color: black">
                     <thead>
                         <tr>
-                            <th style="border-color: black; width: 110px;">INSTRUCTOR</th>
-                            <th style="border-color: black; width: 150px;">NO. MEMORANDUM</th>
-                            <th style="border-color: black; width: 310px;">ESPECIALIDAD</th>720
-                            <th style="border-color: black; width: 150px">MOTIVO</th>
+                            <th style="border-color: black; width: 10%;">INSTRUCTOR</th>
+                            <th style="border-color: black; width: 10%;">NO. MEMORANDUM</th>
+                            <th style="border-color: black; width: 10%;">ESPECIALIDAD</th>720
+                            <th style="border-color: black; width: 10%">MOTIVO</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -185,5 +100,6 @@
             <br><small><small><b>Validó: {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }}.- {{ $funcionarios['gestionacademica']['puesto'] }}.</b></small></small>
             <br><small><small><b>Elaboró: C. {{ $funcionarios['elabora']['nombre'] }}.- {{ $funcionarios['elabora']['puesto'] }}.</b></small></small>
         </div>
-    </body>
-</html>
+        @endsection
+        @section('script_content_js')
+        @endsection

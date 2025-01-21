@@ -1,78 +1,21 @@
-
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('theme.formatos.vlayout2025')
+@section('title', 'ENTREVISTA INSTRUCTOR| SIVyC Icatech')
+@section('content_script_css')
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style>
             /* *.{border: 2px solid red;} */
-            body{
-                font-family: sans-serif;
-                /* border: 1px solid black; */
-                font-size: 1.3em;
-                /* margin: 10px; */
-            }
-            @page {
-                margin: 20px 30px 20px;
-
-            }
-
-            header {
-            position: fixed;
-            left: 0px;
-            top: 0px;
-            right: 0px;
-            color: black;
-            text-align: center;
-            line-height: 60px;
-            height: 60px;
-            }
-            header h1{
-            margin: 10px 0;
-            }
-            header h2{
-            margin: 0 0 10px 0;
-            }
             th, td {
             border-style:solid;
             border-color: black;
             }
-            footer {
-            position: fixed;
-            /* left: 0px; */
-            bottom: 70px;
-            /* right: 0px; */
-            /* height: 60px; */
-            /* text-align: center; */
-            /* line-height: 60px; */
-            border: 1px solid white;
-            }
-            img.izquierda {
-                float: left;
-                width: 300px;
-                height: 60px;
-            }
-
-            img.izquierdabot {
-                float: inline-end;
-                width: 100%;
-                height: 90px;
-            }
-
-            img.derecha {
-                /* float: right; */
-                margin-right: -150px;
-                width: 40%;
-                height: 60px;
-            }
-            div.content
+            /* div.content
             {
                 margin-bottom: 750%;
                 margin-right: -25%;
                 margin-left: 0%;
-            }
+            } */
             .floatleft {
                 float:left;
             }
@@ -97,40 +40,13 @@
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
+        header {left: 25px;}
 
-        .direccion
-        {
-            text-align: left;
-            position: absolute;
-            /* bottom: 0px; */
-            top: 45px;
-            left: 15px;
-            font-size: 8.5px;
-            color: white;
-            line-height: 1;
-        }
         </style>
-    </head>
-    <body style="margin-top:90px; margin-bottom:70px;">
-        <header>
-            <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
-            <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <div style="clear:both;">
-                <h6>{{$distintivo}}</h6>
-            </div>
-        </header>
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-            <p class='direccion'><b>
-                @php $direccion = explode("*",$funcionarios['dacademico']['direccion']) @endphp
-                @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-                <br>
-                {{-- @if(!is_null($funcionarios['dunidad']['telefono']))Teléfono: {{$funcionarios['dunidad']['telefono']}} @endif  --}}
-                @if(!is_null($funcionarios['dacademico']['correo'])) Correo: {{$funcionarios['dacademico']['correo']}} @endif
-            </b></p>
-        </footer>
+@endsection
+@section('content')
         <div>
-            <div align=center><b>Formato de Entrevista para Candidatos a Instructores</b></div>
+            <div style="text-align: center;"><b>Formato de Entrevista para Candidatos a Instructores</b></div>
             <p style="margin-right:-250px; text-align:right;"><b>{{$D}} de {{$M}} del {{$Y}}</b></p>
             <b>Nombre del entrevistado: {{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</b>
             <br><b>Unidad de capacitación: {{$userunidad->ubicacion}}</b>
@@ -138,8 +54,8 @@
                 <table class="tablad" style="border-color: black">
                     <thead>
                         <tr>
-                            <td width="360px"><b>PREGUNTA</b></td>
-                            <td width="360px"><b>RESPUESTA</b></td>
+                            <td width="10%"><b>PREGUNTA</b></td>
+                            <td width="10%"><b>RESPUESTA</b></td>
                         </tr>
                     </thead>
                     <tbody style="font-size:8;">
@@ -228,5 +144,6 @@
                 </tr>
             </table>
         </div>
-    </body>
-</html>
+        @endsection
+        @section('script_content_js')
+        @endsection

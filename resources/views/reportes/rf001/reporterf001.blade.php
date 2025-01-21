@@ -1,5 +1,5 @@
 {{-- Realizado por Jose Luis Morenoa Arcos --}}
-@extends('theme.formatos.vlayoutRf001')
+@extends('theme.formatos.vlayout2025')
 @section('title', 'Soporte de Entrega | SIVyC Icatech')
 
 @section('content_script_css')
@@ -14,9 +14,10 @@
             /* margin-top: 70px; */
             /* margin-bottom: -120px; */
             /* padding-top: 5px; */
-            padding-bottom: 60px;
+            padding-bottom: 16%;
             margin-left: -10px;
             margin-right: -10px;
+            padding-top: 16%;
             /* background-color: aqua; */
         }
 
@@ -267,9 +268,10 @@
                     </tr>
                 @endforeach
             </table>
-            <div style="display: inline-block; width: 16%;">
+            <div style="text-align:right; width: 16%; float: right;">
                 {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                <img style="position: fixed; width: 16%; top: 60%; left: 77%"
+                {{-- <img style="position: fixed; width: 16%; top: 60%; left: 77%" --}}
+                    <img style="padding-top: 15%;"
                     src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
             </div>
         </div>

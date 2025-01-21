@@ -25,6 +25,7 @@ use App\Models\Calificacion;
 use App\Models\tbl_curso;
 use App\Models\Banco;
 use App\Models\pago;
+use App\Models\pais;
 use App\Models\contratos;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -289,14 +290,15 @@ class InstructorController extends Controller
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $bancos = Banco::all();
         $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
+        $paises = pais::all();
 
-        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos','lista_regimen'));
+        return view('layouts.pages.frminstructor', compact('lista_civil','estados','bancos','lista_regimen','paises'));
     }
 
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
-        // dd('hola');
+        // dd($request);
         $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
         if(is_null($verify) == TRUE)
         {
@@ -317,15 +319,17 @@ class InstructorController extends Controller
             $pre_instructor  = $this->guardado_ins($save_preinstructor, $request, $id);
             $pre_instructor->id_oficial = $instructor->id;
             $pre_instructor->registro_activo = TRUE;
+
             // dd($instructor);
             $pre_instructor->save();
             $instructor->save();
 
             $newa = (array) $instructor;
-            $this->new_history($newa, $instructor, 'creacion de instructoe por parte de la unidad');
+            $this->new_history($newa, $instructor, 'creacion de instructor por parte de la unidad');
 
             return redirect()->route('instructor-crear-p2',['id' => $instructor->id])
-                    ->with('success','Información basica agregada');
+                ->with('success','Información basica agregada');
+
         }
         else
         {
@@ -352,6 +356,7 @@ class InstructorController extends Controller
                         ->ORDERBY('muni','ASC')->GET();
         $bancos = Banco::all();
         $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
+        $paises = pais::all();
 
         if(isset($idestnac->id))
         {
@@ -420,8 +425,13 @@ class InstructorController extends Controller
         {
             $nrevisionlast = 0;
         }
+
+        // verificacion de datos alfa. si es nulo o se construye array nulo para evitar errores
+        if($datainstructor->instructor_alfa != true) {
+            $datainstructor->datos_alfa = $this->instructor_alfa_nulo();
+        }
         // dd($nrevisionlast);
-        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos','lista_regimen'));
+        return view('layouts.pages.frminstructorp2', compact('perfil','userunidad','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisiones','nrevisionlast','bancos','lista_regimen','paises'));
     }
 
     public function send_to_dta(Request $request)
@@ -931,7 +941,6 @@ class InstructorController extends Controller
 
     public function validar(Request $request)
     {
-        // dd($request);
         $movimientoesp = $movimientoper = $mvalidacion = NULL;
         $saveInstructor = pre_instructor::find($request->idinsvalidar);
         $regimen_actual = instructor::Where('id',$saveInstructor->id)->Value('tipo_honorario');
@@ -1378,7 +1387,10 @@ class InstructorController extends Controller
                                     $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
                                     $retorno_firma = TRUE;
                                 }
-                                unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+
+                                if(isset($especialidades[$space]->hvalidacion)) {
+                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                                }
                             break;
                         }
                         if(isset($especialidades[$space]->hvalidacion) && $especialidades[$space]->hvalidacion == []) {
@@ -1716,10 +1728,11 @@ class InstructorController extends Controller
         $instructor_perfil = new InstructorPerfil();
         $bancos = Banco::all();
         $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
+        $paises = pais::all();
 
         if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
-            $datainstructor = NULL;
+            $datainstructor = $subproyectos = NULL;
             $datainstructor = instructor::WHERE('id', '=', $id)->FIRST();
             $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
             $validado = $instructor_perfil->SELECT('especialidades.nombre', 'especialidad_instructores.id as espinid',
@@ -1756,6 +1769,9 @@ class InstructorController extends Controller
 
                 if(isset($ges->cursos_impartir))
                 {
+                    if(!is_array($ges->cursos_impartir)) {
+                        $ges->cursos_impartir = json_decode($ges->cursos_impartir, true);
+                    }
                     $cursos = curso::SELECT('nombre_curso')->WHEREIN('id', $ges->cursos_impartir)->GET();
                     foreach($cursos as $llavesita => $ari)
                     {
@@ -1837,7 +1853,19 @@ class InstructorController extends Controller
             $nrevisionlast = 0;
         }
 
-        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen'));
+        // verificacion de datos alfa. si es nulo o se construye array nulo para evitar errores y otros arreglos de json a array
+        if($datainstructor->instructor_alfa != true) {
+            $datainstructor->datos_alfa = $this->instructor_alfa_nulo();
+        }
+
+        if(!is_array($datainstructor->exp_docente)) {
+            $datainstructor->exp_docente = json_decode($datainstructor->exp_docente);
+        }
+        if(!is_array($datainstructor->exp_laboral)) {
+            $datainstructor->exp_laboral = json_decode($datainstructor->exp_laboral);
+        }
+        //fin
+        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen','paises'));
     }
 
     public function save_ins(Request $request)
@@ -1869,8 +1897,8 @@ class InstructorController extends Controller
         $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
         $old = $pre_instructor->apellidoPaterno . ' ' . $pre_instructor->apellidoMaterno . ' ' . $pre_instructor->nombre;
 
-        $extract_inf->status = 'EN CAPTURA';
         $extract_inf->save();
+
 
         if($pre_instructor->status == 'RETORNO' || $pre_instructor->status == 'VALIDADO')
         {
@@ -3332,7 +3360,7 @@ class InstructorController extends Controller
     public function entrevista_pdf($idins)
     {
         // dd($idins);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $data = pre_instructor::WHERE('id', '=', $idins)->WHERE('registro_activo', TRUE)->FIRST();
         if(!isset($data))
         {
@@ -3348,8 +3376,9 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
 
         $funcionarios = $this->funcionarios('TUXTLA');
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','distintivo','D','M','Y','userunidad','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','leyenda','D','M','Y','userunidad','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('entrevista_instructor.pdf');
     }
@@ -3357,7 +3386,7 @@ class InstructorController extends Controller
     public function curriculumicatech_pdf($idins)
     {
         // dd($idins);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $data = pre_instructor::WHERE('id', '=', $idins)->WHERE('registro_activo', TRUE)->FIRST();
         if(!isset($data))
         {
@@ -3375,8 +3404,9 @@ class InstructorController extends Controller
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('distintivo','data', 'perfiles','D','M','Y','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('leyenda','data', 'perfiles','D','M','Y','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('curriculum_icatech_instructor.pdf');
     }
@@ -3432,7 +3462,7 @@ class InstructorController extends Controller
             }
         }
         $data = $this->make_collection($arrtemp);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
 
 
         foreach($data as $count => $item)
@@ -3529,7 +3559,8 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         $nomemosol = $request->nomemo;
         $fecha_letra = $this->obtenerFechaEnLetra($D);
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios'));
+        $direccion = explode("*",$funcionarios['dunidad']['direccion']);
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('leyenda','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
     }
@@ -3596,7 +3627,7 @@ class InstructorController extends Controller
         $instructor->data_especialidad = $special;
 
         // $elaboro = DB::TABLE('users')->WHERE('id','=', $user)->FIRST();
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $especialidades = $this->make_collection($especialidades);
         $ubicacion = DB::TABLE('tbl_unidades')
                         ->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
@@ -3643,8 +3674,8 @@ class InstructorController extends Controller
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
-
-        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','instructor','especialidades','unidad','D','M','Y','funcionarios'));
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
+        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('leyenda','instructor','especialidades','unidad','D','M','Y','funcionarios','direccion'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('validacion_instructor.pdf');
     }
@@ -3654,7 +3685,7 @@ class InstructorController extends Controller
         // dd($request);
         $nomesp = $arrtemp = $especialidades = array();
         $instructor = pre_instructor::find($request->idins);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $idesps = especialidad_instructor::SELECT('id')->WHERE('id_instructor', '=', $request->idins)
                                             ->WHERE('status','=','BAJA EN FIRMA')
                                             ->GET();
@@ -3697,8 +3728,9 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
         // dd($especialidades);
+        $direccion = explode("*",$funcionarios['dunidad']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('leyenda','instructor','data_unidad','D','M','Y','especialidades','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor.pdf');
     }
@@ -3708,7 +3740,7 @@ class InstructorController extends Controller
         // dd($request);
         $nomesp = $arrtemp = $especialidades = array();
         $instructor = pre_instructor::find($request->idinsbajadocval);
-        $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
+        $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $special = $this->make_collection($instructor->data_especialidad);
         $idesps = especialidad_instructor::SELECT('id','memorandum_validacion')->WHERE('id_instructor', '=', $request->idinsbajadocval)
                                             ->WHERE('status','=','BAJA EN FIRMA')
@@ -3749,8 +3781,9 @@ class InstructorController extends Controller
         $MS = $this->monthToString(date('m',$datesol));//A
         $YS = date("Y",$datesol);
         // dd($data_unidad);
+        $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('leyenda','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor_validacion.pdf');
     }
@@ -3822,7 +3855,7 @@ class InstructorController extends Controller
 
     private function guardado_ins($saveInstructor,$request,$id)
     {
-        // dd($saveInstructor);
+        // dd($request);
         $arresp = $arrper = $arrtemp = array();
         $perfiles = InstructorPerfil::WHERE('numero_control',$id)->GET();
         $especialidades = especialidad_instructor::WHERE('id_instructor', '=', $id)->GET();
@@ -3871,6 +3904,7 @@ class InstructorController extends Controller
         $saveInstructor->interbancaria = $request->clabe;
         $saveInstructor->no_cuenta = $request->numero_cuenta;
         $saveInstructor->tipo_instructor = $request->tipo_instructor;
+        $saveInstructor->nacionalidad = $request->pais_nacimiento;
         if(isset($request->numero_control))
         {
             $saveInstructor->numero_control = $request->numero_control;
@@ -4064,6 +4098,108 @@ class InstructorController extends Controller
             }
             $saveInstructor->data_especialidad = $arresp;
         }
+
+        if(isset($request->hispanohablante)) {
+            $subproyectos = [];
+            $saveInstructor->instructor_alfa = true;
+            foreach($request->subproyecto as $subproyecto) {
+                switch($subproyecto) {
+                    case 'oportunidades':
+                        $subproyectos[$subproyecto] = $request->oportunidades_puesto;
+                    break;
+                    case 'conafe':
+                        $subproyectos[$subproyecto] = $request->conafe_puesto;
+                    break;
+                    case 'sedena':
+                        $subproyectos[$subproyecto] = $request->sedena_puesto;
+                    break;
+                    case 'profesores':
+                        $subproyectos[$subproyecto] = $request->profesores_puesto;
+                    break;
+                    case 'becarios':
+                        $subproyectos[$subproyecto] = $request->becarios_puesto;
+                    break;
+                    case 'osc':
+                        $subproyectos[$subproyecto] = $request->osc_puesto;
+                    break;
+                    case 'ipf':
+                        $subproyectos[$subproyecto] = $request->ipf_puesto;
+                    break;
+                    case 'programas federales':
+                        $subproyectos[$subproyecto] = $request->input('programas federales_puesto');
+                    break;
+                    case 'conevyt':
+                        $subproyectos[$subproyecto] = $request->conevyt_puesto;
+                    break;
+                    case 'oportunidades':
+                        $subproyectos[$subproyecto] = $request->oportunidades_puesto;
+                    break;
+                    case 'instituciones academicas':
+                        $subproyectos[$subproyecto] = $request->instituciones_academicas_puesto;
+                    break;
+                    case 'chiapas puede':
+                        $subproyectos[$subproyecto] = $request->chiapas_puede_puesto;
+                    break;
+                    case 'otro':
+                        $subproyectos[$subproyecto] = $request->otrosub_puesto;
+                    break;
+                }
+            }
+
+            $urlalfa = null;
+            if ($request->file('arch_alfa') != null)
+            {
+                $otraid = $request->file('arch_alfa'); # obtenemos el archivo
+                $urlalfa = $this->pdf_upload($otraid, $id, 'archivo_alfa'); # invocamos el método
+            }
+
+            // $horarios_circulo = [
+            //     '1' => ['dia' => $request->dia1, 'inicio' => $request->horario_inicio1, 'termino' => $request->horario_termino1],
+            //     '1-2' => ['dia' => $request->dia1_2, 'inicio' => $request->horario_inicio1_2, 'termino' => $request->horario_termino1_2],
+            //     '2' => ['dia' => $request->dia2, 'inicio' => $request->horario_inicio2, 'termino' => $request->horario_termino2],
+            //     '2-2' => ['dia' => $request->dia2_2, 'inicio' => $request->horario_inicio2_2, 'termino' => $request->horario_termino2_2],
+            //     '3' => ['dia' => $request->dia3, 'inicio' => $request->horario_inicio3, 'termino' => $request->horario_termino3],
+            //     '3-2' => ['dia' => $request->dia3_2, 'inicio' => $request->horario_inicio3_2, 'termino' => $request->horario_termino3_2]
+            // ];
+
+            $datos_alfa = [
+                'hispanohablante' => $request->hispanohablante,
+                'lengua_indigena' => $request->lengua_indigena,
+                'etnia' => $request->etnia,
+                'hijos' => $request->hijos,
+                'subproyectos' => $subproyectos,
+                'tipo_vialidad' => $request->tipo_vialidad,
+                'nombre_vialidad' => $request->nombre_vialidad,
+                'numero_exterior' => $request->numero_exterior,
+                'numero_interior' => $request->numero_interior,
+                'entre_tipo_vialidad1' => $request->entre_tipo_vialidad1,
+                'entre_vialidad1' => $request->entre_vialidad1,
+                'entre_tipo_vialidad2' => $request->entre_tipo_vialidad2,
+                'entre_vialidad2' => $request->entre_vialidad2,
+                'vialidad_posterior' => $request->vialidad_posterior,
+                'carretera' => $request->carretera,
+                'tipo_asentamiento_humano' => $request->tipo_asentamiento_humano,
+                'nombre_asentamiento_humano' => $request->nombre_asentamiento_humano,
+                'descripcion_ubicacion' => $request->descripcion_ubicacion,
+                'ocupacion' => $request->ocupacion,
+                'sin_ocupacion' => $request->sin_ocupacion,
+                'con_ocupacion' => $request->con_ocupacion,
+                'ingreso_mensual' => $request->ingreso_mensual,
+                'roles' => $request->roles_figura_operativa,
+                'unidad_operativa' => $request->unidad_operativa,
+                'circulo_estudio' => $request->circulo_estudio,
+                'responsable_circulo' => $request->responsable_circulo,
+                'fecha_inicio' => $request->fecha_inicio,
+                'archivo_alfa' => $urlalfa,
+                'pais_residencia' => $request->pais,
+                // 'pais_residecia' = $request->
+                // 'horario_circulo' => $horarios_circulo,
+
+            ];
+
+            $saveInstructor->datos_alfa = $datos_alfa;
+        }
+
         return $saveInstructor;
     }
 
@@ -4446,6 +4582,7 @@ class InstructorController extends Controller
 
     private function guardado_oficial($saveInstructor)
     {
+        // dd($saveInstructor);
         // INICIO DE GUARDADO OFICIAL
         $instructor = instructor::find($saveInstructor->id);
         $instructor->nombre = trim($saveInstructor->nombre);
@@ -4503,6 +4640,9 @@ class InstructorController extends Controller
         $instructor->telefono_casa = $saveInstructor->telefono_casa;
         $instructor->curriculum = $saveInstructor->curriculum;
         $instructor->clave_loc_nacimiento = $saveInstructor->clave_loc_nacimiento;
+        $instructor->instructor_alfa = $saveInstructor->instructor_alfa;
+        $instructor->datos_alfa = $saveInstructor->datos_alfa;
+        $instructor->nacionalidad = $saveInstructor->nacionalidad;
         $instructor->save();
 
         $data_ins_curso = tbl_curso::Select('tbl_cursos.id')
@@ -4651,6 +4791,41 @@ class InstructorController extends Controller
         ];
 
         return $funcionarios;
+    }
+
+    private function instructor_alfa_nulo()
+    {
+        $datos_null = [
+            "etnia" => null,
+            "hijos" => null,
+            "roles" => null,
+            "carretera" => null,
+            "ocupacion" => null,
+            "archivo_alfa" => null,
+            "fecha_inicio" => null,
+            "subproyectos" => null,
+            "con_ocupacion" => null,
+            "sin_ocupacion" => null,
+            "tipo_vialidad" => null,
+            "circulo_estudio" => null,
+            "entre_vialidad1" => null,
+            "entre_vialidad2" => null,
+            "hispanohablante" => null,
+            "ingreso_mensual" => null,
+            "lengua_indigena" => null,
+            "nombre_vialidad" => null,
+            "numero_exterior" => null,
+            "numero_interior" => null,
+            "unidad_operativa" => null,
+            "vialidad_posterior" => null,
+            "responsable_circulo" => null,
+            "entre_tipo_vialidad1" => null,
+            "entre_tipo_vialidad2" => null,
+            "descripcion_ubicacion" => null,
+            "tipo_asentamiento_humano" => null,
+            "nombre_asentamiento_humano" => null
+        ];
+        return $datos_null;
     }
 }
 

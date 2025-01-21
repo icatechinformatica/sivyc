@@ -18,41 +18,41 @@ use PDF;
 use Carbon\Carbon;
 
 class turnarAperturaController extends Controller
-{   
+{
     use catUnidades;
     function __construct() {
         session_start();
-        $this->ejercicio = date("y");         
+        $this->ejercicio = date("y");
         $this->middleware('auth');
-        $this->path_pdf = "/UNIDAD/arc01/";        
-        $this->path_files = env("APP_URL").'/storage/uploadFiles';    
+        $this->path_pdf = "/UNIDAD/arc01/";
+        $this->path_files = env("APP_URL").'/storage/uploadFiles';
         $this->middleware(function ($request, $next) {
             $this->id_user = Auth::user()->id;
-            $this->realizo = Auth::user()->name;  
-            $this->id_unidad = Auth::user()->unidad;            
+            $this->realizo = Auth::user()->name;
+            $this->id_unidad = Auth::user()->unidad;
             $this->data = $this->unidades_user('unidad');
-            $_SESSION['unidades'] =  $this->data['unidades'];            
-            return $next($request); 
+            $_SESSION['unidades'] =  $this->data['unidades'];
+            return $next($request);
         });
     }
-    
+
     public function index(Request $request){
         $opt = $memo = $message = $file = $extemporaneo = $status_solicitud = $num_revision = NULL;
         $movimientos = [];
-        if($request->memo)  $memo = $request->memo; 
+        if($request->memo)  $memo = $request->memo;
         elseif(isset($_SESSION['memo'])) $memo = $_SESSION['memo'];
 
-        if($request->opt)  $opt = $request->opt; 
+        if($request->opt)  $opt = $request->opt;
         elseif(isset($_SESSION['opt'])) $opt = $_SESSION['opt'];
 
-        $_SESSION['grupos'] = NULL;        
+        $_SESSION['grupos'] = NULL;
         $grupos = $mextemporaneo = [];
-        $ids_extemp = []; 
-        if($memo){     
-            $grupos = DB::table('tbl_cursos as tc')->select(db::raw("(select sum(hours) from 
+        $ids_extemp = [];
+        if($memo){
+            $grupos = DB::table('tbl_cursos as tc')->select(db::raw("(select sum(hours) from
 			    (select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
-			    ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) ) 
-			        as hours 
+			    ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )
+			        as hours
  			        from agenda
 			        where id_curso = tc.folio_grupo) as t) as horas_agenda"),
                     'tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
@@ -60,35 +60,35 @@ class turnarAperturaController extends Controller
                     ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                     ->leftJoin('tbl_recibos as tr', function ($join) {
                         $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
-                             ->where('tr.status_folio','ENVIADO');                             
+                             ->where('tr.status_folio','ENVIADO');
                     });
-                if($opt == 'ARC01'){ 
+                if($opt == 'ARC01'){
                    $grupos = $grupos->whereRaw("(tc.num_revision = '$memo' OR (tc.munidad = '$memo'))");
                    //->where('tc.munidad',$memo);
-                }else{ 
+                }else{
                    $grupos = $grupos->whereRaw("(tc.num_revision_arc02 = '$memo' OR (tc.nmunidad = '$memo'))");
                    //->where('tc.nmunidad',$memo);
                 }
-                if($_SESSION['unidades']){ 
+                if($_SESSION['unidades']){
                    $grupos = $grupos->whereIn('tc.unidad',$_SESSION['unidades']);
                 }
                 $grupos = $grupos->groupby('tc.id','ar.turnado', 'tr.status_folio')->get();
 
-            if(count($grupos)>0){             
-                              
+            if(count($grupos)>0){
+
                 if ($opt == 'ARC01') {
                     if($grupos[0]->file_arc01) $file =  $this->path_files.$grupos[0]->file_arc01;
                     $status_solicitud = $grupos[0]->status_solicitud;
                     $num_revision = $grupos[0]->num_revision;
                     if(isset($_SESSION['memo']))$ids_extemp = $this->ids_extemp($_SESSION['memo']);
-                                       
+
                     if(count($ids_extemp)>0){
                         $extemporaneo = true;
                         $mextemporaneo = ['VALIDACION VENCIDA DEL INSTRUCTOR'=>'VALIDACION VENCIDA DEL INSTRUCTOR','REQUISITOS FALTANTES'=>'REQUISITOS FALTANTES',
                              'ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO','SOLICITUD DE LA DEPENDENCIA'=>'SOLICITUD DE LA DEPENDENCIA',
                              'ACTUALIZACION DE PAQUETERIA DIDACTICA'=>'ACTUALIZACION DE PAQUETERIA DIDACTICA'];
                     }
-                    
+
                     ///MOVIMIENTO ADICIONALES DESPUES DE AUTORIZADO
                     switch($grupos[0]->status_curso){
                         case 'AUTORIZADO':
@@ -98,25 +98,25 @@ class turnarAperturaController extends Controller
                             $movimientos = [ 'SUBIR' => 'SUBIR SOPORTE'];
                         break;
                     }
-                     
+
                 } elseif ($opt == 'ARC02') {
                     if($grupos[0]->file_arc02) $file =  $this->path_files.$grupos[0]->file_arc02;
                     $status_solicitud = $grupos[0]->status_solicitud_arc02;
                     $num_revision = $grupos[0]->num_revision_arc02;
                     foreach ($grupos as $grupo) {
-                        
-                        $interval = (Carbon::parse($grupo->termino)->diffInDays($grupo->inicio))/2; 
+
+                        $interval = (Carbon::parse($grupo->termino)->diffInDays($grupo->inicio))/2;
                         $interval = intval(ceil($interval));
                         $interval = (Carbon::parse($grupo->inicio)->addDay($interval))->format('Y-m-d');
                         $i = date($interval);
                         if ($i < date('Y-m-d')){
-                             $extemporaneo = true;                                
+                             $extemporaneo = true;
                              $ids_extemp[] = $grupo->id;
                         }
                     }
                     if($extemporaneo == true)$mextemporaneo = ['OBSERVACIONES DE FINANCIEROS'=>'OBSERVACIONES DE FINANCIEROS','ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO',
                     'TRAMITES ADMINISTRATIVOS'=>'TRAMITES ADMINISTRATIVOS'];
-                }          
+                }
                 $_SESSION['grupos'] = $grupos;
                 $_SESSION['memo'] = $memo;
                 $_SESSION['opt'] = $opt;
@@ -126,45 +126,45 @@ class turnarAperturaController extends Controller
 
         if(session('message')) $message = session('message');
         return view('solicitud.turnar.index', compact('message','grupos','memo', 'file','opt','extemporaneo','mextemporaneo','status_solicitud','num_revision','ids_extemp','movimientos'));
-    }  
-   
+    }
+
     public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio']){
             $result = DB::table('alumnos_registro')->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
-            ->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);            
+            ->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
             //$_SESSION['folio'] = null;
            // unset($_SESSION['folio']);
-           if($result){ 
+           if($result){
                 $message = "El grupo fué turnado correctamente a VINCULACIÓN";
                 unset($_SESSION['folio']);
             }
         }
         return redirect('solicitud/apertura')->with('message',$message);
    }
-       
-    public function enviar(Request $request){ 
+
+    public function enviar(Request $request){
         $result = $extemporaneo = NULL;
         $titulo = ''; $cuerpo = '';
         $message = 'Operación fallida, vuelva a intentar..';
 
-        if(isset($request->movimiento) ){ 
+        if(isset($request->movimiento) ){
             switch($request->movimiento){
                 case 'SOPORTE': //CAMBIO DE SOPORTE
                     $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','AUTORIZADO')
-                    ->update(['status_curso' => 'SOPORTE', 'motivo_mov' => $request->motivo]); 
+                    ->update(['status_curso' => 'SOPORTE', 'motivo_mov' => $request->motivo]);
                     if($result) $message = "Operación exitosa!";
                 break;
                 case 'SUBIR': //CAMBIO DE SOPORTE
-                    if ($request->hasFile('file_autorizacion')) { 
+                    if ($request->hasFile('file_autorizacion')) {
                         $name_file = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','ACEPTADO')->value(DB::raw("split_part(file_arc01, '/', array_length(string_to_array(file_arc01, '/'), 1))"));
                         $name_file = str_replace('.pdf', '', $name_file);
 
                         $file = $request->file('file_autorizacion'); //dd($name_file);
-                        $file_result = $this->upload_file($file,$name_file);                
-                        $url_file = $file_result["url_file"]; 
+                        $file_result = $this->upload_file($file,$name_file);
+                        $url_file = $file_result["url_file"];
                         if($file_result['up']){
-                            $movimientos = 
+                            $movimientos =
                             $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','ACEPTADO')
                             ->update(['status_curso' => 'AUTORIZADO',
                                 'movimientos' => DB::raw("
@@ -178,51 +178,51 @@ class turnarAperturaController extends Controller
                                     )
                                 "),
                                 'motivo_mov' => null
-                            ]); 
+                            ]);
                             if($result) $message = "Operación exitosa!";
                         }else $message = "Error al subir el archivo, volver a intentar.";
                     }
                 break;
             }
         }elseif($_SESSION['memo']==$request->nmemo ){
-            if ($request->hasFile('file_autorizacion')) {               
-                $name_file = $this->id_unidad."_".str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;                                
+            if ($request->hasFile('file_autorizacion')) {
+                $name_file = $this->id_unidad."_".str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;
                 $file = $request->file('file_autorizacion');
-                $file_result = $this->upload_file($file,$name_file);                
-                $url_file = $file_result["url_file"]; 
-                if($file_result['up']){                    
+                $file_result = $this->upload_file($file,$name_file);
+                $url_file = $file_result["url_file"];
+                if($file_result['up']){
                     switch($_SESSION['opt']){
                         case "ARC01":
                             //VALIDACION DE EXTEMPORANEIDAD
                             $ids_extemp = $this->ids_extemp($_SESSION['memo']);
 
-                            foreach($ids_extemp as $t){ //GUARDANDO EL VALIDANDO MOTIVO DE LA EXONERACION                                 
+                            foreach($ids_extemp as $t){ //GUARDANDO EL VALIDANDO MOTIVO DE LA EXONERACION
 
-                                if(!$request->mrespuesta[$t]) $message = "Escriba la razón extemporaneo.";                                                                                                    
-                                if(!$request->motivo[$t]) $message = "Selecione el motivo extemporaneo.";                                   
-                                
+                                if(!$request->mrespuesta[$t]) $message = "Escriba la razón extemporaneo.";
+                                if(!$request->motivo[$t]) $message = "Selecione el motivo extemporaneo.";
+
                                 if(!$request->mrespuesta[$t] OR !$request->motivo[$t])  return redirect('solicitud/apertura/turnar')->with('message',$message);
                                 else  $result = DB::table('tbl_cursos')->where('id',$t)
                                 ->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
-                                ->update(['mextemporaneo' => $request->motivo[$t] , 'rextemporaneo'=>$request->mrespuesta[$t]]); 
-                            }                          
+                                ->update(['mextemporaneo' => $request->motivo[$t] , 'rextemporaneo'=>$request->mrespuesta[$t]]);
+                            }
                             //FIN VALIDACION DE EXTEMPORANEIDAD*/
-                            
+
                             $titulo = 'Clave de Apertura';
                             $cuerpo = 'Solicitud de asignación de clave de apertura del memo '.$_SESSION['memo'];
-                            $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');                            
+                            $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');
                             $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
-                                ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc01' => $url_file]); 
+                                ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc01' => $url_file]);
 
                             if($result) $alumnos = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "DTA",'fecha_turnado' => date('Y-m-d')]);
-                            else $message = "Error al turnar la solictud, volver a intentar.";                            
-                           
+                            else $message = "Error al turnar la solictud, volver a intentar.";
+
                         break;
                         case "ARC02":
                             $cursos = DB::table('tbl_cursos')->select('tbl_cursos.*')->where('nmunidad',$_SESSION['memo'])->get();
                             foreach ($cursos as $key => $value) {
                                 $interval = (Carbon::parse($value->termino)->diffInDays($value->inicio))/2;
-                                $interval = intval(ceil($interval)); 
+                                $interval = intval(ceil($interval));
                                 $interval = (Carbon::parse($value->inicio)->addDay($interval))->format('Y-m-d');
                                 $i = date($interval);
                                 if ($i < date('Y-m-d')) {
@@ -236,11 +236,11 @@ class turnarAperturaController extends Controller
                                     }
                                 }
                             }
-                            $titulo = 'Modificación de Apertura'; 
-                            $cuerpo = 'Solicitud de corrección o cancelación de apertura del memo '.$_SESSION['memo'];   
+                            $titulo = 'Modificación de Apertura';
+                            $cuerpo = 'Solicitud de corrección o cancelación de apertura del memo '.$_SESSION['memo'];
                             $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])->where('status_curso','AUTORIZADO')->where('turnado','UNIDAD')->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
-                            ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc02' => $url_file]);    
-                            //echo $result; exit; 
+                            ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc02' => $url_file]);
+                            //echo $result; exit;
                             if ($extemporaneo) {
                                 foreach ($request->motivo as $key => $value) {
                                     if ($value != null) {
@@ -254,7 +254,7 @@ class turnarAperturaController extends Controller
                                                         ->update(['mextemporaneo_arc02' => $value, 'rextemporaneo_arc02'=>$respuesta]);
                                     }
                                 }
-                            }                     
+                            }
                         break;
                     }
                     if($result) {
@@ -278,13 +278,13 @@ class turnarAperturaController extends Controller
                         ];
                         event(new NotificationEvent($usersNotification, $dataNotificacion));
 
-                        $message = "La solicitud fué turnada correctamente a la DTA"; 
+                        $message = "La solicitud fué turnada correctamente a la DTA";
                     }
-                    
+
                 }else $message = "Error al subir el archivo, volver a intentar.";
             }else $message = "Archivo inválido";
         }else $message = "Operación inválida!!";
-        return redirect('solicitud/apertura/turnar')->with('message',$message);   
+        return redirect('solicitud/apertura/turnar')->with('message',$message);
    }
 
    public function preliminar(Request $request){
@@ -303,9 +303,9 @@ class turnarAperturaController extends Controller
                 }
                 $url_file = null;
                 if ($request->hasFile('file_autorizacion')) {
-                    $name_file = $this->id_unidad."_".str_replace('/','-',$request->memo)."_".date('ymdHis')."_".$this->id_user;                                
+                    $name_file = $this->id_unidad."_".str_replace('/','-',$request->memo)."_".date('ymdHis')."_".$this->id_user;
                     $file = $request->file('file_autorizacion');
-                    $file_result = $this->upload_file($file,$name_file);                
+                    $file_result = $this->upload_file($file,$name_file);
                     $url_file = $file_result["url_file"];
                 }
                 $result = DB::table('tbl_cursos as tc')->where($memo,$request->memo)->update([$status=>'TURNADO',$url=>$url_file]);
@@ -416,12 +416,12 @@ class turnarAperturaController extends Controller
             } else {
                 $message = "Acción inválida";
             }
-            
+
         }
         return redirect('solicitud/apertura/turnar')->with('message',$message);
    }
-   
-    protected function upload_file($file,$name){       
+
+    protected function upload_file($file,$name){
         $ext = $file->getClientOriginalExtension(); // extension de la imagen
         $ext = strtolower($ext);
         $path=$url = $mgs= null;
@@ -429,44 +429,44 @@ class turnarAperturaController extends Controller
         if($ext == "pdf"){
             $name = trim($name.".pdf");
             $path = $this->path_pdf.$name;
-            $up = Storage::disk('custom_folder_1')->put($path, file_get_contents($file));            
-            $msg = "El archivo ha sido cargado o reemplazado correctamente.";            
+            $up = Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
+            $msg = "El archivo ha sido cargado o reemplazado correctamente.";
         }else $msg= "Formato de Archivo no válido, sólo PDF.";
-                
+
         $data_file = ["message"=>$msg, 'url_file'=>$path, 'up'=>$up];
-       
+
         return $data_file;
     }
-   
+
     public function pdfARC01(Request $request){
-        if($request->fecha AND $request->memo){ 
-            $marca = true;       
+        if($request->fecha AND $request->memo){
+            $marca = true;
             $fecha_memo =  $request->fecha;
-            $memo_apertura =  $request->memo;            
+            $memo_apertura =  $request->memo;
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
                 DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
-                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01','status_solicitud');                
-            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
+                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01','status_solicitud');
+            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
-                
-            if(count($reg_cursos)>0){               
+
+            if(count($reg_cursos)>0){
                 if(preg_match('/unidad\b/',$this->data['slug'])){
-                    $asigna_fecha = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->whereNull('fecha_arc01')->update(['fecha_arc01'=>$request->fecha]);                   
+                    $asigna_fecha = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->whereNull('fecha_arc01')->update(['fecha_arc01'=>$request->fecha]);
                 }
                 if( $reg_cursos[0]->fecha_arc01) $fecha_memo = $reg_cursos[0]->fecha_arc01;
-                
-                
-               //CONVERSION DE FECHA                
+
+
+               //CONVERSION DE FECHA
                 $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
                 $mes = $meses[date('m',strtotime($fecha_memo))];
                 $fecha_memo = date('d',strtotime($fecha_memo)).' de '.$mes.' del '.date('Y',strtotime($fecha_memo));
-                
 
-                $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();                 
+
+                $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
                 $unidad = $reg_cursos[0]->unidad;
-                $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first();       
-                $direccion = $reg_unidad->direccion;                
+                $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first();
+                $direccion = $reg_unidad->direccion;
 
                 if($reg_cursos[0]->status_solicitud=="VALIDADO") $marca = false;
                 $pdf = PDF::loadView('solicitud.apertura.pdfARC01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion'));
@@ -475,51 +475,51 @@ class turnarAperturaController extends Controller
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
         }return "ACCIÓN INVÁlIDA";exit;
     }
-    
-    public function pdfARC02(Request $request) { 
-        if($request->fecha AND $request->memo){  
-            $marca = true;    
+
+    public function pdfARC02(Request $request) {
+        if($request->fecha AND $request->memo){
+            $marca = true;
             $fecha_memo =  $request->fecha;
-            $memo_apertura =  $request->memo;            
+            $memo_apertura =  $request->memo;
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
                 'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso','fecha_arc02','status_solicitud_arc02');
-            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
+            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
             $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
-                
+
             if(count($reg_cursos)>0){
                 if(preg_match('/unidad\b/',$this->data['slug'])){
                     $asigna_fecha = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->whereNull('fecha_arc02')->update(['fecha_arc02'=>$request->fecha]);
                 }
                 if( $reg_cursos[0]->fecha_arc02) $fecha_memo = $reg_cursos[0]->fecha_arc02;
 
-                //CONVERSION DE FECHA                
+                //CONVERSION DE FECHA
                 $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
                 $mes = $meses[date('m',strtotime($fecha_memo))];
                 $fecha_memo = date('d',strtotime($fecha_memo)).' de '.$mes.' del '.date('Y',strtotime($fecha_memo));
 
 
-                $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
+                $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
                 $unidad = $reg_cursos[0]->unidad;
-                $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first();       
+                $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first();
                 $direccion = $reg_unidad->direccion;
 
                 if($reg_cursos[0]->status_solicitud_arc02=="VALIDADO") $marca = false;
                 $pdf = PDF::loadView('solicitud.apertura.pdfARC02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC02.pdf');
-            }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;   
+            }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
         }
     }
 
     public function cambiar_memorandum(Request $request){
          //dd($request->all());
-        $message = "Operación fallida, vuelva a intentar..";        
+        $message = "Operación fallida, vuelva a intentar..";
         if ($request->memo AND $request->nmemo AND $request->opt) {
             if ($request->opt === 'ARC01') {
                 if ((DB::table('tbl_cursos')->where('munidad',$request->nmemo)->value('id'))) {
                     $message = "El memorándum ya se encuentra en uso..";
-                } else {                    
+                } else {
                     $result = DB::table('tbl_cursos')->where('num_revision',$request->memo)->orWhere('munidad',$request->memo)->update(['munidad' => $request->nmemo]);
                     if($result){
                         $history = DB::table('tbl_cursos_history')->where('num_revision',$request->memo)->orWhere('munidad',$request->memo)->update(['munidad' => $request->nmemo,'num_revision'=>$request->memo]);
@@ -544,35 +544,35 @@ class turnarAperturaController extends Controller
                     } else {
                         $message = "Operación fallida, vuelva a intentar..";
                     }
-                    
+
                 }
             }
         }else $message = "Ingrese el número de memorándum";
-        return redirect('solicitud/apertura/turnar')->with('message',$message); 
+        return redirect('solicitud/apertura/turnar')->with('message',$message);
     }
 
-    private function ids_extemp($memo){        
+    private function ids_extemp($memo){
             $result = DB::select("SELECT id
                     FROM (
-                        SELECT c.id, c.termino, min(generate_series::date) as fecha_extemp                            
-                        FROM tbl_cursos c 
+                        SELECT c.id, c.termino, min(generate_series::date) as fecha_extemp
+                        FROM tbl_cursos c
                                 CROSS JOIN generate_series(
-                                    CASE 
+                                    CASE
                                         WHEN date_part('dow',c.inicio) BETWEEN 1 AND 2 THEN c.inicio+ CAST('3 days' AS INTERVAL)
-                                        WHEN date_part('dow',c.inicio) BETWEEN 3 AND 6 THEN c.inicio+ CAST('5 days' AS INTERVAL) 									
-                                        ELSE c.inicio+ CAST('4 days' AS INTERVAL) 
-                                    
+                                        WHEN date_part('dow',c.inicio) BETWEEN 3 AND 6 THEN c.inicio+ CAST('5 days' AS INTERVAL)
+                                        ELSE c.inicio+ CAST('4 days' AS INTERVAL)
+
                                     END,
                                     c.termino,
                                     '1 day'::interval
                                 )
-                        WHERE  munidad = ? 
+                        WHERE  munidad = ?
                         AND EXTRACT(DOW FROM generate_series::date) BETWEEN 1 AND 5
-  						AND generate_series::date NOT IN(SELECT fecha FROM dias_inhabiles dh WHERE fecha BETWEEN c.inicio AND c.inicio+ CAST('2 days' AS INTERVAL)) 
-                        --AND date_part('dow',generate_series::date) not in(0,6)=true 
-                        group by c.id,c.termino                        
-                           
+  						AND generate_series::date NOT IN(SELECT fecha FROM dias_inhabiles dh WHERE fecha BETWEEN c.inicio AND c.inicio+ CAST('2 days' AS INTERVAL))
+                        --AND date_part('dow',generate_series::date) not in(0,6)=true
+                        group by c.id,c.termino
+
                     ) as global WHERE now()::date>=fecha_extemp or now()::date>termino",[$memo]);
-        return $resultArray = array_column(json_decode(json_encode($result), true),'id'); 
-    }   
+        return $resultArray = array_column(json_decode(json_encode($result), true),'id');
+    }
 }

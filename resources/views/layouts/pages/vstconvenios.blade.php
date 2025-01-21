@@ -1,52 +1,32 @@
-<!--Creado por Daniel Méndez-->
 @extends('theme.sivyc.layout')
-
-<!--llamar a la plantilla -->
 @section('title', 'Convenios | SIVyC Icatech')
-    <!--seccion-->
-
-@section('content')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
     <style>
-        * {
-            box-sizing: border-box;
+        .custom-file-label::after {
+            content: "Examinar";
         }
-
-        #myInput {
-            background-image: url('img/search.png');
-            background-position: 5px 10px;
-            background-repeat: no-repeat;
-            background-size: 32px;
-            width: 100%;
-            font-size: 16px;
-            padding: 12px 20px 12px 40px;
-            border: 1px solid #ddd;
-            margin-bottom: 12px;
+        .fixed-width-label {
+            max-width: 200px; /* Adjust the value as needed */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            margin-bottom:-1px;
         }
-
     </style>
-
-    <div class="container-fluid px-5 g-pt-30">
+@endsection
+@section('content')       
+    <div class="card-header">
+        Catálogos / Convenios
+    </div>
+    <div class="card card-body">
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
             </div>
         @endif
-
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h1>Convenios</h1>
-                </div>
-                @can('convenios.create')
-                    <div class="pull-right">
-                        <a class="btn btn-success btn-lg" href="{{ route('convenio.create') }}">NUEVO</a>
-                    </div>
-                @endcan
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="col">
+        <div class="form-row">            
+            <div class="form-inline">
                 {!! Form::open(['method' => 'GET', 'id' => 'frm_one', 'class' => 'form-inline']) !!}
                 {{ Form::select('busqueda', ['no_convenio'=>'N° DE CONVENIO','institucion'=>'INSTITUCIÓN','tipo_convenio'=>'TIPO DE CONVENIO','sector'=>'SECTOR', 'fechas'=>'FECHA'], $request->busqueda ,['id'=>'busqueda','class' => 'form-control mr-sm-2','title' => 'BUSCAR POR TIPO','placeholder' => 'BUSCAR POR TIPO', 'onchange' => 'selectOp()']) }}
                 {!! Form::text('busqueda_conveniopor', $request->busqueda_conveniopor, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR',
@@ -59,6 +39,11 @@
                 {{ Form::button('EXPORTAR REGISTROS <i class="far fa-file-excel fa-2x fa-lg text-dark ml-1"></i>', ['id' => 'botonGENEXCEL', 'value' => 'EXPORTAR REGISTROS2', 'class' => 'btn btn-warning text-dark']) }}
                 @endcan
                 {!! Form::close() !!}
+                @can('convenios.create')
+                    
+                    <a class="form-control btn" href="{{ route('convenio.create') }}"> NUEVO</a>
+                    
+                @endcan
             </div>
         </div>
 
@@ -73,7 +58,7 @@
                     <th width="150px">SECTOR</th>
                     <th width="150px">STATUS</th>
                     {{-- <th width="150px">FECHA DE ACTUALIZACIÓN</th> --}}
-                    <th scope="col">ARCHIVO CONVENIO</th>
+                    <th scope="col">CONVENIO</th>
                     @can('convenios.edit')
                         <th scope="col">MODIFICAR</th>
                     @endcan
@@ -91,24 +76,18 @@
                         <td>{{ $itemData->activo == 'false' ? 'NO PUBLICADO' : 'PUBLICADO'}}</td>
                         {{-- <td>{{ $itemData->updated_at == '' ? 'SIN FECHA' : $itemData->updated_at->format('d-m-Y')}}</td> --}}
                         <td>
-                            <div class="custom-file">
-                                @if (isset($itemData->archivo_convenio))
-                                    <a href="{{ $itemData->archivo_convenio }}" target="_blank"
-                                        rel="{{ $itemData->archivo_convenio }}">
-                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
-                                            height="50px">
-                                    </a>
-                                @else
-                                    NO ADJUNTADO
-                                @endif
-                            </div>
+                            @if (isset($itemData->archivo_convenio))
+                                <a class="nav-link pt-0"  href="{{ $itemData->archivo_convenio }}" target="_blank">
+                                    <i class="far fa-file-pdf fa-2x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
+                                </a>
+                            @else
+                                <i  class="far fa-file-pdf  fa-3x text-muted pt-0"  title='ARCHIVO NO DISPONIBLE.'></i>
+                            @endif
                         </td>
                         @can('convenios.edit')
                             <td>
-                                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="EDITAR CONVENIO"
-                                    href="{{ route('convenios.edit', ['id' => base64_encode($itemData->id)]) }}">
-                                    <i class="fas fa-pencil-alt fa-2x mt-2" aria-hidden="true"></i>
+                                <a  class="nav-link pt-0" data-toggle="tooltip"data-placement="top" title="EDITAR CONVENIO" href="{{ route('convenios.edit', ['id' => base64_encode($itemData->id)]) }}">
+                                    <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
                                 </a>
                             </td>
                         @endcan
