@@ -87,7 +87,6 @@
         .checkbox {
             margin-top: 5px;
         }
-
     </style>
     <form action="{{ route('saveins') }}" enctype="multipart/form-data" method="post" id="reginstructor">
         @csrf
@@ -115,9 +114,15 @@
                     <p>{{ $message }}</p>
                 </div>
             @endif
-            @if(!is_null($datainstructor->instructor_alfa) && $datainstructor->instructor_alfa)
+            <div class="switch-container">
+                <label class="switch">
+                    <input type="checkbox" id="toggleAcordeon" @if($datainstructor->instructor_alfa) checked @endif >
+                    <span class="slider round"></span>
+                </label>
+                <span class="switch-text">Instructor Alfa</span>
+            </div>
             <!-- Acordeón -->
-            <div id="acordeonInstructor" class="panel-group acordeon-borde" @if(!$datainstructor->instructor_alfa || is_null($datainstructor->instructor_alfa)) style="display: none;" @endif>
+            <div id="acordeonInstructor" class="panel-group acordeon-borde" @if($datainstructor->instructor_alfa) style="border: 3px solid black;" @else style="display: none; border: 3px solid black;" @endif>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -159,56 +164,61 @@
                                 $conOcupacion = ['Seleccione','Trabajador Agropecuario','Inspector o Supervisor','Artesano u Obrero','Operador de Maquinaria Fija','Ayudante o Similar','Operador de Trans. o Maq. Mov.',
                                 'Jefe de Actividades Administrativas','Trabajador Administrativo','Comerciante o Dependiente','Trabajador Ambulante','Trabajador en serv. al púb. o pers.','Trabajador Domestico',
                                 'Protección o Vigilante','Personas dedicadas quehaceres hogar','Funcionario o Directivo','Profesionista','Empleado de Gobierno'];
+                                $vialidad = ['SELECCIONE TIPO','AMPLIACIÓN','ANDADOR','AVENIDA','BOULEVARD','CALLE','CALLEJON','CALZADA','CERRADA','CIRCUITO','CIRCUNVALACIÓN','CONTINUACIÓN','CORREDOR','DIAGONAL','EJE VIAL','PASAJE','PEATONAL',
+                                'PERIFERICO','PRIVADA','PROLONGACIÓN','RETORNO','VIADUCTO','CARRETERA','CAMINO','BRECHA','TERRACERIA','VEREDA'];
+                                $asentamientos = ['SELECCIONE','AEROPUERTO','AMPLIACIÓN','BARRIO','CANTON','CIUDAD','CIUDAD INDUSTRIAL','COLONIA','CONDOMINIO','CONJUNTO HABITACIONAL','CORREDOR INDUSTRIAL','COTO','CUARTEL','EJIDO','EXHACIENDA','FRACCION','FRACCIONAMIENTO',
+                                'GRANJA','HACIENDA','INGENIO','MANZANA','PARAJE','PARQUE INDSUTRIAL','PRIVADA','PROLONGACIÓN','PUEBLO','PUERTO','RANCHERIA','RANCHO','REGION','RESIDENCIAL','RINCONADA','SECCIÓN','SECTOR','SUPERMANZANA','UNIDAD',
+                                'UNIDAD HABITACIONAL','VILLA','ZONA FEDERAL','ZONA INDUSTRIAL','ZONA MILITAR','ZONA NAVAL'];
                             @endphp
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label><strong>Subproyecto:</strong></label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="oportunidades" onclick="puestoOnOff(this, 'oportunidades_puesto')" @if(array_key_exists('oportunidades', $datainstructor->datos_alfa['subproyectos'])) checked @endif> Oportunidades</label>
-                                            <select class="form-control col-md-4" name="oportunidades_puesto" id="oportunidades_puesto" @if(!array_key_exists('oportunidades', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                        {{-- <div class="checkbox">
+                                            <label><input type="checkbox" name="subproyecto[]" value="oportunidades" onclick="puestoOnOff(this, 'oportunidades_puesto')"> Oportunidades</label>
+                                            <select class="form-control col-md-4" name="oportunidades_puesto" id="oportunidades_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('oportunidades', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['oportunidades'] == $puesto) selected @endif >{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="conafe" onclick="puestoOnOff(this, 'conafe_puesto')" @if(array_key_exists('conafe', $datainstructor->datos_alfa['subproyectos'])) checked @endif> CONAFE</label>
-                                            <select class="form-control col-md-4" name="conafe_puesto" id="conafe_puesto" @if(!array_key_exists('conafe', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="conafe" onclick="puestoOnOff(this, 'conafe_puesto')"> CONAFE</label>
+                                            <select class="form-control col-md-4" name="conafe_puesto" id="conafe_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('conafe', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['conafe'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="sedena" onclick="puestoOnOff(this, 'sedena_puesto')" @if(array_key_exists('sedena', $datainstructor->datos_alfa['subproyectos'])) checked @endif> SEDENA</label>
-                                            <select class="form-control col-md-4" name="sedena_puesto" id="sedena_puesto" @if(!array_key_exists('sedena', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="sedena" onclick="puestoOnOff(this, 'sedena_puesto')"> SEDENA</label>
+                                            <select class="form-control col-md-4" name="sedena_puesto" id="sedena_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('sedena', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['sedena'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="profesores" onclick="puestoOnOff(this, 'profesores_puesto')" @if(array_key_exists('profesores', $datainstructor->datos_alfa['subproyectos'])) checked @endif> Profesores</label>
-                                            <select class="form-control col-md-4" name="profesores_puesto" id="profesores_puesto" @if(!array_key_exists('profesores', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="profesores" onclick="puestoOnOff(this, 'profesores_puesto')"> Profesores</label>
+                                            <select class="form-control col-md-4" name="profesores_puesto" id="profesores_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('profesores', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['profesores'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="becarios" onclick="puestoOnOff(this, 'becarios_puesto')" @if(array_key_exists('becarios', $datainstructor->datos_alfa['subproyectos'])) checked @endif> Jóvenes Becarios</label>
-                                            <select class="form-control col-md-4" name="becarios_puesto" id="becarios_puesto" @if(!array_key_exists('becarios', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="becarios" onclick="puestoOnOff(this, 'becarios_puesto')"> Jóvenes Becarios</label>
+                                            <select class="form-control col-md-4" name="becarios_puesto" id="becarios_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('becarios', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['becarios'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="osc" onclick="puestoOnOff(this, 'osc_puesto')" @if(array_key_exists('osc', $datainstructor->datos_alfa['subproyectos'])) checked @endif> Organizaciones de la Sociedad Civil (OSC)</label>
-                                            <select class="form-control col-md-4" name="osc_puesto" id="osc_puesto" @if(!array_key_exists('osc', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="osc" onclick="puestoOnOff(this, 'osc_puesto')"> Organizaciones de la Sociedad Civil (OSC)</label>
+                                            <select class="form-control col-md-4" name="osc_puesto" id="osc_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('osc', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['osc'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -218,44 +228,45 @@
                                     <div class="form-group">
                                         <label style="opacity: 0.0;"><strong>Subproyecto:</strong></label>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="ipf" onclick="puestoOnOff(this, 'ipf_puesto')" @if(array_key_exists('ipf', $datainstructor->datos_alfa['subproyectos'])) checked @endif> Instituciones Públicas Federales</label>
-                                            <select class="form-control col-md-4" name="ipf_puesto" id="ipf_puesto" @if(!array_key_exists('ipf', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="ipf" onclick="puestoOnOff(this, 'ipf_puesto')"> Instituciones Públicas Federales</label>
+                                            <select class="form-control col-md-4" name="ipf_puesto" id="ipf_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('ipf', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['ipf'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="programas federales" onclick="puestoOnOff(this, 'programas federales_puesto')" @if(array_key_exists('programas federales', $datainstructor->datos_alfa['subproyectos'])) checked @endif> Programas Federales</label>
-                                            <select class="form-control col-md-4" name="programas federales_puesto" id="programas federales_puesto" @if(!array_key_exists('programas federales', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="programas federales" onclick="puestoOnOff(this, 'programas federales_puesto')"> Programas Federales</label>
+                                            <select class="form-control col-md-4" name="programas federales_puesto" id="programas federales_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('programas federales', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['programas federales'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="conevyt" onclick="puestoOnOff(this, 'conevyt_puesto')" @if(array_key_exists('conevyt', $datainstructor->datos_alfa['subproyectos'])) checked @endif> Certificación CONEVyT (Empresas)</label>
-                                            <select class="form-control col-md-4" name="conevyt_puesto" id="conevyt_puesto" @if(!array_key_exists('conevyt', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="conevyt" onclick="puestoOnOff(this, 'conevyt_puesto')"> Certificación CONEVyT (Empresas)</label>
+                                            <select class="form-control col-md-4" name="conevyt_puesto" id="conevyt_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('conevyt', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['conevyt'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="instituciones academicas" onclick="puestoOnOff(this, 'instituciones academicas_puesto')" @if(array_key_exists('instituciones academicas', $datainstructor->datos_alfa['subproyectos'])) checked @endif> Instituciones Académicas</label>
-                                            <select class="form-control col-md-4" name="instituciones academicas_puesto" id="instituciones academicas_puesto" @if(!array_key_exists('instituciones academicas', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="instituciones academicas" onclick="puestoOnOff(this, 'instituciones academicas_puesto')"> Instituciones Académicas</label>
+                                            <select class="form-control col-md-4" name="instituciones academicas_puesto" id="instituciones academicas_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('instituciones academicas', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['instituciones academicas'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
-                                        </div>
+                                        </div> --}}
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="otro" onclick="puestoOnOff(this, 'otrosub_puesto')" @if(array_key_exists('otro', $datainstructor->datos_alfa['subproyectos'])) checked @endif> Otro Subproyecto</label>
-                                            <input type="text" class="form-control col-md-4" hidden name="otrosub" id="otrosub">
-                                            <select class="form-control col-md-4" name="otrosub_puesto" id="otrosub_puesto" @if(!array_key_exists('otro', $datainstructor->datos_alfa['subproyectos'])) hidden @endif>
+                                            <label><input type="checkbox" name="subproyecto[]" value="chiapas puede" {{--onclick="puestoOnOff(this, 'otrosub_puesto')"--}} checked>Chiapas Puede</label>
+                                            {{-- <input type="text" class="form-control col-md-4" hidden name="otrosub" id="otrosub"> --}}
+                                            <select class="form-control col-md-4" name="chiapas_puede_puesto" id="chiapas_puede_puesto">
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}" @if(array_key_exists('otro', $datainstructor->datos_alfa['subproyectos']) && $datainstructor->datos_alfa['subproyectos']['otro'] == $puesto) selected @endif>{{$puesto}}</option>
+                                                    {{-- <option value="{{$puesto}}">{{$puesto}}</option> --}}
                                                 @endforeach
+                                                <option value="voluntario">VOLUNTARIO</option>
                                             </select>
                                         </div>
                                     </div>
@@ -265,7 +276,11 @@
                             <div class="form-row">
                                 <label class="col-form-label">Vialidad:</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="tipo_vialidad" id="tipo_vialidad" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['tipo_vialidad']}}">
+                                    <select name="tipo_vialidad" id="tipo_vialidad" class="form-control" aria-required="true">
+                                        @foreach ($vialidad as $vial)
+                                            <option value="{{$vial}}" @if($datainstructor->datos_alfa['tipo_vialidad'] == $vial) selected @endif>{{$vial}}</option>
+                                        @endforeach
+                                    </select>
                                     <small class="form-text text-muted" style="text-align: center;">Tipo</small>
                                 </div>
                                 <div class="col-sm-5 form-group">
@@ -284,10 +299,25 @@
                             </div>
                             <div class="form-row">
                                 <label class="col-form-label">Entre Vialidades:</label>
+                                <div class="col-sm-2 form-group">
+                                    <select name="entre_tipo_vialidad1" id="entre_tipo_vialidad1" class="form-control" aria-required="true">
+                                        @foreach ($vialidad as $vial)
+                                            <option value="{{$vial}}" @if($datainstructor->datos_alfa['entre_tipo_vialidad1'] == $vial) selected @endif>{{$vial}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 <div class="col-sm-3 form-group">
                                     <input name="entre_vialidad1" id="entre_vialidad1" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['entre_vialidad1']}}">
+                                    </select>
                                 </div>
                                 <label class="col-form-label">Y</label>
+                                <div class="col-sm-2 form-group">
+                                    <select name="entre_tipo_vialidad2" id="entre_tipo_vialidad2" class="form-control" aria-required="true">
+                                        @foreach ($vialidad as $vial)
+                                            <option value="{{$vial}}" @if($datainstructor->datos_alfa['entre_tipo_vialidad2'] == $vial) selected @endif>{{$vial}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 <div class="col-sm-3 form-group">
                                     <input name="entre_vialidad2" id="entre_vialidad2" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['entre_vialidad2']}}">
                                 </div>
@@ -305,8 +335,11 @@
                             <div class="form-row">
                                 <label class="col-form-label">Asentamiento Humano:</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="tipo_asentamiento_humano" id="tipo_asentamiento_humano" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['tipo_asentamiento_humano']}}">
-                                    <small class="form-text text-muted" style="text-align: center;">Tipo</small>
+                                    <select name="tipo_asentamiento_humano" id="tipo_asentamiento_humano" class="form-control" aria-required="true">
+                                        @foreach ($asentamientos as $asentamiento)
+                                            <option value="{{$asentamiento}}" @if($datainstructor->datos_alfa['tipo_asentamiento_humano'] == $asentamiento) selected @endif>{{$asentamiento}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="col-sm-5 form-group">
                                     <input name="nombre_asentamiento_humano" id="nombre_asentamiento_humano" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['nombre_asentamiento_humano']}}">
@@ -333,7 +366,7 @@
                                         <option value="no" @if($datainstructor->datos_alfa['ocupacion'] == 'no') selected @endif>No</option>
                                     </select>
                                 </div>
-                                <label class="col-form-label" id="label_ocupa">Seleccionar:</label>
+                                <label class="col-form-label" id="label_ocupa" @if($datainstructor->datos_alfa['ocupacion'] == 'si') hidden @endif>Seleccionar:</label>
                                 <div class="col-sm-2 form-group" id="sin_ocupa" @if($datainstructor->datos_alfa['ocupacion'] == 'si') hidden @endif>
                                     <select class="form-control" name="sin_ocupacion" id="sin_ocupacion">
                                         @foreach ($sinOcupacion as $variable)
@@ -354,23 +387,46 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label><strong>Rol (es) de la figura operativa:</strong></label>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo" @if(in_array('asesor_educativo', $datainstructor->datos_alfa['roles'])) checked @endif> Asesor educativo</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aspirante_asesor" checked> Aspirante que apoya en asesoria educativa hispano 2024</label>
+                                        </div>
+                                        {{-- <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo"> Asesor educativo</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo_bilingüe" @if(in_array('asesor_educativo_bilingüe', $datainstructor->datos_alfa['roles'])) checked @endif> Asesor educativo bilingüe</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo_bilingüe"> Asesor educativo bilingüe</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_grupo" @if(in_array('orientador_grupo', $datainstructor->datos_alfa['roles'])) checked @endif> orientador educativo de grupo</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_grupo"> orientador educativo de grupo</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_discapacidad" @if(in_array('orientador_discapacidad', $datainstructor->datos_alfa['roles'])) checked @endif> orientador educativo para personas en situación de discapacidad</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_discapacidad"> orientador educativo para personas en situación de discapacidad</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="auxiliar_interprete" @if(in_array('auxiliar interprete', $datainstructor->datos_alfa['roles'])) checked @endif> auxiliar intérprete</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="auxiliar_interprete"> auxiliar intérprete</label>
+                                        </div> --}}
+                                    </div>
+                                </div>
+                                {{-- <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo"> Enlace educativo</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo_bilingüe"> Enlace educativo bilingüe</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional"> Enlace regional</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional_bilingüe"> Enlace regional bilingüe</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="formador_especializado"> Formador especializado</label>
                                         </div>
                                     </div>
                                 </div>
@@ -378,19 +434,19 @@
                                     <div class="form-group">
                                         <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo" @if(in_array('enlace_educativo', $datainstructor->datos_alfa['roles'])) checked @endif> Enlace educativo</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="promotor_comunitaria"> Promotor de una plaza comunitaria</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo_bilingüe" @if(in_array('enlace_educativo_bilingüe', $datainstructor->datos_alfa['roles'])) checked @endif> Enlace educativo bilingüe</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_tecnico"> Apoyo técnico</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional" @if(in_array('enlace_regional', $datainstructor->datos_alfa['roles'])) checked @endif> Enlace regional</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes"> Aplicador de exámenes</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional_bilingüe" @if(in_array('enlace_regional_bilingüe', $datainstructor->datos_alfa['roles'])) checked @endif> Enlace regional bilingüe</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes_bilingüe"> aplicador de exámenes bilingüe</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="formador_especializado" @if(in_array('fomrador_especializado', $datainstructor->datos_alfa['roles'])) checked @endif> Formador especializado</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_plaza"> Enlace de plaza</label>
                                         </div>
                                     </div>
                                 </div>
@@ -398,39 +454,19 @@
                                     <div class="form-group">
                                         <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="promotor_comunitaria" @if(in_array('promotor_comunitaria', $datainstructor->datos_alfa['roles'])) checked @endif> Promotor de una plaza comunitaria</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_regional"> Apoyo regional de plazas comunitarias</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_tecnico" @if(in_array('apoyo_tecnico', $datainstructor->datos_alfa['roles'])) checked @endif> Apoyo técnico</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_especifico"> Enlace o apoyo para determinadas actividades específicas</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes" @if(in_array('aplicador_examenes', $datainstructor->datos_alfa['roles'])) checked @endif> Aplicador de exámenes</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="titular_promotor"> Titular promotor</label>
                                         </div>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes_bilingüe" @if(in_array('aplicador_examenes_bilingüe', $datainstructor->datos_alfa['roles'])) checked @endif> aplicador de exámenes bilingüe</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_plaza" @if(in_array('enlace_plaza', $datainstructor->datos_alfa['roles'])) checked @endif> Enlace de plaza</label>
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="tecnico_docente"> Tecnico docente</label>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_regional" @if(in_array('apoyo_regional', $datainstructor->datos_alfa['roles'])) checked @endif> Apoyo regional de plazas comunitarias</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_especifico" @if(in_array('enlace_especifico', $datainstructor->datos_alfa['roles'])) checked @endif> Enlace o apoyo para determinadas actividades específicas</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="titular_promotor" @if(in_array('titular promotor', $datainstructor->datos_alfa['roles'])) checked @endif> Titular promotor</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="tecnico_docente" @if(in_array('tecnico_docente', $datainstructor->datos_alfa['roles'])) checked @endif> Tecnico docente</label>
-                                        </div>
-                                    </div>
-                                </div>
+                                </div> --}}
                             </div>
                             <label><strong>Incorporado a:</strong></label>
                             <div class="form-row">
@@ -446,8 +482,12 @@
                             </div>
                             <div class="form-row">
                                 <label class="col-form-label">Responsable del Círculo de estudio:</label>
-                                <div class="col-sm-9 form-group">
+                                <div class="col-sm-5 form-group">
                                     <input name="responsable_circulo" id="responsable_circulo" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['responsable_circulo']}}">
+                                </div>
+                                <label class="col-form-label">Archivo de Registro Operativas:</label>
+                                <div class="col-sm-2 form-group">
+                                    <input type="file" accept="application/pdf" class="form-control" id="arch_alfa" name="arch_alfa" placeholder="Archivo PDF">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -456,7 +496,7 @@
                                     <input name="fecha_inicio" id="fecha_inicio" type="date" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['fecha_inicio']}}">
                                 </div>
                             </div>
-                            <label><strong>Horario del Círculo de estudio:</strong></label>
+                            {{-- <label><strong>Horario del Círculo de estudio:</strong></label>
                             <div class="form-row">
                                 <div class="col-sm-3 form-group" style="text-align: center;">
                                     <label class="col-form-label" style="text-align: center;">Día</label>
@@ -470,86 +510,85 @@
                             <div class="form-row">
                                 <label class="col-form-label">1.-</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="dia1" id="dia1" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['1']['dia']}}">
+                                    <input name="dia1" id="dia1" type="text" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">De</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio1" id="horario_inicio1" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['1']['inicio']}}">
+                                    <input name="horario_inicio1" id="horario_inicio1" type="time" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">a</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_termino1" id="horario_termino1" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['1']['termino']}}">
+                                    <input name="horario_termino1" id="horario_termino1" type="time" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">1.-</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="dia1_2" id="dia1_2" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['1-2']['dia']}}">
+                                    <input name="dia1_2" id="dia1_2" type="text" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">De</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio1_2" id="horario_inicio1_2" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['1-2']['inicio']}}">
+                                    <input name="horario_inicio1_2" id="horario_inicio1_2" type="time" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">a</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_termino1_2" id="horario_termino1_2" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['1-2']['termino']}}">
+                                    <input name="horario_termino1_2" id="horario_termino1_2" type="time" class="form-control" aria-required="true">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <label class="col-form-label">2.-</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="dia2" id="dia2" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['2']['dia']}}">
+                                    <input name="dia2" id="dia2" type="text" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">De</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio2" id="horario_inicio2" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['2']['inicio']}}">
+                                    <input name="horario_inicio2" id="horario_inicio2" type="time" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">a</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_termino2" id="horario_termino2" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['2']['termino']}}">
+                                    <input name="horario_termino2" id="horario_termino2" type="time" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">2.-</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="dia2_2" id="dia2_2" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['2-2']['dia']}}">
+                                    <input name="dia2_2" id="dia2_2" type="text" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">De</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio2_2" id="horario_inicio2_2" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['2-2']['inicio']}}">
+                                    <input name="horario_inicio2_2" id="horario_inicio2_2" type="time" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">a</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_termino2_2" id="horario_termino2_2" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['2-2']['termino']}}">
+                                    <input name="horario_termino2_2" id="horario_termino2_2" type="time" class="form-control" aria-required="true">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <label class="col-form-label">3.-</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="dia3" id="dia3" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['3']['dia']}}">
+                                    <input name="dia3" id="dia3" type="text" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">De</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio3" id="horario_inicio3" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['3']['inicio']}}">
+                                    <input name="horario_inicio3" id="horario_inicio3" type="time" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">a</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_termino3" id="horario_termino3" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['3']['termino']}}">
+                                    <input name="horario_termino3" id="horario_termino3" type="time" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">3.-</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="dia3_2" id="dia3_2" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['3-2']['dia']}}">
+                                    <input name="dia3_2" id="dia3_2" type="text" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">De</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio3_2" id="horario_inicio3_2" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['3-2']['inicio']}}">
+                                    <input name="horario_inicio3_2" id="horario_inicio3_2" type="time" class="form-control" aria-required="true">
                                 </div>
                                 <label class="col-form-label">a</label>
                                 <div class="col-sm-1 form-group">
-                                    <input name="horario_termino3_2" id="horario_termino3_2" type="time" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['horario_circulo']['3-2']['termino']}}">
+                                    <input name="horario_termino3_2" id="horario_termino3_2" type="time" class="form-control" aria-required="true">
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
             </div>
-        @endif
             <br>
             <div>
                 <label><h2>Datos Personales</h2></label>
@@ -685,6 +724,15 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
+                    <label for="inputentidad">País de Nacimiento</label>
+                    <select class="form-control" name="pais_nacimiento" id="pais_nacimiento">
+                        <option value="">SELECCIONE</option>
+                        @foreach ($paises as $pais)
+                            <option value="{{$pais->id}}" @if($pais->id == $datainstructor->pais_nacimiento || $pais->id == '115') selected @endif>{{$pais->nombre}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Nacimiento</label>
                     <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="entidad_nacimiento" id="entidad_nacimiento" onchange="local2_nacimiento()">
                         <option value="">SELECCIONE</option>
@@ -717,6 +765,15 @@
                 </div>
             </div>
             <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="inputentidad">País de Residencia</label>
+                    <select class="form-control" name="pais" id="pais">
+                        <option value="">SELECCIONE</option>
+                        @foreach ($paises as $pais)
+                            <option value="{{$pais->id}}" @if((isset($datainstructor->datos_alfa['pais_residencia']) && $pais->id == $datainstructor->datos_alfa['pais_residencia']) || $pais->id == '115') selected @endif>{{$pais->nombre}}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Residencia</label>
                     <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="entidad" id="entidad" onchange="local2()">
@@ -1148,6 +1205,9 @@
                                     $hvalidacion = null;
                                 }
                                 if(!is_null($hvalidacion)) {
+                                    if(!is_array($hvalidacion)) {
+                                        $hvalidacion = json_decode($hvalidacion);
+                                    }
                                     $hvalidacion = end($hvalidacion);
                                     if(is_null($dataVal) && !isset($hvalidacion->memo_baja)) {
                                         $dataVal = $hvalidacion;
@@ -3884,6 +3944,61 @@
             acordeon.style.display = 'none';  // Oculta el acordeón
             $('#collapse1').collapse('hide'); // Colapsa el acordeón
             document.getElementById('form-domicilio').removeAttribute('hidden');
+          }
+        });
+
+        function puestoOnOff(checkbox, selectId) {
+            var select = document.getElementById(selectId);  // Obtener el select por su ID
+
+            // if()
+
+            if (checkbox.checked) {
+                select.removeAttribute('hidden');  // Muestra el select cuando el checkbox está marcado
+            } else {
+                select.setAttribute('hidden', true);  // Oculta el select cuando el checkbox no está marcado
+            }
+        }
+
+        function toggleOcupacion() {
+            const ocupacion = document.getElementById('ocupacion').value;
+            const labelOcupa = document.getElementById('label_ocupa');
+            const sinOcupa = document.getElementById('sin_ocupa');
+            const conOcupa = document.getElementById('con_ocupa');
+            const ingresoMensual = document.getElementById('ingreso_mensual_div');
+            const ingresoLabel = document.getElementById('ingreso_label');
+
+            if (ocupacion === 'si') {
+                labelOcupa.removeAttribute('hidden');
+                conOcupa.removeAttribute('hidden');
+                ingresoMensual.removeAttribute('hidden');
+                ingresoLabel.removeAttribute('hidden');
+                sinOcupa.setAttribute('hidden', true);
+            } else if (ocupacion === 'no') {
+                labelOcupa.removeAttribute('hidden');
+                sinOcupa.removeAttribute('hidden');
+                conOcupa.setAttribute('hidden', true);
+                ingresoMensual.setAttribute('hidden', true);
+                ingresoLabel.setAttribute('hidden', true);
+            } else {
+                labelOcupa.setAttribute('hidden', true);
+                conOcupa.setAttribute('hidden', true);
+                sinOcupa.setAttribute('hidden', true);
+                ingresoMensual.setAttribute('hidden', true);
+                ingresoLabel.setAttribute('hidden', true);
+            }
+        }
+    </script>
+    <script>
+        document.getElementById('toggleAcordeon').addEventListener('change', function() {
+          var acordeon = document.getElementById('acordeonInstructor');
+          if (this.checked) {
+            acordeon.style.display = 'block';  // Muestra el acordeón
+            $('#collapse1').collapse('show'); // Expande el acordeón automáticamente
+            // document.getElementById('form-domicilio').setAttribute('hidden', true);
+          } else {
+            acordeon.style.display = 'none';  // Oculta el acordeón
+            $('#collapse1').collapse('hide'); // Colapsa el acordeón
+            // document.getElementById('form-domicilio').removeAttribute('hidden');
           }
         });
 

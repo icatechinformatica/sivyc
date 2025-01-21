@@ -109,7 +109,7 @@
             </div>
 
             <!-- Acordeón -->
-            <div id="acordeonInstructor" class="panel-group acordeon-borde" style="display: none;">
+            <div id="acordeonInstructor" class="panel-group acordeon-borde" style="display: none; border: 3px solid black;">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -151,12 +151,17 @@
                                 $conOcupacion = ['Seleccione','Trabajador Agropecuario','Inspector o Supervisor','Artesano u Obrero','Operador de Maquinaria Fija','Ayudante o Similar','Operador de Trans. o Maq. Mov.',
                                 'Jefe de Actividades Administrativas','Trabajador Administrativo','Comerciante o Dependiente','Trabajador Ambulante','Trabajador en serv. al púb. o pers.','Trabajador Domestico',
                                 'Protección o Vigilante','Personas dedicadas quehaceres hogar','Funcionario o Directivo','Profesionista','Empleado de Gobierno'];
+                                $vialidad = ['SELECCIONE TIPO','AMPLIACIÓN','ANDADOR','AVENIDA','BOULEVARD','CALLE','CALLEJON','CALZADA','CERRADA','CIRCUITO','CIRCUNVALACIÓN','CONTINUACIÓN','CORREDOR','DIAGONAL','EJE VIAL','PASAJE','PEATONAL',
+                                'PERIFERICO','PRIVADA','PROLONGACIÓN','RETORNO','VIADUCTO','CARRETERA','CAMINO','BRECHA','TERRACERIA','VEREDA'];
+                                $asentamientos = ['SELECCIONE','AEROPUERTO','AMPLIACIÓN','BARRIO','CANTON','CIUDAD','CIUDAD INDUSTRIAL','COLONIA','CONDOMINIO','CONJUNTO HABITACIONAL','CORREDOR INDUSTRIAL','COTO','CUARTEL','EJIDO','EXHACIENDA','FRACCION','FRACCIONAMIENTO',
+                                'GRANJA','HACIENDA','INGENIO','MANZANA','PARAJE','PARQUE INDSUTRIAL','PRIVADA','PROLONGACIÓN','PUEBLO','PUERTO','RANCHERIA','RANCHO','REGION','RESIDENCIAL','RINCONADA','SECCIÓN','SECTOR','SUPERMANZANA','UNIDAD',
+                                'UNIDAD HABITACIONAL','VILLA','ZONA FEDERAL','ZONA INDUSTRIAL','ZONA MILITAR','ZONA NAVAL'];
                             @endphp
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label><strong>Subproyecto:</strong></label>
-                                        <div class="checkbox">
+                                        {{-- <div class="checkbox">
                                             <label><input type="checkbox" name="subproyecto[]" value="oportunidades" onclick="puestoOnOff(this, 'oportunidades_puesto')"> Oportunidades</label>
                                             <select class="form-control col-md-4" name="oportunidades_puesto" id="oportunidades_puesto" hidden>
                                                 @foreach ($puestos as $puesto)
@@ -240,14 +245,15 @@
                                                     <option value="{{$puesto}}">{{$puesto}}</option>
                                                 @endforeach
                                             </select>
-                                        </div>
+                                        </div> --}}
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="otro" onclick="puestoOnOff(this, 'otrosub_puesto')"> Otro Subproyecto</label>
-                                            <input type="text" class="form-control col-md-4" hidden name="otrosub" id="otrosub">
-                                            <select class="form-control col-md-4" name="otrosub_puesto" id="otrosub_puesto" hidden>
+                                            <label><input type="checkbox" name="subproyecto[]" value="chiapas puede" {{--onclick="puestoOnOff(this, 'otrosub_puesto')"--}} checked>Chiapas Puede</label>
+                                            {{-- <input type="text" class="form-control col-md-4" hidden name="otrosub" id="otrosub"> --}}
+                                            <select class="form-control col-md-4" name="chiapas_puede_puesto" id="chiapas_puede_puesto">
                                                 @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
+                                                    {{-- <option value="{{$puesto}}">{{$puesto}}</option> --}}
                                                 @endforeach
+                                                <option value="voluntario">VOLUNTARIO</option>
                                             </select>
                                         </div>
                                     </div>
@@ -257,7 +263,11 @@
                             <div class="form-row">
                                 <label class="col-form-label">Vialidad:</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="tipo_vialidad" id="tipo_vialidad" type="text" class="form-control" aria-required="true">
+                                    <select name="tipo_vialidad" id="tipo_vialidad" class="form-control" aria-required="true">
+                                        @foreach ($vialidad as $vial)
+                                            <option value="{{$vial}}">{{$vial}}</option>
+                                        @endforeach
+                                    </select>
                                     <small class="form-text text-muted" style="text-align: center;">Tipo</small>
                                 </div>
                                 <div class="col-sm-5 form-group">
@@ -276,10 +286,25 @@
                             </div>
                             <div class="form-row">
                                 <label class="col-form-label">Entre Vialidades:</label>
+                                <div class="col-sm-2 form-group">
+                                    <select name="entre_tipo_vialidad1" id="entre_tipo_vialidad1" class="form-control" aria-required="true">
+                                        @foreach ($vialidad as $vial)
+                                            <option value="{{$vial}}">{{$vial}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 <div class="col-sm-3 form-group">
                                     <input name="entre_vialidad1" id="entre_vialidad1" type="text" class="form-control" aria-required="true">
+                                    </select>
                                 </div>
                                 <label class="col-form-label">Y</label>
+                                <div class="col-sm-2 form-group">
+                                    <select name="entre_tipo_vialidad2" id="entre_tipo_vialidad2" class="form-control" aria-required="true">
+                                        @foreach ($vialidad as $vial)
+                                            <option value="{{$vial}}">{{$vial}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 <div class="col-sm-3 form-group">
                                     <input name="entre_vialidad2" id="entre_vialidad2" type="text" class="form-control" aria-required="true">
                                 </div>
@@ -297,8 +322,13 @@
                             <div class="form-row">
                                 <label class="col-form-label">Asentamiento Humano:</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="tipo_asentamiento_humano" id="tipo_asentamiento_humano" type="text" class="form-control" aria-required="true">
-                                    <small class="form-text text-muted" style="text-align: center;">Tipo</small>
+                                    {{-- <input name="tipo_asentamiento_humano" id="tipo_asentamiento_humano" type="text" class="form-control" aria-required="true">
+                                    <small class="form-text text-muted" style="text-align: center;">Tipo</small> --}}
+                                    <select name="tipo_asentamiento_humano" id="tipo_asentamiento_humano" class="form-control" aria-required="true">
+                                        @foreach ($asentamientos as $asentamiento)
+                                            <option value="{{$asentamiento}}">{{$asentamiento}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="col-sm-5 form-group">
                                     <input name="nombre_asentamiento_humano" id="nombre_asentamiento_humano" type="text" class="form-control" aria-required="true">
@@ -346,10 +376,13 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label><strong>Rol (es) de la figura operativa:</strong></label>
                                         <div class="checkbox">
+                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aspirante_asesor" checked> Aspirante que apoya en asesoria educativa hispano 2024</label>
+                                        </div>
+                                        {{-- <div class="checkbox">
                                             <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo"> Asesor educativo</label>
                                         </div>
                                         <div class="checkbox">
@@ -363,10 +396,10 @@
                                         </div>
                                         <div class="checkbox">
                                             <label><input type="checkbox" name="roles_figura_operativa[]" value="auxiliar_interprete"> auxiliar intérprete</label>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                {{-- <div class="col-md-3">
                                     <div class="form-group">
                                         <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
                                         <div class="checkbox">
@@ -422,14 +455,14 @@
                                             <label><input type="checkbox" name="roles_figura_operativa[]" value="tecnico_docente"> Tecnico docente</label>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             <label><strong>Incorporado a:</strong></label>
                             <div class="form-row">
                                 <label class="col-form-label">Unidad Operativa:</label>
-                                <div class="col-sm-5 form-group">
+                                <div class="col-sm-3 form-group">
                                     <input name="unidad_operativa" id="unidad_operativa" type="text" class="form-control" aria-required="true">
-                                    {{-- <small class="form-text text-muted" style="text-align: center;">Tipo</small> --}}
+                                    <small class="form-text text-muted" style="text-align: center;">Tipo</small>
                                 </div>
                                 <label class="col-form-label">No. de Círculo de estudio:</label>
                                 <div class="col-sm-3 form-group">
@@ -438,8 +471,12 @@
                             </div>
                             <div class="form-row">
                                 <label class="col-form-label">Responsable del Círculo de estudio:</label>
-                                <div class="col-sm-9 form-group">
+                                <div class="col-sm-5 form-group">
                                     <input name="responsable_circulo" id="responsable_circulo" type="text" class="form-control" aria-required="true">
+                                </div>
+                                <label class="col-form-label">Archivo de Registro Operativas:</label>
+                                <div class="col-sm-2 form-group">
+                                    <input type="file" accept="application/pdf" class="form-control" id="arch_alfa" name="arch_alfa" placeholder="Archivo PDF">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -448,7 +485,7 @@
                                     <input name="fecha_inicio" id="fecha_inicio" type="date" class="form-control" aria-required="true">
                                 </div>
                             </div>
-                            <label><strong>Horario del Círculo de estudio:</strong></label>
+                            {{-- <label><strong>Horario del Círculo de estudio:</strong></label>
                             <div class="form-row">
                                 <div class="col-sm-3 form-group" style="text-align: center;">
                                     <label class="col-form-label" style="text-align: center;">Día</label>
@@ -536,7 +573,7 @@
                                 <div class="col-sm-1 form-group">
                                     <input name="horario_termino3_2" id="horario_termino3_2" type="time" class="form-control" aria-required="true">
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -639,6 +676,15 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
+                    <label for="inputentidad">País de Nacimiento</label>
+                    <select class="form-control" name="pais_nacimiento" id="pais_nacimiento">
+                        <option value="">SELECCIONE</option>
+                        @foreach ($paises as $pais)
+                            <option value="{{$pais->id}}" @if($pais->id == '115') selected @endif>{{$pais->nombre}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Nacimiento</label>
                     <select class="form-control" name="entidad_nacimiento" id="entidad_nacimiento" onchange="local2_nacimiento()">
                         <option value="">SELECCIONE</option>
@@ -661,6 +707,15 @@
                 </div>
             </div>
             <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="inputentidad">País de Residencia</label>
+                    <select class="form-control" name="pais" id="pais">
+                        <option value="">SELECCIONE</option>
+                        @foreach ($paises as $pais)
+                            <option value="{{$pais->id}}" @if($pais->id == '115') selected @endif>{{$pais->nombre}}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Residencia</label>
                     <select class="form-control" name="entidad" id="entidad" onchange="local2()">
@@ -1121,11 +1176,11 @@
           if (this.checked) {
             acordeon.style.display = 'block';  // Muestra el acordeón
             $('#collapse1').collapse('show'); // Expande el acordeón automáticamente
-            document.getElementById('form-domicilio').setAttribute('hidden', true);
+            // document.getElementById('form-domicilio').setAttribute('hidden', true);
           } else {
             acordeon.style.display = 'none';  // Oculta el acordeón
             $('#collapse1').collapse('hide'); // Colapsa el acordeón
-            document.getElementById('form-domicilio').removeAttribute('hidden');
+            // document.getElementById('form-domicilio').removeAttribute('hidden');
           }
         });
 
