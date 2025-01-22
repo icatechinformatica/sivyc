@@ -1,5 +1,5 @@
 {{-- Realizado por Jose Luis Morenoa Arcos --}}
-@extends('theme.formatos.vlayout')
+@extends('theme.formatos.vlayout2025')
 @section('title', 'Expediente Unico | SIVyC Icatech')
 
 @section('content_script_css')
@@ -9,9 +9,10 @@
             margin-left: 0.5cm;
             margin-right: 0.5cm;
         }
-        body{
+        /* body{
             padding-bottom: 70px;
-        }
+        } */
+
         .bloque_uno{
             /* padding-top: 40px; */
             font-weight: bold;
@@ -21,7 +22,7 @@
 
         .contenido{
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 5;
         }
 
 
@@ -46,6 +47,7 @@
         .negrita{
             font-weight: bold;
         }
+        header { top: 110px; text-align: center;width:100%;line-height: 15px; font-weight: bold; font-size: 15px;}
 
     </style>
 @endsection
