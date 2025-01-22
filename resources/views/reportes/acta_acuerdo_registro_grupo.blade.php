@@ -1,8 +1,8 @@
 {{-- Realizado por Jose Luis Morenoa Arcos --}}
-@extends('theme.formatos.vlayout_conv')
+@extends('theme.formatos.vlayout2025')
 @section('title', 'Acta de acuerdo | SIVyC Icatech')
 
-@section('css')
+@section('content_script_css')
     <style>
         img.izquierda {float: left;width: 31%;height: 60px;}
         img.izquierdabot {
@@ -68,12 +68,12 @@
     }
 @endphp
 
-@section('header')
+{{-- @section('header')
     <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
-@endsection
+@endsection --}}
 
 
-@section('body')
+@section('content')
     <div class="contenedor">
         <p align=center style="margin-top: 5px; font-size: 14px; font-weight:bold;">ACTA DE ACUERDO</p>
         {{-- crear un div para encerrar todo lo que lleva al inicio --}}
@@ -189,7 +189,7 @@
     </div>
 @endsection
 
-@section('js')
+@section('content_script_js')
     <script type="text/php">
         if ( isset($pdf) ) {
             $pdf->page_script('
