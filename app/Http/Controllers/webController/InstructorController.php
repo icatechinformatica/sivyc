@@ -2258,6 +2258,9 @@ class InstructorController extends Controller
         $entrevista = $instructorupd->entrevista;
         $archivo = $request->file('doc_entrevista'); # obtenemos el archivo
         $urlentrevista = $this->pdf_upload($archivo, $request->idInstructorentrevistaupd, 'entrevista'); # invocamos el método
+        if(!is_array($entrevista)) {
+            $entrevista = json_decode($entrevista, true);
+        }
         $entrevista['link'] = $urlentrevista; # guardamos el path
         $instructorupd->entrevista = $entrevista;
         $instructorupd->status = 'EN CAPTURA';
