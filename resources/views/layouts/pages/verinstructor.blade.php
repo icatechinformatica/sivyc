@@ -1535,6 +1535,7 @@
                                             </button>
                                         @endif
                                         @if(isset($item->hvalidacion))
+                                            @php if(!is_array($item->hvalidacion)){ $item->hvalidacion = json_decode($item->hvalidacion); if(is_array($item->hvalidacion)){ $item->hvalidacion = json_encode($item->hvalidacion);}} @endphp
                                             <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VALIDACIÓN"
                                                 data-toggle="modal"
                                                 data-placement="top"

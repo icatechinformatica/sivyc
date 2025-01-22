@@ -67,7 +67,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $i = 30; @endphp
+                        @php $i = 25; $rep = 0; @endphp
                         @foreach($cursos AS $key => $cold)
                             <tr>
                                 <td><small>{{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}}</small></td>
@@ -76,10 +76,11 @@
                                 @if($data[$key]->status == 'BAJA EN FIRMA' || $data[$key]->status == 'BAJA EN PREVALIDACION' || $data[$key]->status == 'BAJA EN CAPTURA')<small>BAJA EN TODOS LOS CURSOS DE LA ESPECIALIDAD</small></td>
                                 @else
                                     @foreach($cold as $moist => $cadwell)
+                                    @php $rep = $rep+1; @endphp
                                         <ul style="margin-left: -30px; line-height:80%;">
-                                            <small><li style="text-align:left; margin: -1; padding: -0.2em;">{{$cadwell->nombre_curso}} {{$moist}}.</small></li>
+                                            <small><li style="text-align:left; margin: -1; padding: -0.2em;">{{$cadwell->nombre_curso}}</small></li>
                                         </ul>
-                                        @if($moist == $i)
+                                        @if($rep == $i)
                                             </td>
                                             <td><small>{{$data[$key]->observacion}}</small></td>
                                             </tr>
@@ -89,7 +90,7 @@
                                             <table class="tablad">
                                                 <thead>
                                                     <tr>
-                                                        <th style="border-color: black; width: 90px;">INSTRUCTOR</th>
+                                                        <th style="border-color: black; width: 15%;">INSTRUCTOR</th>
                                                         <th style="border-color: black; width: 100px;">ESPECIALIDAD</th>
                                                         <th style="border-color: black">CURSOS A IMPARTIR</th>
                                                         <th style="border-color: black; width: 120px">OBSERVACIONES</th>
@@ -114,7 +115,7 @@
                     </tbody>
                 </table>
             {{-- </div> --}}
-            <small><b>"La documentación proporcionada por el candidato a instructor externo a esta Unidad de Capacitación ha sido previamente cotejada con el ejemplar original".</b></small>
+            <br><small><b>"La documentación proporcionada por el candidato a instructor externo a esta Unidad de Capacitación ha sido previamente cotejada con el ejemplar original".</b></small>
             <br><p class="text-left">Sin más por el momento le envío un cordial saludo.</p>
             <br><p class="text-left"><p>Atentamente.</p></p>
             <b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
@@ -122,7 +123,7 @@
             <br><h6><small><b>C.c.p. {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }}.- {{ $funcionarios['gestionacademica']['puesto'] }}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo<b></small></h6>
             <small><small><b>Valido: {{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.- {{ $funcionarios['dunidad']['puesto'] }}.</b></small></small>
-            <br><small><small><b>Elaboró: C. {{ $funcionarios['elabora']['nombre'] }}.- {{ $funcionarios['elabora']['puesto'] }}.</b></small></small>
+            <br><small><small><b>Elaboró: {{ $funcionarios['dacademico_unidad']['titulo'] }} {{ $funcionarios['dacademico_unidad']['nombre'] }}.- {{ $funcionarios['dacademico_unidad']['puesto'] }}.</b></small></small>
             @foreach ($data as $altmer)
                 @if($altmer->status != 'BAJA EN FIRMA' && $altmer->status!= 'BAJA EN PREVALIDACION')
                     <div class="page-break"></div>

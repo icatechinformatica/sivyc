@@ -155,7 +155,7 @@
                                 @endphp
                                 @if(isset($hvalidacion->arch_val))
                                     <a href="{{$hvalidacion->arch_val}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
-                                @elseif(!is_null($hvalidacion))
+                                @elseif(!is_null($hvalidacion) && isset($hvalidacion->arch_baja))
                                     <a href="{{$hvalidacion->arch_baja}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                 @endif
 
