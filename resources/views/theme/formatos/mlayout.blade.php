@@ -58,11 +58,15 @@
     
     <footer>
         @yield("footer")
-        <div style="position: relative;";>            
-            @php 
-                $direccion = str_replace("*", " ", $direccion);                
+        <div style="position: relative;";>
+            <p class='direccion'><b>
+            @php
+                if(isset($direccion)){
+                    $direccion = explode("*", $direccion);
+                   echo $direccionConSaltos = implode("<br />", $direccion);
+                }
             @endphp
-            <p class='direccion'><b>{{$direccion}}</b></p>
+            </b></p>
         </div>
     </footer>       
     
