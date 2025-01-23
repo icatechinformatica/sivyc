@@ -1,12 +1,12 @@
-@extends('theme.formatos.hlayout')
+@extends('theme.formatos.hlayout2025')
 @section('title', 'Solicitud de Exoneración | SIVyC Icatech')
-@section('css')
+@section('content_script_css')
     <style>
-        @page { margin-bottom: 125px; }
-        body {
+        /* @page { margin-bottom: 125px; } */
+        /* body {
             margin-top: 150px;
 
-        }
+        } */
 
         .tb {width: 100%; border-collapse: collapse; text-align: center; font-size: 8px;}
         .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
@@ -21,19 +21,20 @@
             color:black;
             font-size:10px;
         }
-        .container{ margin-top: -50px; font-family: sans-serif; font-size: 12px;}
+        .container{font-family: sans-serif; font-size: 12px;}
+        header{ line-height: 1; font-size: 12px; top: 40px; font-weight: bold; left: 40px;}
     </style>
 @endsection
-@section('header')
-    <table style="text-align: right; border-collapse: collapse; font-family: sans-serif; font-size: 12px;" align="right">
-        <tr><td>Unidad de Capacitación {{$reg_unidad->ubicacion}}.</td></tr>
-        <tr><td style="font-weight:normal;">@if ($marca) {{ "Revisión No. "}} @else {{ "Memorándum No. "}} @endif{{$mexoneracion}}.</td></tr>
-        <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha}}.</td></tr>
-    </table>
-@endsection
-@section('body')
-    <main>
+@section('content')
+    {{-- <main> --}}
         <div class="container">
+            <div style="margin-bottom: -30px;">
+                <table style="text-align: right; border-collapse: collapse; font-family: sans-serif; font-size: 12px;" align="right">
+                    <tr><td>Unidad de Capacitación {{$reg_unidad->ubicacion}}.</td></tr>
+                    <tr><td style="font-weight:normal;">@if ($marca) {{ "Revisión No. "}} @else {{ "Memorándum No. "}} @endif{{$mexoneracion}}.</td></tr>
+                    <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha}}.</td></tr>
+                </table>
+            </div>
             <table style="border-collapse: collapse;">
                 <tr>
                     <td><b>{{$reg_unidad->dgeneral}}.</b></td>
@@ -247,15 +248,15 @@
             </table>
             @endforeach
         </div>
-    </main>
-
+    {{-- </main> --}}
 @endsection
-@section('js')
+@section('script_content_js')
 <script type="text/php">
         if ( isset($pdf) ) {
             $pdf->page_script('
                 $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-                $pdf->text(40, 540, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
+                $pdf->text(40, 500, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
             ');
         }
+</script>
 @endsection
