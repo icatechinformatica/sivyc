@@ -319,9 +319,7 @@
                             @can('reportes.dpa')
                                 <a class="dropdown-item" href="{{ route('reportes.dpa') }}">DPA - Nómina de Instructores</a>
                             @endcan
-                            @can('reportes.dv')
-                                <a class="dropdown-item" href="{{ route('reportes.dv') }}">DV - Operación con Convenio</a>
-                            @endcan
+                            
                         </div>
                     </li>
                 @endcanany
