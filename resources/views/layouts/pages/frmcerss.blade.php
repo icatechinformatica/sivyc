@@ -1,15 +1,16 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Formulario de CERSS | Sivyc Icatech')
-<!--seccion-->
+@section('title', 'Nuevo CERSS | Sivyc Icatech')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />      
+@endsection
 @section('content')
-    <div class="container g-pt-50">
+    <div class="card-header">
+        Catálogos / NUEVO CERSS
+    </div>
+    <div class="card card-body">
         <form action="{{ route('cerss.save') }}" method="post" id="registercerss">
-            @csrf
-            <div style="text-align: right;width:65%">
-                <label for="tituloCERSS"><h1>Formulario para un Nuevo CERSS</h1></label>
-            </div>
-             <hr style="border-color:dimgray">
+            @csrf            
              <div class="form-row">
                  <div class="form-group col-md-4">
                     <label for="nombre" class="control-label">Nombre</label>
@@ -56,14 +57,8 @@
             </div>
             <br>
             <div class="row">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
-                    </div>
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-primary" >Guardar</button>
-                    </div>
-                </div>
+                <a class="btn " href="{{URL::previous()}}">Regresar</a>
+                <button type="submit" class="btn btn-danger" >Guardar</button>                    
             </div>
         </form>
         <br>
