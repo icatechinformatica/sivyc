@@ -108,6 +108,27 @@
             /* border: 1px solid red; */
         }
     </style>
+    @if(isset($marca))
+        @if ($marca)
+            <style>
+                header:after {
+                content: "BORRADOR";
+                font-size: 11em;
+                color: rgba(40, 40, 43, 0.35);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: fixed;
+                top: 35%;
+                right: 0;
+                bottom: 0;
+                left: 20%;
+                transform: rotate(-25deg);
+                }
+            </style>
+        @endif
+    @endif
     @yield("content_script_css")
 </head>
 {{-- cambio prueba --}}
