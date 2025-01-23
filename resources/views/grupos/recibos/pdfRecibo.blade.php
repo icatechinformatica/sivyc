@@ -3,7 +3,10 @@
 @section('css')
     <style>   
         h1 { width: 100%; text-align:center;}
-        table { border: 1px solid; width:100%; margin-bottom: 5px; border-spacing: 0; }
+        table { border: 1px solid; width:90%; margin-bottom: 5px; border-spacing: 0;
+            margin: 0 auto 5px;
+            border-spacing: 0;
+        }
         table tr td{ font-size: 13px; color:black; padding: 4px; }
         .negro {  background-color:black; font-size: 14px; color:white; font-weight:bold; padding-left:7px; width:auto; margin: 0px; }
         .bold {  font-size: 14px; font-weight:bold;}
