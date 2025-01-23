@@ -1,7 +1,7 @@
 <!--Navbar -->
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark pink2 darken-4">    
     <a href="https://sivyc.icatech.gob.mx" class="navbar-brand g-text-underline--hover">
-        <img src="{{asset('img/sivyc.png') }}" alt="SIVyC" height="40">
+        <img src="{{asset('img/sivyc.png') }}" alt="SIVyC" height="45">
     </a>    
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
         aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
@@ -314,6 +314,9 @@
                             @can('reportes.dpa')
                                 <a class="dropdown-item" href="{{ route('reportes.dpa') }}">DPA - Nómina de Instructores</a>
                             @endcan
+                            @can('reportes.dv')
+                                <a class="dropdown-item" href="{{ route('reportes.dv') }}">DV - Operación con Convenio</a>
+                            @endcan
                         </div>
                     </li>
                 @endcanany
@@ -410,7 +413,7 @@
                 <li class="nav-item avatar dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user" style="color:rgb(216, 2, 109)"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg-right dropdown-secondary"
                         aria-labelledby="navbarDropdownMenuLink">
