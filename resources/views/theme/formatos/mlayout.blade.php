@@ -11,7 +11,7 @@
         content {font-family: sans-serif; font-size: 9px; width:100%; padding:0px;}
         header {text-align: center;}        
         footer { position: fixed; top: 14.2cm; width:100%;  }
-        .direccion {position: absolute;  top: 1.3cm; width:300px; margin-left:580px; height:auto; font-family: sans-serif; font-size: 9px; color:#000; width:23%; }
+        .direccion { position: absolute; top: 1.3cm; width: 95%; height: auto; font-family: sans-serif; font-size: 9px; color: #000;}
         #fondo {
             background-image: url('img/membretado/recibo_pago.png');
             background-size: 100%;
@@ -58,15 +58,15 @@
     
     <footer>
         @yield("footer")
-        <div style="position: relative;";>
-            <p class='direccion'><b>
+        <div style="position: relative; display: flex; justify-content: flex-end;">
+            <p class='direccion' style="text-align: right;">            
             @php
                 if(isset($direccion)){
                     $direccion = explode("*", $direccion);
                    echo $direccionConSaltos = implode("<br />", $direccion);
                 }
             @endphp
-            </b></p>
+            </p>
         </div>
     </footer>       
     
