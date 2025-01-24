@@ -1,16 +1,17 @@
 <!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
 @extends('theme.sivyc.layout')
-@section('title', 'Reportes | SIVyC Icatech')
-@section('content')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
-    <style>
+@section('title', 'Reportes- Cursos Autorizados | SIVyC Icatech')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />  
+    <style>   
         table tr th .nav-link {padding: 0; margin: 0;}
     </style>
-    <div class="card-header">
-        Reportes de Cursos Autorizados
-
+@endsection
+@section('content')        
+<div class="card-header">
+        Reportes / Cursos Autorizados
     </div>
-    <div class="card card-body" >
+    <div class="card card-body" style=" min-height:450px;">
         @if ($message = Session::get('success'))
             <div class="row">
                 <div class="alert alert-success">
