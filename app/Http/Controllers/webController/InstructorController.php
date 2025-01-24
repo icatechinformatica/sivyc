@@ -857,6 +857,9 @@ class InstructorController extends Controller
                         "fecha_val" => null,
                         "arch_val" => null);
                     }
+                    if(!is_array($cadwell->hvalidacion)) {
+                        $cadwell->hvalidacion = json_decode($cadwell->hvalidacion, true);
+                    }
                     $count = count($cadwell->hvalidacion);
                     $record = $cadwell->hvalidacion;
                     $record[$count] = $newrecord;
