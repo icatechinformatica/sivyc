@@ -134,24 +134,25 @@
 {{-- cambio prueba --}}
 {{-- @section('content') --}}
 <body @if(!isset($fecha) || $fecha > '08-12-2024') id='fondo1' @else id='fondo_old' @endif >
+    <header>
+        @if(isset($leyenda))
+        @if(!is_array($leyenda)) @php $leyenda = explode("*",$leyenda) @endphp @endif
+         <p><small style="line-height: 1;">@foreach($leyenda as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small></p>
+        {{-- <small>{{$leyenda}}</small> --}}
+    @elseif(isset($distintivo))
+        @if(!is_array($distintivo)) @php $distintivo = explode("*",$distintivo) @endphp @endif
+        <small>@foreach($distintivo as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small>
+        {{-- <small>{{$distintivo}}</small> --}}
+    @endif
+    </header>
+<footer>
+    <p @if(!isset($fecha) || $fecha > '07-12-2024') class='direccion' @else class='direccion_old' @endif>
+        @if(!is_array($direccion)) @php $direccion = explode("*",$direccion) @endphp @endif
+        @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
+    </p>
+</footer>
     <div class="content">
-        <header>
-            @if(isset($leyenda))
-            @if(!is_array($leyenda)) @php $leyenda = explode("*",$leyenda) @endphp @endif
-             <p><small style="line-height: 1;">@foreach($leyenda as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small></p>
-            {{-- <small>{{$leyenda}}</small> --}}
-        @elseif(isset($distintivo))
-            @if(!is_array($distintivo)) @php $distintivo = explode("*",$distintivo) @endphp @endif
-            <small>@foreach($distintivo as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small>
-            {{-- <small>{{$distintivo}}</small> --}}
-        @endif
-        </header>
-    <footer>
-        <p @if(!isset($fecha) || $fecha > '07-12-2024') class='direccion' @else class='direccion_old' @endif>
-            @if(!is_array($direccion)) @php $direccion = explode("*",$direccion) @endphp @endif
-            @foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach
-        </p>
-    </footer>
+
     @yield("content")
     </div>
 
