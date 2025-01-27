@@ -24,6 +24,7 @@ use SebastianBergmann\Environment\Console;
 use App\Models\AlumnosSice;
 use App\Models\cerss_a;
 use PharIo\Manifest\Author;
+use App\Models\pais;
 
 class AlumnoController extends Controller {
 
@@ -58,7 +59,7 @@ class AlumnoController extends Controller {
 
     public function showl(Request $request) {  //EN PRODUCCION vista inscripción aspirante
         $curp = $sexo = $fnacimiento = $alumno = $datos_alfa = null;
-        $grado_estudio = $estados = $estado_civil = $etnias = $gvulnerables = $municipios = $localidades = [];
+        $grado_estudio = $estados = $estado_civil = $etnias = $gvulnerables = $municipios = $localidades = $cat_modelo = $etapa_eb = $paises =  $vialidad = $asentamientos = [];
         $curp = $request->busqueda;//dd($request->all());
         if ($curp) {
             $curp_d = str_split($curp);
@@ -113,13 +114,30 @@ class AlumnoController extends Controller {
                     $datos_alfa= json_decode($datos_alfa);
                 }
             }
+
+            //Vamos a crear catalogos desde el codigo para alimentar los combos de texto
+            $cat_modelo = ['MEVYT / INICIAL' => 'MEVYT', 'MIBES / INICIAL' => 'MIBES', 'MEVAPREN / INICIAL' => 'MEVAPREN', 'MEV AIB / INICIAL' => 'MEV AIB',
+            'MEV10-14 / INTERMEDIO' => 'MEV10-14', 'MEVAPREN / INTERMEDIO' => 'MEVAPREN', 'MEVYT / AVANZADO' => 'MEVYT', 'MIBES / AVANZADO' => 'MIBES',
+            'MEVAPREN / AVANZADO' => 'MEVAPREN'];
+
+            // $paises = ["MÉXICO", "ESTADOS UNIDOS", "CANADÁ", "REINO UNIDO", "ALEMANIA", "FRANCIA", "ESPAÑA", "ITALIA", "JAPÓN", "CHINA"];
+            $paises = pais::all();
+
+            $vialidad = ['AMPLIACIÓN','ANDADOR','AVENIDA','BOULEVARD','CALLE','CALLEJON','CALZADA','CERRADA','CIRCUITO','CIRCUNVALACIÓN','CONTINUACIÓN','CORREDOR','DIAGONAL','EJE VIAL','PASAJE','PEATONAL',
+                        'PERIFERICO','PRIVADA','PROLONGACIÓN','RETORNO','VIADUCTO','CARRETERA','CAMINO','BRECHA','TERRACERIA','VEREDA'];
+
+            $asentamientos = ['AEROPUERTO','AMPLIACIÓN','BARRIO','CANTON','CIUDAD','CIUDAD INDUSTRIAL','COLONIA','CONDOMINIO','CONJUNTO HABITACIONAL','CORREDOR INDUSTRIAL','COTO','CUARTEL','EJIDO','EXHACIENDA','FRACCION','FRACCIONAMIENTO',
+            'GRANJA','HACIENDA','INGENIO','MANZANA','PARAJE','PARQUE INDSUTRIAL','PRIVADA','PROLONGACIÓN','PUEBLO','PUERTO','RANCHERIA','RANCHO','REGION','RESIDENCIAL','RINCONADA','SECCIÓN','SECTOR','SUPERMANZANA','UNIDAD',
+            'UNIDAD HABITACIONAL','VILLA','ZONA FEDERAL','ZONA INDUSTRIAL','ZONA MILITAR','ZONA NAVAL'];
+
+
         }
         $medio_confirmacion = ["WHATSAPP"=>"WHATSAPP","MENSAJE DE TEXTO"=>"MENSAJE DE TEXTO","CORREO ELECTRÓNICO"=>"CORREO ELECTRÓNICO","FACEBOOK"=>"FACEBOOK","INSTAGRAM"=>"INSTAGRAM","TWITTER"=>"TWITTER","TELEGRAM"=>"TELEGRAM"];
 
 
 
         return view('layouts.pages.valcurp', compact('curp','sexo','fnacimiento','estados','grado_estudio','estado_civil','etnias','alumno','gvulnerables', 'municipios',
-            'localidades','medio_confirmacion','datos_alfa'));
+            'localidades','medio_confirmacion','datos_alfa', 'cat_modelo', 'etapa_eb', 'paises', 'vialidad', 'asentamientos'));
     }
 
     public function showlm(Request $request) { //obtención municipios
@@ -185,12 +203,15 @@ class AlumnoController extends Controller {
     public function store(Request $request) {  // EN PRODUCCION
 
         ###Alumno alfa###
-
+        // dd($request->all());
         //Datos de alumno alfa
+        $switchValor = $request->has('switch_alfa') ? true : false;
+        // dd($switchValor);
         $alumno_alfa = [
-            'coordzona' => request()->input('coordzona'),
+            'switch_alfa' => $switchValor,
+            // 'coordzona' => request()->input('coordzona'),
             'fec_registro' => request()->input('fec_registro'),
-            'dato_rfe' => request()->input('dato_rfe'),
+            // 'dato_rfe' => request()->input('dato_rfe'),
             'entidad_naci' => request()->input('entidad_naci'),
             'check_habla_espa' => request()->boolean('check_habla_espa'),
             'txt_dialecto' => request()->input('txt_dialecto'),
@@ -274,17 +295,27 @@ class AlumnoController extends Controller {
             'check_informe_cali' => request()->boolean('check_informe_cali'),
             'txt_num_const_cap' => request()->input('txt_num_const_cap'),
             'txt_hr_const_cap' => request()->input('txt_hr_const_cap'),
-            'text_cotejo_doc' => request()->input('text_cotejo_doc'),
-            'txt_fecha_cotejo' => request()->input('txt_fecha_cotejo'),
+            // 'text_cotejo_doc' => request()->input('text_cotejo_doc'),
+            // 'txt_fecha_cotejo' => request()->input('txt_fecha_cotejo'),
             'txt_unidad_operativa' => request()->input('txt_unidad_operativa'),
             'txt_circulo_estudio' => request()->input('txt_circulo_estudio'),
             'txt_fecha_llenado' => request()->input('txt_fecha_llenado'),
             'txt_persona_beneficiaria' => request()->input('txt_persona_beneficiaria'),
-            'txt_nom_tutor' => request()->input('txt_nom_tutor'),
-            'txt_nom_figura' => request()->input('txt_nom_figura'),
-            'txt_nom_coordinador' => request()->input('txt_nom_coordinador'),
-            'txt_nom_responsable_zona' => request()->input('txt_nom_responsable_zona'),
+            // 'txt_nom_tutor' => request()->input('txt_nom_tutor'),
+            // 'txt_nom_figura' => request()->input('txt_nom_figura'),
+            // 'txt_nom_coordinador' => request()->input('txt_nom_coordinador'),
+            // 'txt_nom_responsable_zona' => request()->input('txt_nom_responsable_zona'),
             'txt_nom_capturista' => request()->input('txt_nom_capturista'),
+            //Nuevos
+            'num_hijos' => request()->input('num_hijos'),
+            'pais_nacimiento' => intval(request()->input('pais_nacimiento')),
+            'pais' => intval(request()->input('pais')),
+            // 'check_confirmado' => request()->boolean('check_confirmado'),
+            // 'check_reingreso' => request()->boolean('check_reingreso'),
+            // 'check_expevalid' => request()->boolean('check_expevalid'),
+            // 'area_observa' => request()->input('area_observa'),
+            'modelo' => request()->input('modelo'),
+            'txt_etapaeb' => request()->input('txt_etapaeb'),
         ];
 
         $json_datos_alfa = json_encode($alumno_alfa);
