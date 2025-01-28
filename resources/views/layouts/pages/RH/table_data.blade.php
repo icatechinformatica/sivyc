@@ -3,8 +3,8 @@
 <thead>
     <tr>
         <th scope="col" width="110px">No. DE ENLACE</th>
-        <th scope="col" width="250px">NOMBRE</th>
         <th scope="col" width="250px">UNIDAD DE CAPACITACIÓN</th>
+        <th scope="col" width="250px">NOMBRE</th>
         <th scope="col" width="90px">FECHA</th>
         <th scope="col">ENTRADA - SALIDA</th>
         <th scope="col" width="120px">RETARDO / FALTA</th>
@@ -17,8 +17,8 @@
     @foreach($data as $key => $registro)
         <tr>
             <td style="text-align: center;">{{$registro->numero_enlace}}</td> <!-- Muestra el número de enlace -->
-            <td>{{$registro->nombre_trabajador}}</td> <!-- Muestra el nombre del trabajador -->
             <td>{{$registro->nombre_adscripcion}}</td> <!-- Muestra la unidad de capacitación -->
+            <td>{{$registro->nombre_trabajador}}</td> <!-- Muestra el nombre del trabajador -->
             <td>{{$registro->fecha}}</td> <!-- Muestra la fecha -->
             <td>{{$registro->entrada}} - {{$registro->salida}}</td> <!-- Muestra la entrada y salida -->
             <td>
@@ -31,9 +31,6 @@
             <td>{{$registro->justificante}}</td> <!-- Muestra el justificante -->
             <td>{{$registro->observaciones}}</td> <!-- Muestra las observaciones -->
             <td>
-                <a class="nav-link" href="{{route('rh.detalles', ['id' => $registro->numero_enlace])}}">
-                    <i class="fa fa-search fa-2x fa-lg text-info" title="Ver"></i>
-                </a>
             </td> <!-- Enlace para ver detalles -->
         </tr>
     @endforeach
