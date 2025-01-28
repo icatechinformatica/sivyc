@@ -857,6 +857,9 @@ class InstructorController extends Controller
                         "fecha_val" => null,
                         "arch_val" => null);
                     }
+                    if(!is_array($cadwell->hvalidacion)) {
+                        $cadwell->hvalidacion = json_decode($cadwell->hvalidacion, true);
+                    }
                     $count = count($cadwell->hvalidacion);
                     $record = $cadwell->hvalidacion;
                     $record[$count] = $newrecord;
@@ -2218,6 +2221,9 @@ class InstructorController extends Controller
     {
         // dd($request);
         $instructorupd = pre_instructor::find($request->idInstructorentrevistamod);
+        if(!is_array($instructorupd->entrevista)) {
+            $instructorupd->entrevista = json_decode($instructorupd->entrevista, true);
+        }
         $entrevista = ['1' => $request->MQ1, '2' => $request->MQ2, '3' => $request->MQ3,
                        '4' => $request->MQ4, '5' => $request->MQ5, '6' => $request->MQ6,
                        '7' => $request->MQ7, '8' => $request->MQ8, '9' => $request->MQ9,
@@ -2255,6 +2261,9 @@ class InstructorController extends Controller
         $entrevista = $instructorupd->entrevista;
         $archivo = $request->file('doc_entrevista'); # obtenemos el archivo
         $urlentrevista = $this->pdf_upload($archivo, $request->idInstructorentrevistaupd, 'entrevista'); # invocamos el método
+        if(!is_array($entrevista)) {
+            $entrevista = json_decode($entrevista, true);
+        }
         $entrevista['link'] = $urlentrevista; # guardamos el path
         $instructorupd->entrevista = $entrevista;
         $instructorupd->status = 'EN CAPTURA';
@@ -2742,6 +2751,12 @@ class InstructorController extends Controller
                         ->GET();
                 $lstarr = count($listacursos) -1;
 
+        //chequeo de json a array
+        if(!is_array($especvalid->cursos_impartir)) {
+            $especvalid->cursos_impartir = json_decode($especvalid->cursos_impartir, true);
+        }
+        // dd($especvalid);
+        //fin
         // dd($listacursos);
         return view('layouts.pages.frmmodespecialidad', compact('especvalid','data_espec','data_pago','data_unidad', 'id','idins','nomesp', 'catcursos'));
     }
@@ -3362,6 +3377,9 @@ class InstructorController extends Controller
         // dd($idins);
         $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $data = pre_instructor::WHERE('id', '=', $idins)->WHERE('registro_activo', TRUE)->FIRST();
+        if(!is_array($data->entrevista)) {
+            $data->entrevista = json_decode($data->entrevista, true);
+        }
         if(!isset($data))
         {
             $data = instructor::WHERE('id', '=', $idins)->FIRST();
@@ -3405,6 +3423,15 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
+
+        //revision de json a array
+        if(!is_array($data->exp_docente)) {
+            $data->exp_docente = json_decode($data->exp_docente, true);
+        }
+        if(!is_array($data->exp_laboral)) {
+            $data->exp_laboral = json_decode($data->exp_laboral, true);
+        }
+        // fin
 
         $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('leyenda','data', 'perfiles','D','M','Y','funcionarios','direccion'));
         $pdf->setPaper('letter');
