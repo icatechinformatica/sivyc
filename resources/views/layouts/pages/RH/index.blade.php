@@ -34,8 +34,8 @@
             <thead>
                 <tr>
                     <th scope="col" width="110px">No. DE ENLACE</th>
-                    <th scope="col" width="250px">NOMBRE</th>
                     <th scope="col" width="250px">UNIDAD DE CAPACITACIÓN</th>
+                    <th scope="col" width="250px">NOMBRE</th>
                     <th scope="col" width="90px">FECHA</th>
                     <th scope="col">ENTRADA - SALIDA</th>
                     <th scope="col" width="120px">RETARDO / FALTA</th>
@@ -48,8 +48,8 @@
                 @foreach($data as $key => $registro)
                     <tr>
                         <td style="text-align: center;">{{$registro->numero_enlace}}</td>
-                        <td>{{$registro->nombre_trabajador}}</td>
                         <td>{{$registro->nombre_adscripcion}}</td>
+                        <td>{{$registro->nombre_trabajador}}</td>
                         <td>{{$registro->fecha}}</td>
                         <td>{{$registro->entrada}} - {{$registro->salida}}</td>
                         <td>@if(is_null($registro->salida) || $registro->inasistencia) Inasistencia @elseif($registro->retardo) Retardo @endif</td>

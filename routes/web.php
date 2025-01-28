@@ -928,6 +928,6 @@ Route::get('/expediente/pago/merge', 'webController\PagoController@expediente-pa
 
 // Seccion modulo RH
 Route::get('/recursos-humanos/index', 'RH\RHController@index')->name('rh.index');
-// Route::get('/recursos-humanos/funcionario/detalles/{id}', 'RH\RHController@detalles')->name('rh.detalles'); Borrar el 27 de mayo 2025
+// Route::get('/recursos-humanos/funcionario/detalles/{id}', 'RH\RHController@detalles')->name('rh.detalles');
 Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
 Route::post('/agregar/justificante', 'RH\RHController@add_justificante')->name('add.justificante');
