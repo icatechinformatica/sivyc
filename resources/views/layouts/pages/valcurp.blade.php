@@ -16,6 +16,79 @@
         .icon-size {
             font-size: 2.5rem;
         }
+
+        /* Estilos del switch */
+        .switch-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .switch-text {
+            margin-left: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .acordeon-borde {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        input:checked + .slider {
+            background-color: #28a745; /* Color verde */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .checkbox {
+            margin-top: 5px;
+        }
     </style>
 @endsection
 @extends('theme.sivyc.layout')
@@ -23,10 +96,11 @@
 @section('content')
 
     <?php
+        $clase_alfa = '';
         $nombre = $apaterno = $amaterno = $nacionalidad = $telefono_casa = $telefono_cel = $email = $face = $twitter = $instagram = $tiktok =
         $ecivil = $domicilio = $colonia = $estado = $muni = $localidad = $cp = $etnia = $gvulnerable = $escolaridad = $medio_entero =
         $motivo_eleccion = $empresa_trabaja = $puesto_empresa = $antiguedad = $direccion_empresa = $requisitos = $nexpediente_cerss = $fotografia = null;
-        $publicaciones = $redes = $lgbt = $madre_soltera = $faminmigra = $inmigra = $empleado = $ficha_cerss = $cerss = $confirmacion = $check_bolsa = false;
+        $publicaciones = $redes = $lgbt = $madre_soltera = $faminmigra = $inmigra = $empleado = $ficha_cerss = $cerss = $confirmacion = $check_bolsa = $switch_alfa = false;
         if (isset($alumno)) {
             $nombre = $alumno->nombre;
             $apaterno = $alumno->apellido_paterno;
@@ -70,6 +144,13 @@
             $confirmacion = $alumno->medio_confirmacion;
             if ($alumno->check_bolsa) {$check_bolsa = true;}
         }
+
+        if(isset($datos_alfa->switch_alfa)){
+            $switch_alfa = $datos_alfa->switch_alfa;
+            if($datos_alfa->switch_alfa == false){
+                $clase_alfa = 'd-none';
+            }
+        }else{ $clase_alfa = 'd-none'; }
     ?>
      <div class="card-header">
         Presincripción / Editar Aspirante
@@ -134,17 +215,35 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label for="nombre " class="control-label">Nombre del Aspirante</label>
                                     {!! Form::text('nombre', $nombre, ['id'=>'nombre', 'class'=>'form-control']) !!}
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label for="apellido_paterno" class="control-label">Apellido Paterno</label>
                                     {!! Form::text('apellido_paterno', $apaterno, ['id'=>'apellido_paterno', 'class'=>'form-control']) !!}
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label for="apellido_materno" class="control-label">Apellido Materno</label>
                                     <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{{$amaterno}}">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="apellido_materno" class="control-label">Pais de Nacimiento</label>
+                                    {{-- {!! Form::select('pais_nacimiento', $paises, $datos_alfa->pais_nacimiento ?? '', ['id'=>'pais_nacimiento', 'class'=>'form-control mr-sm--2', 'placeholder' => '- SELECCIONAR -']) !!} --}}
+                                    <select class="form-control" name="pais_nacimiento" id="pais_nacimiento">
+                                        <option value="">SELECCIONE</option>
+                                        @foreach ($paises as $pais)
+                                            <option value="{{$pais->id}}"
+                                                @if (!isset($datos_alfa->pais_nacimiento))
+                                                    @if ($pais->id == '115')
+                                                        selected
+                                                    @endif
+                                                @elseif($datos_alfa->pais_nacimiento == $pais->id)
+                                                    selected
+                                                @endif
+                                                >{{$pais->nombre}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -184,14 +283,32 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-3">
+                            <label for="estado" class="control-label">Pais</label>
+                            {{-- {!! Form::select('pais', $paises, $datos_alfa->pais ?? '', ['id'=>'pais', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!} --}}
+                            <select class="form-control" name="pais" id="pais">
+                                <option value="">SELECCIONE</option>
+                                @foreach ($paises as $pais)
+                                    <option value="{{$pais->id}}"
+                                        @if (!isset($datos_alfa->pais))
+                                            @if ($pais->id == '115')
+                                                selected
+                                            @endif
+                                        @elseif($datos_alfa->pais == $pais->id)
+                                            selected
+                                        @endif
+                                        >{{$pais->nombre}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
                             <label for="estado" class="control-label">Estado</label>
                             {!! Form::select('estado', $estados, $estado, ['id'=>'estado', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="municipio" class="control-label">Municipio</label>
                             {!! Form::select('municipio', $municipios, $muni, ['id'=>'municipio', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
                         </div>
-                        <div class="form-group col-md-5">
+                        <div class="form-group col-md-3">
                             <label for="localidad" class="control-label">Localidad</label>
                             {!! Form::select('localidad', $localidades, $localidad, ['id'=>'localidad', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
                         </div>
@@ -276,7 +393,7 @@
                         </div>
                     </div>
                     <h5><b>DE LA CAPACITACIÓN</b></h5>
-                    <hr/>
+                    </>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="ultimo_grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS:</label>
@@ -350,22 +467,36 @@
                     </div>
 
                     {{-- Formulario para alumno alfa --}}
+                    {{-- Agregar un check de Alumno alfa para cuando se le de clic mostrar el formulario completo y si ya hay datos simplemente validar que se encuentre seleccionado osea mantener la seleccion y mostrar los datos quiza quitando la clase d-none de bootstrap --}}
                     <br>
                     <hr style="border: 2px solid rgb(123, 120, 120);">
-                    <div class="">
+
+                    {{-- Prueba de switch --}}
+                    <div class="switch-container">
+                        <label class="switch">
+                            <input type="checkbox" id="toggleAcordeon" name="switch_alfa"
+                            @if ($switch_alfa == true)
+                                checked
+                            @endif>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="switch-text">Alumno Alfa</span>
+                    </div>
+
+                    <div id="contenedor_alfa" class="{{$clase_alfa}} mt-5">
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+                            {{-- <div class="form-group col-md-4">
                                 <label for="coordzona" class="control-label">Coordinación de Zona (Numero y Nombre):</label>
                                 <input type="text" name="coordzona" id="coordzona" class="form-control" value="{{ $datos_alfa->coordzona ?? ''}}">
-                            </div>
+                            </div> --}}
                             <div class="form-group col-md-2">
                                 <label for="fec_registro" class="control-label">Fecha de Registro:</label>
                                 <input type="date" name="fec_registro" id="fec_registro" class="form-control" value="{{ $datos_alfa->fec_registro ?? ''}}">
                             </div>
-                            <div class="form-group col-md-4">
+                            {{-- <div class="form-group col-md-4">
                                 <label for="dato_rfe" class="control-label">RFE (Anotar una vez que haya sido asignado):</label>
                                 <input type="text" name="dato_rfe" id="dato_rfe" class="form-control" value="{{ $datos_alfa->dato_rfe ?? ''}}">
-                            </div>
+                            </div> --}}
                             <div class="form-group col-md-2">
                                 <label for="" class="control-label">Entidad de nacimiento:</label>
                                 {!! Form::select('entidad_naci', $estados, $datos_alfa->entidad_naci ?? '', ['id'=>'entidad_naci', 'class'=>'form-control', 'placeholder'=>'- SELECCIONAR -']) !!}
@@ -399,8 +530,9 @@
                         <label for="txt_tipo_vialidad" class="font-weight-bold">Vialidad</label>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <input type="text" name="txt_tipo_vialidad" id="txt_tipo_vialidad" class="form-control"
-                                placeholder="Tipo: andador, avenida, boulevard, callejón, calle, carretera." value="{{ $datos_alfa->txt_tipo_vialidad ?? '' }}">
+                                {{-- <input type="text" name="txt_tipo_vialidad" id="txt_tipo_vialidad" class="form-control"
+                                placeholder="Tipo: andador, avenida, boulevard, callejón, calle, carretera." value="{{ $datos_alfa->txt_tipo_vialidad ?? '' }}"> --}}
+                                {!! Form::select('txt_tipo_vialidad', $vialidad, $datos_alfa->txt_tipo_vialidad ?? '', ['id'=>'txt_tipo_vialidad', 'class'=>'form-control mr-sm--2', 'placeholder' => '- SELECCIONAR -']) !!}
                             </div>
                             <div class="form-group col-md-4">
                                 <input id="txt_nom_vialidad" class="form-control" name="txt_nom_vialidad" placeholder="Nombre" type="text" value="{{ $datos_alfa->txt_nom_vialidad ?? '' }}"/>
@@ -416,8 +548,9 @@
                         <label for="txt_tipo_asentamiento" class="font-weight-bold">Asentamiento humano</label>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <input type="text" name="txt_tipo_asentamiento" id="txt_tipo_asentamiento" class="form-control"
-                                placeholder="Tipo: colonia, conjunto habitacional, ejido, fraccionamiento, rancho, zona, manzana, pueblo." value="{{ $datos_alfa->txt_tipo_asentamiento ?? '' }}">
+                                {{-- <input type="text" name="txt_tipo_asentamiento" id="txt_tipo_asentamiento" class="form-control"
+                                placeholder="Tipo: colonia, conjunto habitacional, ejido, fraccionamiento, rancho, zona, manzana, pueblo." value="{{ $datos_alfa->txt_tipo_asentamiento ?? '' }}"> --}}
+                                {!! Form::select('txt_tipo_asentamiento', $asentamientos, $datos_alfa->txt_tipo_asentamiento ?? '', ['id'=>'txt_tipo_asentamiento', 'class'=>'form-control mr-sm--2', 'placeholder' => '- SELECCIONAR -']) !!}
                             </div>
                             <div class="form-group col-md-6">
                                 <input id="txt_nom_asentamiento" class="form-control" name="txt_nom_asentamiento" placeholder="Nombre" type="text" value="{{ $datos_alfa->txt_nom_asentamiento ?? '' }}"/>
@@ -427,8 +560,9 @@
                         <label for="txt_tipo_entre_vialidad" class="font-weight-bold">Entre qué vialidad</label>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <input type="text" name="txt_tipo_entre_vialidad" id="txt_tipo_entre_vialidad" class="form-control"
-                                placeholder="Tipo" value="{{ $datos_alfa->txt_tipo_entre_vialidad ?? '' }}">
+                                {{-- <input type="text" name="txt_tipo_entre_vialidad" id="txt_tipo_entre_vialidad" class="form-control"
+                                placeholder="Tipo" value="{{ $datos_alfa->txt_tipo_entre_vialidad ?? '' }}"> --}}
+                                {!! Form::select('txt_tipo_entre_vialidad', $vialidad, $datos_alfa->txt_tipo_entre_vialidad ?? '', ['id'=>'txt_tipo_entre_vialidad', 'class'=>'form-control mr-sm--2', 'placeholder' => '- SELECCIONAR -']) !!}
                             </div>
                             <div class="form-group col-md-6">
                                 <input id="txt_nom_entre_vialidad" class="form-control" name="txt_nom_entre_vialidad" placeholder="Nombre" type="text" value="{{ $datos_alfa->txt_nom_entre_vialidad ?? '' }}"/>
@@ -438,8 +572,9 @@
                         <label for="txt_Ytipo_entre_vialidad" class="font-weight-bold">Y qué vialidad</label>
                         <div class="form-row">
                             <div class="form-group col-md-5">
-                                <input type="text" name="txt_Ytipo_entre_vialidad" id="txt_Ytipo_entre_vialidad" class="form-control"
-                                placeholder="Tipo" value="{{ $datos_alfa->txt_Ytipo_entre_vialidad ?? '' }}">
+                                {{-- <input type="text" name="txt_Ytipo_entre_vialidad" id="txt_Ytipo_entre_vialidad" class="form-control"
+                                placeholder="Tipo" value="{{ $datos_alfa->txt_Ytipo_entre_vialidad ?? '' }}"> --}}
+                                {!! Form::select('txt_Ytipo_entre_vialidad', $vialidad, $datos_alfa->txt_Ytipo_entre_vialidad ?? '', ['id'=>'txt_Ytipo_entre_vialidad', 'class'=>'form-control mr-sm--2', 'placeholder' => '- SELECCIONAR -']) !!}
                             </div>
                             <div class="form-group col-md-5">
                                 <input id="txt_Ynom_entre_vialidad" class="form-control" name="txt_Ynom_entre_vialidad" placeholder="Nombre" type="text" value="{{ $datos_alfa->txt_Ynom_entre_vialidad ?? '' }}"/>
@@ -665,6 +800,13 @@
                         </div>
                         <br>
 
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="num_hijos" class="control-label font-weight-bold">Numero de Hijos</label>
+                                <input type="number" name="num_hijos" id="num_hijos" class="form-control" value="{{ $datos_alfa->num_hijos ?? ''}}">
+                            </div>
+                        </div>
+
                         <label for="" class="mt-4 font-weight-bold">¿Como se enteró de nuestros servicios?</label>
                         <div class="form-row d-flex justify-content-start mt-3">
                             <div class="form-inline col-md-4">
@@ -682,15 +824,50 @@
 
                         <div class="form-row mt-3 d-flex justify-content-between">
                             <div class="form-group col-md-6">
+                                <label for="" class="font-weight-bold">Modelo</label>
+                                <select id="modelo" class="form-control" name="modelo" onchange="updateEtapaEB()">
+                                    <option value="">- SELECCIONAR -</option>
+                                    @foreach ($cat_modelo as $key => $item)
+                                        <option value="{{ $item }}" @if (isset($datos_alfa->modelo) && $datos_alfa->modelo == $item) selected @endif>{{ $key }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="txt_etapaeb" class="font-weight-bold">Etapa EB.</label>
+                                <input id="txt_etapaeb" name="txt_etapaeb" class="form-control" type="text" readonly value="{{ $datos_alfa->txt_etapaeb ?? '' }}"/>
+                            </div>
+
+                            <div class="form-group col-md-6">
                                 <label for="" class="font-weight-bold">Subproyecto</label>
-                                <input id="txt_subproyecto" name="txt_subproyecto" class="form-control" type="text" value="{{ $datos_alfa->txt_subproyecto ?? '' }}"/>
+                                <input id="txt_subproyecto" name="txt_subproyecto" class="form-control" type="text" readonly value="CHIAPAS PUEDE INSTITUTOS"/>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="" class="font-weight-bold">Dependencia</label>
-                                <input id="txt_dependencia" name="txt_dependencia" class="form-control" type="text" value="{{ $datos_alfa->txt_dependencia ?? '' }}"/>
+                                <input id="txt_dependencia" name="txt_dependencia" class="form-control" readonly type="text" value="ICATECH"/>
                             </div>
                         </div>
+
+                        {{-- <div class="form-row mt-3 d-flex justify-content-between">
+                            <div class="form-inline col-md-4">
+                                <label>Confirmado <input id="check_confirmado" name="check_confirmado" class="check-input ml-3" type="checkbox" value="true" @if ($datos_alfa->check_confirmado ?? false) { checked } @endif/></label>
+                            </div>
+                            <div class="form-inline col-md-4">
+                                <label>Reingreso <input id="check_reingreso" name="check_reingreso" class="check-input ml-3" type="checkbox" value="true" @if ($datos_alfa->check_reingreso ?? false) { checked } @endif/></label>
+                            </div>
+                            <div class="form-inline col-md-4">
+                                <label>Expediente Validado <input id="check_expevalid" name="check_expevalid" class="check-input ml-3" type="checkbox" value="true" @if ($datos_alfa->check_expevalid ?? false) { checked } @endif/></label>
+                            </div>
+                        </div> --}}
+
+                        {{-- <div class="form-row mt-4 d-flex justify-content-between">
+                            <div class="form-group col-md-6">
+                                <label for="" class="font-weight-bold">Observaciones</label>
+                                <textarea name="area_observa" id="area_observa" cols="100" rows="3">{{$datos_alfa->area_observa ?? ''}}</textarea>
+                            </div>
+                        </div> --}}
+
                         <br>
+
                         <label for="" class="font-weight-bold">Documentación de la persona beneficiaria</label>
                         <div class="form-row d-flex justify-content-start">
                             <div class="form-inline col-md-4">
@@ -731,13 +908,13 @@
                             <div class="form-inline col-md-8">
                                 <label for="">Constancias de Capacitación: </label>
                                 <input id="txt_num_const_cap" name="txt_num_const_cap" class="form-control mx-3" type="text" placeholder="Numero" value="{{ $datos_alfa->txt_num_const_cap ?? '' }}"/>
-                                <input id="txt_hr_const_cap" name="txt_hr_const_cap" class="form-control" type="text" placeholder="Horas" value="{{ $datos_alfa->txt_hr_const_cap ?? '' }}"/>
+                                <input id="txt__const_cap" name="txt_hr_const_cap" class="form-control" type="text" placeholder="Horas" value="{{ $datos_alfa->txt_hr_const_cap ?? '' }}"/>
                             </div>
                         </div>
 
                         <br>
 
-                        <label for="" class="font-weight-bold mt-3">Cotejo de Documentos impresos mostrados por la persona beneficiaria</label>
+                        {{-- <label for="" class="font-weight-bold mt-3">Cotejo de Documentos impresos mostrados por la persona beneficiaria</label>
                         <div class="form-row d-flex justify-content-start mt-2">
                             <div class="form-group col-md-6">
                                 <label for="">Nombre completo de quien cotejó los documentos:</label>
@@ -748,8 +925,7 @@
                                 <input id="txt_fecha_cotejo" name="txt_fecha_cotejo" class="form-control" type="date" placeholder="Ingresar Fecha" value="{{ $datos_alfa->txt_fecha_cotejo ?? '' }}"/>
                             </div>
                         </div>
-
-                        <br>
+                        <br> --}}
 
                         <label for="" class="font-weight-bold mt-3">Información de la Unidad Operativa</label>
                         <div class="form-row d-flex justify-content-start mt-2">
@@ -774,22 +950,22 @@
                                 <label for="">Nombre completo de la persona beneficiaria del INEA</label>
                                 <input id="txt_persona_beneficiaria" name="txt_persona_beneficiaria" class="form-control" type="text" placeholder="" value="{{ $datos_alfa->txt_persona_beneficiaria ?? '' }}"/>
                             </div>
-                            <div class="form-group col-md-4">
+                            {{-- <div class="form-group col-md-4">
                                 <label for="">Nombre completo del padre o tutor (En caso de Inscripción al MEVyT 10-14)</label>
                                 <input id="txt_nom_tutor" name="txt_nom_tutor" class="form-control" type="text" placeholder="" value="{{ $datos_alfa->txt_nom_tutor ?? '' }}"/>
-                            </div>
-                            <div class="form-group col-md-4">
+                            </div> --}}
+                            {{-- <div class="form-group col-md-4">
                                 <label for="">Nombre completo de la figura que incorpora</label>
                                 <input id="txt_nom_figura" name="txt_nom_figura" class="form-control" type="text" placeholder="" value="{{ $datos_alfa->txt_nom_figura ?? '' }}"/>
-                            </div>
-                            <div class="form-group col-md-4">
+                            </div> --}}
+                            {{-- <div class="form-group col-md-4">
                                 <label for="">Nombre completo del Coordinador de Zona</label>
                                 <input id="txt_nom_coordinador" name="txt_nom_coordinador" class="form-control" type="text" placeholder="" value="{{ $datos_alfa->txt_nom_coordinador ?? '' }}"/>
-                            </div>
-                            <div class="form-group col-md-4">
+                            </div> --}}
+                            {{-- <div class="form-group col-md-4">
                                 <label for="">Nombre completo del Responsable de Acreditación de la Coordinación de Zona</label>
                                 <input id="txt_nom_responsable_zona" name="txt_nom_responsable_zona" class="form-control" type="text" placeholder="" value="{{ $datos_alfa->txt_nom_responsable_zona ?? '' }}"/>
-                            </div>
+                            </div> --}}
                             <div class="form-group col-md-4">
                                 <label for="">Nombre completo de la persona que capturó</label>
                                 <input id="txt_nom_capturista" name="txt_nom_capturista" class="form-control" type="text" placeholder="" value="{{ $datos_alfa->txt_nom_capturista ?? '' }}"/>
@@ -1150,6 +1326,19 @@
                 } else {
                     $('#datos_cerss').hide();
                 }
+
+                //Validacion de alumno alfa
+                const toggleSwitch = document.getElementById('toggleAcordeon');
+                const contenedorAlfa = document.getElementById('contenedor_alfa');
+
+                toggleSwitch.addEventListener('change', function () {
+                    if (this.checked) {
+                        contenedorAlfa.classList.remove('d-none'); // Mostrar div
+                    } else {
+                        contenedorAlfa.classList.add('d-none'); // Ocultar div
+                    }
+                });
+
             });
             function validarInput(input) {
                 if (!$('#cerss_ok').prop('checked')) {
@@ -1234,6 +1423,16 @@
                     cameraIcon.style.display = 'block';
                 }
             }
+
+            //Para rellenar campo al seleccionar el select modelo
+            function updateEtapaEB() {
+                const select = document.getElementById('modelo');
+                const selectedText = select.options[select.selectedIndex].text;
+                const parts = selectedText.split(' / ');
+                const secondPart = parts[1] || '';
+                document.getElementById('txt_etapaeb').value = secondPart;
+            }
+
 /* SOLO SI SE AUTORIZA LA CARGA Y VISUALIZACIÓN DE FOTOGRAFÍA
             document.addEventListener('DOMContentLoaded', function () {
                 const imagePreview = document.getElementById('selected-image');
