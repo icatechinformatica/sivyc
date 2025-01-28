@@ -15,7 +15,7 @@ use Illuminate\Http\Response;
 use setasign\Fpdi\Fpdi;
 use Illuminate\Support\Facades\Http;
 use setasign\Fpdi\PdfParser\StreamReader;
-use App\Extensions\FPDIWithRotation;
+use App\extensions\FPDIWithRotation;
 
 class Rf001AdministrativoController extends Controller
 {
