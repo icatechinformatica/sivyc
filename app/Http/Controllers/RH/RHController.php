@@ -124,9 +124,9 @@ class RHController extends Controller
         }
 
         if($entrada > '08:14:59' && $entrada < '08:30:00') { // se analiza si existe retraso
-            $registro['retardo'] = true;
+            $registro->retardo = true;
         } else if($entrada > '08:29:59') { // se analiza si es falta
-            $registro['inasistencia'] = true;
+            $registro->inasistencia = true;
         }
 
         $registro->save();
