@@ -926,3 +926,8 @@ Route::post('/report/busqueda', 'efirma\ReporteFotController@getreportefoto')->n
 Route::post('/retorno/movimiento/instructor', 'webController\InstructorController@movimiento_retorno')->name('movimiento-retorno');
 Route::get('/expediente/pago/merge', 'webController\PagoController@expediente-pago-merge');
 
+// Seccion modulo RH
+Route::get('/recursos-humanos/index', 'RH\RHController@index')->name('rh.index');
+// Route::get('/recursos-humanos/funcionario/detalles/{id}', 'RH\RHController@detalles')->name('rh.detalles');
+Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
+Route::post('/agregar/justificante', 'RH\RHController@add_justificante')->name('add.justificante');
