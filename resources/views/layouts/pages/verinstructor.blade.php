@@ -267,6 +267,7 @@
                                                     {{-- <option value="{{$puesto}}">{{$puesto}}</option> --}}
                                                 @endforeach
                                                 <option value="voluntario">VOLUNTARIO</option>
+                                                <option value="no_voluntario" @if($datainstructor->datos_alfa['subproyectos']['chiapas puede'] == 'no_voluntario') selected @endif>NO ES VOLUNTARIO</option>
                                             </select>
                                         </div>
                                     </div>
