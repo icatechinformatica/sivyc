@@ -8,7 +8,7 @@
     </style>
 @endsection
 @section('content')        
-<div class="card-header">
+    <div class="card-header">
         Reportes / Cursos Autorizados
     </div>
     <div class="card card-body" style=" min-height:450px;">
