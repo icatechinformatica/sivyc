@@ -4,8 +4,8 @@
 <!--llamar a la plantilla -->
 @section('title', 'Fechas Pat | SIVyC Icatech')
     <!--seccion-->
-
-@section('content')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         * {
             box-sizing: border-box;
@@ -44,7 +44,9 @@
             .form-control { height: 40px; }
 
     </style>
+@endsection
 
+@section('content')
     <div class="card-header py-2">
         <h3>Fechas Metas y Avances</h3>
     </div>
@@ -64,7 +66,7 @@
 
             <div class="row">
                 @if (count($ejercicio) > 1)
-                    <div class="col-3 mb-2">
+                    <div class="col-3 mb-2 ml-4">
                         <form action="" id="form_eje">
                             <select name="sel_ejercicio" id="" class="form-control-sm" onchange="cambioEjercicio()">
                                 @foreach ($ejercicio as $anioeje)
@@ -75,43 +77,46 @@
                     </div>
                 @endif
 
-                <div class="col-lg-12 margin-tb">
-                    {{-- @can('convenios.create') --}}
-                        <div class="pull-right">
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        <form class="form-inline" action="" method="get" id="formBusqueda">
+                            <select class="form-control-sm mr-sm-2" name="" id="selectTabla" onchange="cambiarTabla()">
+                                <option value="meta">FECHAS META</option>
+                                <option value="avance" {{$mes_avance_get != null ? 'selected' : ''}}>FECHAS AVANCE</option>
+                            </select>
+                            <select name="meses_index" id="meses_index" class="form-control-sm {{$mes_avance_get != null ? '' : 'd-none'}}" onchange="buscarMesAvance()">
+                                <option value="">SELECCIONAR MES</option>
+                                <option value="enero">ENERO</option>
+                                <option value="febrero">FEBRERO</option>
+                                <option value="marzo">MARZO</option>
+                                <option value="abril">ABRIL</option>
+                                <option value="mayo">MAYO</option>
+                                <option value="junio">JUNIO</option>
+                                <option value="julio">JULIO</option>
+                                <option value="agosto">AGOSTO</option>
+                                <option value="septiembre">SEPTIEMBRE</option>
+                                <option value="octubre">OCTUBRE</option>
+                                <option value="noviembre">NOVIEMBRE</option>
+                                <option value="diciembre">DICIEMBRE</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-end">
+                        <div class="">
                             <a class="btn btn-danger py-1 px-2" data-toggle="tooltip"
                                 data-placement="top" title="DESHACER VALIDACIÓN" href="#" id="btnAbrirModal">
                                 <i class="fa fa-history fa-2x" aria-hidden="true"></i>
                             </a>
                         </div>
-                        <div class="pull-right">
+                        <div class="">
                             <a class="btn btn-success py-1 px-2" data-toggle="tooltip"
                                 data-placement="top" title="AGREGAR FECHAS" href="#" id="btnNuevoReg">
                                 <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
                             </a>
                         </div>
-                    {{-- @endcan --}}
+                    </div>
 
-                    <form class="form-inline" action="" method="get" id="formBusqueda">
-                        <select class="form-control-sm mr-sm-2" name="" id="selectTabla" onchange="cambiarTabla()">
-                            <option value="meta">FECHAS META</option>
-                            <option value="avance" {{$mes_avance_get != null ? 'selected' : ''}}>FECHAS AVANCE</option>
-                        </select>
-                        <select name="meses_index" id="meses_index" class="form-control-sm {{$mes_avance_get != null ? '' : 'd-none'}}" onchange="buscarMesAvance()">
-                            <option value="">SELECCIONAR MES</option>
-                            <option value="enero">ENERO</option>
-                            <option value="febrero">FEBRERO</option>
-                            <option value="marzo">MARZO</option>
-                            <option value="abril">ABRIL</option>
-                            <option value="mayo">MAYO</option>
-                            <option value="junio">JUNIO</option>
-                            <option value="julio">JULIO</option>
-                            <option value="agosto">AGOSTO</option>
-                            <option value="septiembre">SEPTIEMBRE</option>
-                            <option value="octubre">OCTUBRE</option>
-                            <option value="noviembre">NOVIEMBRE</option>
-                            <option value="diciembre">DICIEMBRE</option>
-                        </select>
-                    </form>
+
                 </div>
             </div>
             {{-- Formulario para agregar las fechas de metas y avances --}}

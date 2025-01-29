@@ -1,11 +1,7 @@
 <!--Creado por Jose Luis Moreno luisito08672@gmail.com-->
-@extends('theme.sivyc.layout')
-
-<!--llamar a la plantilla -->
-@section('title', 'Metas y Avances | SIVyC Icatech')
-    <!--seccion-->
-
 @section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+
     <style>
         * {
             box-sizing: border-box;
@@ -176,6 +172,11 @@
 
 @endsection
 
+@extends('theme.sivyc.layout')
+
+<!--llamar a la plantilla -->
+@section('title', 'Metas y Avances | SIVyC Icatech')
+    <!--seccion-->
 @section('content')
     {{-- Loader --}}
     <div id="loader-overlay">
@@ -292,40 +293,34 @@
                                 </div>
                             </div>
 
-                            <div class="card bg-warning" style="width: 17rem;">
-                                <div class="card-body px-2 py-2">
-                                    {{-- <p class="card-text text-center mb-2">Descargar pdfs firmados</p> --}}
-                                    <div class="d-flex justify-content-center">
-                                        {{-- <i  class="far fa-file-pdf ml-2 text-danger"></i> --}}
-                                        <select name="selOpenLink" id="selOpenLink" class="form-control" onchange="pdfOpenfirm()">
-                                            <option value="" disabled selected >Descargar PDF Oficializado</option>
-                                            @if ($fecha_meta_avance->fecha_meta['urldoc_firm'] != '')
-                                                <optgroup label="METAS PDF">
-                                                    <option value="{{$fecha_meta_avance->fecha_meta['urldoc_firm']}}">Meta Anual</option>
-                                                </optgroup>
+                            <div class="d-flex justify-content-center">
+                                <select name="selOpenLink" id="selOpenLink" class="form-control" onchange="pdfOpenfirm()">
+                                    <option value="" disabled selected >Descargar PDF Oficializado</option>
+                                    @if ($fecha_meta_avance->fecha_meta['urldoc_firm'] != '')
+                                        <optgroup label="METAS PDF">
+                                            <option value="{{$fecha_meta_avance->fecha_meta['urldoc_firm']}}">Meta Anual</option>
+                                        </optgroup>
+                                    @endif
+                                    <optgroup label="AVANCES PDF">
+                                        @for ($i = 0; $i < count($mesGlob); $i++)
+                                            @if ($fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav'] != '')
+                                                <option value="{{$fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav']}}"> {{ucfirst($mesGlob[$i])}}</option>
                                             @endif
-                                            <optgroup label="AVANCES PDF">
-                                                @for ($i = 0; $i < count($mesGlob); $i++)
-                                                    @if ($fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav'] != '')
-                                                        <option value="{{$fecha_meta_avance->fechas_avance[$mesGlob[$i]]['urldoc_firmav']}}"> {{ucfirst($mesGlob[$i])}}</option>
-                                                    @endif
-                                                @endfor
-                                            </optgroup>
-                                            <optgroup label="FIRMA ELECTRONICA">
-                                                @if (!empty($consul_efirma['id_meta_valid']))
-                                                    <option value="{{$consul_efirma['id_meta_valid']}}">Meta Anual</option>
-                                                @endif
-                                                @if (count($meses_validados) > 0)
-                                                    @foreach ($meses_validados as $key => $valor)
-                                                        <option value="{{ $valor }}">Avance {{$key}} </option>
-                                                    @endforeach
-                                                @endif
-                                                {{-- <option value="">Enero</option> --}}
-                                            </optgroup>
-                                        </select>
-                                    </div>
-                                </div>
-                              </div>
+                                        @endfor
+                                    </optgroup>
+                                    <optgroup label="FIRMA ELECTRONICA">
+                                        @if (!empty($consul_efirma['id_meta_valid']))
+                                            <option value="{{$consul_efirma['id_meta_valid']}}">Meta Anual</option>
+                                        @endif
+                                        @if (count($meses_validados) > 0)
+                                            @foreach ($meses_validados as $key => $valor)
+                                                <option value="{{ $valor }}">Avance {{$key}} </option>
+                                            @endforeach
+                                        @endif
+                                        {{-- <option value="">Enero</option> --}}
+                                    </optgroup>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -585,7 +580,7 @@
                                             d-none
                                         @endif
                                     ">
-                                        <div class="card-body my-0 pb-3 pt-2">
+                                        <div class="my-0 pb-3 pt-2 pl-3">
 
                                             {{-- Botones de efirma y tradicional --}}
                                             @if (empty($fecha_meta_avance->fecha_meta['mod_documento']))
@@ -652,7 +647,7 @@
                                             d-none
                                         @endif
                                     ">
-                                        <div class="card-body my-0 pb-3 pt-2 {{$fecha_meta_avance->status_meta['validado'] != '1' ? 'd-none' : ''}}">
+                                        <div class="my-0 pb-3 pt-2 pl-3 {{$fecha_meta_avance->status_meta['validado'] != '1' ? 'd-none' : ''}}">
                                             <div class="col-12 mb-2 px-0">
                                                 <b class="">AVANCE MENSUAL</b>
                                             </div>
