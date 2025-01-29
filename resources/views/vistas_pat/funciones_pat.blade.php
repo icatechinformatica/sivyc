@@ -4,8 +4,8 @@
 <!--llamar a la plantilla -->
 @section('title', 'Funciones | SIVyC Icatech')
     <!--seccion-->
-
-@section('content')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         * {
             box-sizing: border-box;
@@ -53,7 +53,10 @@
             }
 
     </style>
+@endsection
 
+
+@section('content')
     <div class="card-header py-2">
         <h3>Funciones</h3>
     </div>

@@ -5,7 +5,8 @@
 @section('title', 'Expediente Unico | SIVyC Icatech')
     <!--seccion-->
 
-@section('content')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         * {
             box-sizing: border-box;
@@ -249,7 +250,9 @@
         }
 
     </style>
+@endsection
 
+@section('content')
     <div class="card-header">
         Expediente Unico
     </div>
