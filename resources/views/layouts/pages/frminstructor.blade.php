@@ -254,6 +254,7 @@
                                                     {{-- <option value="{{$puesto}}">{{$puesto}}</option> --}}
                                                 @endforeach
                                                 <option value="voluntario">VOLUNTARIO</option>
+                                                <option value="no_voluntario">NO ES VOLUNTARIO</option>
                                             </select>
                                         </div>
                                     </div>
