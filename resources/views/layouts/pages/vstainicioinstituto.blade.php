@@ -1,16 +1,13 @@
 @extends('theme.sivyc.layout')
-<!--llamar a la plantilla -->
 @section('title', 'ICATECH | SIVyC Icatech')
-
-@section('content')
-
-    <div class="container g-pt-30">
-        <div class="row">
-            <div class="col">
-                <h1>ACERCA DEL INSTITUTO</h1>
-            </div>
-        </div>
-
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />      
+@endsection
+@section('content')       
+    <div class="card-header">
+        Catálogos / Acerca del Instituto
+    </div>
+    <div class="card card-body" style=" min-height:450px;">
         <form action="{{ route('instituto.guardar') }}" method="post">
             @csrf
 
@@ -129,17 +126,11 @@
                 </div>
             </div>
 
-            {{-- boton --}}
-            <div class="row my-2">
-                <div class="col">
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                        <input type="text" name="idarea" id="idarea" hidden value="{{ 1 }}">
-                    </div>
-                </div>
+            <div class="modal-footer flex-center py-2">
+                <div class="col d-flex justify-content-start">
+                    <button type="submit" class="btn">Guardar cambios</button>
+                </div>                      
             </div>
-
         </form>
-
     </div>
 @endsection
