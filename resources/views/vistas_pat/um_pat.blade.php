@@ -4,8 +4,8 @@
 <!--llamar a la plantilla -->
 @section('title', 'Unidades de Medida | SIVyC Icatech')
     <!--seccion-->
-
-@section('content')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         * {
             box-sizing: border-box;
@@ -48,7 +48,9 @@
                 text-transform: none !important;
             }
     </style>
+@endsection
 
+@section('content')
     <div class="card-header py-2">
         <h3>Unidades de medida</h3>
     </div>
