@@ -267,7 +267,7 @@
                                                     {{-- <option value="{{$puesto}}">{{$puesto}}</option> --}}
                                                 @endforeach
                                                 <option value="voluntario">VOLUNTARIO</option>
-                                                {{-- <option value="no_voluntario" @if($datainstructor->datos_alfa['subproyectos']['chiapas puede'] == 'no_voluntario') selected @endif>NO ES VOLUNTARIO</option> --}}
+                                                <option value="no_voluntario" @if(isset($datainstructor->datos_alfa['subproyectos']['chiapas puede']) && $datainstructor->datos_alfa['subproyectos']['chiapas puede'] == 'no_voluntario') selected @endif>NO ES VOLUNTARIO</option>
                                             </select>
                                         </div>
                                     </div>
@@ -592,7 +592,8 @@
             </div>
             <br>
             <div>
-                <label><h2>Datos Personales</h2></label>
+                <label><h2>Datos Personales</h2></label>@php
+            @endphp
             </div>
             @php $stats = array('PREVALIDACION','EN FIRMA'); $ari = ['VALIDADO','EN CAPTURA','RETORNO','REACTIVACION EN CAPTURA']; $perfilprof_nom = NULL; @endphp
             <div class="form-row">
