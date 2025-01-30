@@ -394,80 +394,8 @@
                                         <div class="checkbox">
                                             <label><input type="checkbox" name="roles_figura_operativa[]" value="aspirante_asesor" checked> Aspirante que apoya en asesoria educativa hispano 2024</label>
                                         </div>
-                                        {{-- <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo"> Asesor educativo</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo_bilingüe"> Asesor educativo bilingüe</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_grupo"> orientador educativo de grupo</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_discapacidad"> orientador educativo para personas en situación de discapacidad</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="auxiliar_interprete"> auxiliar intérprete</label>
-                                        </div> --}}
                                     </div>
                                 </div>
-                                {{-- <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo"> Enlace educativo</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo_bilingüe"> Enlace educativo bilingüe</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional"> Enlace regional</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional_bilingüe"> Enlace regional bilingüe</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="formador_especializado"> Formador especializado</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="promotor_comunitaria"> Promotor de una plaza comunitaria</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_tecnico"> Apoyo técnico</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes"> Aplicador de exámenes</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes_bilingüe"> aplicador de exámenes bilingüe</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_plaza"> Enlace de plaza</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_regional"> Apoyo regional de plazas comunitarias</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_especifico"> Enlace o apoyo para determinadas actividades específicas</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="titular_promotor"> Titular promotor</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="tecnico_docente"> Tecnico docente</label>
-                                        </div>
-                                    </div>
-                                </div> --}}
                             </div>
                             <label><strong>Incorporado a:</strong></label>
                             <div class="form-row">
@@ -497,95 +425,6 @@
                                     <input name="fecha_inicio" id="fecha_inicio" type="date" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['fecha_inicio']}}">
                                 </div>
                             </div>
-                            {{-- <label><strong>Horario del Círculo de estudio:</strong></label>
-                            <div class="form-row">
-                                <div class="col-sm-3 form-group" style="text-align: center;">
-                                    <label class="col-form-label" style="text-align: center;">Día</label>
-                                </div>
-                                <div class="col-sm-3 form-group" style="text-align: center;">
-                                </div>
-                                <div class="col-sm-3 form-group" style="text-align: center;">
-                                    <label class="col-form-label" style="text-align: center;">Día</label>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <label class="col-form-label">1.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia1" id="dia1" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio1" id="horario_inicio1" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino1" id="horario_termino1" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">1.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia1_2" id="dia1_2" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio1_2" id="horario_inicio1_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino1_2" id="horario_termino1_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <label class="col-form-label">2.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia2" id="dia2" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio2" id="horario_inicio2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino2" id="horario_termino2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">2.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia2_2" id="dia2_2" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio2_2" id="horario_inicio2_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino2_2" id="horario_termino2_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <label class="col-form-label">3.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia3" id="dia3" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio3" id="horario_inicio3" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino3" id="horario_termino3" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">3.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia3_2" id="dia3_2" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio3_2" id="horario_inicio3_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino3_2" id="horario_termino3_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -626,9 +465,6 @@
                         @foreach ($lista_regimen as $regimen)
                             <option value="{{$regimen->concepto}}" @if($datainstructor->tipo_honorario == $regimen->concepto) selected @endif>{{$regimen->concepto}}</option>
                         @endforeach
-                        {{-- <option value="HONORARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS') selected @endif >Honorarios</option> --}}
-                        {{-- <option value="ASIMILADOS A SALARIOS" @if($datainstructor->tipo_honorario == 'ASIMILADOS A SALARIOS') selected @endif>Asimilados a Salarios</option> --}}
-                        {{-- <option value="HONORARIOS Y ASIMILADOS A SALARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIOS') selected @endif>Honorarios y Asimilados a Salarios</option> --}}
                     </select>
                 </div>
                 <div class="form-group col-md-3">
@@ -758,7 +594,7 @@
                     <label for="inputlocalidad">Localidad de Nacimiento</label>
                     <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="localidad_nacimiento" id="localidad_nacimiento">
                         <option value="sin especificar">Sin Especificar</option>
-                        @if(isset($localidades_nacimiento))
+                        @if(!is_null($localidades_nacimiento))
                             @foreach ($localidades_nacimiento as $cadwell)
                                 <option value="{{$cadwell->clave}}" @if($datainstructor->localidad_nacimiento == $cadwell->localidad) selected @endif>{{$cadwell->localidad}}</option>
                             @endforeach
@@ -798,9 +634,11 @@
                     <label for="inputlocalidad">Localidad de Residencia</label>
                     <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="localidad" id="localidad">
                         <option value="sin especificar">Sin Especificar</option>
-                        @foreach ($localidades as $cadwell)
-                            <option value="{{$cadwell->clave}}" @if($datainstructor->localidad == $cadwell->localidad) selected @endif>{{$cadwell->localidad}}</option>
-                        @endforeach
+                        @if(!is_null($localidades))
+                            @foreach ($localidades as $cadwell)
+                                <option value="{{$cadwell->clave}}" @if($datainstructor->localidad == $cadwell->localidad) selected @endif>{{$cadwell->localidad}}</option>
+                            @endforeach
+                        @endif
                     </select @if($datainstructor->status != "VALIDADO") disabled @endif>
                 </div>
             </div>
