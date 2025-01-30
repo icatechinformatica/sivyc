@@ -1,7 +1,8 @@
 <!-- Creado por Orlando Chávez 04012021-->
 @extends('theme.sivyc.layout')
-@section('title', 'Reporte de Suficiencias Presupuestales| Sivyc Icatech')
-<head>
+@section('title', 'Reporte de Costeo de Suficiencias Presupuestales| Sivyc Icatech')
+<@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" /> 
     <style>
         .radio-xl .custom-control-label::before,
         .radio-xl .custom-control-label::after {
@@ -14,21 +15,7 @@
         padding-top: 23px;
         padding-left: 10px;
         }
-
-        td {
-            text-align: center; /* center checkbox horizontally */
-            vertical-align: middle; /* center checkbox vertically */
-        }
-        #choice-td{
-            background-color: white;
-        }
-        table {
-            border: 1px solid;
-            width: 200px;
-        }
-        tr {
-            height: 65px;
-        }
+       
        .modal
         {
             position: fixed;
@@ -60,39 +47,34 @@
             width: 128px;
         }
     </style>
-</head>
-@section('content')
-    <section class="container g-pt-50">
-        <form action="{{ route('planeacion.reporte.costeo.xl') }}" method="post" id="registercontrato">
-            @csrf
-            <div class="text-center">
-                <h1>Reporte de Costeo de Suficiencias Presupuestales</h1>
-            </div>
-            <br>
-            <hr style="border-color:dimgray">
+</style>
+@endsection
+@section('content')       
+    <div class="card-header">
+        Reportes / Costeo de Suficiencias Presupuestales
+    </div>
+    <div class="card card-body" >
+        <form action="{{ route('planeacion.reporte.costeo.xl') }}" method="post" id="registercontrato" class="p-5">
+            @csrf            
             <div class="form-row">
-                <div class="form-group col-md-2"></div>
-                <div class="form-group col-md-3">
+                <h2>Ingrese el periódo:</h2>
+            </div>
+            <hr/>
+            <div class="form-row">
+                <div class="col-md-6">
                     <label for="inputid_curso"><h3>De:</h3></label>
-                    <input type="date" name="fecha1" id="fecha1" class="form-control" required>
+                    <input type="date" name="fecha1" id="fecha1" class="form-control col-md-6" required>
                 </div>
-                <div class="form-group col-md-1"></div>
-                <div class="form-group col-md-3">
+                <div class="col-md-6">
                     <label for="inputid_curso"><h3>Hasta:</h3></label>
-                    <input type="date" name="fecha2" id="fecha2" class="form-control" required>
+                    <input type="date" name="fecha2" id="fecha2" class="form-control col-md-6" required>                
                 </div>
             </div>
             <br>
-            <div class="form-row">
-                <div class="form-group col-md-2">
-                </div>
-                <div class="form-group col-md-4">
-                    <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
-                </div>
-                <div class="form-group col-md-4">
-                    <button target="_blank" id="submit" name="submit" type="submit" class="btn btn-primary" >Generar</button>
-                </div>
-            </div>
+            <div class="row d-flex justify-content-between">
+                <a class="btn btn" href="{{URL::previous()}}"> < Regresar</a>
+                <button id="submit" name="submit" type="submit" class="btn btn-danger">Generar</button>
+            </div>            
         </form>
         <!--display modal-->
         <div class="modal">
@@ -100,7 +82,7 @@
                 <img alt="" src="{{URL::asset('/img/cargando.gif')}}" />
             </div>
         </div>
-    </section>
+    </div>
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/autocomplete.js") }}"></script>
