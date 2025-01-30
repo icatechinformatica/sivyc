@@ -2,7 +2,7 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Modificación de Perfil Profesional | Sivyc Icatech')
 @section('content')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
     @if ($errors->any())
         <div class="alert alert-danger">
             <strong>Whoops!</strong> hay algunos problemas con los campos.<br><br>

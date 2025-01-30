@@ -2,7 +2,7 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Edición de Instructor | Sivyc Icatech')
 @section('content')
-<link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <form action="{{ url('/instructor/guardar-mod') }}" method="post" id="registerinstructor" enctype="multipart/form-data">
     @csrf
     <div class="card-header">

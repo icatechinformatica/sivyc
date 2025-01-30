@@ -3,7 +3,6 @@
 <!--llamar a la plantilla -->
 @section('title', 'Instructor | SIVyC Icatech')
 @section('content_script_css')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/bootstrap-5.0.1/css/bootstrap.css') }}">
     <style>
