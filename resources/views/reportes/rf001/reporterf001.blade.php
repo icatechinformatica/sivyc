@@ -192,6 +192,12 @@
             margin-right: 1cm;
             /* position: fixed; */
         }
+        header {
+            font-size: 11px; line-height: 1; top: 100px; font-weight: bold;
+        }
+        .content {
+            padding-bottom: 50px;
+        }
     </style>
 @endsection
 @section('content')
