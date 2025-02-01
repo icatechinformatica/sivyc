@@ -200,7 +200,7 @@ class Rf001Controller extends Controller
             $dataFirmantes = $firmantes['firmantes']['firmante'] ?? [];
             $procesados = null;
 
-            if (!emptyt($dataFirmantes)) {
+            if (!empty($dataFirmantes)) {
                 # code...
                 $procesados = [];
                 foreach ($dataFirmantes as $grupoFirmantes) {
