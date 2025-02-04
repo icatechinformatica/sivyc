@@ -296,7 +296,7 @@ class EValsupreController extends Controller
                 //     $body_html = $body_html . $numOficioSupre;
                 // }
                 $body_html = $body_html . ' de fecha '.$D.' de '.$M.' del '.$Y.'; me permito comunicarle lo siguiente:<br/></font>
-                    <font size=0>La Secretaria de Hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal '.$Y.', en ese sentido, con Fundamento en el Art. 13 Y Art. 38 del decreto de presupuesto
+                    <font size=0>La Secretaria de Hacienda mediante oficio N: SF/53/2025 aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, para el Ejercicio Fiscal '.$Y.', en ese sentido, con Fundamento en el Art. 13 Y Art. 38 del decreto de presupuesto
                     de egresos del Estado de Chiapas para el Ejercicio Fiscal '.$Y.' y en apego al tabulador de pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de ';
                     if($data[0]->tipo_curso == 'CURSO'){
                         $body_html = $body_html . 'Capacitación';
@@ -322,7 +322,7 @@ class EValsupreController extends Controller
                     $body_html = $body_html .'<br/></font>
                     <br><font size=0>Por lo anterior, me permito remitir a usted el original de la solicitud, así como su respectivo respaldo documental, debidamente validado presupuestalmente.<br/></font>
                     <font size=0>La presente validación presupuestal no implica ninguna autorización de pago de recursos, si no que únicamente se refiere a la verificación de la disponibilidad presupuestal, No omito manifestarle que, en estricto apego a la normatividad vigente establecida,
-                    el área administrativa solicitante, es responsable de la correcta aplicación de los recursos públicos validados, en tal sentido el ejercicio y comprobación del gasto, deberá sujetarse a las disposiciones legales aplicables para tal efecto.<br/></font>
+                    el área administrativa solicitante, es responsable de la correcta aplicación de los recursos públicos validados, en tal sentido, el ejercicio y comprobación del gasto, deberá sujetarse a las disposiciones legales aplicables para tal efecto.<br/></font>
                 </div>
             <br>
             </div>
