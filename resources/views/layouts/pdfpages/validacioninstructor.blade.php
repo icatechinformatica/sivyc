@@ -69,8 +69,8 @@
                 <b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
                 <br>{{ $funcionarios['dunidad']['puesto'] }}.
                 <br>Presente.
-                <br><br style="line-height: 0.5">Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.
-                <div class="table table-responsive">
+                <br><br style="line-height: 1;"><p style="line-height: 1;">Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.</p>
+                <div class="table table-responsive" style="margin-bottom: 0px; margin-top: -8px;">
                     <table class="tablag" style="">
                         <tbody>
                             <tr>
@@ -95,7 +95,7 @@
                                     <tr>
                                         <td style='width: 180px;'>{{$cadwell->clave}}</td>
                                         <td style='width: 360px;'>{{$cadwell->nombre}}</td>
-                                        <td>{{strtoupper($cadwell->perfil_profesional)}}</td>
+                                        <td>{{mb_strtoupper($cadwell->perfil_profesional, 'UTF-8')}}</td>
                                     </tr>
                                     @endif
                                 @endforeach
@@ -111,9 +111,9 @@
                         </tbody>
                     </table>
                 </div>
-                Es preciso señalar que, en su expediente consta que cumple con los requisitos y documentos que requiere el perfil de la especialidad solicitada.
-                <br>
-                Agradeciendo de antemano su atención, envío un cordial saludo.
+                <p style="line-height: 1;">Es preciso señalar que, en su expediente consta que cumple con los requisitos y documentos que requiere el perfil de la especialidad solicitada.
+                <br style="line-height: 0;">
+                Agradeciendo de antemano su atención, envío un cordial saludo.</p>
                 <div>
                     <div class="column">
                         <table class="tablad">
@@ -186,7 +186,7 @@
                 </div>
                 <div style="font-size: 10px;">
                     “Este documento es de uso interno y no tiene validez jurídica ni contractual, se extiende únicamente con fines académicos. Estos datos y resultados son considerados confidenciales por lo que se prohíbe su reproducción parcial o total para fines distintos al uso interno de la Dirección Técnica Académica y las Unidades de Capacitación”.
-                    <br><br>
+                    <br>
                     <small><small>C.c.p. {{ $funcionarios['gestionacademica']['titulo'] }} {{ $funcionarios['gestionacademica']['nombre'] }} .- {{ $funcionarios['gestionacademica']['puesto'] }}. – Para su conocimiento - Edificio.</small></small>
                     <br><small><small>Archivo</small></small>
                 </div>
