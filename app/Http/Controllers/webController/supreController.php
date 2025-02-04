@@ -137,7 +137,7 @@ class supreController extends Controller
         $final = $year.'-12-30';
 
         $countCursos = DB::Table('folios')->Where('tabla_supre.unidad_capacitacion',$unidad->ubicacion)
-        ->WhereBetween('tabla_supre.fecha',['2024-01-01','2024-12-30'])
+        ->WhereBetween('tabla_supre.fecha',[$inicio,$final])
         ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
         ->Count('folios.id_folios');
 
