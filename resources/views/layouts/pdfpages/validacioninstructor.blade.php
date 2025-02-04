@@ -116,7 +116,7 @@
                                     <td>
                                         <b>ELABORÓ</b><br><br>
                                         <b><br>_________________________</b>
-                                        <br><small><small><small>C. {{ $funcionarios['elabora']['nombre'] }}</small></small></small>
+                                        <br><small><small><small>{{ $funcionarios['elabora']['nombre'] }}</small></small></small>
                                         <br><small><small><small>{{ $funcionarios['elabora']['puesto'] }}</small></small></small>
                                         <br>
                                     </td>
