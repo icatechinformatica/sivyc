@@ -38,7 +38,7 @@
         $fecha = $asunto = $det = $memo =  $obs = "";
         switch($opt){
             case 'ARC-01':
-                $fecha = $reg_cursos[0]->fecha_apertura;
+                $fecha = $fechaLayout = $reg_cursos[0]->fecha_apertura;
                 $memo = $reg_cursos[0]->mvalida;
                 $asunto = "AUTORIZACIÓN DE ASIGNACIÓN DE CLAVES DE APERTURAS";
                 $det = "Por este medio envió a Usted el formato de autorización de asignación de claves de apertura de servicios, en atención a la solicitud con número de memorándum $munidad.";
