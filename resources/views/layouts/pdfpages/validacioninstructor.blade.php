@@ -54,8 +54,8 @@
         .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
         .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
         .tablad { border-collapse: collapse;font-size: 12px;border: black 1px solid; text-align: center; padding:0.5px; width: 100%;}
-        .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
-        .tablag tr td{ font-size: 8px; padding: 1px;}
+        .tablag { border-collapse: collapse;border: 1px solid rgb(23, 23, 23); font-size: 7; text-align: center; padding:0.5px; width: 100%;}
+        .tablag tr td{ border: 1px solid rgb(23, 23, 23)}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
         .content { margin-top: 12%;}
         </style>
@@ -71,35 +71,41 @@
                 <br>Presente.
                 <br><br style="line-height: 0.5">Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.
                 <div class="table table-responsive">
-                    <table class="tablad" style="border-color: black; font-size: 7;">
+                    <table class="tablag" style="">
                         <tbody>
                             <tr>
-                                <td style='width: 180px;'>Nombre del Instructor:</td>
+                                <td style='width: 180px;'><b>NOMBRE DEL INSTRUCTOR:</b></td>
                                 <td style='width: 360px;' colspan="2">{{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}}</td>
                             </tr>
                             <tr>
-                                <td style='width: 180px;'>Numero de Control:</td>
+                                <td style='width: 180px;'><b>NUMERO DE CONTROL:</b></td>
                                 <td style='width: 360px;' colspan="2">{{$instructor->numero_control}}</td>
                             </tr>
                             <tr>
-                                <td style='width: 180px;' rowspan="{{$cont}}">Especialidad y Clave de la Especialidad:</td>
-                                @foreach ($especialidades AS $wort => $cadwell)
-                                    @if ($cadwell->status != 'BAJA EN FIRMA')
-                                        <td style='width: 360px;'>{{$cadwell->nombre}}</td>
-                                        <td style='width: 180px;'>{{$cadwell->clave}}</td>
-                                    </tr>
-                                    <tr>
-                                    @endif
-                                @endforeach
-                                <td style='width: 180px;'>Instructor:</td>
+                                <td style='width: 180px;'><b>REGIMEN FISCAL:</b></td>
                                 <td style='width: 360px;' colspan="2">{{$instructor->tipo_honorario}}</td>
                             </tr>
                             <tr>
-                                <td style='width: 180px;'>Nivel de Estudios que Cubre para la Especialidad:</td>
-                                <td style='width: 360px;' colspan="2"> @if($especialidades[0]->status != 'BAJA EN FIRMA'){{$especialidades[0]->perfil_profesional}} @else {{$especialidades[1]->perfil_profesional}}@endif</td>
+                                <td><b>CLAVE DE LA ESPECIALIDAD:</b></td>
+                                <td><b>ESPECIALIDAD:</b></td>
+                                <td><b>NIVEL ACADÉMICO:</b></td>
                             </tr>
+                                @foreach ($especialidades AS $wort => $cadwell)
+                                    @if ($cadwell->status != 'BAJA EN FIRMA')
+                                    <tr>
+                                        <td style='width: 180px;'>{{$cadwell->clave}}</td>
+                                        <td style='width: 360px;'>{{$cadwell->nombre}}</td>
+                                        <td>{{strtoupper($cadwell->perfil_profesional)}}</td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+                            {{-- </tr> --}}
+                            {{-- <tr>
+                                <td style='width: 180px;'>NIVEL DE ESTUDIOS QUE CUBRE PARA LA ESPE:</td>
+                                <td style='width: 360px;' colspan="2"> @if($especialidades[0]->status != 'BAJA EN FIRMA'){{$especialidades[0]->perfil_profesional}} @else {{$especialidades[1]->perfil_profesional}}@endif</td>
+                            </tr> --}}
                             <tr>
-                                <td style='width: 180px;'>Observaciones:</td>
+                                <td style='width: 180px;'><b>OBSERVACIONES:</b></td>
                                 <td style='width: 360px;' colspan="2"> @if($especialidades[0]->status != 'BAJA EN FIRMA'){{$especialidades[0]->observacion_validacion}} @else {{$especialidades[1]->observacion_validacion}}@endif</td>
                             </tr>
                         </tbody>
@@ -161,12 +167,12 @@
                         </table>
                     </div>
                     <div class="column">
-                        <table style="border-collapse:initial;font-size: 12px; color:white; border: black 1px solid; text-align: center; padding:0.5px;">
+                        <table style="border-collapse:initial;font-size: 12px; border: black 1px solid; text-align: center; padding:0.5px;">
                             <thead>
                                 <tr>
                                     <td width="173px"  >
-                                        <b>&nbsp;</b><br><br>
-                                        <b><br>&nbsp;</b>
+                                        <b>SELLO</b><br><br>
+                                        <br><b></b>
                                         <br>&nbsp;<br>
                                         <b>&nbsp;</b>
                                         <br>
