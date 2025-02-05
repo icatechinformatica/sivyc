@@ -2,7 +2,7 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Validación de Instructor | Sivyc Icatech')
 @section('content')
-<link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <div class="card-header">
     <h1>Validación de Instructor<h1>
 </div>

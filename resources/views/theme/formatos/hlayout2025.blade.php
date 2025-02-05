@@ -133,7 +133,7 @@
 </head>
 {{-- cambio prueba --}}
 {{-- @section('content') --}}
-<body @if(!isset($fecha) || $fecha > '08-12-2024') id='fondo1' @else id='fondo_old' @endif >
+<body @if((isset($fechaLayout) && $fechaLayout > '08-12-2024') ||!isset($fecha) || $fecha > '08-12-2024') id='fondo1' @else id='fondo_old' @endif >
     <header>
         @if(isset($leyenda))
         @if(!is_array($leyenda)) @php $leyenda = explode("*",$leyenda) @endphp @endif

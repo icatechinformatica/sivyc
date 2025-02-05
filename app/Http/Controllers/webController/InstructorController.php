@@ -1805,6 +1805,7 @@ class InstructorController extends Controller
                             ->ORDERBY('muni','ASC')->GET();
         }
 
+        $localidades = $localidades_nacimiento = null;
         $munix = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')
                 ->WHERE('muni', '=', $datainstructor->municipio)
                 ->WHERE('estados.nombre',$datainstructor->entidad)

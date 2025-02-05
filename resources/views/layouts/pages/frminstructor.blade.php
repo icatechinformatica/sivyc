@@ -2,7 +2,7 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Registro de Instructor | Sivyc Icatech')
 @section('content')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         table tr th .nav-link {padding: 0; margin: 0;}
 
@@ -254,6 +254,7 @@
                                                     {{-- <option value="{{$puesto}}">{{$puesto}}</option> --}}
                                                 @endforeach
                                                 <option value="voluntario">VOLUNTARIO</option>
+                                                <option value="no_voluntario">NO ES VOLUNTARIO</option>
                                             </select>
                                         </div>
                                     </div>
