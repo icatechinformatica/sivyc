@@ -89,7 +89,6 @@
                     <th >ESTATUS</th>
                     <th >CURSO /CERTIFICACIÓN</th>
                     <th >PROG. ESTRA.</th>
-                    <th>CREADO</th>
                     <th >ACTUALIZADO</th>
                     @can('cursos.show')
                         <th >&nbsp;EDIT&nbsp;</th>
@@ -108,10 +107,10 @@
                     if($itemData->proyecto) $prog = 'SI';
                     else $prog = 'NO';
 
-                    $fecha_crea = $fecha_act = null;
-                    if($itemData->created_at) $fecha_crea = date('d/m/Y H:i', strtotime($itemData->created_at));
-                    if($itemData->updated_at) $fecha_act = date('d/m/Y H:i', strtotime($itemData->updated_at));
-                    // elseif($itemData->created_at) $fecha = date('d/m/Y H:i', strtotime($itemData->created_at));
+                    $fecha = null;
+                    // if($itemData->created_at) $fecha_crea = date('d/m/Y H:i', strtotime($itemData->created_at));
+                    if($itemData->updated_at) $fecha = date('d/m/Y H:i', strtotime($itemData->updated_at));
+                    elseif($itemData->created_at) $fecha = date('d/m/Y H:i', strtotime($itemData->created_at));
 
                 @endphp
                     <tr>
@@ -125,8 +124,7 @@
                         <td>{{$itemData->estado}}</td>
                         <td>{{$servicio}}</td>
                         <td>{{$prog}}</td>
-                        <td style="font-size: 11px;">{{$itemData->user_created_name}} {{ $fecha_crea }}</td>
-                        <td style="font-size: 11px;">{{$itemData->user_updated_name}} {{ $fecha_act }} </td>
+                        <td>{{ $itemData->user_updated_name ?: $itemData->user_created_name }} {{ $fecha }} </td>
                         @can('cursos.show')
                         <td>
                             <a class="nav-link" alt="Editar Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}">
