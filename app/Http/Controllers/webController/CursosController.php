@@ -67,10 +67,8 @@ class CursosController extends Controller
             $data = $data->WHERE('cursos.estado', '=', true);
         }
         $data = $data->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
-            ->leftJoin('users', function($join) {
-                $join->on('cursos.iduser_updated', '=', 'users.id')
-                    ->orOn('cursos.iduser_created', '=', 'users.id'); 
-            })            
+            ->leftJoin('users as user_created', 'cursos.iduser_created', '=', 'user_created.id')
+            ->leftJoin('users as user_updated', 'cursos.iduser_updated', '=', 'user_updated.id')
             ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
                        'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
                        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
@@ -78,7 +76,10 @@ class CursosController extends Controller
                        'cursos.tipo_curso', 'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo',
                        DB::raw("CASE WHEN cursos.estado ='true' THEN 'ACTIVO' ELSE (CASE WHEN cursos.estado='false' THEN  'INACTIVO' ELSE 'BAJA' END) END as estado"),
                        'cursos.servicio','cursos.proyecto','cursos.file_carta_descriptiva',
-                       DB::raw("REPLACE(users.name, 'BAJA', '') as user_name"),'cursos.created_at','cursos.updated_at']);
+                        DB::raw("REPLACE(user_created.name, 'BAJA', '') as user_created_name"),
+                        DB::raw("REPLACE(user_updated.name, 'BAJA', '') as user_updated_name"),
+                        'cursos.created_at', 'cursos.updated_at'
+                    ]);
         return view('layouts.pages.vstacursosinicio',compact('data'));
     }
 
