@@ -155,7 +155,7 @@ class ReporteFotController extends Controller
                 $dataFirmante = DB::Table('tbl_organismos AS org')
                 ->Select('org.id', 'fun.nombre AS funcionario','fun.curp',
                 'fun.cargo','fun.correo', 'org.nombre', 'fun.incapacidad')
-                    ->join('tbl_funcionarios AS fun', 'fun.id','org.id')
+                    ->join('tbl_funcionarios AS fun', 'fun.id_org','org.id')
                     ->where('fun.curp', '=', $puestoUsuario)
                     ->first();
                 if($dataFirmante == null){return "No se encontraron datos del servidor publico";}
