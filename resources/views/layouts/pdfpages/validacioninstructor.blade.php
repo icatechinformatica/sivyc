@@ -69,7 +69,7 @@
                 <b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
                 <br>{{ $funcionarios['dunidad']['puesto'] }}.
                 <br>Presente.
-                <br><br style="line-height: 1;"><p style="line-height: 1;">Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.</p>
+                <br><br style="line-height: 1;"><p style="line-height: 1; font-size: 12px;">Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.</p>
                 <div class="table table-responsive" style="margin-bottom: 0px; margin-top: -8px;">
                     <table class="tablag" style="">
                         <tbody>
@@ -111,12 +111,12 @@
                         </tbody>
                     </table>
                 </div>
-                <p style="line-height: 1;">Es preciso señalar que, en su expediente consta que cumple con los requisitos y documentos que requiere el perfil de la especialidad solicitada.
+                <p style="line-height: 1; font-size: 12px;">Es preciso señalar que, en su expediente consta que cumple con los requisitos y documentos que requiere el perfil de la especialidad solicitada.
                 <br style="line-height: 0;">
                 Agradeciendo de antemano su atención, envío un cordial saludo.</p>
                 <div>
                     <div class="column">
-                        <table class="tablad">
+                        <table style="border-collapse:initial;font-size: 12px;border: black 1px solid; text-align: center; padding:0.5px;">
                             <thead>
                                 <tr>
                                     <td>
