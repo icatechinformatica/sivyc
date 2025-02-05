@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('descarga:nube')->dailyAt('20:00');
         // $schedule->command('inspire')
         //          ->hourly();
     }

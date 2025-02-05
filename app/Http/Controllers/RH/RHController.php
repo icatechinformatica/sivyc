@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Exports\ExportExcel;
 use Illuminate\Http\Request;
 use App\Models\funcionario;
+use Illuminate\Support\Str;
 use setasign\Fpdi\Fpdi;
 use Redirect,Response;
 use Dompdf\Dompdf;
@@ -43,11 +44,36 @@ class RHController extends Controller
         return view('layouts.pages.RH.index', compact('data'));
     }
 
-    // borrar el 27 de mayo del 2025
-    // public function detalles($numero_enlace) {
-    //     $data = checador_asistencia::Where('numero_enlace',$numero_enlace)->OrderBy('fecha', 'ASC')->Paginate(15);
-    //     return view('layouts.pages.RH.detalles',compact('data'));
-    // }
+    public function descarga_nube() {
+        $url = 'https://api.us.crosschexcloud.com/'; // Reemplaza con la URL correcta
+        $token = $this->get_api_token($url); // funcion donde se consigue el token para accesar
+
+        $hoy = Carbon::now()->format('Y-m-d');
+        $beginTime = $hoy.'T00:00:00+00:00';
+        $endTime = $hoy.'T23:59:59+00:00';
+        $page = 1;
+        $perPage = 100;
+
+        $data = $this->get_records($url,$beginTime, $endTime, $page, $perPage, $token); // funcion donde se consiguen los registros de los checadores de la nube
+        $totalPages = $data['pageCount'];
+
+        for ($x = 1; $x <= $totalPages; $x++) {
+            foreach($data['list'] as $record) {
+                $time = explode('T',$record['checktime']); //se procesa la fecha y hora
+                $time[1] = substr($time[1], 0, 8);
+
+                $registro = checador_asistencia::Where('numero_enlace',$record['employee']['workno'])->Where('fecha',$time[0])->First();
+                if(is_null($registro)) {
+                    $this->add_registro($record['employee']['workno'],$time[0],$time[1]);
+                } else {
+                    $this->update_registro($registro, $time[1]);
+                }
+            }
+            $page++;
+            $data = $this->get_records($url,$beginTime, $endTime, $page, $perPage, $token);
+        }
+        // dd('complete'); // quitar para subir a produccion
+    }
 
     public function upload(Request $request) {
         // dd($request);
@@ -73,7 +99,7 @@ class RHController extends Controller
             }
 
             return redirect()->route('rh.index')
-                ->with('success','Asistencias Cargadas Exitosamente');;
+                ->with('success','Asistencias Cargadas Exitosamente');
 
         } else {
             return back()->withErrors(['file' => 'El archivo no se puede leer.']);
@@ -164,5 +190,49 @@ class RHController extends Controller
         $registro->save();
 
         return $registro;
+    }
+
+    private function get_api_token($url) {
+        $response = Http::post($url, [
+            'header' => [
+                'nameSpace' => 'authorize.token',
+                'nameAction' => 'token',
+                'version' => '1.0',
+                'requestId' => (string) Str::uuid(), // Genera un UUID dinámico
+                'timestamp' => Carbon::now()->toIso8601String(),
+            ],
+            'payload' => [
+                'api_key' => '060b777c75ccfa52ba7505bdc24ddcf9',
+                'api_secret' => '316dc3b75403372e665fe8ad6b4927ee',
+            ]
+        ]);
+
+        $token = $response->json()['payload']['token'];
+
+        return $token;
+    }
+    private function get_records($url,$beginTime, $endTime, $page, $perPage, $token) {
+        $response2 = Http::post($url, [
+            'header' => [
+                'nameSpace' => 'attendance.record',
+                'nameAction' => 'getrecord',
+                'version' => '1.0',
+                'requestId' => (string) Str::uuid(),
+                'timestamp' => Carbon::now()->toIso8601String(),
+            ],
+            'authorize' => [
+                'type' => 'token',
+                'token' => $token,
+            ],
+            'payload' => [
+                'begin_time' => $beginTime,
+                'end_time' => $endTime,
+                'order' => 'asc',
+                'page' => $page,
+                'per_page' => $perPage,
+            ],
+        ]);
+
+        return $response2->json()['payload'];
     }
 }
