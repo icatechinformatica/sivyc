@@ -928,6 +928,6 @@ Route::get('/expediente/pago/merge', 'webController\PagoController@expediente-pa
 
 // Seccion modulo RH
 Route::get('/recursos-humanos/index', 'RH\RHController@index')->name('rh.index');
-// Route::get('/recursos-humanos/funcionario/detalles/{id}', 'RH\RHController@detalles')->name('rh.detalles');
+Route::get('/recursos-humanos/descarga/nube', 'RH\RHController@descarga_nube')->name('rh.descarga.nube');
 Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
 Route::post('/agregar/justificante', 'RH\RHController@add_justificante')->name('add.justificante');
