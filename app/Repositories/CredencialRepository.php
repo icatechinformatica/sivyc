@@ -3,17 +3,54 @@
 namespace App\Repositories;
 use App\Interfaces\CredencialesInterface;
 use PHPQRCode\QRcode;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\Label\Font\OpenSans;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Matrix\Module\RoundModule;
+use Endroid\QrCode\Matrix\Eye\CircleEye;
+use App\Models\Catalogos\Funcionario;
 
 final class CredencialRepository implements CredencialesInterface
 {
     public function generarQrCode()
     {
-        ob_start(); // Inicia el almacenamiento en búfer de la salida
-        QRcode::png('https://google.com'); // Genera el código QR directamente
-        $imageData = ob_get_contents(); // Obtiene los datos generados en el búfer
-        ob_end_clean(); // Limpia el búfer de salida
+            $logoPath = public_path('img/credencial/logo_humanismo_gobierno.png');
 
-        // Devolver la imagen QR como una respuesta HTTP con el tipo de contenido 'image/png'
-        return $imageData;
+            if (!file_exists($logoPath)) {
+                throw new \Exception("El archivo logo no se encuentra en la ruta: $logoPath");
+            }
+
+            $builder = Builder::create()
+            ->writer(new PngWriter())
+            ->data('https://www.google.com')
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+            ->size(80)
+            ->margin(5)
+            ->logoPath($logoPath)
+            ->logoResizeToWidth(45)
+            ->logoPunchoutBackground(false)
+            ->labelText('Código Generado')
+            ->labelFont(new OpenSans(16))
+            ->foregroundColor(new Color(211, 194, 180)) // QR en rojo
+            ->backgroundColor(new Color(255, 255, 255)); // Ojos en forma de círculo; // Fondo blanco;
+
+            $result = $builder->build();
+
+            // Convertir la imagen a base64
+            // $qrCodeBase64 = base64_encode($result->getString());
+
+            return $result;
+    }
+
+    public function getFuncionarios()
+    {
+        // return (new Funcionario())->where('status', 'true')->paginate(15 ?? 10);
+        return [];
     }
 }
