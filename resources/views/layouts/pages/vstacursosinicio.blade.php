@@ -108,9 +108,10 @@
                     else $prog = 'NO';
 
                     $fecha = null;
-                    if($itemData->updated_at) $fecha = date('d/m/Y H:i', strtotime($itemData->updated_at));                         
+                    // if($itemData->created_at) $fecha_crea = date('d/m/Y H:i', strtotime($itemData->created_at));
+                    if($itemData->updated_at) $fecha = date('d/m/Y H:i', strtotime($itemData->updated_at));
                     elseif($itemData->created_at) $fecha = date('d/m/Y H:i', strtotime($itemData->created_at));
-                     
+
                 @endphp
                     <tr>
                         <th scope="row">{{$itemData->nombre}}</th>
@@ -123,7 +124,7 @@
                         <td>{{$itemData->estado}}</td>
                         <td>{{$servicio}}</td>
                         <td>{{$prog}}</td>
-                        <td>{{$itemData->user_name}} {{ $fecha }}</td>
+                        <td>{{ $itemData->user_updated_name ?: $itemData->user_created_name }} {{ $fecha }} </td>
                         @can('cursos.show')
                         <td>
                             <a class="nav-link" alt="Editar Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}">
