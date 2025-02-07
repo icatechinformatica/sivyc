@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Credencial;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\CredencialesInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CredencialController extends Controller
 {
@@ -20,9 +21,8 @@ class CredencialController extends Controller
     public function index(Request $request)
     {
         //
-        $imageData = $this->credencial->generarQrCode();
-        return response($imageData, 200)
-                ->header('Content-Type', 'image/png');
+        $getAllFuncionarios = $this->credencial->getFuncionarios();
+        return view('credencial.credencial', compact('getAllFuncionarios'))->render();
     }
 
     /**
@@ -55,6 +55,7 @@ class CredencialController extends Controller
     public function show($id)
     {
         //
+        return view('credencial.detalle_credencial')->render();
     }
 
     /**
@@ -89,5 +90,17 @@ class CredencialController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getQrCode($id)
+    {
+        $result = $this->credencial->generarQrCode();
+        $imageData = $result->getString();
+        $qrCodeBase64 = base64_encode($imageData);
+        $data = [
+            'qrCodeBase64' => $qrCodeBase64,
+        ];
+        return view('credencial.credencial', $data);
+        // return '<img src="data:image/png;base64,' . $qrCodeBase64 . '" alt="QR Code">';
     }
 }
