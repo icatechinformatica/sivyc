@@ -2,12 +2,10 @@
 
 namespace App\Models\Catalogos;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Funcionario extends Model
 {
-    use HasFactory;
 
     protected $table = 'tbl_funcionario';
 
