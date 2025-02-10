@@ -2,6 +2,7 @@
 namespace App\Interfaces;
 
 interface CredencialesInterface {
-    public function generarQrCode();
+    public function generarQrCode($id);
     public function getFuncionarios();
+    public function descargarQr($id);
 }
