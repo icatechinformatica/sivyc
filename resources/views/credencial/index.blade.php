@@ -127,7 +127,7 @@
         <h3 class="text-center text-muted font-weight-bold">Generación de código QR</h2>
             <div class="row">
                 <div class="form-group col-md-12">
-                    <form action="{{ route('credencial.index') }}" method="get">
+                    <form action="{{ route('credencial.indice') }}" method="get">
                         <div class="d-flex align-items-center">
                             <input type="text" placeholder="Buscar Registros de los Funcionarios Icatech ..."
                                 class="form-control" name="filtroBusqueda" id="filtroBusqueda" style="width:92%;">
