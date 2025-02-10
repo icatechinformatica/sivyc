@@ -22,16 +22,14 @@ class CredencialController extends Controller
     {
         //
         $getAllFuncionarios = $this->credencial->getFuncionarios();
-        if ($request->filled('filtroBusqueda')) {
-            #
-            $filtro = trim($request->input('filtroBusqueda'));
-            $getAllFuncionarios->where(function ($q) use ($filtro) {
-                $q->where('nombre_trabajador', 'ILIKE', "%{$filtro}%")
+
+        $getAllFuncionarios->when($request->filled('filtroBusqueda'), function ($query) use ($request) {
+            $filtro = trim($request->get('filtroBusqueda'));
+            $query->where('nombre_trabajador', 'ILIKE', "%{$filtro}%")
                 ->orWhere('clave_empleado', 'ILIKE', "%{$filtro}%")
                 ->orWhere('puesto_estatal', 'ILIKE', "%{$filtro}%")
                 ->orWhere('categoria_estatal', 'ILIKE', "%{$filtro}%");
-            });
-        }
+        });
 
         return view('credencial.credencial', compact('getAllFuncionarios'))->render();
     }

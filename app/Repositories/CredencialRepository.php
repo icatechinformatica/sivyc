@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 use App\Interfaces\CredencialesInterface;
-use PHPQRCode\QRcode;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
