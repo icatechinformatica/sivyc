@@ -1,16 +1,14 @@
 @extends('theme.sivyc.layout')
-@section('title', 'Reportes | SIVyC Icatech')
-@section('content')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
-    <style>
-        table tr th .nav-link {padding: 0; margin: 0;}
-    </style>
-    <div class="card-header">
-        Reporte formato 911
+@section('title', 'Reportes 911 | SIVyC Icatech')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" /> 
 
+    @endsection
+@section('content')       
+    <div class="card-header">
+        Reportes / Formato 911
     </div>
-    <div class="card card-body" >
-        <br />
+    <div class="card card-body" >        
         <div class="container">
             @if ($message = Session::get('success'))
                 <div class="alert alert-success">
@@ -23,7 +21,7 @@
                     <br>
                     <form action="{{route('contacto')}}" method="POST" id="cacahuate" target="_blank">
                         <div class="form-group">
-                            <label for="unidades">Unidad</label>
+                            <label for="unidades">UNIDAD DE CAPACITACIÓN / ACCIÓN MÓVIL</label>
                             <select name="unidades" class="form-control" placeholder=" " id="unidades">
                                 <option value=0 selected disabled="">Selecciona una opción</option>
                                 @if($tipo=='string')
@@ -36,7 +34,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="turno">Turno</label>
+                            <label for="turno">TURNO</label>
                             <select name="turno" class="form-control" placeholder=" " id="turno">
                                 <option selected disabled="">Selecciona una opción</option>
                                 <option>MATUTINO</option>
@@ -44,14 +42,14 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="">Fecha de inicio</label>
+                            <label for="">FECHA DE INICIO</label>
                             <input type="date" name="fecha_inicio" class="form-control" id="fecha_inicio">
                         </div>
                         <div class="form-group">
-                            <label for="">Fecha de termino</label>
+                            <label for="">FECHA DE TERMINO</label>
                             <input type="date" name="fecha_termino" class="form-control" id="fecha_termino">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="text-align: center;">
                             <input type="submit" value="Generar PDF" class="btn">
                         </div>
                         {{csrf_field()}}
