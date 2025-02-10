@@ -129,10 +129,14 @@
         <h3 class="text-center text-muted font-weight-bold">Generación de código QR</h2>
             <div class="row">
                 <div class="form-group col-md-12">
-                    <div class="d-flex align-items-center">
-                        <input type="text" placeholder="Buscar Registros de los Funcionarios Icatech ..." class="form-control" style="width:92%;">
-                        <button class="btn">Filtrar</button>
-                    </div>
+                    <form action="{{ route('credencial.index') }}" method="get">
+                        @csrf
+                        <div class="d-flex align-items-center">
+                            <input type="text" placeholder="Buscar Registros de los Funcionarios Icatech ..."
+                                class="form-control" name="filtroBusqueda" id="filtroBusqueda" style="width:92%;">
+                            <button class="btn">Filtrar</button>
+                        </div>
+                    </form>
                     <br>
                     <!-- Input para el filtro -->
                     <div class="table-container">
@@ -149,15 +153,22 @@
                             </thead>
 
                             <tbody>
-                                @for ($i = 0; $i < 20; $i++)
+                                @if (count($getAllFuncionarios) > 0)
+                                    @foreach ($getAllFuncionarios as $item)
+                                        <tr>
+                                            <td data-label=“Tipo”><strong>S</strong></td>
+                                            <td data-label=“Precio”>40€</td>
+                                            <td data-label=“Medidas”>1,50 X 1,50 M</td>
+                                            <td data-label=“Metros”>2,25</td>
+                                            <td data-label=“Metros”><a href="{{ route('credencial.ver', ['id' => $item->id]) }}"
+                                                    class="btn btn-info"><i class="fas fa-info"></i></a></td>
+                                        </tr>
+                                    @endforeach
+                                @else
                                     <tr>
-                                        <td data-label=“Tipo”><strong>S</strong></td>
-                                        <td data-label=“Precio”>40€</td>
-                                        <td data-label=“Medidas”>1,50 X 1,50 M</td>
-                                        <td data-label=“Metros”>2,25</td>
-                                        <td data-label=“Metros”><a href="{{ route('credencial.ver', ['id' => $i]) }}" class="btn btn-info"><i class="fas fa-info"></i></a></td>
+                                        <td data-label=“Tipo” rowspan="5"><strong>¡NO HAY REGISTROS!</strong></td>
                                     </tr>
-                                @endfor
+                                @endif
                             </tbody>
 
                         </table>

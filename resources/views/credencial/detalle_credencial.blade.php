@@ -1,142 +1,122 @@
 @extends('theme.sivyc.layout')
 @section('content_script_css')
     <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> --}}
+    <style>
+        .perfil {
+            border-radius: 50%;
+            width: 100px;
+            /* Ajusta según el tamaño deseado */
+            height: 100px;
+            /* Ajusta según el tamaño deseado */
+            object-fit: cover;
+        }
+
+    </style>
 @endsection
 @section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
 @section('content')
-    <div class="container">
-
+    <div class="card card-body">
         <div class="row">
-            <div class="col-sm-4" style="margin-top: 50px;">
-                <div class="text-center">
-                    <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
-                        alt="avatar">
-                    <h6>Upload a different photo...</h6>
-                    <input type="file" class="text-center center-block file-upload">
-                </div>
-                </hr><br>
+            <div class="form-group col-md-12">
+                <div class="container">
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">Sitio Web <i class="fa fa-link fa-1x"></i></div>
-                    <div class="panel-body"><a href="https://github.com/sergio-gonzalez11">github.com/sergio-gonzalez11</a>
+                    <div class="row">
+                        <div class="col-sm-4" style="margin-top: 50px;">
+                            <div class="text-center">
+                                <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="perfil" alt="avatar">
+                                <h6>Agregar Imagen...</h6>
+                                <input type="file" class="text-center center-block file-upload">
+                            </div>
+                            </hr><br>
+
+                            <div class="d-flex justify-content-center">
+                                <img style="max-width: 100%;" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <a href="data:image/png;base64,{{ $qrCodeBase64 }}" download="codigo_qr.png" class="btn btn-warning mt-3">Descargar <i class="fas fa-qrcode"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-8" style="margin-top: 50px;">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#home">Perfil</a></li>
+                            </ul>
+
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="home">
+                                    <hr>
+                                    <form class="form" action="##" method="post" id="registrationForm">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="nombre">
+                                                    <h4>Nombre</h4>
+                                                </label>
+                                                <input type="text" class="form-control" name="nombre" id="nombre"
+                                                    placeholder="nombre" value="{{ $perfil->nombre_trabajador }}">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="movil">
+                                                    <h4>Número de Enlace</h4>
+                                                </label>
+                                                <input type="text" class="form-control" name="movil" id="movil"
+                                                    placeholder="número de enlace" value="{{ $perfil->clave_empleado }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <label for="telefono">
+                                                    <h4>Puesto</h4>
+                                                </label>
+                                                <input type="text" class="form-control" name="telefono" id="telefono"
+                                                    placeholder="teléfono" value="{{ $perfil->puesto_estatal }}">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="movil">
+                                                    <h4>Fecha de Ingreso</h4>
+                                                </label>
+                                                <input type="text" class="form-control" name="movil" id="movil"
+                                                    placeholder="Fecha Ingreso" value="{{ $perfil->fecha_ingreso }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <label for="adscripcion">
+                                                    <h4>Adscripción</h4>
+                                                </label>
+                                                <input type="text" class="form-control" name="adscripcion"
+                                                    placeholder="ADSCRIPCIÓN" value="{{ $perfil->nombre_adscripcion }}">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="ciudad">
+                                                    <h4>Estado del Empleado</h4>
+                                                </label>
+                                                <input type="text" class="form-control" id="ciudad"
+                                                    placeholder="estado" value="{{ ($perfil->status) ? "ACTIVO" : "INACTIVO" }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <label for="comision">
+                                                    <h4>Comisionado (si es el caso)</h4>
+                                                </label>
+                                                <input type="text" class="form-control" name="comision"
+                                                    placeholder="ADSCRIPCIÓN" value="{{ $perfil->comision_direccion_o_unidad }}">
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <hr>
+                                </div>
+                            </div>
+
+
+                        </div>
                     </div>
                 </div>
-
-                <ul class="list-group">
-                    <li class="list-group-item text-muted">Actividad <i class="fa fa-dashboard fa-1x"></i></li>
-                    <li class="list-group-item text-right"><span class="pull-left"><strong>Shares</strong></span> 125
-                    </li>
-                    <li class="list-group-item text-right"><span class="pull-left"><strong>Likes</strong></span> 13</li>
-                </ul>
-            </div>
-
-            <div class="col-sm-8" style="margin-top: 50px;">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#home">Perfil</a></li>
-                </ul>
-
-
-                <div class="tab-content">
-                    <div class="tab-pane active" id="home">
-                        <hr>
-                        <form class="form" action="##" method="post" id="registrationForm">
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="nombre">
-                                        <h4>Nombre</h4>
-                                    </label>
-                                    <input type="text" class="form-control" name="nombre" id="nombre"
-                                        placeholder="nombre">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="last_name">
-                                        <h4>Apellidos</h4>
-                                    </label>
-                                    <input type="text" class="form-control" name="apellidos" id="apellidos"
-                                        placeholder="apellidos">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="teléfono">
-                                        <h4>Teléfono</h4>
-                                    </label>
-                                    <input type="text" class="form-control" name="teléfono" id="teléfono"
-                                        placeholder="teléfono">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-xs-6">
-                                    <label for="mobile">
-                                        <h4>Movil</h4>
-                                    </label>
-                                    <input type="text" class="form-control" name="movil" id="movil"
-                                        placeholder="introduce tu móvil">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="email">
-                                        <h4>Email</h4>
-                                    </label>
-                                    <input type="email" class="form-control" name="email" id="email"
-                                        placeholder="you@email.com">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="ciudad">
-                                        <h4>Ciudad</h4>
-                                    </label>
-                                    <input type="text" class="form-control" id="ciudad" placeholder="ciudad">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="password">
-                                        <h4>Contraseña</h4>
-                                    </label>
-                                    <input type="password" class="form-control" name="password" id="password"
-                                        placeholder="contraseña">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="password2">
-                                        <h4>Verifica la contraseña</h4>
-                                    </label>
-                                    <input type="password" class="form-control" name="password2" id="password2"
-                                        placeholder="password2">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-xs-12">
-                                    <br>
-                                    <button class="btn btn-success" type="submit"><i
-                                            class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
-                                    <button class="btn btn-danger" type="reset"><i
-                                            class="glyphicon glyphicon-repeat"></i> Limpiar</button>
-                                </div>
-                            </div>
-                        </form>
-
-                        <hr>
-
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>

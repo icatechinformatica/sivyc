@@ -22,6 +22,17 @@ class CredencialController extends Controller
     {
         //
         $getAllFuncionarios = $this->credencial->getFuncionarios();
+        if ($request->filled('filtroBusqueda')) {
+            #
+            $filtro = trim($request->input('filtroBusqueda'));
+            $getAllFuncionarios->where(function ($q) use ($filtro) {
+                $q->where('nombre_trabajador', 'ILIKE', "%{$filtro}%")
+                ->orWhere('clave_empleado', 'ILIKE', "%{$filtro}%")
+                ->orWhere('puesto_estatal', 'ILIKE', "%{$filtro}%")
+                ->orWhere('categoria_estatal', 'ILIKE', "%{$filtro}%");
+            });
+        }
+
         return view('credencial.credencial', compact('getAllFuncionarios'))->render();
     }
 
@@ -55,7 +66,15 @@ class CredencialController extends Controller
     public function show($id)
     {
         //
-        return view('credencial.detalle_credencial')->render();
+        $result = $this->credencial->generarQrCode($id);
+        $perfil = $this->credencial->getFuncionario($id);
+        $imageData = $result->getString();
+        $qrCodeBase64 = base64_encode($imageData);
+        $data = [
+            'qrCodeBase64' => $qrCodeBase64,
+            'perfil' => $perfil,
+        ];
+        return view('credencial.detalle_credencial', $data)->render();
     }
 
     /**
@@ -67,6 +86,8 @@ class CredencialController extends Controller
     public function edit($id)
     {
         //
+        $perfil = $this->credencial->getFuncionario($id);
+        return view('credencial.perfil', compact('perfil'))->render();
     }
 
     /**
@@ -94,7 +115,7 @@ class CredencialController extends Controller
 
     public function getQrCode($id)
     {
-        $result = $this->credencial->generarQrCode();
+        $result = $this->credencial->generarQrCode($id);
         $imageData = $result->getString();
         $qrCodeBase64 = base64_encode($imageData);
         $data = [
@@ -102,5 +123,13 @@ class CredencialController extends Controller
         ];
         return view('credencial.credencial', $data);
         // return '<img src="data:image/png;base64,' . $qrCodeBase64 . '" alt="QR Code">';
+    }
+
+    public function download($id)
+    {
+        $descargarQr = $this->credencial->descargarQr($id);
+        return response($descargarQr->getString())
+        ->header('Content-Type', 'image/png')
+        ->header('Content-Disposition', 'attachment; filename="codigo_qr.png"');
     }
 }
