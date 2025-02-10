@@ -21,7 +21,7 @@ class CredencialController extends Controller
     public function index(Request $request)
     {
         //
-        $getAllFuncionarios = $this->credencial->getFuncionarios();
+        // $getAllFuncionarios = $this->credencial->getFuncionarios();
 
         // $getAllFuncionarios->when($request->filled('filtroBusqueda'), function ($query) use ($request) {
         //     $filtro = trim($request->get('filtroBusqueda'));
@@ -31,7 +31,7 @@ class CredencialController extends Controller
         //         ->orWhere('categoria_estatal', 'ILIKE', "%{$filtro}%");
         // });
 
-        return view('credencial.index', compact('getAllFuncionarios'))->render();
+        return view('credencial.index')->render();
     }
 
     /**
