@@ -25,12 +25,12 @@
 <body>
     <div class="encabezado">
         <img class="izquierda" src="{{ public_path('img/reportes/sep.png') }}" width="23%">
-        @if ($alumnos->chk_fotografia == TRUE && $vistaFoto == TRUE)
+        {{-- @if ($alumnos->chk_fotografia == TRUE && $vistaFoto == TRUE)
            <img class="img-thumbnail mb-3" style="float: right; width: 3cm; height: 3cm; margin-top:-10px;" src="{{ asset($pathimg) }}" >
         @else
            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}" width="20%">
-        @endif
-        <p><strong>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN</strong></p>
+        @endif --}}
+        <p style="margin-right: 160px;"><strong>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN</strong></p>
         <p><strong>( SID - 01 )<strong></p>
     </div>
     <br>
@@ -40,7 +40,7 @@
             <td style=" width: 60%;"> </td>
             <td  style=" width: 20%; text-align: center;">{{str_pad($alumnos->id, 8, "0", STR_PAD_LEFT)}}</td>
         </tr>
-        
+
         <tr>
             <td>FECHA</td>
             <td></td>
@@ -244,7 +244,7 @@
     {{-- <table>
         <tr>
             <td>
-                <br>                
+                <br>
 
                 <strong>FECHA:</strong> {{ date('d/m/Y',strtotime($alumnos->creado))}}
             </td>
