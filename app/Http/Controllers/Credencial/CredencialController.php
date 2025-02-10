@@ -31,7 +31,7 @@ class CredencialController extends Controller
         //         ->orWhere('categoria_estatal', 'ILIKE', "%{$filtro}%");
         // });
 
-        return view('credencial.credencial', compact('getAllFuncionarios'))->render();
+        return view('credencial.index', compact('getAllFuncionarios'))->render();
     }
 
     /**

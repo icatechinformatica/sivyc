@@ -1,5 +1,3 @@
-{{-- <img style="padding-top: 15%;"
-                    src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
 @extends('theme.sivyc.layout')
 @section('content_script_css')
     <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
@@ -130,7 +128,6 @@
             <div class="row">
                 <div class="form-group col-md-12">
                     <form action="{{ route('credencial.index') }}" method="get">
-                        @csrf
                         <div class="d-flex align-items-center">
                             <input type="text" placeholder="Buscar Registros de los Funcionarios Icatech ..."
                                 class="form-control" name="filtroBusqueda" id="filtroBusqueda" style="width:92%;">
@@ -156,11 +153,11 @@
                                 @if (count($getAllFuncionarios) > 0)
                                     @foreach ($getAllFuncionarios as $item)
                                         <tr>
-                                            <td data-label=“Tipo”><strong>S</strong></td>
-                                            <td data-label=“Precio”>40€</td>
-                                            <td data-label=“Medidas”>1,50 X 1,50 M</td>
-                                            <td data-label=“Metros”>2,25</td>
-                                            <td data-label=“Metros”><a href="{{ route('credencial.ver', ['id' => $item->id]) }}"
+                                            <td data-label=Nombre del Trabajador><strong>{{ $item->nombre_trabajador }}</strong></td>
+                                            <td data-label=Clave de Empleado>{{ $item->clave_empleado }}</td>
+                                            <td data-label=Puesto>{{ $item->puesto_estatal }}</td>
+                                            <td data-label=Categoría>{{ $item->categoria_estatal }}</td>
+                                            <td data-label=Detalles><a href="{{ route('credencial.ver', ['id' => $item->id]) }}"
                                                     class="btn btn-info"><i class="fas fa-info"></i></a></td>
                                         </tr>
                                     @endforeach
