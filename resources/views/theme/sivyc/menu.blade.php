@@ -282,7 +282,8 @@
                             @can('planeacion.reporte')
                                 <a class="dropdown-item" href="{{ route('planeacion.reporte') }}">Suficiencias Presupuestales</a>
                                 <a class="dropdown-item" href="{{ route('planeacion.reporte.costeo') }}">Costeo Suficiencias Presupuestales</a>
-                                <a class="dropdown-item" href="{{ route('planeacion.reporte-cancelados') }}">FoliosCancelados</a>
+
+                                {{-- DAR DE BAJA <a class="dropdown-item" href="{{ route('planeacion.reporte-cancelados') }}">FoliosCancelados</a> --}}
                             @endcan
                             @can('financieros.reporte')
                                 <a class="dropdown-item" href="{{ route('financieros.reporte') }}">Estado de Contratos y Pagos</a>

@@ -1,11 +1,15 @@
 @extends('theme.sivyc.layout')
 
 @section('title', 'Reporte Grupos Vulnerables | SIVYC ICATECH')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+@endsection
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row my-4">
-            <div class="col d-flex justify-content-center"><h4><strong>REPORTE DE GRUPOS VULNERABLES</strong></h4></div>
+    <div class="card-header">
+        Consultas/ Grupos Vulnerables
+    </div>
+    <div class="card card-body">  
         </div>
 
         <form id="formFechas" action="{{route('reportes.planeacion.grupos_vulnerables')}}" method="get">

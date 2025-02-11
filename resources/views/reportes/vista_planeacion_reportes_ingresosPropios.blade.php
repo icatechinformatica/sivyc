@@ -1,13 +1,13 @@
 @extends('theme.sivyc.layout')
-
 @section('title', 'Reporte Ingresos Propios | SIVYC ICATECH')
-
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    @endsection
 @section('content')
-    <div class="container-fluid">
-        <div class="row my-4">
-            <div class="col d-flex justify-content-center"><h4><strong>REPORTE DE INGRESOS PROPIOS</strong></h4></div>
-        </div>
-
+    <div class="card-header">
+        Consultas/ Ingresos Propios
+    </div>
+    <div class="card card-body">    
         <form id="formFechas" action="{{route('reportes.planeacion.ingresos_propios')}}" method="get">
             @csrf
             

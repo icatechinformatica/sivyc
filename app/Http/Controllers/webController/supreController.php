@@ -316,23 +316,6 @@ class supreController extends Controller
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                             ->GET();
 
-        $agenda = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','o.id_parent')
-            ->Join('tbl_funcionarios AS f', 'f.id_org','o.id')
-            ->Where('o.id_unidad',$unidadsel->id)->where('f.titular', true)
-            ->Get();
-
-        Foreach($agenda as $moist) {
-            if($moist->id_parent == 1){
-                $funcionarios['director'] = $moist->nombre;
-                $funcionarios['directorp'] = $moist->cargo;
-            }
-            if(str_contains($moist->cargo, 'ADMINISTRATIVO') || str_contains($moist->cargo, 'ADMINISTRATIVA')) {
-                $funcionarios['delegado'] = $moist->nombre;
-                $funcionarios['delegadop'] = $moist->cargo;
-            }
-
-        }
-
         $getfolios[0]->mov_bancario = json_decode($getfolios[0]->mov_bancario);
 
         $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
@@ -366,7 +349,8 @@ class supreController extends Controller
             }
         }
         // FINAL del check
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios','unidadsel','recibo','funcionarios','generarEfirmaSupre'));
+        $funcionarios = $this->funcionarios_supre($unidadsel->unidad);
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios','unidadsel','recibo','funcionarios','generarEfirmaSupre','funcionarios'));
     }
 
     public function solicitud_mod_guardar(Request $request)
