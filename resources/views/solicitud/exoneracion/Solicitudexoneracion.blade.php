@@ -37,10 +37,10 @@
             </div>
             <table style="border-collapse: collapse;">
                 <tr>
-                    <td><b>{{$reg_unidad->dgeneral}}.</b></td>
+                    <td><b>{{$director->titular}}.</b></td>
                 </tr>
                 <tr>
-                    <td><b>Encargado de la Dirección General</b></td>
+                    <td><b>{{$director->cargo}}.</b></td>
                 </tr>
                 <tr>
                     <td><b>Presente.</b></td>
