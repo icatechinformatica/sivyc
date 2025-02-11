@@ -21,17 +21,16 @@ class CredencialController extends Controller
     public function index(Request $request)
     {
         //
-        // $getAllFuncionarios = $this->credencial->getFuncionarios();
+        $getAllFuncionarios = $this->credencial->getFuncionarios();
+        $filtro = $request->get('filtroBusqueda');
 
-        // $getAllFuncionarios->when($request->filled('filtroBusqueda'), function ($query) use ($request) {
-        //     $filtro = trim($request->get('filtroBusqueda'));
-        //     $query->where('nombre_trabajador', 'ILIKE', "%{$filtro}%")
-        //         ->orWhere('clave_empleado', 'ILIKE', "%{$filtro}%")
-        //         ->orWhere('puesto_estatal', 'ILIKE', "%{$filtro}%")
-        //         ->orWhere('categoria_estatal', 'ILIKE', "%{$filtro}%");
-        // });
+        $getAllFuncionarios->when(isset($filtro) && $filtro !== '', function ($query) use ($filtro) {
+            return $query->where('nombre_trabajador', '=', trim($filtro));
+        });
 
-        return view('credencial.index')->render();
+        $query = $getAllFuncionarios->orderBy('clave_empleado', 'ASC')->paginate(15);
+
+        return view('credencial.index', compact('query'))->render();
     }
 
     /**
