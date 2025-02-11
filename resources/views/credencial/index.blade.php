@@ -150,12 +150,27 @@
                             </thead>
 
                             <tbody>
-
+                                @if (count($query) > 0)
+                                    @foreach ($query as $item)
+                                        <tr>
+                                            <td data-label=Nombre del Trabajador>
+                                                <strong>{{ $item->nombre_trabajador }}</strong></td>
+                                            <td data-label=Clave de Empleado>{{ $item->clave_empleado }}</td>
+                                            <td data-label=Puesto>{{ $item->puesto_estatal }}</td>
+                                            <td data-label=Categoría>{{ $item->categoria_estatal }}</td>
+                                            <td data-label=Detalles><a
+                                                    href="{{ route('credencial.ver', ['id' => $item->id]) }}"
+                                                    class="btn btn-info"><i class="fas fa-info"></i></a></td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <td data-label=“Tipo” colspan="5"><strong>¡NO HAY REGISTROS!</strong></td>
+                                @endif
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan='5'>
-
+                                        {{ $query->links() }}
                                     </td>
                                 </tr>
                             </tfoot>

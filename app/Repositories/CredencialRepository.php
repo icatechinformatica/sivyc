@@ -14,7 +14,7 @@ use Endroid\QrCode\Matrix\Module\RoundModule;
 use Endroid\QrCode\Matrix\Eye\CircleEye;
 use App\Models\Catalogos\Funcionario;
 
-final class CredencialRepository implements CredencialesInterface
+class CredencialRepository implements CredencialesInterface
 {
     public function generarQrCode($id)
     {
@@ -51,7 +51,7 @@ final class CredencialRepository implements CredencialesInterface
 
     public function getFuncionarios()
     {
-        return (new Funcionario())->where('status', 'true')->paginate(15 ?? 10);
+        return (new Funcionario())->where('status', 'true');
     }
 
     public function descargarQr($id)
