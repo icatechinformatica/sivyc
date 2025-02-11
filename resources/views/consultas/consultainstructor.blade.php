@@ -1,12 +1,14 @@
 @extends('theme.sivyc.layout')  {{--AGC--}}
 @section('title', 'Consultas | SIVyC Icatech')
-@section('content')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />    
     <style>
         table tr th .nav-link {padding: 0; margin: 0;}
     </style>
+@endsection
+@section('content')       
     <div class="card-header">
-        Consulta de Instructores Asignados
+        Consultas / Instructores Asignados
     </div>
     <div class="card card-body" >
         <br />
