@@ -94,7 +94,7 @@
                         <th >&nbsp;EDIT&nbsp;</th>
                     @endcan
                     <th >&nbsp;VER&nbsp;</th>
-                    <th >CARTA DESCRI</th>
+                    {{-- <th >CARTA DESCRI</th> --}}
                     @can('paqueteriasdidacticas')
                     <th >PAQUE TERÍA</th>
                     @endcan
@@ -138,7 +138,7 @@
                                 <i  class="fa fa-search  fa-2x fa-lg text-primary"></i>
                             </a>
                         </td>
-                        <td>
+                        {{-- <td>
                             @if($itemData->file_carta_descriptiva)
 
                                 <a class="nav-link"  alt="Descargar PDF" href="{{env('APP_URL').'/'.'storage'.$itemData->file_carta_descriptiva}}" target="_blank">
@@ -146,7 +146,7 @@
                                 </a>
 
                             @endif
-                        </td>
+                        </td> --}}
                         @can('paqueteriasdidacticas')
                         <td>
                             <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="nav-link" title="Paquetes">
