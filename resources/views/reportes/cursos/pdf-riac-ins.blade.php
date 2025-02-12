@@ -47,7 +47,7 @@
                 <span class="block">FECHA INICIO: {{ $curso->fechaini }}</span>
                 <span class="block">FECHA TERMINO: {{ $curso->fechafin }}</span>
                 <span class="block">DURACI&Oacute;N EN HORAS: {{ $curso->dura }}</span>
-                <span class="block">GRUPO: {{ $curso->grupo }}</span>
+                <span class="block">GRUPO: {{ $curso->folio_grupo }}</span>
                 <span class="block">HORARIO: {{ $curso->hini }} A {{ $curso->hfin }}</span>
                 <span class="block">CURP: {{ $curso->curp}}</span>
                 <span class="block">CONVENIO REALIZADO CON: {{ $curso->depen}}</span>
