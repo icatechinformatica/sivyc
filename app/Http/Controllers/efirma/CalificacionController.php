@@ -406,7 +406,7 @@ class CalificacionController extends Controller
                     CLAVE CCT: <span class="tab">'. $curso->cct. '</span>
                     AREA: <span class="tab">'. $curso->area. '</span>
                     ESPECIALIDAD: &nbsp;&nbsp;'. $curso->espe. '<br />
-                    CURSO: <span class="tab1">'.  $curso->curso. '</span>
+                    CURSO: <span class="tab1">'.  $curso->folio_grupo. '</span>
                     CLAVE: <span class="tab1">'. $curso->clave. '</span>
                     CICLO ESCOLAR: <span class="tab1">'. $curso->ciclo. '</span>
                     FECHA INICIO: <span class="tab1">'. $curso->fechaini. '</span>
