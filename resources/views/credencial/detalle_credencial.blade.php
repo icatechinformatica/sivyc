@@ -54,14 +54,14 @@
                                                     <h4>Nombre</h4>
                                                 </label>
                                                 <input type="text" class="form-control" name="nombre" id="nombre"
-                                                    placeholder="nombre" value="{{ $perfil->nombre_trabajador }}">
+                                                    placeholder="nombre" value="{{ $perfil->nombre_trabajador }}" readonly>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="movil">
                                                     <h4>Número de Enlace</h4>
                                                 </label>
                                                 <input type="text" class="form-control" name="movil" id="movil"
-                                                    placeholder="número de enlace" value="{{ $perfil->clave_empleado }}">
+                                                    placeholder="número de enlace" value="{{ $perfil->clave_empleado }}" readonly>
                                             </div>
                                         </div>
 
@@ -71,14 +71,14 @@
                                                     <h4>Puesto</h4>
                                                 </label>
                                                 <input type="text" class="form-control" name="telefono" id="telefono"
-                                                    placeholder="teléfono" value="{{ $perfil->puesto_estatal }}">
+                                                    placeholder="teléfono" value="{{ $perfil->puesto_estatal }}" readonly>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="movil">
                                                     <h4>Fecha de Ingreso</h4>
                                                 </label>
                                                 <input type="text" class="form-control" name="movil" id="movil"
-                                                    placeholder="Fecha Ingreso" value="{{ $perfil->fecha_ingreso }}">
+                                                    placeholder="Fecha Ingreso" value="{{ $perfil->fecha_ingreso }}" readonly>
                                             </div>
                                         </div>
 
@@ -88,14 +88,14 @@
                                                     <h4>Adscripción</h4>
                                                 </label>
                                                 <input type="text" class="form-control" name="adscripcion"
-                                                    placeholder="ADSCRIPCIÓN" value="{{ $perfil->nombre_adscripcion }}">
+                                                    placeholder="ADSCRIPCIÓN" value="{{ $perfil->nombre_adscripcion }}" readonly>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="ciudad">
                                                     <h4>Estado del Empleado</h4>
                                                 </label>
                                                 <input type="text" class="form-control" id="ciudad"
-                                                    placeholder="estado" value="{{ ($perfil->status) ? "ACTIVO" : "INACTIVO" }}">
+                                                    placeholder="estado" value="{{ ($perfil->status) ? "ACTIVO" : "INACTIVO" }}" readonly>
                                             </div>
                                         </div>
 
@@ -105,7 +105,7 @@
                                                     <h4>Comisionado (si es el caso)</h4>
                                                 </label>
                                                 <input type="text" class="form-control" name="comision"
-                                                    placeholder="ADSCRIPCIÓN" value="{{ $perfil->comision_direccion_o_unidad }}">
+                                                    placeholder="ADSCRIPCIÓN" value="{{ $perfil->comision_direccion_o_unidad }}" readonly>
                                             </div>
                                         </div>
                                     </form>
