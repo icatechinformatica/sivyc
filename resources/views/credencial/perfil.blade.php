@@ -1,4 +1,4 @@
-@extends('theme.sivyc.layout')
+@extends('theme.sivycCredencial.layout')
 @section('content_script_css')
     <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -28,12 +28,13 @@
 
         .name {
             font-size: 22px;
-            font-weight: bold
+            font-weight: bold;
+            text-align: center;
         }
 
         .idd {
             font-size: 14px;
-            font-weight: 600
+            font-weight: 600;
         }
 
         .idd1 {
@@ -87,36 +88,67 @@
 @endsection
 @section('title', 'Perfil del Empleado | SIVyC Icatech')
 @section('content')
+    @php
+        $isActive = $perfil->status;
+    @endphp
     <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
         <div class="card p-4">
-            <div class=" image d-flex flex-column justify-content-center align-items-center">
-                <button class="btn-profile">
-                    <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" height="80" width="80" />
-                </button>
-                <span class="name mt-3">{{ $perfil->nombre_trabajador }}</span>
-                <span class="idd">{{ ($perfil->status) ? "ACTIVO" : "INACTIVO" }}</span>
-                <div class="d-flex flex-row justify-content-center align-items-center gap-2">
-                    <span
-                        class="idd1">ENLACE N°: <b>{{ $perfil->clave_empleado }}</b>
-                    </span>
+            @if ($perfil->status)
+                <div class=" image d-flex flex-column justify-content-center align-items-center">
+                    <button class="btn-profile">
+                        <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" height="80" width="80" />
+                    </button>
+                    <span class="name mt-3">{{ $perfil->nombre_trabajador }}</span>
+                    <span class="idd" style="color: {{ $isActive ? 'green' : 'red' }}">{{ $perfil->status ? 'ACTIVO' : 'INACTIVO' }}</span>
+                    <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                        <span class="idd1">ENLACE N°: <b>{{ $perfil->clave_empleado }}</b>
+                        </span>
+                    </div>
+                    <div class="d-flex flex-row justify-content-center align-items-center mt-3">
+                        <span class="follow">{{ $perfil->categoria_estatal }}</span>
+                    </div>
+                    <div class=" d-flex mt-1">
+                        <span class="follow">{{ $perfil->puesto_estatal }}</span>
+                    </div>
+                    <div class=" d-flex mt-1">
+                        <span class="follow">COMISIONADO A:</span> &nbsp;
+                        <span class="follow">{{ $perfil->comision_direccion_o_unidad ?? 'NO HAY COMISIÓN' }}</span>
+                    </div>
+                    <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
+                        <span><i class="fa fa-twitter"></i></span> &nbsp;
+                        <span><i class="fa fa-facebook-f"></i></span> &nbsp;
+                        <span><i class="fa fa-instagram"></i></span>
+                    </div>
+                    <div class=" px-2 rounded mt-4 date "> <span class="join">{{ $perfil->fecha_ingreso }}</span> </div>
                 </div>
-                <div class="d-flex flex-row justify-content-center align-items-center mt-3">
-                    <span  class="follow">{{ $perfil->categoria_estatal }}</span>
+            @else
+                <div class=" image d-flex flex-column justify-content-center align-items-center">
+                    <button class="btn-profile">
+                        <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" height="80" width="80" />
+                    </button>
+                    <span class="name mt-3">FUNCIONARIO NO ENCONTRADO</span>
+                    <span class="idd" style="color: {{ $isActive ? 'green' : 'red' }}">INACTIVO</span>
+                    <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                        <span class="idd1"></b>
+                        </span>
+                    </div>
+                    <div class="d-flex flex-row justify-content-center align-items-center mt-3">
+                        <span class="follow"></span>
+                    </div>
+                    <div class=" d-flex mt-1">
+                        <span class="follow"></span>
+                    </div>
+                    <div class=" d-flex mt-1">
+                        <span class="follow"></span> &nbsp;
+                        <span class="follow"></span>
+                    </div>
+                    <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
+                        <span><i class="fa fa-twitter"></i></span> &nbsp;
+                        <span><i class="fa fa-facebook-f"></i></span> &nbsp;
+                        <span><i class="fa fa-instagram"></i></span>
+                    </div>
                 </div>
-                <div class=" d-flex mt-1">
-                    <span  class="follow">{{ $perfil->puesto_estatal }}</span>
-                </div>
-                <div class=" d-flex mt-1">
-                    <span  class="follow">COMISIONADO A:</span> &nbsp;
-                    <span  class="follow">{{ $perfil->comision_direccion_o_unidad ?? "NO HAY COMISIÓN" }}</span>
-                </div>
-                <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
-                    <span><i class="fa fa-twitter"></i></span> &nbsp;
-                    <span><i class="fa fa-facebook-f"></i></span> &nbsp;
-                    <span><i class="fa fa-instagram"></i></span>
-                </div>
-                <div class=" px-2 rounded mt-4 date "> <span class="join">{{ $perfil->fecha_ingreso }}</span> </div>
-            </div>
+            @endif
         </div>
     </div>
 @endsection

@@ -34,7 +34,7 @@
                                 <img style="max-width: 100%;" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
                             </div>
                             <div class="d-flex justify-content-center">
-                                <a href="data:image/png;base64,{{ $qrCodeBase64 }}" download="codigo_qr.png" class="btn btn-warning mt-3">Descargar <i class="fas fa-qrcode"></i></a>
+                                <a href="data:image/png;base64,{{ $qrCodeBase64 }}" download="codigo_qr_{{ $perfil->clave_empleado}}.png" class="btn btn-warning mt-3">Descargar <i class="fas fa-qrcode"></i></a>
                             </div>
                         </div>
 
@@ -104,8 +104,7 @@
                                                 <label for="comision">
                                                     <h4>Comisionado (si es el caso)</h4>
                                                 </label>
-                                                <input type="text" class="form-control" name="comision"
-                                                    placeholder="ADSCRIPCIÓN" value="{{ $perfil->comision_direccion_o_unidad }}" readonly>
+                                                <input type="text" class="form-control" name="comision" value="{{ $perfil->comision_direccion_o_unidad }}" readonly>
                                             </div>
                                         </div>
                                     </form>

@@ -36,16 +36,11 @@ class CredencialRepository implements CredencialesInterface
             $logo = Logo::create($logoPath)
             ->setResizeToWidth(45);
 
-            // Configurar la etiqueta
-            $label = Label::create('Código Generado')
-            ->setFont(new OpenSans(16))
-            ->setTextColor(new Color(0, 0, 0)); // Color del texto de la etiqueta
-
             // Crear el writer (PNG en este caso)
             $writer = new PngWriter();
 
             // Generar el resultado
-            $result = $writer->write($qrCode, $logo, $label);
+            $result = $writer->write($qrCode, $logo);
 
             return $result;
     }
