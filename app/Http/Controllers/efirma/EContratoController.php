@@ -48,9 +48,10 @@ class EContratoController extends Controller
         $arrayFirmantes = [];
 
         $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
-                            ->Join('tbl_funcionarios AS fun','fun.id','org.id')
+                            ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
                             ->Where('org.id_unidad', $info->id)
                             ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
+                            ->Where('fun.activo','true')
                             ->Get();
         // Info de director firmante
         foreach($dataFirmantes as $dataFirmante) {
