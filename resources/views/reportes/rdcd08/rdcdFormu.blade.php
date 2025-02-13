@@ -1,19 +1,14 @@
-<?php
-$i=1;
-$a=0;
-?>
+
 @extends('theme.sivyc.layout')
 @section('title', 'Reportes | SIVyC Icatech')
-@section('content')
-    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
-    <style>
-        table tr th .nav-link {padding: 25px; margin: 0;}
-    </style>
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+@endsection
+@section('content')       
     <div class="card-header">
-        Reporte RDCD-08
-
+        Reportes / RDCD-08
     </div>
-    <div class="card card-body" >
+    <div class="card card-body">
         <form action="{{route('lolipop')}}" method="POST" id="cacahuate">
             <div class="row form-inline">
                 <div class="form-group">
@@ -57,6 +52,10 @@ $a=0;
                 <td>EXISTENTES</td>
                 <td> </td>
             </tr>
+            @php
+                $i = 1;
+                $a = 0;
+            @endphp
             @foreach ($actas as $key => $item)
             <tr>     
                  <td>{{ $i++ }}</td>          

@@ -1,23 +1,18 @@
-<?php
-$i=1;
-?>
+
 @extends('theme.sivyc.layout')
 @section('title', 'Reportes | SIVyC Icatech')
-@section('content')
-<link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
-    <style>
-        table tr th .nav-link {padding: 5px; margin: 0;}
-        table tr th {padding: 5px; margin: 0;}
-    </style>
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+@endsection
+@section('content')       
     <div class="card-header">
-        Reporte RCDOD-11
-
+        Reportes / RCDOD-11       
     </div>
     <div class="card card-body">
         @if ($message = Session::get('success'))
-                <div class="alert alert-success">
-                    <p>{{$message}}</p>
-                </div>
+            <div class="alert alert-success">
+                <p>{{$message}}</p>
+            </div>
         @endif
         <form method="POST" id="frm" name="frm">
             <div class="row form-inline">
@@ -64,11 +59,14 @@ $i=1;
                             <th class="text-center">NO.</th>
                             <th class="text-center">MATRÍCULA</th>
                             <th class="text-center">ALUMNO</th>
-                            <th class="text-center">FOLIO DEL <br/>DIPLOMA</th>
-                            <th class="text-center">FOLIO DEL </br>DUPLICADO</th> 
+                            <th class="text-center">CONSTANCIA</th>
+                            <th class="text-center">DUPLICADO</th> 
                         </tr>
                     </thead>
                     @if(isset($consulta))
+                        @php
+                            $i = 1;
+                        @endphp
                     <tbody>
                         @foreach($consulta as $item)
                         <tr>

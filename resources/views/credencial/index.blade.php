@@ -1,0 +1,181 @@
+@extends('theme.sivyc.layout')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
+    <style>
+        .table-container {
+            max-width: 100%;
+            max-height: 400px;
+            /* Ajusta la altura según necesites */
+            overflow-y: auto;
+            /* Scroll vertical */
+            overflow-x: auto;
+            /* Scroll horizontal si es necesario */
+            border: 1px solid #ddd;
+        }
+
+        table {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        table caption {
+            font-size: 1.5em;
+            margin: .5em 0 .75em;
+        }
+
+        table tr {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: .35em;
+        }
+
+        table th,
+        table td {
+            padding: .8em;
+            text-align: center;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            /* Asegura que el encabezado se pegue en la parte superior */
+            z-index: 10;
+            /* Asegura que el encabezado esté por encima del contenido */
+            background-color: #FFED86;
+            /* Color de fondo del encabezado */
+        }
+
+        th {
+            padding: .625em;
+            text-align: center;
+            font-size: .85em;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        thead tr {
+            height: 60px;
+            background: #FFED86;
+            font-size: 16px;
+        }
+
+        table th {
+            font-size: .85em;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 10px;
+        }
+
+        @media screen and (max-width: 600px) {
+            table {
+                border: 0;
+                width: 100%;
+            }
+
+            table caption {
+                font-size: 1.3em;
+                margin-bottom: 10px;
+            }
+            table thead {
+                display: none;
+            }
+
+            table tr {
+                border-bottom: 3px solid #ddd;
+                display: block;
+                margin-bottom: 0.625em;
+            }
+
+            table td {
+                border-bottom: 1px solid #ddd;
+                display: block;
+                font-size: 0.8em;
+                text-align: right;
+                padding: 8px;
+            }
+
+            table td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-right: 10px;
+            }
+
+            table td:last-child {
+                border-bottom: 0;
+            }
+        }
+    </style>
+@endsection
+@section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
+@section('content')
+    <div class="card card-body">
+        <h3 class="text-center text-muted font-weight-bold">Generación de código QR</h2>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <form action="{{ route('credencial.indice') }}" method="get">
+                        <div class="d-flex align-items-center">
+                            <input type="text" placeholder="Buscar Registros de los Funcionarios Icatech ..."
+                                class="form-control" name="filtroBusqueda" id="filtroBusqueda" style="width:92%;">
+                            <button class="btn">Filtrar</button>
+                        </div>
+                    </form>
+                    <br>
+                    <!-- Input para el filtro -->
+                    <div class="table-container">
+                        <table class=“responsive-table”>
+
+                            <thead>
+                                <tr>
+                                    <th>Nombre del Trabajador</th>
+                                    <th>Clave de Empleado</th>
+                                    <th>Puesto</th>
+                                    <th>Categoría</th>
+                                    <th>Detalles</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @if (count($query) > 0)
+                                    @foreach ($query as $item)
+                                        <tr>
+                                            <td data-label=Nombre del Trabajador>
+                                                <strong>{{ $item->nombre_trabajador }}</strong>
+                                            </td>
+                                            <td data-label=Clave de Empleado>{{ $item->clave_empleado }}</td>
+                                            <td data-label=Puesto>{{ $item->puesto_estatal }}</td>
+                                            <td data-label=Categoría>{{ $item->categoria_estatal }}</td>
+                                            <td data-label=Detalles><a
+                                                    href="{{ route('credencial.ver', ['id' => $item->id]) }}"
+                                                    class="btn btn-info"><i class="fas fa-info"></i></a></td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <td data-label=“Tipo” colspan="5"><strong>¡NO HAY REGISTROS!</strong></td>
+                                @endif
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan='5'>
+                                        {{ $query->links() }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+@endsection
+@section('script_content_js')
+@endsection

@@ -41,7 +41,7 @@
                 <span class="block">CICLO ESCOLAR: &nbsp;{{ $curso->ciclo }}</span>
                 <span class="block">FECHA INICIO: &nbsp;{{ $curso->fechaini }}</span>
                 <span class="block">FECHA TERMINO: &nbsp;{{ $curso->fechafin }}</span>
-                <span class="block">GRUPO: &nbsp;{{ $curso->grupo }}</span>
+                <span class="block">GRUPO: &nbsp;{{ $curso->folio_grupo }}</span>
                 <span class="block">HORARIO: &nbsp;{{ $curso->hini }} A {{ $curso->hfin }}</span>
                 <span class="block">CURP: &nbsp;{{ $curso->curp}}</span>
             </div>

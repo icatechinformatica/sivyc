@@ -1,7 +1,7 @@
 <!-- Creado por Orlando Chávez 04012021-->
 @extends('theme.sivyc.layout')
 @section('title', 'Reporte de Costeo de Suficiencias Presupuestales| Sivyc Icatech')
-<@section('content_script_css')
+@section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" /> 
     <style>
         .radio-xl .custom-control-label::before,
@@ -47,7 +47,6 @@
             width: 128px;
         }
     </style>
-</style>
 @endsection
 @section('content')       
     <div class="card-header">
