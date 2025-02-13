@@ -193,36 +193,47 @@ class Rf001Controller extends Controller
         $memorandum = $getConcentrado->memorandum;
         $cadenaOriginal = DB::table('documentos_firmar')->select('cadena_original', 'id', 'documento', 'obj_documento')->where('numero_o_clave', $memorandum)->first();
         $pathCancelado = $this->path_files_cancelled;
-        $firmantes = json_decode($cadenaOriginal->obj_documento, true) ?? [];
-        $dataFirmantes = $firmantes['firmantes']['firmante'] ?? [];
 
-        $procesados = [];
-        foreach ($dataFirmantes as $grupoFirmantes) {
-            foreach ($grupoFirmantes as $firmante) {
-                $procesados[] = [
-                    'curp_firmante' => $firmante['_attributes']['curp_firmante'],
-                    'nombre_firmante' => $firmante['_attributes']['nombre_firmante'],
-                    'email_firmante' => $firmante['_attributes']['email_firmante'],
-                ];
-            }
-        }
+        if ($cadenaOriginal) {
+            # la consulta encontró un registro
+            $firmantes = json_decode($cadenaOriginal->obj_documento, true) ?? [];
+            $dataFirmantes = $firmantes['firmantes']['firmante'] ?? [];
+            $procesados = null;
 
-        $duplicados = [];
-        $dataDuplicados = false;
-        $countDuplicidad = 0;
-        foreach ($procesados as $firmante) {
-            // Usar un array para llevar un control de los firmantes ya procesados
-            $key = $firmante['curp_firmante']. $firmante['nombre_firmante'] . $firmante['email_firmante'];
-            if (isset($duplicados[$key])) {
-                // Si el firmante ya está en el array de duplicados, se marca como repetido
-                $dataDuplicados = true;
-                $countDuplicidad = 1;
-                break;
-            } else {
-                // Si no es duplicado, se agrega al array de control
-                $duplicados[$key] = true;
-                $countDuplicidad = 0;
+            $procesados = [];
+            foreach ($dataFirmantes as $grupoFirmantes) {
+                foreach ($grupoFirmantes as $firmante) {
+                    $procesados[] = [
+                        'curp_firmante' => $firmante['_attributes']['curp_firmante'],
+                        'nombre_firmante' => $firmante['_attributes']['nombre_firmante'],
+                        'email_firmante' => $firmante['_attributes']['email_firmante'],
+                    ];
+                }
             }
+
+            $duplicados = [];
+            $dataDuplicados = false;
+            $countDuplicidad = 0;
+            foreach ($procesados as $firmante) {
+                // Usar un array para llevar un control de los firmantes ya procesados
+                $key = $firmante['curp_firmante']. $firmante['nombre_firmante'] . $firmante['email_firmante'];
+                if (isset($duplicados[$key])) {
+                    // Si el firmante ya está en el array de duplicados, se marca como repetido
+                    $dataDuplicados = true;
+                    $countDuplicidad = 1;
+                    break;
+                } else {
+                    // Si no es duplicado, se agrega al array de control
+                    $duplicados[$key] = true;
+                    $countDuplicidad = 0;
+                }
+            }
+
+        } else {
+            // No se encontró un registro, se asigna null a todas las variables dependientes
+            $firmantes = [];
+            $dataFirmantes = [];
+            $procesados = null;
         }
 
 
@@ -262,7 +273,7 @@ class Rf001Controller extends Controller
                 );
         });
         $pathFile = $this->path_files;
-        $curpFirmante = $getSigner->curp; //modificaciones en la curp
+        $curpFirmante = $getSigner->curp ?? null; //modificaciones en la curp
         return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal', 'pathCancelado'))->render();
     }
 
