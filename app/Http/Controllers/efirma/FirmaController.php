@@ -48,6 +48,7 @@ class FirmaController extends Controller {
         $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
             ->Join('tbl_funcionarios','tbl_funcionarios.id_org','users.id_organismo')
             ->Where('users.id', Auth::user()->id)
+            ->Where('tbl_funcionarios.activo', 'true')
             ->First();
 
         if($rol->role_id == '31' || $rol->role_id == '47' || $rol->role_id == '4'){
@@ -55,6 +56,7 @@ class FirmaController extends Controller {
             $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
                 ->Join('tbl_funcionarios','tbl_funcionarios.id_org','users.id_organismo')
                 ->Where('users.id', Auth::user()->id)
+                ->Where('tbl_funcionarios.activo', 'true')
                 ->First();
             }
 
