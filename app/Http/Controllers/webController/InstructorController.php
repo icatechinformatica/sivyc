@@ -3531,6 +3531,10 @@ class InstructorController extends Controller
             }
             if($item->memorandum_solicitud != $request->nomemo)
             {
+                if(is_null($request->nomemo)) { // mejora para evitar que memorandum de solicitud quede sin numero
+                    return back()->with('mensaje', 'Error: No se ha especificado el numero de memorandum');
+                }
+
                 $item->memorandum_solicitud = $request->nomemo;
             }
 
@@ -3608,6 +3612,9 @@ class InstructorController extends Controller
     public function validacion_instructor_pdf(Request $request)
     {
         // dd($request);
+        if(is_null($request->memovali)) {
+            return back()->with('mensaje', 'Error: No se ha especificado el numero de memorandum');
+        }
         $rplc = array('[',']','"');
         $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA','BAJA EN FIRMA');
         $especialidades = $arrtemp = array();
