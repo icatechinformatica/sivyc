@@ -593,6 +593,7 @@
                                     <th style="text-align: center;">CURSO</th>
                                     <th style="text-align: center;">CONCEPTO</th>
                                     <th style="text-align: center;">FOLIOS</th>
+                                    <th style="text-align: center;">LISTA DE ASISTENCIA</th>
                                     <th style="text-align: center;">RECIBO DE PAGO</th>
                                     <th style="text-align: center;">IMPORTES</th>
                                     <th style="text-align: center;">COMENTARIOS</th>
@@ -620,6 +621,15 @@
                                                 \DB::raw( "CASE WHEN tr.status_folio='CANCELADO' THEN concat('" . $pathCancelado . "', tr.folio_recibo)
                                                    END as file_pdf")
                                             )->first();
+
+                                        $val_asis = \DB::table('tbl_cursos as tc')
+                                            ->join('documentos_firmar as ef', 'ef.numero_o_clave', '=', 'tc.clave')
+                                            ->where('tc.id', $fileCancelled->id_curso)
+                                            ->where('ef.tipo_archivo', 'Lista de asistencia')
+                                            ->where('ef.status', 'VALIDADO')
+                                            ->value('tc.id');
+
+                                        if(empty($val_asis)){$val_asis = \DB::table('pagos')->where('id_curso', $fileCancelled->id_curso)->value('arch_asistencia');}
                                     @endphp
                                     <tr>
                                         <td style="width: 6em;">{{ $item['folio'] }}</td>
@@ -635,6 +645,21 @@
                                             @foreach ($depositos as $k)
                                                 {{ $k['folio'] }} &nbsp;
                                             @endforeach
+                                        </td>
+                                        {{-- LISTA DE ASISTENCIA --}}
+                                        <td style="text-align:center;">
+                                            <a class="nav-link pt-0"
+                                            href="
+                                                @if (is_numeric($val_asis))
+                                                    {{route('asistencia-pdf', ['id' => $val_asis])}}
+                                                @else
+                                                    {{$val_asis}}
+                                                @endif
+                                            "
+                                                    target="_blank">
+                                                    <i class="far fa-file-pdf fa-2x {{empty($val_asis) ? 'text-gray' : 'text-danger'}}"
+                                                        title='VER LISTA DE ASISTENCIA'></i>
+                                            </a>
                                         </td>
                                         <td style="text-align: center;">
                                             @if ($fileCancelled->file_pdf !== null)
@@ -668,7 +693,7 @@
                                     @endphp
                                 @endforeach
                                 <tr>
-                                    <td colspan="5" style="text-align: end;"><b>SUBTOTAL</b></td>
+                                    <td colspan="6" style="text-align: end;"><b>SUBTOTAL</b></td>
                                     <td style="text-align: end;"><b>$
                                             {{ number_format($importeTotal, 2, '.', ',') }}</b></td>
                                 </tr>
