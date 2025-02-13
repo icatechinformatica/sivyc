@@ -79,4 +79,41 @@ class CredencialRepository implements CredencialesInterface
     {
         return (new Funcionario())->findOrFail($id);
     }
+
+    public function setProfilePicture(array $request)
+    {
+            // Desestructurar el arreglo
+            ['archivo' => $archivo, 'remplazar' => $remplazar, 'carpeta' => $carpeta] = $request;
+
+            if ($remplazar === true) {
+                $this->reemplazar($archivo->getClientOriginalName(), $archivo, $carpeta);
+            }
+
+            // Acceder a las propiedades del archivo
+            $fileInfo = [
+                'nombre_original' => $archivo->getClientOriginalName(), // Nombre original
+                'extension' => $archivo->getClientOriginalExtension(), // Extensión
+                'mime' => $archivo->getMimeType(), // Tipo MIME
+                'tamaño' => $archivo->getSize(), // Tamaño en bytes
+                'ruta_almacenamiento' => '2025/'.$archivo->storeAs($carpeta, $archivo->getClientOriginalName()),
+                // 'ruta_almacenamiento' => $archivo->store($carpeta),
+            ];
+
+            return $fileInfo;
+    }
+
+    protected function reemplazar($nombreArchivo, $archivo, $carpeta)
+    {
+        $rutaRelativa = $carpeta.'/'.$nombreArchivo;
+        if (Storage::disk($this->disco)->exists($rutaRelativa))
+        {
+            // Eliminar el archivo original
+            Storage::disk($this->disco)->delete($rutaRelativa);
+            // return response()->json([
+            //     'mensaje' => 'Archivo eliminado exitosamente.',
+            // ]);
+        } else {
+            return false;
+        }
+    }
 }
