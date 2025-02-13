@@ -2,16 +2,14 @@
 
 namespace App\Repositories;
 use App\Interfaces\CredencialesInterface;
-use Endroid\QrCode\Builder\Builder;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use Endroid\QrCode\Label\LabelAlignment;
-use Endroid\QrCode\Label\Font\OpenSans;
-use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\Color\Color;
-use Endroid\QrCode\Matrix\Module\RoundModule;
-use Endroid\QrCode\Matrix\Eye\CircleEye;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\Label\Font\OpenSans;
 use App\Models\Catalogos\Funcionario;
 
 class CredencialRepository implements CredencialesInterface
@@ -26,25 +24,28 @@ class CredencialRepository implements CredencialesInterface
                 throw new \Exception("El archivo logo no se encuentra en la ruta: $logoPath");
             }
 
-            $builder = Builder::create()
-            ->writer(new PngWriter())
-            ->data($url)
-            ->encoding(new Encoding('UTF-8'))
-            ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
-            ->size(200)
-            ->margin(5)
-            ->logoPath($logoPath)
-            ->logoResizeToWidth(45)
-            ->logoPunchoutBackground(false)
-            ->labelText('Código Generado')
-            ->labelFont(new OpenSans(16))
-            ->foregroundColor(new Color(211, 194, 180)) // QR en rojo
-            ->backgroundColor(new Color(255, 255, 255)); // Ojos en forma de círculo; // Fondo blanco;
+            $qrCode = QrCode::create($url)
+                ->setEncoding(new Encoding('UTF-8'))
+                ->setErrorCorrectionLevel(new ErrorCorrectionLevelHigh())
+                ->setSize(200)
+                ->setMargin(5)
+                ->setForegroundColor(new Color(211, 194, 180)) // Color del QR
+                ->setBackgroundColor(new Color(255, 255, 255)); // Color de fondo
 
-            $result = $builder->build();
+            // Configurar el logo
+            $logo = Logo::create($logoPath)
+            ->setResizeToWidth(45);
 
-            // Convertir la imagen a base64
-            // $qrCodeBase64 = base64_encode($result->getString());
+            // Configurar la etiqueta
+            $label = Label::create('Código Generado')
+            ->setFont(new OpenSans(16))
+            ->setTextColor(new Color(0, 0, 0)); // Color del texto de la etiqueta
+
+            // Crear el writer (PNG en este caso)
+            $writer = new PngWriter();
+
+            // Generar el resultado
+            $result = $writer->write($qrCode, $logo, $label);
 
             return $result;
     }
