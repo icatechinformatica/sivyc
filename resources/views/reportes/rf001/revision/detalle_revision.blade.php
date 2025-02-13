@@ -695,7 +695,7 @@
                             </div>
 
                             @can('validacion.rf001')
-                                @if ($getConcentrado->estado == 'REVISION')
+                                @if ($getConcentrado->estado == 'REVISION' || $getConcentrado->estado == 'PARASELLAR')
                                     <a type="button" class="btn btn-warning btn-xs sendReviewBack ml-2" style="height: 41px;">
                                         <i class="fas fa-undo"></i> REGRESAR
                                     </a>
