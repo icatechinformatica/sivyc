@@ -46,7 +46,7 @@ class FirmaController extends Controller {
         $rol = DB::Table('role_user')->Select('role_id')->Where('user_id', Auth::user()->id)->First();
         $unidad_user = DB::Table('tbl_unidades')->Where('id',Auth::user()->unidad)->Value('ubicacion');
         $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
-            ->Join('tbl_funcionarios','tbl_funcionarios.correo','users.email')
+            ->Join('tbl_funcionarios','tbl_funcionarios.id_org','users.id_organismo')
             ->Where('users.id', Auth::user()->id)
             ->First();
 
