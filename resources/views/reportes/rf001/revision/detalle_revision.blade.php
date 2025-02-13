@@ -648,18 +648,23 @@
                                         </td>
                                         {{-- LISTA DE ASISTENCIA --}}
                                         <td style="text-align:center;">
-                                            <a class="nav-link pt-0"
-                                            href="
-                                                @if (is_numeric($val_asis))
-                                                    {{route('asistencia-pdf', ['id' => $val_asis])}}
-                                                @else
-                                                    {{$val_asis}}
-                                                @endif
-                                            "
-                                                    target="_blank">
-                                                    <i class="far fa-file-pdf fa-2x {{empty($val_asis) ? 'text-gray' : 'text-danger'}}"
-                                                        title='VER LISTA DE ASISTENCIA'></i>
-                                            </a>
+                                            @if ($val_asis)
+                                                <a class="nav-link pt-0"
+                                                href="
+                                                    @if (is_numeric($val_asis))
+                                                        {{route('asistencia-pdf', ['id' => $val_asis])}}
+                                                    @else
+                                                        {{$val_asis}}
+                                                    @endif
+                                                "
+                                                        target="_blank">
+                                                        <i class="far fa-file-pdf fa-2x {{empty($val_asis) ? 'text-gray' : 'text-danger'}}"
+                                                            title='VER LISTA DE ASISTENCIA'></i>
+                                                </a>
+                                            @else
+                                                <i class="far fa-file-pdf fa-2x text-gray" title='ARCHIVO NO DISPONIBLE'></i>
+                                            @endif
+
                                         </td>
                                         <td style="text-align: center;">
                                             @if ($fileCancelled->file_pdf !== null)
