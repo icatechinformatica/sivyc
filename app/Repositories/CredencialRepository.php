@@ -11,6 +11,7 @@ use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\Label\Font\OpenSans;
 use App\Models\Catalogos\Funcionario;
+use Illuminate\Support\Facades\Storage;
 
 class CredencialRepository implements CredencialesInterface
 {
@@ -85,18 +86,24 @@ class CredencialRepository implements CredencialesInterface
             // Desestructurar el arreglo
             ['archivo' => $archivo, 'remplazar' => $remplazar, 'carpeta' => $carpeta] = $request;
 
-            if ($remplazar === true) {
+            if ($remplazar === false) {
                 $this->reemplazar($archivo->getClientOriginalName(), $archivo, $carpeta);
             }
 
+            //generar nombre único para la imagen
+            $imageName = $carpeta.'.'.$archivo->getClientOriginalExtension();
+            $rutaUpload = $archivo->storeAs('2025/funcionarios/'.$carpeta, $imageName, 'public');
+            $path = public_path($rutaUpload);
+
             // Acceder a las propiedades del archivo
             $fileInfo = [
-                'nombre_original' => $archivo->getClientOriginalName(), // Nombre original
+                'nombre_original' => $imageName, // Nombre original
                 'extension' => $archivo->getClientOriginalExtension(), // Extensión
                 'mime' => $archivo->getMimeType(), // Tipo MIME
                 'tamaño' => $archivo->getSize(), // Tamaño en bytes
-                'ruta_almacenamiento' => '2025/'.$archivo->storeAs($carpeta, $archivo->getClientOriginalName()),
-                // 'ruta_almacenamiento' => $archivo->store($carpeta),
+                'ruta_almacenamiento' => $rutaUpload,
+                'urlImagen' => Storage::url($rutaUpload),
+                'result' => true
             ];
 
             return $fileInfo;
