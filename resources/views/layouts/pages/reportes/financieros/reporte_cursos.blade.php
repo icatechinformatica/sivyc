@@ -1,7 +1,8 @@
 <!-- Creado por Orlando Chávez 200320204 /// 9612986322 /// oorlandochavez@outlook.com-->
 @extends('theme.sivyc.layout')
 @section('title', 'Reporte de Cursos| Sivyc Icatech')
-<head>
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         .radio-xl .custom-control-label::before,
         .radio-xl .custom-control-label::after {
@@ -60,15 +61,14 @@
             width: 128px;
         }
     </style>
-</head>
-@section('content')
-    <section class="container g-pt-50">
+@endsection
+@section('content')       
+    <div class="card-header">
+        Reporte / Cursos de Capacitación
+    </div>
+    <div class="card card-body">        
         <form action="{{ route('financieros-reporte-cursos-xls') }}" method="post">
             @csrf
-            <div class="text-center">
-                <h1>Reporte de Cursos</h1>
-            </div>
-            <br>
             {{-- <h2>Filtrar Trámites Recepcionados Por:</h2>
             <br> --}}
             {{-- <hr style="border-color:rgb(245, 245, 245)"> --}}
@@ -113,15 +113,9 @@
                 </div>
             </div>
             <br>
-            <div class="row">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
-                    </div>
-                    <div class="pull-right">
-                        <button id="submit" name="submit" type="submit" class="btn btn-primary" >Generar</button>
-                    </div>
-                </div>
+            <div class="row d-flex justify-content-between">
+                <a class="btn btn" href="{{URL::previous()}}"> < Regresar</a>
+                <button id="submit" name="submit" type="submit" class="btn btn-danger">Generar</button>
             </div>
         </form>
         <!--display modal-->
@@ -130,7 +124,7 @@
                 <img alt="" src="{{URL::asset('/img/cargando.gif')}}" />
             </div>
         </div>
-    </section>
+    </div>
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/autocomplete.js") }}"></script>

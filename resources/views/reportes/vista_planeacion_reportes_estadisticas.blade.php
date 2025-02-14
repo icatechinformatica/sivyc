@@ -1,13 +1,13 @@
 @extends('theme.sivyc.layout')
-
-@section('title', 'Estadisticas | SIVYC ICATECH')
-
-@section('content')
-    <div class="container-fluid">
-        <div class="row my-4">
-            <div class="col d-flex justify-content-center"><h4><strong>REPORTE ESTADISTICO DEL FORMATO T</strong></h4></div>
-        </div>
-
+@section('title', 'Estadisticas Formato T| SIVYC ICATECH')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    @endsection
+@section('content')       
+    <div class="card-header">
+        Consultas / Estadísticas del Formato T
+    </div>
+    <div class="card card-body">
         <form id="formFechas" action="{{route('reportes.planeacion.estadisticas')}}" method="get">
             @csrf
 
@@ -93,10 +93,10 @@
         </table>
 
         <div class="row d-flex justify-content-end">
-            <button id="btnReporteXls" type="button" class="btn btn-success mb-4">Generar Reporte XLS</button>
+            <button id="btnReporteXls" type="button" class="btn mb-4">Generar Reporte XLS</button>
             <form target="_blank" id="formReporteXls" action="{{ route('reportes.planeacion.estadisticasXls') }}" method="get">@csrf</form>
 
-            <button id="btnReporteCronograma" type="button" class="btn btn-info mb-4">Generar Reporte PDF</button>
+            <button id="btnReporteCronograma" type="button" class="btn btn mb-4">Generar Reporte PDF</button>
             <form target="_blank" id="formReporteCronograma" action="{{ route('reportes.planeacion.estadisticasPdf') }}" method="get">@csrf</form>
         </div>
 
