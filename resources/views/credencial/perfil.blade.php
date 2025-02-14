@@ -96,7 +96,7 @@
             @if ($perfil->status)
                 <div class=" image d-flex flex-column justify-content-center align-items-center">
                     <button class="btn-profile">
-                        <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" height="80" width="80" />
+                        <img src="{{ $avatar ? $avatar : 'http://ssl.gstatic.com/accounts/ui/avatar_2x.png' }}" height="80" width="80" />
                     </button>
                     <span class="name mt-3">{{ $perfil->nombre_trabajador }}</span>
                     <span class="idd" style="color: {{ $isActive ? 'green' : 'red' }}">{{ $perfil->status ? 'ACTIVO' : 'INACTIVO' }}</span>
@@ -109,6 +109,12 @@
                     </div>
                     <div class=" d-flex mt-1">
                         <span class="follow">{{ $perfil->puesto_estatal }}</span>
+                    </div>
+                    <div class=" d-flex mt-1">
+                        <span class="follow">ADSCRITO A:</span> &nbsp;
+                    </div>
+                    <div class=" d-flex mt-1">
+                        <span class="follow">{{ $perfil->nombre_adscripcion ?? 'NO HAY COMISIÓN' }}</span>
                     </div>
                     <div class=" d-flex mt-1">
                         <span class="follow">COMISIONADO A:</span> &nbsp;
