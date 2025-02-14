@@ -5,7 +5,7 @@
 @endsection
 @section('content')
     <div class="card-header">
-        Catálogos / Nuevo Convenio
+        Catálogos / Organismos Públicos
     </div>
     <div class="card card-body">    
         @if ($message = Session::get('success'))
