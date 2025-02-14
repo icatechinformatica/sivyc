@@ -133,7 +133,7 @@ class EContratoController extends Controller
 
         //Llenado de delegacion firmante
         foreach($dataFirmantes as $dataFirmante) {
-            if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE DELEGA') || str_contains($dataFirmante->cargo, 'ENCARGADA DE DELEGA')) {
+            if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE LA DELEGA') || str_contains($dataFirmante->cargo, 'ENCARGADA DE LA DELEGA')) {
                 if(isset($dataFirmante->incapacidad)) {
                     $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
                     if($incapacidadFirmante != FALSE) {
