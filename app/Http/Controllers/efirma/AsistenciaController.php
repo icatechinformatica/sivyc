@@ -437,7 +437,7 @@ class AsistenciaController extends Controller
                                     <span class="tab">'. $curso->plantel. ' '. $curso->unidad. '</span>
                                     CLAVE CCT: <span class="tab">'. $curso->cct. '</span>
                                     CICLO ESCOLAR: <span class="tab">'. $curso->ciclo. '</span>
-                                    GRUPO: <span class="tab">'. $curso->grupo. '</span>
+                                    GRUPO: <span class="tab">'. $curso->folio_grupo. '</span>
                                     MES: <span class="tab">'. $mes['mes']. '</span>
                                     AÑO: &nbsp;&nbsp;'. $mes['year']. '
                                     <br />

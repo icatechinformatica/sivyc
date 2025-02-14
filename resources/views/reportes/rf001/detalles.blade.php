@@ -730,7 +730,7 @@
                                         id="enviarRevision">EDITAR CONCENTRADO</a>
                                 @endcan
                             @endif
-                            @if ($getConcentrado->estado == 'APROBADO')
+                            @if ($getConcentrado->estado !== 'SELLADO' || $getConcentrado->estado !== 'ENSELLADO' || $getConcentrado->estado !== 'GENERADO')
                                 @can('solicitud.rf001')
                                     <a href="javascript:;" class="btn btn-danger openModalPlaneacion btn-xs ml-2" id="retornoPlaneacion" data-memo="{{ $getConcentrado->memorandum }}">RETORNO PLANEACIÓN</a>
                                 @endcan
