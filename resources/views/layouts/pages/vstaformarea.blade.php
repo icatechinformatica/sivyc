@@ -1,16 +1,16 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
 @section('title', 'Agregar área | Sivyc Icatech')
-
-@section('content')
-
-    <div class="container g-pt-50 g-pb-20">
-
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+@endsection
+@section('content')       
+    <div class="card-header">
+        Catálogos / Agregar Área
+    </div>
+    <div class="card card-body">
         <form action="{{ route('areas.guardar') }}" method="post">
             @csrf
-
-            <h1>Agregar Área</h1>
-
             <div class="row mt-5">
                 <div class="col">
                     <div class="form-group">
@@ -36,7 +36,7 @@
             <div class="row my-2">
                 <div class="col">
                     <div class="pull-right">
-                        <button type="submit" class="btn btn-primary">Guardar área</button>
+                        <button type="submit" class="btn">Guardar área</button>
                     </div>
                 </div>
             </div>

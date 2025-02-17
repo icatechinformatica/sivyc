@@ -10,8 +10,6 @@
         Consultas/ Grupos Vulnerables
     </div>
     <div class="card card-body">  
-        </div>
-
         <form id="formFechas" action="{{route('reportes.planeacion.grupos_vulnerables')}}" method="get">
             @csrf
 
