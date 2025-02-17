@@ -115,6 +115,23 @@
         #loader-text span:nth-child(3) {
             animation-delay: 1.5s;
         }
+
+        .btn-custom {
+            background-color: #009B85;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-custom:hover {
+            background-color: #007A69;
+        }
     </style>
 @endsection
 @section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
@@ -125,6 +142,9 @@
             Espere un momento mientras se realiza el proceso<span> . </span><span> . </span><span> . </span>
         </div>
     </div>
+    <div class="card-header">
+       <a href="{{ route('credencial.indice') }}" style="color: white !important;"> Generación Código QR </a> / Perfil
+    </div>
     <div class="card card-body">
         <div class="row">
             <div class="form-group col-md-12">
@@ -133,10 +153,11 @@
                     <div class="row">
                         <div class="col-sm-4" style="margin-top: 50px;">
                             <div class="upload">
-                                <img src="{{ $avatar ? $avatar : 'http://ssl.gstatic.com/accounts/ui/avatar_2x.png' }}" width=140 height=140
-                                    alt="" id="avatarImage">
+                                <img src="{{ $avatar ? $avatar : 'http://ssl.gstatic.com/accounts/ui/avatar_2x.png' }}"
+                                    width=140 height=140 alt="" id="avatarImage">
                                 <div class="round">
-                                    <form method="post" style="display: none" id="avatarForm" action="{{ route('credencial.uploadphoto') }}">
+                                    <form method="post" style="display: none" id="avatarForm"
+                                        action="{{ route('credencial.uploadphoto') }}">
                                         @csrf
                                         <input type="file" id="avatarInput" name="photo">
                                         <input type="hidden" name="curp" id="curp"
@@ -154,7 +175,7 @@
                             <div class="d-flex justify-content-center">
                                 <a href="data:image/png;base64,{{ $qrCodeBase64 }}"
                                     download="{{ $perfil->curp_usuario }}_{{ $perfil->clave_empleado }}.png"
-                                    class="btn btn-warning mt-3">Descargar <i class="fas fa-qrcode"></i></a>
+                                    class="btn btn-custom mt-3">Descargar <i class="fas fa-qrcode"></i></a>
                             </div>
                         </div>
 
@@ -286,9 +307,11 @@
                     success: function(response) {
                         setTimeout(function() {
                             // Ocultar el loader y mostrar el contenido después de la carga
-                            document.getElementById('loader-overlay').style.display = 'none';
+                            document.getElementById('loader-overlay').style.display =
+                                'none';
                             if (response.data.result === true) {
-                                window.location.href = "{{ route('credencial.ver', ['id' => $id]) }}"; // redirect
+                                window.location.href =
+                                    "{{ route('credencial.ver', ['id' => $id]) }}"; // redirect
                             }
                         }, 2300);
                     },
