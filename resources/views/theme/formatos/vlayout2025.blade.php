@@ -81,7 +81,7 @@
     <footer>
         @if(isset($reporte_fotografico))
             @if(!is_null($uuid))
-                <div style="margin-left: 30px; margin-right: 30px; position: absolute; top: -155px; left: 15px; font-size:10px; text-align:justify">
+                <div style="margin-left: 30px; margin-right: 30px; position: absolute; top: -190px; left: 15px; font-size:10px; text-align:justify">
                     <span style="">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas.</span>
                 </div>
             @endif
