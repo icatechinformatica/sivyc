@@ -46,15 +46,22 @@ class FirmaController extends Controller {
         $rol = DB::Table('role_user')->Select('role_id')->Where('user_id', Auth::user()->id)->First();
         $unidad_user = DB::Table('tbl_unidades')->Where('id',Auth::user()->unidad)->Value('ubicacion');
         $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
-            ->Join('tbl_funcionarios','tbl_funcionarios.correo','users.email')
+            ->Join('tbl_funcionarios','tbl_funcionarios.id_org','users.id_organismo')
             ->Where('users.id', Auth::user()->id)
+            ->Where('tbl_funcionarios.activo', 'true')
             ->First();
+
+        if(is_null($curpUser)) {
+            $curpUser = new \stdClass();
+            $curpUser->curp = 'N/A';
+        }
 
         if($rol->role_id == '31' || $rol->role_id == '47' || $rol->role_id == '4'){
 
             $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
                 ->Join('tbl_funcionarios','tbl_funcionarios.id_org','users.id_organismo')
                 ->Where('users.id', Auth::user()->id)
+                ->Where('tbl_funcionarios.activo', 'true')
                 ->First();
             }
 

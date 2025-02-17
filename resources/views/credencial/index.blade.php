@@ -78,34 +78,29 @@
         @media screen and (max-width: 600px) {
             table {
                 border: 0;
+                width: 100%;
             }
 
             table caption {
                 font-size: 1.3em;
+                margin-bottom: 10px;
             }
-
             table thead {
-                border: none;
-                clip: rect(0 0 0 0);
-                height: 1px;
-                margin: -1px;
-                overflow: hidden;
-                padding: 0;
-                position: absolute;
-                width: 1px;
+                display: none;
             }
 
             table tr {
                 border-bottom: 3px solid #ddd;
                 display: block;
-                margin-bottom: .625em;
+                margin-bottom: 0.625em;
             }
 
             table td {
                 border-bottom: 1px solid #ddd;
                 display: block;
-                font-size: .8em;
+                font-size: 0.8em;
                 text-align: right;
+                padding: 8px;
             }
 
             table td::before {
@@ -113,6 +108,7 @@
                 float: left;
                 font-weight: bold;
                 text-transform: uppercase;
+                margin-right: 10px;
             }
 
             table td:last-child {
@@ -154,7 +150,8 @@
                                     @foreach ($query as $item)
                                         <tr>
                                             <td data-label=Nombre del Trabajador>
-                                                <strong>{{ $item->nombre_trabajador }}</strong></td>
+                                                <strong>{{ $item->nombre_trabajador }}</strong>
+                                            </td>
                                             <td data-label=Clave de Empleado>{{ $item->clave_empleado }}</td>
                                             <td data-label=Puesto>{{ $item->puesto_estatal }}</td>
                                             <td data-label=Categoría>{{ $item->categoria_estatal }}</td>
