@@ -130,8 +130,8 @@
             <div class="col-10">
                 <form action="{{ route('credencial.indice') }}" method="get">
                     <div class="d-flex align-items-center">
-                        <input type="text" placeholder="Filtrar Registros por número de enlace / Nombre ..." class="form-control"
-                            name="filtroBusqueda" id="filtroBusqueda" style="width:85%;">
+                        <input type="text" placeholder="Filtrar Registros por número de enlace / Nombre ..."
+                            class="form-control" name="filtroBusqueda" id="filtroBusqueda" style="width:85%;">
                         <button class="btn">Filtrar</button>
                     </div>
                 </form>
@@ -162,9 +162,12 @@
                                 <td data-label=Puesto>{{ $item->puesto_estatal }}</td>
                                 <td data-label=Categoría>{{ $item->categoria_estatal }}</td>
                                 <td data-label=Detalles>
-                                    <a class="nav-link pt-0" title="generar" href="{{ route('credencial.ver', ['id' => $item->id]) }}">
-                                        <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
-                                    </a>
+                                    @can('detalles.perfilqr')
+                                        <a class="nav-link pt-0" title="generar"
+                                            href="{{ route('credencial.ver', ['id' => $item->id]) }}">
+                                            <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach
