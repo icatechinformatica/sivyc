@@ -373,7 +373,7 @@ class EPagoController extends Controller
                 </tr>')) .
             '</tbody>
         </table>
-        <p class="text-left"><p>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;">'.$tipo.'</font>, obra en poder de la Unidad de Capacitación.</p></p>';
+        <p class="text-left"><p><small>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;">'.$tipo.'</font>, obra en poder de la Unidad de Capacitación.</small></p></p>';
 
         $body_html['ccp'] = '<p style="line-height:0.8em;">
             <b><small>C.c.p. '. $funcionarios['ccp1']. '.- '. $funcionarios['ccp1p']. '.-Para su conocimiento.</small></b><br/>
