@@ -11,6 +11,7 @@ use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\Label\Font\OpenSans;
 use App\Models\Catalogos\Funcionario;
+use Illuminate\Support\Facades\Storage;
 
 class CredencialRepository implements CredencialesInterface
 {
@@ -78,5 +79,48 @@ class CredencialRepository implements CredencialesInterface
     public function getFuncionario($id)
     {
         return (new Funcionario())->findOrFail($id);
+    }
+
+    public function setProfilePicture(array $request)
+    {
+            // Desestructurar el arreglo
+            ['archivo' => $archivo, 'remplazar' => $remplazar, 'carpeta' => $carpeta] = $request;
+
+            if ($remplazar === false) {
+                $this->reemplazar($archivo->getClientOriginalName(), $archivo, $carpeta);
+            }
+
+            //generar nombre único para la imagen
+            $imageName = $carpeta.'.'.$archivo->getClientOriginalExtension();
+            $rutaUpload = $archivo->storeAs('2025/funcionarios/'.$carpeta, $imageName, 'public');
+            $path = public_path($rutaUpload);
+
+            // Acceder a las propiedades del archivo
+            $fileInfo = [
+                'nombre_original' => $imageName, // Nombre original
+                'extension' => $archivo->getClientOriginalExtension(), // Extensión
+                'mime' => $archivo->getMimeType(), // Tipo MIME
+                'tamaño' => $archivo->getSize(), // Tamaño en bytes
+                'ruta_almacenamiento' => $rutaUpload,
+                'urlImagen' => Storage::url($rutaUpload),
+                'result' => true
+            ];
+
+            return $fileInfo;
+    }
+
+    protected function reemplazar($nombreArchivo, $archivo, $carpeta)
+    {
+        $rutaRelativa = $carpeta.'/'.$nombreArchivo;
+        if (Storage::disk($this->disco)->exists($rutaRelativa))
+        {
+            // Eliminar el archivo original
+            Storage::disk($this->disco)->delete($rutaRelativa);
+            // return response()->json([
+            //     'mensaje' => 'Archivo eliminado exitosamente.',
+            // ]);
+        } else {
+            return false;
+        }
     }
 }

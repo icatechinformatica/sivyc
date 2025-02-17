@@ -45,7 +45,7 @@
             /* Asegura que el encabezado se pegue en la parte superior */
             z-index: 10;
             /* Asegura que el encabezado esté por encima del contenido */
-            background-color: #FFED86;
+            background-color: #009B85;
             /* Color de fondo del encabezado */
         }
 
@@ -59,8 +59,9 @@
 
         thead tr {
             height: 60px;
-            background: #FFED86;
+            background: #009B85;
             font-size: 16px;
+            color: #ffffff;
         }
 
         table th {
@@ -85,6 +86,7 @@
                 font-size: 1.3em;
                 margin-bottom: 10px;
             }
+
             table thead {
                 display: none;
             }
@@ -119,62 +121,67 @@
 @endsection
 @section('title', 'Formatos Rf001 enviados a revisión | SIVyC Icatech')
 @section('content')
+
+    <div class="card-header">
+        Generación de Código Qr
+    </div>
     <div class="card card-body">
-        <h3 class="text-center text-muted font-weight-bold">Generación de código QR</h2>
-            <div class="row">
-                <div class="form-group col-md-12">
-                    <form action="{{ route('credencial.indice') }}" method="get">
-                        <div class="d-flex align-items-center">
-                            <input type="text" placeholder="Buscar Registros de los Funcionarios Icatech ..."
-                                class="form-control" name="filtroBusqueda" id="filtroBusqueda" style="width:92%;">
-                            <button class="btn">Filtrar</button>
-                        </div>
-                    </form>
-                    <br>
-                    <!-- Input para el filtro -->
-                    <div class="table-container">
-                        <table class=“responsive-table”>
-
-                            <thead>
-                                <tr>
-                                    <th>Nombre del Trabajador</th>
-                                    <th>Clave de Empleado</th>
-                                    <th>Puesto</th>
-                                    <th>Categoría</th>
-                                    <th>Detalles</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @if (count($query) > 0)
-                                    @foreach ($query as $item)
-                                        <tr>
-                                            <td data-label=Nombre del Trabajador>
-                                                <strong>{{ $item->nombre_trabajador }}</strong>
-                                            </td>
-                                            <td data-label=Clave de Empleado>{{ $item->clave_empleado }}</td>
-                                            <td data-label=Puesto>{{ $item->puesto_estatal }}</td>
-                                            <td data-label=Categoría>{{ $item->categoria_estatal }}</td>
-                                            <td data-label=Detalles><a
-                                                    href="{{ route('credencial.ver', ['id' => $item->id]) }}"
-                                                    class="btn btn-info"><i class="fas fa-info"></i></a></td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <td data-label=“Tipo” colspan="5"><strong>¡NO HAY REGISTROS!</strong></td>
-                                @endif
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan='5'>
-                                        {{ $query->links() }}
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+        <div class="row">
+            <div class="col-10">
+                <form action="{{ route('credencial.indice') }}" method="get">
+                    <div class="d-flex align-items-center">
+                        <input type="text" placeholder="Filtrar Registros por número de enlace / Nombre ..." class="form-control"
+                            name="filtroBusqueda" id="filtroBusqueda" style="width:85%;">
+                        <button class="btn">Filtrar</button>
                     </div>
-                </div>
+                </form>
             </div>
+        </div>
+        <hr style="border-color:dimgray">
+        <div class="table-container">
+            <table class=“responsive-table”>
+
+                <thead>
+                    <tr>
+                        <th>Nombre del Trabajador</th>
+                        <th>Clave de Empleado</th>
+                        <th>Puesto</th>
+                        <th>Categoría</th>
+                        <th>Detalles</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (count($query) > 0)
+                        @foreach ($query as $item)
+                            <tr>
+                                <td data-label=Nombre del Trabajador>
+                                    <strong>{{ $item->nombre_trabajador }}</strong>
+                                </td>
+                                <td data-label=Clave de Empleado>{{ $item->clave_empleado }}</td>
+                                <td data-label=Puesto>{{ $item->puesto_estatal }}</td>
+                                <td data-label=Categoría>{{ $item->categoria_estatal }}</td>
+                                <td data-label=Detalles>
+                                    <a class="nav-link pt-0" title="generar" href="{{ route('credencial.ver', ['id' => $item->id]) }}">
+                                        <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <td data-label=“Tipo” colspan="5"><strong>¡NO HAY REGISTROS!</strong></td>
+                    @endif
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='5'>
+                            {{ $query->links() }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <br>
     </div>
 @endsection
 @section('script_content_js')
