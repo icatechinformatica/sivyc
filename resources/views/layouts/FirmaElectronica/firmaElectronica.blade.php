@@ -273,9 +273,15 @@
                                         </div>
                                     </div>
                                 @else
-                                    <div class="alert alert-primary" role="alert">
-                                        <strong class="d-block text-center">No se encontraron documentos en esta sección</strong>
-                                    </div>
+                                    @if($curpUser->curp == 'N/A')
+                                        <div class="alert alert-danger" role="alert">
+                                            <strong class="d-block text-center">ERROR: No se ha encontrado una CURP relacionada a este usuario</strong>
+                                        </div>
+                                    @else
+                                        <div class="alert alert-primary" role="alert">
+                                            <strong class="d-block text-center">No se encontraron documentos en esta sección</strong>
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
 
