@@ -28,8 +28,16 @@ class CredencialController extends Controller
         $filtro = $request->get('filtroBusqueda');
 
         $getAllFuncionarios->when(isset($filtro) && $filtro !== '', function ($query) use ($filtro) {
-            return $query->where('nombre_trabajador', '=', trim($filtro));
+            return $query->where(function ($q) use ($filtro) {
+                $q->where('nombre_trabajador', 'LIKE', '%' . trim($filtro) . '%');
+
+                // Verificamos si el filtro es un número antes de aplicarlo a clave_empleado
+                if (is_numeric($filtro)) {
+                    $q->orWhere('clave_empleado', '=', (int) trim($filtro));
+                }
+            });
         });
+
 
         $query = $getAllFuncionarios->orderBy('clave_empleado', 'ASC')->paginate(15);
 
