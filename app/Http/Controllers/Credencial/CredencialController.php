@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\CredencialesInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 
 class CredencialController extends Controller
 {
@@ -25,8 +28,16 @@ class CredencialController extends Controller
         $filtro = $request->get('filtroBusqueda');
 
         $getAllFuncionarios->when(isset($filtro) && $filtro !== '', function ($query) use ($filtro) {
-            return $query->where('nombre_trabajador', '=', trim($filtro));
+            return $query->where(function ($q) use ($filtro) {
+                $q->where('nombre_trabajador', 'LIKE', '%' . trim($filtro) . '%');
+
+                // Verificamos si el filtro es un número antes de aplicarlo a clave_empleado
+                if (is_numeric($filtro)) {
+                    $q->orWhere('clave_empleado', '=', (int) trim($filtro));
+                }
+            });
         });
+
 
         $query = $getAllFuncionarios->orderBy('clave_empleado', 'ASC')->paginate(15);
 
@@ -63,13 +74,17 @@ class CredencialController extends Controller
     public function show($id)
     {
         //
-        $result = $this->credencial->generarQrCode($id);
+        $idCodificar = base64_encode($id);
+        $result = $this->credencial->generarQrCode($idCodificar);
         $perfil = $this->credencial->getFuncionario($id);
+        $avatar = $this->getAvatarUrl($id);
         $imageData = $result->getString();
         $qrCodeBase64 = base64_encode($imageData);
         $data = [
             'qrCodeBase64' => $qrCodeBase64,
             'perfil' => $perfil,
+            'id' => $id,
+            'avatar' => $avatar ?? null,
         ];
         return view('credencial.detalle_credencial', $data)->render();
     }
@@ -83,8 +98,10 @@ class CredencialController extends Controller
     public function edit($id)
     {
         //
-        $perfil = $this->credencial->getFuncionario($id);
-        return view('credencial.perfil', compact('perfil'))->render();
+        $idDecode = base64_decode($id);
+        $avatar = $this->getAvatarUrl($idDecode);
+        $perfil = $this->credencial->getFuncionario($idDecode);
+        return view('credencial.perfil', compact('perfil', 'avatar'))->render();
     }
 
     /**
@@ -128,5 +145,49 @@ class CredencialController extends Controller
         return response($descargarQr->getString())
         ->header('Content-Type', 'image/png')
         ->header('Content-Disposition', 'attachment; filename="codigo_qr.png"');
+    }
+
+    public function uploadPhoto(Request $request) : JSONResponse
+    {
+        // Configurar datos dinámicos
+        $remplazar = true;
+        // Validar la imagen
+        $request->validate([
+            'photo' => 'required|image|mimes:png,jpg,jpeg,gif|max:4096',
+        ]);
+
+        $file = $request->file('photo');
+
+        if (!$file) {
+            return response()->json(['error' => 'No file uploaded'], 400);
+        }
+
+        $data = [
+            'archivo' => $file, // Instancia UploadedFile
+            'remplazar' => $remplazar ?? false,
+            'carpeta' => $request->get('curp'),
+        ];
+
+        return response()->json(
+            [
+                'data' => $this->credencial->setProfilePicture($data)
+            ],
+            Response::HTTP_CREATED
+        );
+    }
+
+    public function getAvatarUrl($id)
+    {
+        $perfil = $this->credencial->getFuncionario($id);
+        $pathFile = '2025/funcionarios/'.$perfil->curp_usuario;
+        $archivos = Storage::files($pathFile); // Obtiene los archivos en la carpeta
+        if (!empty($archivos)) {
+            $nombreArchivo = pathinfo($archivos[0], PATHINFO_FILENAME); // Nombre sin extensión
+            $extension = pathinfo($archivos[0], PATHINFO_EXTENSION); // Extensión
+
+            $path = $pathFile."/".$nombreArchivo.".".$extension;
+
+            return Storage::url($path);
+        }
     }
 }

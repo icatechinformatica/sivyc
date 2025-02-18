@@ -6,6 +6,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/credencial/inicio', [CredencialController::class, 'index'])->name('credencial.indice');
     Route::get('/credencial/detalle/{id}', [CredencialController::class, 'show'])->name('credencial.ver');
     Route::get('/credencial/descargar/{id}', [CredencialController::class, 'download'])->name('descargar.codigo');
+    Route::post('/credencial/perfil/foto', [CredencialController::class, 'uploadPhoto'])->name('credencial.uploadphoto');
 
 });
 
