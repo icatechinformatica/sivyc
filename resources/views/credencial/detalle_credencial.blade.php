@@ -215,25 +215,14 @@
                                                 <input type="text" class="form-control" name="telefono" id="telefono"
                                                     placeholder="teléfono" value="{{ $perfil->puesto_estatal }}" readonly>
                                             </div>
-                                            <div class="col-md-6">
+                                            {{-- <div class="col-md-6">
                                                 <label for="movil">
                                                     <h4>Fecha de Ingreso</h4>
                                                 </label>
                                                 <input type="text" class="form-control" name="movil" id="movil"
                                                     placeholder="Fecha Ingreso" value="{{ $perfil->fecha_ingreso }}"
                                                     readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label for="adscripcion">
-                                                    <h4>Adscripción</h4>
-                                                </label>
-                                                <input type="text" class="form-control" name="adscripcion"
-                                                    placeholder="ADSCRIPCIÓN" value="{{ $perfil->nombre_adscripcion }}"
-                                                    readonly>
-                                            </div>
+                                            </div> --}}
                                             <div class="col-md-6">
                                                 <label for="ciudad">
                                                     <h4>Estado del Empleado</h4>
@@ -244,7 +233,15 @@
                                             </div>
                                         </div>
 
-                                        <div class="row mt-3">
+                                        {{-- <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <label for="adscripcion">
+                                                    <h4>Adscripción</h4>
+                                                </label>
+                                                <input type="text" class="form-control" name="adscripcion"
+                                                    placeholder="ADSCRIPCIÓN" value="{{ $perfil->nombre_adscripcion }}"
+                                                    readonly>
+                                            </div>
                                             <div class="col-md-6">
                                                 <label for="comision">
                                                     <h4>Comisionado (si es el caso)</h4>
@@ -252,7 +249,7 @@
                                                 <input type="text" class="form-control" name="comision"
                                                     value="{{ $perfil->comision_direccion_o_unidad }}" readonly>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </form>
                                     <hr>
                                 </div>
