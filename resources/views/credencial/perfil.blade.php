@@ -102,32 +102,32 @@
                             width="80" />
                     </button>
                     <span class="name mt-3">{{ $perfil->nombre_trabajador }}</span>
-                    <span class="idd"
-                        style="color: {{ $isActive ? 'green' : 'red' }}">{{ $perfil->status ? 'ACTIVO' : 'INACTIVO' }}</span>
-                    <div class="d-flex flex-row justify-content-center align-items-center gap-2">
-                        <span class="idd1">ENLACE N°: <b>{{ $perfil->clave_empleado }}</b>
-                        </span>
+                    <div class=" d-flex mt-1">
+                        <span class="follow">{{ $perfil->puesto_estatal }}</span>
                     </div>
                     <div class="d-flex flex-row justify-content-center align-items-center mt-3">
                         {{-- <span class="follow">{{ $perfil->categoria_estatal }}</span> --}}
                     </div>
-                    <div class=" d-flex mt-1">
-                        <span class="follow">{{ $perfil->puesto_estatal }}</span>
+                    <div class="d-flex flex-row justify-content-center align-items-center gap-2" style="color: green; font-size: 14px; font-weight: 600;">
+                        <span class="idd1">ENLACE N°: <b>{{ $perfil->clave_empleado }}</b>
+                        </span>
                     </div>
-                    <div class=" d-flex mt-1">
+                    <span class="idd"
+                        style="color: {{ $isActive ? 'green' : 'red' }}">{{ $perfil->status ? 'ACTIVO' : 'INACTIVO' }}</span>
+                    {{-- <div class=" d-flex mt-1">
                         <span class="follow">ADSCRITO A:</span> &nbsp;
                     </div>
                     <div class=" d-flex mt-1">
-                        <span class="follow">{{ $perfil->nombre_adscripcion ?? 'NO HAY COMISIÓN' }}</span>
-                    </div>
-                    <div class=" d-flex mt-1">
+                        <span class="follow">{{ $perfil->nombre_adscripcion }}</span>
+                    </div> --}}
+                    {{-- <div class=" d-flex mt-1">
                         <span class="follow">COMISIONADO A:</span> &nbsp;
                         <span class="follow">{{ $perfil->comision_direccion_o_unidad ?? 'NO HAY COMISIÓN' }}</span>
-                    </div>
+                    </div> --}}
                     <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
-                        <span><i class="fa fa-twitter"></i></span> &nbsp;
+                        {{-- <span><i class="fa fa-twitter"></i></span> &nbsp;
                         <span><i class="fa fa-facebook-f"></i></span> &nbsp;
-                        <span><i class="fa fa-instagram"></i></span>
+                        <span><i class="fa fa-instagram"></i></span> --}}
                     </div>
                     <div class=" px-2 rounded mt-4 date ">
                         {{-- <span class="join">{{ $perfil->fecha_ingreso }}</span>  --}}

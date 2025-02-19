@@ -233,7 +233,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row mt-3">
+                                        {{-- <div class="row mt-3">
                                             <div class="col-md-6">
                                                 <label for="adscripcion">
                                                     <h4>Adscripción</h4>
@@ -249,7 +249,7 @@
                                                 <input type="text" class="form-control" name="comision"
                                                     value="{{ $perfil->comision_direccion_o_unidad }}" readonly>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </form>
                                     <hr>
                                 </div>
