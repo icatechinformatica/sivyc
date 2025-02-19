@@ -24,6 +24,24 @@
             width: 120px;
             border-radius: 50%;
             background-color: #E6E6E6;
+            overflow: hidden;
+            /* Para que la imagen no sobresalga */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #ccc;
+            /* Borde opcional */
+            padding: 0;
+            /* Eliminar padding extra */
+        }
+
+        .btn-profile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Ajusta la imagen dentro del círculo sin deformarla */
+            border-radius: 50%;
+            /* Asegurar que la imagen también sea circular */
         }
 
         .name {
@@ -108,7 +126,8 @@
                     <div class="d-flex flex-row justify-content-center align-items-center mt-3">
                         {{-- <span class="follow">{{ $perfil->categoria_estatal }}</span> --}}
                     </div>
-                    <div class="d-flex flex-row justify-content-center align-items-center gap-2" style="color: green; font-size: 14px; font-weight: 600;">
+                    <div class="d-flex flex-row justify-content-center align-items-center gap-2"
+                        style="color: green; font-size: 14px; font-weight: 600;">
                         <span class="idd1">ENLACE N°: <b>{{ $perfil->clave_empleado }}</b>
                         </span>
                     </div>
