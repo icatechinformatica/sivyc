@@ -82,7 +82,9 @@
         }
 
         .date {
-            background-color: #ccc
+            background-color: #c90166;
+            color: #ffffff;
+            font-weight: bold;
         }
     </style>
 @endsection
@@ -96,16 +98,18 @@
             @if ($perfil->status)
                 <div class=" image d-flex flex-column justify-content-center align-items-center">
                     <button class="btn-profile">
-                        <img src="{{ $avatar ? $avatar : 'http://ssl.gstatic.com/accounts/ui/avatar_2x.png' }}" height="80" width="80" />
+                        <img src="{{ $avatar ? $avatar : 'http://ssl.gstatic.com/accounts/ui/avatar_2x.png' }}" height="80"
+                            width="80" />
                     </button>
                     <span class="name mt-3">{{ $perfil->nombre_trabajador }}</span>
-                    <span class="idd" style="color: {{ $isActive ? 'green' : 'red' }}">{{ $perfil->status ? 'ACTIVO' : 'INACTIVO' }}</span>
+                    <span class="idd"
+                        style="color: {{ $isActive ? 'green' : 'red' }}">{{ $perfil->status ? 'ACTIVO' : 'INACTIVO' }}</span>
                     <div class="d-flex flex-row justify-content-center align-items-center gap-2">
                         <span class="idd1">ENLACE N°: <b>{{ $perfil->clave_empleado }}</b>
                         </span>
                     </div>
                     <div class="d-flex flex-row justify-content-center align-items-center mt-3">
-                        <span class="follow">{{ $perfil->categoria_estatal }}</span>
+                        {{-- <span class="follow">{{ $perfil->categoria_estatal }}</span> --}}
                     </div>
                     <div class=" d-flex mt-1">
                         <span class="follow">{{ $perfil->puesto_estatal }}</span>
@@ -125,7 +129,10 @@
                         <span><i class="fa fa-facebook-f"></i></span> &nbsp;
                         <span><i class="fa fa-instagram"></i></span>
                     </div>
-                    <div class=" px-2 rounded mt-4 date "> <span class="join">{{ $perfil->fecha_ingreso }}</span> </div>
+                    <div class=" px-2 rounded mt-4 date ">
+                        {{-- <span class="join">{{ $perfil->fecha_ingreso }}</span>  --}}
+                        <span>ICATECH</span>
+                    </div>
                 </div>
             @else
                 <div class=" image d-flex flex-column justify-content-center align-items-center">

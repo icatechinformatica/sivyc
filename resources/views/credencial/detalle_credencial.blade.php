@@ -215,13 +215,21 @@
                                                 <input type="text" class="form-control" name="telefono" id="telefono"
                                                     placeholder="teléfono" value="{{ $perfil->puesto_estatal }}" readonly>
                                             </div>
-                                            <div class="col-md-6">
+                                            {{-- <div class="col-md-6">
                                                 <label for="movil">
                                                     <h4>Fecha de Ingreso</h4>
                                                 </label>
                                                 <input type="text" class="form-control" name="movil" id="movil"
                                                     placeholder="Fecha Ingreso" value="{{ $perfil->fecha_ingreso }}"
                                                     readonly>
+                                            </div> --}}
+                                            <div class="col-md-6">
+                                                <label for="ciudad">
+                                                    <h4>Estado del Empleado</h4>
+                                                </label>
+                                                <input type="text" class="form-control" id="ciudad"
+                                                    placeholder="estado"
+                                                    value="{{ $perfil->status ? 'ACTIVO' : 'INACTIVO' }}" readonly>
                                             </div>
                                         </div>
 
@@ -234,17 +242,6 @@
                                                     placeholder="ADSCRIPCIÓN" value="{{ $perfil->nombre_adscripcion }}"
                                                     readonly>
                                             </div>
-                                            <div class="col-md-6">
-                                                <label for="ciudad">
-                                                    <h4>Estado del Empleado</h4>
-                                                </label>
-                                                <input type="text" class="form-control" id="ciudad"
-                                                    placeholder="estado"
-                                                    value="{{ $perfil->status ? 'ACTIVO' : 'INACTIVO' }}" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3">
                                             <div class="col-md-6">
                                                 <label for="comision">
                                                     <h4>Comisionado (si es el caso)</h4>
