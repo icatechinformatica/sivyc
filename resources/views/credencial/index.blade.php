@@ -146,7 +146,6 @@
                         <th>Nombre del Trabajador</th>
                         <th>Clave de Empleado</th>
                         <th>Puesto</th>
-                        <th>Categoría</th>
                         <th>Detalles</th>
                     </tr>
                 </thead>
@@ -160,7 +159,6 @@
                                 </td>
                                 <td data-label=Clave de Empleado>{{ $item->clave_empleado }}</td>
                                 <td data-label=Puesto>{{ $item->puesto_estatal }}</td>
-                                <td data-label=Categoría>{{ $item->categoria_estatal }}</td>
                                 <td data-label=Detalles>
                                     @can('detalles.perfilqr')
                                         <a class="nav-link pt-0" title="generar"
@@ -172,12 +170,12 @@
                             </tr>
                         @endforeach
                     @else
-                        <td data-label=“Tipo” colspan="5"><strong>¡NO HAY REGISTROS!</strong></td>
+                        <td data-label=“Tipo” colspan="4"><strong>¡NO HAY REGISTROS!</strong></td>
                     @endif
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan='5'>
+                        <td colspan='4'>
                             {{ $query->links() }}
                         </td>
                     </tr>
