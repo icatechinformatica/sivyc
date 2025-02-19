@@ -88,6 +88,7 @@ class supreController extends Controller
                     ->Select('status')
                     ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
                     ->Where('documentos_firmar.tipo_archivo', 'supre')
+                    ->OrderBy('documentos_firmar.id', 'desc')
                     ->Limit(1);
                     // ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
                 }, 'efirma_status_supre')
@@ -103,6 +104,7 @@ class supreController extends Controller
                     ->Select('status')
                     ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
                     ->Where('documentos_firmar.tipo_archivo', 'valsupre')
+                    ->OrderBy('documentos_firmar.id', 'desc')
                     ->Limit(1);
                     // ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
                 }, 'efirma_status_valsupre')
