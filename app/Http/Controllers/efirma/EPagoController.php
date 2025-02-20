@@ -375,13 +375,13 @@ class EPagoController extends Controller
         </table>
         <p class="text-left"><p><small>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;">'.$tipo.'</font>, obra en poder de la Unidad de Capacitación.</small></p></p>';
 
-        $body_html['ccp'] = '<p style="line-height:0.8em;">
-            <b><small>C.c.p. '. $funcionarios['ccp1']. '.- '. $funcionarios['ccp1p']. '.-Para su conocimiento.</small></b><br/>
-            <b><small>C.c.p. '. $funcionarios['ccp2']. '.- '. $funcionarios['ccp2p']. '.-Mismo fin.</small></b><br/>
-            <b><small>C.c.p. '. $funcionarios['delegado']. '.- '. $funcionarios['delegadop']. '.-Mismo fin.</small></b><br/>
-            <b><small>Archivo/ Minutario<small></b><br/>
-            <b><small>Validó: '. $funcionarios['director']. '.- '. $funcionarios['directorp']. '.</small></b><br/>
-            <b><small>Elaboró: '. $funcionarios['delegado']. '.- '.$funcionarios['delegadop']. '.</small></b>
+        $body_html['ccp'] = '<p style="font-size: 8px;">
+            C.c.p. '. $funcionarios['ccp1']. '.- '. $funcionarios['ccp1p']. '.-Para su conocimiento.<br/>
+            C.c.p. '. $funcionarios['ccp2']. '.- '. $funcionarios['ccp2p']. '.-Mismo fin.<br/>
+            C.c.p. '. $funcionarios['delegado']. '.- '. $funcionarios['delegadop']. '.-Mismo fin.<br/>
+            Archivo/ Minutario<br/>
+            Validó: '. $funcionarios['director']. '.- '. $funcionarios['directorp']. '.<br/>
+            Elaboró: '. $funcionarios['delegado']. '.- '.$funcionarios['delegadop']. '.
         </p>';
 
         $body_html['footer'] = '<footer>
