@@ -130,8 +130,8 @@
             <div class="col-10">
                 <form action="{{ route('credencial.indice') }}" method="get">
                     <div class="d-flex align-items-center">
-                        <input type="text" placeholder="Filtrar Registros por número de enlace / Nombre ..." class="form-control"
-                            name="filtroBusqueda" id="filtroBusqueda" style="width:85%;">
+                        <input type="text" placeholder="Filtrar Registros por número de enlace / Nombre ..."
+                            class="form-control" name="filtroBusqueda" id="filtroBusqueda" style="width:85%;">
                         <button class="btn">Filtrar</button>
                     </div>
                 </form>
@@ -146,7 +146,6 @@
                         <th>Nombre del Trabajador</th>
                         <th>Clave de Empleado</th>
                         <th>Puesto</th>
-                        <th>Categoría</th>
                         <th>Detalles</th>
                     </tr>
                 </thead>
@@ -160,21 +159,23 @@
                                 </td>
                                 <td data-label=Clave de Empleado>{{ $item->clave_empleado }}</td>
                                 <td data-label=Puesto>{{ $item->puesto_estatal }}</td>
-                                <td data-label=Categoría>{{ $item->categoria_estatal }}</td>
                                 <td data-label=Detalles>
-                                    <a class="nav-link pt-0" title="generar" href="{{ route('credencial.ver', ['id' => $item->id]) }}">
-                                        <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
-                                    </a>
+                                    @can('detalles.perfilqr')
+                                        <a class="nav-link pt-0" title="generar"
+                                            href="{{ route('credencial.ver', ['id' => $item->id]) }}">
+                                            <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach
                     @else
-                        <td data-label=“Tipo” colspan="5"><strong>¡NO HAY REGISTROS!</strong></td>
+                        <td data-label=“Tipo” colspan="4"><strong>¡NO HAY REGISTROS!</strong></td>
                     @endif
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan='5'>
+                        <td colspan='4'>
                             {{ $query->links() }}
                         </td>
                     </tr>

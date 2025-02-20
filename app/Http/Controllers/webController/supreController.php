@@ -87,7 +87,9 @@ class supreController extends Controller
                 $query->From('documentos_firmar')
                     ->Select('status')
                     ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
-                    ->Where('documentos_firmar.tipo_archivo', 'supre');
+                    ->Where('documentos_firmar.tipo_archivo', 'supre')
+                    ->OrderBy('documentos_firmar.id', 'desc')
+                    ->Limit(1);
                     // ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
                 }, 'efirma_status_supre')
             ->SelectSub(function($query) {
@@ -102,6 +104,7 @@ class supreController extends Controller
                     ->Select('status')
                     ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
                     ->Where('documentos_firmar.tipo_archivo', 'valsupre')
+                    ->OrderBy('documentos_firmar.id', 'desc')
                     ->Limit(1);
                     // ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
                 }, 'efirma_status_valsupre')
@@ -336,7 +339,7 @@ class supreController extends Controller
 
         foreach($status_doc as $mxs) {
             if(!is_null($mxs)) {
-                if(in_array($mxs->status, ['CANCELADO ICTI','VALIDADO'])) {
+                if(in_array($mxs->status, ['VALIDADO'])) {
                     $generarEfirmaSupre = FALSE;
                 } elseif($mxs->status == 'EnFirma') {
                     $firmantes = json_decode($mxs->obj_documento, true);
