@@ -613,7 +613,7 @@ class supreController extends Controller
 
         foreach($status_doc as $mxs) {
             if(!is_null($mxs)) {
-                if(in_array($mxs->status, ['CANCELADO ICTI','VALIDADO'])) {
+                if(in_array($mxs->status, ['VALIDADO'])) {
                     $generarEfirmaValsupre = FALSE;
                 } elseif($mxs->status == 'EnFirma') {
                     $firmantes = json_decode($mxs->obj_documento, true);
