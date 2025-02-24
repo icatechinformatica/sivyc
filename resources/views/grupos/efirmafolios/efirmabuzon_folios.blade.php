@@ -7,50 +7,8 @@
     <!--seccion-->
 
 @section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        .card-header{
-            font-variant: small-caps;
-            background-color: #621132 !important;
-            color: white;
-            margin: 1.7% 1.7% 1% 1.7%;
-            padding: 1.3% 39px 1.3% 39px;
-            font-style: normal;
-            font-size: 22px;
-        }
-
-        .card-body{
-            margin: 1%;
-            margin-left: 1.7%;
-            margin-right: 1.7%;
-            /* padding: 55px; */
-            -webkit-box-shadow: 0 8px 6px -6px #999;
-            -moz-box-shadow: 0 8px 6px -6px #999;
-            box-shadow: 0 8px 6px -6px #999;
-        }
-        .card-body.card-msg{
-            background-color: yellow;
-            margin: .5% 1.7% .5% 1.7%;
-            padding: .5% 5px .5% 25px;
-        }
-
-        body { background-color: #E6E6E6; }
-
-        .btn, .btn:focus{ color: white; background: #12322b; font-size: 14px; border-color: #12322b; margin: 0 5px 0 5px; padding: 10px 13px 10px 13px; }
-        .btn:hover { color: white; background:#2a4c44; border-color: #12322b; }
-
-        .form-control { height: 40px; }
-
-
-        #text_buscar_curso {
-            height: fit-content;
-            width: auto;
-        }
-
-
         /* Estilo del loader */
         #loader-overlay {
             position: fixed;
@@ -99,8 +57,8 @@
     <input class="d-none" id="token" name="token" type="text" value="{{$token}}">
     <input class="d-none" id="curpfir" name="curpfir" type="text" value="{{$curpf}}">
 
-    <div class="card-header py-2">
-        <h3>EFIRMA CONSTANCIAS</h3>
+    <div class="card-header">
+        Efirma Constancias
     </div>
 
     {{-- Loader --}}
@@ -109,7 +67,7 @@
     </div>
 
     {{-- card para el contenido --}}
-    <div class="card card-body" style=" min-height:450px;">
+    <div class="card card-body">
         <div class="container-fluid">
             @if ($message = Session::get('message'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
