@@ -46,6 +46,7 @@
                     $munidad = $grupos[0]->munidad;
                     $nmunidad = $grupos[0]->nmunidad;
                     $pdf_curso = $grupos[0]->pdf_curso;
+                    $permiso = $grupos[0]->status_curso;
                     $rojo = null;
                 ?>
                 @foreach($grupos as $g)
@@ -205,8 +206,11 @@
     @if($pdf_curso)
         <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">AUTORIZACIÓN</a>
     @endif
-    @if($movimientos)
+    @if($movimientos)        
         <div class="form-row col-md-9 justify-content-end">
+            @if(($permiso ?? null) == 'ACEPTADO')
+                {{ Form::button('GENERAR MEMORÁNDUM PDF', ['id'=>'generar','class' => 'btn']) }}
+            @endif            
             {{ Form::select('movimiento', $movimientos, '', ['id'=>'movimiento','class' => 'form-control  col-md-4 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }}
             {{ Form::text('motivo', '', ['id'=>'motivo', 'class' => 'form-control col-md-4 m-1 ', 'placeholder' => 'MOTIVO', 'title' => 'MOTIVO', 'style'=>'display:none']) }}
             <div class="custom-file col-md-3 m-1" id="inputFile" style="display:none">
