@@ -2,7 +2,7 @@
 @section('title', 'FIRMAR ELECTRONICAMENTE | Sivyc Icatech')
 
 @section('content_script_css')
-
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         .colorTop {
             background-color: #541533;
@@ -107,7 +107,7 @@
             <div class="card-header">Mis documentos</div>
             {{-- Buscador --}}
             <div class="card">
-                <div class="card-body">
+                <div class="mt-5 ml-4 mb-2">
                     <form action="" class="form-inline" id="frmBuscar" method="get">
                         <input type="text" class="form-control" placeholder="CLAVE DE CURSO" name="txtBusqueda" id="txtBusqueda" value="{{($busqueda_clave != null) ? $busqueda_clave : ''}}">
                         <input type="hidden" name="seccion" id="seccion">
@@ -117,7 +117,7 @@
                         </a>
                         <a class="btn btn-danger" data-toggle="tooltip"
                                 data-placement="top" title="Limpiar" href="#" onclick="Limpiar(event)">
-                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                <i class="fa fa-trash" aria-hidden="true"></i>
                         </a>
                     </form>
                 </div>
