@@ -1294,11 +1294,11 @@ class ContratoController extends Controller
             ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
             ->Where('tipo_archivo','Solicitud Pago')
             ->first();
+        $funcionarios = $this->funcionarios($data->ubicacion);
         if(is_null($documento)) {
             $firma_electronica = false;
             $pagoController = new EPagoController();
             $body_html = $pagoController->create_body($id);
-            $funcionarios = $this->funcionarios($data->ubicacion);
         } else {
             // dd('a');
             $firma_electronica = true;
