@@ -1,6 +1,6 @@
 <!-- Creado por Orlando Chávez -->
 @extends('theme.sivyc.layout')
-@section('title', 'Disponibilidad del Cruso | Sivyc Icatech')
+@section('title', 'Disponibilidad del Curso | Sivyc Icatech')
 @section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />    
 @endsection
