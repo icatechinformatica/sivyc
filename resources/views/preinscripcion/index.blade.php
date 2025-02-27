@@ -30,10 +30,10 @@
             $organismo = $grupo->depen;
             $id_gvulnerable = $grupo->id_gvulnerable;
             //if($id_gvulnerable == 0 and $grupo->plantel) $es_vulnerable = false;
-            if(($grupo->plantel and $id_gvulnerable) OR !$grupo->plantel) $checked = 'checked';            
-            
+            if(($grupo->plantel and $id_gvulnerable) OR !$grupo->plantel) $checked = 'checked';
+
         }
-        if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;        
+        if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
     @endphp
     <div class="card-header">
@@ -90,7 +90,7 @@
                             @elseif ($grupo->exo_nrevision )
                                 <span>EXONERACIÓN/REDUCCIÓN No. REVISIÓN:&nbsp;&nbsp;<strong>{{$grupo->exo_nrevision}}</strong></span>
                             @elseif ($grupo->tipo != 'PINS' )
-                                <span>EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong class="text-danger">TRÁMITE PENDIENTE</strong></span>                                
+                                <span>EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong class="text-danger">TRÁMITE PENDIENTE</strong></span>
                             @endif
                             @if($grupo->tdias)<span>TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></span>@endif
                             @if($grupo->dia)<span>DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></span>@endif
@@ -166,7 +166,7 @@
                         @else
                             <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($grupo->id_gvulnerable ?? ''){{'checked'}}@endif disabled>&nbsp;&nbsp;GRUPO VULNERABLE</label>
                             {{ Form::select('grupo_vulnerable', $grupo_vulnerable, '', ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
-                        @endif                        
+                        @endif
                     </div>
                     <div class="form-group col-md-6">
                         <label>DOMICILIO, LUGAR O ESPACIO FÍSICO:</label>
@@ -286,13 +286,13 @@
                                 <textarea name="observaciones" id="observaciones" rows="5" class="form-control">{{$grupo->obs_vincula}}</textarea>
                             </div>
                         </div>
-                        <div class="form-row">
+                        {{-- <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="">SOLICITANTE (NOMBRE,CARGO):</label>
 
                                 {!! Form::text('solicita', $grupo->solicita ?? '', ['id'=>'solicita', 'class' => 'form-control', 'placeholder' => 'NOMBRE,CARGO', 'aria-label' => 'SOLICITANTE', $grupo->editar_solicita ? '' : 'readonly' => 'readonly']) !!}
                             </div>
-                        </div>
+                        </div> --}}
                         <br>
                         <br>
                     @endif

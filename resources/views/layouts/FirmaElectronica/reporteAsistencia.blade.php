@@ -129,8 +129,8 @@
     @if(!is_null($uuid))
         <footer>
             {{-- <div style="display: inline-block; width: 50%;"></div> --}}
-            <div style="display: inline-block; width: 85%;">
-                <table style="width: 100%; font-size: 5px;">
+            <div style="display: inline-block; width: 85%; margin-top: 25px;">
+                <table style="width: 100%; font-size: 5px; line-height: 1;">
                     @foreach ($objeto['firmantes']['firmante'][0] as $keys=>$moist)
                         <tr>
                             <td style="width: 10%; font-size: 7px;"><b>Nombre del firmante:</b></td>
@@ -161,7 +161,7 @@
             </div>
             <div style="display: inline-block; width: 15%;">
                 {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                <img style="position: fixed; width: 15%; top: 0%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                <img style="position: fixed; width: 15%; top: 5%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
             </div>
             <div class="page-number"><small class="link">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} <br> Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas </small></div>
         </footer>
