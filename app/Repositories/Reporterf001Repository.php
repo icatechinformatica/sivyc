@@ -407,7 +407,7 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function getFirmadoFormat($request)
     {
-        return (new Rf001Model())->whereIn('estado', ['REVISION', 'PARASELLAR', 'ENSELLADO', 'SELLADO'])->paginate(10 ?? 5);
+        return (new Rf001Model())->whereIn('estado', ['REVISION', 'PARASELLAR', 'ENSELLADO', 'SELLADO'])->whereYear('periodo_fin', Carbon::now()->year)->orderBy('updated_at', 'desc')->paginate(10 ?? 5);
     }
 
     public function reenviarSolicitud($request)
