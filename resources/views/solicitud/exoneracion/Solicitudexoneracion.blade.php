@@ -32,7 +32,7 @@
                 <table style="text-align: right; border-collapse: collapse; font-family: sans-serif; font-size: 12px;" align="right">
                     <tr><td>Unidad de Capacitación {{$reg_unidad->ubicacion}}.</td></tr>
                     <tr><td style="font-weight:normal;">@if ($marca) {{ "Revisión No. "}} @else {{ "Memorándum No. "}} @endif{{$mexoneracion}}.</td></tr>
-                    <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha}}.</td></tr>
+                    <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha_doc}}.</td></tr>
                 </table>
             </div>
             <table style="border-collapse: collapse;">
