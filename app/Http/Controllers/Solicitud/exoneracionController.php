@@ -340,10 +340,10 @@ class exoneracionController extends Controller
                 //$fecha = strftime("%d de %B del %Y" ,strtotime($date));
                 $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
                 $mes = $meses[date('m',strtotime($date))];
-                $fecha = date('d',strtotime($date)).' de '.$mes.' del '.date('Y',strtotime($date));
+                $fecha_doc = date('d',strtotime($date)).' de '.$mes.' del '.date('Y',strtotime($date));
+                $fecha = '09-12-2024';
 
-
-                $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha','reg_unidad','depen','marca','data','direccion','director'));
+                $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha_doc','reg_unidad','depen','marca','data','direccion','director','fecha'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('EXONERACION.pdf');
            // } else {
