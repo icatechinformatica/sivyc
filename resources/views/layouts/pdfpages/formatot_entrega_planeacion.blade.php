@@ -18,7 +18,7 @@
         /* Propiedad que ha sido agreda*/
         }
         .margin_top_ccp {
-            margin-top: 7em;
+            margin-top: 4em;
         }
     </style>
 @endsection
@@ -47,13 +47,13 @@
         {{-- <br> --}}
 
         <br>
-        <br><br>
+        <br>
         <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
 
         <div class="margin_top_ccp">
             <div style="font-size:11px;"> <b> {{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }} </b> </div>
             <div style="font-size:11px;"> <b> {{ $funcionarios['dacademico']['puesto'] }} </b> </div>
-            <br><br><br>
+            <br>
             <div style="font-size:9px;"> <b>C.c.p  {{ $funcionarios['dgeneral']['titulo'] }} {{ $funcionarios['dgeneral']['nombre'] }}, {{ $funcionarios['dgeneral']['puesto'] }}. Para su conocimiento.</b> </div>
             <div style="font-size:9px"><b>C.c. {{ $funcionarios['progpres']['titulo'] }} {{ $funcionarios['progpres']['nombre'] }} - {{ $funcionarios['progpres']['puesto'] }} . Para su conocimiento.</b></div>
             <div style="font-size:9px;"> <b>Archivo.</b> </div>
