@@ -49,14 +49,14 @@
             </div>
             <br><br>
             <div align="justify" style="font-size:16px;">Sin más por el momento, agradezco su atención y le envio un cordial saludo.</div>
-            <br><br><br><br>
+            <br><br>
             <div align="justify" style="font-size:16px;"><b>A T E N T A M E N T E</b></div>
             <br><br><br>
             <div align="justify" style="font-size:14px;"><b>{{$funcionarios['dacademico']['titulo']}} {{$funcionarios['dacademico']['nombre']}}.</b></div>
             <div align="justify" style="font-size:14px;"><b>{{$funcionarios['dacademico']['puesto']}}.</b></div>
-            <br><br><br>
+            <br><br>
             {{-- <div align="justify" style="font-size:10px;">C.c.p. {{$funcionarios['dacademico_unidad']['titulo']}} {{$funcionarios['dacademico_unidad']['nombre']}} - {{$funcionarios['dacademico_unidad']['puesto']}}, Ciudad.</div> --}}
-            <div align="justify" style="font-size:10px;">C.c.p. Titular del Departamento Academico.</div>
+            <div align="justify" style="font-size:10px;">C.c.p. {{$funcionarios['dacademico_unidad']['titulo']}} {{$funcionarios['dacademico_unidad']['nombre']}} - {{$funcionarios['dacademico_unidad']['puesto']}}.</div>
             <div align="justify" style="font-size:10px;">Archivo.</div>
             <div align="justify" style="font-size:10px;">Validó: {{$funcionarios['certificacion']['titulo']}} {{$funcionarios['certificacion']['nombre']}} - {{$funcionarios['certificacion']['puesto']}}, Edificio.</div>
             <div align="justify" style="font-size:10px;">Elaboró: {{$funcionarios['elabora']['nombre']}} - {{$funcionarios['elabora']['puesto']}}.</div>
