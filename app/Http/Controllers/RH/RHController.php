@@ -49,6 +49,8 @@ class RHController extends Controller
         $token = $this->get_api_token($url); // funcion donde se consigue el token para accesar
 
         $hoy = Carbon::now()->format('Y-m-d');
+        // $beginTime = '2025-03-04T00:00:00+00:00';
+        // $endTime = '2025-03-04T23:59:59+00:00';
         $beginTime = $hoy.'T00:00:00+00:00';
         $endTime = $hoy.'T23:59:59+00:00';
         $page = 1;
@@ -60,7 +62,16 @@ class RHController extends Controller
         for ($x = 1; $x <= $totalPages; $x++) {
             foreach($data['list'] as $record) {
                 $time = explode('T',$record['checktime']); //se procesa la fecha y hora
+                $timezone = substr($time[1],8,13); // se extrae la timezone para generarla en -06
                 $time[1] = substr($time[1], 0, 8);
+
+                if($timezone = '+00:00') { // si la timezone es 0 se le hara una resta a la hora de 6 para tenerla en -06:00
+                    $hour = substr($time[1],0,2) - 6;
+                    if($hour < 10) {
+                        $hour = '0'.$hour;
+                    }
+                    $time[1] =  $hour . substr($time[1],2,7);
+                }
 
                 $registro = checador_asistencia::Where('numero_enlace',$record['employee']['workno'])->Where('fecha',$time[0])->First();
                 if(is_null($registro)) {
@@ -72,7 +83,7 @@ class RHController extends Controller
             $page++;
             $data = $this->get_records($url,$beginTime, $endTime, $page, $perPage, $token);
         }
-        // dd('complete'); // quitar para subir a produccion
+        dd('complete'); // quitar para subir a produccion
     }
 
     public function upload(Request $request) {
@@ -202,8 +213,8 @@ class RHController extends Controller
                 'timestamp' => Carbon::now()->toIso8601String(),
             ],
             'payload' => [
-                'api_key' => '060b777c75ccfa52ba7505bdc24ddcf9',
-                'api_secret' => '316dc3b75403372e665fe8ad6b4927ee',
+                'api_key' => 'c4b5f541364d3f196899b116b0bebb2d',
+                'api_secret' => 'd7e30cd8e81c98c580c3f5e57c35bd24',
             ]
         ]);
 
