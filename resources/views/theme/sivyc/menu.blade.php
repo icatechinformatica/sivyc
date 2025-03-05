@@ -354,53 +354,51 @@
                 @canany(['consultas.folios', 'consultas.lotes', 'consultas.cursosaperturados', 'planeacion.estadisticas',
                     'planeacion.grupos.vulnerables', 'planeacion.ingresos.propios', 'consultas.cursosefisico',
                     'consultas.instructor', 'consultas.instructores.disponibles', 'consultas.poa', 'show.cursos.validados',
-                    'consulta.bolsa.trabajo'])
+                    'consulta.bolsa.trabajo'.'consultas.cursos.exo'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Consultas
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            @can('consultas.folios')
-                                <a class="dropdown-item" href="{{ route('consultas.folios') }}">Folios Asignados</a>
-                            @endcan
                             @can('consultas.lotes')
                                 <a class="dropdown-item" href="{{ route('consultas.lotes') }}">Actas de Folios</a>
-                            @endcan
-                            @can('consultas.cursosaperturados')
-                                <a class="dropdown-item" href="{{ route('consultas.cursosaperturados') }}">Cursos Aperturados</a>
-                            @endcan
-                            @can('planeacion.estadisticas')
-                                <a class="dropdown-item" href="{{ route('reportes.planeacion.estadisticas') }}">Estadisticas del
-                                    Formato T</a>
-                            @endcan
-                            @can('planeacion.grupos.vulnerables')
-                                <a class="dropdown-item" href="{{ route('reportes.planeacion.grupos_vulnerables') }}">Grupos
-                                    Vulnerables</a>
-                            @endcan
-                            @can('planeacion.ingresos.propios')
-                                <a class="dropdown-item" href="{{ route('reportes.planeacion.ingresos_propios') }}">Ingresos
-                                    Propios</a>
-                            @endcan
-                            @can('consultas.cursosefisico')
-                                <a class="dropdown-item" href="{{ route('consultas.cursosefisico') }}">Cursos EFisico</a>
-                            @endcan
-                            @can('consultas.instructor')
-                                <a class="dropdown-item" href="{{ route('consultas.instructor') }}">Instructores Asignados</a>
-                            @endcan
-                            @can('consultas.instructores.disponibles')
-                                <a class="dropdown-item" href="{{ route('consultas.instructores.disponibles') }}">Instructores
-                                    Disponibles</a>
-                            @endcan
-                            @can('consultas.poa')
-                                <a class="dropdown-item" href="{{ route('consultas.poa') }}">POA&Autorizados</a>
-                            @endcan
-                            @can('show.cursos.validados')
-                                <a class="dropdown-item" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
                             @endcan
                             @can('consulta.bolsa.trabajo')
                                 <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
                             @endcan
+                            @can('consultas.cursosaperturados')
+                                <a class="dropdown-item" href="{{ route('consultas.cursosaperturados') }}">Cursos Aperturados</a>
+                            @endcan                                                       
+                            @can('consultas.cursosefisico')
+                                <a class="dropdown-item" href="{{ route('consultas.cursosefisico') }}">Cursos EFisico</a>
+                            @endcan
+                            @can('show.cursos.validados')
+                                <a class="dropdown-item" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
+                            @endcan                            
+                            @can('planeacion.estadisticas')
+                                <a class="dropdown-item" href="{{ route('reportes.planeacion.estadisticas') }}">Estadisticas FormatoT</a>
+                            @endcan
+                            @can('consultas.folios')
+                                <a class="dropdown-item" href="{{ route('consultas.folios') }}">Folios Asignados</a>
+                            @endcan
+                            @can('planeacion.grupos.vulnerables')
+                                <a class="dropdown-item" href="{{ route('reportes.planeacion.grupos_vulnerables') }}">Grupos Vulnerables</a>
+                            @endcan
+                            @can('planeacion.ingresos.propios')
+                                <a class="dropdown-item" href="{{ route('reportes.planeacion.ingresos_propios') }}">Ingresos Propios</a>
+                            @endcan
+                            
+                            @can('consultas.instructor')
+                                <a class="dropdown-item" href="{{ route('consultas.instructor') }}">Instructores Asignados</a>
+                            @endcan
+                            @can('consultas.instructores.disponibles')
+                                <a class="dropdown-item" href="{{ route('consultas.instructores.disponibles') }}">Instructores Disponibles</a>
+                            @endcan
+                            @can('consultas.poa')
+                                <a class="dropdown-item" href="{{ route('consultas.poa') }}">POA&Autorizados</a>
+                            @endcan
+                            
                         </div>
                     </li>
                 @endcanany

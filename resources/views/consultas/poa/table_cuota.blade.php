@@ -41,7 +41,7 @@
                     return ($v->costo == $valor);
             }, ARRAY_FILTER_USE_BOTH);            
             
-            $total_cursos = $total_inscritos = $total_egresados = 0;
+            $total_cursos = $total_inscritos = $total_egresados = $total_importe = 0;
         @endphp
         <div class="tab-pane fade  @if($n==0){{'show active'}}@endif" id="contenido[{{$n}}]" role="tabpanel" aria-labelledby="menu[{{$n}}]">
             <div class="table-responsive">
@@ -53,6 +53,7 @@
                         <th class="text-center">CURSOS</th>
                         <th  class="text-center">INSCRITOS</th>
                         <th class="text-center">EGRESADOS</th>
+                        <th class="text-center">COSTO</th>
                     </tr>       
                 </thead>                    
                     <tbody>                        
@@ -62,12 +63,14 @@
                                 <td class="text-right">{{ number_format($valor->costo, 0, '', ',')}}</td>
                                 <td class="text-center">{{ number_format($valor->cursos_reportados, 0, '', ',')}}</td>
                                 <td class="text-center">{{ number_format($valor->inscritos, 0, '', ',')}}</td>
-                                <td class="text-center">{{ number_format($valor->inscritos-$valor->desercion, 0, '', ',') }}</td>                    
+                                <td class="text-center">{{ number_format($valor->inscritos-$valor->desercion, 0, '', ',') }}</td>
+                                <td class="text-center">{{ number_format($valor->importe, 0, '', ',') }}</td>
                             </tr>  
                             @php
                                 $total_cursos += $valor->cursos_reportados;
                                 $total_inscritos += $valor->inscritos;
                                 $total_egresados += ($valor->inscritos-$valor->desercion);
+                                $total_importe += $valor->importe;
                             @endphp                             
                         @endforeach          
                         <tr>
@@ -75,7 +78,8 @@
                             <td class="text-right"></td>
                             <td class="text-center"><b>{{ number_format($total_cursos, 0, '', ',')}}</b></td>
                             <td class="text-center"><b>{{ number_format($total_inscritos, 0, '', ',')}}</b></td>
-                            <td class="text-center"><b>{{ number_format($total_egresados, 0, '', ',')}}</b></td>                 
+                            <td class="text-center"><b>{{ number_format($total_egresados, 0, '', ',')}}</b></td>
+                            <td class="text-center"><b>{{ number_format($total_importe, 0, '', ',')}}</b></td>   
                         </tr>
                     </tbody>
                 </table>
