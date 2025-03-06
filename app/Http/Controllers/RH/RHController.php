@@ -45,43 +45,48 @@ class RHController extends Controller
     }
 
     public function descarga_nube() {
-        $url = 'https://api.us.crosschexcloud.com/'; // Reemplaza con la URL correcta
-        $token = $this->get_api_token($url); // funcion donde se consigue el token para accesar
+        $apiKey = ['oficinas centrales' => 'c4b5f541364d3f196899b116b0bebb2d',
+                   'sancris' => 'd5ccfdba72c0f69c969838e83e5ca9bf'];
+        $apiSecret = ['oficinas centrales' => 'd7e30cd8e81c98c580c3f5e57c35bd24',
+                      'sancris' => '009ea37f8553c1348b51687d2db164df'];
 
-        $hoy = Carbon::now()->format('Y-m-d');
-        // $beginTime = '2025-03-04T00:00:00+00:00';
-        // $endTime = '2025-03-04T23:59:59+00:00';
-        $beginTime = $hoy.'T00:00:00+00:00';
-        $endTime = $hoy.'T23:59:59+00:00';
-        $page = 1;
-        $perPage = 100;
+        foreach($apiKey as $name => $ak) {
+            $url = 'https://api.us.crosschexcloud.com/'; // Reemplaza con la URL correcta
+            $hoy = Carbon::now()->format('Y-m-d');
+            // $beginTime = '2025-03-04T00:00:00+00:00';
+            // $endTime = '2025-03-06T23:59:59+00:00';
+            $beginTime = $hoy.'T00:00:00-06:00';
+            $endTime = $hoy.'T23:59:59-06:00';
+            $page = 1;
+            $perPage = 100;
 
-        $data = $this->get_records($url,$beginTime, $endTime, $page, $perPage, $token); // funcion donde se consiguen los registros de los checadores de la nube
-        $totalPages = $data['pageCount'];
+            $data = $this->get_api($url, $ak, $apiSecret[$name], $beginTime, $endTime, $page, $perPage); // funcion donde se consigue el token para accesar
+            $totalPages = $data['pageCount'];
 
-        for ($x = 1; $x <= $totalPages; $x++) {
-            foreach($data['list'] as $record) {
-                $time = explode('T',$record['checktime']); //se procesa la fecha y hora
-                $timezone = substr($time[1],8,13); // se extrae la timezone para generarla en -06
-                $time[1] = substr($time[1], 0, 8);
+            for ($x = 1; $x <= $totalPages; $x++) {
+                foreach($data['list'] as $record) {
+                    $time = explode('T',$record['checktime']); //se procesa la fecha y hora
+                    $timezone = substr($time[1],8,13); // se extrae la timezone para generarla en -06
+                    $time[1] = substr($time[1], 0, 8);
 
-                if($timezone = '+00:00') { // si la timezone es 0 se le hara una resta a la hora de 6 para tenerla en -06:00
-                    $hour = substr($time[1],0,2) - 6;
-                    if($hour < 10) {
-                        $hour = '0'.$hour;
+                    if($timezone = '+00:00') { // si la timezone es 0 se le hara una resta a la hora de 6 para tenerla en -06:00
+                        $hour = substr($time[1],0,2) - 6;
+                        if($hour < 10) {
+                            $hour = '0'.$hour;
+                        }
+                        $time[1] =  $hour . substr($time[1],2,7);
                     }
-                    $time[1] =  $hour . substr($time[1],2,7);
-                }
 
-                $registro = checador_asistencia::Where('numero_enlace',$record['employee']['workno'])->Where('fecha',$time[0])->First();
-                if(is_null($registro)) {
-                    $this->add_registro($record['employee']['workno'],$time[0],$time[1]);
-                } else {
-                    $this->update_registro($registro, $time[1]);
+                    $registro = checador_asistencia::Where('numero_enlace',$record['employee']['workno'])->Where('fecha',$time[0])->First();
+                    if(is_null($registro)) {
+                        $this->add_registro($record['employee']['workno'],$time[0],$time[1]);
+                    } else {
+                        $this->update_registro($registro, $time[1]);
+                    }
                 }
+                $page++;
+                $data = $this->get_api($url, $ak, $apiSecret[$name], $beginTime, $endTime, $page, $perPage); // consulta de la segunda hoja
             }
-            $page++;
-            $data = $this->get_records($url,$beginTime, $endTime, $page, $perPage, $token);
         }
         // dd('complete'); // quitar para subir a produccion
     }
@@ -192,9 +197,9 @@ class RHController extends Controller
     }
 
     private function update_registro($registro, $salida) {
-        if($salida > '07:30:00' && $salida < '08:30:00') { // se analiza si el horario es de salida o de entrada
+        if($salida > '07:30:00' && $salida < '09:30:00') { // se analiza si el horario es de salida o de entrada
             $registro->entrada = $salida;
-        } else if(($salida > '15:59:59' && $salida < '16:29:59') || is_null($registro->salida)) { // se analiza si el horario es salida y esta dentro de la hora adecuada
+        } else if(($salida > '14:59:59' && $salida < '16:29:59') || is_null($registro->salida)) { // se analiza si el horario es salida y esta dentro de la hora adecuada
             $registro->salida = $salida;
         }
 
@@ -203,7 +208,7 @@ class RHController extends Controller
         return $registro;
     }
 
-    private function get_api_token($url) {
+    private function get_api($url, $apiKey, $apiSecret, $beginTime, $endTime, $page, $perPage) {
         $response = Http::post($url, [
             'header' => [
                 'nameSpace' => 'authorize.token',
@@ -213,14 +218,15 @@ class RHController extends Controller
                 'timestamp' => Carbon::now()->toIso8601String(),
             ],
             'payload' => [
-                'api_key' => 'c4b5f541364d3f196899b116b0bebb2d',
-                'api_secret' => 'd7e30cd8e81c98c580c3f5e57c35bd24',
+                'api_key' => $apiKey,
+                'api_secret' => $apiSecret,
             ]
         ]);
 
         $token = $response->json()['payload']['token'];
+        $data = $this->get_records($url,$beginTime, $endTime, $page, $perPage, $token); // funcion donde se consiguen los registros de los checadores de la nube
 
-        return $token;
+        return $data;
     }
     private function get_records($url,$beginTime, $endTime, $page, $perPage, $token) {
         $response2 = Http::post($url, [
