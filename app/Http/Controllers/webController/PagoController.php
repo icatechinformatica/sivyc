@@ -360,12 +360,11 @@ class PagoController extends Controller
                     AND (EXISTS (SELECT 1 FROM pagos p WHERE p.arch_calificaciones IS NOT NULL AND p.id_contrato = contratos.id_contrato)
                     OR EXISTS (SELECT 1 FROM documentos_firmar df WHERE df.tipo_archivo = 'Reporte fotografico' AND df.status = 'VALIDADO' AND df.numero_o_clave = tbl_cursos.clave)
                     OR tbl_cursos.tipo_curso != 'CERTIFICACION')
-                    THEN TRUE
-                ELSE FALSE
+                    THEN FALSE
+                ELSE TRUE
             END
             ) AS resultado")
             ]);
-        // dd($contratos_folios[1]->resultado);
 
         foreach($contratos_folios as $pointer => $ari)
         {
