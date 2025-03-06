@@ -53,10 +53,10 @@ class RHController extends Controller
         foreach($apiKey as $name => $ak) {
             $url = 'https://api.us.crosschexcloud.com/'; // Reemplaza con la URL correcta
             $hoy = Carbon::now()->format('Y-m-d');
-            $beginTime = '2025-03-04T00:00:00+00:00';
-            $endTime = '2025-03-06T23:59:59+00:00';
-            // $beginTime = $hoy.'T00:00:00-06:00';
-            // $endTime = $hoy.'T23:59:59-06:00';
+            // $beginTime = '2025-03-04T00:00:00+00:00';
+            // $endTime = '2025-03-06T23:59:59+00:00';
+            $beginTime = $hoy.'T00:00:00-06:00';
+            $endTime = $hoy.'T23:59:59-06:00';
             $page = 1;
             $perPage = 100;
 
