@@ -85,11 +85,15 @@ class InstructorController extends Controller
                 $join->on('instructores.id','=','especialidad_instructores.id_instructor');
                 $join->where('especialidad_instructores.status','=','VALIDADO');
                 $join->groupby('especialidad_instructores.id_instructor');
-            })
+            });
             //->JOIN('especialidad_instructores','instructores.id','especialidad_instructores.id_instructor')
             //->WHERE('especialidad_instructores','especialidad_instructores.status','VALIDADO')
-            ->WHEREIN('estado', [true,false])
-            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
+            if(Auth::user()->can('instructores.all'))                
+                $data = $data->WHEREIN('estado', [true,false]);
+            else                
+                $data = $data->whereIn('estado', [true]);
+
+            $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
             ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
                 'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado', DB::raw('min(fecha_validacion) as fecha_validacion'),
                 DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
@@ -98,8 +102,7 @@ class InstructorController extends Controller
                   WHERE especialidad_instructores.id_instructor = instructores.id
                   AND especialidad_instructores.status = \'VALIDADO\'
                   ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
-            ]);
-
+            ]);            
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
     }
@@ -262,6 +265,7 @@ class InstructorController extends Controller
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','DTA')
                                                 ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO'])
+                                                ->WHERE('registro_activo', ['true'])
                                                 ->GET();
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','UNIDAD')
@@ -4448,8 +4452,9 @@ class InstructorController extends Controller
         if($request->id_instructor and $request->estado){
 
             $id_instructor = $request->id_instructor;
-            $estado = $request->estado;
-            $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
+            $estado = $request->estado;            
+            $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);            
+            $result2 =  pre_instructor::where('id', '=', $request->id_instructor)->update(['registro_activo' => $estado]);
         }
         if($result){
             if($estado == "true") $msg = "INSTRUCTOR ACTIVADO.";
