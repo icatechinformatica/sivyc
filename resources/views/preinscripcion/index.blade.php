@@ -28,9 +28,10 @@
             $termino = $grupo->termino;
             $nombre_curso = $grupo->nombre_curso;
             $organismo = $grupo->depen;
-            $id_gvulnerable = $grupo->id_gvulnerable;
-            //if($id_gvulnerable == 0 and $grupo->plantel) $es_vulnerable = false;
-            if(($grupo->plantel and $id_gvulnerable) OR !$grupo->plantel) $checked = 'checked';
+            $id_gvulnerable = $grupo->id_gvulnerable;            
+            if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
+            elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
+            
 
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
