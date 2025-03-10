@@ -88,9 +88,9 @@ class InstructorController extends Controller
             });
             //->JOIN('especialidad_instructores','instructores.id','especialidad_instructores.id_instructor')
             //->WHERE('especialidad_instructores','especialidad_instructores.status','VALIDADO')
-            if(Auth::user()->can('instructores.all'))                
+            if(Auth::user()->can('instructores.all'))
                 $data = $data->WHEREIN('estado', [true,false]);
-            else                
+            else
                 $data = $data->whereIn('estado', [true]);
 
             $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
@@ -102,7 +102,7 @@ class InstructorController extends Controller
                   WHERE especialidad_instructores.id_instructor = instructores.id
                   AND especialidad_instructores.status = \'VALIDADO\'
                   ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
-            ]);            
+            ]);
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
     }
@@ -4452,8 +4452,8 @@ class InstructorController extends Controller
         if($request->id_instructor and $request->estado){
 
             $id_instructor = $request->id_instructor;
-            $estado = $request->estado;            
-            $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);            
+            $estado = $request->estado;
+            $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
             $result2 =  pre_instructor::where('id', '=', $request->id_instructor)->update(['registro_activo' => $estado]);
         }
         if($result){
