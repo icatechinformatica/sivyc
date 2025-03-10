@@ -10,7 +10,7 @@
         .tablag tr td { font-size: 8px; padding: 0px;}
         .contenedor {
         position:RELATIVE;
-        top:120px;
+        top:70px;
         width:100%;
         margin:auto;
         }
