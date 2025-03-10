@@ -21,12 +21,22 @@
             </div>
         @endif
         <div class="col-lg-12 d-flex justify-content-between align-items-center">
-            <div>
+            <div >
+                <label for="busqueda">Busqueda</label>
                 <input type="text" id="busqueda" class="form-control mr-sm-2" placeholder="BUSCAR">
             </div>
-            <div style="padding-top: 3%">
-                <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-placement="top" data-target="#cargarModal"> CARGAR ASISTENCIAS</button>
+            <div style="margin-left: 0%;">
+                <label for="fecha_inicio">Fecha Inicio</label>
+                <input type="date" id="fecha_inicio" class="form-control mr-sm-2" >
             </div>
+            <div style="margin-left: -2%;">
+                <label for="fecha_inicio">Fecha Termino</label>
+                <input type="date" id="fecha_termino" class="form-control mr-sm-2">
+            </div>
+            <div style="padding-top: 2%">
+                {{-- <button id="buscar" class="btn btn-primary">Buscar</button> --}}
+            </div>
+            <div style="margin-left: 40%;"></div>
         </div>
         <hr style="border-color:dimgray">
         <table id="tablaResultados" class="table table-bordered">
@@ -71,6 +81,12 @@
                 </tr>
             </tfoot>
         </table>
+        <div class="col-lg-12 d-flex justify-content-between align-items-right" style="text-align: right;">
+            <div></div>
+            <div style="padding-top: 3%;">
+                <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-placement="top" data-target="#cargarModal"> CARGAR ASISTENCIAS</button>
+            </div>
+        </div>
         <br>
         <!-- Modal Cargar Asistencias-->
         <div class="modal fade" id="cargarModal" role="dialog">
@@ -150,6 +166,32 @@
                         $('#tablaResultados').html(data);
                     }
                 });
+            });
+
+            function buscarDatos() {
+                var query = $('#busqueda').val();
+                var fechaInicio = $('#fecha_inicio').val();
+                var fechaTermino = $('#fecha_termino').val();
+                console.log(fechaInicio);
+                console.log(fechaTermino);
+
+                $.ajax({
+                    url: "{{ route('rh.index') }}",
+                    method: 'GET',
+                    data: {
+                        search: query,
+                        fecha_inicio: fechaInicio,
+                        fecha_termino: fechaTermino
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        $('#tablaResultados').html(data); // Solo actualiza el tbody
+                    }
+                });
+            }
+
+            $('#fecha_inicio, #fecha_termino').on('change', function() {
+                buscarDatos();
             });
         });
     </script>
