@@ -10,7 +10,7 @@
         .tablag tr td { font-size: 8px; padding: 0px;}
         .contenedor {
         position:RELATIVE;
-        top:70px;
+        top:50px;
         width:100%;
         margin:auto;
         }
@@ -25,11 +25,11 @@
         <div align=right style="font-size:11px;"><b>DIRECCIÓN DE PLANEACIÓN. </b></div>
         <div align=right style="font-size:11px;"><b>MEMORÁNDUM NO. {{ $num_memo_planeacion }}</b></div>
         <div align=right style="font-size:11px;"><b>TUXTLA GUTIÉRREZ, CHIAPAS; {{ $fecha_ahora_espaniol }}</b></div>
-        <br><br>
+        <br>
         <div align=left style="font-size:12px;"><b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}.</b></div>
         <div align=left style="font-size:11px;"><b>{{ $funcionarios['dacademico']['puesto'] }}.</b></div>
         <div align="left" style="font-size: 11px;"><b>Presente</b></div>
-        <br><br><br><br>
+        <br><br>
         <div align="justify" style="font-size:16px;">
            <p>
             De acuerdo a la información estadistica reportada mediante el Formato T, recibido por
