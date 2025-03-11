@@ -27,12 +27,26 @@ class RHController extends Controller
 {
     public function index(Request $request)
     {
-        $query = funcionario::RightJoin('tbl_checador_asistencias', 'tbl_checador_asistencias.numero_enlace','tbl_funcionario.clave_empleado')->OrderBy('fecha','desc')->select('tbl_checador_asistencias.*', 'tbl_funcionario.nombre_trabajador','nombre_adscripcion','curp_usuario');
+        $query = null;
+        $query = funcionario::RightJoin('tbl_checador_asistencias', 'tbl_checador_asistencias.numero_enlace','tbl_funcionario.clave_empleado')
+            ->select('tbl_checador_asistencias.*', 'tbl_funcionario.nombre_trabajador','nombre_adscripcion','curp_usuario')
+            ->OrderBy('fecha','desc');
 
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('numero_enlace', 'LIKE', "%$search%")
+            $query->where(function ($q) use ($search) {
+                $q->where('numero_enlace', 'LIKE', "%$search%")
                 ->orWhere('nombre_trabajador', 'LIKE', "%$search%");
+            });
+        }
+
+        if ($request->has('fecha_inicio') && $request->has('fecha_termino')) {
+            $fechaInicio = $request->input('fecha_inicio');
+            $fechaTermino = $request->input('fecha_termino');
+
+            if (!empty($fechaInicio) && !empty($fechaTermino)) {
+                $query->whereBetween('fecha', [$fechaInicio, $fechaTermino]);
+            }
         }
 
         $data = $query->paginate(25);
@@ -53,8 +67,10 @@ class RHController extends Controller
         foreach($apiKey as $name => $ak) {
             $url = 'https://api.us.crosschexcloud.com/'; // Reemplaza con la URL correcta
             $hoy = Carbon::now()->format('Y-m-d');
-            // $beginTime = '2025-03-04T00:00:00+00:00';
-            // $endTime = '2025-03-06T23:59:59+00:00';
+            $dia = Carbon::now();
+            $diaSemana = $dia->translatedFormat('l');
+            // $beginTime = '2025-03-07T00:00:00+00:00';
+            // $endTime = '2025-03-07T23:59:59+00:00';
             $beginTime = $hoy.'T00:00:00-06:00';
             $endTime = $hoy.'T23:59:59-06:00';
             $page = 1;
@@ -81,7 +97,7 @@ class RHController extends Controller
                     if(is_null($registro)) {
                         $this->add_registro($record['employee']['workno'],$time[0],$time[1]);
                     } else {
-                        $this->update_registro($registro, $time[1]);
+                        $this->update_registro($registro, $time[1], $diaSemana);
                     }
                 }
                 $page++;
@@ -196,11 +212,17 @@ class RHController extends Controller
         return $new;
     }
 
-    private function update_registro($registro, $salida) {
+    private function update_registro($registro, $salida, $dia) {
         if($salida > '07:30:00' && $salida < '09:30:00') { // se analiza si el horario es de salida o de entrada
             $registro->entrada = $salida;
-        } else if(($salida > '14:59:59' && $salida < '16:29:59') || is_null($registro->salida)) { // se analiza si el horario es salida y esta dentro de la hora adecuada
-            $registro->salida = $salida;
+        } else if(($salida > '14:59:59') || is_null($registro->salida) || ($dia == 'viernes' && $salida > '12:59:59')) { // se analiza si el horario es salida y esta dentro de la hora adecuada
+            if ($dia == 'viernes' && $salida > '13:30:59') {
+                $registro->salida = '13:30:00';
+            } else if($salida > '16:30:59'){
+                $registro->salida = '16:30:00';
+            } else {
+                $registro->salida = $salida;
+            }
         }
 
         $registro->save();
