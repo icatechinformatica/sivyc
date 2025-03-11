@@ -274,4 +274,21 @@ class RHController extends Controller
 
         return $response2->json()['payload'];
     }
+
+    public function api_rh(Request $request)
+    {
+        // Capturar parámetros desde la URL
+        $url = $request->query('url');
+        $apiKey = $request->query('key');
+        $apiSecret = $request->query('secret');
+        $beginTime = $request->query('inicio');
+        $endTime = $request->query('final');
+        $page = $request->query('pagina', 1);
+        $perPage = $request->query('porpagina', 10);
+
+        // Llamar a un método privado para procesar la información
+        $response = $this->get_api($url, $apiKey, $apiSecret, $beginTime, $endTime, $page, $perPage);
+
+        return response()->json([$response]);
+    }
 }

@@ -57,6 +57,7 @@ use Illuminate\Support\Facades\Route;
      Route::post('folios/{curso}/{id}', 'ApiController\FolioController@update');
      Route::get('instructores/perfil/{id}', 'ApiController\InstructorPerfilController@show');
      Route::post('cursos/actualizar/{id}', 'ApiController\CursosController@updateCursosCalificaciones');
+     Route::get('/rh-api', 'RH\RHController@api_rh'); // rh para api de la nube
 
 
     //api app movil "supervision icatech"eb
