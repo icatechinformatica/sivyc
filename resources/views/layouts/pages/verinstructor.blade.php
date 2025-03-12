@@ -2981,7 +2981,7 @@
                 request2.done(( respuesta) =>
                 {
                     position = document.getElementById("row").value;
-                    console.log(position);
+                    // console.log(position);
                     $('#modperprofModal').modal('hide');
                         var table = document.getElementById('tableperfiles')
                         var row = table.rows[position];
@@ -3352,7 +3352,6 @@
                     }
                 }
             }
-            // console.log(id);
             $('#modperprofwarning').prop("class", "d-none d-print-none")
             document.getElementById('grado_prof2').value = id['0'];
             document.getElementById('area_carrera2').value = id['1'];

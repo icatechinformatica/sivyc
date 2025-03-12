@@ -2487,8 +2487,7 @@ class InstructorController extends Controller
         $instructor->lastUserId = Auth::user()->id;
         $instructor->status = 'EN CAPTURA';
         $instructor->registro_activo = TRUE;
-        $instructor->save();
-
+        $respo = $instructor->save();
 
         $cue = '<button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO"
         data-toggle="modal"
