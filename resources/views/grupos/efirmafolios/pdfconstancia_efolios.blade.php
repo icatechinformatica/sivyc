@@ -59,7 +59,7 @@
 }
 
     #fondo1 {
-        background-image: url('{{$url_uno_membretado}}');
+        background-image: url('img/econstancias_alumnos/fondo_constancia_2025_frente.png');
         background-size: cover;
         background-position: center;
         width: 100%;
@@ -68,7 +68,7 @@
     }
 
     #fondo2 {
-        background-image: url('{{$url_dos_membretado}}');
+        background-image: url('img/econstancias_alumnos/fondo_constancia_2025_reverso.png');
         background-size: cover;
         background-position: center;
         width: 100%;
