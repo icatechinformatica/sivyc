@@ -66,7 +66,7 @@ class FuncionesController extends Controller
             ->select('funciones_proced.*')
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $organismo)
-            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
+            // ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderByDesc('funciones_proced.id')
             ->paginate(20, ['funciones_proced.*']);
 
