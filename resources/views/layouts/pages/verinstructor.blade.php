@@ -3343,6 +3343,15 @@
         $('#modperprofModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget);
             var id = button.data('id');
+            if (!Array.isArray(id)) {
+                if (!Array.isArray(id)) {
+                    try {
+                        id = JSON.parse(id);
+                    } catch (e) {
+                        id = id.split(",").map(item => item.trim().replace(/^"|"$/g, ''));
+                    }
+                }
+            }
             // console.log(id);
             $('#modperprofwarning').prop("class", "d-none d-print-none")
             document.getElementById('grado_prof2').value = id['0'];
