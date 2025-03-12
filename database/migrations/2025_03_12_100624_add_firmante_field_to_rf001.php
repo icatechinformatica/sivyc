@@ -15,7 +15,7 @@ class AddFirmanteFieldToRf001 extends Migration
     {
         Schema::table('tbl_rf001', function (Blueprint $table) {
             //
-            $table->jsonb('firmante')->nullable();
+            $table->json('firmante')->nullable();
         });
     }
 
