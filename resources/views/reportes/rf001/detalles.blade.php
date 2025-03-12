@@ -694,7 +694,7 @@
                     <div class="col d-flex justify-content-end">
                         <div class="d-flex gap-1">
                             @if ($countFirma < 2 ||  $getConcentrado->estado == 'APROBADO' || $getConcentrado->estado == 'ENFIRMA')
-                                @if ($curps->isEmpty())
+                                @if (is_null($curps))
                                     @canany(['solicitud.rf001', 'vobo.rf001'])
                                         <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
                                         :token-data="$token" :id="$id" :curp-firmante="$curpFirmante" :duplicado="$data['controlduplicado']"></x-firma-componente>
