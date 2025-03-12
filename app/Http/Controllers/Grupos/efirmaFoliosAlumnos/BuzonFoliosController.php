@@ -248,7 +248,7 @@ class BuzonFoliosController extends Controller
                 }
 
                 //Obtener el formato correcto de la tabla tbl_eformatos
-                $$url_uno_membretado = $url_dos_membretado = '';
+                $url_uno_membretado = $url_dos_membretado = '';
                 $fecha_eformato = $consulta->fecha_creacion;
                 $fecha_solo_fecha = substr($fecha_eformato, 0, 10);
                 if ($fecha_solo_fecha <= '2024-12-31') {
