@@ -264,17 +264,18 @@ class Rf001Controller extends Controller
             $token = $getToken->token;
         }
 
-        // obtener revision
-        $revisionLocal = collect(json_decode($getConcentrado->movimiento, true))->first(function ($item) {
-            return isset($item['tipo'], $item['usuario']) &&
-                (
-                    ($item['tipo'] === 'REVISION_LOCAL' && $item['usuario'] != Auth::user()->email) ||
-                    ($item['tipo'] === 'GENERADO' && $item['usuario'] != Auth::user()->email)
-                );
-        });
-        $pathFile = $this->path_files;
         $curpFirmante = $getSigner->curp ?? null; //modificaciones en la curp
-        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal', 'pathCancelado'))->render();
+        $countFirma = $getConcentrado->contador_firma;
+
+        // obtener revision
+        $curps = collect(json_decode($getConcentrado->firmante, true))
+        ->first(function ($item) {
+            return isset($item['curp']) && $item['curp'] === $curpFirmante;
+        });
+
+        $pathFile = $this->path_files;
+
+        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'curps', 'pathCancelado', 'countFirma'))->render();
     }
 
     /**

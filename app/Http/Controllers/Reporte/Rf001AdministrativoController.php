@@ -100,13 +100,9 @@ class Rf001AdministrativoController extends Controller
             $token = $getToken->token;
         }
 
-        // obtener revision
-        $revisionLocal = collect(json_decode($getConcentrado->movimiento, true))->first(function ($item) {
-            return isset($item['tipo']) && $item['tipo'] === 'REVISION_GENERAL';
-        });
         $pathFile = $this->path_files;
         $curpFirmante = $getFirmante->curp;
-        return view('reportes.rf001.revision.detalle_revision', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal', 'pathCancelado'))->render();
+        return view('reportes.rf001.revision.detalle_revision', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'pathCancelado'))->render();
     }
 
     /**
