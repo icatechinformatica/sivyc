@@ -269,7 +269,7 @@ class Rf001Controller extends Controller
 
         // obtener revision
         $curps = collect(json_decode($getConcentrado->firmante, true))
-        ->first(function ($item) {
+        ->first(function ($item) use ($curpFirmante) {
             return isset($item['curp']) && $item['curp'] === $curpFirmante;
         });
 
