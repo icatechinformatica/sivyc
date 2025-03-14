@@ -46,9 +46,11 @@
                                 <th>Subsistema</th>
                                 <th>Entidad</th>
                                 <th>ZonaEconómica</th>
-                                <th>Trabajador</th>
-                                <th>CURP</th>
                                 <th>RFC</th>
+                                <th>CURP</th>
+                                <th>Primer Apellido</th>
+                                <th>Segundo Apellido</th>
+                                <th>Nombres</th>                                
                                 <th>Plaza</th>
                                 <th>Categoría</th>
                                 <th>Código</th>
@@ -64,9 +66,12 @@
                                         <td>{{ $item->subsistema}}</td>                                        
                                         <td>{{ $item->entidad}}</td>
                                         <td>{{ $item->ze}}</td>
-                                        <td class="text-left">{{ $item->nombre}}</td>
-                                        <td class="text-left">{{ $item->curp}}</td>
                                         <td class="text-left">{{ $item->rfc}}</td>
+                                        <td class="text-left">{{ $item->curp}}</td>                                        
+                                        <td class="text-left">{{ $item->apaterno}}</td>
+                                        <td class="text-left">{{ $item->amaterno}}</td>
+                                        <td class="text-left">{{ $item->nombre}}</td>
+                                        
                                         <td>{{ $item->tipo_plaza}}</td>
                                         <td>{{ $item->plaza}}</td>
                                         <td>{{ $item->codigo_plaza}}</td>                                        
