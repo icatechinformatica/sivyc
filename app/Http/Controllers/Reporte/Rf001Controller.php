@@ -264,7 +264,7 @@ class Rf001Controller extends Controller
             $token = $getToken->token;
         }
 
-        $curpFirmante = $getSigner->curp ?? null; //modificaciones en la curp
+        $curpFirmante = isset($getSigner) ? ($getSigner->curp ?? null) : null; //modificaciones en la curp
         $countFirma = $getConcentrado->contador_firma;
 
         // obtener revision
