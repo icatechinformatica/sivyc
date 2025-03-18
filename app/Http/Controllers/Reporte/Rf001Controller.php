@@ -264,12 +264,12 @@ class Rf001Controller extends Controller
             $token = $getToken->token;
         }
 
-        $curpFirmante = $getSigner->curp ?? null; //modificaciones en la curp
+        $curpFirmante = isset($getSigner) ? ($getSigner->curp ?? null) : null; //modificaciones en la curp
         $countFirma = $getConcentrado->contador_firma;
 
         // obtener revision
         $curps = collect(json_decode($getConcentrado->firmante, true))
-        ->first(function ($item) {
+        ->first(function ($item) use ($curpFirmante) {
             return isset($item['curp']) && $item['curp'] === $curpFirmante;
         });
 
