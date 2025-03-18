@@ -599,7 +599,7 @@
                                                             @if ($consul_efirma['status_firma'] != 'FIRMADO')
                                                                 <button class="btn btn-info" onclick="openModal()">FIRMAR</button>
                                                             @endif
-                                                            @if ($consul_efirma['pos_firm_activo'] == 0 && $consul_efirma['status_doc'] == 'EnFirma' && $consul_efirma['firmado_uno'] == 'SI' && $consul_efirma['firmado_dos'] == 'SI')
+                                                            @if (!empty($consul_efirma['pos_firm_activo']) && $consul_efirma['status_doc'] == 'EnFirma' && $consul_efirma['firmado_uno'] == 'SI' && $consul_efirma['firmado_dos'] == 'SI')
                                                                 <button class="btn btn-info" onclick="sellarDocumento('{{$consul_efirma['idEfirmaMeta']}}', 'meta' )">SELLAR</button>
                                                             @endif
                                                         </div>
