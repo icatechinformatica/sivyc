@@ -25,7 +25,7 @@
         @endif        
         {{ Form::open(['method' => 'post', 'id'=>'frm',  'enctype' => 'multipart/form-data']) }}
             @csrf                   
-            <h4>Filtrar en Fechas de Reportado:</h4>
+            <h4>Filtrar con Fecha de Incio del Curso:</h4>
             <div class="row form-inline ml-1">   
                 
                 {{ Form::date('fecha1', $fecha1 ?? '' , ['id'=>'fecha1', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA INICIAL', 'required' => 'required']) }}
@@ -58,6 +58,7 @@
                                 <th>Código</th>
                                 <th>Horas</th>
                                 <th>CCT</th>
+                                <th>Turnado DTA</th>
                             </tr>                            
                         </thead>                       
                             <tbody>
@@ -79,6 +80,7 @@
                                         <td>{{ $item->codigo_plaza}}</td>                                        
                                         <td>{{ $item->horas}}</td>
                                         <td>{{ $item->cct}}</td>
+                                        <td>{{ $item->turnado_dta}}</td>
                                     </tr>     
                                 @endforeach    
                             </tbody>
@@ -88,6 +90,12 @@
                                     </td>
                                 </tr>
                             </tfoot>
+                        @elseif(isset($fecha1))
+                            <div class="row mt-4">
+                                <div  class="col-md-12 alert alert-danger text-center" >
+                                    {{ "NO SE ENCONTRARON REGISTROS." }}
+                                </div>
+                            </div>
                         @endif
                     </table>
                 </div>
