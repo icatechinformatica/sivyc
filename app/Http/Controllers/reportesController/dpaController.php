@@ -80,12 +80,12 @@ class dpaController extends Controller
                 ->selectRaw("'E11001' as codigo_plaza")
                 ->selectRaw('SUM(dura) as horas')
                 ->addSelect('cct')
-                ->selectRaw("TO_CHAR(MAX(memos->'TURNADO_PLANEACION'->'PLANEACION'->>'FECHA')::TIMESTAMP,'DD/MM/YYYY') as turnado_dta")
+                ->selectRaw("TO_CHAR((memos->'TURNADO_PLANEACION'->'PLANEACION'->>'FECHA')::TIMESTAMP,'DD/MM/YYYY') as turnado_dta")
                 ->join('instructores as i','i.curp','tc.curp')                
                 ->where('status_curso', 'AUTORIZADO')                                
                 ->whereBetween('inicio', [$request->fecha1, $request->fecha2])
                 ->whereNotNull('memos->TURNADO_PLANEACION->PLANEACION->FECHA')                
-                ->groupBy('nqna','tc.rfc','tc.curp', 'cct','i.apellidoPaterno','i.apellidoMaterno','i.nombre')
+                ->groupBy('nqna','tc.rfc','tc.curp', 'cct','i.apellidoPaterno','i.apellidoMaterno','i.nombre','turnado_dta')
                 ->orderByRaw('nqna')                
                 ->orderByRaw("MAX(CASE 
                                 WHEN ze = 'I' THEN 1
