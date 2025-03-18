@@ -25,7 +25,9 @@
         @endif        
         {{ Form::open(['method' => 'post', 'id'=>'frm',  'enctype' => 'multipart/form-data']) }}
             @csrf                   
-            <div class="row form-inline">   
+            <h4>Filtrar en Fechas de Reportado:</h4>
+            <div class="row form-inline ml-1">   
+                
                 {{ Form::date('fecha1', $fecha1 ?? '' , ['id'=>'fecha1', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA INICIAL', 'required' => 'required']) }}
                 {{ Form::date('fecha2', $fecha2 ?? '', ['id'=>'fecha2', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA FINAL', 'title' => 'FECHA FINAL', 'required' => 'required']) }}                  
                 {{ Form::button('FILTRAR', ['class' => 'btn', 'onclick' => "filtrar('FILTRAR')"]) }}
