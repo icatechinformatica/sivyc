@@ -8,7 +8,7 @@
         <style>
             body {
                 font-family: sans-serif;
-                padding: 13% 2% 5% 2% !important;
+                padding: 13% 2% 7% 2% !important;
             }
             @page {
                 margin: 0px;
@@ -119,7 +119,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="page-break"></div>
+            {{-- <div class="page-break"></div> --}}
             <br>
             <table border="1" class="tableA" style="width: 100%;">
                 <tbody>
@@ -196,38 +196,42 @@
                                     @endif
                                     @if($sincrono[0] > 0 || $sincrono[1] > 0 || $asincrono[0] > 0 || $asincrono[1] > 0)
                                         <br><br><b>A Distancia</b>
-                                        @if($sincrono[0] > 0)
+                                        @if($sincrono[0] > 0 || $sincrono[1] > 0)
                                             @if($sincrono[0] > 0 || $sincrono[1] > 0) <br><b>Sincronas</b><br>@endif
                                             @if($sincrono[0] >= 10)
                                                 {{$sincrono[0]}}
                                             @else
-                                                {{$sincrono[0]['1']}}
+                                                @if ($sincrono[0]['1'] != 0)
+                                                    {{$sincrono[0]['1']}}
+                                                @endif
                                             @endif
-                                            @if($sincrono[0] > 1)Horas @else Hora @endif
+                                            @if($sincrono[0] > 1)Horas @elseif($sincrono[0] == 1) Hora @endif
                                             @if($sincrono[1] > 0)
                                                 @if($sincrono[1] >= 10)
                                                     {{$sincrono[1]}}
                                                 @else
                                                     {{$sincrono[1]['1']}}
                                                 @endif
-                                                @if($sincrono[1] > 1)Minutos @else Minuto @endif
+                                                @if($sincrono[1] > 1)Minutos @elseif($sincrono[1] == 1) Minuto @endif
                                             @endif
                                         @endif
-                                        @if($asincrono[0] > 0)
+                                        @if($asincrono[0] > 0 || $sincrono[1] > 0)
                                             @if($asincrono[0] > 0 || $asincrono[1] > 0) <br><b>Asincronas</b><br>@endif
                                             @if($asincrono[0] >= 10)
                                                 {{$asincrono[0]}}
                                             @else
-                                                {{$asincrono[0]['1']}}
+                                                @if ($asincrono[0]['1'] != 0)
+                                                    {{$asincrono[0]['1']}}
+                                                @endif
                                             @endif
-                                            @if($asincrono[0] > 1)Horas @else Hora @endif
+                                            @if($asincrono[0] > 1)Horas @elseif($asincrono[0] == 1) Hora @endif
                                             @if($asincrono[1] > 0)
                                                 @if($asincrono[1] >= 10)
                                                     {{$asincrono[1]}}
                                                 @else
                                                     {{$asincrono[1]['1']}}
                                                 @endif
-                                                @if($asincrono[1] > 1)Minutos @else Minuto @endif
+                                                @if($asincrono[1] > 1)Minutos @elseif($asincrono[1] == 1) Minuto @endif
                                             @endif
                                         @endif
                                     @endif
@@ -249,7 +253,7 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="page-break"></div>
+            {{-- <div class="page-break"></div> --}}
             <br>
             <table border="1" class="tableA" style="width: 100%;">
                 <tbody>
