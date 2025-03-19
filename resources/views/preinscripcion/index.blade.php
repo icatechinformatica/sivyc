@@ -215,15 +215,21 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label>INSTRUCTOR DISPONIBLE:</label>
+                        @php
+                            $encontrado = false
+                        @endphp
                         <select name="instructor" id="instructor" class="form-control mr-sm--2">
-                            @if ($instructor)
-                                <option value="{{$instructor->id}}">{{$instructor->instructor}}</option>
-                            @else
-                                <option value="">- SELECCIONAR -</option>
-                            @endif
                             @foreach ($instructores as $item)
-                                <option value="{{$item->id}}">{{$item->instructor}}</option>
+                                <option value="{{$item->id}}" {{ $item->id == $instructor->id ? 'selected' : '' }}> {{$item->instructor}} </option>
+                                @if ($item->id == $instructor->id)                                    
+                                    @php
+                                        $encontrado = true
+                                    @endphp
+                                @endif
                             @endforeach
+                            @if (!$encontrado && $instructor)
+                                <option value="{{$instructor->id}}" selected>{{$instructor->instructor}}</option>
+                            @endif
                         </select>
                     </div>
                 </div>
