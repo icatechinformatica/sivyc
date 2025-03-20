@@ -193,6 +193,7 @@
                     </table>
                     </div>
                 @else
+                <div style="padding-right: 12%;">
                     <table>
                         <tr>
                             <td colspan="2"><p align="center"><b>"ICATECH"</b></p></td>
@@ -211,8 +212,8 @@
                             <td colspan="2"><div align="center"></td></div>
                         </tr>
                     </table>
+                </div>
                     <p align="center"><b>"TESTIGOS"</b></p>
-                    <br><br><br><br>
                     <table>
                         <tr>
                             <td colspan="2"><p align="center"></p></td>
@@ -234,6 +235,20 @@
                         <br><small><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></small>
                         <br><small><b>{{$testigo3->puesto}}</b> </small></b>
                     </div> --}}
+                    <table>
+                        <tr>
+                            <td colspan="2"><p align="center"><b>"AUTORIZA"</b></p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><p align="center"></p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['directorDTA']}}</b></td></div>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div align="center"><b>{{$funcionarios['directorDTAp']}}</b></td></div>
+                        </tr>
+                    </table>
                     <br>
                     <div align=justify>
                         <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales en su modalidad de @if($data->tipo_curso=='CURSO') horas curso @else   certificación extraordinaria @endif No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$funcionarios['director']}}, {{$funcionarios['directorp']}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.</small>

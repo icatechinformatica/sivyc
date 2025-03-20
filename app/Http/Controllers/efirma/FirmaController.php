@@ -49,6 +49,7 @@ class FirmaController extends Controller {
             ->Join('tbl_funcionarios','tbl_funcionarios.id_org','users.id_organismo')
             ->Where('users.id', Auth::user()->id)
             ->Where('tbl_funcionarios.activo', 'true')
+            ->Where('tbl_funcionarios.titular', 'true')
             ->First();
 
         if(is_null($curpUser)) {
