@@ -1464,7 +1464,7 @@ class ContratoController extends Controller
     }
 
     public function funcionarios($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = clone $directorDTA = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true')
             ->Where('f.titular', true);
@@ -1477,6 +1477,7 @@ class ContratoController extends Controller
         $destino = $destino->Where('o.id',13)->First();
         $ccp1 = $ccp1->Where('o.id',1)->First();
         $ccp2 = $ccp2->Where('o.id',12)->First();
+        $directorDTA = $directorDTA->Where('o.id', 16)->First();
         $delegado = $delegado->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('o.nombre','LIKE','DELEG%')
             ->Where('u.unidad', $unidad)
@@ -1492,6 +1493,7 @@ class ContratoController extends Controller
             ->Where('u.unidad', $unidad)
             ->First();
 
+
         //parte de checado de incapacidad
         $direc = $this->incapacidad(json_decode($direc->incapacidad), $direc->nombre) ?: $direc;
         $delegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre) ?: $delegado;
@@ -1505,6 +1507,8 @@ class ContratoController extends Controller
             'ccp1p' => $ccp1->cargo,
             'ccp2' => $ccp2->nombre,
             'ccp2p' => $ccp2->cargo,
+            'directorDTA' => $directorDTA->nombre,
+            'directorDTAp' => $directorDTA->cargo,
             'delegado' => $delegado->nombre,
             'delegadop' => $delegado->cargo,
             'academico' => $academico->nombre,
