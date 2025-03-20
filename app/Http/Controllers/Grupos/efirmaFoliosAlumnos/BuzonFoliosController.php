@@ -108,8 +108,9 @@ class BuzonFoliosController extends Controller
             if($data) $cad_original = $data->pluck('cadena_original', 'id')->toArray();
 
             ##Obtenemos token para enviarlos a la vista
-            $getToken = Tokens_icti::latest()->first();
-            if ($getToken) {$token = $getToken->token;}
+            $token = $this->generarToken();
+            // $getToken = Tokens_icti::latest()->first();
+            // if ($getToken) {$token = $getToken->token;}
 
             ##Validamos los firmantes del documento
                 $obj = json_decode($data[0]->obj_documento, true);
@@ -133,9 +134,6 @@ class BuzonFoliosController extends Controller
                     }
                 }
         }
-
-        // $token =$this->generarToken();
-        // dd($token);
 
         return view('grupos.efirmafolios.efirmabuzon_folios', compact('ubicacion','estados','ejercicio_e','filtro_e','clave_e',
         'data','ids','matricula','token', 'cad_original', 'array_firm', 'curpf','existcurp','existmail','slug', 'existfirma'));

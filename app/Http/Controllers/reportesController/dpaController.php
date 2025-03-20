@@ -80,13 +80,12 @@ class dpaController extends Controller
                 ->selectRaw("'E11001' as codigo_plaza")
                 ->selectRaw('SUM(dura) as horas')
                 ->addSelect('cct')
-                ->join('instructores as i','i.curp','tc.curp')
-                ->join('folios as f','f.id_cursos','tc.id')
-                ->where('f.status', '<>', 'Rechazado')
-                ->where('f.status', '<>', 'En_Proceso')
-                ->where('status_curso', 'AUTORIZADO')
-                ->whereBetween('inicio', [$request->fecha1, $request->fecha2])//->where('tc.curp','FORJ930424HCSLDV00')
-                ->groupBy('nqna','tc.rfc','tc.curp', 'cct','i.apellidoPaterno','i.apellidoMaterno','i.nombre')
+                ->selectRaw("TO_CHAR((memos->'TURNADO_PLANEACION'->'PLANEACION'->>'FECHA')::TIMESTAMP,'DD/MM/YYYY') as turnado_dta")
+                ->join('instructores as i','i.curp','tc.curp')                
+                ->where('status_curso', 'AUTORIZADO')                                
+                ->whereBetween('inicio', [$request->fecha1, $request->fecha2])
+                ->whereNotNull('memos->TURNADO_PLANEACION->PLANEACION->FECHA')                
+                ->groupBy('nqna','tc.rfc','tc.curp', 'cct','i.apellidoPaterno','i.apellidoMaterno','i.nombre','turnado_dta')
                 ->orderByRaw('nqna')                
                 ->orderByRaw("MAX(CASE 
                                 WHEN ze = 'I' THEN 1
@@ -96,7 +95,7 @@ class dpaController extends Controller
                                 ELSE 0 
                             END)")
                 ->orderByRaw('tc.curp')
-                ->get();
+                ->get(); 
             return $data;                            
         }else $message["ERROR"] = "SE REQUIERE QUE SELECCIONE LA FECHA INICIAL Y FECHA FINAL PARA GENERAR EL REPORTE.";        
         if($message) return $message;
