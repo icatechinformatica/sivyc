@@ -297,7 +297,7 @@
                 @endcanany
                 @canany(['reportes.cursos', 'planeacion.reporte', 'financieros.reporte', 'vinculacion.reporte',
                     'reportes.911', 'reportes.rdcd08', 'reportes.rcdod11', 'reportes.rf001', 'financieros.reportevalrec',
-                    'financieros.reportecursos', 'reportes.pat', 'reportes.dpa'])
+                    'financieros.reportecursos', 'reportes.pat', 'reportes.dpa','reportes.dv'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
