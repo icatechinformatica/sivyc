@@ -48,7 +48,7 @@ class CredencialRepository implements CredencialesInterface
 
     public function getFuncionarios()
     {
-        return (new Funcionario())->where('status', 'true');
+        return (new Funcionario())->where('status', 'true')->where('visible', 'true');
     }
 
     public function descargarQr($id)
