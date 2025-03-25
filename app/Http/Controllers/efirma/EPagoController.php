@@ -127,7 +127,7 @@ class EPagoController extends Controller
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
                 // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body['header']). strip_tags($body['body']).strip_tags($body['ccp']).strip_tags($body['footer'])]
+                'cuerpo' => [strip_tags($body['header']). strip_tags($body['body']).strip_tags($body['ccp']).strip_tags($body['footer']).strip_tags($body['sello'])]
             ],
             'firmantes' => [
                 '_attributes' => [
@@ -395,6 +395,8 @@ class EPagoController extends Controller
             }
             $body_html['footer'] = $body_html['footer']. '</b></p>
         </footer>';
+
+        $body_html['sello'] = 'I C A T E C H "DIRECCIÓN ADMINISTRATIVA" OPERADO CONVENIO DE DESCENTRALIZACIÓN RAMO 11: EDUCACIÓN';
 
         return $body_html;
     }
