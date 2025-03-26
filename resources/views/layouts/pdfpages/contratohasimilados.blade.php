@@ -157,7 +157,21 @@
                                     </tr>
                                     <tr>
                                         <td><b>Puesto:</b></td>
-                                        <td height="25px;">{{$puestos[$key]}}</td>
+                                        @if(!is_null($firmantes))
+                                            @php $iex = true; @endphp
+                                            @foreach ($firmantes as $puesto)
+                                                @if($puesto->curp == $moist['_attributes']['curp_firmante'])
+                                                    <td height="25px;">{{$puesto->cargo}}</td>
+                                                    @php $iex = false; @endphp
+                                                    @break
+                                                @endif
+                                            @endforeach
+                                            @if($iex)
+                                                <td height="25px;">INSTRUCTOR</td>
+                                            @endif
+                                        @else
+                                            <td height="25px;">{{$puestos[$key]}}</td>
+                                        @endif
                                         {{-- @foreach($dataFirmantes as $search_puesto)
                                             @if($search_puesto->curp == $moist['_attributes']['curp_firmante'])
                                                 @php $esInstructor = FALSE; @endphp
