@@ -1145,7 +1145,7 @@ class ContratoController extends Controller
             ->Join('role_user','role_user.user_id','users.id')
             ->Where('users.id', Auth::user()->id)
             ->First();
-        $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = $body_html = null;
+        $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = $body_html = $firmantes = null;
         $contrato = new contratos();
         $puestos = array();
 
@@ -1205,6 +1205,10 @@ class ContratoController extends Controller
             $Y = date("Y", $date);
 
             $body_html = json_decode($documento->obj_documento_interno);
+            if(isset($body_html->firmantes)) {
+                $firmantes = $body_html->firmantes;
+                $body_html = $body_html->body;
+            }
         }
         if(isset($documento->uuid_sellado)){
             $objeto = json_decode($documento->obj_documento,true);
@@ -1259,7 +1263,7 @@ class ContratoController extends Controller
             if ($data->modinstructor == 'HONORARIOS') {
                 $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html','funcionarios'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('data_contrato','data','D','M','Y','nomins','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html','funcionarios'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('data_contrato','data','D','M','Y','nomins','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html','funcionarios','firmantes'));
             }
 
         $pdf->setPaper('LETTER', 'Portrait');
