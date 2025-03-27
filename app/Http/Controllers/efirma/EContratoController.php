@@ -46,6 +46,7 @@ class EContratoController extends Controller
 
         $numFirmantes = '4';
         $arrayFirmantes = [];
+        $firmante = array();
 
         $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
                             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
@@ -73,6 +74,7 @@ class EContratoController extends Controller
                 ];
                 array_push($arrayFirmantes, $temp);
                 $emisor = [ 'nombre' => $dataFirmante->nombre, 'cargo' => $dataFirmante->cargo];
+                array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
             }
         }
 
@@ -106,6 +108,7 @@ class EContratoController extends Controller
                 ];
                 array_push($arrayFirmantes, $temp);
                 $emisor = [ 'nombre' => $dataFirmante->nombre, 'cargo' => $dataFirmante->cargo];
+                array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
             }
         }
 
@@ -128,6 +131,7 @@ class EContratoController extends Controller
         //             ]
         //         ];
         //         array_push($arrayFirmantes, $temp);
+        //         array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
         //     }
         // }
 
@@ -149,6 +153,7 @@ class EContratoController extends Controller
                     ]
                 ];
                 array_push($arrayFirmantes, $temp);
+                array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
             }
         }
 
@@ -174,6 +179,7 @@ class EContratoController extends Controller
             ]
         ];
         array_push($arrayFirmantes, $temp);
+        array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
@@ -271,8 +277,10 @@ class EContratoController extends Controller
                 $dataInsert = new DocumentosFirmar();
             }
 
+            $body_html = ['body' => $body, 'firmantes' => $firmante];
+
             $dataInsert->obj_documento = json_encode($ArrayXml);
-            $dataInsert->obj_documento_interno = json_encode($body);
+            $dataInsert->obj_documento_interno = json_encode($body_html);
             $dataInsert->status = 'EnFirma';
             // $dataInsert->link_pdf = $urlFile;
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
