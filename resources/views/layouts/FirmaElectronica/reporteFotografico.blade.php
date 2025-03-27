@@ -232,7 +232,11 @@
                         <tr>
                             <td style="font-size: 11px; padding-bottom: 10px;"><b>Puesto:</b></td>
                             @if ($dataFirmante->curp == $moist['_attributes']['curp_firmante'])
-                                <td style="font-size: 11px; padding-bottom: 10px;">{{ $dataFirmante->cargo }}</td>
+                                @if(!is_null($firmantes))
+                                    <td style="font-size: 7px; height: 25px;">{{ $firmantes->cargo }}</td>
+                                @else
+                                    <td style="font-size: 11px; padding-bottom: 10px;">{{ $dataFirmante->cargo }}</td>
+                                @endif
                             @else
                                 <td style="font-size: 11px; padding-bottom: 10px;">INSTRUCTOR EXTERNO</td>
                             @endif
