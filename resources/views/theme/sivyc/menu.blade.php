@@ -115,7 +115,7 @@
                                 <a class="dropdown-item" href="{{ route('grupos.cancelacionfolios') }}">Cancelar Folios</a>
                             @endcan
                             @can('grupos.consultas')
-                                <a class="dropdown-item" href="{{ route('grupos.consultas') }}">B&uacute;squeda</a>
+                                <a class="dropdown-item" href="{{ route('grupos.consultas') }}">Buscar Grupo</a>
                             @endcan
                             @can('grupos.recibos')
                                 <a class="dropdown-item" href="{{ route('grupos.recibos') }}">Asignar Recibo de Pago</a>
@@ -141,9 +141,9 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
                             @can('vista.formatot.unidades.indice')
-                                <a class="dropdown-item" href="{{ route('vista_formatot') }}">Generación y Envío de FormatoT</a>
+                                <a class="dropdown-item" href="{{ route('vista_formatot') }}">Gestión de FormatoT</a>
                             @endcan
-                            <a class="dropdown-item" href="{{ route('formatot.consulta.index') }}">Consulta de FormatoT</a>
+                            <a class="dropdown-item" href="{{ route('formatot.consulta.index') }}">Consulta FormatoT</a>
                             @can('vista.validacion.enlaces.dta')
                                 <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión
                                     FormatoT</a>
@@ -155,7 +155,8 @@
                                     FormatoT</a>
                             @endcan
                             @can('vista.revision.validacion.planeacion.indice')
-                                <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Validación FormatoT DP</a>
+                                <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Validación FormatoT
+                                    DP</a>
                             @endcan
                             @canany(['vista.validacion.direccion.dta', 'vista.validacion.enlaces.dta'])
                                 <a href="{{ route('checar.memorandum.dta.mes') }}" class="dropdown-item">Memos Turnados a DTA</a>
