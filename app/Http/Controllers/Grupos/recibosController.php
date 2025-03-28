@@ -45,12 +45,14 @@ class recibosController extends Controller
         
         [$data , $message] = $this->data($request);
         if(session('message')) $message = session('message');
-        if($data){            
+        if($data){     
             if($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS', 'DESHACER'=>'DESHACER ASIGNACION'];
             elseif((!$data->status_curso and !in_array($data->status_folio, ['DISPONIBLE','IMPRENTA'])) OR in_array($data->status_folio,['ACEPTADO', 'CARGADO','ASIGNADO'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];            
             
             if($data->status_folio=="ENVIADO" and $data->status_curso=='CANCELADO') $movimientos = [ 'CANCELAR' => 'CANCELAR'];
             elseif($data->status_folio=="ENVIADO" and ($data->status_curso OR $data->id_concepto>1)) $movimientos = [ 'SOPORTE' => 'SOLICITUD DE CAMBIO SOPORTES'];
+
+            if($data->status_folio=="REPORTADO") $movimientos = [];
         }     
         $path_files = $this->path_files;
         $conceptos = DB::table('cat_conceptos')->WHERE('tipo','CUOTA')->WHERE('activo',true)->ORDERBY('id')->pluck('concepto','id'); 
@@ -78,7 +80,8 @@ class recibosController extends Controller
                             WHEN tc.clave ='0' and tc.status_curso ='CANCELADO' THEN 'CANCELADO' 
                             ELSE tc.clave
                             END as clave"),
-                        DB::raw("CASE                             
+                        DB::raw("CASE     
+                            WHEN tr.estado_reportado IS NOT NULL THEN 'REPORTADO'
                             WHEN tr.status_folio='CANCELADO' THEN 'CANCELADO' 
                             WHEN tr.status_folio='ENVIADO' OR  tc.comprobante_pago <> 'null' THEN 'ENVIADO'
                             WHEN tr.status_folio='SOPORTE' THEN 'CAMBIO DE SOPORTE'
@@ -419,8 +422,9 @@ class recibosController extends Controller
                             END) as num_recibo"),
 
                         DB::raw("(
-                            CASE
+                            CASE                                
                                 WHEN tc.comprobante_pago IS NOT NULL  THEN 'IMPRENTA'
+                                WHEN tr.estado_reportado IS NOT NULL  THEN 'REPORTADO'
                                 WHEN tr.status_folio is null THEN 'DISPONIBLE'
                                 ELSE  tr.status_folio
                             END) as status_folio"),                    
@@ -432,8 +436,9 @@ class recibosController extends Controller
 
                         DB::raw("(
                             CASE                                
+                                WHEN tr.estado_reportado IS NOT NULL  THEN false
                                 WHEN tc.status_curso IS NULL AND tr.status_folio IS DISTINCT FROM 'CANCELADO' THEN true
-                                WHEN tr.status_folio IN ('ACEPTADO', 'ASIGNADO') THEN true
+                                WHEN tr.status_folio IN ('ACEPTADO', 'ASIGNADO') THEN true                                
                                 ELSE false
                             END) as editar")
                     );
