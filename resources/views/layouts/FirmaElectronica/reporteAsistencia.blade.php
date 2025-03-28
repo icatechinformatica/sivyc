@@ -135,7 +135,7 @@
                             <td style="font-size: 7px;"><b>Puesto:</b></td>
                             @if ($dataFirmante->curp == $moist['_attributes']['curp_firmante'])
                                 @if(!is_null($firmantes))
-                                    <td style="font-size: 7px; height: 25px;">{{ $firmantes->cargo }}</td>
+                                    <td style="font-size: 7px; height: 25px;">{{ $firmantes['cargo'] }}</td>
                                  @else
                                     <td style="font-size: 7px; height: 25px;">{{ $dataFirmante->cargo }}</td>
                                 @endif
