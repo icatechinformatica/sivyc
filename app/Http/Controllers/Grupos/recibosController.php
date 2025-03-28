@@ -151,6 +151,10 @@ class recibosController extends Controller
                 if($request->status == "PENDIENTE") $request->status = null;
                 $data = DB::table('tbl_recibos as tr')->where('id_concepto','>',1)->join('cat_conceptos as cc','cc.id','=','tr.id_concepto')
                     ->select('tr.*','cc.concepto','tr.id as id_recibo',
+                    DB::raw("CASE     
+                        WHEN tr.estado_reportado IS NOT NULL THEN 'REPORTADO'                        
+                        ELSE tr.status_folio                   
+                        END as status_folio"),
                     DB::raw("(
                         CASE
                             WHEN tr.status_folio IS NOT NULL AND tr.status_folio<>'ENVIADO' THEN true                                        
