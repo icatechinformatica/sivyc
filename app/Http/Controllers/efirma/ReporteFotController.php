@@ -62,8 +62,8 @@ class ReporteFotController extends Controller
             $body['header'] = $body_html->header;
             $body['footer'] = $body_html->footer;
             $body['body'] = $body_html->body;
-            if(isset($body->firmantes)) {
-                $firmantes = $body->firmantes;
+            if(isset($body_html->firmantes)) {
+                $firmantes = $body_html->firmantes;
             }
         }
 
