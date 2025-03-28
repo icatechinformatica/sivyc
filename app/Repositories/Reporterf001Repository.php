@@ -33,6 +33,7 @@ class Reporterf001Repository implements Reporterf001Interface
     public function getReciboQry($unidad)
     {
         return Recibo::where('tbl_recibos.status_recibo', 'PAGADO')
+            ->where('tbl_recibos.status_folio', 'ENVIADO')
             ->where('tbl_unidades.unidad', $unidad)
             ->where(function($query) {
                 $query->whereNull('tbl_recibos.estado_reportado')
