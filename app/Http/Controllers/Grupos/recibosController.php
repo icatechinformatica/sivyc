@@ -481,9 +481,10 @@ class recibosController extends Controller
                                     ELSE max.num_recibo+1
                                 END) as num_recibo"), 
                             DB::raw("(
-                                CASE                                    
+                                CASE
+                                    WHEN tr.estado_reportado IS NOT NULL  THEN 'REPORTADO'            
                                     WHEN tr.status_folio is null THEN 'DISPONIBLE'
-                                    ELSE  tr.status_folio
+                                    ELSE tr.status_folio
                                 END) as status_folio"),         
                             DB::raw("(
                                 CASE
@@ -492,6 +493,7 @@ class recibosController extends Controller
                                 END) as deshacer"),
                             DB::raw("(
                                 CASE
+                                    WHEN tr.estado_reportado IS NOT NULL  THEN false
                                     WHEN tr.status_folio IS NOT NULL AND tr.status_folio<>'ENVIADO' THEN true
                                     WHEN  tr.status_folio='ACEPTADO'  THEN true                                    
                                     ELSE false
