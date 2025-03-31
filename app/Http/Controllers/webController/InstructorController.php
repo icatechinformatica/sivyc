@@ -40,24 +40,7 @@ use App\User;
 
 class InstructorController extends Controller
 {
-    public function prueba()
-    {
-        $data = User::Select('id')->Get();
-        foreach($data as $item)
-        {
-            $user = User::find($item->id);
-            if(str_contains($user->password,'BAJA') || str_contains($user->email,'BAJA')) {
-                $user->activo = FALSE;
-            } else {
-                $user->activo = TRUE;
-            }
-
-            $user->save();
-        }
-        dd('complete');
-
-    }
-
+     
     private function honorarios($total)
     {
 
@@ -80,31 +63,61 @@ class InstructorController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
-        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
+        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')        
             ->LEFTJOIN('especialidad_instructores',function($join){
                 $join->on('instructores.id','=','especialidad_instructores.id_instructor');
                 $join->where('especialidad_instructores.status','=','VALIDADO');
                 $join->groupby('especialidad_instructores.id_instructor');
             });
-            //->JOIN('especialidad_instructores','instructores.id','especialidad_instructores.id_instructor')
-            //->WHERE('especialidad_instructores','especialidad_instructores.status','VALIDADO')
-            if(Auth::user()->can('instructores.all'))
-                $data = $data->WHEREIN('estado', [true,false]);
-            else
-                $data = $data->whereIn('estado', [true]);
+            
+            if(!Auth::user()->can('instructores.all')){   //RESTRICCION PARA UNIDADES
+                $data = $data->whereIn('estado', [true])
+                ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA']);
+            }else{
+                //$data = $data->WHEREIN('estado', [true,false])
+                $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA','INHABILITADO']);                
+            }
+            if($tipoInstructor=='nombre_curso'){
+                if($busquedaInstructor){
+                    $buscando = explode('-', $busquedaInstructor);
+                    $data = $data->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
+                    ->where('curso_id', $buscando[0]);
+                }
+                
+            }
 
-            $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
-                'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado', DB::raw('min(fecha_validacion) as fecha_validacion'),
+            $data = $data->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
+                'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado','activo_curso', DB::raw('min(fecha_validacion) as fecha_validacion'),
                 DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
                 DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia"),
                 DB::raw('(SELECT hvalidacion FROM especialidad_instructores
                   WHERE especialidad_instructores.id_instructor = instructores.id
                   AND especialidad_instructores.status = \'VALIDADO\'
                   ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
-            ]);
+            ]); 
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
+    }
+
+    public function cursosAutocomplete(Request $request) {
+        $buscar = $request->buscar;
+        $tipo = $request->tipo;
+
+        if($tipo == 'nombre_curso' && $buscar){
+            $data = Curso::select(DB::raw("CONCAT(id, ' - ', nombre_curso) as curso"));
+
+            if (is_numeric($buscar)) $data->where('id', $buscar);
+            else $data->where(DB::raw("CONCAT(nombre_curso)"), 'like', '%'.$buscar.'%');
+            $data = $data->limit(10)->get();
+                
+            $response = array();
+            foreach ($data as $value) {
+                $response[] = array('label' => $value->curso);
+            }                
+            return json_encode($response);            
+        }
+            
+            return [];
     }
 
     public function prevalidar_index(Request $request)
@@ -4448,12 +4461,18 @@ class InstructorController extends Controller
 
     public function iestado(Request $request)
     {
-        if($request->id_instructor and $request->estado){
-
+        if($request->id_instructor and $request->estado){            
             $id_instructor = $request->id_instructor;
             $estado = $request->estado;
-            $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
-            $result2 =  pre_instructor::where('id', '=', $request->id_instructor)->update(['registro_activo' => $estado]);
+            $field = $request->field;
+            if($field == "estado"){                
+                $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
+                $result2 =  pre_instructor::where('id', '=', $request->id_instructor)->update(['registro_activo' => $estado]);
+                if($estado == true) $result3 =  instructor::where('id', '=', $request->id_instructor)->where('status','INHABILITADO')->update(['status' => 'EN CAPTURA']);
+
+            }elseif($field == "activo_curso"){
+                $result =  instructor::where('id', '=', $request->id_instructor)->update(['activo_curso' => $estado]);
+            }
         }
         if($result){
             if($estado == "true") $msg = "INSTRUCTOR ACTIVADO.";
