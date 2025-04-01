@@ -62,7 +62,8 @@
                 <p style="line-height: 0;">Empleado: <b>{{$data[0]->nombre_trabajador}}</b></p>
             </div>
             <div style="text-align: right; width: 49%; display: inline-block;">
-                <p style="text-align: right;">Grupo: <b>{{$data[0]->nombre_adscripcion}}</b></p>
+                <p style="text-align: right;">Grupo: <b>OFICINAS ADMINISTRATIVAS</b></p>
+                {{-- <p style="text-align: right;">Grupo: <b>{{$data[0]->nombre_adscripcion}}</b></p> --}}
             </div>
         </div>
         <br>

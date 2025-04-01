@@ -10,7 +10,7 @@
         <th scope="col" width="120px">RETARDO / FALTA</th>
         <th scope="col">JUSTIFICANTE</th>
         <th scope="col">OBSERVACIÓN</th>
-        <th width="80px">ACCION</th>
+        {{-- <th width="80px">ACCION</th> --}}
     </tr>
 </thead>
 <tbody>
@@ -30,8 +30,7 @@
             </td> <!-- Muestra Inasistencia o Retardo dependiendo de las condiciones -->
             <td>{{$registro->justificante}}</td> <!-- Muestra el justificante -->
             <td>{{$registro->observaciones}}</td> <!-- Muestra las observaciones -->
-            <td>
-            </td> <!-- Enlace para ver detalles -->
+            {{-- <td></td> <!-- Enlace para ver detalles --> --}}
         </tr>
     @endforeach
 </tbody>
