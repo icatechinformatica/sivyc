@@ -140,7 +140,7 @@ class aperturasController extends Controller
                 if($status_solicitud=='TURNADO'){
                     $movimientos += ['' => '- SELECCIONAR -']; 
                     if($grupos[0]->arc == '02')  $movimientos += ['EDICION' =>'AUTORIZAR EDICION']; 
-                     $movimientos += ['RETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'];
+                     $movimientos += ['RETORNADOPRE'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'];
                 }
             }else $message = "No se encuentran registros que mostrar.";
         }
