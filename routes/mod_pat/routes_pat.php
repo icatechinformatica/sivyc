@@ -101,6 +101,8 @@ Route::get('/vista/pat/buzon/pdf/general/{mes}/{opcion}', 'PatController\BuzonCo
 Route::post('/vista/pat/buzon/delete', 'PatController\BuzonController@cancelar_documento')->name('pat.buzon.cancel.doc');
 //Visualizar documento electronico pat planeación
 Route::get('/vista/pat/buzon/pdf/firma/{id?}/{org?}', 'PatController\BuzonController@ver_docfirmado')->name('pat.buzon.pdf.efirma');
+//Agregar autocomplete para la busqueda de organismos
+Route::post('/vista/pat/buzon/autocomplete', 'PatController\BuzonController@organismosAutocomplete')->name('consulta.orgpat.autocomp');
 
 
 

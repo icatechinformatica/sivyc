@@ -52,6 +52,8 @@
 
             .pendiente {color: red;}
 
+            .texto_once {font-size: 11px;}
+
             .pdfGeneral {
                 position: relative;
                 top: -20px;
@@ -93,6 +95,10 @@
                 }
             }
 
+            /* #text_buscar_organismo {
+                height: fit-content;
+                width: auto;
+            } */
 
     </style>
 @endsection
@@ -135,7 +141,7 @@
             @endif
 
             {{-- Tabla y opcion de selección --}}
-            <div class="container">
+            <div class="">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
                         <a class="nav-link {{$mes == null ? 'active show' : ''}}" data-toggle="pill" href="#home" id="gotometa">Metas</a>
@@ -149,27 +155,40 @@
                     {{-- APARTADO DE METAS --}}
                     <div id="home" class="tab-pane fade {{$mes == null ? 'show active' : ''}}  mt-4">
                         <form action="" id="form_meta">
-                            <div class="px-0 col-3">
+                            <div class="px-0 col-2">
                                 <select name="sel_meta" id="sel_meta" class="form-control ml-3"  onchange="metas_status()">
                                     <option {{$sel_meta == 'GENERAL' ? 'selected' : ''}} value="GENERAL">GENERAL</option>
                                     <option {{$sel_meta == 'PENDIENTES' ? 'selected' : ''}} value="PENDIENTES">PENDIENTES</option>
                                     <option {{$sel_meta == 'RETORNADOS' ? 'selected' : ''}} value="RETORNADOS">RETORNADOS</option>
                                     <option {{$sel_meta == 'VALIDADOS' ? 'selected' : ''}} value="VALIDADOS">VALIDADOS</option>
+                                    <option {{$sel_meta == 'SIN_MOVIMIENTOS' ? 'selected' : ''}} value="SIN_MOVIMIENTOS">SIN MOVIMIENTO</option>
                                 </select>
                             </div>
+                            <div class="d-flex row mt-2">
+                                <div class="col-3">
+                                    <input type="text" id="text_buscar_organismo" class="form-control text_buscar_organismo ml-3"
+                                    name="text_buscar_organismo" placeholder="INGRESE UN ORGANISMO" value="{{$txt_auto ?? ''}}">
+                                </div>
+                                <div class="col-4">
+                                    <button class="btn btn-success btn-md mt-1" onclick="metas_status()">BUSCAR</button>
+                                    <button class="btn btn-warning btn-md mt-1" onclick="limpiar_campo_meta()">ELIMINAR</button>
+                                </div>
+                            </div>
+
                         </form>
 
                         <h4 class="text-center font-weight-bold"><u>METAS</u></h4>
                         <table class="table table-hover table-responsive-md" id='tableperfiles'>
                             <thead>
                                 <tr>
-                                    <th scope="col">No</th>
-                                    <th scope="col">ORGANISMO</th>
+                                    <th scope="col" width="5px">No</th>
+                                    <th scope="col" width="23%">ORGANISMO</th>
                                     <th scope="col">PERIODO</th>
-                                    <th scope="col">FECHA DE ENVIO</th>
+                                    <th scope="col" width="12%">FECHA DE ENVIO</th>
                                     <th scope="col">STATUS</th>
                                     <th scope="col">PDF</th>
-                                    <th scope="col">TIPO DOCUMENTO</th>
+                                    <th scope="col" width="10%">TIPO DOCUMENTO</th>
+                                    <th scope="col" width="23%" class="text-center">FIRMANTES EFIRMA</th>
                                     <th scope="col" class="text-center">VER DETALLES</th>
                                     <th scope="col" class="text-center">CANCELAR DOCUMENTO</th>
                                 </tr>
@@ -178,7 +197,7 @@
                                 @for ($i = 0; $i < count($data); $i++)
                                     <tr>
                                         <td class="font-weight-bold">{{$i+1}}</td>
-                                        <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->nombre}}</td>
+                                        <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}} texto_once">{{$data[$i]->nombre}}</td>
                                         <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->periodo}}</td>
                                         <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->fecha_meta['fecenvioplane_m'] != "" ? $data[$i]->fecha_meta['fecenvioplane_m'] : 'Pendiente por enviar'}}</td>
                                         <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">
@@ -219,14 +238,31 @@
                                         </td>
                                         <td>
                                             {{-- status documento --}}
+                                            @php
+                                                $array_firmantes = [];
+                                            @endphp
                                             @if ( !empty($data[$i]->fecha_meta['id_efirma']) &&  !empty($data[$i]->fecha_meta['mod_documento']) && !empty($data[$i]->fecha_meta['status_efirma']) )
                                                 @if ($data[$i]->fecha_meta['status_efirma'] == 'validado')
-                                                    Electronico <br>(SELLADO)
+                                                    Electronico (SELLADO)
                                                 @else
-                                                    Electronico <br>(EN FIRMA)
+                                                    Electronico (EN FIRMA)
                                                 @endif
+                                                @php
+                                                    $consulta_firmantes = DB::table('documentos_firmar')
+                                                    ->select(DB::raw("(obj_documento->'firmantes'->'firmante'->0->0->'_attributes'->>'nombre_firmante') as nombre_firmante1"), DB::raw("(obj_documento->'firmantes'->'firmante'->0->1->'_attributes'->>'nombre_firmante') as nombre_firmante2"),
+                                                    DB::raw("(obj_documento->'firmantes'->'firmante'->0->0->'_attributes'->>'firma_firmante') IS NOT NULL AND (obj_documento->'firmantes'->'firmante'->0->0->'_attributes'->>'firma_firmante') <> '' as firma_user1"),
+                                                    DB::raw("(obj_documento->'firmantes'->'firmante'->0->1->'_attributes'->>'firma_firmante') IS NOT NULL AND (obj_documento->'firmantes'->'firmante'->0->1->'_attributes'->>'firma_firmante') <> '' as firma_user2"))->where('id', $data[$i]->fecha_meta['id_efirma'])->first();
+                                                    if($consulta_firmantes){$array_firmantes = ['firmante1' => $consulta_firmantes->nombre_firmante1,'firmante2' => $consulta_firmantes->nombre_firmante2,'firma_user1' => $consulta_firmantes->firma_user1,'firma_user2' => $consulta_firmantes->firma_user2];}
+                                                @endphp
+
                                             @elseif($data[$i]->status_meta['validado'] == '1' &&  !empty($data[$i]->fecha_meta['urldoc_firm']))
                                                 Tradicional
+                                            @endif
+                                        </td>
+                                        <td class="text-left texto_once">
+                                            @if (!empty($array_firmantes))
+                                                <b>1. {{$array_firmantes['firmante1']}} {{ $array_firmantes['firma_user1'] ? '(FIRMADO)' : '(FALTA)' }}</b> <br>
+                                                <b>2. {{$array_firmantes['firmante2']}} {{ $array_firmantes['firma_user2'] ? '(FIRMADO)' : '(FALTA)' }}</b>
                                             @endif
                                         </td>
                                         <td class="text-center">
@@ -252,9 +288,9 @@
                     {{-- APARTADO DE AVANCES --}}
                     <div id="menu1" class="tab-pane fade {{$mes != null ? 'show active' : ''}} mt-4">
                         @php if($mes == null) $mes = 'seleccionar'; @endphp
-                        <div class="col-3 px-0">
+                        <div class="px-0">
                             <form action="" id="formConsul">
-                                <div class="d-flex flex-row">
+                                <div class="col-4 d-flex flex-row">
                                     <select name="sel_mes" id="sel_mes" class="form-control" onchange="cambiarMes()">
                                         <option value="seleccionar">Seleccionar Mes</option>
                                         @for ($i = 0; $i < count($mesGlob); $i++)
@@ -266,7 +302,17 @@
                                         <option {{$sel_status == 'PENDIENTE' ? 'selected' : ''}} value="PENDIENTE">PENDIENTES</option>
                                         <option {{$sel_status == 'RETORNADO' ? 'selected' : ''}} value="RETORNADO">RETORNADOS</option>
                                         <option {{$sel_status == 'AUTORIZADO' ? 'selected' : ''}} value="AUTORIZADO">AUTORIZADOS</option>
+                                        <option {{$sel_status == 'SIN_MOVIMIENTO' ? 'selected' : ''}} value="SIN_MOVIMIENTO">SIN MOVIMIENTO</option>
                                     </select>
+                                </div>
+                                <div class="d-flex flex-row mt-2">
+                                    <div class="col-3 pl-0">
+                                        <input type="text" id="text_buscar_organismo" class="form-control text_buscar_organismo ml-3"
+                                        name="text_buscar_organismo" placeholder="INGRESE UN ORGANISMO" value="{{$txt_auto ?? ''}}">
+                                    </div>
+                                    <div class="col-4">
+                                        <button class="btn btn-success btn-md mt-1" onclick="cambiarMes()">BUSCAR</button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -277,13 +323,14 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">No</th>
-                                        <th scope="col">ORGANISMO</th>
+                                        <th scope="col" width="23%">ORGANISMO</th>
                                         <th scope="col">PERIODO</th>
                                         {{-- <th scope="col">MES DE AVANCE</th> --}}
-                                        <th scope="col">FECHA DE ENVIO</th>
+                                        <th scope="col" width="12%">FECHA DE ENVIO</th>
                                         <th scope="col">STATUS</th>
                                         <th scope="col">PDF</th>
-                                        <th scope="col">TIPO DOCUMENTO</th>
+                                        <th scope="col" width="10%">TIPO DOCUMENTO</th>
+                                        <th scope="col" width="23%" class="text-center">FIRMANTES EFIRMA</th>
                                         <th scope="col">VER DETALLES</th>
                                         <th scope="col">PDF DIRECCIÓNES</th>
                                         <th scope="col">CANCELAR DOCUMENTO</th>
@@ -294,7 +341,7 @@
                                     @for ($i = 0; $i < count($data); $i++)
                                         <tr>
                                             <td class="font-weight-bold">{{$i+1}}</td>
-                                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->nombre}}</td>
+                                            <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}} texto_once">{{$data[$i]->nombre}}</td>
                                             <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->periodo}}</td>
                                             {{-- <td class="font-weight-bold">{{$mes}}</td> --}}
                                             <td class="{{$data[$i]->id_parent == 1 || $data[$i]->id_parent == 0 ? 'font-weight-bold' : ''}}">{{$data[$i]->fechas_avance[$mes]['fecenvioplane_a'] != '' ? $data[$i]->fechas_avance[$mes]['fecenvioplane_a'] : 'Pendiente por enviar'}}</td>
@@ -337,14 +384,31 @@
                                             </td>
                                             <td>
                                                 {{-- status documento --}}
+                                                @php
+                                                    $firmantes_avance = [];
+                                                @endphp
                                                 @if (!empty($data[$i]->fechas_avance[$mes]['id_efirma']) && !empty($data[$i]->fechas_avance[$mes]['mod_documento']) && !empty($data[$i]->fechas_avance[$mes]['status_efirma']))
                                                     @if ($data[$i]->fechas_avance[$mes]['status_efirma'] == 'validado')
                                                         Electronico <br>(SELLADO)
                                                     @else
                                                         Electronico <br>(EN FIRMA)
                                                     @endif
+                                                    @php
+                                                        $consulta_firm_avance = DB::table('documentos_firmar')
+                                                        ->select(DB::raw("(obj_documento->'firmantes'->'firmante'->0->0->'_attributes'->>'nombre_firmante') as nombre_firmante1"), DB::raw("(obj_documento->'firmantes'->'firmante'->0->1->'_attributes'->>'nombre_firmante') as nombre_firmante2"),
+                                                        DB::raw("(obj_documento->'firmantes'->'firmante'->0->0->'_attributes'->>'firma_firmante') IS NOT NULL AND (obj_documento->'firmantes'->'firmante'->0->0->'_attributes'->>'firma_firmante') <> '' as firma_user1"),
+                                                        DB::raw("(obj_documento->'firmantes'->'firmante'->0->1->'_attributes'->>'firma_firmante') IS NOT NULL AND (obj_documento->'firmantes'->'firmante'->0->1->'_attributes'->>'firma_firmante') <> '' as firma_user2"))->where('id', $data[$i]->fechas_avance[$mes]['id_efirma'])->first();
+                                                        if($consulta_firm_avance){$firmantes_avance = ['firmante1' => $consulta_firm_avance->nombre_firmante1,'firmante2' => $consulta_firm_avance->nombre_firmante2,'firma_user1' => $consulta_firm_avance->firma_user1,'firma_user2' => $consulta_firm_avance->firma_user2];}
+                                                    @endphp
+
                                                 @elseif($data[$i]->fechas_avance[$mes]['statusmes'] == 'autorizado' &&  !empty($data[$i]->fechas_avance[$mes]['urldoc_firmav']))
                                                         Tradicional
+                                                @endif
+                                            </td>
+                                            <td class="text-left texto_once">
+                                                @if (!empty($firmantes_avance))
+                                                    <b>1. {{$firmantes_avance['firmante1']}} {{ $firmantes_avance['firma_user1'] ? '(FIRMADO)' : '(FALTA)' }}</b> <br>
+                                                    <b>2. {{$firmantes_avance['firmante2']}} {{ $firmantes_avance['firma_user2'] ? '(FIRMADO)' : '(FALTA)' }}</b>
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -520,6 +584,32 @@
                     }
                 });
         }
+
+        /*Funcion Ajax para realizar autocompletado*/
+        $( ".text_buscar_organismo" ).autocomplete({
+            source: function( request, response ) {
+                $.ajax({
+                    url: "{{ route('consulta.orgpat.autocomp') }}",
+                    method: 'POST',
+                    dataType: "json",
+                    data: {
+                        "_token": $("meta[name='csrf-token']").attr("content"),
+                        search: request.term,
+                        // tipoCurso: $('#busqueda').val()
+                    },
+                    success: function( data ) {
+                        response( data );
+                        // console.log(data);
+                    }
+                });
+            }
+        });
+
+        function limpiar_campo_meta() {
+            $("#text_buscar_organismo").val("");
+            metas_status();
+        }
+
 
         </script>
         @endsection
