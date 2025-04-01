@@ -1,4 +1,5 @@
 @extends('theme.sivyc.layout')
+{{dd('a')}}
 
 @section('title', 'Recursos Humanos | SIVyC Icatech')
 
@@ -172,8 +173,6 @@
                 var query = $('#busqueda').val();
                 var fechaInicio = $('#fecha_inicio').val();
                 var fechaTermino = $('#fecha_termino').val();
-                console.log(fechaInicio);
-                console.log(fechaTermino);
 
                 $.ajax({
                     url: "{{ route('rh.index') }}",
