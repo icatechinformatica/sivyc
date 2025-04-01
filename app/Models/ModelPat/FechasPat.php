@@ -41,6 +41,13 @@ class FechasPat extends Model
             ->orderByRaw("fechas_pat.fechas_avance->'$mes'->>'fecavanvalid' ASC");
             return $query;
 
+        }else if($sel_status == 'SIN_MOVIMIENTO'){
+            $query->whereRaw("fechas_pat.fechas_avance->'$mes'->>'fecenvioplane_a' = '' ")
+            ->whereRaw("fechas_pat.fechas_avance->'$mes'->>'fecavanreturn' = '' ")
+            ->whereRaw("fechas_pat.fechas_avance->'$mes'->>'fecavanvalid' = '' ")
+            ->orderByRaw("fechas_pat.id");
+            return $query;
+
         //FILTRADO DE METAS
 
         }else if($sel_meta == 'PENDIENTES'){
@@ -60,7 +67,12 @@ class FechasPat extends Model
             ->whereRaw("fechas_pat.fecha_meta->>'fecmetvalid' != ''")
             ->orderByRaw("fechas_pat.fecha_meta->>'fecmetvalid' ASC");
             return $query;
-
+        }else if($sel_meta == 'SIN_MOVIMIENTOS'){
+            $query->whereRaw("fechas_pat.fecha_meta->>'fecenvioplane_m' = '' ")
+            ->whereRaw("fechas_pat.fecha_meta->>'fecmetretorno' = '' ")
+            ->whereRaw("fechas_pat.fecha_meta->>'fecmetvalid' = '' ")
+            ->orderByRaw("fechas_pat.id");
+            return $query;
         }else{
             $query->orderBy('fechas_pat.id', 'asc');
             return $query;
