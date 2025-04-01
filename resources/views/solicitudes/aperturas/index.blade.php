@@ -166,6 +166,14 @@
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.soporte_pago')}}");
                         $('#frm').attr('target', '_self').submit();
                     break;
+                    case "VALIDADO":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
+                        $('#frm').attr('target', '_self').submit();
+                        break;
+                    case "RETORNADOPRE":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pretornar')}}");
+                        $('#frm').attr('target', '_self').submit();
+                        break;
                     default:
                         alert("POR FAVOR SELECCIONE UN MOVIMIENTO.")
                     break;
