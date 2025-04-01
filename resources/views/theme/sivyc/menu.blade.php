@@ -298,7 +298,7 @@
                 @endcanany
                 @canany(['reportes.cursos', 'planeacion.reporte', 'financieros.reporte', 'vinculacion.reporte',
                     'reportes.911', 'reportes.rdcd08', 'reportes.rcdod11', 'reportes.rf001', 'financieros.reportevalrec',
-                    'financieros.reportecursos', 'reportes.pat', 'reportes.dpa','reportes.dv'])
+                    'financieros.reportecursos', 'reportes.pat', 'reportes.dpa','reportes.dv','RH.tarjetatiempo'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -348,6 +348,9 @@
                             @can('reportes.dv')
                                 <a class="dropdown-item" href="{{ route('reportes.dv') }}">DV - Operación con Convenios</a>
                             @endcan
+                            @can('RH.tarjetatiempo')
+                                <a class="dropdown-item" href="{{ route('rh.reporte.quincenal') }}">RH - Tarjeta de Tiempo</a>
+                            @endcan
                         </div>
                     </li>
                 @endcanany
@@ -369,13 +372,13 @@
                             @endcan
                             @can('consultas.cursosaperturados')
                                 <a class="dropdown-item" href="{{ route('consultas.cursosaperturados') }}">Cursos Aperturados</a>
-                            @endcan                                                       
+                            @endcan
                             @can('consultas.cursosefisico')
                                 <a class="dropdown-item" href="{{ route('consultas.cursosefisico') }}">Cursos EFisico</a>
                             @endcan
                             @can('show.cursos.validados')
                                 <a class="dropdown-item" href="{{ route('cursos_validados.index') }}">Cursos Validados</a>
-                            @endcan                            
+                            @endcan
                             @can('planeacion.estadisticas')
                                 <a class="dropdown-item" href="{{ route('reportes.planeacion.estadisticas') }}">Estadisticas FormatoT</a>
                             @endcan
@@ -388,7 +391,7 @@
                             @can('planeacion.ingresos.propios')
                                 <a class="dropdown-item" href="{{ route('reportes.planeacion.ingresos_propios') }}">Ingresos Propios</a>
                             @endcan
-                            
+
                             @can('consultas.instructor')
                                 <a class="dropdown-item" href="{{ route('consultas.instructor') }}">Instructores Asignados</a>
                             @endcan
@@ -398,7 +401,7 @@
                             @can('consultas.poa')
                                 <a class="dropdown-item" href="{{ route('consultas.poa') }}">POA&Autorizados</a>
                             @endcan
-                            
+
                         </div>
                     </li>
                 @endcanany

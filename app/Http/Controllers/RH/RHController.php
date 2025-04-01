@@ -58,6 +58,144 @@ class RHController extends Controller
         return view('layouts.pages.RH.index', compact('data'));
     }
 
+    public function reporte_quincenal(Request $request)
+    {
+        $query = null;
+        $query = funcionario::Select('nombre_trabajador','nombre_adscripcion','curp_usuario','clave_empleado AS numero_enlace')
+            ->OrderBy('nombre_trabajador','asc');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('clave_empleado', 'LIKE', "%$search%")
+                ->orWhere('nombre_trabajador', 'LIKE', "%$search%");
+            });
+        }
+
+        $data = $query->paginate(25);
+
+        if ($request->ajax()) {
+            return view('layouts.pages.RH.table_reporteQuincenal', compact('data'))->render();
+        }
+
+        return view('layouts.pages.RH.reporteQuincenal', compact('data'));
+    }
+
+    public function reporte_quincenal_detalles($numero_enlace, Request $request)
+    {
+        // dd('a');
+        if(is_null($request->mes)) { // checa si es entrada por primera vez a la vista o es pedida de actualizacion de tarjeta de tiempo
+            $date = Carbon::now();
+            $mes = null;
+        } else {
+            $numero_enlace = $request->numero_enlace;
+            $mes = $request->mes;
+            $year = date('Y'); // Get current year
+            $date = Carbon::createFromDate($year, $request->mes, $request->quincena); // Create Carbon date for the first day of that month
+        }
+
+        $response = $this->get_reporte_quincenal_detalles($numero_enlace, $date, $mes);
+        $data = $response['data'];
+        $days = $response['days'];
+        $range = $response['range'];
+        $dates = $response['dates'];
+        $dias_inhabiles = $response['dias_inhabiles'];
+
+        if (!is_null($request) && $request->ajax()) {
+            return view('layouts.pages.RH.table_reporteQuincenalDetalles', compact('data','days','range','dates','numero_enlace','dias_inhabiles'))->render();
+        }
+        return view('layouts.pages.RH.reporteQuincenalDetalles', compact('data','days','range','dates','numero_enlace','dias_inhabiles'));
+    }
+
+    public function reporte_quincenal_pdf(Request $request) {
+        // dd($request);
+        $numero_enlace = $request->numero_enlace;
+        $year = date('Y'); // Get current year
+        $date = Carbon::createFromDate($year, $request->mes, $request->quincena);
+        $hoy = Carbon::now()->format('d/m/Y');
+
+        $response = $this->get_reporte_quincenal_detalles($numero_enlace, $date, $request->mes);
+        $data = $response['data'];
+        $days = $response['days'];
+        $range = $response['range'];
+        $dates = $response['dates'];
+        $dias_inhabiles = $response['dias_inhabiles'];
+
+        $direccion = DB::Table('tbl_instituto')->Value('direccion');
+
+        $pdf = PDF::loadView('layouts.pages.RH.pdf.reporteQuincenalPDF', compact('data','days','range','dates','numero_enlace','direccion','hoy','dias_inhabiles'));
+            $pdf->setPaper('legal', 'Landscape');
+            return $pdf->stream('medium.pdf');
+    }
+
+    public function get_reporte_quincenal_detalles($numero_enlace, $date, $mes)
+    {
+        if(is_null($mes)) { // se analiza si la variable mes fue enviada desde la actualizacion de pantalla
+            $previousMonth = $date->copy()->subMonthNoOverflow();
+            if ($date->day > 15) { //si date es mayor a 15 entra aqui para poder generar la quincena pasada
+                $start = Carbon::now()->startOfMonth();
+                $end = Carbon::now()->day(15);
+                $quincena = 'primera';
+            } else { // aqui entra cuando es menor o igual a 15
+                $start = $previousMonth->copy()->day(16);
+                $end = $previousMonth->endOfMonth();
+                $quincena = 'segunda';
+            }
+        } else {
+            if ($date->day < 15) { //si date es menor a 15 entra aqui para poder generar la primera quincena
+                $start = $date->startOfMonth();
+                $end = $date->copy()->day(15);
+                $quincena = 'primera';
+            } else { // aqui entra cuando es mayor a 15
+                $start = $date->copy()->day(16);
+                $end = $date->endOfMonth();
+                $quincena = 'segunda';
+            }
+        }
+
+        $range = ['start' => $start->format('d/m/Y'), 'end' => $end->format('d-m-Y'), 'month' => mb_strtoupper($start->translatedformat('F')), 'quincena' => $quincena];
+        $days = $dates = array();
+        for ($i = $start->day; $i <= $end->day; $i++) {
+            $day = $start->copy()->translatedFormat('l');
+            array_push($dates, $start->copy()->format('d/m/Y')); // lista de fechas de inicio a fin
+            array_push($days, $day); // lista de los dias inicio a fin
+            $start->addDay();
+        }
+        $days = array_map('mb_strtoupper', $days);
+
+        $data = funcionario::RightJoin('tbl_checador_asistencias', 'tbl_checador_asistencias.numero_enlace','tbl_funcionario.clave_empleado')
+            ->select(DB::raw("to_char(tbl_checador_asistencias.fecha, 'DD/MM/YYYY') as fecha2"),'tbl_checador_asistencias.*', 'tbl_funcionario.nombre_trabajador','nombre_adscripcion','curp_usuario')
+            ->Where('clave_empleado', $numero_enlace)
+            ->whereBetween('fecha', [$range['start'], $range['end']])
+            ->OrderBy('fecha','asc')
+            ->Get(); // info del checador
+
+        // analisis de dias inhabiles en el rango
+        $dias_inhabiles = DB::Table('dias_inhabiles')->Select(DB::raw("TO_CHAR(fecha, 'DD/MM/YYYY') as fecha"),'numero_memorandum')->whereBetween('fecha', [$range['start'], $range['end']])->Get()->ToArray();
+        $response = ['data' => $data, 'days' => $days, 'range' => $range, 'dates' => $dates, 'dias_inhabiles' => $dias_inhabiles];
+        return $response;
+    }
+
+    public function agregar_justificante(Request $request) {
+        if(is_null($request->registro_id)) {
+            $registro = new checador_asistencia;
+            $registro->numero_enlace = $request->numero_enlace;
+            $registro->fecha = $request->registro_fecha;
+            $registro->inasistencia = FALSE;
+            $registro->justificante = TRUE;
+            $registro->observaciones = $request->justificante;
+            $registro->save();
+        } else {
+            DB::Table('tbl_checador_asistencias')->Where('id',$request->registro_id)
+                ->update([
+                    'justificante' => TRUE,
+                    'observaciones' => $request->justificante
+                ]);
+        }
+
+        return true;
+    }
+
     public function descarga_nube() {
         $apiKey = ['oficinas centrales' => 'c4b5f541364d3f196899b116b0bebb2d',
                    'sancris' => 'd5ccfdba72c0f69c969838e83e5ca9bf'];
@@ -223,6 +361,12 @@ class RHController extends Controller
             } else {
                 $registro->salida = $salida;
             }
+        }
+
+        if(is_null($registro->entrada) || is_null($registro->salida)) {
+            $registro->inasistencia = TRUE;
+        } else {
+            $registro->inasistencia = FALSE;
         }
 
         $registro->save();
