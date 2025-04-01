@@ -201,7 +201,7 @@
             <label>MOVIMIENTO:</label>
         </div>
         <div class="form-group col-md-2  my-1">
-            {!! Form::select('pmovimiento',$movimientos, '', ['id'=>'pmovimiento','class' => 'form-control' ]) !!}            
+            {!! Form::select('pmovimiento',['' => '- SELECCIONAR -', 'EDICION'=>'AUTORIZAR EDICION', 'RETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'], '', ['id'=>'pmovimiento','class' => 'form-control' ]) !!}
         </div>
         <div class="form-group col-md-1">
             {{ Form::button(' ACEPTAR ', ['id'=>'aceptar_preliminar','class' => 'btn  bg-danger ']) }}
