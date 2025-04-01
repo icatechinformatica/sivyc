@@ -46,7 +46,8 @@
                 <p>Empleado: <b>{{$data[0]->nombre_trabajador}}</b></p>
             </div>
             <div class="form-group" style="text-align: right; width: 50%;">
-                <p style="text-align: right;">Grupo: {{$data[0]->nombre_adscripcion}}</p>
+                <p style="text-align: right;">Grupo: OFICINAS ADMINISTRATIVAS</p>
+                {{-- <p style="text-align: right;">Grupo: {{$data[0]->nombre_adscripcion}}</p> --}}
             </div>
         </div>
         <hr style="border-color:dimgray">
