@@ -122,8 +122,9 @@ class RHController extends Controller
         $dias_inhabiles = $response['dias_inhabiles'];
 
         $direccion = DB::Table('tbl_instituto')->Value('direccion');
+        $supervisa = Funcionario::Select('titulo','nombre_trabajador')->Where('curp_usuario',Auth::user()->curp)->First();
 
-        $pdf = PDF::loadView('layouts.pages.RH.pdf.reporteQuincenalPDF', compact('data','days','range','dates','numero_enlace','direccion','hoy','dias_inhabiles'));
+        $pdf = PDF::loadView('layouts.pages.RH.pdf.reporteQuincenalPDF', compact('data','days','range','dates','numero_enlace','direccion','hoy','dias_inhabiles','supervisa'));
             $pdf->setPaper('legal', 'Landscape');
             return $pdf->stream('medium.pdf');
     }
