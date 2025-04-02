@@ -170,7 +170,6 @@
             <div class="form-group col-md-3">
 
                     {{ Form::button('GENERAR AUTORIZACIÓN PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
-
             </div>
         @endif
         @if($movimientos)

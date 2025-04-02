@@ -40,7 +40,7 @@ class aperturasController extends Controller
         });
     }
 
-    public function index(Request $request){
+    public function index(Request $request){ 
         $opt = $memo = $message = $file = $status_solicitud = $extemporaneo = $motivo_soporte = NULL;
 
         if($request->memo)  $memo = $request->memo;
@@ -48,6 +48,7 @@ class aperturasController extends Controller
 
         if($request->opt)  $opt = $request->opt;
         elseif(isset($_SESSION['opt'])) $opt = $_SESSION['opt'];
+        else $opt = 'ARC01';
 
         $_SESSION['grupos'] = NULL;
         $grupos = $movimientos = [];
@@ -135,6 +136,13 @@ class aperturasController extends Controller
                      $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
                      $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
                 }
+                /*
+                if($status_solicitud=='TURNADO'){
+                    $movimientos += ['' => '- SELECCIONAR -']; 
+                    if($grupos[0]->arc == '02')  $movimientos += ['EDICION' =>'AUTORIZAR EDICION']; 
+                     $movimientos += ['RETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'];
+                }*/
+                
             }else $message = "No se encuentran registros que mostrar.";
         }
 

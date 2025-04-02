@@ -39,6 +39,7 @@ class BuzonController extends Controller
         $sel_status = $request->sel_status;
         $sel_meta = $request->sel_meta;
         $sel_eje = $request->sel_ejercicio;
+        $txt_auto = $request->text_buscar_organismo; //Autocomplete
         $ejercicio = [];
         for ($i=2023; $i <= intval(date('Y')); $i++) {array_push($ejercicio, $i);}
 
@@ -49,15 +50,46 @@ class BuzonController extends Controller
         }
         $anio = $_SESSION['eje_pat_buzon'];
 
+        //Busqueda por el autocomplete
+        if (!empty($txt_auto)) {
+            $part_auto = explode(' - ', $txt_auto, 2);
+            $array_idsorg = [];
+            $data_recursivo = DB::select("
+                WITH RECURSIVE cte AS (
+                    SELECT id, id_parent, nombre
+                    FROM tbl_organismos
+                    WHERE id_parent = :parentId
+                    UNION ALL
+                    SELECT t.id, t.id_parent, t.nombre
+                    FROM tbl_organismos t
+                    JOIN cte ON t.id_parent = cte.id
+                )
+                SELECT * FROM cte ORDER BY id", ['parentId' => $part_auto[0]]);
 
-        $data = FechasPat::BusquedaStatus($sel_status, $mes, $sel_meta)
-        ->select('fechas_pat.*', 'o.nombre', 'o.id_parent')
-        ->Join('tbl_organismos as o', 'o.id', 'fechas_pat.id_org')
-        ->where('periodo', '=', $anio)
-        ->paginate(15, ['fechas_pat.*']);
+            $array_idsorg [] = intval($part_auto[0]);
+            if (!empty($data_recursivo)) {
+                foreach ($data_recursivo as $key => $value) {
+                    $array_idsorg [] = $value->id;
+                }
+            }
+
+            // dd($sel_status, $mes, $sel_meta); //null, null, General  (metas)
+
+            $data = FechasPat::select('fechas_pat.*', 'o.nombre', 'o.id_parent')
+            ->Join('tbl_organismos as o', 'o.id', 'fechas_pat.id_org')
+            ->where('periodo', '=', $anio)->whereIn('o.id', $array_idsorg)
+            ->paginate(15, ['fechas_pat.*']);
+
+        }else{
+            $data = FechasPat::BusquedaStatus($sel_status, $mes, $sel_meta)
+            ->select('fechas_pat.*', 'o.nombre', 'o.id_parent')
+            ->Join('tbl_organismos as o', 'o.id', 'fechas_pat.id_org')
+            ->where('periodo', '=', $anio)
+            ->paginate(15, ['fechas_pat.*']);
+        }
 
 
-        return view('vistas_pat.buzon_pat', compact('data', 'mesGlob', 'mes', 'sel_status', 'sel_meta', 'ejercicio', 'anio'));
+        return view('vistas_pat.buzon_pat', compact('data', 'mesGlob', 'mes', 'sel_status', 'sel_meta', 'ejercicio', 'anio', 'txt_auto'));
     }
 
     /**
@@ -628,6 +660,23 @@ class BuzonController extends Controller
         }else{
             return back()->with('message', '¡No se encuentra el documento!');
         }
+    }
+
+    ## Funcion para la busqueda de organismos
+    public function organismosAutocomplete(Request $request) {
+        $search = $request->search;
+
+        if (isset($search) && $search != '') {
+            $data = Organismos::select('id', 'nombre')
+            ->selectRaw("CONCAT(id, ' - ', nombre) as id_nombre")
+            ->where('nombre', 'like', '%'.$search.'%')
+            ->limit(7)->get();
+        }
+        $response = array();
+        foreach ($data as $value) {
+            $response[] = array('label' => $value->id_nombre);
+        }
+        return json_encode($response);
     }
 
     // public function pdforg_direc($mes_get, $opcion_get){
