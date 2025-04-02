@@ -131,7 +131,7 @@
                     <td><h3>_____________________</h3></td>
                 </tr>
                 <tr>
-                    <td><div align="center"> C.P. Alberto de Jesús Pérez León</td></div>
+                    <td><div align="center"> @if(!is_null($supervisa->titulo)){{$supervisa->titulo}} @else C. @endif {{$supervisa->nombre_trabajador}}</td></div>
                 </tr>
             </table>
         </div>
