@@ -93,16 +93,22 @@
                         <td style="text-align: center;">{{$date}}</td>
                         <td>{{$days[$key]}}</td>
                         <td>
-                            @if (in_array($days[$key], ['SÁBADO','DOMINGO']))  {{-- Se verifica si la fecha es sabado o domingo --}}
+                            @if (in_array($days[$key], ['SÁBADO','DOMINGO']) && !in_array($data[0]->horario_checador, ['4','5']))  {{-- Se verifica si la fecha es sabado o domingo y si no es velador. los veladores trabajan fin de semana tambien --}}
                                 <b>{{$days[$key]}}</b>
                             @else {{-- Aqui entra cuando es entresemana --}}
                                 @php $falta = true @endphp {{-- Checador de inasistencia por falta --}}
                                 @foreach($data as $registro) {{-- foreach de los registros del usuario --}}
                                     @if($registro->fecha2 == $date)
-                                        @if(collect($dias_inhabiles)->contains('fecha', $date))
+                                        @if(collect($dias_inhabiles)->contains('fecha', $date) && !in_array($data[0]->horario_checador, ['4','5'])) {{-- Verifica si hay dias inabiles en el rango de fechas y que no sea velador. los veladores trabajan en dias inhabiles --}}
                                             {{$dias_inhabiles[array_search($date, array_column($dias_inhabiles, 'fecha'))]->numero_memorandum}}
                                         @elseif(!$registro->justificante)
-                                            @if(!is_null($registro->entrada)) {{$registro->entrada}} @else <b>INASISTENCIA</b> @endif -  @if(!is_null($registro->salida)) {{$registro->salida}} @else <b>INASISTENCIA</b> @endif
+                                            @if(!is_null($registro->entrada))
+                                                @if($registro->retardo) <b> R @endif
+                                                {{$registro->entrada}} </b>
+                                            @else
+                                                <b>OMISIÓN DE ENTRADA</b>
+                                            @endif
+                                            @if(!is_null($registro->salida)) - {{$registro->salida}} @elseif(!in_array($data[0]->horario_checador, ['4','5'])) - <b>OMISIÓN DE SALIDA</b> @endif
                                         @else
                                             INCAPACIDAD {{$registro->observaciones}}
                                         @endif

@@ -5,7 +5,7 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
     <div class="card-header">
-       RECURSOS HUMANOS / REPORTE QUINCENAL
+       Recursos Humanos / Reporte Quincenal
     </div>
     <div class="card card-body" style="min-height:450px;">
         @if ($message = Session::get('warning'))
