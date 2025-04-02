@@ -62,7 +62,7 @@ class RHController extends Controller
     {
         $query = null;
         $query = funcionario::Select('nombre_trabajador','nombre_adscripcion','curp_usuario','clave_empleado AS numero_enlace')
-            ->OrderBy('nombre_trabajador','asc');
+            ->OrderBy('numero_enlace','asc');
 
         if ($request->has('search')) {
             $search = $request->input('search');
@@ -124,9 +124,10 @@ class RHController extends Controller
         $direccion = DB::Table('tbl_instituto')->Value('direccion');
         $supervisa = Funcionario::Select('titulo','nombre_trabajador')->Where('curp_usuario',Auth::user()->curp)->First();
 
+        $nombrePDF = 'TarjetaTiempo-'.$range['quincena'].'-'.$range['month'].'-'.$numero_enlace.'.pdf';
         $pdf = PDF::loadView('layouts.pages.RH.pdf.reporteQuincenalPDF', compact('data','days','range','dates','numero_enlace','direccion','hoy','dias_inhabiles','supervisa'));
             $pdf->setPaper('legal', 'Landscape');
-            return $pdf->stream('medium.pdf');
+            return $pdf->stream($nombrePDF);
     }
 
     public function get_reporte_quincenal_detalles($numero_enlace, $date, $mes)
@@ -165,7 +166,7 @@ class RHController extends Controller
         $days = array_map('mb_strtoupper', $days);
 
         $data = funcionario::RightJoin('tbl_checador_asistencias', 'tbl_checador_asistencias.numero_enlace','tbl_funcionario.clave_empleado')
-            ->select(DB::raw("to_char(tbl_checador_asistencias.fecha, 'DD/MM/YYYY') as fecha2"),'tbl_checador_asistencias.*', 'tbl_funcionario.nombre_trabajador','nombre_adscripcion','curp_usuario')
+            ->select(DB::raw("to_char(tbl_checador_asistencias.fecha, 'DD/MM/YYYY') as fecha2"),'tbl_checador_asistencias.*', 'tbl_funcionario.nombre_trabajador','nombre_adscripcion','curp_usuario','horario_checador')
             ->Where('clave_empleado', $numero_enlace)
             ->whereBetween('fecha', [$range['start'], $range['end']])
             ->OrderBy('fecha','asc')
@@ -335,23 +336,26 @@ class RHController extends Controller
             'numero_enlace' => $numero_enlace,
             'fecha' => $fecha
         ]);
+
+        $tipo_horario = Funcionario::Where('clave_empleado', $numero_enlace)->Value('horario_checador');
         if($entrada < '14:59:59') { // se analiza si el horario es de salida o de entrada
             $new['entrada'] = $entrada;
-            if($entrada > '08:14:59' && $entrada < '08:30:00') { // se analiza si existe retraso
+            if((!in_array($tipo_horario, ['3','5']) && $entrada > '08:14:59' && $entrada < '08:30:00') || (in_array($tipo_horario, ['3','5']) && $entrada > '09:14:59' && $entrada < '09:30:00')) { // se analiza si existe retraso, despues del || se analizan los que entran a las 9am
                 $new['retardo'] = true;
-            } else if($entrada > '08:29:59') { // se analiza si es falta
+            } else if((!in_array($tipo_horario, ['3','5']) && $entrada > '08:29:59') || (in_array($tipo_horario, ['3','5']) && $entrada > '09:29:59')) { // se analiza si es falta
                 $new['inasistencia'] = true;
             }
+
         } else {
             $new['salida'] = $entrada;
         }
 
         $new->save();
-
         return $new;
     }
 
     private function update_registro($registro, $salida, $dia) {
+        $tipo_horario = Funcionario::Where('clave_empleado', $registro->numero_enlace)->Value('horario_checador');
         if($salida > '07:30:00' && $salida < '09:30:00') { // se analiza si el horario es de salida o de entrada
             $registro->entrada = $salida;
         } else if(($salida > '14:59:59') || is_null($registro->salida) || ($dia == 'viernes' && $salida > '12:59:59')) { // se analiza si el horario es salida y esta dentro de la hora adecuada
@@ -364,7 +368,7 @@ class RHController extends Controller
             }
         }
 
-        if(is_null($registro->entrada) || is_null($registro->salida)) {
+        if(is_null($registro->entrada) || ((!in_array($tipo_horario, ['3','5']) && $registro->entrada > '08:29:59') || (in_array($tipo_horario, ['3','5']) && $registro->entrada > '09:29:59'))  || is_null($registro->salida)) {
             $registro->inasistencia = TRUE;
         } else {
             $registro->inasistencia = FALSE;

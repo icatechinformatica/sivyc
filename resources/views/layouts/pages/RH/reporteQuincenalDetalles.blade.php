@@ -4,7 +4,7 @@
     @php $months = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']; $id_registro = null; @endphp
     <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
     <div class="card-header">
-       RECURSOS HUMANOS / TARJETA DE TIEMPO
+       Recursos Humanos / Tarjeta de Tiempo
     </div>
     <div class="card card-body" style="min-height:450px;">
         @if ($message = Session::get('warning'))

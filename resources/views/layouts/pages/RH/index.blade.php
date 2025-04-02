@@ -4,7 +4,7 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
     <div class="card-header">
-       RECURSOS HUMANOS / REGISTRO DE CHECADO
+       Recursos Humanos / Registro de Checado
     </div>
     <div class="card card-body" style="min-height:450px;">
         @if ($message = Session::get('warning'))
