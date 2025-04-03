@@ -144,9 +144,18 @@ class FirmaController extends Controller {
             // $docsFirmados = $docsFirmados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
             // $docsValidados = $docsValidados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
             // $docsCancelados = $docsCancelados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
-            $docsFirmar = $docsFirmar1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
-            $docsFirmados = $docsFirmados1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
-            $docsValidados = $docsValidados1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsFirmar = $docsFirmar1->where(function ($query) use ($busqueda_clave) {
+                $query->where('numero_o_clave', $busqueda_clave)
+                    ->OrWhere('folios.folio_validacion', $busqueda_clave);
+            })->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsFirmados = $docsFirmados1->where(function ($query) use ($busqueda_clave) {
+                $query->where('numero_o_clave', $busqueda_clave)
+                    ->OrWhere('folios.folio_validacion', $busqueda_clave);
+            })->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsValidados = $docsValidados1->where(function ($query) use ($busqueda_clave) {
+                $query->where('numero_o_clave', $busqueda_clave)
+                    ->OrWhere('folios.folio_validacion', $busqueda_clave);
+            })->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
             $docsCancelados = $docsCancelados1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
         }
 
