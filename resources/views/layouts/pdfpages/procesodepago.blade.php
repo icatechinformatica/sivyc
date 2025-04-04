@@ -81,7 +81,15 @@
                             </tr>
                             <tr>
                                 <td style="font-size: 8px; border: none;"><b>Puesto:</b></td>
-                                <td style="font-size: 8px; height: 25px; border: none;">{{ $puesto->cargo }}</td>
+                                @if(isset($body_html['firmantes']))
+                                    @foreach($body_html['firmantes'] as $firma)
+                                        @if($firma->curp == $moist['_attributes']['curp_firmante'])
+                                            <td style="font-size: 8px; height: 25px; border: none;">{{ $firma->cargo }}</td>
+                                        @endif
+                                    @endforeach
+                                @else
+                                    <td style="font-size: 8px; height: 25px; border: none;">{{ $puesto->cargo }}</td>
+                                @endif
                             </tr>
                             <tr>
                                 <td style="font-size: 8px; border: none;"><b>Fecha de Firma:</b></td>
