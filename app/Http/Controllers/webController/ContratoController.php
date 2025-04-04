@@ -1317,7 +1317,7 @@ class ContratoController extends Controller
             // dd('a');
             $firma_electronica = true;
             $body = json_decode($documento->body_html);
-            $body_html = ['header' => $body->header, 'body' => $body->body, 'ccp' => $body->ccp, 'footer' => $body->footer];
+            $body_html = ['header' => $body->header, 'body' => $body->body, 'ccp' => $body->ccp, 'footer' => $body->footer, 'firmantes' => $body->firmantes];
 
             if(isset($documento->uuid_sellado)){
                 $objeto = json_decode($documento->obj_documento,true);

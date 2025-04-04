@@ -45,6 +45,7 @@ class EPagoController extends Controller
         $body = $this->create_body($info->id_folios, $info->no_memo); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
         $numFirmantes = '1';
         $arrayFirmantes = [];
+        $firmante = array();
 
         $funcionarios = $this->funcionarios($info->ubicacion);
         $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
@@ -73,6 +74,7 @@ class EPagoController extends Controller
         ];
 
         array_push($arrayFirmantes, $temp);
+        array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
@@ -196,6 +198,8 @@ class EPagoController extends Controller
             if(!$sobrescribir) {
                 $dataInsert = new DocumentosFirmar();
             }
+
+            $body['firmantes'] = $firmante;
 
             $dataInsert->obj_documento = json_encode($ArrayXml);
             // $dataInsert->obj_documento_interno = json_encode($body);
