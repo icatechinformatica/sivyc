@@ -1154,7 +1154,7 @@ class ContratoController extends Controller
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura',
                                   'tbl_cursos.tipo_curso','tbl_cursos.unidad','tbl_cursos.espe', 'tbl_cursos.clave','tbl_cursos.inicio','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion',
-                                  'instructores.rfc','tbl_cursos.modinstructor','instructores.curp','instructores.domicilio','tabla_supre.fecha_validacion')
+                                  'instructores.rfc','tbl_cursos.modinstructor','instructores.curp','instructores.domicilio','tabla_supre.fecha_validacion','instructores.sexo')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                           ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
@@ -1169,7 +1169,17 @@ class ContratoController extends Controller
         }
         //fin
         $funcionarios = $this->funcionarios($uni->ubicacion);
+        if($funcionarios['directors'] == 'MASCULINO') {
+            $funcionarios['director'] = 'el '. $funcionarios['directort']. ' '. $funcionarios['director'];
+        } else {
+            $funcionarios['director'] = 'la '. $funcionarios['directort']. ' '. $funcionarios['director'];
+        }
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+        if($data->sexo == 'MASCULINO') {
+            $nomins = 'el C. '. $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+        } else {
+            $nomins = 'la C. '. $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+        }
         // carga de firmas electronicas organismo
 
         $documento = DocumentosFirmar::where('numero_o_clave', $data->clave)
@@ -1468,7 +1478,7 @@ class ContratoController extends Controller
     }
 
     public function funcionarios($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = clone $directorDTA = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = clone $directorDTA = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad','f.titulo','f.sexo')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true')
             ->Where('f.titular', true);
@@ -1505,18 +1515,32 @@ class ContratoController extends Controller
         $funcionarios = [
             'director' => $direc->nombre,
             'directorp' => $direc->cargo,
+            'directort' => $direc->titulo,
+            'directors' => $direc->sexo,
             'destino' => $destino->nombre,
             'destinop' => $destino->cargo,
+            'destinot' => $destino->titulo,
+            'destinos' => $destino->sexo,
             'ccp1' => $ccp1->nombre,
             'ccp1p' => $ccp1->cargo,
+            'ccp1t' => $ccp1->titulo,
+            'ccp1s' => $ccp1->sexo,
             'ccp2' => $ccp2->nombre,
             'ccp2p' => $ccp2->cargo,
+            'ccp2t' => $ccp2->titulo,
+            'ccp2s' => $ccp2->sexo,
             'directorDTA' => $directorDTA->nombre,
             'directorDTAp' => $directorDTA->cargo,
+            'directorDTAt' => $directorDTA->titulo,
+            'directorDTAs' => $directorDTA->sexo,
             'delegado' => $delegado->nombre,
             'delegadop' => $delegado->cargo,
+            'delegadot' => $delegado->titulo,
+            'delegados' => $delegado->sexo,
             'academico' => $academico->nombre,
             'academicop' => $academico->cargo,
+            'academicot' => $academico->titulo,
+            'academicos' => $academico->sexo,
             'elabora' => strtoupper(Auth::user()->name),
             'elaborap' => strtoupper(Auth::user()->puesto)
         ];

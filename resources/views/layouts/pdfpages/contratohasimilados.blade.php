@@ -135,7 +135,7 @@
                 <div class="page-number"></div>
             @endif
         </footer>
-        <div class= "container g-pt-30" style="font-size: 12px; margin-bottom: 25px;">
+        <div class= "container g-pt-30" style="font-size: 11px; margin-bottom: 25px;">
             <div id="content">
                     {!! $body_html !!}
                 @if($firma_electronica == true)
@@ -210,8 +210,8 @@
                 <div style="padding-right: 12%;">
                     <table>
                         <tr>
-                            <td colspan="2"><p align="center"><b><small>"ICATECH"</small></b></p></td>
-                            <td colspan="2"><p align="center"><b><small>"PRESTADOR DE SERVICIOS"</small></b></p></td>
+                            <td colspan="2"><p align="center"><b><small>"ICATECH"<br></small></b></p></td>
+                            <td colspan="2"><p align="center"><b><small>"PRESTADOR DE SERVICIOS"<br></small></b></p></td>
                         </tr>
                         <tr>
                             <td colspan="2"><div align="center"><br><br></td></div>
@@ -226,8 +226,8 @@
                             <td colspan="2"><div align="center"></td></div>
                         </tr>
                     </table>
-                </div>
-                    <p align="center"><b><small>"TESTIGOS"</small></b></p>
+                </div><br>
+                    <p align="center"><b><small>TESTIGOS</small></b></p> <br><br>
                     <table>
                         <tr>
                             <td colspan="2"><p align="center"></p></td>
@@ -249,9 +249,9 @@
                         <br><small><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></small>
                         <br><small><b>{{$testigo3->puesto}}</b> </small></b>
                     </div> --}}
-                    <table>
+                    <table >
                         <tr>
-                            <td colspan="2"><p align="center"><b><small>"AUTORIZA"</small></b></p></td>
+                            <td colspan="2"><p align="center"><b><small>AUTORIZA</small><br><br></b></p></td>
                         </tr>
                         <tr>
                             <td colspan="2"><p align="center"></p></td>
@@ -264,7 +264,7 @@
                         </tr>
                     </table>
                     <div align=justify>
-                        <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales en su modalidad de @if($data->tipo_curso=='CURSO') horas curso @else   certificación extraordinaria @endif No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$funcionarios['director']}}, {{$funcionarios['directorp']}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.</small>
+                        <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales en su modalidad de @if($data->tipo_curso=='CURSO') horas curso @else   certificación extraordinaria @endif No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por {{$funcionarios['director']}}, y {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.</small>
                     </div>
                 @endif
             </div>

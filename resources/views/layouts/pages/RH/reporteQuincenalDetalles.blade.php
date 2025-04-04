@@ -52,7 +52,6 @@
         </div>
         <hr style="border-color:dimgray">
         <table id="tablaResultados" class="table table-bordered" style='text-align:center;'>
-            <caption>Tarjeta de Tiempo</caption>
             @include('layouts.pages.RH.table_reporteQuincenalDetalles')
         </table>
         <div style="text-align: right;">
