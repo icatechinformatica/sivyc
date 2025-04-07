@@ -167,7 +167,11 @@
                                                 @endif
                                             @endforeach
                                             @if($iex)
-                                                <td height="25px;">INSTRUCTOR</td>
+                                                @if($moist['_attributes']['curp_firmante'] == 'DUCM830907HCSRBR02')
+                                                    <td height="25px;">DIRECTOR TÉCNICO ACADÉMICO</td>
+                                                @else
+                                                    <td height="25px;">INSTRUCTOR</td>
+                                                @endif
                                             @endif
                                         @else
                                             <td height="25px;">{{$puestos[$key]}}</td>
