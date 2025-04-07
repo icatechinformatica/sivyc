@@ -18,7 +18,7 @@
                 <tr>
                     <td class="text-center">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="{{ $item->id }}" name="activo_curso"   onchange="cambia_estado({{$item->id}},$(this).prop('checked'))"  @if($item->vb_dg==true){{'checked'}} @endif >
+                            <input class="form-check-input" type="checkbox" value="{{ $item->id }}" name="activo_curso"   onchange="cambia_estado({{$item->id}},$(this))"  @if($item->vb_dg==true){{'checked'}} @endif >
                         </div>
                     </td>                     
                     <td>{{ $item->curso }}</td>

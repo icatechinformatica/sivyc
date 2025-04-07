@@ -25,18 +25,18 @@ class vbgruposController extends Controller
         $data = $message = NULL;
         $clave = $request->clave;        
         if($request->estatus) $status = $request->estatus;
-        $status = "PENDIENTES";
+        else $status = "PENDIENTES";
         $ejercicio = date("Y");
         
         $data = DB::table('tbl_cursos')->where('clave','0')->whereYear('inicio',$ejercicio);
         if($status == "PENDIENTES") $data = $data->where('vb_dg', false);
-        elseif($status == "VALIDADOS") $data = $data->where('vb_dg', true);
+        elseif($status == "AUTORIZADOS") $data = $data->where('vb_dg', true);
 
         if($clave) $data = $data->where(DB::raw("CONCAT(nombre,curso,unidad)"),'like','%'.$clave.'%');        
         //$data = $data->first();
         $data = $data->orderby('inicio','DESC')->paginate(15);
 
-        if(!$data) $message = "Dato no encontrado, por favor intente de nuevo.";
+        if(!$data) $message = "No se encontraron registros.";
         return [$data, $status, $message, $clave];
     }
 
@@ -64,13 +64,16 @@ class vbgruposController extends Controller
     public function autodata(Request $request){        
         list($data, $status, $message, $clave) = $this->data($request);
         if($data){
-            $filas = "";
-            foreach ($data as $item){            
+            $filas = $checked = "";
+            foreach ($data as $item){        
+                if($item->vb_dg==true) $checked = 'checked';
+                else $checked = '';
+
                 $filas .= "
                     <tr>
                         <td class='text-center'>
-                            <div class='form-check'>
-                                <input class='form-check-input' type='checkbox' value='valor' name='activo_curso'   onchange='cambia_estado(1,0))'>                                    
+                            <div class='form-check'>                                
+                                <input class='form-check-input' type='checkbox' value='".$item->id."' name='activo_curso'   onchange='cambia_estado(".$item->id.",$(this))' $checked>
                             </div>
                         </td>                            
                         <td>".$item->curso."</td>
@@ -78,7 +81,7 @@ class vbgruposController extends Controller
                         <td>".$item->inicio."</td>
                         <td>".$item->termino."</td>
                         <td>".$item->unidad."</td>
-                        </tr>
+                    </tr>
                 ";
             }
         } else $filas = "Dato no encontrado, por favor intente de nuevo.";
