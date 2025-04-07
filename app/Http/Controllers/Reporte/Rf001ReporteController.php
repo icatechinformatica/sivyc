@@ -134,6 +134,7 @@ class Rf001ReporteController extends Controller
 
         // Obtener el campo JSON y decodificarlo
         $datosExistentes  = json_decode($rf001->movimiento, true);
+        $curpExistente = json_decode($rf001->firmante, true);
         // obtener revision
         $revisionLocal = collect(json_decode($rf001->movimiento, true))->first(function ($item) {
             return isset($item['tipo']) && ($item['tipo'] === 'REVISION_LOCAL');
@@ -154,11 +155,18 @@ class Rf001ReporteController extends Controller
             'tipo' => $revision
         ];
 
+        $jsonCurpFirmante = [
+            'curp' => $request->curpObtenido,
+        ];
+
         $datosExistentes[] = $jsonObject;
+        $curpExistente[] = $jsonCurpFirmante;
 
         (new Rf001Model())->where('id', $request->idRf)->update([
             'estado' => $estado,
             'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
+            'contador_firma' => \DB::raw('contador_firma + 1'),
+            'firmante' => json_encode($curpExistente, JSON_UNESCAPED_UNICODE),
         ]);
 
         return redirect()->route('reporte.rf001.sent', ['generado' => $encrypted])->with('message', 'Documento firmado exitosamente!');

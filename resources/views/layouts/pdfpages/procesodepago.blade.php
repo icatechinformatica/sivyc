@@ -26,7 +26,41 @@
                 font-size: .7em
             }
             header {left: 25px;}
+            .overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                background-color: transparent; /* Fondo semitransparente para hacerlo visible */
+                color: white;
+                z-index: 10; /* Asegura que esté encima del contenido */
+                padding: 10px;
+                text-align: center;
+                line-height: -1;
+                align-items: center;
+            }
         </style>
+        @if(!is_null($objeto))
+            <style>
+                .sello {
+                    position: relative;
+                    top: -12%;
+                    right: -10%;
+                    text-align: center;
+                    line-height: 0;
+                }
+            </style>
+        @else
+            <style>
+                .sello {
+                    position: relative;
+                    top: -20%;
+                    right: -35%;
+                    text-align: center;
+                    line-height: 0;
+                }
+            </style>
+        @endif
 @endsection
 @section('content')
         {{-- {!! $body_html['header'] !!} --}}
@@ -47,7 +81,15 @@
                             </tr>
                             <tr>
                                 <td style="font-size: 8px; border: none;"><b>Puesto:</b></td>
-                                <td style="font-size: 8px; height: 25px; border: none;">{{ $puesto->cargo }}</td>
+                                @if(isset($body_html['firmantes']))
+                                    @foreach($body_html['firmantes'] as $firma)
+                                        @if($firma->curp == $moist['_attributes']['curp_firmante'])
+                                            <td style="font-size: 8px; height: 25px; border: none;">{{ $firma->cargo }}</td>
+                                        @endif
+                                    @endforeach
+                                @else
+                                    <td style="font-size: 8px; height: 25px; border: none;">{{ $puesto->cargo }}</td>
+                                @endif
                             </tr>
                             <tr>
                                 <td style="font-size: 8px; border: none;"><b>Fecha de Firma:</b></td>
@@ -80,6 +122,14 @@
                         </tr>
                     </table>
                 @endif
+                <div class="sello" style="height: 0;">
+                    @php  $sello = explode('*', $sello); @endphp
+                    <p class="overlay" ><h4 style="line-height: 0;">{{$sello[0]}}</h4>
+                        <br style="line-height: 0;"><h5 style="line-height: 0;">{{$sello[1]}}
+                            <br style="line-height: 0;"><h3 style="line-height: 0;">{{$sello[2]}}</h3>
+                        <br style="line-height: -1;"> {{$sello[3]}}
+                    <br style="line-height: 1;"><h4 style="line-height: 0;">{{$sello[4]}}</h4></h5></p>
+                </div>
                 {!! $body_html['ccp'] !!}
                 {{-- <p style="line-height:0.8em;">
                     <b><small>C.c.p.{{$funcionarios['ccp1']}}.- {{$funcionarios['ccp1p']}}.-Para su conocimiento.</small></b><br/>

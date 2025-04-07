@@ -108,8 +108,9 @@ class BuzonFoliosController extends Controller
             if($data) $cad_original = $data->pluck('cadena_original', 'id')->toArray();
 
             ##Obtenemos token para enviarlos a la vista
-            $getToken = Tokens_icti::latest()->first();
-            if ($getToken) {$token = $getToken->token;}
+            $token = $this->generarToken();
+            // $getToken = Tokens_icti::latest()->first();
+            // if ($getToken) {$token = $getToken->token;}
 
             ##Validamos los firmantes del documento
                 $obj = json_decode($data[0]->obj_documento, true);
@@ -133,9 +134,6 @@ class BuzonFoliosController extends Controller
                     }
                 }
         }
-
-        // $token =$this->generarToken();
-        // dd($token);
 
         return view('grupos.efirmafolios.efirmabuzon_folios', compact('ubicacion','estados','ejercicio_e','filtro_e','clave_e',
         'data','ids','matricula','token', 'cad_original', 'array_firm', 'curpf','existcurp','existmail','slug', 'existfirma'));
@@ -188,7 +186,7 @@ class BuzonFoliosController extends Controller
             $uuid = $cadena_sello = $fecha_sello = $no_oficio = "";
 
 
-            $consulta = EfoliosAlumnos::select('datos_alumno', 'obj_documento', 'status_doc', 'uuid_sellado',
+            $consulta = EfoliosAlumnos::select('datos_alumno', 'fecha_creacion', 'obj_documento', 'status_doc', 'uuid_sellado',
             'fecha_sellado', 'cadena_sello', 'no_oficio')->where('id', $id)->first();
 
 
@@ -246,9 +244,20 @@ class BuzonFoliosController extends Controller
                     $result = ['nombre_modulo' => $value['nombre_modulo'], 'hora' => $value['hora'], 'tipo' => $tipo];
                     $cont_tematico[] = $result;
                 }
-                // dd($cont_tematico);
 
-                $pdf = PDF::loadView('grupos.efirmafolios.pdfconstancia_efolios',compact('data', 'uuid', 'cadena_sello', 'fecha_sello', 'no_oficio', 'qrCodeBase64', 'firmantes', 'cont_tematico'));
+                //Obtener el formato correcto de la tabla tbl_eformatos
+                $url_uno_membretado = $url_dos_membretado = '';
+                $fecha_eformato = $consulta->fecha_creacion;
+                $fecha_solo_fecha = substr($fecha_eformato, 0, 10);
+                if ($fecha_solo_fecha <= '2024-12-31') {
+                    $url_uno_membretado = 'img/econstancias_alumnos/fondo_constancia1.png';
+                    $url_dos_membretado = 'img/econstancias_alumnos/fondo_constancia2.png';
+                }else{
+                    $url_uno_membretado = 'img/econstancias_alumnos/fondo_constancia_2025_frente.png';
+                    $url_dos_membretado = 'img/econstancias_alumnos/fondo_constancia_2025_reverso.png';
+                }
+
+                $pdf = PDF::loadView('grupos.efirmafolios.pdfconstancia_efolios',compact('data', 'uuid', 'cadena_sello', 'fecha_sello', 'no_oficio', 'qrCodeBase64', 'firmantes', 'cont_tematico', 'url_uno_membretado', 'url_dos_membretado'));
                 return $pdf->stream('Constancia alumno');
             }else{
                 return "Error al realizar la consulta a la base de datos";

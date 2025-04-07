@@ -33,6 +33,7 @@ class Reporterf001Repository implements Reporterf001Interface
     public function getReciboQry($unidad)
     {
         return Recibo::where('tbl_recibos.status_recibo', 'PAGADO')
+            ->where('tbl_recibos.status_folio', 'ENVIADO')
             ->where('tbl_unidades.unidad', $unidad)
             ->where(function($query) {
                 $query->whereNull('tbl_recibos.estado_reportado')
@@ -116,6 +117,7 @@ class Reporterf001Repository implements Reporterf001Interface
             'movimiento' => json_encode($movimientoAdd, JSON_UNESCAPED_UNICODE),
             'tipo' => trim($request->get('tipoSolicitud')),
             'envia' => trim($usuario->name),
+            'contador_firma' => 0,
         ]);
     }
 
@@ -182,6 +184,11 @@ class Reporterf001Repository implements Reporterf001Interface
                     ) {
                         unset($arrayDatos[$i]);
                         $arrayDatos = array_values($arrayDatos);
+                        // dejarlo null
+                        Recibo::where('folio_recibo', '=', $arrayDatos[$i]['folio'])
+                        ->update([
+                            'estado_reportado' => null
+                        ]);
                         break;
                     }
                 }
@@ -300,6 +307,7 @@ class Reporterf001Repository implements Reporterf001Interface
 
         // Obtener el campo JSON y decodificarlo
         $datosExistentes  = json_decode($rf001->movimiento, true);
+        $curpExistente = json_decode($rf001->firmante, true);
 
         $jsonObject = [
             'fecha' => $fechaUnica,
@@ -309,9 +317,17 @@ class Reporterf001Repository implements Reporterf001Interface
         ];
         $datosExistentes[] = $jsonObject;
 
+        $jsonCurpFirmante = [
+            'curp' => $request->curpObtenido,
+        ];
+
+        $curpExistente[] = $jsonCurpFirmante;
+
         return (new Rf001Model())->where('id', $request->idRf)->update([
             'estado' => 'ENSELLADO',
             'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
+            'contador_firma' => \DB::raw('contador_firma + 1'),
+            'firmante' => json_encode($curpExistente, JSON_UNESCAPED_UNICODE),
         ]);
     }
 

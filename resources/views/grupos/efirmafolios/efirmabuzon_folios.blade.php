@@ -515,8 +515,8 @@
                         const objeto = {
                             certificado: element.certificated,
                             no_seriefirmante: element.certifiedSeries,
-                            //fechafirma: element.date, //Prueba
-                            fechafirma: element.date_sign, //Producción
+                            // fechafirma: element.date, //Prueba
+                            fechafirma: element.date, //Producción
                             firma_cadena: element.sign,
                             idCadena: element.idCadena
                         };

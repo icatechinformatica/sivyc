@@ -116,15 +116,6 @@
 </head>
 
 <body>
-    {{-- Eliminar despues del  01/01/2025 --}}
-    {{-- <header>
-        <img src="img/reportes/sep.png" alt='sep' width="16%" style='position:fixed; left:0; margin: -70px 0 0 20px;' />
-        <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N E INVESTIGACI&Oacute;N TECNOL&Oacute;GICAS</h6>
-        <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
-        <h6>LISTA DE ASISTENCIA</h6>
-        <h6>(LAD-04)</h6>
-
-    </header> --}}
     {!! $header !!}
     @if(!is_null($uuid))
         <footer>
@@ -143,7 +134,11 @@
                         <tr>
                             <td style="font-size: 7px;"><b>Puesto:</b></td>
                             @if ($dataFirmante->curp == $moist['_attributes']['curp_firmante'])
-                                <td style="font-size: 7px; height: 25px;">{{ $dataFirmante->cargo }}</td>
+                                @if(!is_null($firmantes))
+                                    <td style="font-size: 7px; height: 25px;">{{ $firmantes[0]->cargo }}</td>
+                                 @else
+                                    <td style="font-size: 7px; height: 25px;">{{ $dataFirmante->cargo }}</td>
+                                @endif
                             @else
                                 <td style="font-size: 7px; height: 25px;">INSTRUCTOR EXTERNO</td>
                             @endif

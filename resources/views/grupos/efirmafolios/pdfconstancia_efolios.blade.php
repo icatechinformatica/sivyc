@@ -59,7 +59,7 @@
 }
 
     #fondo1 {
-        background-image: url('img/econstancias_alumnos/fondo_constancia1.png');
+        background-image: url('img/econstancias_alumnos/fondo_constancia_2025_frente.png');
         background-size: cover;
         background-position: center;
         width: 100%;
@@ -68,13 +68,32 @@
     }
 
     #fondo2 {
-        background-image: url('img/econstancias_alumnos/fondo_constancia2.png');
+        background-image: url('img/econstancias_alumnos/fondo_constancia_2025_reverso.png');
         background-size: cover;
         background-position: center;
         width: 100%;
         margin: auto;
         height: 100%;
     }
+
+    /* nuevo sexenio 2025 */
+    /* #fondo1 {
+        background-image: url('img/econstancias_alumnos/fondo_constancia_2025_frente.png');
+        background-size: cover;
+        background-position: center;
+        width: 100%;
+        margin: auto;
+        height: 100%;
+    }
+
+    #fondo2 {
+        background-image: url('img/econstancias_alumnos/fondo_constancia_2025_reverso.png');
+        background-size: cover;
+        background-position: center;
+        width: 100%;
+        margin: auto;
+        height: 100%;
+    } */
 
 </style>
 

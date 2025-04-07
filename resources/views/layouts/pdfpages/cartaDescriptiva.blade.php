@@ -6,36 +6,12 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style>
-            body{
+            body {
                 font-family: sans-serif;
+                padding: 13% 2% 7% 2% !important;
             }
             @page {
-                margin: 100px 20px 85px;
-                color: black;
-            }
-            header { position: fixed;
-                left: 0px;
-                top: -90px;
-                /* margin-left: -20px; */
-                padding-left: 0px;
-                height: 90px;
-                width: 100%;
-                background-color: white;
-                color: black;
-                text-align: center;
-                line-height: 60px;
-            }
-            footer {
-                position: fixed;
-                left: 0px;
-                bottom: -70px;
-                right: 0px;
-                height: 80px;
-                width: 100%;
-                padding-left: 0px;
-                background-color: white;
-                color: black;
-                text-align: center;
+                margin: 0px;
             }
             img.izquierda {
                 float: left;
@@ -47,13 +23,6 @@
                 float: inline-end;
                 width: 100%;
                 height: 100%;
-            }
-            div.content
-            {
-                margin-top: 60%;
-                margin-bottom: 70%;
-                margin-right: 25%;
-                margin-left: 0%;
             }
             .direccion
             {
@@ -84,16 +53,21 @@
             .page-break-non {
                 page-break-after: avoid;
             }
+
+        #fondo1 {
+            background-image: url('img/membretado/membretado_carta_descriptiva.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
         </style>
     </head>
-    <body>
-        <header>
-            <img class="izquierda" src="{{ public_path('img/formatos/banner_carta_descriptiva.png') }}">
-        </header>
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_carta_descriptiva.png') }}">
-        </footer>
-        <div id="wrapper">
+    <body id="fondo1">
+        <div class="content">
             {{-- <br> --}}
             <h3 class="center-text">CARTA DESCRIPTIVA</h3>
             <table border="1" class="tableA" style="width: 100%;">
@@ -145,7 +119,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="page-break"></div>
+            {{-- <div class="page-break"></div> --}}
             <br>
             <table border="1" class="tableA" style="width: 100%;">
                 <tbody>
@@ -222,38 +196,42 @@
                                     @endif
                                     @if($sincrono[0] > 0 || $sincrono[1] > 0 || $asincrono[0] > 0 || $asincrono[1] > 0)
                                         <br><br><b>A Distancia</b>
-                                        @if($sincrono[0] > 0)
+                                        @if($sincrono[0] > 0 || $sincrono[1] > 0)
                                             @if($sincrono[0] > 0 || $sincrono[1] > 0) <br><b>Sincronas</b><br>@endif
                                             @if($sincrono[0] >= 10)
                                                 {{$sincrono[0]}}
                                             @else
-                                                {{$sincrono[0]['1']}}
+                                                @if ($sincrono[0]['1'] != 0)
+                                                    {{$sincrono[0]['1']}}
+                                                @endif
                                             @endif
-                                            @if($sincrono[0] > 1)Horas @else Hora @endif
+                                            @if($sincrono[0] > 1)Horas @elseif($sincrono[0] == 1) Hora @endif
                                             @if($sincrono[1] > 0)
                                                 @if($sincrono[1] >= 10)
                                                     {{$sincrono[1]}}
                                                 @else
                                                     {{$sincrono[1]['1']}}
                                                 @endif
-                                                @if($sincrono[1] > 1)Minutos @else Minuto @endif
+                                                @if($sincrono[1] > 1)Minutos @elseif($sincrono[1] == 1) Minuto @endif
                                             @endif
                                         @endif
-                                        @if($asincrono[0] > 0)
+                                        @if($asincrono[0] > 0 || $sincrono[1] > 0)
                                             @if($asincrono[0] > 0 || $asincrono[1] > 0) <br><b>Asincronas</b><br>@endif
                                             @if($asincrono[0] >= 10)
                                                 {{$asincrono[0]}}
                                             @else
-                                                {{$asincrono[0]['1']}}
+                                                @if ($asincrono[0]['1'] != 0)
+                                                    {{$asincrono[0]['1']}}
+                                                @endif
                                             @endif
-                                            @if($asincrono[0] > 1)Horas @else Hora @endif
+                                            @if($asincrono[0] > 1)Horas @elseif($asincrono[0] == 1) Hora @endif
                                             @if($asincrono[1] > 0)
                                                 @if($asincrono[1] >= 10)
                                                     {{$asincrono[1]}}
                                                 @else
                                                     {{$asincrono[1]['1']}}
                                                 @endif
-                                                @if($asincrono[1] > 1)Minutos @else Minuto @endif
+                                                @if($asincrono[1] > 1)Minutos @elseif($asincrono[1] == 1) Minuto @endif
                                             @endif
                                         @endif
                                     @endif
@@ -275,7 +253,7 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="page-break"></div>
+            {{-- <div class="page-break"></div> --}}
             <br>
             <table border="1" class="tableA" style="width: 100%;">
                 <tbody>

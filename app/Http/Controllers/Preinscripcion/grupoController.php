@@ -105,24 +105,8 @@ class grupoController extends Controller
 
                 if($grupo->status_curso =='AUTORIZADO')$cursos->put($grupo->id_curso, $grupo->nombre_curso);
 
-                //dd($cursos);
-                $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-                    ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
-                    ->rightJoin('instructores','t.id_instructor','=','instructores.id')
-                    ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-                    ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-                    ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-                    //->join('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
-                    ->WHERE('estado',true)
-                    ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
-                    ->WHERE('especialidad_instructores.especialidad_id',$grupo->id_especialidad)
-                    //->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
-                    //->where('especialidad_instructor_curso.activo', true)
-                    ->WHERE('fecha_validacion','<',$grupo->inicio)
-                    ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino)
-                    ->groupBy('t.id_instructor','instructores.id')
-                    ->orderBy('instructor')
-                    ->get();
+                //dd($grupo);
+                $instructores = $this->data_instructores($grupo);            
                 //FIN CATALOGOS
                 $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
                 //$grupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->first();
@@ -195,6 +179,48 @@ class grupoController extends Controller
         return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar',
             'es_vulnerable', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','edicion_exo','instructores','instructor',
             'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo','programas','planteles', 'message'));
+    }
+
+
+    private function data_instructores($data){
+        
+        $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
+        ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
+        ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($data->inicio)))
+        ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($data->inicio)))
+        ->havingRaw('count(*) >= 2')
+        ->groupby('i.id');
+        
+        $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
+        ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
+        ->rightJoin('instructores','t.id_instructor','=','instructores.id')
+        ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
+        ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+        ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+        //->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
+        //->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
+        ->WHERE('estado',true)
+        ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
+        ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)        
+        //->where('especialidad_instructor_curso.activo', true)
+        ->WHERE('fecha_validacion','<',$data->inicio)
+        ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
+        ->whereNotIn('instructores.id', $internos)
+        ->groupBy('t.id_instructor','instructores.id')
+        ->orderBy('instructor')
+        ->get();
+        return $instructores;
+    }
+
+    public function cmbinstructor(Request $request){        
+        if (isset($request->id) and isset($request->inicio) and isset($request->termino)) {
+            $data = $request;
+            $data->id_especialidad = DB::table('cursos')->where('id',$request->id)->value('id_especialidad');            
+            $data->id_curso = $request->id;            
+            $instructores = $this->data_instructores($data);
+            $json = json_encode($instructores);
+            return $json;
+        } else $json = json_encode(["No hay registros que mostrar."]);
     }
 
 
@@ -1206,44 +1232,7 @@ class grupoController extends Controller
             return "ACCIÓN INVÁlIDA";exit;
         }
     }
-
-    public function cmbinstructor(Request $request)
-    {
-        if (isset($request->id) and isset($request->inicio) and isset($request->termino)) {
-            $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
-            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
-            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($request->inicio)))
-            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($request->inicio)))
-            ->havingRaw('count(*) >= 2')
-            ->groupby('i.id');
-
-            $id_especialidad = DB::table('cursos')->where('id',$request->id)->value('id_especialidad');
-            $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-                ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
-                ->rightJoin('instructores','t.id_instructor','=','instructores.id')
-                ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-                ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-                ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-                //->join('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
-                ->WHERE('estado',true)
-                //->WHERE('instructores.tipo_honorario', 'like', '%HONORARIOS%')
-                ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
-                ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
-                //->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
-                //->where('especialidad_instructor_curso.activo', true)
-                ->WHERE('fecha_validacion','<',$request->inicio)
-                ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
-                ->whereNotIn('instructores.id', $internos)
-                ->groupBy('t.id_instructor','instructores.id')
-                ->orderBy('instructor')
-                ->get();
-            $json = json_encode($instructores);
-            //var_dump($json);exit;
-        } else {
-            $json = json_encode(["No hay registros que mostrar."]);
-        }
-        return $json;
-    }
+   
 
     public function showCalendar($id){
         $folio = $id;

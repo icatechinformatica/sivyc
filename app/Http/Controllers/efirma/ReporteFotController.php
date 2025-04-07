@@ -38,6 +38,7 @@ class ReporteFotController extends Controller
 
     ##Generacion de PDF en caso de que haya firma, mostralas.
     public function repofotoPdf($id){
+        $firmantes = null;
         $id_curso = $id;
         $cursopdf = tbl_curso::select('nombre', 'curso', 'tcapacitacion', 'inicio', 'termino', 'evidencia_fotografica',
         'clave', 'hini', 'hfin', 'tbl_cursos.unidad', 'uni.dunidad', 'uni.ubicacion', 'uni.direccion', 'uni.municipio')
@@ -61,6 +62,9 @@ class ReporteFotController extends Controller
             $body['header'] = $body_html->header;
             $body['footer'] = $body_html->footer;
             $body['body'] = $body_html->body;
+            if(isset($body_html->firmantes)) {
+                $firmantes = $body_html->firmantes;
+            }
         }
 
         // $path_files = $this->path_files;
@@ -179,7 +183,7 @@ class ReporteFotController extends Controller
         // }
 
         $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('body', 'objeto','dataFirmante','direccion',
-        'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos'));
+        'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos','firmantes'));
         $pdf->setPaper('Letter', 'portrait');
         $file = "REPORTE_FOTOGRAFICO_$id_curso.PDF";
         return $pdf->stream($file);

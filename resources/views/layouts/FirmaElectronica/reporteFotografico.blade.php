@@ -200,7 +200,7 @@
             @foreach($base64Images as $key => $base64)
                 <div @if ($objeto == null && $key == (count($base64Images)-1)) @else @if($key != 0) style= "page-break-after: always; text-align: center; margin-top: 15%;" @else  style= "page-break-after: always; text-align: center;" @endif @endif>
                     <img style="width: auto; height: auto; max-width: 95%; max-height:95%;" src="data:image/jpeg;base64,{{$base64}}" alt="Foto">
-                    <small style="text-align: right; display:block; max-width: 95%; margin-top:2px;">{{basename($array_fotos[$key])}}</small>
+                    <small style="text-align: right; display:block; max-width: 95%; margin-top:1px;">{{basename($array_fotos[$key])}}</small>
                 </div>
             @endforeach
         </div>
@@ -232,7 +232,11 @@
                         <tr>
                             <td style="font-size: 11px; padding-bottom: 10px;"><b>Puesto:</b></td>
                             @if ($dataFirmante->curp == $moist['_attributes']['curp_firmante'])
-                                <td style="font-size: 11px; padding-bottom: 10px;">{{ $dataFirmante->cargo }}</td>
+                                @if(!is_null($firmantes))
+                                    <td style="font-size: 7px; height: 25px;">{{ $firmantes[0]->cargo }}</td>
+                                @else
+                                    <td style="font-size: 11px; padding-bottom: 10px;">{{ $dataFirmante->cargo }}</td>
+                                @endif
                             @else
                                 <td style="font-size: 11px; padding-bottom: 10px;">INSTRUCTOR EXTERNO</td>
                             @endif
