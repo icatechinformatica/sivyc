@@ -1275,7 +1275,7 @@ class supreController extends Controller
 
     public function supre_pdf($id){
         $id = base64_decode($id);
-        $uuid = $objeto = $qrCodeBase64 = $bodyCcp = null;
+        $uuid = $objeto = $qrCodeBase64 = $bodyCcp = $firmante =  null;
         $user_data = DB::Table('users')->Select('ubicacion','role_user.role_id')
             ->Join('tbl_unidades','tbl_unidades.id','users.unidad')
             ->Join('role_user','role_user.user_id','users.id')
@@ -1317,9 +1317,16 @@ class supreController extends Controller
         } else {
             $firma_electronica = true;
             $body_html = json_decode($documento->obj_documento_interno);
-            $bodySupre = $body_html->supre;
-            $bodyTabla = $body_html->tabla;
-            $bodyCcp = $body_html->ccp;
+            if(isset($body_html->firmantes)) {
+                $bodySupre = $body_html->body->supre;
+                $bodyTabla = $body_html->body->tabla;
+                $bodyCcp = $body_html->body->ccp;
+                $firmante = $body_html->firmantes;
+            } else {
+                $bodySupre = $body_html->supre;
+                $bodyTabla = $body_html->tabla;
+                $bodyCcp = $body_html->ccp;
+            }
         }
 
 
@@ -1362,8 +1369,8 @@ class supreController extends Controller
         // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
         // return $pdf2->stream("prueba.pdf");
 
-        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))->setPaper('letter', 'portrait')->output();
-        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))
+        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante'))->setPaper('letter', 'portrait')->output();
+        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante'))
             ->setPaper('a4', 'landscape')  // Configurar tamaño y orientación
             ->output();
 
