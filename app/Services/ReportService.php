@@ -1248,7 +1248,7 @@ class ReportService
                 foreach ($movimiento as $item) {
                     Recibo::where('folio_recibo', '=', $item['folio'])
                         ->update([
-                            'estado_reportado' => ''
+                            'estado_reportado' => null
                         ]);
                 }
 
