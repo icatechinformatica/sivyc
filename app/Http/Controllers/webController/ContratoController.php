@@ -1319,7 +1319,7 @@ class ContratoController extends Controller
             $body = json_decode($documento->body_html);
             $body_html = ['header' => $body->header, 'body' => $body->body, 'ccp' => $body->ccp, 'footer' => $body->footer];
             if(isset($body->firmantes)) {
-                $body['firmantes'] = $body->firmantes;
+                $body_html['firmantes'] = $body->firmantes;
             }
 
             if(isset($documento->uuid_sellado)){
