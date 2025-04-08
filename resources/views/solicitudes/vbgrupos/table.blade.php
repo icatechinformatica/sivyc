@@ -18,11 +18,19 @@
                 <tr>
                     <td class="text-center">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="{{ $item->id }}" name="activo_curso"   onchange="cambia_estado({{$item->id}},$(this).prop('checked'))"  @if($item->vb_dg==true){{'checked'}} @endif >
+                            <input class="form-check-input" type="checkbox" value="{{ $item->id }}" name="activo_curso"   onchange="cambia_estado({{$item->id}},$(this))"  @if($item->vb_dg==true){{'checked'}} @endif >
                         </div>
-                    </td>                     
-                    <td>{{ $item->curso }}</td>
-                    <td>{{ $item->nombre }}</td>
+                    </td>                        
+                    <td>
+                        <a onclick="ver_modal('CURSO', '{{ $item->folio_grupo}}')" style="color:rgb(1, 95, 84);">
+                            <b>{{ $item->curso }}</b>
+                        </a>          
+                    </td>
+                    <td>
+                        <a onclick="ver_modal('INSTRUCTOR', '{{ $item->folio_grupo}}')" style="color:rgb(1, 95, 84);">
+                            <b>{{ $item->nombre }}</b>
+                        </a>      
+                    </td>
                     <td>{{ date('d/m/Y', strtotime($item->inicio)) }}</td>
                     <td>{{ date('d/m/Y', strtotime($item->termino)) }}</td>
                     <td>{{ $item->unidad }}</td>
