@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\Tokens_icti;
 use Carbon\Carbon;
 use App\Utilities\MyUtility;
+use PDF;
 
-class EFirmaService
+
+class EFirmaService extends DocumentoService
 {
     public function __construct()
     {
@@ -132,48 +134,29 @@ class EFirmaService
                     'importeMemo'       => $importeMemo,
                     'periodo_inicio'    => $periodoInicio,
                     'periodo_fin'       => $periodoFin,
+                    'id_unidad'         => $idUnidad,
                 ] = $param;
 
                 // Preparar valores con formato
-                $unidad      = htmlspecialchars(strtoupper($unidadUbicacion));
-                $memo        = htmlspecialchars($memorandum);
-                $mun         = htmlspecialchars($municipio);
-                $fecha       = htmlspecialchars($fechaFormateada);
-                $tit         = htmlspecialchars(strtoupper($titulo));
-                $nom         = htmlspecialchars(strtoupper($nombre));
-                $importeLetra = $this->letras($importeMemo);
-                $car         = htmlspecialchars($cargo);
-                $importe     = number_format($importeMemo, 2, '.', ',');
-                $intervalo   = $this->formatoIntervaloFecha($periodoInicio, $periodoFin);
+                $valores = [
+                    'unidad'    => ['value' => $unidadUbicacion, 'upper' => true],
+                    'memo'      => ['value' => $memorandum],
+                    'mun'       => ['value' => $municipio],
+                    'fecha'     => ['value' => $fechaFormateada],
+                    'tit'       => ['value' => $titulo, 'upper' => true],
+                    'nom'       => ['value' => $nombre, 'upper' => true],
+                    'car'       => ['value' => $cargo],
+                    'importeLetra' => ['value' => $this->letras($importeMemo)],
+                    'importe' => ['value' => number_format($importeMemo, 2, '.', ',')],
+                    'intervalo' => ['value' => $this->formatoIntervaloFecha($periodoInicio, $periodoFin)],
+                    'idUnidad' => ['value' => $idUnidad]
+                ];
 
-                $html = <<<HTML
-                <div class="contenedor">
-                    <div class="bloque_dos" align="right" style="font-family: Arial, sans-serif; font-size: 14px;">
-                        <p class="delet_space_p color_text"><b>UNIDAD DE CAPACITACIÓN {$unidad}</b></p>
-                        <p class="delet_space_p color_text">MEMORÁNDUM No. {$memo}</p>
-                        <p class="delet_space_p color_text">{$mun}, CHIAPAS; <span class="color_text">{$fecha}</span></p>
-                    </div>
-                    <br>
-                    <div class="bloque_dos" align="left" style="font-family: Arial, sans-serif; font-size: 14px;">
-                        <p class="delet_space_p color_text"><b>{$tit} {$nom}</b></p>
-                        <p class="delet_space_p color_text"><b>{$car}</b></p>
-                        <p class="delet_space_p color_text"><b>PRESENTE.</b></p>
-                    </div>
-                    <div class="contenido" style="font-family: Arial, sans-serif; font-size: 14px; margin-top: 25px" align="justify">
-                        Por medio del presente, me permito enviar a usted el Concentrado de Ingresos Propios (FORMA RF-001) de la Unidad de Capacitación
-                        <span class="color_text"> {$unidad}, </span> correspondiente a la semana comprendida {$intervalo}.
-                        El informe refleja un total de \${$importe} ({$importeLetra}), mismo que se adjunta para su conocimiento y trámite correspondiente.
-                    </div>
-                    <br>
-                    <div class="tabla_alumnos">
-                        <p style="font-family: Arial, sans-serif; font-size: 14px;">Sin otro particular, aprovecho la ocasión para saludarlo.</p>
-                    </div>
-                    <br><br>
-                    <div class="ccp">C.c.p </div>
-                </div>
-                HTML;
+                $html = $this->generarDocumento($valores);
 
-                return $html;
+                $pdf = Pdf::loadHTML($html);
+                return $pdf->stream('documento.pdf');
+
                 break;
 
             default:
