@@ -184,6 +184,11 @@ class Reporterf001Repository implements Reporterf001Interface
                     ) {
                         unset($arrayDatos[$i]);
                         $arrayDatos = array_values($arrayDatos);
+                        // dejarlo null
+                        Recibo::where('folio_recibo', '=', $arrayDatos[$i]['folio'])
+                        ->update([
+                            'estado_reportado' => null
+                        ]);
                         break;
                     }
                 }

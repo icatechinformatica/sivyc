@@ -179,7 +179,7 @@ class EContratoController extends Controller
             ]
         ];
         array_push($arrayFirmantes, $temp);
-        array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
+        array_push($firmante, ['nombre' => $dataFirmanteDTA->nombre, 'curp' => $dataFirmanteDTA->curp, 'cargo' => $dataFirmanteDTA->cargo]);
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
