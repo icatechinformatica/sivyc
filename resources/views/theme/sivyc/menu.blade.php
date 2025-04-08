@@ -237,6 +237,9 @@
                             @can('listado.credencial')
                                 <a href="{{ route('credencial.indice') }}">Credencialización de Funcionarios</a>
                             @endcan
+                            @can('solicitudes.vb.grupos')
+                                <a href="{{ route('solicitudes.vb.grupos') }}">VB.- Grupos de Capacitación</a>
+                            @endcan
                         </div>
                     </li>
                 @endcan
