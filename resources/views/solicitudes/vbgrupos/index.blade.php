@@ -8,6 +8,10 @@
             width:22px;
             height:22px;
         }
+        #result_modal ul { padding: 5px; list-style-type: none}
+        #result_modal ul li { font-size: 12x; margin-bottom:10px; width: 232px;}
+        #result_modal ul li p{ font-size: 11px; margin-bottom:12px; display: block;  }
+        #result_modal ul li b { font-size: 14px; padding: 3px;}
     </style>
 @endsection
 @section('content')
@@ -46,89 +50,95 @@
                 @include('solicitudes.vbgrupos.table')
             </div>
 
-
             {{-- Modal DATOS --}}
-            <div class="modal fade" id="modalDatos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                {{-- color en el modal --}}
-                <div class="modal-dialog modal-sm modal-notify modal-danger" id="" role="document">
-                <!--Content-->
-                <div class="modal-content text-center">
-                    <!--Header-->
-                    <div class="modal-header d-flex justify-content-center">
-                        {{-- Mensaje para el modal --}}
-                    <p class="heading font-weight-bold">HOLA</p>
-                    </div>
-                    <!--Body-->
-                    <div class="modal-body">
-                        <div class="alert alert-danger alert-dismissible fade show pl-2 text-left" role="alert">
-                           HOLA
+            <div class="modal fade" id="modalDetalles" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">                
+                <div class="modal-dialog modal-sm modal-notify modal-danger" id="" role="document">                
+                    <div class="modal-content text-center">
+                        <!--Header-->
+                        <div class="modal-header d-flex justify-content-center" style="background-color:rgb(201, 1, 102);" >                            
+                        <p class="heading font-weight-bold" id="curso">DATOS</p>
                         </div>
-                        <div class="form-group">
-                            HOLA
+                        <!--Body-->
+                        <div class="modal-body">
+                            <div class="alert alert-danger alert-dismissible fade show pl-2 text-left" role="alert"  id="result_modal" ></div>                            
                         </div>
-                    </div>
-                    <!--Footer-->
-                    <div class="modal-footer flex-center">                        
-                        <a type="button" class="btn btn-outline-danger waves-effect" id="" data-dismiss="modal">
-                        <i class="fa fa-times fa-sm text-danger" aria-hidden="true"> </i> &nbsp; CERRAR</a>
-                    </div>
-                </div>
-                <!--/.Content-->
+                        <!--Footer-->
+                        <div class="modal-footer flex-center">                        
+                            <a type="button" class="btn" data-dismiss="modal" style="background-color:rgb(201, 1, 102);" >
+                            <i class="fa fa-times fa-sm " aria-hidden="true"> </i> &nbsp; CERRAR</a>
+                        </div>
+                    </div>                
                 </div>
             </div>
-            {{-- FIN Modal DATOS --}}
+            {{-- FIN Modal DATOS --}}      
 
         {!! Form::close() !!}
     </div>
     @section('script_content_js')
         <script language="javascript">    
-        $(function(){            
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-        });
-        function cambia_estado(id, status){
-            estado = status.prop('checked');
-            $.ajax({
-                    method: "POST",
-                    url: "vbgrupos/vistobueno",
-                    data: {
-                        id: id,
-                        estado: estado
-                    }
-            })
-            .done(function( msg ) { alert(msg); });
-        }
-
-        function actualiza_data(){
-            var clave = $('#clave').val();
-            var estatus = $('input[name="estatus"]:checked').val();
-            if (clave.length >= 3 || clave.length ==0 || estatus.length>0){
-                $.ajax({
-                    url: "vbgrupos/buscar",
-                    method: 'POST',
-                    data: {
-                        clave: clave,
-                        estatus: estatus
-                    },
-                    success: function(data) {
-                        $('#result_table').html(data);
+            $(function(){            
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-            }
-        }
-
-        $(document).ready(function(){
-            $('#clave').on('keyup', function() { actualiza_data(); });            
-            $('input[name="estatus"]').on('click', function() { 
-                actualiza_data();
             });
-        });
-        
-        //$('#modalDatos').modal('show');
-        
+            function cambia_estado(id, status){
+                estado = status.prop('checked');
+                $.ajax({
+                        method: "POST",
+                        url: "vbgrupos/vistobueno",
+                        data: {
+                            id: id,
+                            estado: estado
+                        }
+                })
+                .done(function( msg ) { alert(msg); });
+            }
+
+            function actualiza_data(){
+                var clave = $('#clave').val();
+                var estatus = $('input[name="estatus"]:checked').val();
+                if (clave.length >= 3 || clave.length ==0 || estatus.length>0){
+                    $.ajax({
+                        url: "vbgrupos/buscar",
+                        method: 'POST',
+                        data: {
+                            clave: clave,
+                            estatus: estatus
+                        },
+                        success: function(data) {
+                            $('#result_table').html(data);
+                        }
+                    });
+                }
+            }
+
+            $(document).ready(function(){
+                $('#clave').on('keyup', function() { actualiza_data(); });            
+                $('input[name="estatus"]').on('click', function() { 
+                    actualiza_data();
+                });
+            });
+            
+            function ver_modal(tipo, folio_grupo, ejercicio){
+                $('#result_modal').html("");
+                if (folio_grupo.length >0){
+                    $.ajax({
+                        url: "vbgrupos/getinfo",
+                        method: 'POST',
+                        data: {
+                            tipo: tipo,
+                            folio_grupo : folio_grupo
+                        },
+                        success: function(data) {                            
+                            $('#result_modal').html(data);                            
+                            $("#modalDetalles").modal("show");
+                        }
+                    });
+                    
+                }
+            }
         </script>
     @endsection
 @endsection
