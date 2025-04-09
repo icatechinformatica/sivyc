@@ -105,6 +105,17 @@
             width: 100%;
             margin-bottom: 10px; /* Espaciado inferior entre inputs */
         }
+
+        .borde-div {
+            border-width: 1px;
+            border-style:solid;
+            border-color: rgb(131, 131, 135);
+        }
+
+        .btn-outline-dark {
+            border-color: #959090 !important; /* Gris claro */
+            color: #333 !important; /* Color del texto (opcional) */
+        }
     </style>
 @endsection
 
@@ -204,38 +215,60 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="nombre" class="negrita">Aprendizaje esperado:</label>
+                                <div class="col-12 borde-div mb-1">
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('aprendizaje_esp', 'mayusculas')">A</button>
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('aprendizaje_esp', 'minusculas')">a</button>
+                                </div>
                                 <textarea id="aprendizaje_esp" name="aprendizaje_esp" class="tam_area" placeholder="Aprendizaje esperado">{{ data_get($json_general, 'aprendizaje_esp', '')}}</textarea>
                             </div>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 pl-2">
                             <div class="form-group">
                                 <label for="nombre" class="negrita">Objetivos especificos por tema:</label>
-                                {{-- <textarea name="" id="obj_especificos" rows="3" class="tam_area" placeholder="Objetivos especificos por tema">{{ data_get($json_general, 'obj_especificos', '')}}</textarea> --}}
-                                {{-- <textarea name="" id="obj_especificos" class="tam_area"></textarea> --}}
+                                {{-- <div class="col-12 borde-div mb-1">
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('obj_especificos', 'mayusculas')">A</button>
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('obj_especificos', 'minusculas')">a</button>
+                                </div> --}}
                                 <textarea id="obj_especificos" name="obj_especificos" class="tam_area" placeholder="Objetivos especificos por tema">{{ data_get($json_general, 'obj_especificos', '')}}</textarea>
                             </div>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 pl-2">
                             <div class="form-group">
                                 <label for="nombre" class="negrita">Transversalidad con otros cursos:</label>
+                                <div class="col-12 borde-div mb-1">
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('transversalidad', 'mayusculas')">A</button>
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('transversalidad', 'minusculas')">a</button>
+                                </div>
                                 <textarea name="transversalidad" id="transversalidad" rows="2" class="tam_area" placeholder="Transversalidad con otros cursos">{{ data_get($json_general, 'transversalidad', '')}}</textarea>
                             </div>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 pl-2">
                             <div class="form-group">
                                 <label for="nombre" class="negrita">Publico o personal a quien va dirigido el curso:</label>
+                                <div class="col-12 borde-div mb-1">
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('dirigido', 'mayusculas')">A</button>
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('dirigido', 'minusculas')">a</button>
+                                </div>
                                 <textarea name="dirigido" id="dirigido" class="tam_area"  placeholder="Publico o personal a quien va dirigido el curso">{{ data_get($json_general, 'dirigido', '')}}</textarea>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="form-group">
+                        <div class="col-12 pl-2">
+                            <div class="form-group pl-2">
                                 <label for="nombre" class="negrita">Proceso de evaluación:</label>
+                                <div class="col-12 borde-div mb-1">
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('proces_evalua', 'mayusculas')">A</button>
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('proces_evalua', 'minusculas')">a</button>
+                                </div>
                                 <textarea name="proces_evalua" id="proces_evalua" class="tam_area" placeholder="Proceso de evaluación">{{ data_get($json_general, 'proces_evalua', '')}}</textarea>
                             </div>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 pl-2">
                             <div class="form-group">
                                 <label for="nombre" class="negrita">Observaciones:</label>
+                                <div class="col-12 borde-div mb-1">
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('observaciones', 'mayusculas')">A</button>
+                                    <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('observaciones', 'minusculas')">a</button>
+                                </div>
                                 <textarea name="observaciones" id="observaciones" rows="3" class="tam_area" placeholder="Observaciones">{{ data_get($json_general, 'observaciones', '')}}</textarea>
                             </div>
                         </div>
@@ -265,6 +298,9 @@
                             <p class="text-center font-weight-bold">Submodulos</p>
                             <textarea name="submodulos" id="submodulos" rows="7" class="tam_area" placeholder="1.1 Conceptos básicos de la facturación electrónica."></textarea>
                             <input type="hidden" name="ids_subs" id="ids_subs" value="0">
+                            <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="convertirTexto('mayusculas')">A</button>
+                            <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="convertirTexto('minusculas')">a</button>
+
                         </div>
                         <div class="col-3 ml-2" style="border: 2px solid black">
                             <p class="text-center font-weight-bold">Duración</p>
@@ -308,10 +344,18 @@
                     <div class="col-12 row mt-2">
                         <div class="col-6 px-0" style="border: 2px solid black">
                             <p class="text-center font-weight-bold">Estrategias Didácticas</p>
+                            <div class="col borde-div mb-1 pl-1">
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('estra_dida', 'mayusculas')">A</button>
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('estra_dida', 'minusculas')">a</button>
+                            </div>
                             <textarea name="estra_dida" id="estra_dida" rows="7" class="tam_area" placeholder=""></textarea>
                         </div>
                         <div class="col-5 ml-2 px-0" style="border: 2px solid black">
                             <p class="text-center font-weight-bold">Proceso de Evaluación</p>
+                            <div class="col borde-div mb-1 pl-1">
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('proceso_evalua', 'mayusculas')">A</button>
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('proceso_evalua', 'minusculas')">a</button>
+                            </div>
                             <textarea name="proceso_evalua" id="proceso_evalua" rows="7" class="tam_area" placeholder=""></textarea>
                         </div>
                     </div>
@@ -401,18 +445,30 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label for="nombre" class="negrita">ELEMENTOS DE APOYO:</label>
+                            <div class="col borde-div mb-1 pl-1">
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('elem_apoyo', 'mayusculas')">A</button>
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('elem_apoyo', 'minusculas')">a</button>
+                            </div>
                             <textarea name="elem_apoyo" id="elem_apoyo" rows="5" class="tam_area" placeholder="Describe los elementos de apoyo">{{ data_get($json_didactico, 'elem_apoyo', '')}}</textarea>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
                             <label for="nombre" class="negrita">Auxiliares de la enseñanza:</label>
+                            <div class="col borde-div mb-1 pl-1">
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('auxiliares_ense', 'mayusculas')">A</button>
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('auxiliares_ense', 'minusculas')">a</button>
+                            </div>
                             <textarea name="auxiliares_ense" id="auxiliares_ense" rows="5" class="tam_area" placeholder="Auxiliares de enseñanza">{{ data_get($json_didactico, 'auxiliares_ense', '')}}</textarea>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
                             <label for="nombre" class="negrita">Referencias:</label>
+                            <div class="col borde-div mb-1 pl-1">
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Mayúsculas" onclick="transformarTextoEditor('referencias', 'mayusculas')">A</button>
+                                <button type="button" class="btn-sm btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Minúsculas" onclick="transformarTextoEditor('referencias', 'minusculas')">a</button>
+                            </div>
                             <textarea name="referencias" id="referencias" rows="5" class="tam_area" placeholder="Referencias">{{ data_get($json_didactico, 'referencias', '')}}</textarea>
                         </div>
                     </div>
@@ -459,58 +515,92 @@
 @section('script_content_js')
     <script src="{{asset('vendor/ckeditor5-decoupled-document/ckeditor.js') }}"></script>
     <script language="javascript">
+
         //Ocultar loader cuando cargue la pagina
         window.addEventListener('load', function() {
             loader('hide');
         });
 
-        //Iniciamos los objetos para el estilo de textos
-        let estraDidaEditor, procesoEvaluaEditor;
         function objetos_ckeditor(parte) {
             switch (parte) {
                 case "general": //Parte 1
-                    ClassicEditor.create(document.querySelector('#obj_especificos'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
-                    });
-                    ClassicEditor.create(document.querySelector('#aprendizaje_esp'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
-                    });
-                    ClassicEditor.create(document.querySelector('#transversalidad'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
-                    });
-                    ClassicEditor.create(document.querySelector('#dirigido'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
-                    });
-                    ClassicEditor.create(document.querySelector('#proces_evalua'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
-                    });
-                    ClassicEditor.create(document.querySelector('#observaciones'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+
+                    Promise.all([
+                        ClassicEditor.create(document.querySelector('#obj_especificos'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                            .then(editor => { objEspecificosEditor = editor; })
+                            .catch(console.error),
+
+                        ClassicEditor.create(document.querySelector('#aprendizaje_esp'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                            .then(editor => { apredizajeEditor = editor; })
+                            .catch(console.error),
+
+                        ClassicEditor.create(document.querySelector('#transversalidad'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                        .then(editor => { transverEditor = editor; })
+                        .catch(console.error),
+
+                        ClassicEditor.create(document.querySelector('#dirigido'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                            .then(editor => { dirigidoEditor = editor; })
+                            .catch(console.error),
+
+                        ClassicEditor.create(document.querySelector('#proces_evalua'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                        .then(editor => { procesevaluaEditor = editor; })
+                        .catch(console.error),
+
+                        ClassicEditor.create(document.querySelector('#observaciones'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                            .then(editor => { observacionesEditor = editor; })
+                            .catch(console.error),
+
+                    ]).then(() => {
+                        // Una vez que TODOS los editores estén inicializados, crea el objeto `editores`
+                        window.editores = {
+                            obj_especificos: objEspecificosEditor,
+                            aprendizaje_esp: apredizajeEditor,
+                            transversalidad: transverEditor,
+                            dirigido: dirigidoEditor,
+                            proces_evalua: procesevaluaEditor,
+                            observaciones: observacionesEditor
+                        };
                     });
                     break;
                 case "tematico": //Parte 2
-                    ClassicEditor
-                    .create(document.querySelector('#estra_dida'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
-                    })
-                    .then(editor => {estraDidaEditor = editor;})
-                    .catch(error => {console.error(error);});
 
-                    ClassicEditor.create(document.querySelector('#proceso_evalua'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
-                    })
-                    .then(editor => {procesoEvaluaEditor = editor;})
-                    .catch(error => {console.error(error);});
-                    break;
+                    Promise.all([
+                        ClassicEditor.create(document.querySelector('#estra_dida'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                            .then(editor => { estraDidaEditor = editor; })
+                            .catch(console.error),
+
+                        ClassicEditor.create(document.querySelector('#proceso_evalua'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                            .then(editor => { procesoEvaluaEditor = editor; })
+                            .catch(console.error),
+                    ]).then(() => {
+                        // Una vez que TODOS los editores estén inicializados, crea el objeto `editores`
+                        window.editores = {
+                            estra_dida: estraDidaEditor,
+                            proceso_evalua: procesoEvaluaEditor
+                        };
+                    });
                 case "didactico": //Parte 3
-                    ClassicEditor.create(document.querySelector('#elem_apoyo'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
-                    });
-                    ClassicEditor.create(document.querySelector('#auxiliares_ense'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
-                    });
-                    ClassicEditor.create(document.querySelector('#referencias'),{
-                        toolbar: {items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo']}
+
+                    Promise.all([
+                        ClassicEditor.create(document.querySelector('#elem_apoyo'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                            .then(editor => { elemapoyoEditor = editor; })
+                            .catch(console.error),
+
+                        ClassicEditor.create(document.querySelector('#auxiliares_ense'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                            .then(editor => { auxiliarenseEditor = editor; })
+                            .catch(console.error),
+
+                        ClassicEditor.create(document.querySelector('#referencias'), { toolbar: { items: ['bold', 'italic', 'underline', 'alignment', 'fontColor', 'backColor', '|', 'bulletedList', 'numberedList','|', 'indent', 'outdent', '|', 'undo', 'redo'] } })
+                        .then(editor => { referenciasEditor = editor; })
+                        .catch(console.error),
+
+                    ]).then(() => {
+                        // Una vez que TODOS los editores estén inicializados, crea el objeto `editores`
+                        window.editores = {
+                            elem_apoyo: elemapoyoEditor,
+                            auxiliares_ense: auxiliarenseEditor,
+                            referencias: referenciasEditor
+                        };
                     });
                     break;
                 default:
@@ -681,6 +771,44 @@
         //Funcion para validar campos
         function isEmpty(value) {
             return value == null || value === '';
+        }
+
+
+        function transformarTextoEditor(nombreEditor, tipoTransformacion) {
+            const editor = window.editores?.[nombreEditor]; // Usa el objeto global
+
+            if (!editor) {
+                console.error(`Editor "${nombreEditor}" no encontrado.`);
+                return;
+            }
+
+            const html = editor.getData();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            function transformarTexto(node) {
+                node.childNodes.forEach(child => {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        child.textContent = tipoTransformacion === 'mayusculas'
+                            ? child.textContent.toUpperCase()
+                            : child.textContent.toLowerCase();
+                    } else if (child.nodeType === Node.ELEMENT_NODE) {
+                        transformarTexto(child);
+                    }
+                });
+            }
+
+            transformarTexto(doc.body);
+            editor.setData(doc.body.innerHTML);
+        }
+
+        function convertirTexto(valor) {
+            const textarea = document.getElementById("submodulos");
+            if (valor === 'mayusculas') {
+                textarea.value = textarea.value.toUpperCase();
+            }else{
+                textarea.value = textarea.value.toLowerCase();
+            }
         }
 
 
