@@ -205,8 +205,9 @@ class vbgruposController extends Controller
             
             if($monto_pago > 0) $monto_pago = $monto_pago * $consulta_pago->dura;            
 
-            if($result){
-                $head = $result->instructor;
+            if($result){                
+                if (strlen($result->instructor) > 25) $head = substr($result->instructor, 0, 25) . " ...";
+                else $head = $result->instructor;
                 $body = "
                     <ul>
                         <li> <b> Importe: </b> $ ". number_format($monto_pago, 2, '.', ',')."</li>
