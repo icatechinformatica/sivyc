@@ -87,10 +87,10 @@ class vbgruposController extends Controller
                             <a onclick='".$modal_instructor."' style='color:rgb(1, 95, 84);'>
                                 <b>".$item->nombre."</b>
                             </a>
-                        </td>
-                        <td>".$item->unidad."</td>
+                        </td>                        
                         <td>".$item->inicio."</td>
-                        <td>".$item->termino."</td>                        
+                        <td>".$item->termino."</td>
+                        <td>".$item->unidad."</td>
                     </tr>
                 ";
             }
