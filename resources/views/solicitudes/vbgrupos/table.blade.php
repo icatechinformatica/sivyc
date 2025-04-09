@@ -9,7 +9,7 @@
                 <th scope="col">INSTRUCTOR</th>
                 <th scope="col" width="90px">INICIO</th>
                 <th scope="col" width="90px">TERMINO</th>
-                <th scope="col" width="7%">UNIDAD/A.M.</th>                
+                <th scope="col" width="7%">UNIDAD/AM</th>
                                  
             </tr>
         </thead>

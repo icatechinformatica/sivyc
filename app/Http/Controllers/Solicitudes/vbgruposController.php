@@ -67,6 +67,9 @@ class vbgruposController extends Controller
             foreach ($data as $item){        
                 if($item->vb_dg==true) $checked = 'checked';
                 else $checked = '';
+                                
+                $modal_curso = 'ver_modal("CURSO", "'.$item->folio_grupo.'" )';
+                $modal_instructor = 'ver_modal("INSTRUCTOR", "'.$item->folio_grupo.'" )';
 
                 $filas .= "
                     <tr>
@@ -74,12 +77,20 @@ class vbgruposController extends Controller
                             <div class='form-check'>                                
                                 <input class='form-check-input' type='checkbox' value='".$item->id."' name='activo_curso'   onchange='cambia_estado(".$item->id.",$(this))' $checked>
                             </div>
-                        </td>                            
-                        <td>".$item->curso."</td>
-                        <td>".$item->nombre."</td>
-                        <td>".$item->inicio."</td>
-                        <td>".$item->termino."</td>
+                        </td>                                             
+                        <td>
+                            <a onclick='".$modal_curso."' style='color:rgb(1, 95, 84);'>
+                                <b>".$item->curso."</b>
+                            </a>   
+                        </td>
+                        <td>
+                            <a onclick='".$modal_instructor."' style='color:rgb(1, 95, 84);'>
+                                <b>".$item->nombre."</b>
+                            </a>
+                        </td>
                         <td>".$item->unidad."</td>
+                        <td>".$item->inicio."</td>
+                        <td>".$item->termino."</td>                        
                     </tr>
                 ";
             }
@@ -88,25 +99,28 @@ class vbgruposController extends Controller
     } 
 
     public function modal_datos(Request $request){ 
-        $html = null;
+        $data = null;
         switch($request->tipo){
             case "CURSO":                
-                $html = $this->detalles_curso($request);
+                $data = $this->detalles_curso($request);
             break;
             case "INSTRUCTOR":
-                $html = $this->detalles_instructor($request);
+                $data = $this->detalles_instructor($request);
             break;
         }
-        return $html;
+        return $data;
     }
 
     private function detalles_curso(Request $request){
         $folio = $request->folio_grupo;
-        $html = "Datos no encontrado.";
+        $head = null;
+        $body = "Datos no encontrado.";        
         if($folio){            
-            $result = DB::table('tbl_cursos')->select('muni', 'hini', 'hfin', 'efisico')->where('folio_grupo', $folio)->first();     
+            $result = DB::table('tbl_cursos')->select('muni', 'hini', 'hfin', 'efisico', 'curso')->where('folio_grupo', $folio)->first();     
             if($result){
-                $html = "
+                if (strlen($result->curso) > 25) $head = substr($result->curso, 0, 25) . " ...";
+                else $head = $result->curso;
+                $body = "
                     <ul>                    
                         <li> <b> Municipio: </b>".$result->muni."</li>
                         <li> <b> Horario: </b>De ".$result->hini." A ".$result->hfin."</li>
@@ -115,17 +129,18 @@ class vbgruposController extends Controller
                     ";
             }            
         } 
-        return $html;
+        return [$head, $body];
     }
 
 
     private function detalles_instructor(Request $request){
         $folio = $request->folio_grupo;
-        $html = "Datos no encontrado.";
+        $head = null;
+        $body = "Datos no encontrado.";
         if($folio){
             $result =  DB::table('tbl_cursos as tc')
-                ->select([ 'ins.id as id_instructor',
-                    DB::raw('CONCAT(ins.nombre, \' \', ins."apellidoPaterno", \' \', ins."apellidoMaterno") AS nombre_completo'),
+                ->select([ 'ins.id as id_instructor', 
+                    DB::raw('CONCAT(ins.nombre, \' \', ins."apellidoPaterno", \' \', ins."apellidoMaterno") AS instructor'),
                     'ins.telefono',
                     'insper.grado_profesional as escolaridad',
                     'insper.carrera',
@@ -188,13 +203,13 @@ class vbgruposController extends Controller
                 }
             }
             
-            if($monto_pago > 0) $monto_pago = $monto_pago * $consulta_pago->dura;
-            
+            if($monto_pago > 0) $monto_pago = $monto_pago * $consulta_pago->dura;            
 
             if($result){
-                $html = "
+                $head = $result->instructor;
+                $body = "
                     <ul>
-                        <li> <b> Escolaridad: </b> $ ". number_format($monto_pago, 2, '.', ',')."</li>
+                        <li> <b> Importe: </b> $ ". number_format($monto_pago, 2, '.', ',')."</li>
                         <li> <b> Escolaridad: </b>".$result->escolaridad."</li>
                         <li> <b> Carrera: </b>".$result->carrera."</li>
                         <li> <b> Teléfono: </b>".$result->telefono."</li>
@@ -205,6 +220,6 @@ class vbgruposController extends Controller
                     ";
             }            
         } 
-        return $html;
+        return [$head, $body];
     }   
 }
