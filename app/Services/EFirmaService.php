@@ -120,49 +120,9 @@ class EFirmaService extends DocumentoService
 
     public function setBody(array $param = [])
     {
-        switch ($param['TYPE']) {
-            case 'RF001':
-                // destructurar
-                [
-                    'unidadUbicacion'   => $unidadUbicacion,
-                    'memorandum'        => $memorandum,
-                    'municipio'         => $municipio,
-                    'fechaFormateada'   => $fechaFormateada,
-                    'titulo'            => $titulo,
-                    'nombre'            => $nombre,
-                    'cargo'             => $cargo,
-                    'importeMemo'       => $importeMemo,
-                    'periodo_inicio'    => $periodoInicio,
-                    'periodo_fin'       => $periodoFin,
-                    'id_unidad'         => $idUnidad,
-                ] = $param;
-
-                // Preparar valores con formato
-                $valores = [
-                    'unidad'    => ['value' => $unidadUbicacion, 'upper' => true],
-                    'memo'      => ['value' => $memorandum],
-                    'mun'       => ['value' => $municipio],
-                    'fecha'     => ['value' => $fechaFormateada],
-                    'tit'       => ['value' => $titulo, 'upper' => true],
-                    'nom'       => ['value' => $nombre, 'upper' => true],
-                    'car'       => ['value' => $cargo],
-                    'importeLetra' => ['value' => $this->letras($importeMemo)],
-                    'importe' => ['value' => number_format($importeMemo, 2, '.', ',')],
-                    'intervalo' => ['value' => $this->formatoIntervaloFecha($periodoInicio, $periodoFin)],
-                    'idUnidad' => ['value' => $idUnidad]
-                ];
-
-                $html = $this->generarDocumento($valores);
-
-                $pdf = Pdf::loadHTML($html);
-                return $pdf->stream('documento.pdf');
-
-                break;
-
-            default:
-                # code...
-                break;
-        }
+        $html = $this->generarDocumento($param);
+        $pdf = Pdf::loadHTML($html);
+        return $pdf->stream('documento.pdf');
     }
 
     public static function letras($cantidad, $ver_decimal=true){
