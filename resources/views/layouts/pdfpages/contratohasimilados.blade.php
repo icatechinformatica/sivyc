@@ -159,10 +159,10 @@
                                         <td><b>Puesto:</b></td>
                                         @if(!is_null($firmantes))
                                             @php $iex = true; @endphp
-                                            @foreach ($firmantes as $puesto)
+                                            @foreach ($firmantes as $pop => $puesto)
                                                 @if($puesto->curp == $moist['_attributes']['curp_firmante'])
                                                     <td height="25px;">{{$puesto->cargo}}</td>
-                                                    @php $iex = false; @endphp
+                                                    @php $iex = false; unset($firmantes[$pop]); @endphp
                                                     @break
                                                 @endif
                                             @endforeach
