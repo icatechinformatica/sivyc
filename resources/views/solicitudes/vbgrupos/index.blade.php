@@ -8,10 +8,11 @@
             width:22px;
             height:22px;
         }
-        #result_modal ul { padding: 5px; list-style-type: none}
-        #result_modal ul li { font-size: 12x; margin-bottom:10px; width: 232px;}
-        #result_modal ul li p{ font-size: 11px; margin-bottom:12px; display: block;  }
-        #result_modal ul li b { font-size: 14px; padding: 3px;}
+        #result_body ul { padding: 5px; list-style-type: none}
+        #result_body ul li { font-size: 12x; margin-bottom:10px; width: 232px;}
+        #result_body ul li p{ font-size: 11px; margin-bottom:12px; display: block;  }
+        #result_body ul li b { font-size: 14px; padding: 3px;}
+        .modal-header p {font-size: 10px;}
     </style>
 @endsection
 @section('content')
@@ -56,16 +57,12 @@
                     <div class="modal-content text-center">
                         <!--Header-->
                         <div class="modal-header d-flex justify-content-center" style="background-color:rgb(201, 1, 102);" >                            
-                        <p class="heading font-weight-bold" id="curso">DATOS</p>
+                            <p class="heading font-weight-bold" id="result_head">DATOS</p>  
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true" class="text-light">&times;</span></button>                      
                         </div>
                         <!--Body-->
                         <div class="modal-body">
-                            <div class="alert alert-danger alert-dismissible fade show pl-2 text-left" role="alert"  id="result_modal" ></div>                            
-                        </div>
-                        <!--Footer-->
-                        <div class="modal-footer flex-center">                        
-                            <a type="button" class="btn" data-dismiss="modal" style="background-color:rgb(201, 1, 102);" >
-                            <i class="fa fa-times fa-sm " aria-hidden="true"> </i> &nbsp; CERRAR</a>
+                            <div class="alert alert-danger alert-dismissible fade show pl-2 text-left" role="alert"  id="result_body" ></div>                            
                         </div>
                     </div>                
                 </div>
@@ -121,8 +118,9 @@
                 });
             });
             
-            function ver_modal(tipo, folio_grupo, ejercicio){
-                $('#result_modal').html("");
+            function ver_modal(tipo, folio_grupo){
+                $('#result_head').html("");
+                $('#result_body').html("");
                 if (folio_grupo.length >0){
                     $.ajax({
                         url: "vbgrupos/getinfo",
@@ -131,8 +129,9 @@
                             tipo: tipo,
                             folio_grupo : folio_grupo
                         },
-                        success: function(data) {                            
-                            $('#result_modal').html(data);                            
+                        success: function(data) {                                                        
+                            $('#result_head').html(data[0]);
+                            $('#result_body').html(data[1]);
                             $("#modalDetalles").modal("show");
                         }
                     });
