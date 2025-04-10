@@ -60,7 +60,7 @@ Route::get('/servicio/archivo/electronico', function () {
         'importeMemo'      => 74833.96,
         'periodo_inicio'   => '2025-03-24',
         'periodo_fin'      => '2025-04-01',
-        'id_unidad'        => 20,
+        'id_unidad'        => 8,
         'creado'           => '2025-03-12 10:49:22',
         'movimientos'      => $movimiento,
     ];
