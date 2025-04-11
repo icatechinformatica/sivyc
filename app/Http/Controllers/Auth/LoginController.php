@@ -20,9 +20,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers{
-        AuthenticatesUsers::authenticated as parentAuthenticated;
-    }
+    use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login.
@@ -56,6 +54,6 @@ class LoginController extends Controller
         }
 
         // Comportamiento normal para otros usuarios
-        return $this->parentAuthenticated($request, $user);
+        return redirect()->intended($this->redirectPath());
     }
 }
