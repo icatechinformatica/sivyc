@@ -50,6 +50,7 @@ class LoginController extends Controller
     {
         //solicitudes.vb.grupos
         if ($user->id === 1) {
+            dd($user);
             return redirect()->route('solicitudes.vb.grupos'); // Ruta única para el usuario 1
         }
 
