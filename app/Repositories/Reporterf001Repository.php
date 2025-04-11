@@ -386,10 +386,19 @@ class Reporterf001Repository implements Reporterf001Interface
 
             // fin de la generación
             foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
-                $puesto = \DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+
+                $puesto = \DB::table('tbl_funcionarios as funcionarios')
+                ->select('funcionarios.cargo')
+                ->join('tbl_organismos as tblOrganismo', 'funcionarios.id_org', '=', 'tblOrganismo.id')
+                ->where(function ($query) {
+                    $query->where('funcionarios.cargo', 'LIKE', '%DELEGA%')
+                        ->orWhere('tblOrganismo.id_parent', 1);
+                })
+                ->where('funcionarios.curp', $moist['_attributes']['curp_firmante'])
+                ->distinct()
+                ->first();
                 if(!is_null($puesto)) {
                     array_push($puestos,$puesto->cargo);
-                    // <td height="25px;">{{$search_puesto->cargo}}</td>
                 } else {
                     array_push($puestos,'ENCARGADO');
                 }
