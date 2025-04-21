@@ -493,7 +493,7 @@
                                 </div>
                                 <label class="col-form-label">No. de Folio:</label>
                                 <div class="col-sm-3 form-group">
-                                    <input name="no_folio" id="no_folio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['numero_folio']}}">
+                                    <input name="no_folio" id="no_folio" type="text" class="form-control" aria-required="true" @if(isset($datainstructor->datos_alfa['numero_folio'])) value="{{$datainstructor->datos_alfa['numero_folio']}}" @endif>
                                 </div>
                             </div>
                             {{-- <label><strong>Horario del Círculo de estudio:</strong></label>
