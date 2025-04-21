@@ -214,9 +214,9 @@
                                             <i class="fas fa-money-bill-alt" aria-hidden="true"></i>
                                         </a>
                                     @endcan
-                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Formulario" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
+                                    {{-- <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Formulario" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </a>
+                                    </a> --}}
                                     @if($itemData->permiso_editar == TRUE)
                                         @can('folio.especialedit')
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">

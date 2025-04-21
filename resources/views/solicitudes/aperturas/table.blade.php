@@ -165,12 +165,11 @@
     </div>
 </div>
 <div class="row justify-content-end">
-    @if($activar==true OR isset($soporte) OR $status_curso == 'SOPORTE')
+    @if($activar==true OR isset($soporte) OR $status_curso == 'SOPORTE' OR $status_solicitud == 'TURNADO')
         @if($status_curso == "EN FIRMA")
             <div class="form-group col-md-3">
 
                     {{ Form::button('GENERAR AUTORIZACIÓN PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
-
             </div>
         @endif
         @if($movimientos)
@@ -196,16 +195,6 @@
         </div>
         <div class="form-group col-md-1 ">
             {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger']) }}
-        </div>
-    @elseif ($status_solicitud == 'TURNADO' OR $status_curso=='SOPORTE')
-        <div class="form-group col-md-1  my-2">
-            <label>MOVIMIENTO:</label>
-        </div>
-        <div class="form-group col-md-2  my-1">
-            {!! Form::select('pmovimiento',['' => '- SELECCIONAR -', 'EDICION'=>'AUTORIZAR EDICION', 'RETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'], '', ['id'=>'pmovimiento','class' => 'form-control' ]) !!}
-        </div>
-        <div class="form-group col-md-1">
-            {{ Form::button(' ACEPTAR ', ['id'=>'aceptar_preliminar','class' => 'btn  bg-danger ']) }}
-        </div>
+        </div>   
     @endif
 </div>

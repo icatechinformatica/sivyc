@@ -157,7 +157,25 @@
                                     </tr>
                                     <tr>
                                         <td><b>Puesto:</b></td>
-                                        <td height="25px;">{{$puestos[$key]}}</td>
+                                        @if(!is_null($firmantes))
+                                            @php $iex = true; @endphp
+                                            @foreach ($firmantes as $pop => $puesto)
+                                                @if($puesto->curp == $moist['_attributes']['curp_firmante'])
+                                                    <td height="25px;">{{$puesto->cargo}}</td>
+                                                    @php $iex = false; unset($firmantes[$pop]); @endphp
+                                                    @break
+                                                @endif
+                                            @endforeach
+                                            @if($iex)
+                                                @if($moist['_attributes']['curp_firmante'] == 'DUCM830907HCSRBR02')
+                                                    <td height="25px;">DIRECTOR TÉCNICO ACADÉMICO</td>
+                                                @else
+                                                    <td height="25px;">INSTRUCTOR</td>
+                                                @endif
+                                            @endif
+                                        @else
+                                            <td height="25px;">{{$puestos[$key]}}</td>
+                                        @endif
                                         {{-- @foreach($dataFirmantes as $search_puesto)
                                             @if($search_puesto->curp == $moist['_attributes']['curp_firmante'])
                                                 @php $esInstructor = FALSE; @endphp
@@ -193,38 +211,39 @@
                     </table>
                     </div>
                 @else
+                <div style="padding-right: 12%;">
                     <table>
                         <tr>
-                            <td colspan="2"><p align="center"><b>"ICATECH"</b></p></td>
-                            <td colspan="2"><p align="center"><b>"PRESTADOR DE SERVICIOS"</b></p></td>
+                            <td colspan="2"><p align="center"><b><small>"ICATECH"</small></b></p></td>
+                            <td colspan="2"><p align="center"><b><small>"PRESTADOR DE SERVICIOS"</small></b></p></td>
                         </tr>
                         <tr>
                             <td colspan="2"><div align="center"><br><br></td></div>
                             <td colspan="2"><div align="center"><br><br></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$funcionarios['director']}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>C. {{$nomins}}</b></td></div>
+                            <td colspan="2"><div align="center"><b><small>{{$funcionarios['director']}}</small></b></td></div>
+                            <td colspan="2"><div align="center"><b><small>C. {{$nomins}}</small></b></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$funcionarios['directorp']}}</b></td></div>
+                            <td colspan="2"><div align="center"><b><small>{{$funcionarios['directorp']}}</small></b></td></div>
                             <td colspan="2"><div align="center"></td></div>
                         </tr>
                     </table>
-                    <p align="center"><b>"TESTIGOS"</b></p>
-                    <br><br><br><br>
+                </div>
+                    <p align="center"><b><small>"TESTIGOS"</small></b></p>
                     <table>
                         <tr>
                             <td colspan="2"><p align="center"></p></td>
                             <td colspan="2"><p align="center"></p></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$funcionarios['academico']}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$funcionarios['delegado']}}</b></td></div>
+                            <td colspan="2"><div align="center"><b><small>{{$funcionarios['academico']}}</small></b></td></div>
+                            <td colspan="2"><div align="center"><b><small>{{$funcionarios['delegado']}}</small></b></td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center"><b>{{$funcionarios['academicop']}}</b></td></div>
-                            <td colspan="2"><div align="center"><b>{{$funcionarios['delegadop']}}</b></td></div>
+                            <td colspan="2"><div align="center"><b><small>{{$funcionarios['academicop']}}</small></b></td></div>
+                            <td colspan="2"><div align="center"><b><small>{{$funcionarios['delegadop']}}</small></b></td></div>
                         </tr>
                     </table>
                     {{-- <div align=center>
@@ -234,7 +253,20 @@
                         <br><small><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></small>
                         <br><small><b>{{$testigo3->puesto}}</b> </small></b>
                     </div> --}}
-                    <br>
+                    <table>
+                        <tr>
+                            <td colspan="2"><p align="center"><b><small>"AUTORIZA"</small></b></p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><p align="center"></p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div align="center"><b><small>{{$funcionarios['directorDTA']}}</small></b></td></div>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div align="center"><b><small>{{$funcionarios['directorDTAp']}}</small></b></td></div>
+                        </tr>
+                    </table>
                     <div align=justify>
                         <small  style="font-size: 10px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales en su modalidad de @if($data->tipo_curso=='CURSO') horas curso @else   certificación extraordinaria @endif No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$funcionarios['director']}}, {{$funcionarios['directorp']}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}.</small>
                     </div>

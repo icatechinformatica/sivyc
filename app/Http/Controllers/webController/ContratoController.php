@@ -1145,7 +1145,7 @@ class ContratoController extends Controller
             ->Join('role_user','role_user.user_id','users.id')
             ->Where('users.id', Auth::user()->id)
             ->First();
-        $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = $body_html = null;
+        $uuid = $objeto = $no_oficio = $dataFirmantes = $qrCodeBase64 = $cadena_sello = $fecha_sello = $body_html = $firmantes = null;
         $contrato = new contratos();
         $puestos = array();
 
@@ -1205,6 +1205,10 @@ class ContratoController extends Controller
             $Y = date("Y", $date);
 
             $body_html = json_decode($documento->obj_documento_interno);
+            if(isset($body_html->firmantes)) {
+                $firmantes = $body_html->firmantes;
+                $body_html = $body_html->body;
+            }
         }
         if(isset($documento->uuid_sellado)){
             $objeto = json_decode($documento->obj_documento,true);
@@ -1259,7 +1263,7 @@ class ContratoController extends Controller
             if ($data->modinstructor == 'HONORARIOS') {
                 $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html','funcionarios'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('data_contrato','data','D','M','Y','nomins','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html','funcionarios'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('data_contrato','data','D','M','Y','nomins','uuid','objeto','no_oficio','dataFirmantes','qrCodeBase64','cadena_sello','fecha_sello','puestos','firma_electronica','body_html','funcionarios','firmantes'));
             }
 
         $pdf->setPaper('LETTER', 'Portrait');
@@ -1294,16 +1298,19 @@ class ContratoController extends Controller
             ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
             ->Where('tipo_archivo','Solicitud Pago')
             ->first();
+        $funcionarios = $this->funcionarios($data->ubicacion);
         if(is_null($documento)) {
             $firma_electronica = false;
             $pagoController = new EPagoController();
             $body_html = $pagoController->create_body($id);
-            $funcionarios = $this->funcionarios($data->ubicacion);
         } else {
             // dd('a');
             $firma_electronica = true;
             $body = json_decode($documento->body_html);
             $body_html = ['header' => $body->header, 'body' => $body->body, 'ccp' => $body->ccp, 'footer' => $body->footer];
+            if(isset($body->firmantes)) {
+                $body_html['firmantes'] = $body->firmantes;
+            }
 
             if(isset($documento->uuid_sellado)){
                 $objeto = json_decode($documento->obj_documento,true);
@@ -1338,8 +1345,9 @@ class ContratoController extends Controller
 
         $direccion = DB::Table('tbl_unidades')->WHERE('unidad',$data->ubicacion)->VALUE('direccion');
         $direccion = explode("*", $direccion);
+        $sello = DB::Table('tbl_instituto')->Value('sello_ramo11');
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','qrCodeBase64','objeto','puesto','leyenda','direccion'));
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','qrCodeBase64','objeto','puesto','leyenda','direccion','sello'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 
@@ -1463,7 +1471,7 @@ class ContratoController extends Controller
     }
 
     public function funcionarios($unidad) {
-        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
+        $query = clone $direc = clone $ccp1 = clone $ccp2 = clone $delegado = clone $academico = clone $vinculacion = clone $destino = clone $directorDTA = DB::Table('tbl_organismos AS o')->Select('f.nombre','f.cargo','f.incapacidad')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
             ->Where('f.activo', 'true')
             ->Where('f.titular', true);
@@ -1476,6 +1484,7 @@ class ContratoController extends Controller
         $destino = $destino->Where('o.id',13)->First();
         $ccp1 = $ccp1->Where('o.id',1)->First();
         $ccp2 = $ccp2->Where('o.id',12)->First();
+        $directorDTA = $directorDTA->Where('o.id', 16)->First();
         $delegado = $delegado->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('o.nombre','LIKE','DELEG%')
             ->Where('u.unidad', $unidad)
@@ -1491,6 +1500,7 @@ class ContratoController extends Controller
             ->Where('u.unidad', $unidad)
             ->First();
 
+
         //parte de checado de incapacidad
         $direc = $this->incapacidad(json_decode($direc->incapacidad), $direc->nombre) ?: $direc;
         $delegado = $this->incapacidad(json_decode($delegado->incapacidad), $delegado->nombre) ?: $delegado;
@@ -1504,6 +1514,8 @@ class ContratoController extends Controller
             'ccp1p' => $ccp1->cargo,
             'ccp2' => $ccp2->nombre,
             'ccp2p' => $ccp2->cargo,
+            'directorDTA' => $directorDTA->nombre,
+            'directorDTAp' => $directorDTA->cargo,
             'delegado' => $delegado->nombre,
             'delegadop' => $delegado->cargo,
             'academico' => $academico->nombre,

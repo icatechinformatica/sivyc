@@ -116,21 +116,12 @@
 </head>
 
 <body>
-    {{-- Eliminar despues del  01/01/2025 --}}
-    {{-- <header>
-        <img src="img/reportes/sep.png" alt='sep' width="16%" style='position:fixed; left:0; margin: -70px 0 0 20px;' />
-        <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N E INVESTIGACI&Oacute;N TECNOL&Oacute;GICAS</h6>
-        <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
-        <h6>LISTA DE ASISTENCIA</h6>
-        <h6>(LAD-04)</h6>
-
-    </header> --}}
     {!! $header !!}
     @if(!is_null($uuid))
         <footer>
             {{-- <div style="display: inline-block; width: 50%;"></div> --}}
-            <div style="display: inline-block; width: 85%;">
-                <table style="width: 100%; font-size: 5px;">
+            <div style="display: inline-block; width: 85%; margin-top: 25px;">
+                <table style="width: 100%; font-size: 5px; line-height: 1;">
                     @foreach ($objeto['firmantes']['firmante'][0] as $keys=>$moist)
                         <tr>
                             <td style="width: 10%; font-size: 7px;"><b>Nombre del firmante:</b></td>
@@ -143,7 +134,11 @@
                         <tr>
                             <td style="font-size: 7px;"><b>Puesto:</b></td>
                             @if ($dataFirmante->curp == $moist['_attributes']['curp_firmante'])
-                                <td style="font-size: 7px; height: 25px;">{{ $dataFirmante->cargo }}</td>
+                                @if(!is_null($firmantes))
+                                    <td style="font-size: 7px; height: 25px;">{{ $firmantes[0]->cargo }}</td>
+                                 @else
+                                    <td style="font-size: 7px; height: 25px;">{{ $dataFirmante->cargo }}</td>
+                                @endif
                             @else
                                 <td style="font-size: 7px; height: 25px;">INSTRUCTOR EXTERNO</td>
                             @endif
@@ -161,7 +156,7 @@
             </div>
             <div style="display: inline-block; width: 15%;">
                 {{-- <img style="position: fixed; width: 100%; top: 55%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR"> --}}
-                <img style="position: fixed; width: 15%; top: 0%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
+                <img style="position: fixed; width: 15%; top: 5%; left: 80%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
             </div>
             <div class="page-number"><small class="link">Sello Digital: | GUID: {{$uuid}} | Sello: {{$cadena_sello}} | Fecha: {{$fecha_sello}} <br> Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas </small></div>
         </footer>

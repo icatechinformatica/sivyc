@@ -2981,7 +2981,7 @@
                 request2.done(( respuesta) =>
                 {
                     position = document.getElementById("row").value;
-                    console.log(position);
+                    // console.log(position);
                     $('#modperprofModal').modal('hide');
                         var table = document.getElementById('tableperfiles')
                         var row = table.rows[position];
@@ -3343,7 +3343,15 @@
         $('#modperprofModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget);
             var id = button.data('id');
-            // console.log(id);
+            if (!Array.isArray(id)) {
+                if (!Array.isArray(id)) {
+                    try {
+                        id = JSON.parse(id);
+                    } catch (e) {
+                        id = id.split(",").map(item => item.trim().replace(/^"|"$/g, ''));
+                    }
+                }
+            }
             $('#modperprofwarning').prop("class", "d-none d-print-none")
             document.getElementById('grado_prof2').value = id['0'];
             document.getElementById('area_carrera2').value = id['1'];

@@ -44,6 +44,7 @@ class turnarAperturaController extends Controller
 
         if($request->opt)  $opt = $request->opt;
         elseif(isset($_SESSION['opt'])) $opt = $_SESSION['opt'];
+        else $opt = "ARC01";
 
         $_SESSION['grupos'] = NULL;
         $grupos = $mextemporaneo = [];

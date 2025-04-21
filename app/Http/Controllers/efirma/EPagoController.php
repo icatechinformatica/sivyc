@@ -45,6 +45,7 @@ class EPagoController extends Controller
         $body = $this->create_body($info->id_folios, $info->no_memo); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
         $numFirmantes = '1';
         $arrayFirmantes = [];
+        $firmanteInterno = array();
 
         $funcionarios = $this->funcionarios($info->ubicacion);
         $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
@@ -73,6 +74,7 @@ class EPagoController extends Controller
         ];
 
         array_push($arrayFirmantes, $temp);
+        array_push($firmanteInterno, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
@@ -127,7 +129,7 @@ class EPagoController extends Controller
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
                 // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body['header']). strip_tags($body['body']).strip_tags($body['ccp']).strip_tags($body['footer'])]
+                'cuerpo' => [strip_tags($body['header']). strip_tags($body['body']).strip_tags($body['ccp']).strip_tags($body['footer']).strip_tags($body['sello'])]
             ],
             'firmantes' => [
                 '_attributes' => [
@@ -196,6 +198,8 @@ class EPagoController extends Controller
             if(!$sobrescribir) {
                 $dataInsert = new DocumentosFirmar();
             }
+
+            $body['firmantes'] = $firmanteInterno;
 
             $dataInsert->obj_documento = json_encode($ArrayXml);
             // $dataInsert->obj_documento_interno = json_encode($body);
@@ -395,6 +399,8 @@ class EPagoController extends Controller
             }
             $body_html['footer'] = $body_html['footer']. '</b></p>
         </footer>';
+
+        $body_html['sello'] = 'I C A T E C H "DIRECCIÓN ADMINISTRATIVA" OPERADO CONVENIO DE DESCENTRALIZACIÓN RAMO 11: EDUCACIÓN';
 
         return $body_html;
     }

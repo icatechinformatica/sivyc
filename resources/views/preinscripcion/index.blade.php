@@ -29,8 +29,9 @@
             $nombre_curso = $grupo->nombre_curso;
             $organismo = $grupo->depen;
             $id_gvulnerable = $grupo->id_gvulnerable;
-            //if($id_gvulnerable == 0 and $grupo->plantel) $es_vulnerable = false;
-            if(($grupo->plantel and $id_gvulnerable) OR !$grupo->plantel) $checked = 'checked';
+            if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
+            elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
+
 
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
@@ -214,15 +215,21 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label>INSTRUCTOR DISPONIBLE:</label>
+                        @php
+                            $encontrado = false
+                        @endphp
                         <select name="instructor" id="instructor" class="form-control mr-sm--2">
-                            @if ($instructor)
-                                <option value="{{$instructor->id}}">{{$instructor->instructor}}</option>
-                            @else
-                                <option value="">- SELECCIONAR -</option>
-                            @endif
                             @foreach ($instructores as $item)
-                                <option value="{{$item->id}}">{{$item->instructor}}</option>
+                                <option value="{{$item->id}}" {{ $item->id == $instructor->id ? 'selected' : '' }}> {{$item->instructor}} </option>
+                                @if ($item->id == $instructor->id)
+                                    @php
+                                        $encontrado = true
+                                    @endphp
+                                @endif
                             @endforeach
+                            @if (!$encontrado && $instructor)
+                                <option value="{{$instructor->id}}" selected>{{$instructor->instructor}}</option>
+                            @endif
                         </select>
                     </div>
                 </div>

@@ -126,6 +126,18 @@
         $("#aceptar").click(function() { // alert($("#movimiento").val());
             if (confirm("Esta seguro de ejecutar la acción?") == true) {
                 switch ($("#movimiento").val()) {
+                    case "PRETORNADO":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pretornar')}}");
+                        $('#frm').attr('target', '_self').submit();
+                        break;
+                    case "VALIDADO":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
+                        $('#frm').attr('target', '_self').submit();
+                        break;
+                    case "EDICION":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
+                        $('#frm').attr('target', '_self').submit();
+                        break;                        
                     case "RETORNADO":
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.retornar')}}");
                         $('#frm').attr('target', '_self').submit();
@@ -165,7 +177,7 @@
                     case "DENEGADO ARC":
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.soporte_pago')}}");
                         $('#frm').attr('target', '_self').submit();
-                    break;
+                    break;                    
                     default:
                         alert("POR FAVOR SELECCIONE UN MOVIMIENTO.")
                     break;
@@ -175,28 +187,7 @@
         $("#generar").click(function() {
             $('#frm').attr('action', "{{route('solicitudes.generar.autoriza')}}");
             $('#frm').attr('target', '_blank').submit();
-        });
-        $("#aceptar_preliminar").click(function() { // alert($("#movimiento").val());
-            if (confirm("Esta seguro de ejecutar la acción?") == true) {
-                switch ($("#pmovimiento").val()) {
-                    case "RETORNADO":
-                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pretornar')}}");
-                        $('#frm').attr('target', '_self').submit();
-                        break;
-                    case "VALIDADO":
-                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
-                        $('#frm').attr('target', '_self').submit();
-                        break;
-                    case "EDICION":
-                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
-                        $('#frm').attr('target', '_self').submit();
-                        break;
-                    default:
-                        alert("POR FAVOR SELECCIONE UN MOVIMIENTO.")
-                        break;
-                }
-            }
-        });
+        });       
     });
 </script>
 @endsection

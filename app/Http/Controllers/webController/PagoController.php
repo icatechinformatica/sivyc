@@ -271,10 +271,21 @@ class PagoController extends Controller
             ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
             ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
             ->LeftJoin('tbl_cursos_expedientes','tbl_cursos_expedientes.id_curso','tbl_cursos.id')
-            ->leftJoin('documentos_firmar', function($join) {
-                $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
-                        ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
-            })
+            ->leftJoinSub(
+                DB::table('documentos_firmar')
+                    ->selectRaw('DISTINCT ON (numero_o_clave) *')
+                    ->where('tipo_archivo', 'Contrato')
+                    ->orderBy('numero_o_clave')
+                    ->orderBy('id', 'desc'), // O puedes usar fecha si tienes un campo 'fecha_creacion'
+                'documentos_firmar',
+                function ($join) {
+                    $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave');
+                }
+            )
+            // ->leftJoin('documentos_firmar', function($join) {
+            //     $join->on('documentos_firmar.numero_o_clave', '=', 'tbl_cursos.clave')
+            //             ->where('documentos_firmar.tipo_archivo', '=', 'Contrato');
+            // })
             ->LEFTJOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
             ->orderBy('pagos.created_at', 'desc');
 
@@ -349,12 +360,11 @@ class PagoController extends Controller
                     AND (EXISTS (SELECT 1 FROM pagos p WHERE p.arch_calificaciones IS NOT NULL AND p.id_contrato = contratos.id_contrato)
                     OR EXISTS (SELECT 1 FROM documentos_firmar df WHERE df.tipo_archivo = 'Reporte fotografico' AND df.status = 'VALIDADO' AND df.numero_o_clave = tbl_cursos.clave)
                     OR tbl_cursos.tipo_curso != 'CERTIFICACION')
-                    THEN TRUE
-                ELSE FALSE
+                    THEN FALSE
+                ELSE TRUE
             END
             ) AS resultado")
             ]);
-        // dd($contratos_folios[1]->resultado);
 
         foreach($contratos_folios as $pointer => $ari)
         {

@@ -3,8 +3,7 @@
 <!--llamar a la plantilla -->
 @section('title', 'Instructor | SIVyC Icatech')
 @section('content_script_css')
-    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/bootstrap-5.0.1/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />    
     <style>
         .form-check-input{
             width:22px;
@@ -24,20 +23,21 @@
             </div>
         @endif
         <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+            <div class="col-lg-12 margin-tb">           
+                {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipo_busqueda_instructor" class="form-control mr-sm-2" id="tipo_busqueda_instructor">
                             <option value="">BUSCAR POR TIPO</option>
+                            <option value="nombre_curso">CURSO</option>                            
                             <option value="clave_instructor">CLAVE</option>
                             <option value="nombre_instructor">NOMBRE</option>
                             <option value="curp">CURP</option>
                             <option value="telefono_instructor">TELÉFONO</option>
                             <option value="estatus_instructor">ESTATUS</option>
-                            <option value="especialidad">ESPECIALIDAD</option>
+                            <option value="especialidad">ESPECIALIDAD</option>                            
                         </select>
-                        <Div id="divcampo" name="divcampo">
-                            {!! Form::text('busquedaPorInstructor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        
+                        <Div id="divcampo" name="divcampo" class="form-inline" style="width:300px">
+                            {!! Form::text('busquedaPorInstructor', null, ['class' => 'form-control mr-sm-2 w-100', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR','id' => 'busquedaPorInstructor']) !!}    
                         </Div>
                         <Div id="divstat" name="divstat" class="d-none d-print-none">
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
@@ -57,20 +57,15 @@
                                 @endforeach
                             </select>
                         </Div>
-                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
-                    {!! Form::close() !!}
-
-                </div>
-                <br>
-                <div class="pull-right">
+                        <button class="btn my-2 my-sm-0 ml-3" type="submit">BUSCAR</button>
                     @can('instructor.create')
-                        <a class="btn mr-sm-4 mt-3 btn-lg" href="{{route('instructor-crear')}}"> Nuevo</a>
+                        <a class="btn ml-3" href="{{route('instructor-crear')}}"> Nuevo</a>
                     @endcan
-                    @can('academico.exportar.instructores')
-                        <a class="btn mr-sm-4 mt-3 btn-info btn-lg" href="{{route('academico.exportar.instructores')}}">Exportar Instructores</a>
-                        <a class="btn mr-sm-4 mt-3 btn-info btn-lg" href="{{route('academico.exportar.instructores.activos')}}">Exportar Activos</a>
+                    @can('academico.exportar.instructores')                        
+                        <a class="btn ml-3" href="{{route('academico.exportar.instructores')}}">Instructores XLS</a>
+                        <a class="btn ml-3" href="{{route('academico.exportar.instructores.activos')}}">Activos XLS</a>                        
                     @endcan
-                </div>
+                {!! Form::close() !!}
             </div>
         </div>
         <table  id="table-instructor" class="table table-bordered table-responsive-md">
@@ -82,11 +77,15 @@
                     <th scope="col">CURP</th>
                     <th scope="col">TELEFONO</th>
                     <th scope="col">ESTATUS</th>
-                    <th scope="col">FEC.VALIDA</th>
-                    <th width="160px" class="text-center">ACCIONES</th>
+                    <th scope="col">FEC.VALIDA</th>                                
                     <th>VALIDACIÓN</th>
                     @can('only.admin') <th class="text-center">EXTRA</th> @endcan
-                    @can('instructor.validar') <th class="text-center">ACTIVAR</th> @endcan
+                    @can('instructor.validar') 
+                        <th class="text-center">VISIBLE</th>
+                        <th class="text-center">CURSO</th>
+                    @endcan
+                    <th width="160px" class="text-center">ACCIONES</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -108,6 +107,41 @@
                                 {{$itemData->fecha_validacion}}
                             </span>
                         </td>
+                        <td class="text-center">
+                            @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION' || $itemData->status == 'BAJA')
+                                @php
+                                    $hvalidacion = json_decode($itemData->hvalidacion);
+                                    if(!is_null($hvalidacion)) {
+                                        $hvalidacion = end($hvalidacion);
+                                    }
+                                @endphp
+                                @if(isset($hvalidacion->arch_val))
+                                    <a href="{{$hvalidacion->arch_val}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                @elseif(!is_null($hvalidacion) && isset($hvalidacion->arch_baja))
+                                    <a href="{{$hvalidacion->arch_baja}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                @endif
+
+                            @endif
+                        </td>
+                        @can('only.admin')
+                            <td class="text-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="curso_extra({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->curso_extra==true){{'checked'}} @endif >
+                                </div>
+                            </td>
+                        @endcan
+                        @can('instructor.validar')
+                            <td class="text-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->estado==true){{'checked'}} @endif >
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="activo_curso"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->activo_curso==true){{'checked'}} @endif >
+                                </div>
+                            </td>
+                        @endcan
                         <td class="text-center">
                             @if ($itemData->status == 'EN CAPTURA' || $itemData->status == 'REACTIVACION EN CAPTURA')
                                 {{-- @can('instructor.validar')
@@ -144,36 +178,7 @@
 
                             @endif
                         </td>
-                        <td class="text-center">
-                            @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION' || $itemData->status == 'BAJA')
-                                @php
-                                    $hvalidacion = json_decode($itemData->hvalidacion);
-                                    if(!is_null($hvalidacion)) {
-                                        $hvalidacion = end($hvalidacion);
-                                    }
-                                @endphp
-                                @if(isset($hvalidacion->arch_val))
-                                    <a href="{{$hvalidacion->arch_val}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
-                                @elseif(!is_null($hvalidacion) && isset($hvalidacion->arch_baja))
-                                    <a href="{{$hvalidacion->arch_baja}}" target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
-                                @endif
-
-                            @endif
-                        </td>
-                        @can('only.admin')
-                            <td class="text-center">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="curso_extra({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->curso_extra==true){{'checked'}} @endif >
-                                </div>
-                            </td>
-                        @endcan
-                        @can('instructor.validar')
-                            <td class="text-center">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->estado==true){{'checked'}} @endif >
-                                </div>
-                            </td>
-                        @endcan
+                        
                     </tr>
                 @endforeach
             </tbody>
@@ -236,14 +241,15 @@
             .done(function( msg ) { alert(msg); });
         }
 
-        function cambia_estado(id, status, obj){
-            if (confirm("Está seguro de realizar el cambio?") == true) {
+        function cambia_estado(id, status, obj){            
+            if (confirm("Está seguro de realizar el cambio?") == true) {                
                 $.ajax({
                     method: "POST",
                     url: "estado",
                     data: {
                         id_instructor: id,
-                        estado: status
+                        estado: status,
+                        field : obj.attr('name')
                     }
                 })
                 .done(function( msg ) { alert(msg); });
@@ -252,5 +258,24 @@
                 else obj.prop('checked', true);
             }
         }
+
+        $("#busquedaPorInstructor" ).autocomplete({
+                source: function( request, response ) {
+                    $.ajax({
+                        url: "{{ route('instructores.cursos.autocomplete') }}",
+                        method: 'POST',
+                        dataType: "json",
+                        data: {
+                            "_token": $("meta[name='csrf-token']").attr("content"),
+                            buscar: request.term,
+                            tipo: $('#tipo_busqueda_instructor').val()
+                        },
+                        success: function( data ) {     
+                            //console.log(data);
+                            response( data );
+                        }
+                    });
+                }
+        });
     </script>
 @endsection

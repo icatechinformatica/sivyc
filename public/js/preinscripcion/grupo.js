@@ -130,7 +130,8 @@
         var id =$('#id_curso').val();
         var inicio =$('#inicio').val();
         var termino =$('#termino').val();
-        $("#instructor").empty();                            
+        $("#instructor").empty();
+        $("#instructor").append('<option value="">SELECCIONAR</option>');
         if(id && inicio && termino){
             $.ajax({
                 type: "GET",
@@ -138,8 +139,7 @@
                 data:{id:id,inicio:inicio,termino:termino, _token:"{{csrf_token()}}"},
                 contentType: "application/json",              
                 dataType: "json",
-                success: function (data) {// console.log(data); 
-                    $("#instructor").append('<option value="" selected="selected">SELECCIONAR</option>');
+                success: function (data) {// console.log(data);                    
                     $.each(data, function () {                                    
                         $("#instructor").append('<option value="'+this['id']+'">'+this['instructor']+'</option>');
                     });

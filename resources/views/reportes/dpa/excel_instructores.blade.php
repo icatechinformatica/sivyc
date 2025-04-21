@@ -11,14 +11,17 @@
             <th style="{{$hestilo}} width: 95px;">Subsistema</th>
             <th style="{{$hestilo}} width: 95px;">Entidad</th>
             <th style="{{$hestilo}} width: 150px;">Zona Económica</th>
-            <th style="{{$hestilo}} width: 320px; text-align: left;">Nombre del trabajador</th>
-            <th style="{{$hestilo}} width: 200px;">Clave Única de Registro <br/> de Personal (CURP)</th>
-            <th style="{{$hestilo}} width: 150px;">Registro Federal de<br/> Contribuyentes (RFC)</th>
-            <th style="{{$hestilo}} width: 180px;">Tipo de Plaza <br/>(Directiva, <br/>Administrativa, Docente)</th>
-            <th style="{{$hestilo}} width: 320px;">Denominación de Plaza o<br/> Categoría</th>
-            <th style="{{$hestilo}} width: 120px;">Código <br/>de la <br/>plaza</th>
-            <th style="{{$hestilo}} width: 120px;">Número de <br/>plazas y <br/>horas</th>
-            <th style="{{$hestilo}} width: 140px;">Clave de <br/>Centro de <br/>Trabajo</th>
+            <th style="{{$hestilo}} width: 150px;">Registro Federal de<br/> Contribuyentes<br/>(RFC)</th>
+            <th style="{{$hestilo}} width: 200px;">Clave Única de<br/>Registro  de <br/>Personal (CURP)</th>
+            <th style="{{$hestilo}} width: 120px; text-align: left;">Primer Apellido</th>
+            <th style="{{$hestilo}} width: 120px; text-align: left;">Segundo Apellido</th>
+            <th style="{{$hestilo}} width: 120px; text-align: left;">Nombres</th>            
+            <th style="{{$hestilo}} width: 180px;">Tipo de Plaza <br/>(Directiva, <br/>Administrativa,<br/>Docente)</th>
+            <th style="{{$hestilo}} width: 320px;">Denominación<br/> de Plaza o<br/> Categoría</th>
+            <th style="{{$hestilo}} width: 120px;">Código de <br/>la plaza</th>
+            <th style="{{$hestilo}} width: 120px;">Número de <br/>horas <br/>(Docente)</th>
+            <th style="{{$hestilo}} width: 140px;">CCT de <br/>adscripción</th>
+            <th style="{{$hestilo}} width: 140px;">Turnado DTA</th>
         </tr>                          
     </thead>
     @php
@@ -31,14 +34,17 @@
                 <td style="{{$bestilo}}">{{ $item->subsistema}}</td>                                        
                 <td style="{{$bestilo}}">{{ $item->entidad}}</td>
                 <td style="{{$bestilo}}">{{ $item->ze}}</td>
-                <td style="font-size:12px;">{{ $item->nombre}}</td>
-                <td style="{{$bestilo}}">{{ $item->curp}}</td>
                 <td style="{{$bestilo}}">{{ $item->rfc}}</td>
+                <td style="{{$bestilo}}">{{ $item->curp}}</td>
+                <td style="font-size:12px;">{{ $item->apaterno}}</td>
+                <td style="font-size:12px;">{{ $item->amaterno}}</td>
+                <td style="font-size:12px;">{{ $item->nombre}}</td>
                 <td style="{{$bestilo}}">{{ $item->tipo_plaza}}</td>
                 <td style="{{$bestilo}}">{{ $item->plaza}}</td>
                 <td style="{{$bestilo}}">{{ $item->codigo_plaza}}</td>                                        
                 <td style="{{$bestilo}}">{{ $item->horas}}</td>
                 <td style="{{$bestilo}}">{{ $item->cct}}</td>
+                <td style="{{$bestilo}}">{{ $item->turnado_dta}}</td>
             </tr>     
         @endforeach 
     </tbody>

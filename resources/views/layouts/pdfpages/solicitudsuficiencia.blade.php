@@ -32,7 +32,15 @@
                         </tr>
                         <tr>
                             <td style="font-size: 9px;"><b>Puesto:</b></td>
-                            <td style="font-size: 9px; height: 25px;">{{$puestos[$key]}}</td>
+                            @if(is_null($firmante))
+                                <td style="font-size: 9px; height: 25px;">{{$puestos[$key]}}</td>
+                            @else
+                                @foreach ($firmante as $search)
+                                    @if ($search->curp == $moist['_attributes']['curp_firmante'])
+                                        <td style="font-size: 9px; height: 25px;">{{$search->cargo}}</td>
+                                    @endif
+                                @endforeach
+                            @endif
                         </tr>
                         <tr>
                             <td style="font-size: 9px;"><b>Fecha de Firma:</b></td>
