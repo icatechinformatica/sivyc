@@ -451,13 +451,16 @@
                 </div>
             </div>
             <div class="form-group col-md-2">
-                <label for="categoria" class="control-label h6">ESTATUS DEL CURSO</label>                
+                <label for="categoria" class="control-label h6">ESTATUS DEL CURSO</label>
                 <select class="form-control" aria-label="estado" name="estado" id="estado"
                     @can('cursos.activar') @else disabled @endcan>
                     <option value='1' @if($cursos[0]->estado==true){{"selected"}} @endif >ACTIVO</option>
                     <option value='2' @if($cursos[0]->estado==false){{"selected"}} @endif >INACTIVO</option>
                     <option value='3' @if(is_null($cursos[0]->estado)){{"selected"}} @endif >BAJA</option>
                 </select>
+                @unless(auth()->user()->can('cursos.activar'))
+                    <input type="hidden" name="estado" value="{{ $cursos[0]->estado === true ? '1' : ($cursos[0]->estado === false ? '2' : '3') }}">
+                @endunless
             </div>
             <div class="form-group col-md-8">
                 <label for="motivo" class="control-label h6">MOTIVO</label>
@@ -465,7 +468,7 @@
             </div>
         </div>
         {{-- By jose luis moreno --}}
-        @can('show.carta.descriptiva')        
+        @can('show.carta.descriptiva')
             <hr style="border-color:dimgray" class="">
             <span class="h5 mb-3">DE LA CARTA DESCRIPTIVA</span>
             <div class="row ml-0 mt-3">
@@ -473,12 +476,12 @@
                 <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'tematico']) }}" class="btn-sm btn-primary mx-3">CONTENIDO TEMÁTICO</a>
                 <a href="{{ route('cursos-catalogo.cartadescriptiva', ['id' => base64_encode($cursos[0]->id), 'parte' => 'didactico']) }}" class="btn-sm btn-primary">RECURSOS DIDÁCTICOS</a>
             </div>
-            <p class="font-weight-bold">HORAS CAPTURADAS DE CONTENIDO TEMATICO: <span class="{{$horas_tematico == $cursos[0]->horas ? 'text-success' : 'text-danger'}}">{{$horas_tematico}} HRS de {{$cursos[0]->horas}} HRS (duración del curso)</span></p>        
-        @endcan       
+            <p class="font-weight-bold">HORAS CAPTURADAS DE CONTENIDO TEMATICO: <span class="{{$horas_tematico == $cursos[0]->horas ? 'text-success' : 'text-danger'}}">{{$horas_tematico}} HRS de {{$cursos[0]->horas}} HRS (duración del curso)</span></p>
+        @endcan
         <hr style="border-color:dimgray">
         <div class="form-row">
-            <div class="d-flex flex-lg-row flex-column col-6 col-lg-3 justify-content-left">            
-                <a class="btn" href="{{URL::previous()}}"><< Regresar</a>            
+            <div class="d-flex flex-lg-row flex-column col-6 col-lg-3 justify-content-left">
+                <a class="btn" href="{{URL::previous()}}"><< Regresar</a>
             </div>
             <div class="d-flex flex-lg-row flex-column col-6 col-lg-9 justify-content-end">
                 <a class="btn" href="{{ route('curso-alta_baja', ['id' => $cursos[0]->id]) }}" >Activar por Unidad</a>
