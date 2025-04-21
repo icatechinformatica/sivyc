@@ -40,7 +40,7 @@ use App\User;
 
 class InstructorController extends Controller
 {
-     
+
     private function honorarios($total)
     {
 
@@ -63,19 +63,19 @@ class InstructorController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
-        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')        
+        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
             ->LEFTJOIN('especialidad_instructores',function($join){
                 $join->on('instructores.id','=','especialidad_instructores.id_instructor');
                 $join->where('especialidad_instructores.status','=','VALIDADO');
                 $join->groupby('especialidad_instructores.id_instructor');
             });
-            
+
             if(!Auth::user()->can('instructores.all')){   //RESTRICCION PARA UNIDADES
                 $data = $data->whereIn('estado', [true])
                 ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA']);
             }else{
                 //$data = $data->WHEREIN('estado', [true,false])
-                $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA','INHABILITADO']);                
+                $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA','INHABILITADO']);
             }
             if($tipoInstructor=='nombre_curso'){
                 if($busquedaInstructor){
@@ -83,7 +83,7 @@ class InstructorController extends Controller
                     $data = $data->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
                     ->where('curso_id', $buscando[0]);
                 }
-                
+
             }
 
             $data = $data->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
@@ -94,7 +94,7 @@ class InstructorController extends Controller
                   WHERE especialidad_instructores.id_instructor = instructores.id
                   AND especialidad_instructores.status = \'VALIDADO\'
                   ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
-            ]); 
+            ]);
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
     }
@@ -109,14 +109,14 @@ class InstructorController extends Controller
             if (is_numeric($buscar)) $data->where('id', $buscar);
             else $data->where(DB::raw("CONCAT(nombre_curso)"), 'like', '%'.$buscar.'%');
             $data = $data->limit(10)->get();
-                
+
             $response = array();
             foreach ($data as $value) {
                 $response[] = array('label' => $value->curso);
-            }                
-            return json_encode($response);            
+            }
+            return json_encode($response);
         }
-            
+
             return [];
     }
 
@@ -4243,6 +4243,7 @@ class InstructorController extends Controller
                 'fecha_inicio' => $request->fecha_inicio,
                 'archivo_alfa' => $urlalfa,
                 'pais_residencia' => $request->pais,
+                'numero_folio' => $request->no_folio
                 // 'pais_residecia' = $request->
                 // 'horario_circulo' => $horarios_circulo,
 
@@ -4461,11 +4462,11 @@ class InstructorController extends Controller
 
     public function iestado(Request $request)
     {
-        if($request->id_instructor and $request->estado){            
+        if($request->id_instructor and $request->estado){
             $id_instructor = $request->id_instructor;
             $estado = $request->estado;
             $field = $request->field;
-            if($field == "estado"){                
+            if($field == "estado"){
                 $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
                 $result2 =  pre_instructor::where('id', '=', $request->id_instructor)->update(['registro_activo' => $estado]);
                 if($estado == true) $result3 =  instructor::where('id', '=', $request->id_instructor)->where('status','INHABILITADO')->update(['status' => 'EN CAPTURA']);

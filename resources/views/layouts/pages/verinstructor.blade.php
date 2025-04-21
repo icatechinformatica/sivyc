@@ -399,12 +399,12 @@
                             </div>
                             <label><strong>Incorporado a:</strong></label>
                             <div class="form-row">
-                                <label class="col-form-label">Unidad Operativa:</label>
+                                <label class="col-form-label">Unidad de Capacitación:</label>
                                 <div class="col-sm-5 form-group">
                                     <input name="unidad_operativa" id="unidad_operativa" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['unidad_operativa']}}">
                                     {{-- <small class="form-text text-muted" style="text-align: center;">Tipo</small> --}}
                                 </div>
-                                <label class="col-form-label">No. de Círculo de estudio:</label>
+                                <label class="col-form-label">Clave del Centro de Trabajo:</label>
                                 <div class="col-sm-3 form-group">
                                     <input name="circulo_estudio" id="circulo_estudio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['circulo_estudio']}}">
                                 </div>
@@ -420,9 +420,13 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <label class="col-form-label">Fecha de inicio:</label>
+                                <label class="col-form-label">Fecha de Registro Alfa:</label>
                                 <div class="col-sm-3 form-group">
                                     <input name="fecha_inicio" id="fecha_inicio" type="date" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['fecha_inicio']}}">
+                                </div>
+                                <label class="col-form-label">No. de Folio:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="no_folio" id="no_folio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['numero_folio']}}">
                                 </div>
                             </div>
                         </div>
