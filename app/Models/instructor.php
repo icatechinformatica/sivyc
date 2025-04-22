@@ -103,7 +103,7 @@ class instructor extends Model
             }
             if(!empty($tipo_status))
             {
-                return $query->where( 'status', '=', $tipo_status);
+                return $query->where( 'instructores.status', '=', $tipo_status);
             }
             if(!empty($tipo_especialidad))
             {

@@ -17,7 +17,7 @@
         <h3>Registro de Instructores</h3>
     </div>
     <div class="card card-body">
-        @if ($message = Session::get('success'))
+        @if($message)
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
             </div>
@@ -27,11 +27,11 @@
                 {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipo_busqueda_instructor" class="form-control mr-sm-2" id="tipo_busqueda_instructor">
                             <option value="">BUSCAR POR TIPO</option>
-                            <option value="nombre_curso">CURSO</option>                            
-                            <option value="clave_instructor">CLAVE</option>
-                            <option value="nombre_instructor">NOMBRE</option>
-                            <option value="curp">CURP</option>
-                            <option value="telefono_instructor">TELÉFONO</option>
+                            <option value="nombre_curso" {{ $old['tipo_busqueda_instructor'] == 'nombre_curso' ? 'selected' : '' }}>CURSO</option>
+                            <option value="clave_instructor" {{ $old['tipo_busqueda_instructor'] == 'clave_instructor' ? 'selected' : '' }}>CLAVE</option>
+                            <option value="nombre_instructor" {{ $old['tipo_busqueda_instructor'] == 'nombre_instructor' ? 'selected' : '' }}>NOMBRE</option>
+                            <option value="curp" {{ $old['tipo_busqueda_instructor'] == 'curp' ? 'selected' : '' }}>CURP</option>
+                            <option value="telefono_instructor" {{ $old['tipo_busqueda_instructor'] == 'telefono_instructor' ? 'selected' : '' }}>TELÉFONO</option>
                             <option value="estatus_instructor">ESTATUS</option>
                             <option value="especialidad">ESPECIALIDAD</option>                            
                         </select>
