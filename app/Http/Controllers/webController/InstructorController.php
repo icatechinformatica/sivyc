@@ -98,6 +98,8 @@ class InstructorController extends Controller
             ]);
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         $old = $request->query->all(); //dd($old);
+        if(!$old)  $old['tipo_busqueda_instructor'] = null;
+        
         return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old'));
     }
 
