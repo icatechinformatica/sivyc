@@ -115,6 +115,14 @@
             </div>
         @endif
 
+        {{-- prueba de documentos electronicos --}}
+        <div class="mb-4">
+            <form action="{{route('generar.html.contrato')}}" method="post">
+            @csrf
+                <button class="btn btn-primary">CONTRATO</button>
+            </form>
+        </div>
+
         {{-- tabla --}}
         @if (count($data_func)> 0)
             <div class="col-4">
@@ -146,8 +154,20 @@
                         @foreach ($data_func as $item)
                             <tr>
                                 <th scope="row">{{$item->id}}</th>
-                                <td class="letras_tabla">{{$item->nombre}}</td>
-                                <td class="letras_tabla">{{$item->cargo}}</td>
+                                {{-- <td class="letras_tabla">{{$item->nombre}}</td> --}}
+                                {{-- Nuevo modulo --}}
+                                <td>
+                                    <a href="#" onclick="consultarInfo('6Y-250041', 'info_curso', 2025)" class="text-primary">
+                                    {{$item->nombre}}
+                                    </a>
+                                </td>
+                                {{-- Nuevo modulo --}}
+                                <td class="letras_tabla">
+                                    {{-- {{$item->cargo}} --}}
+                                    <a href="#" onclick="consultarInfo('6Y-250041', 'info_instructor', 2025)" class="text-primary">
+                                        {{$item->cargo}}
+                                    </a>
+                                </td>
                                 <td class="letras_tabla">{{$item->titular ? 'SI' : 'NO'}}</td>
                                 <td class="letras_tabla">{{$item->telefono ?? 'SIN TELEFONO'}}</td>
                                 <td class="letras_tabla">{{$item->correo ?? 'SIN CORREO'}}</td>
@@ -273,9 +293,27 @@
             </div>
         {!! Form::close() !!}
 
-
-
     </div>
+
+    <!-- Modal Dinamico Nuevo modulo -->
+<div class="modal fade" id="modalDetalles" tabindex="-1" role="dialog" aria-labelledby="modalDetallesLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDetallesLabel"></h5>
+                <button type="button" class="close cerrarModal" onclick="cerrarModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-body-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cerrarModal" onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 
@@ -309,6 +347,105 @@
                     }
                 });
 
+        }
+        //Nuevo modulo
+        //Funcion para obtener datos del grupo
+        function consultarInfo(valor, tipo_valor, ejercicio) {
+            if (valor != '' && tipo_valor != '') {
+                let data = {
+                    "_token": $("meta[name='csrf-token']").attr("content"),
+                    "valor": valor,
+                    "tipo_valor": tipo_valor,
+                    "ejercicio": ejercicio
+                }
+                $.ajax({
+                    type:"post",
+                    url: "{{ route('obtener.datos.modal') }}",
+                    data: data,
+                    dataType: "json",
+                    success: function (response) {
+                        console.log(response);
+                        if(response.status == 200){
+                            if (response.tipoValor == 'info_curso') {
+                                const cursoData = response.consulta || {};
+                                detallesCurso(
+                                    cursoData.efisico || '',
+                                    cursoData.hini || '',
+                                    cursoData.hfin || '',
+                                    cursoData.muni || ''
+                                );
+
+                            }else if(response.tipoValor == 'info_instructor'){
+                                // Procesar las especialidades
+                                const instructorData = response.consulta || {};
+                                let arrayEspecialidades = [];
+                                try {
+                                    arrayEspecialidades = instructorData.especialidades ? instructorData.especialidades.split('|') : [];
+                                } catch (e) {
+                                    arrayEspecialidades = [];
+                                    console.error("Error al procesar especialidades:", e);
+                                }
+
+                                detallesInstructor(
+                                    instructorData.nombre_completo || 'No disponible',
+                                    instructorData.telefono || 'No disponible',
+                                    instructorData.fecha_ingreso || 'No disponible',
+                                    response.unidad_solicita || 'No disponible',
+                                    instructorData.nivelAcad || 'No disponible',
+                                    instructorData.carrera || 'No disponible',
+                                    arrayEspecialidades,
+                                    response.tcursosIns || 'No disponible',
+                                    response.monto_pago || 'No disponible'
+                                );
+                            }
+                        }else{
+                            alert("Error en la busqueda de información");
+                        }
+                    }
+                });
+            }
+
+        }
+
+        //Nuevo modulo
+        function detallesCurso(lugar, horaIni, horaFin, municipio) {
+            let contenido = `
+                <p><strong>Lugar:</strong> ${lugar}</p>
+                <p><strong>Hora de Inicio:</strong> ${horaIni} - <strong>Hora Final:</strong> ${horaFin}</p>
+                <p><strong>Municipio:</strong> ${municipio}</p>
+            `;
+            abrirModal("Detalles del curso", contenido);
+        }
+
+
+        //Nuevo modulo
+        function detallesInstructor(nombre_completo, telefono, fecha_ingreso, unidad_solicita, nivelAcad, carrera, especialidades, tcursosIns, monto_pago) {
+            let listaEspecialidades = especialidades.map(esp => `<li>${esp}</li>`).join('');
+            let contenido = `
+                <p><strong>Telefono:</strong> ${telefono}</p>
+                <p><strong>Unidad al que pertenece:</strong> ${unidad_solicita}</p>
+                <p><strong>Nivel Academico:</strong> ${nivelAcad}</p>
+                <p><strong>Carrera:</strong> ${carrera}</p>
+                <p><strong>Total de cursos impartidos:</strong> ${tcursosIns}</p>
+                <p><strong>Pago del Instructor:</strong> $ ${monto_pago} pesos</p>
+                <div>
+                    <strong>Especialidades validadas:</strong>
+                    <ul>${listaEspecialidades}</ul>
+                </div>
+            `;
+            abrirModal("Detalles del Instructor", contenido);
+        }
+
+        //Nuevo modulo
+        function abrirModal(titulo, contenido) {
+            document.getElementById("modalDetallesLabel").innerText = titulo;
+            document.getElementById("modal-body-content").innerHTML = contenido;
+            $("#modalDetalles").modal("show");
+        }
+
+        function cerrarModal() {
+            document.activeElement.blur();
+            $("#modalDetalles").modal("hide");
         }
 
     </script>
