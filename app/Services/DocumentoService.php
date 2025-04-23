@@ -364,6 +364,14 @@ class DocumentoService
     public function obtenerPlantillas()
     {
         // obtención de las plantillas TODAS
-        return $this->ElectronicDocument->obtenerTodosLosDatos();
+        return $this->ElectronicDocument->getallData();
+    }
+
+    public function procesarPlantilla($contenido, array $variables)
+    {
+        foreach ($variables as $key => $value) {
+            $contenido = str_replace("@$key", $value, $contenido);
+        }
+        return $contenido;
     }
 }

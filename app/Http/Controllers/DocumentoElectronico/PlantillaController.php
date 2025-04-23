@@ -60,9 +60,15 @@ class PlantillaController extends Controller
     public function show($id): JsonResponse
     {
         $documento = $this->servicioPlantilla->getPlantilla($id);
+        // como llamarias al método de inyección de variables en un servicio dedicado
+        $variables = [
+            'municipio' => 'Tuxtla Gutiérrez',
+            // otras variables...
+        ];
+        $contenidoProcesado = $this->servicioPlantilla->procesarPlantilla($documento->cuerpo, $variables);
         return response()->json([
             'success' => true,
-            'data' => $documento
+            'data' => $contenidoProcesado
         ], 200);
     }
 
