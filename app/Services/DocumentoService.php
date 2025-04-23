@@ -2,12 +2,14 @@
 namespace App\Services;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use App\Interfaces\ElectronicDocument\ElectronicDocumentRepositoryInterface;
 
 class DocumentoService
 {
-    protected function __construct()
+    private $ElectronicDocument;
+    protected function __construct(ElectronicDocumentRepositoryInterface $ElectronicDocument)
     {
-
+        $this->ElectronicDocument = $ElectronicDocument;
     }
 
     protected function generarDocumento(array $parameters = [])
@@ -352,5 +354,16 @@ class DocumentoService
                 ->orderByDesc('funcionario.id_org')
                 ->get();
 
+    }
+
+    protected function getPlantilla(int $id)
+    {
+        return $this->ElectronicDocument->obtenerPlantilla($id);
+    }
+
+    public function obtenerPlantillas()
+    {
+        // obtención de las plantillas TODAS
+        return $this->ElectronicDocument->getallData();
     }
 }
