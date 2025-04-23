@@ -7,12 +7,12 @@ use App\Interfaces\ElectronicDocument\ElectronicDocumentRepositoryInterface;
 class DocumentoService
 {
     private $ElectronicDocument;
-    protected function __construct(ElectronicDocumentRepositoryInterface $ElectronicDocument)
+    public function __construct(ElectronicDocumentRepositoryInterface $ElectronicDocument)
     {
         $this->ElectronicDocument = $ElectronicDocument;
     }
 
-    protected function generarDocumento(array $parameters = [])
+    public function generarDocumento(array $parameters = [])
     {
         switch ($parameters['TYPE']) {
             case 'RF001':
@@ -303,7 +303,7 @@ class DocumentoService
         }
     }
 
-    protected function setCpp($idUnidad)
+    public function setCpp($idUnidad)
     {
         $query = \DB::table('tbl_funcionarios as funcionario')
         ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
@@ -332,7 +332,7 @@ class DocumentoService
         return $query;
     }
 
-    protected function setFuncionarios($idUnidad)
+    public function setFuncionarios($idUnidad)
     {
         return \DB::table('tbl_funcionarios AS funcionario')
                 ->join('tbl_organismos AS organismos', 'funcionario.id_org', '=', 'organismos.id')
@@ -356,7 +356,7 @@ class DocumentoService
 
     }
 
-    protected function getPlantilla(int $id)
+    public function getPlantilla(int $id)
     {
         return $this->ElectronicDocument->obtenerPlantilla($id);
     }
@@ -364,6 +364,6 @@ class DocumentoService
     public function obtenerPlantillas()
     {
         // obtención de las plantillas TODAS
-        return $this->ElectronicDocument->getallData();
+        return $this->ElectronicDocument->obtenerTodosLosDatos();
     }
 }

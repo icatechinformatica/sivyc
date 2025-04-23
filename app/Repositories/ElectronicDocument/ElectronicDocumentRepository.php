@@ -12,6 +12,6 @@ class ElectronicDocumentRepository implements ElectronicDocumentRepositoryInterf
 
     public function obtenerPlantilla(int $id)
     {
-        return Eplantilla::findOrFail($id);
+        return Eplantillas::findOrFail($id);
     }
 }

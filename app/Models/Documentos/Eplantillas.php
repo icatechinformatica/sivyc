@@ -13,8 +13,7 @@ class Eplantillas extends Model
     ];
 
     protected $casts = [
-        'cuerpo' => 'xml',
-        'firmantes' => 'array',
+        'firmantes' => 'json',
         'vigencia' => 'date',
     ];
 
