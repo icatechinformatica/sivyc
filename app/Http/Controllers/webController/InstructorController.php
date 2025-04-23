@@ -78,8 +78,8 @@ class InstructorController extends Controller
                 $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA','INHABILITADO']);
             }
             if($tipoInstructor=='nombre_curso'){
-                $buscando = explode('-', $busquedaInstructor);
-                if(is_int($buscando[0])){
+                $buscando = explode(' - ', $busquedaInstructor);
+                if (isset($buscando[0]) && is_numeric($buscando[0])){
                     $data = $data->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
                     ->where('especialidad_instructor_curso.activo','true')
                     ->where('curso_id', $buscando[0]);
@@ -108,7 +108,7 @@ class InstructorController extends Controller
         $tipo = $request->tipo;
 
         if($tipo == 'nombre_curso' && $buscar){
-            $data = Curso::select(DB::raw("CONCAT(id, ' - ', nombre_curso) as curso"));
+            $data = Curso::select(DB::raw("CONCAT(id, ' - ', nombre_curso) as curso"))->where('estado',true);
 
             if (is_numeric($buscar)) $data->where('id', $buscar);
             else $data->where(DB::raw("CONCAT(nombre_curso)"), 'like', '%'.$buscar.'%');
