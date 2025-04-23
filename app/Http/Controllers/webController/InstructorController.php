@@ -48,7 +48,7 @@ class InstructorController extends Controller
     }
 
     public function index(Request $request)
-    { 
+    {
         $busquedaInstructor = $request->get('busquedaPorInstructor');
         $tipoInstructor = $request->get('tipo_busqueda_instructor');
         $tipoStatus = $request->get('tipo_status');
@@ -84,7 +84,7 @@ class InstructorController extends Controller
                     ->where('especialidad_instructor_curso.activo','true')
                     ->where('curso_id', $buscando[0]);
                 }else $message = "SELECCIONE UNA OPCIÓN DE LA LISTA DE CURSOS";
-                
+
             }
 
             $data = $data->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
@@ -99,7 +99,7 @@ class InstructorController extends Controller
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         $old = $request->query->all(); //dd($old);
         if(!$old)  $old['tipo_busqueda_instructor'] = null;
-        
+
         return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old'));
     }
 
@@ -3900,7 +3900,7 @@ class InstructorController extends Controller
             $instructor_ofc->turnado = $temp->turnado = 'UNIDAD';
             $instructor_ofc->estado = $temp->estado = FALSE;
         }
-
+        unset($temp->activo_curso);
         $temp->save();
         $instructor_ofc->save();
 
