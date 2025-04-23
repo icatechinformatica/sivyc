@@ -48,13 +48,13 @@ class InstructorController extends Controller
     }
 
     public function index(Request $request)
-    {
+    { 
         $busquedaInstructor = $request->get('busquedaPorInstructor');
         $tipoInstructor = $request->get('tipo_busqueda_instructor');
         $tipoStatus = $request->get('tipo_status');
         $tipoEspecialidad = $request->get('tipo_especialidad');
         $unidadUser = Auth::user()->unidad;
-
+        $message = null;
         $userId = Auth::user()->id;
 
         $roles = DB::table('role_user')
@@ -71,19 +71,20 @@ class InstructorController extends Controller
             });
 
             if(!Auth::user()->can('instructores.all')){   //RESTRICCION PARA UNIDADES
-                $data = $data->whereIn('estado', [true])
+                $data = $data->whereIn('instructores.estado', [true])
                 ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA']);
             }else{
                 //$data = $data->WHEREIN('estado', [true,false])
                 $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA','INHABILITADO']);
             }
             if($tipoInstructor=='nombre_curso'){
-                if($busquedaInstructor){
-                    $buscando = explode('-', $busquedaInstructor);
+                $buscando = explode(' - ', $busquedaInstructor);
+                if (isset($buscando[0]) && is_numeric($buscando[0])){
                     $data = $data->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
+                    ->where('especialidad_instructor_curso.activo','true')
                     ->where('curso_id', $buscando[0]);
-                }
-
+                }else $message = "SELECCIONE UNA OPCIÓN DE LA LISTA DE CURSOS";
+                
             }
 
             $data = $data->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
@@ -96,7 +97,10 @@ class InstructorController extends Controller
                   ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
             ]);
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
-        return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
+        $old = $request->query->all(); //dd($old);
+        if(!$old)  $old['tipo_busqueda_instructor'] = null;
+        
+        return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old'));
     }
 
     public function cursosAutocomplete(Request $request) {
@@ -104,7 +108,7 @@ class InstructorController extends Controller
         $tipo = $request->tipo;
 
         if($tipo == 'nombre_curso' && $buscar){
-            $data = Curso::select(DB::raw("CONCAT(id, ' - ', nombre_curso) as curso"));
+            $data = Curso::select(DB::raw("CONCAT(id, ' - ', nombre_curso) as curso"))->where('estado',true);
 
             if (is_numeric($buscar)) $data->where('id', $buscar);
             else $data->where(DB::raw("CONCAT(nombre_curso)"), 'like', '%'.$buscar.'%');
