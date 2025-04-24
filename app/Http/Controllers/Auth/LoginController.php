@@ -58,32 +58,4 @@ class LoginController extends Controller
         // Comportamiento normal para otros usuarios
         return redirect()->intended($this->redirectPath());
     }
-
-    public function login(Request $request)
-    {
-        $this->validateLogin($request); // usa las reglas del trait
-
-        // Si el usuario ha superado el límite de intentos
-        if (method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-            return $this->sendLockoutResponse($request);
-        }
-
-        $credentials = $request->only('email', 'password');
-
-        if (!Auth::attempt($credentials, $request->filled('remember'))) {
-            \Log::warning('Login fallido', [
-                'email' => $credentials['email'],
-                'ip' => $request->ip(),
-                'hora' => now()->toDateTimeString(),
-            ]);
-
-            $this->incrementLoginAttempts($request); // incrementa intentos fallidos
-            return $this->sendFailedLoginResponse($request);
-        }
-
-        // Autenticación exitosa
-        return $this->sendLoginResponse($request);
-    }
 }
