@@ -118,8 +118,9 @@ class dvController extends Controller
                     FROM convenios AS c2
                     LEFT JOIN tbl_cursos AS tc2 ON c2.no_convenio = tc2.cgeneral
                     LEFT JOIN tbl_inscripcion AS ti2 ON ti2.id_curso = tc2.id
-                    WHERE EXTRACT(YEAR FROM c2.fecha_firma::DATE) = $anio
+                    WHERE EXTRACT(YEAR FROM ((tc2.memos->'CERRADO_PLANEACION'->>'FECHA')::DATE)) = $anio
                     AND tc2.status_curso = 'AUTORIZADO'
+                    AND tc2.proceso_terminado = true
                     GROUP BY c2.no_convenio
                 ), ";
             }
@@ -138,8 +139,9 @@ class dvController extends Controller
                     FROM convenios AS c3
                     LEFT JOIN tbl_cursos AS tc3 ON c3.no_convenio = tc3.cgeneral
                     LEFT JOIN tbl_inscripcion AS ti3 ON ti3.id_curso = tc3.id
-                    WHERE TO_CHAR(c3.fecha_firma::DATE, 'YYYY-MM') = '$mes'
+                    WHERE TO_CHAR((tc3.memos->'CERRADO_PLANEACION'->>'FECHA')::DATE, 'YYYY-MM') = '$mes'
                     AND tc3.status_curso = 'AUTORIZADO'
+                    AND tc3.proceso_terminado = true
                     GROUP BY c3.no_convenio
                 ), ";
             }
@@ -156,7 +158,8 @@ class dvController extends Controller
                 c.fecha_firma,
                 c.fecha_vigencia,
                 c.poblacion,
-                c.municipio, ";
+                c.municipio,
+                tc.unidad, ";
 
             // Agregar las columnas dinámicas para cada año
             foreach ($anios as $anio) {
@@ -200,10 +203,11 @@ class dvController extends Controller
             }
 
             $sql .= "
-            WHERE c.fecha_firma BETWEEN '$request->fecha1' AND '$request->fecha2'
+            WHERE (tc.memos->'CERRADO_PLANEACION'->>'FECHA')::DATE BETWEEN '$request->fecha1' AND '$request->fecha2'
             AND tc.status_curso = 'AUTORIZADO'
+            AND tc.proceso_terminado = true
 
-            GROUP BY c.no_convenio, c.institucion, c.tipo_sector, c.fecha_firma, c.fecha_vigencia, c.poblacion, c.municipio, ";
+            GROUP BY c.no_convenio, c.institucion, c.tipo_sector, c.fecha_firma, c.fecha_vigencia, c.poblacion, c.municipio, tc.unidad, ";
 
             // Agregar las columnas dinámicas al GROUP BY
             foreach ($anios as $anio) {
@@ -225,6 +229,7 @@ class dvController extends Controller
 
             // dd($resultados);
 
+            // dd($resultados, $anios, $meses);
             return [$resultados, $anios, $meses];
         }else $message["ERROR"] = "SE REQUIERE QUE SELECCIONE LA FECHA INICIAL Y FECHA FINAL PARA GENERAR EL REPORTE.";
         //dd($message);
