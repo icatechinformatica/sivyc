@@ -50,10 +50,10 @@ class LoginController extends Controller
     public function authenticated(Request $request, $user)
     {
         //solicitudes.vb.grupos
-        // if ($user->id === 1) {
-        \Log::info($user->id);
-            // return redirect()->route('solicitudes.vb.grupos');
-        // }
+        if ($user->id === 1) {
+            \Log::info($user->id);
+            return redirect()->route('solicitudes.vb.grupos');
+        }
 
         // Comportamiento normal para otros usuarios
         return redirect()->intended($this->redirectPath());
@@ -71,8 +71,6 @@ class LoginController extends Controller
         }
 
         $credentials = $request->only('email', 'password');
-
-        \Log::debug('Intento de login con:', $credentials);
 
         if (!Auth::attempt($credentials, $request->filled('remember'))) {
             \Log::warning('Login fallido', [
