@@ -72,6 +72,8 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
 
+        \Log::debug('Intento de login con:', $credentials);
+
         if (!Auth::attempt($credentials, $request->filled('remember'))) {
             \Log::warning('Login fallido', [
                 'email' => $credentials['email'],
