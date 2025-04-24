@@ -16,21 +16,25 @@ class dvController extends Controller
     }
 
     public function index(Request $request){
-        $id_user = Auth::user()->id;
-        $data = $message = $anios = $meses = $array_meses = [];
-        $array_meses = ['01' => 'Enero', '02' => 'Febrero', '03' => 'Marzo', '04' => 'Abril', '05'=> 'Mayo',
-        '06' => 'Junio', '07' => 'Julio', '08' => 'Agosto', '09' => 'Septiembre', '10' => 'Octubre', '11' => 'Noviembre', '12' => 'Diciembre'];
-        if(session('message')) $message = session('message');
-        if(session('data')) $data = session('data');
-        if(session('anios')) $anios = session('anios');
-        if(session('meses')) $meses = session('meses');
-        if(session('array_meses')) $array_meses = session('array_meses');
+        try {
+            $id_user = Auth::user()->id;
+            $data = $message = $anios = $meses = $array_meses = [];
+            $array_meses = ['01' => 'Enero', '02' => 'Febrero', '03' => 'Marzo', '04' => 'Abril', '05'=> 'Mayo',
+            '06' => 'Junio', '07' => 'Julio', '08' => 'Agosto', '09' => 'Septiembre', '10' => 'Octubre', '11' => 'Noviembre', '12' => 'Diciembre'];
+            if(session('message')) $message = session('message');
+            if(session('data')) $data = session('data');
+            if(session('anios')) $anios = session('anios');
+            if(session('meses')) $meses = session('meses');
+            if(session('array_meses')) $array_meses = session('array_meses');
 
-        if(session('fecha1')) $fecha1 = session('fecha1');
-        else $fecha1 = $request->fecha1;
+            if(session('fecha1')) $fecha1 = session('fecha1');
+            else $fecha1 = $request->fecha1;
 
-        if(session('fecha2')) $fecha2 = session('fecha2');
-        else $fecha2 = $request->fecha2;
+            if(session('fecha2')) $fecha2 = session('fecha2');
+            else $fecha2 = $request->fecha2;
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
 
         return view('reportes.dv.index', compact('data','message','fecha1', 'fecha2', 'anios', 'meses', 'array_meses'));
     }
@@ -113,8 +117,9 @@ class dvController extends Controller
                     FROM convenios AS c2
                     LEFT JOIN tbl_cursos AS tc2 ON c2.no_convenio = tc2.cgeneral
                     LEFT JOIN tbl_inscripcion AS ti2 ON ti2.id_curso = tc2.id
-                    WHERE EXTRACT(YEAR FROM c2.fecha_firma::DATE) = $anio
+                    WHERE EXTRACT(YEAR FROM ((tc2.memos->'CERRADO_PLANEACION'->>'FECHA')::DATE)) = $anio
                     AND tc2.status_curso = 'AUTORIZADO'
+                    AND tc2.proceso_terminado = true
                     GROUP BY c2.no_convenio
                 ), ";
             }
@@ -133,8 +138,9 @@ class dvController extends Controller
                     FROM convenios AS c3
                     LEFT JOIN tbl_cursos AS tc3 ON c3.no_convenio = tc3.cgeneral
                     LEFT JOIN tbl_inscripcion AS ti3 ON ti3.id_curso = tc3.id
-                    WHERE TO_CHAR(c3.fecha_firma::DATE, 'YYYY-MM') = '$mes'
+                    WHERE TO_CHAR((tc3.memos->'CERRADO_PLANEACION'->>'FECHA')::DATE, 'YYYY-MM') = '$mes'
                     AND tc3.status_curso = 'AUTORIZADO'
+                    AND tc3.proceso_terminado = true
                     GROUP BY c3.no_convenio
                 ), ";
             }
@@ -151,7 +157,8 @@ class dvController extends Controller
                 c.fecha_firma,
                 c.fecha_vigencia,
                 c.poblacion,
-                c.municipio, ";
+                c.municipio,
+                tc.unidad, ";
 
             // Agregar las columnas dinámicas para cada año
             foreach ($anios as $anio) {
@@ -195,10 +202,11 @@ class dvController extends Controller
             }
 
             $sql .= "
-            WHERE c.fecha_firma BETWEEN '$request->fecha1' AND '$request->fecha2'
+            WHERE (tc.memos->'CERRADO_PLANEACION'->>'FECHA')::DATE BETWEEN '$request->fecha1' AND '$request->fecha2'
             AND tc.status_curso = 'AUTORIZADO'
+            AND tc.proceso_terminado = true
 
-            GROUP BY c.no_convenio, c.institucion, c.tipo_sector, c.fecha_firma, c.fecha_vigencia, c.poblacion, c.municipio, ";
+            GROUP BY c.no_convenio, c.institucion, c.tipo_sector, c.fecha_firma, c.fecha_vigencia, c.poblacion, c.municipio, tc.unidad, ";
 
             // Agregar las columnas dinámicas al GROUP BY
             foreach ($anios as $anio) {
@@ -217,8 +225,6 @@ class dvController extends Controller
 
             // Ejecutar la consulta
             $resultados = DB::select($sql);
-
-            // dd($resultados);
 
             return [$resultados, $anios, $meses];
         }else $message["ERROR"] = "SE REQUIERE QUE SELECCIONE LA FECHA INICIAL Y FECHA FINAL PARA GENERAR EL REPORTE.";
