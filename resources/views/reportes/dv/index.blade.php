@@ -44,9 +44,8 @@
                                 <th rowspan="2"><p>Tipo</p></th>
                                 <th rowspan="2"><p style="width: 60px;">Inicio de Vigencia</p></th>
                                 <th rowspan="2"><p style="width: 60px;">Termino de Vigencia</p></th>
-                                <th rowspan="2"><p style="width: 100px;">Unidad</p></th>
-                                {{-- <th rowspan="2"><p style="width: 100px;">Población</p></th>
-                                <th rowspan="2"><p style="width: 100px;">Municipio</p></th> --}}
+                                <th rowspan="2"><p style="width: 100px;">Población</p></th>
+                                <th rowspan="2"><p style="width: 100px;">Municipio</p></th>
 
                                 @foreach ($anios as $anio)
                                     <th rowspan="2">Total Cursos {{$anio}}</th>
@@ -88,9 +87,8 @@
                                         <td class="tb_texto">{{ $item->tipo_sector}}</td>
                                         <td class="tb_texto">{{ $item->fecha_firma}}</td>
                                         <td class="tb_texto">{{ $item->fecha_vigencia}}</td>
-                                        <td class="tb_texto">{{ $item->unidad}}</td>
-                                        {{-- <td class="tb_texto">{{ $item->poblacion}}</td>
-                                        <td class="tb_texto">{{ $item->municipio}}</td> --}}
+                                        <td class="tb_texto">{{ $item->poblacion}}</td>
+                                        <td class="tb_texto">{{ $item->municipio}}</td>
                                         {{-- anio --}}
                                         @foreach ($anios as $anio)
                                             <td class="tb_texto">{{ $item->{'total_cursos_' . $anio} }}</td>
