@@ -50,10 +50,10 @@ class LoginController extends Controller
     public function authenticated(Request $request, $user)
     {
         //solicitudes.vb.grupos
-        if ($user->id === 1) {
-            \Log::info($user);
-            return redirect()->route('solicitudes.vb.grupos'); // Ruta única para el usuario 1
-        }
+        // if ($user->id === 1) {
+        \Log::info($user->id);
+            // return redirect()->route('solicitudes.vb.grupos');
+        // }
 
         // Comportamiento normal para otros usuarios
         return redirect()->intended($this->redirectPath());
