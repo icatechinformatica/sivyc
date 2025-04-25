@@ -123,6 +123,7 @@ class dvController extends Controller
                     GROUP BY c2.no_convenio
                 ), ";
             }
+            // WHERE EXTRACT(YEAR FROM tc2.inicio::DATE) = $anio
 
             // Construir los CTEs para cada mes
             foreach ($meses as $mes) {
@@ -144,6 +145,7 @@ class dvController extends Controller
                     GROUP BY c3.no_convenio
                 ), ";
             }
+            // WHERE TO_CHAR(tc3.inicio::DATE, 'YYYY-MM') = '$mes'
 
             // Eliminar la última coma y espacio
             $sql = rtrim($sql, ', ');
