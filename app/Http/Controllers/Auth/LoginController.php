@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -20,9 +21,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers{
-        AuthenticatesUsers::authenticated as parentAuthenticated;
-    }
+    use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login.
@@ -48,14 +47,15 @@ class LoginController extends Controller
      * @param  mixed  $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    protected function authenticated(Request $request, $user)
+    public function authenticated(Request $request, $user)
     {
         //solicitudes.vb.grupos
         if ($user->id === 1) {
-            return redirect()->route('solicitudes.vb.grupos'); // Ruta única para el usuario 1
+            \Log::info($user->id);
+            return redirect()->route('solicitudes.vb.grupos');
         }
 
         // Comportamiento normal para otros usuarios
-        return $this->parentAuthenticated($request, $user);
+        return redirect()->intended($this->redirectPath());
     }
 }
