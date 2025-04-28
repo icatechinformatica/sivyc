@@ -41,8 +41,14 @@ class buscarController extends Controller
         $parameters = $request->all();
         if(!isset($parameters['ejercicio'])) $ejercicio = $parameters['ejercicio'] = date('Y');
         $data = DB::table('alumnos_registro as ar')
-        ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad')
-        ->join('cursos as c', 'ar.id_curso', '=', 'c.id');        
+        //->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad')
+        ->select('ar.turnado',
+            DB::raw('COALESCE(tc.folio_grupo, ar.folio_grupo) as folio_grupo'),
+            DB::raw('COALESCE(tc.curso, c.nombre_curso) as curso'),
+            DB::raw('COALESCE(tc.unidad, ar.unidad) as unidad')
+        )
+        ->join('cursos as c', 'ar.id_curso', '=', 'c.id')
+        ->leftjoin('tbl_cursos as tc','tc.folio_grupo','ar.folio_grupo');        
 
         if (preg_match('/^2B-\d{6}$/', $valor_buscar)){
             $data->where('ar.folio_grupo', 'like', '%' . $valor_buscar . '%');
@@ -64,7 +70,7 @@ class buscarController extends Controller
         }
 
         $data = $data->whereNotNull('ar.folio_grupo')
-            ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad')
+            ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad','tc.id')
             ->orderBy('ar.folio_grupo', 'DESC')
             ->paginate(15);
         return view('preinscripcion.buscar.index',compact('data','activar','anios','parameters'));

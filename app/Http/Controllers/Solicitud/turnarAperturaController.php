@@ -56,22 +56,36 @@ class turnarAperturaController extends Controller
 			        as hours
  			        from agenda
 			        where id_curso = tc.folio_grupo) as t) as horas_agenda"),
-                    'tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                    DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"),'tr.status_folio')
+                    'tc.*',DB::raw("'$opt' as option"),'tc.turnado as turnado_solicitud',
+                    DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"),'tr.status_folio',
+                    DB::raw("
+                    CASE 
+                        WHEN status IN ('EN_FIRMA') THEN 'NO REPORTADO'                
+                        WHEN status IN ('REVISION_DTA','TURNADO_DTA') THEN 'REPORTADO'                
+                    ELSE status
+                    END as status"),
+                DB::raw("
+                    CASE
+                        WHEN vb_dg = false AND tc.turnado IN ('UNIDAD') AND clave = '0' THEN 'PENDIENTE' 
+                        WHEN vb_dg = true AND tc.turnado = 'VoBo'  THEN 'APROBADO' 
+                        WHEN tc.turnado = 'PLANEACION_TERMINADO' THEN 'PLANEACION'
+                        WHEN tc.turnado IN ('REVISION_DTA', 'TURNADO_DTA') THEN 'DTA'            
+                        WHEN tc.turnado = 'MEMO_TURNADO_RETORNO' THEN 'UNIDAD'            
+                        ELSE tc.turnado
+                    END as turnado")
+                    )
                     ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                     ->leftJoin('tbl_recibos as tr', function ($join) {
                         $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
                              ->where('tr.status_folio','ENVIADO');
                     });
                 if($opt == 'ARC01'){
-                   $grupos = $grupos->whereRaw("(tc.num_revision = '$memo' OR (tc.munidad = '$memo'))");
-                   //->where('tc.munidad',$memo);
+                    $grupos = $grupos->whereRaw("(tc.num_revision = ? OR tc.munidad = ?)", [$memo, $memo]);                    
                 }else{
-                   $grupos = $grupos->whereRaw("(tc.num_revision_arc02 = '$memo' OR (tc.nmunidad = '$memo'))");
-                   //->where('tc.nmunidad',$memo);
+                    $grupos = $grupos->whereRaw("(tc.num_revision_arc02 = ? OR tc.nmunidad = ?)", [$memo, $memo]);                   
                 }
                 if($_SESSION['unidades']){
-                   $grupos = $grupos->whereIn('tc.unidad',$_SESSION['unidades']);
+                    $grupos = $grupos->whereIn('tc.unidad',$_SESSION['unidades']);
                 }
                 $grupos = $grupos->groupby('tc.id','ar.turnado', 'tr.status_folio')->get();
 
@@ -98,6 +112,13 @@ class turnarAperturaController extends Controller
                         case 'ACEPTADO'://PARA SUBIR ARCHIVO
                             $movimientos = [ 'SUBIR' => 'SUBIR SOPORTE'];
                         break;
+                        /*
+                        default:
+                            if($grupos[0]->fecha_arc01 AND $grupos[0]->status_solicitud=='VALIDADO' ){
+                                $movimientos = ['ENVIAR'=>'ENVIAR A LA DTA', 'CORRECCION' => 'SOLICITUD DE CORRECCIÓN'];
+                            }
+                        break;
+                        */
                     }
 
                 } elseif ($opt == 'ARC02') {
@@ -122,13 +143,13 @@ class turnarAperturaController extends Controller
                 $_SESSION['memo'] = $memo;
                 $_SESSION['opt'] = $opt;
 
-            }else $message = "No se encuentran registros que mostrar.";
+            }else $message = "Verifique que el grupo tiene la aprobación de Vo.bo. o el número de memorándum sea correcto.";
         }else $message = "Ingrese el número de revisión o número de memorándum.";
 
         if(session('message')) $message = session('message');
         return view('solicitud.turnar.index', compact('message','grupos','memo', 'file','opt','extemporaneo','mextemporaneo','status_solicitud','num_revision','ids_extemp','movimientos'));
     }
-
+/*
     public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio']){
@@ -143,6 +164,19 @@ class turnarAperturaController extends Controller
         }
         return redirect('solicitud/apertura')->with('message',$message);
    }
+*/
+
+    private function es_valido_turnar($opt, Request $request){ //NUEVO
+        $valido = false;
+        if($request->opt=='ARC01'){
+            switch($opt){
+                case 'VoBo':
+                    $valido = DB::table('tbl_cursos')->where('vb_dg',true)->where('munidad',$request->memo)->exists() &&  !DB::table('tbl_cursos')->where('vb_dg',false)->where('munidad',$request->memo)->exists();                
+                break;         
+            }
+        return $valido;
+        } else return true;
+    }
 
     public function enviar(Request $request){
         $result = $extemporaneo = NULL;
@@ -186,6 +220,7 @@ class turnarAperturaController extends Controller
                 break;
             }
         }elseif($_SESSION['memo']==$request->nmemo ){
+
             if ($request->hasFile('file_autorizacion')) {
                 $name_file = $this->id_unidad."_".str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;
                 $file = $request->file('file_autorizacion');
@@ -213,6 +248,7 @@ class turnarAperturaController extends Controller
                             $cuerpo = 'Solicitud de asignación de clave de apertura del memo '.$_SESSION['memo'];
                             $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');
                             $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
+                                ->where('vb_dg',true)//NUEVO
                                 ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc01' => $url_file]);
 
                             if($result) $alumnos = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "DTA",'fecha_turnado' => date('Y-m-d')]);
@@ -285,12 +321,15 @@ class turnarAperturaController extends Controller
                 }else $message = "Error al subir el archivo, volver a intentar.";
             }else $message = "Archivo inválido";
         }else $message = "Operación inválida!!";
+
         return redirect('solicitud/apertura/turnar')->with('message',$message);
    }
 
-   public function preliminar(Request $request){
+   public function preliminar(Request $request){ 
         $message = 'Operación fallida, vuelva a intentar..';
-        if ($request->opt) {
+        $valido_turnar = $this->es_valido_turnar('VoBo',$request); //NUEVO
+        
+        if($request->opt && $valido_turnar) { //NUEVO
             $opt = $request->opt;
             if ($opt == 'ARC01' OR $opt == 'ARC02') {
                 if ($opt == 'ARC01') {
@@ -417,7 +456,6 @@ class turnarAperturaController extends Controller
             } else {
                 $message = "Acción inválida";
             }
-
         }
         return redirect('solicitud/apertura/turnar')->with('message',$message);
    }

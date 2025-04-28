@@ -21,8 +21,6 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
 use App\Models\ModelExpe\ExpeUnico;
-//use App\Models\Alumnopre;
-//use App\Models\Inscripcion;
 use App\Models\tbl_inscripcion;
 use App\Utilities\MyCrypt;
 
@@ -65,11 +63,6 @@ class grupoController extends Controller
         $unidad = $uni = $this->data['unidad'];
         if(!$unidad) $unidad = $uni = $request->unidad;
 
-
-
-        //if(session('IDE')) $folio_grupo= session('IDE');
-        //else $folio_grupo = $request->folio_grupo;
-
         if (isset($_SESSION['folio_grupo'])) {  //echo $folio_grupo;exit;
 
             $folio_grupo = $_SESSION['folio_grupo'];
@@ -85,12 +78,9 @@ class grupoController extends Controller
                 if (($grupo->turnado_grupo == 'VINCULACION' or  $grupo->status_curso=='EDICION' )and isset($this->data['cct_unidad'])) $this->activar = true;
                 else $this->activar = false;
 
-                //dd($this->activar);
-
                 $curso = DB::table('cursos')->where('id', $grupo->id_curso);
                     if($grupo->status_curso!='AUTORIZADO') $curso = $curso->where('cursos.estado', true);
                 $curso = $curso->first();
-                //dd($curso);
 
                 //CATALOGOS
                 $tipo = $grupo->tcapacitacion;
@@ -108,9 +98,8 @@ class grupoController extends Controller
                 //dd($grupo);
                 $instructores = $this->data_instructores($grupo);            
                 //FIN CATALOGOS
-                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
-                //$grupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->first();
-                //dd($instructor_mespecialidad);
+                //$instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
+                
                 $edicion_exo = DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','EDICION')->exists();
                 if($grupo->id_especialidad){
                     $instructor_mespecialidad = $grupo->instructor_mespecialidad;
@@ -170,8 +159,7 @@ class grupoController extends Controller
         } catch (\Throwable $th) {
             dd("Error al cargar documentos ".$th->getMessage());
         }
-
-        //$recibo = DB::table('tbl_recibos')->where('folio_grupo',$folio_grupo)->where('status_folio','ENVIADO')->first();
+        
         $ubicacion = DB::table('tbl_unidades')->where('id', Auth::user()->unidad)->value('ubicacion');
         $recibo_nulo = DB::table('tbl_recibos')->whereNull('folio_recibo')->where('unidad',$ubicacion)->exists();
         $programas = $this->programa();
@@ -183,7 +171,6 @@ class grupoController extends Controller
 
 
     private function data_instructores($data){
-        
         $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
         ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
         ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($data->inicio)))
@@ -197,16 +184,18 @@ class grupoController extends Controller
         ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
         ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
         ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-        //->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
-        //->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
+        ->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id') //NUEVO POR CURSO
+        ->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)//NUEVO POR CURSO
         ->WHERE('estado',true)
+        ->WHERE('activo_curso',true)//NUEVO
         ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
-        ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)        
-        //->where('especialidad_instructor_curso.activo', true)
+        ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
+        ->WHERE('especialidad_instructores.activo', 'true')//NUEVO        
         ->WHERE('fecha_validacion','<',$data->inicio)
         ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
-        ->whereNotIn('instructores.id', $internos)
-        ->groupBy('t.id_instructor','instructores.id')
+        ->whereNotIn('instructores.id', $internos);
+        if(isset($data->id_instructor)) $instructores = $instructores->orWhere('instructores.id' , $data->id_instructor);
+        $instructores = $instructores->groupBy('t.id_instructor','instructores.id')
         ->orderBy('instructor')
         ->get();
         return $instructores;
@@ -216,7 +205,8 @@ class grupoController extends Controller
         if (isset($request->id) and isset($request->inicio) and isset($request->termino)) {
             $data = $request;
             $data->id_especialidad = DB::table('cursos')->where('id',$request->id)->value('id_especialidad');            
-            $data->id_curso = $request->id;            
+            $data->id_curso = $request->id; 
+            $data->id_instructor = $request->instructor;
             $instructores = $this->data_instructores($data);
             $json = json_encode($instructores);
             return $json;
@@ -316,9 +306,7 @@ class grupoController extends Controller
 
 
 
-    public function cmbcursos(Request $request)
-    {
-        //$request->unidad = 'TUXTLA';
+    public function cmbcursos(Request $request) {        
         if (isset($request->tipo) and isset($request->unidad) and isset($request->modalidad)) {
             $cursos = DB::table('cursos')->select('cursos.id', 'nombre_curso')
                 ->where('tipo_curso','like',"%$request->tipo%")
@@ -354,9 +342,8 @@ class grupoController extends Controller
         return $json;
     }
 
-    public function save(Request $request)
-    {
-        // $objeto_curp = array('url' => ''); //Para json doc_soporte
+    public function save(Request $request){
+        
         if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
         $curp = $request->busqueda;    //dd($request->all());
         $matricula = $message = NULL;
@@ -398,20 +385,7 @@ class grupoController extends Controller
                                     $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                                     return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
                                 }
-                                #Consultar doc url Curp json by Jose Luis Moreno Arcos
-                                // if($curp){
-                                //     try {
-                                //         $resul_alumnos = Alumnopre::where('curp', '=', $curp)->first();
-                                //         if ($resul_alumnos && isset($resul_alumnos->requisitos['documento'])) {
-                                //             $objeto_curp = ['url' => $resul_alumnos->requisitos['documento']];
-                                //         } else {
-                                //             $objeto_curp = ['url' => ''];
-                                //         }
-                                //     } catch (\Throwable $th) {
-                                //         // Manejar la excepción según sea necesario
-                                //     }
-                                // }
-
+                               
                                 if ($a_reg) {
                                     $id_especialidad = $a_reg->id_especialidad;
                                     $id_unidad = $a_reg->id_unidad;
@@ -505,8 +479,9 @@ class grupoController extends Controller
                                                     ]
                                                 );
                                                 if ($result){
-                                                     $message = "Operación Exitosa!!";
-                                                     if($alumno->curso_extra==true) DB::table('alumnos_pre')->where('id',$alumno->id_pre)->where('curso_extra',true)->update(['curso_extra'=>false]);
+                                                    $message = "Operación Exitosa!!";
+                                                    DB::table('instructores')->where('id',$g->id_instructor)->where('activo_curso',true)->update(['activo_curso'=>false]);//NUEVO                                                    
+                                                    if($alumno->curso_extra==true) DB::table('alumnos_pre')->where('id',$alumno->id_pre)->where('curso_extra',true)->update(['curso_extra'=>false]);
                                                 }
                                         } else {
                                             $message = 'La fecha de termino no puede ser menor a la de inicio';
@@ -639,7 +614,7 @@ class grupoController extends Controller
                                     'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
                                     'banco','no_cuenta','interbancaria','tipo_honorario'
                                     )
-                                ->WHERE('estado', true)
+                                //->WHERE('estado', true)//NUEVO
                                 ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')->where('instructores.id', $request->instructor)
                                 //->whereJsonContains('unidades_disponible', [$grupo->unidad])
                                 ->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
@@ -839,7 +814,7 @@ class grupoController extends Controller
                                             'cp' => $cp,'ze' => $municipio->ze,'id_curso' => $curso->id,'id_instructor' => $instructor->id,'modinstructor' => $tipo_honorario,
                                             'nmunidad' => '0','nmacademico' => '0','observaciones' => 'NINGUNO','status' => "NO REPORTADO",'realizo' => strtoupper($this->realizo),
                                             'valido' => 'SIN VALIDAR','arc' => '01','tcapacitacion' => $request->tipo,'status_curso' => null,'fecha_apertura' => null,
-                                            'fecha_modificacion' => null,'costo' => $total_pago,'motivo_correccion' => null,'pdf_curso' => null,'turnado' => "UNIDAD",
+                                            'fecha_modificacion' => null,'costo' => $total_pago,'motivo_correccion' => null,'pdf_curso' => null,//'turnado' => "UNIDAD",
                                             'fecha_turnado' => null,'tipo_curso' => $request->tcurso,'clave_especialidad' => $curso->clave_especialidad,'id_especialidad' => $id_especialidad,
                                             'instructor_escolaridad' => $instructor->escolaridad,'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,
                                             'instructor_mespecialidad' => $instructor->mespecialidad,'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,
@@ -864,6 +839,7 @@ class grupoController extends Controller
                                         DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
                                     }
                                 }
+                                DB::table('instructores')->where('id',$request->instructor)->where('activo_curso',true)->update(['activo_curso'=>false]);//NUEVO
 
                             } else {
                                 $message = 'Instructor no valido..';
@@ -936,8 +912,13 @@ class grupoController extends Controller
                                     if(!$result)return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
 
                                 }else{
-                                    $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
-                                    if($result) DB::table('instructores')->where('id',$g->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
+                                    $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
+                                    if($result){
+                                        DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
+                                        DB::table('instructores')->where('id',$g->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
+                                        //DB::table('instructores')->where('id',$g->id_instructor)->where('estado',true)->update(['estado'=>false]);//NUEVO
+                                    }
+
                                     else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
                                 }
                             }else return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
@@ -1012,7 +993,7 @@ class grupoController extends Controller
                 ->first();
             $localidadArray = DB::table('tbl_localidades')->select('localidad', 'clave')
                 ->where('id_estado', $clave->id_estado)
-                ->where('clave_municipio', '=', $clave->clave)
+                ->where('clave_municipio', '=', $clave->clave)                
                 ->orderBy('localidad')->get();
             return response()->json($localidadArray);
         }

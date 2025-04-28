@@ -29,7 +29,7 @@ class vbgruposController extends Controller
         else $status = "PENDIENTES";        
         
         $data = DB::table('tbl_cursos')->where('clave','0')->whereYear('inicio',$this->ejercicio);
-        if($status == "PENDIENTES") $data = $data->where('vb_dg', false);
+        if($status == "PENDIENTES") $data = $data->where('turnado','VoBo')->where('vb_dg', false);
         elseif($status == "AUTORIZADOS") $data = $data->where('vb_dg', true);
 
         if($clave) $data = $data->where(DB::raw("CONCAT(nombre,curso,unidad)"),'like','%'.$clave.'%');        
@@ -48,7 +48,11 @@ class vbgruposController extends Controller
             else $estado = false;
             
             if (is_numeric($id)){
-                $result =  DB::table('tbl_cursos')->where('id',$id)->update(['vb_dg' => $estado]);
+                $result =  DB::table('tbl_cursos')->where('id',$id)->whereNull('status_curso');
+                if($estado == true)
+                    $result->update(['vb_dg' => $estado, 'turnado' => 'UNIDAD']);
+                else 
+                    $result->update(['vb_dg' => $estado, 'turnado' => 'VoBo']);
                 if($result){
                     if($estado == "true") $msg = "ACTIVADO";
                     else $msg = "DESACTIVADO";
@@ -58,6 +62,29 @@ class vbgruposController extends Controller
             $msg = "Operación no valida.";
         }        
         return $msg;        
+    }
+
+    public function rechazar(Request $request){   // dd($request->motivo);
+        $id_curso = $request->id_curso;
+        $motivo = $request->motivo;
+        if($id_curso and $motivo){
+            $result = DB::table('tbl_cursos')->where('id',$id_curso)
+                ->update([ 'turnado' => 'UNIDAD',
+                'movimientos' => DB::raw("
+                    COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                        jsonb_build_object(
+                            'fecha', '".Carbon::now()->format('Y-m-d H:i:s')."',
+                            'usuario', '".Auth::user()->name."',
+                            'operacion', 'RECHAZO VISTO BUENO',
+                            'motivo', '$motivo'
+                        )
+                    )
+                ")
+            ]);
+            if($result) $message = "Operación Exitosa!";
+        }
+
+        return redirect()->route('solicitudes.vb.grupos')->with(['message' => $message]);
     }
 
     public function autodata(Request $request){        
@@ -91,6 +118,11 @@ class vbgruposController extends Controller
                         <td>".$item->inicio."</td>
                         <td>".$item->termino."</td>
                         <td>".$item->unidad."</td>
+                        <td class='text-center'>
+                            <a onclick='".modal_motivo('{{ $modal_curso }}','{{ $item->id }}')."'>
+                                <i class='fas fa-window-close fa-2x fa-danger'></i>
+                            </a>
+                        </td>  
                     </tr>
                 ";
             }
@@ -118,7 +150,7 @@ class vbgruposController extends Controller
         if($folio){            
             $result = DB::table('tbl_cursos')->select('muni', 'hini', 'hfin', 'efisico', 'curso')->where('folio_grupo', $folio)->first();     
             if($result){
-                if (strlen($result->curso) > 25) $head = substr($result->curso, 0, 25) . " ...";
+                if (strlen($result->curso) > 25) $head =  mb_substr($result->curso, 0, 25, 'UTF-8') . " ...";
                 else $head = $result->curso;
                 $body = "
                     <ul>                    

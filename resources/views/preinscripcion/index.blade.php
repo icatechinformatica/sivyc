@@ -5,8 +5,6 @@
         <link rel="stylesheet" href="{{asset('css/global.css') }}" />
         <link rel="stylesheet" href="{{asset('css/preinscripcion/index.css') }}" />
         <link rel="stylesheet" href="{{asset('css/bootstrap4-toggle.min.css') }}"/>
-        <link rel="stylesheet" href="{{asset('css/tools/combox_edit.css') }}" />
-
         <link rel="stylesheet" href="{{ asset('fullCalendar/core/main.css') }}">
         <link rel="stylesheet" href="{{ asset('fullCalendar/daygrid/main.css') }}">
         <link rel="stylesheet" href="{{ asset('fullCalendar/list/main.css') }}">
@@ -131,15 +129,15 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label>CURSO</label>
-                        {{ Form::select('id_curso', $cursos, $grupo->id_curso ?? '', ['id'=>'id_curso','old'=>'curso', 'class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
+                        {{ Form::select('id_curso', $cursos, $grupo->id_curso ?? '', ['id'=>'id_curso','old'=>'curso', 'class' => 'form-control mr-sm-2 limpia_instructor', 'placeholder' => 'SELECIONAR'] ) }}
                     </div>
                     <div class="form-group col-md-2">
                         <label>FECHA INICIO:</label>
-                        <input type="date" id="inicio" name="inicio" value="{{$grupo->inicio ?? ''}}" class="form-control" >
+                        <input type="date" id="inicio" name="inicio" value="{{$grupo->inicio ?? ''}}" class="form-control limpia_instructor" >
                     </div>
                     <div class="form-group col-md-2">
                         <label>FECHA TERMINO:</label>
-                        <input type="date" id="termino" name="termino" value="{{$grupo->termino ?? ''}}" class="form-control" >
+                        <input type="date" id="termino" name="termino" value="{{$grupo->termino ?? ''}}" class="form-control limpia_instructor" >
                     </div>
                 </div>
                 <div class="form-row">
@@ -220,16 +218,8 @@
                         @endphp
                         <select name="instructor" id="instructor" class="form-control mr-sm--2">
                             @foreach ($instructores as $item)
-                                <option value="{{$item->id}}" {{ $item->id == $instructor->id ? 'selected' : '' }}> {{$item->instructor}} </option>
-                                @if ($item->id == $instructor->id)                                    
-                                    @php
-                                        $encontrado = true
-                                    @endphp
-                                @endif
+                                <option value="{{$item->id}}" {{ $item->id == $grupo->id_instructor ? 'selected' : '' }}> {{$item->instructor}} </option>                           
                             @endforeach
-                            @if (!$encontrado && $instructor)
-                                <option value="{{$instructor->id}}" selected>{{$instructor->instructor}}</option>
-                            @endif
                         </select>
                     </div>
                 </div>

@@ -29,10 +29,10 @@
                 <th scope="col" class="text-center">MUNICIPIO</th>
                 <th scope="col" class="text-center">ZE</th>
                 <th scope="col" class="text-center">DEPENDENCIA</th>
-                <th scope="col" class="text-center">TIPO</th>
-                <th scope="col" class="text-center">TURNADO</th>
+                <th scope="col" class="text-center">TIPO</th>                
                 <th scope="col" class="text-center">SOLICITUD</th>
-                <th scope="col" class="text-center">ESTATUS</th>
+                <th scope="col" class="text-center">TURNADO</th>
+                <th scope="col" class="text-center">FORMATOT</th>
                 <th scope="col" class="text-center">LUGAR</th>
                 <th scope="col" class="text-center">OBSERVACIONES</th>
                 <th scope="col" class="text-center">AVISO</th>
@@ -97,6 +97,8 @@
                         $id_mextemporaneo = $g->mextemporaneo_arc02;
                         $rextemporaneo = $g->rextemporaneo_arc02;
                     }
+
+                    if( $g->option =='ARC01' and $g->vb_dg==false and $g->clave=='0'){ $activar=false;  $rojo = true;}//NUEVO
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
                         <td class="text-center"> {{ $g->id }}</td>
@@ -137,9 +139,9 @@
                         <td> {{ $g->muni }} </td>
                         <td class="text-center"> {{ $g->ze}} </td>
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
-                        <td class="text-center"> {{ $g->tcapacitacion }} </td>
-                        <td class="text-center"> {{ $g->turnado_solicitud }} </td>
+                        <td class="text-center"> {{ $g->tcapacitacion }} </td>                        
                         <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif </td>
+                        <td class="text-center"> {{ $g->turnado }} </td>
                         <td class="text-center"> {{ $g->status }} </td>
                         <td > <div style="width:350px;">{{ $g->efisico }} </div></td>
                         <td class="text-left">
@@ -148,7 +150,7 @@
                                 @elseif($g->option =='ARC02') {{ $g->observaciones }} @endif
                             </div>
                         </td>
-                        <td> <div style="width:200px;"> {{ $aviso }} </div></td>
+                        <td> <div style="width:200px;" > {{ $aviso }} </div></td>
                     </tr>
                  @endforeach
             </tbody>
@@ -174,21 +176,16 @@
                 {{ Form::button('ENVIAR PRELIMINAR ARC 02 >>', ['id'=>'preliminar','class' => 'btn  bg-danger mx-4']) }}
                 @endif
             </div>
-        @else
-            @if($activar OR Auth::user()->roles[0]->slug=='admin')
-                <div class="form-group col-md-12 p-2 pl-3 bg-light">
-                    <h5> USUARIO ADMINISTRADOR </h5>
-                </div>
-            @endif
+        @else           
             <div class="form-group col-md-3 mt-3">
                 <label for="">MEMORÁNDUM ARC:</label>
                 {{ Form::text('nmemo', $memo, ['id'=>'nmemo', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM ARC', 'aria-label' => 'MEMORÁNDUM ARC', 'required' => 'required', 'size' => 25]) }}
             </div>
-            <div class="form-group col-md-2">
-                {{ Form::button('GUARDAR MEMORÁNDUM ARC', ['id'=>'mcambiar','class' => 'btn mt-5']) }}
+            <div class="form-group col-md-1">
+                {{ Form::button('GUARDAR', ['id'=>'mcambiar','class' => 'btn mt-5']) }}
             </div>
             <div class="form-group col-md-2">
-                {{ Form::button('GENERAR MEMORÁNDUM PDF', ['id'=>'generar','class' => 'btn mt-5']) }}
+                {{ Form::button('GENERAR PDF', ['id'=>'generar','class' => 'btn mt-5']) }}
             </div>
             <div class="form-group col-md-3">
                 <div class="custom-file mt-5">

@@ -78,7 +78,8 @@ class aperturaController extends Controller
         $instructores = $convenio = $localidad = $exonerado = $num_oficio_sop = $titular_sop = $ValidaInstructorPDF = NULL;
         $recibo =[];
         $url_soporte = '';
-        if($request->folio_grupo)  $folio_grupo = $request->folio_grupo;
+        if(isset($request->clave)) $folio_grupo = $request->clave;
+        elseif($request->folio_grupo)  $folio_grupo = $request->folio_grupo;
         elseif(isset($_SESSION['folio_grupo'])) $folio_grupo = $_SESSION['folio_grupo'];
         //$_SESSION['alumnos'] = NULL;
 
@@ -208,7 +209,9 @@ class aperturaController extends Controller
                 DB::raw('ar.turnado as  turnado_grupo'),
                 DB::raw('ar.observaciones as obs_vincula'),
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
-                DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital")
+                DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital"),
+                DB::raw("CASE WHEN tc.turnado ='UNIDAD' and vb_dg = false and clave='0' THEN true ELSE false END as turnar_vobo"),
+                DB::raw("CASE WHEN tc.turnado ='UNIDAD' and vb_dg = true and clave='0' THEN true ELSE false END as vobo_aprobado")
             )
             ->leftjoin('alumnos_registro as ar','tc.folio_grupo','ar.folio_grupo')
             ->leftJoin('tbl_recibos as tr', function ($join) {
@@ -313,16 +316,31 @@ class aperturaController extends Controller
         return $json;
     }
 
+    public function vobo(Request $request){
+        $message = 'Operación fallida, vuelva a intentar..';
+         if($_SESSION['folio_grupo'] == $request->folio_grupo){
+             $result = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VoBo",'fecha_turnado' => date('Y-m-d')]);             
+             if($result){
+                 $message = "Grupo turnado para VoBo.";
+                 //unset($_SESSION['folio_grupo']);
+             }
+         }
+         return redirect('solicitud/apertura')->with('message',$message);
+    }
+
 
     public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
-        if($_SESSION['folio_grupo'] == $request->folio_grupo){
-            $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VINCULACION",'fecha_turnado' => null,'fmpreapertura'=>null]);
-            DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['fecha_arc01'=>null]);
+        if($_SESSION['folio_grupo'] == $request->folio_grupo){            
+            $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])
+            ->where('turnado','UNIDAD')->where('vb_dg',false) //NUEVO
+            ->update(['fecha_arc01'=>null,'turnado'=>'VINCULACION']);
+
             if($result){
-                $message = "El grupo fué turnado correctamente a VINCULACIÓN";
+                DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VINCULACION",'fecha_turnado' => null,'fmpreapertura'=>null]);
+                $message = "Grupo turnado a VINCULACIÓN.";
                 unset($_SESSION['folio_grupo']);
-            }
+            }else $message = "Grupo APROBADO por VoBo.";
         }
         return redirect('solicitud/apertura')->with('message',$message);
    }

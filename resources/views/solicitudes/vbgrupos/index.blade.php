@@ -13,6 +13,7 @@
         #result_body ul li p{ font-size: 11px; margin-bottom:12px; display: block;  }
         #result_body ul li b { font-size: 14px; padding: 3px;}
         .modal-header p {font-size: 10px;}
+        .fas { cursor: pointer; color: red;}
     </style>
 @endsection
 @section('content')
@@ -67,7 +68,32 @@
                     </div>                
                 </div>
             </div>
-            {{-- FIN Modal DATOS --}}      
+            {{-- FIN Modal DATOS --}} 
+            
+            {{-- Modal RECHAZAR --}}
+            <div class="modal fade" id="modalMotivo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">                
+                <div class="modal-dialog modal-sm modal-notify modal-danger" id="" role="document">                
+                    <div class="modal-content text-center">
+                        <!--Header-->
+                        <div class="modal-header d-flex justify-content-center" style="background-color:rgb(201, 1, 102);" >                            
+                            <p class="heading font-weight-bold">Curso: <block id="body_motivo"> </block></p>  
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true" class="text-light">&times;</span></button>                      
+                        </div>
+                        <!--Body-->
+                        <div class="modal_body">                            
+                            <div class="alert alert-dismissible fade show p-2 text-left" role="alert">                                
+                                {{ Form::hidden('id_curso', '',['id'=>'id_curso']) }}
+                                <h6>MOTIVO:</h6>
+                                {{ Form::textarea('motivo',old('motivo'), ['id'=>'motivo', 'class' => 'form-control mt-2', 'placeholder' => 'Describir el motivo del rechazo.', 'rows' => 3]) }}
+                                <div class="modal-footer flex-center">
+                                    <button class="btn btn-danger" id="rechazar" onclick="rechazar()">RECHAZAR</button>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>                
+                </div>
+            </div>
+            {{-- FIN Modal RECHAZAR --}}
 
         {!! Form::close() !!}
     </div>
@@ -116,6 +142,14 @@
                 $('input[name="estatus"]').on('click', function() { 
                     actualiza_data();
                 });
+
+                $("#rechazar" ).click(function(){
+                    if(confirm("Esta seguro de GUARDAR?")==true){
+                        $('#frm').attr('target', '_self');
+                        $('#frm').attr('action', "{{route('solicitudes.vb.grupos.rechazar')}}"); $('#frm').submit();
+                    }
+                });
+            
             });
             
             function ver_modal(tipo, folio_grupo){
@@ -137,6 +171,12 @@
                     });
                     
                 }
+            }
+
+            function modal_motivo(curso,id_curso){
+                $('#id_curso').val(id_curso); alert($('#id_curso').val());
+                $('#body_motivo').html(curso);
+                $("#modalMotivo").modal("show");
             }
         </script>
     @endsection

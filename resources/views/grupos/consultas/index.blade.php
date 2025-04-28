@@ -19,15 +19,11 @@
             if(isset($curso)) $clave = $curso->clave;
             else $clave = null;
         ?>
-        {{ Form::open(['route' => 'grupos.consultas', 'method' => 'post', 'id'=>'frm']) }}
-
-            <div class="row">
-                <div class="form-group col-md-3">
-                        {{ Form::text('clave', $clave, ['id'=>'clave', 'class' => 'form-control', 'placeholder' => 'CLAVE DEL CURSO O INSTRUCTOR', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 100]) }}
-                </div>
-                <div class="form-group col-md-2">
-                        {{ Form::button('FILTRAR', ['class' => 'btn', 'type' => 'submit']) }}
-                </div>
+        {{ Form::open(['route' => 'grupos.consultas', 'method' => 'post', 'class' => 'form-inline', 'id'=>'frm']) }}
+            <div class="row">                
+                {{ Form::select('ejercicio', $anios, $ejercicio ??'' ,['id'=>'ejercicio','class' => 'form-control mr-sm-2','title' => 'EJERCICIO','placeholder' => 'EJERCICIO']) }}
+                {{ Form::text('clave', $clave, ['id'=>'clave', 'class' => 'form-control mr-sm-2', 'placeholder' => 'FOLIO GRUPO / CLAVE / INSTRUCTOR', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 50]) }}                
+                {{ Form::button('BUSCAR', ['class' => 'btn', 'type' => 'submit']) }}                
             </div>
             <div class="row">
                 @include('grupos.consultas.table')
@@ -36,6 +32,10 @@
     </div>
     @section('script_content_js')
         <script language="javascript">
+            function arc01(clave){
+                $("#clave").val(clave);
+                $('#frm').attr('action', "{{route('solicitud.apertura')}}"); $('#frm').submit();
+            }
             function editar(clave){
                 $("#clave").val(clave);
                 $('#frm').attr('action', "{{route('grupos.consultas.calificaciones')}}"); $('#frm').submit();

@@ -105,14 +105,21 @@
 
 
  <div class="col-md-12 col-lg-12 text-right mt-20">
-    @if($grupo->clave=='0' AND !$grupo->status_curso AND (!$grupo->status_solicitud OR $grupo->status_solicitud=='RETORNO'))
+    @if($grupo->turnar_vobo)
         <button type="button" class="btn bg-danger" id="regresar" ><< REGRESAR A VINCULACI&Oacute;N</button>
+    @endif
+    
+    @if($grupo->clave=='0' AND !$grupo->status_curso AND (!$grupo->status_solicitud OR $grupo->status_solicitud=='RETORNO') AND $grupo->turnado<>'VINCULACION')        
          {{--<button id="btnShowCalendarFlex" type="button" class="btn btn-amber">Agendar Horario Flexible</button>--}}
         <button type="submit" class="btn" id="guardar" >GUARDAR SOLICITUD</button> &nbsp;&nbsp;
         @if ($instructor)
              <button id="btnShowCalendar" type="button" class="btn btn-info">Agendar</button>
-        @endif
+        @endif       
     @elseif($grupo->clave!='0' AND $grupo->status_curso=="AUTORIZADO" AND $grupo->status=="NO REPORTADO" AND $mov == "INSERT")
         <button type="button" class="btn bg-warning" id="inscribir" >ACEPTAR APERTURA </button>
+    @endif
+    
+    @if($grupo->turnar_vobo)
+            <button type="button" class="btn bg-danger" id="vobo" >ENVIAR A VISTO BUENO >></button>
     @endif
 </div>

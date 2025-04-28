@@ -406,6 +406,7 @@
 
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura')}}");$('#frm').attr('target', '_self'); $('#frm').submit();});
                 $("#regresar" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.regresar')}}");$('#frm').attr('target', '_self'); $('#frm').submit();}});
+                $("#vobo" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.vobo')}}");$('#frm').attr('target', '_self'); $('#frm').submit();}});
                 $("#guardar" ).click(function(){
                     validaCERT();
                     if(confirm("Esta seguro de ejecutar la acción?")==true){

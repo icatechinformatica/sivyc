@@ -27,6 +27,7 @@
         cmb_curso();
     });
     $("#id_municipio" ).change(function(){
+        $("#localidad").empty();
         cmb_loc();
     });
     $("#dependencia" ).change(function(){
@@ -59,7 +60,7 @@
  
     function cmb_loc(){ 
         var tipo =$('#id_municipio').val();
-        $("#localidad").empty();                            
+        $("#localidad").empty();
         if(tipo && unidad){
             $.ajax({
                 type: "GET",
@@ -67,7 +68,7 @@
                 data:{estado_id:tipo, _token:"{{csrf_token()}}"},
                 contentType: "application/json",              
                 dataType: "json",
-                success: function (data) {// console.log(data); 
+                success: function (data) { console.log(data); 
                     $("#localidad").append('<option value="" selected="selected">SELECCIONAR</option>');  
                     $.each(data, function () {                                                                
                         $("#localidad").append('<option value="'+this['clave']+'">'+this['localidad']+'</option>');
@@ -117,37 +118,54 @@
         }
     };
 
-    $("#id_curso" ).change(function(){
-        cmb_instru();
-    }); 
-    $("#inicio" ).change(function(){
-        cmb_instru();
-    });
-    $("#termino" ).change(function(){
-        cmb_instru();
-    });
-    function cmb_instru(){ 
-        var id =$('#id_curso').val();
-        var inicio =$('#inicio').val();
-        var termino =$('#termino').val();
+    $('.limpia_instructor').on('change', function () {
         $("#instructor").empty();
         $("#instructor").append('<option value="">SELECCIONAR</option>');
-        if(id && inicio && termino){
+    });
+    
+    $("#instructor" ).focus(function(){
+        cmb_instru();
+    }); 
+
+    const valoresIniciales = {
+        id : $('#id_curso').val(),
+        inicio : $('#inicio').val(),
+        termino : $('#termino').val(),
+        instructor : $('#instructor').val()
+    };
+
+    function huboCambios() {
+        return $('#id_curso').val() !== valoresIniciales.id ||
+               $('#inicio').val() !== valoresIniciales.inicio ||
+               $('#termino').val() !== valoresIniciales.termino;
+    }
+
+    function cmb_instru(){ 
+        var id = $('#id_curso').val();
+        var inicio = $('#inicio').val();
+        var termino = $('#termino').val();                
+        if(id && inicio && termino && huboCambios()){                 
+            $("#instructor").empty();
+            $("#instructor").append('<option value="">SELECCIONAR</option>');
             $.ajax({
                 type: "GET",
                 url: "/preinscripcion/grupo/cmbinstructor",
-                data:{id:id,inicio:inicio,termino:termino, _token:"{{csrf_token()}}"},
+                data:{id:id,inicio:inicio,termino:termino,instructor:valoresIniciales.instructor, _token:"{{csrf_token()}}"},
                 contentType: "application/json",              
                 dataType: "json",
-                success: function (data) {// console.log(data);                    
+                success: function (data) { //console.log(data);
                     $.each(data, function () {                                    
                         $("#instructor").append('<option value="'+this['id']+'">'+this['instructor']+'</option>');
+                    });
+                    Object.assign(valoresIniciales, {
+                        id: $('#id').val(),
+                        inicio: $('#inicio').val(),
+                        termino: $('#termino').val()
                     });
                     
                 }
             });                        
-        }
-                        
+        }                        
     };
 
     if( $('#cerss_ok').is(':checked')){
