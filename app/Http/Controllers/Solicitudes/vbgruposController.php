@@ -23,17 +23,17 @@ class vbgruposController extends Controller
     }
 
     private function data(Request $request){
-        $data = $message = NULL;
+        $message = NULL;
         $clave = $request->clave;        
-        if($request->estatus) $status = $request->estatus;
-        else $status = "PENDIENTES";        
-        
-        $data = DB::table('tbl_cursos')->where('clave','0')->whereYear('inicio',$this->ejercicio);
-        if($status == "PENDIENTES") $data = $data->where('turnado','VoBo')->where('vb_dg', false);
-        elseif($status == "AUTORIZADOS") $data = $data->where('vb_dg', true);
+        $data = [];
+        if($request->estatus) $status = $request->estatus;              
+        else $status = "PENDIENTES";
+
+        $data = DB::table('tbl_cursos')->whereYear('inicio',$this->ejercicio);        
+        if($status == "AUTORIZADOS") $data = $data->where('vb_dg', true);
+        else  $data = $data->where('clave','0')->where('turnado','VoBo')->where('vb_dg', false);
 
         if($clave) $data = $data->where(DB::raw("CONCAT(nombre,curso,unidad)"),'like','%'.$clave.'%');        
-        //$data = $data->first();
         $data = $data->orderby('inicio','DESC')->paginate(15);
 
         if(!$data) $message = "No se encontraron registros.";
@@ -76,7 +76,8 @@ class vbgruposController extends Controller
                             'fecha', '".Carbon::now()->format('Y-m-d H:i:s')."',
                             'usuario', '".Auth::user()->name."',
                             'operacion', 'RECHAZO VISTO BUENO',
-                            'motivo', '$motivo'
+                            'motivo', '$motivo',
+                            'vb_dg' => false
                         )
                     )
                 ")
@@ -87,16 +88,22 @@ class vbgruposController extends Controller
         return redirect()->route('solicitudes.vb.grupos')->with(['message' => $message]);
     }
 
-    public function autodata(Request $request){        
+    public function autodata(Request $request){
         list($data, $status, $message, $clave) = $this->data($request);
+        
         if($data){
             $filas = $checked = "";
             foreach ($data as $item){        
-                if($item->vb_dg==true) $checked = 'checked';
+                if($item->vb_dg == true) $checked = 'checked';
                 else $checked = '';
-                                
+                
+                if(strlen($item->curso) >= 18) $curso = mb_substr($item->curso, 0, 18, 'UTF-8')."..";
+                else $curso = $item->curso;
+
+
                 $modal_curso = 'ver_modal("CURSO", "'.$item->folio_grupo.'" )';
                 $modal_instructor = 'ver_modal("INSTRUCTOR", "'.$item->folio_grupo.'" )';
+                $modal_motivo =  'modal_motivo("'.$curso.'", "'.$item->id_curso.'" )';
 
                 $filas .= "
                     <tr>
@@ -118,15 +125,22 @@ class vbgruposController extends Controller
                         <td>".$item->inicio."</td>
                         <td>".$item->termino."</td>
                         <td>".$item->unidad."</td>
-                        <td class='text-center'>
-                            <a onclick='".modal_motivo('{{ $modal_curso }}','{{ $item->id }}')."'>
-                                <i class='fas fa-window-close fa-2x fa-danger'></i>
-                            </a>
+                        <td class='text-center'>";
+                        if($item->clave==0){
+                            $filas .= "
+                                <a onclick='".$modal_motivo."' >
+                                    <i class='fas fa-window-close fa-2x fa-danger'></i>
+                                </a>";
+                        }else{
+                            $filas .= $item->clave;
+                        }
+                        $filas .= "                        
                         </td>  
                     </tr>
                 ";
             }
         } else $filas = "Dato no encontrado, por favor intente de nuevo.";
+        
         return $filas;        
     } 
 

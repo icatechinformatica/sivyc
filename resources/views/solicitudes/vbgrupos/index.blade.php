@@ -174,7 +174,7 @@
             }
 
             function modal_motivo(curso,id_curso){
-                $('#id_curso').val(id_curso); alert($('#id_curso').val());
+                $('#id_curso').val(id_curso);
                 $('#body_motivo').html(curso);
                 $("#modalMotivo").modal("show");
             }
