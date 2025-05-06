@@ -9,7 +9,7 @@
             <div class="alert alert-danger">
                 <ul>
                     @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                        <li><strong>{!! $error !!}</strong></li>
                     @endforeach
                 </ul>
             </div> <br>
@@ -31,7 +31,7 @@
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
+                                        <strong>{!! $message !!}</strong>
                                     </span>
                                 @enderror
                             </div>
@@ -45,7 +45,7 @@
 
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
+                                        <h2>{!! $message !!}</h2>
                                     </span>
                                 @enderror
                             </div>

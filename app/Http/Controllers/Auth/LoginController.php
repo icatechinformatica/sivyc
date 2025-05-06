@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\HtmlString;
 
 class LoginController extends Controller
 {
@@ -70,7 +71,7 @@ class LoginController extends Controller
             foreach($roles as $rol) {
                 if(in_array($rol->role_id, [11, 44, 5, 55])) {
                     throw ValidationException::withMessages([
-                        'email' => ['SIVyC en Mantenimiento.'],
+                        'email' => [new HtmlString('S I V y C &nbsp;&nbsp;&nbsp;&nbsp; E N &nbsp;&nbsp;&nbsp;&nbsp; M A N T E N I M I E N T O.')],
                     ]);
                 }
             }
