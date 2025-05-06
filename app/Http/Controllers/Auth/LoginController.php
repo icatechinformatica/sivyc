@@ -65,12 +65,14 @@ class LoginController extends Controller
     {
         $user = User::where('email', $request->email)->first();
 
-        $roles = DB::Table('role_user')->Where('user_id', $user->id)->Get();
-        foreach($roles as $rol) {
-            if(in_array($rol->role_id, [11, 44, 5, 55])) {
-                throw ValidationException::withMessages([
-                    'email' => ['SIVyC en Mantenimiento.'],
-                ]);
+        if(isset($user->id)) {
+            $roles = DB::Table('role_user')->Where('user_id', $user->id)->Get();
+            foreach($roles as $rol) {
+                if(in_array($rol->role_id, [11, 44, 5, 55])) {
+                    throw ValidationException::withMessages([
+                        'email' => ['SIVyC en Mantenimiento.'],
+                    ]);
+                }
             }
         }
 
