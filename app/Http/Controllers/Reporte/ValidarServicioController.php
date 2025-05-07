@@ -19,16 +19,19 @@ class ValidarServicioController extends Controller
     public function index()
     {
         //
-        $folio_grupo = '6Y-250020';
-        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino')->where('folio_grupo', $folio_grupo)->first();
+        $folio_grupo = '6Y-250063';
+        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino', 'hini', 'hfin', 'id')->where('folio_grupo', $folio_grupo)->first();
+        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
         $instructores = $this->data_instructores($grupo);
         $servicio = (new ValidacionServicio($instructores));
 
 
         // return response()->json([
-        //     'resp' => $dataCurso
+        //     'resp' => $servicio->InstNoRebase8Horas($inicio, $termino),
         //  ], Response::HTTP_CREATED);
-        dd($servicio);
+        // $servicio->InstNoRebase40HorasSem($grupo->inicio, $grupo->termino, $grupo->hini, $grupo->hfin);
+        // $servicio->InstNoRebase8Horas($grupo->inicio, $grupo->termino, $grupo->hini, $grupo->hfin)
+        dd($servicio->InstNoRebase40HorasSem($agenda));
     }
 
     /**
