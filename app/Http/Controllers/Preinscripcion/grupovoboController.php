@@ -222,7 +222,7 @@ class grupovoboController extends Controller
                 DB::raw('COALESCE(tc.fcgen, null) as fcgen'),
                 DB::raw('COALESCE(tc.tipo, null) as tipo'),
                 DB::raw('COALESCE(tc.vb_dg, null) as vb_dg'),
-
+                DB::raw("COALESCE(tc.turnado, 'VINCULACION') as turnado_vb"),
                 //DEL GRUPO
                 DB::raw('COALESCE(tc.id_cerss, ar.id_cerss) as id_cerss'),
                 DB::raw('COALESCE(tc.inicio, ar.inicio) as inicio'),
@@ -828,7 +828,7 @@ class grupovoboController extends Controller
 
     public function turnar()
     {
-        if ($_SESSION['folio_grupo']) {
+        if ($_SESSION['folio_grupo']){
             if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->where('status','!=','AUTORIZADO')->exists()) {
                 $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                 return redirect()->route('preinscripcion.grupovobo')->with(['message' => $message]);
@@ -858,19 +858,18 @@ class grupovoboController extends Controller
                                     $conteo += 1;
                                 }
                             }
-                            $instructor_valido = $this->valida_instructor($g->id_instructor);
-                            if($instructor_valido['valido']){
-                                if($g->status_curso=="EDICION"){
-                                    if($g->clave !='0') $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','!=','0')->update(['status_curso' => 'AUTORIZADO']);
-                                    else $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','0')->update(['status_curso' => null]);
+                            
+                            if($g->status_curso=="EDICION"){
+                                if($g->clave !='0') $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','!=','0')->update(['status_curso' => 'AUTORIZADO']);
+                                else $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','0')->update(['status_curso' => null]);
 
-                                    if(!$result)return redirect()->route('preinscripcion.grupovobo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
+                                if(!$result)return redirect()->route('preinscripcion.grupovobo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
 
-                                }else{
-                                    $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
-                                    if(!$result) return redirect()->route('preinscripcion.grupovobo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
-                                }
-                            }else return redirect()->route('preinscripcion.grupovobo')->with(['message' => $instructor_valido['message']]);
+                            }else{
+                                $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
+                                if(!$result) return redirect()->route('preinscripcion.grupovobo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
+                            }
+                            
                         } else {
                             $message = "Las horas agendadas no corresponden a la duración del curso..";
                             return redirect()->route('preinscripcion.grupovobo')->with(['message' => $message]);
