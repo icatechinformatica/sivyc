@@ -146,7 +146,7 @@ return [
         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
         Illuminate\Cookie\CookieServiceProvider::class,
         Illuminate\Database\DatabaseServiceProvider::class,
-        Spatie\Permission\PermissionServiceProvider::class,
+        //Spatie\Permission\PermissionServiceProvider::class,
         Illuminate\Encryption\EncryptionServiceProvider::class,
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
@@ -181,8 +181,8 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         App\Providers\ReporteRf001Provider::class,
         App\Providers\DocumentacionPagoInstructorProvider::class,
-        App\Providers\StorageServiceProvider::class,
-        App\Providers\CredencialProvider::class,
+        //App\Providers\StorageServiceProvider::class,
+        App\Providers\CredencialProvider::class,        
     ],
 
     /*
