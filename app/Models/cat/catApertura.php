@@ -103,8 +103,7 @@ trait catApertura
     }
 
     protected function programa(){
-        $programa = DB::table('tbl_cursos')->where('programa','!=','0')->where('programa','!=','N')->where('programa', 'not like', '%21%')
-        ->where('programa','!=','NINGUNA')->distinct()->orderby('programa')->pluck('programa','programa');
+        $programa = DB::table('cat_conceptos')->where('activo',true)->where('tipo','PROGRAMA')->ORDERBY('concepto','ASC')->pluck('concepto','concepto');
         return $programa;
     }
 
