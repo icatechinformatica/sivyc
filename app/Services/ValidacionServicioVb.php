@@ -178,4 +178,22 @@ class ValidacionServicioVb
         }
         return $newArray;
     }
+
+    public function InstAlfaNoBecados($instructores){
+        $instructoresValidos = [];
+        foreach ($instructores as $instructor) {
+            # ciclo para recorrer los registros vamos a descartar a los que no son alfa
+            $alfa = DB::table('instructores')
+            ->where('id', $instructor->id)
+            ->where('instructor_alfa', true)
+            ->whereRaw("datos_alfa->'subproyectos'->>'chiapas puede' = ?", ['voluntario']) // Condición de "voluntario"
+            ->exists();
+
+            if ($alfa) {
+                $instructoresValidos[] = $instructor;
+                break;
+            }
+        }
+        return $instructoresValidos;
+    }
 }
