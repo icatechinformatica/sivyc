@@ -213,13 +213,13 @@
                     </div>
                     <input type="hidden" name="valid_cerss" value="{{$id_cerss}}"> --}}
                 </div>
-                <div class="form-row">
-                    @if($instructor)
-                    <div class="form-group col-md-4">                        
-                        <label>INSTRUCTOR ASIGNADO:</label>                        
-                    </div>
+                
+                    @if($instructor)                    
+                    <div class="form-row bg-light form-inline p-3 mt-2 mb-4">
+                        <label>INSTRUCTOR ASIGNADO:<b>&nbsp;&nbsp; {{ $instructor->instructor }}</b></label>
+                    </div>                    
                     @endif
-                </div>
+                
                 @if($folio_grupo)
                     <div class="form-row">
                         <div class="form-group col-md-2">
