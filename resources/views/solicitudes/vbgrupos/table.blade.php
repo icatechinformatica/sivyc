@@ -33,9 +33,16 @@
                     </td>
                     <td>
                         <a onclick="seleccion_instructor('{{ $item->folio_grupo }}')" title="Seleccionar Instructor"><i class="fa fa-address-book mr-2" aria-hidden="true" style="color:rgb(1, 95, 84);"></i></a>
-                        <a onclick="ver_modal('INSTRUCTOR', '{{ $item->folio_grupo}}')" style="color:rgb(1, 95, 84);">
-                            <b>{{ $item->nombre }}</b>
-                        </a>
+
+                        @if (!empty($item->nombre))
+                            <a onclick="ver_modal('INSTRUCTOR', '{{ $item->folio_grupo}}')" style="color:rgb(1, 95, 84);">
+                                <b>{{ $item->nombre }}</b>
+                            </a>
+                        @else
+                            <b style="color:rgb(237, 22, 22);">SIN INSTRUCTOR</b>
+                        @endif
+
+
                     </td>
                     <td>{{ date('d/m/Y', strtotime($item->inicio)) }}</td>
                     <td>{{ date('d/m/Y', strtotime($item->termino)) }}</td>

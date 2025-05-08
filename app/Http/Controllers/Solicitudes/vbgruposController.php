@@ -131,10 +131,16 @@ class vbgruposController extends Controller
                         <td>
                             <a onclick='".$modal_listinst."' title='Seleccionar Instructor'>
                                 <i class='fa fa-address-book mr-2 $show_btninst' aria-hidden='true' style='color:rgb(1, 95, 84);'></i>
-                            </a>
-                            <a onclick='".$modal_instructor."' style='color:rgb(1, 95, 84);'>
-                                <b>".$item->nombre."</b>
-                            </a>
+                            </a>";
+                            if(!empty($item->nombre)){
+                                $filas.= "
+                                    <a onclick='".$modal_instructor."' style='color:rgb(1, 95, 84);'>
+                                        <b>".$item->nombre."</b>
+                                    </a>";
+                            }else{
+                                $filas .= "<b style='color:rgb(237, 22, 22);'>SIN INSTRUCTOR</b>";
+                            }
+                            $filas .= "
                         </td>
                         <td>".$item->inicio."</td>
                         <td>".$item->termino."</td>
@@ -289,7 +295,7 @@ class vbgruposController extends Controller
     public function modal_instructores(Request $request) {
         $folio_grupo = $request->folio_grupo;
         $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
-        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino', 'folio_grupo')->where('folio_grupo', $folio_grupo)->first();
+        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa')->where('folio_grupo', $folio_grupo)->first();
         list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
 
         return response()->json([
@@ -313,12 +319,9 @@ class vbgruposController extends Controller
             ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
             ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
             ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-            //->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
-            //->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
             ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
-            //->where('especialidad_instructor_curso.activo', true)
             ->WHERE('fecha_validacion','<',$data->inicio)
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
             ->whereNotIn('instructores.id', $internos)
@@ -329,6 +332,14 @@ class vbgruposController extends Controller
 
             #### Validacion de criterios de instructor
             $servicio = (new ValidacionServicioVb());
+
+            //Validar si el curso es ALFA
+            if ($data->programa == 'ALFA') {
+                $instructores = $servicio->InstAlfaNoBecados($instructores);
+                if (count($instructores) == 0) {
+                    return [[], 'No se encontraron Instructores Alfa'];
+                }
+            }
 
             //Primer criterio
             $respuesta8Horas = $servicio->InstNoRebase8Horas($instructores, $agenda);
@@ -391,9 +402,12 @@ class vbgruposController extends Controller
             if ($respuesta) {
                 $message = 'Instructor actualizado => '.$dataInstructor->instructor. ' | Curso => '.$dataCurso->curso;
                 return redirect()->route('solicitudes.vb.grupos')->with('success', $message);
+            }else{
+                $message = 'Error al actualizar los datos del instructor.';
+                return redirect()->route('solicitudes.vb.grupos')->with('success', $message);
             }
         }else{
-            $message = 'Error al actualizar datos del instructor';
+            $message = 'Error al obtener datos del instructor';
             return redirect()->route('solicitudes.vb.grupos')->with('error', $message);
         }
 
@@ -472,7 +486,7 @@ class vbgruposController extends Controller
                 ]);
 
             if (!$result_curso) {
-                throw new \Exception('No se pudo actualizar los datos del instructor.');
+                throw new \Exception('No se pudo actualizar los datos del instructor del curso seleccionado.');
             }
 
             // Guarda el id del instructor en alumnos_registro
@@ -485,7 +499,7 @@ class vbgruposController extends Controller
             );
 
             if (!$result_alumnos) {
-                throw new \Exception('No se pudo actualizar los datos del instructor.');
+                throw new \Exception('No se pudo actualizar los datos del instructor en el grupo de alumnos.');
             }
 
             //Guardar id del instructor en agenda
@@ -498,11 +512,15 @@ class vbgruposController extends Controller
             );
 
             if (!$result_agenda) {
-                throw new \Exception('No se pudo actualizar agenda');
+                throw new \Exception('No se pudo actualizar en datos en agenda');
             }
 
             DB::commit(); // Todo salió bien, confirmar cambios
-            return $result_agenda;
+            if ($result_curso and $result_alumnos and $result_agenda) {
+                return true;
+            }else{
+                return false;
+            }
 
         } catch (\Throwable $th) {
             //throw $th;
