@@ -251,10 +251,10 @@
                                                                 </small>
                                                             </td>
                                                             <td><small>{{$docFirmar->created_at->format('d-m-Y')}}</small></td>
+                                                            <td>
+                                                                <button class="btn btn-outline-danger" type="button" onclick="cancelarDocumento('{{$docFirmar->id}}', '{{$nameArchivo}}', '{{$docFirmar->tipo_archivo}}', '{{$docFirmar->numero_o_clave}}')">Cancelar</button>
+                                                            </td>
                                                             @if(!in_array($rol->role_id, [31, 47]))
-                                                                <td>
-                                                                    <button class="btn btn-outline-danger" type="button" onclick="cancelarDocumento('{{$docFirmar->id}}', '{{$nameArchivo}}', '{{$docFirmar->tipo_archivo}}', '{{$docFirmar->numero_o_clave}}')">Cancelar</button>
-                                                                </td>
                                                                 <td>
                                                                     <button class="btn btn-outline-primary" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal('{{$key}}')">firmar</button>
                                                                 </td>
