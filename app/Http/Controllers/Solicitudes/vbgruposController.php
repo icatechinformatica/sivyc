@@ -99,10 +99,14 @@ class vbgruposController extends Controller
         list($data, $status, $message, $clave) = $this->data($request);
 
         if($data){
-            $filas = $checked = $show_btninst = "";
+            $filas = $checked = $show_btninst = $esAlfa = "";
             foreach ($data as $item){
                 if($item->vb_dg == true) {$checked = 'checked'; $show_btninst = 'd-none';}
                 else {$checked = ''; $show_btninst = '';}
+
+                if ($item->programa == 'ALFA') $esAlfa = 'SI';
+                else $esAlfa = 'NO';
+
 
                 if(strlen($item->curso) >= 18) $curso = mb_substr($item->curso, 0, 18, 'UTF-8')."..";
                 else $curso = $item->curso;
@@ -146,6 +150,7 @@ class vbgruposController extends Controller
                         }
                         $filas .= "
                         </td>
+                        <td class='text-center'><strong>".$esAlfa."</strong></td>
                     </tr>
                 ";
             }
