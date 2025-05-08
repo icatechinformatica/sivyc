@@ -165,7 +165,7 @@ class grupovoboController extends Controller
                 DB::raw('COALESCE(tc.fcgen, null) as fcgen'),
                 DB::raw('COALESCE(tc.tipo, null) as tipo'),
                 DB::raw('COALESCE(tc.vb_dg, null) as vb_dg'),
-                DB::raw("COALESCE(tc.turnado, 'VINCULACION') as turnado_vb"),
+                DB::raw("COALESCE(tc.turnado, 'UNIDAD') as turnado_vb"),
                 //DEL GRUPO
                 DB::raw('COALESCE(tc.id_cerss, ar.id_cerss) as id_cerss'),
                 DB::raw('COALESCE(tc.inicio, ar.inicio) as inicio'),
