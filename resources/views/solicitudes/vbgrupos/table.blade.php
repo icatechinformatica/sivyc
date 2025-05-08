@@ -11,6 +11,7 @@
                 <th scope="col" width="90px">TERMINO</th>
                 <th scope="col" width="13%">UNIDAD/AM</th>
                 <th scope="col" width="0%">RECHAZAR</th>
+                <th scope="col" width="0%">ALFA</th>
             </tr>
         </thead>
         <tbody id="result_table">
@@ -48,6 +49,7 @@
                             {{ $item->turnado}}
                         @endif
                     </td>
+                    <td class="text-center"><strong>{{$item->programa == 'ALFA' ? 'SI' : 'NO'}}</strong></td>
                 </tr>
             @endforeach
             <tr>
