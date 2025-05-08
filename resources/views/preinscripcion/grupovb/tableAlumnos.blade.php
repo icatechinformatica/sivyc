@@ -153,11 +153,11 @@
         <button id="btnShowCalendar" type="button" class="btn btn-info mt-3">AGENDAR</button>
     @endif
     <button type="button" class="btn mt-3" id="nuevo" >NUEVO</button>
-    @if($activar AND $folio_grupo and !$vistobueno AND $grupo->turnado_vb =='UNIDAD')
+    @if($activar AND $folio_grupo and !$vistobueno AND $grupo->turnado_vb ?? 0 =='UNIDAD')
         <button type="submit" class="btn mt-3" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;        
     @endif
     @can('enviar.grupo.vobo')
-      @if(!$vistobueno AND $grupo->turnado_vb =='UNIDAD')
+      @if(!$vistobueno AND $grupo->turnado_vb ?? 0 =='UNIDAD')
           <button type="button" class="btn mt-3 btn-outline-danger " id="vobo" >ENVIAR A VOBO >></button>        
       @elseif($activar AND $folio_grupo AND $vistobueno ) 
           <button type="button" class="btn mt-3 bg-danger " id="turnar" >TURNAR A ACADEMICO >></button>
