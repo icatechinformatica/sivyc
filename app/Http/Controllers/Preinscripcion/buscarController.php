@@ -41,7 +41,7 @@ class buscarController extends Controller
         $parameters = $request->all();
         if(!isset($parameters['ejercicio'])) $ejercicio = $parameters['ejercicio'] = date('Y');
         $data = DB::table('alumnos_registro as ar')
-        ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad')
+        ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad','id_instructor')
         ->join('cursos as c', 'ar.id_curso', '=', 'c.id');        
 
         if (preg_match('/^2B-\d{6}$/', $valor_buscar)){
@@ -64,7 +64,7 @@ class buscarController extends Controller
         }
 
         $data = $data->whereNotNull('ar.folio_grupo')
-            ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad')
+            ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad','id_instructor')
             ->orderBy('ar.folio_grupo', 'DESC')
             ->paginate(15);
         return view('preinscripcion.buscar.index',compact('data','activar','anios','parameters'));
@@ -74,6 +74,11 @@ class buscarController extends Controller
     public function show(Request $request){
         $_SESSION['folio_grupo'] = $request->folio_grupo;
         return redirect()->route('preinscripcion.grupo');
+    }
+
+    public function showvb(Request $request){
+        $_SESSION['folio_grupo'] = $request->folio_grupo;
+        return redirect()->route('preinscripcion.grupovobo');
     }
 
 }

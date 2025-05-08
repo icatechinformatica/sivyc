@@ -740,30 +740,38 @@ class grupovoboController extends Controller
         return redirect()->route('preinscripcion.grupovobo');
     }
 
-    private function valida_grupo($folio_grupo=null){        
-        $horas_agenda = DB::table('agenda')
-                            ->select(DB::raw("SUM( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
-                                ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end))-tc.dura) as horas")
-                             )
-                            ->where('agenda.id_curso',$folio_grupo)
-                            ->join('tbl_cursos as tc','tc.folio_grupo','=','agenda.id_curso')
-                            ->value('horas');
-        dd($horas_agenda);
-        
+    private function valida_grupo($folio_grupo=null){  
+        $message = $diferenciaHoras = null;
+        $HorasAgenda  = DB::table('agenda')
+            ->select(DB::raw("SUM( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
+                ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end))) as horas"))
+                 ->where('agenda.id_curso',$folio_grupo)->value('horas')*1;        
+        if($HorasAgenda){  ///VALIDA SI TIENE HORAS AGENDADAS
+            $HorasGrupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->value('dura');
+            $diferenciaHoras = $HorasGrupo - $HorasAgenda;    // VALIDA SI LAS HORAS DEL GRUPO COINCIDEN CON LAS HORAS AGENDADAS          
+            if($diferenciaHoras) $message = "Las horas del curso, no coinciden con las horas agendadas. Favor de verificar.";
+
+        }else $message = "Para turnar, se requiere que se registre la Agenda.";
+
+
+        //dd($message);
+        return $message;
 
     }
 
     public function vobo(Request $request){
-        //$HorasAgenda = $this->valida_grupo($request->folio_grupo);        
-
         $message = 'Operación fallida, vuelva a intentar..';
-         if($_SESSION['folio_grupo'] == $request->folio_grupo){
-             $result = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VoBo",'fecha_turnado' => date('Y-m-d')]);             
-             if($result){
-                 $message = "Grupo turnado para VoBo.";
-                 //unset($_SESSION['folio_grupo']);
-             }
-         }
+        $ValidaHoras = $this->valida_grupo($request->folio_grupo);        
+        if(!$ValidaHoras){        
+            if($_SESSION['folio_grupo'] == $request->folio_grupo){
+                $result = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VoBo",'fecha_turnado' => date('Y-m-d')]);             
+                if($result){
+                    $message = "Grupo turnado para VoBo.";
+                    //unset($_SESSION['folio_grupo']);
+                }
+            }
+         }else $message = $ValidaHoras;
+
          return redirect('preinscripcion/grupovb')->with('message',$message);
     }
 

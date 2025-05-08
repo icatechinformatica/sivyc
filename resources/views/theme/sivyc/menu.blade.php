@@ -45,6 +45,7 @@
                             @endcan
                             @can('preinscripcion.grupo.save')
                                 <a class="dropdown-item" href="{{ route('preinscripcion.grupo.nuevo') }}">Nuevo Grupo</a>
+                                <a class="dropdown-item" href="{{ route('preinscripcion.grupovobo') }}">Nuevo Grupo VoBo</a>
                                 <a class="dropdown-item" href="{{ route('preinscripcion.buscar') }}">Buscar Grupo</a>
                             @endcan
                         </div>

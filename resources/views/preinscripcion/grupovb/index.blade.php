@@ -19,7 +19,8 @@
 @endsection
 @section('content')
     @php
-        $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = $id_gvulnerable= $checked = $vistobueno = null;
+        $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = $id_gvulnerable= $checked = null;
+        $enviar_vobo = $turnar = false; 
         if(isset($grupo)){
             $turnado = $grupo->turnado_grupo;
             $hini = $grupo->hini;
@@ -31,8 +32,8 @@
             $id_gvulnerable = $grupo->id_gvulnerable;            
             if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
             elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
-            if($grupo->vb_dg == true) $vistobueno = true ; 
-            else $vistobueno = false ; 
+            if(!$grupo->vb_dg and $grupo->turnado_vb == "UNIDAD") $enviar_vobo= true ;
+            if($grupo->vb_dg and $grupo->turnado_vb == "UNIDAD") $turnar= true ;
 
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
@@ -396,7 +397,7 @@
                         <div class="row">
                             <div class="col">
                                 @can('agenda.vinculacion')
-                                    @if ($activar AND $folio_grupo)
+                                    @if ($activar AND $folio_grupo AND $enviar_vobo)
                                         <button id="btnAgregar" type="button" class="btn btn-success">Agregar</button>
                                         <button id="btnBorrar" class="btn btn-danger">Borrar</button>
                                     @endif
