@@ -9,6 +9,9 @@
                 <th scope="col">UNIDAD</th>    
                 <th scope="col">TURNADO A</th>
                 <th scope="col" class="text-center">OPCIONES</th>
+                @can('preinscripcion.grupovobo')
+                    <th scope="col" class="text-center">VoBo</th>
+                @endcan
             </tr>
         </thead>
         <tbody>
@@ -19,12 +22,25 @@
                     <td>{{ $item->unidad }}</td>
                     <td>{{ $item->turnado }}</td>
                     <td class="text-center">
-                        @if($item->turnado == 'VINCULACION')                       
-                            <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$item->folio_grupo}}')"></i></a>
-                        @else 
-                            <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-info" title="Ver" onclick="show('{{$item->folio_grupo}}')"></i></a>
+                        @if($item->id_instructor)  
+                            @if($item->turnado == 'VINCULACION')                       
+                                <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$item->folio_grupo}}')"></i></a>
+                            @else 
+                                <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-info" title="Ver" onclick="show('{{$item->folio_grupo}}')"></i></a>
+                            @endif
                         @endif
                     </td>
+                    @can('preinscripcion.grupovobo')
+                        <td class="text-center">
+                            @if(!$item->id_instructor)  
+                                @if($item->turnado == 'VINCULACION')                       
+                                    <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show2('{{$item->folio_grupo}}')"></i></a>
+                                @else 
+                                    <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-info" title="Ver" onclick="show2('{{$item->folio_grupo}}')"></i></a>
+                                @endif
+                            @endif
+                        </td>
+                    @endcan
                 </tr>
             @endforeach
                 <tr>

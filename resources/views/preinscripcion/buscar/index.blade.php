@@ -33,10 +33,15 @@
                 function  show(id){
                     //if(id>0){
                         $('#folio_grupo').val(id);
-                        $('#frm').attr('action', "{{route('preinscripcion.show')}}"); $('#frm').submit(); 
+                        $('#frm').attr('action', "{{route('preinscripcion.show')}}"); $('#frm').submit();                         
                     //}alert(id);
                 }
-                    
+                function  show2(id){
+                    //if(id>0){
+                        $('#folio_grupo').val(id);                        
+                        $('#frm').attr('action', "{{route('preinscripcion.showvb')}}"); $('#frm').submit(); 
+                    //}alert(id);
+                }
         </script>
     @endsection
 @endsection
