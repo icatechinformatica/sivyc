@@ -125,29 +125,80 @@ class ValidacionServicioVb
         return $instructoresValidos;
     }
 
-    public function InstValida150Dias($instructores, $folio_grupo) {
-        ///VALIDACIÓN 150 dias de actividad y 30 días naturales de RECESO
-        $newArray = [];
-        foreach($instructores as $instructor) {
-            $receso =  DB::table('tbl_cursos as tc')->where('id_instructor',$instructor->id)
-            ->where(function($query) use ($folio_grupo){
-                $query->where('tc.status_curso','<>','CANCELADO')->orWherenull('tc.status_curso')->OrWhere('folio_grupo',$folio_grupo);
-            })
-            ->where('tc.inicio','>',DB::raw("
-            COALESCE(
-                (select max(inicio) from tbl_cursos as c where c.id_instructor = $instructor->id
-                    and COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp )
-                    from tbl_cursos as tc where tc.id_instructor = $instructor->id and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)>=30 )
-                    , (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = $instructor->id))
-            "))
-            ->value(DB::raw("DATE_PART('day', max(tc.termino)::timestamp - min(tc.inicio)::timestamp)+1"));
+    // public function InstValida150Dias($instructores, $folio_grupo) {
+    //     ///VALIDACIÓN 150 dias de actividad y 30 días naturales de RECESO
+    //     $newArray = [];
+    //     foreach($instructores as $instructor) {
+    //         $receso =  DB::table('tbl_cursos as tc')->where('id_instructor',$instructor->id)
+    //         ->where(function($query) use ($folio_grupo){
+    //             $query->where('tc.status_curso','<>','CANCELADO')->orWherenull('tc.status_curso')->OrWhere('folio_grupo',$folio_grupo);
+    //         })
+    //         ->where('tc.inicio','>',DB::raw("
+    //         COALESCE(
+    //             (select max(inicio) from tbl_cursos as c where c.id_instructor = $instructor->id
+    //                 and COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp )
+    //                 from tbl_cursos as tc where tc.id_instructor = $instructor->id and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)>=30 )
+    //                 , (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = $instructor->id))
+    //         "))
+    //         ->value(DB::raw("DATE_PART('day', max(tc.termino)::timestamp - min(tc.inicio)::timestamp)+1"));
 
-            if($receso<=150){
-                array_push($newArray,$instructor);
+    //         if($receso<=150){
+    //             array_push($newArray,$instructor);
+    //         }
+    //     }
+    //     return $newArray;
+    // }
+
+
+
+public function InstValida150Dias($instructores, $folio_grupo)
+{
+    $validados = [];
+
+    foreach ($instructores as $instructor) {
+        // Obtener cursos del instructor filtrados
+        $cursos = DB::table('tbl_cursos as tc')
+            ->where('tc.id_instructor', $instructor->id)
+            ->where(function ($query) use ($folio_grupo) {
+                $query->where('tc.status_curso', '<>', 'CANCELADO')
+                      ->orWhereNull('tc.status_curso')
+                      ->orWhere('tc.folio_grupo', $folio_grupo);
+            })
+            ->orderBy('tc.inicio')
+            ->get(['tc.inicio', 'tc.termino']);
+
+        if ($cursos->isEmpty()) continue;
+
+        // Calcular diferencia de fechas y buscar recesos >= 30 días
+        $max_inicio = null;
+        for ($i = 0; $i < count($cursos) - 1; $i++) {
+            $diff = Carbon::parse($cursos[$i+1]->inicio)->diffInDays($cursos[$i]->termino);
+            if ($diff >= 30) {
+                $max_inicio = Carbon::parse($cursos[$i]->inicio);
             }
         }
-        return $newArray;
+
+        // Si no se encontró un receso válido, usar el inicio del primer curso -1 día
+        $inicio_limite = $max_inicio ?? Carbon::parse($cursos->min('inicio'))->subDay();
+
+        // Filtrar cursos después del receso
+        $filtrados = $cursos->filter(function ($curso) use ($inicio_limite) {
+            return Carbon::parse($curso->inicio)->gt($inicio_limite);
+        });
+
+        // Calcular duración total de cursos activos posteriores al receso
+        $dias = $filtrados->reduce(function ($carry, $curso) {
+            return $carry + Carbon::parse($curso->termino)->diffInDays(Carbon::parse($curso->inicio)) + 1;
+        }, 0);
+
+        if ($dias <= 150) {
+            $validados[] = $instructor;
+        }
     }
+
+    return $validados;
+}
+
 
     public function InstNoTraslapeFechaHoraConOtroCurso($instructores, $grupos) {
         //DISPONIBILIDAD FECHA Y HORA
