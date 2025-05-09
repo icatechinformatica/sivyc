@@ -26,12 +26,18 @@
                                     {{$dias_inhabiles[array_search($date, array_column($dias_inhabiles, 'fecha'))]->numero_memorandum}}
                                 @elseif(!$registro->justificante)
                                     @if(!is_null($registro->entrada))
-                                        @if($registro->retardo) <b> R @endif
-                                        {{$registro->entrada}} </b>
+                                        @if($registro->entrada > '08:31:00') {{-- revisa si el checado es despues de l ahora correcta--}}
+                                            <b>INASISTENCIA</b>
+                                        @else
+                                            @if($registro->retardo) <b> R @endif
+                                            {{$registro->entrada}} </b>
+                                        @endif
                                     @else
                                         <b>OMISIÓN DE ENTRADA</b>
                                     @endif
-                                    @if(!is_null($registro->salida)) - {{$registro->salida}} @elseif(!in_array($data[0]->horario_checador, ['4','5'])) - <b>OMISIÓN DE SALIDA</b> @endif
+                                    @if(!is_null($registro->salida))
+                                        @if($registro->salida < '16:00:00' && in_array($data[0]->horario_checador, ['1','3'])) @else - {{$registro->salida}} @endif
+                                    @elseif(!in_array($data[0]->horario_checador, ['4','5'])) - <b>OMISIÓN DE SALIDA</b> @endif
                                 @else
                                     INCAPACIDAD {{$registro->observaciones}}
                                 @endif
