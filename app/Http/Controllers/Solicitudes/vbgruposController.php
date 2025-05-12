@@ -142,8 +142,6 @@ class vbgruposController extends Controller
                             }
                             $filas .= "
                         </td>
-                        <td>".$item->inicio."</td>
-                        <td>".$item->termino."</td>
                         <td>".$item->unidad."</td>
                         <td class='text-center'>";
                         if($item->clave==0){
@@ -183,12 +181,16 @@ class vbgruposController extends Controller
         $head = null;
         $body = "Datos no encontrado.";
         if($folio){
-            $result = DB::table('tbl_cursos')->select('muni', 'hini', 'hfin', 'efisico', 'curso')->where('folio_grupo', $folio)->first();
+            $result = DB::table('tbl_cursos')->select('muni', 'hini', 'hfin', 'efisico', 'curso','inicio','termino')->where('folio_grupo', $folio)->first();
+            $fechaInicio = date('d/m/Y', strtotime($result->inicio));
+            $fechaTermino = date('d/m/Y', strtotime($result->termino));
             if($result){
                 if (strlen($result->curso) > 25) $head =  mb_substr($result->curso, 0, 25, 'UTF-8') . " ...";
                 else $head = $result->curso;
                 $body = "
                     <ul>
+                        <li> <b> Fecha de Inicio: </b>".$fechaInicio."</li>
+                        <li> <b> Fecha de Término: </b>".$fechaTermino."</li>
                         <li> <b> Municipio: </b>".$result->muni."</li>
                         <li> <b> Horario: </b>De ".$result->hini." A ".$result->hfin."</li>
                         <li> <p> <b> Lugar: </b>".$result->efisico."</p></li>
@@ -334,8 +336,8 @@ class vbgruposController extends Controller
             $servicio = (new ValidacionServicioVb());
 
             // //pruebas
-            // $respuesta = $servicio->InstNoTraslapeFechaHoraConOtroCurso($instructores, $agenda);
-            // return [$respuesta, ''];
+            $respuesta = $servicio->InstNoRebase8Horas($instructores, $agenda);
+            return [$respuesta, 'cero'.count($respuesta)];
 
             //Validar si el curso es ALFA
             if ($data->programa == 'ALFA') {
