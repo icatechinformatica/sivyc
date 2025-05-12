@@ -90,24 +90,10 @@ class grupovoboController extends Controller
                     $cursos = $cursos->where('modalidad','like',"%$mod%")
                     ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
                 if($grupo->status_curso =='AUTORIZADO')$cursos->put($grupo->id_curso, $grupo->nombre_curso);                
-                
                 //FIN CATALOGOS
-                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
-                
+                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();                
                 $edicion_exo = DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','EDICION')->exists();
-                /*
-                if($grupo->id_especialidad){
-                    $instructor_mespecialidad = $grupo->instructor_mespecialidad;
-                    $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
-                        ->where('id_instructor', $grupo->id_instructor)
-                        ->whereExists(function ($query) use ($instructor_mespecialidad){
-                            $query->select(\DB::raw("elem->>'arch_val'"))
-                                ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
-                                ->where(\DB::raw("elem->>'memo_val'"), '=', $instructor_mespecialidad);
-                        })
-                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad') as pdfvalida"));
-                }
-                    */
+                
             } else {
                 $message = "No hay registro qwue mostrar para Grupo No." . $folio_grupo;
                 $this->activar = true;
@@ -166,50 +152,7 @@ class grupovoboController extends Controller
             'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo','programas','planteles', 'message'));
     }
 
-
-    private function data_instructores($data){
-        
-        $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
-        ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
-        ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($data->inicio)))
-        ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($data->inicio)))
-        ->havingRaw('count(*) >= 2')
-        ->groupby('i.id');
-        
-        $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-        ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
-        ->rightJoin('instructores','t.id_instructor','=','instructores.id')
-        ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-        ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-        ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-        //->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
-        //->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
-        ->WHERE('estado',true)
-        ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
-        ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)        
-        //->where('especialidad_instructor_curso.activo', true)
-        ->WHERE('fecha_validacion','<',$data->inicio)
-        ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
-        ->whereNotIn('instructores.id', $internos)
-        ->groupBy('t.id_instructor','instructores.id')
-        ->orderBy('instructor')
-        ->get();
-        return $instructores;
-    }
-
-    public function cmbinstructor(Request $request){        
-        if (isset($request->id) and isset($request->inicio) and isset($request->termino)) {
-            $data = $request;
-            $data->id_especialidad = DB::table('cursos')->where('id',$request->id)->value('id_especialidad');            
-            $data->id_curso = $request->id;            
-            //$instructores = $this->data_instructores($data);
-            $instructores = [];
-            $json = json_encode($instructores);
-            return $json;
-        } else $json = json_encode(["No hay registros que mostrar."]);
-    }
-
-
+   
     private function grupo_alumnos($folio_grupo){
         $grupo =  DB::table('alumnos_registro as ar')->where('ar.folio_grupo', $folio_grupo)
             ->select(//DE LA APERTURA
@@ -222,7 +165,7 @@ class grupovoboController extends Controller
                 DB::raw('COALESCE(tc.fcgen, null) as fcgen'),
                 DB::raw('COALESCE(tc.tipo, null) as tipo'),
                 DB::raw('COALESCE(tc.vb_dg, null) as vb_dg'),
-                DB::raw("COALESCE(tc.turnado, 'VINCULACION') as turnado_vb"),
+                DB::raw("COALESCE(tc.turnado, 'UNIDAD') as turnado_vb"),
                 //DEL GRUPO
                 DB::raw('COALESCE(tc.id_cerss, ar.id_cerss) as id_cerss'),
                 DB::raw('COALESCE(tc.inicio, ar.inicio) as inicio'),
@@ -300,8 +243,6 @@ class grupovoboController extends Controller
         if($grupo and $alumnos )  return [$grupo, $alumnos];
         else return $message = "OPERACION NO VALIDA.";
     }
-
-
 
     public function cmbcursos(Request $request)
     {
@@ -384,21 +325,7 @@ class grupovoboController extends Controller
                                 if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
                                     $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                                     return redirect()->route('preinscripcion.grupovobo')->with(['message' => $message]);
-                                }
-                                #Consultar doc url Curp json by Jose Luis Moreno Arcos
-                                // if($curp){
-                                //     try {
-                                //         $resul_alumnos = Alumnopre::where('curp', '=', $curp)->first();
-                                //         if ($resul_alumnos && isset($resul_alumnos->requisitos['documento'])) {
-                                //             $objeto_curp = ['url' => $resul_alumnos->requisitos['documento']];
-                                //         } else {
-                                //             $objeto_curp = ['url' => ''];
-                                //         }
-                                //     } catch (\Throwable $th) {
-                                //         // Manejar la excepción según sea necesario
-                                //     }
-                                // }
-
+                                }                            
                                 if ($a_reg) {
                                     $id_especialidad = $a_reg->id_especialidad;
                                     $id_unidad = $a_reg->id_unidad;
@@ -813,15 +740,38 @@ class grupovoboController extends Controller
         return redirect()->route('preinscripcion.grupovobo');
     }
 
+    private function valida_grupo($folio_grupo=null){  
+        $message = $diferenciaHoras = null;
+        $HorasAgenda  = DB::table('agenda')
+            ->select(DB::raw("SUM( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
+                ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end))) as horas"))
+                 ->where('agenda.id_curso',$folio_grupo)->value('horas')*1;        
+        if($HorasAgenda){  ///VALIDA SI TIENE HORAS AGENDADAS
+            $HorasGrupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->value('dura');
+            $diferenciaHoras = $HorasGrupo - $HorasAgenda;    // VALIDA SI LAS HORAS DEL GRUPO COINCIDEN CON LAS HORAS AGENDADAS          
+            if($diferenciaHoras) $message = "Las horas del curso, no coinciden con las horas agendadas. Favor de verificar.";
+
+        }else $message = "Para turnar, se requiere que se registre la Agenda.";
+
+
+        //dd($message);
+        return $message;
+
+    }
+
     public function vobo(Request $request){
         $message = 'Operación fallida, vuelva a intentar..';
-         if($_SESSION['folio_grupo'] == $request->folio_grupo){
-             $result = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VoBo",'fecha_turnado' => date('Y-m-d')]);             
-             if($result){
-                 $message = "Grupo turnado para VoBo.";
-                 //unset($_SESSION['folio_grupo']);
-             }
-         }
+        $ValidaHoras = $this->valida_grupo($request->folio_grupo);        
+        if(!$ValidaHoras){        
+            if($_SESSION['folio_grupo'] == $request->folio_grupo){
+                $result = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VoBo",'fecha_turnado' => date('Y-m-d')]);             
+                if($result){
+                    $message = "Grupo turnado para VoBo.";
+                    //unset($_SESSION['folio_grupo']);
+                }
+            }
+         }else $message = $ValidaHoras;
+
          return redirect('preinscripcion/grupovb')->with('message',$message);
     }
 
@@ -1502,11 +1452,7 @@ class grupovoboController extends Controller
                 $diferencia = 'web';
             }
         }
-
-        // dd($part_firm_cer1, $part_firm_cer2, $part_firm_user);
-
-        $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3', 'diferencia', 'part_firm_cer1', 'part_firm_cer2', 'part_firm_user', 'allcourses', 'array_folios', 'direccion'));
-        // $pdf->setPaper('A4', 'portrait');
+        $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3', 'diferencia', 'part_firm_cer1', 'part_firm_cer2', 'part_firm_user', 'allcourses', 'array_folios', 'direccion'));        
         return $pdf->stream('Convenio');
     }
 
@@ -1870,58 +1816,4 @@ class grupovoboController extends Controller
         $json_vacios = [$vinculacion, $academico, $administrativa];
         return $json_vacios;
     }
-
-
-    // public function pdf_acta_firm(Request $request) {
-    //     $folio_grupo =  $_SESSION['folio_grupo'];
-    //     $convenio_esp = DB::table('tbl_cursos')->select('cespecifico')->where('folio_grupo','=',"$folio_grupo")->first();
-    //     $cadena_conv = $convenio_esp->cespecifico;
-    //     $cadenaSinGuiones = str_replace("-", "", $cadena_conv);
-    //     $mensaje = '';
-
-    //     if($request->hasFile('archivoPDF')){
-    //         if($request->acciondoc == 'libre'){}
-    //         else if($request->acciondoc == 'reemplazar'){
-    //             $filePath = 'uploadFiles/acuerdoconvenios/'.$cadenaSinGuiones.'/'.$request->nomDoc;
-    //             if (Storage::exists($filePath)) {
-    //                 Storage::delete($filePath);
-    //                 $mensaje = "ingreso a eliminar";
-    //             } else { return response()->json(['status' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
-    //         }
-    //         $doc = $request->file('archivoPDF'); # obtenemos el archivo
-    //         $urldoc = $this->pdf_upload($doc, $cadenaSinGuiones, 'actafirmado'); # invocamos el método
-    //         DB::table('tbl_cursos')->where('folio_grupo', $folio_grupo)->update(['url_pdf_acta' => $urldoc[0]]);
-    //         $mensaje = "ARCHIVO CARGADO CORRECTAMENTE";
-
-
-    //     }else{ $mensaje = "ERROR AL SUBIR EL DOCUMENTO!"; }
-    //     return response()->json(['status' => 200, 'mensaje' => $mensaje]);
-    // }
-
-    // public function pdf_conv_firm(Request $request) {
-    //     $folio_grupo =  $_SESSION['folio_grupo'];
-    //     $convenio_esp = DB::table('tbl_cursos')->select('cespecifico')->where('folio_grupo','=',"$folio_grupo")->first();
-    //     $cadena_conv = $convenio_esp->cespecifico;
-    //     $cadenaSinGuiones = str_replace("-", "", $cadena_conv);
-    //     $mensaje = '';
-
-    //     if($request->hasFile('archivoPDF')){
-    //         if($request->acciondoc == 'libre'){}
-    //         else if($request->acciondoc == 'reemplazar'){
-    //             $filePath = 'uploadFiles/acuerdoconvenios/'.$cadenaSinGuiones.'/'.$request->nomDoc;
-    //             if (Storage::exists($filePath)) {
-    //                 Storage::delete($filePath);
-    //                 $mensaje = "ingreso a eliminar";
-    //             } else { return response()->json(['status' => "¡ERROR!, DOCUMENTO NO ENCONTRADO"]); }
-    //         }
-
-    //         $doc = $request->file('archivoPDF'); # obtenemos el archivo
-    //         $urldoc = $this->pdf_upload($doc, $cadenaSinGuiones, 'conveniofirmado'); # invocamos el método
-    //         DB::table('tbl_cursos')->where('cespecifico', $cadena_conv)->update(['url_pdf_conv' => $urldoc[0]]);
-    //         $mensaje = "Archivo cargado correctamente";
-
-
-    //     }else{ $mensaje = "ERROR AL SUBIR EL DOCUMENTO!"; }
-    //     return response()->json(['status' => 200, 'mensaje' => $mensaje]);
-    // }
 }

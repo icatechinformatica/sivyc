@@ -14,8 +14,10 @@
         #result_body ul li p{ font-size: 11px; margin-bottom:12px; display: block;  }
         #result_body ul li b { font-size: 14px; padding: 3px;}
         .modal-header p {font-size: 10px;}
+        .fas { cursor: pointer; color: red;}
 
-        /* Reescribir algunos estilos del select */
+        /* Made By Jose Luis */
+        /* Reescribir algunos estilos del select2 */
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             top: 15px !important; /* Cambia el valor según lo que necesites */
         }
@@ -25,9 +27,71 @@
         .select2-container--default .select2-selection--single .select2-selection__rendered {
             line-height: normal !important; /* o usa el valor que quieras */
         }
+
+
+        /* Estilo del loader */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+            z-index: 9999; /* Asegura que esté por encima de otros elementos */
+            display: none; /* Ocultar inicialmente */
+        }
+
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {transform: translate(-50%, -50%) rotate(0deg);}
+            100% {transform: translate(-50%, -50%) rotate(360deg);}
+        }
+
+        #loader-text {
+            color: #fff;
+            margin-top: 150px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        /* Texto loader */
+        #loader-text span {
+            opacity: 0; /* Inicia los puntos como invisibles */
+            font-size: 30px;
+            font-weight: bold;
+            animation: fadeIn 1s infinite; /* Aplica la animación de aparecer */
+        }
+
+        @keyframes fadeIn {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        #loader-text span:nth-child(1) {animation-delay: 0.5s; }
+        #loader-text span:nth-child(2) {animation-delay: 1s; }
+        #loader-text span:nth-child(3) {animation-delay: 1.5s;}
+
     </style>
 @endsection
 @section('content')
+    <div id="loader-overlay">
+        <div id="loader"></div>
+        <div id="loader-text">
+            Espere un momento mientras se realiza la consulta .<span> . </span><span> . </span><span> . </span>
+        </div>
+    </div>
     <div class="card-header">
         Solicitudes / V.B. de Grupos de Capacitación
     </div>
@@ -39,14 +103,33 @@
                 </div>
             </div>
         @endif
-        @if ($msg = Session::get('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{-- Made by Jose Luis --}}
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
-                <strong>{{ $msg }}</strong>
+                <strong>{{ session('error') }}</strong>
+
             </div>
         @endif
+
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>{{ session('success') }}</strong>
+            </div>
+        @endif
+        <div id="mensajeInstructor" style="display: none;">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong id="textoMensajeInstructor"></strong>
+            </div>
+        </div>
         <?php
             if(isset($curso)) $clave = $curso->clave;
             else $clave = null;
@@ -89,6 +172,31 @@
             </div>
             {{-- FIN Modal DATOS --}}
 
+            {{-- Modal RECHAZAR --}}
+            <div class="modal fade" id="modalMotivo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-notify modal-danger" id="" role="document">
+                    <div class="modal-content text-center">
+                        <!--Header-->
+                        <div class="modal-header d-flex justify-content-center" style="background-color:rgb(201, 1, 102);" >
+                            <p class="heading font-weight-bold">Curso: <block id="body_motivo"> </block></p>
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true" class="text-light">&times;</span></button>
+                        </div>
+                        <!--Body-->
+                        <div class="modal_body">
+                            <div class="alert alert-dismissible fade show p-2 text-left" role="alert">
+                                {{ Form::hidden('id_curso', '',['id'=>'id_curso']) }}
+                                <h6>MOTIVO:</h6>
+                                {{ Form::textarea('motivo',old('motivo'), ['id'=>'motivo', 'class' => 'form-control mt-2', 'placeholder' => 'Describir el motivo del rechazo.', 'rows' => 3]) }}
+                                <div class="modal-footer flex-center">
+                                    <button class="btn btn-danger" id="rechazar" onclick="rechazar()">RECHAZAR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- FIN Modal RECHAZAR --}}
+
         {!! Form::close() !!}
 
         {{-- Modal elegir instructor --}}
@@ -122,9 +230,8 @@
         </div>
         {{-- FIN Modal DATOS --}}
     </div>
-    @endsection
     @section('script_content_js')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script language="javascript">
             $(function(){
                 $.ajaxSetup({
@@ -169,6 +276,14 @@
                 $('input[name="estatus"]').on('click', function() {
                     actualiza_data();
                 });
+
+                $("#rechazar" ).click(function(){
+                    if(confirm("Esta seguro de GUARDAR?")==true){
+                        $('#frm').attr('target', '_self');
+                        $('#frm').attr('action', "{{route('solicitudes.vb.grupos.rechazar')}}"); $('#frm').submit();
+                    }
+                });
+
             });
 
             function ver_modal(tipo, folio_grupo){
@@ -192,8 +307,15 @@
                 }
             }
 
+            function modal_motivo(curso,id_curso){
+                $('#id_curso').val(id_curso);
+                $('#body_motivo').html(curso);
+                $("#modalMotivo").modal("show");
+            }
 
+            // Made by Jose Luis
             function seleccion_instructor(folio_grupo){
+                loader('show');
                 if (folio_grupo.length >0){
                     $.ajax({
                         url: "vbgrupos/getinstruc",
@@ -202,10 +324,16 @@
                             folio_grupo : folio_grupo
                         },
                         success: function(data) {
-                            // console.log(data);
+                            loader('hide');
+                            if (data.instructores.length === 0) {
+                                $('#textoMensajeInstructor').text(data.mensaje);
+                                $('#mensajeInstructor').show();
+                                return;
+                            }
+                            console.log(data);
                             let options = '<option value="0">Seleccionar Instructor</option>'; // Dejar siempre el primer option
 
-                            data.forEach(function(item) {
+                            data.instructores.forEach(function(item) {
                                 options += `<option value="${item.id}">${item.instructor}</option>`;
                             });
                             $(".sel_instructor").html(options);
@@ -224,6 +352,12 @@
 
                 }
             }
+
+            function loader(make) {
+                if(make == 'hide') make = 'none';
+                if(make == 'show') make = 'block';
+                document.getElementById('loader-overlay').style.display = make;
+            }
         </script>
     @endsection
-
+@endsection
