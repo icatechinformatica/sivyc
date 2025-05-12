@@ -234,6 +234,7 @@ class CursosController extends Controller
                 $cursos->servicio = json_encode($request->servicio);
                 $cursos->motivo = trim($request->motivo);
                 $cursos->iduser_created = Auth::user()->id;
+                $cursos->curso_alfa = $request->curso_alfa;
 
                 $cursos->save();
 
@@ -547,7 +548,8 @@ class CursosController extends Controller
                 'servicio' => json_encode($request->servicio),
                 'motivo' => trim($request->motivo),
                 'updated_at' =>date('Y-m-d h:m:s'),
-                'iduser_updated' => Auth::user()->id
+                'iduser_updated' => Auth::user()->id,
+                'curso_alfa' => $request->curso_alfa
 
             ];
             if($url_solicitud_autorizacion!=NULL) $array += ['documento_solicitud_autorizacion' => $url_solicitud_autorizacion];
