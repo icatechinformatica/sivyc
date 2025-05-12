@@ -333,6 +333,10 @@ class vbgruposController extends Controller
             #### Validacion de criterios de instructor
             $servicio = (new ValidacionServicioVb());
 
+            // //pruebas
+            // $respuesta = $servicio->InstNoTraslapeFechaHoraConOtroCurso($instructores, $agenda);
+            // return [$respuesta, ''];
+
             //Validar si el curso es ALFA
             if ($data->programa == 'ALFA') {
                 $instructores = $servicio->InstAlfaNoBecados($instructores);
