@@ -98,8 +98,8 @@ class grupoController extends Controller
                 //dd($grupo);
                 $clave = DB::table('tbl_municipios')->where('id', $grupo->id_municipio)->value('clave');
                 $localidad = DB::table('tbl_localidades')->where('id_estado', '7')->where('clave_municipio', '=', $clave)->pluck('localidad', 'clave');
-                $cursos = DB::table('cursos')->where('tipo_curso','like',"%$tipo%")
-                    ->Where('curso_alfa',true); //nueva linea para cursos alfa 08052025
+                $cursos = DB::table('cursos')->where('tipo_curso','like',"%$tipo%");
+                    // ->Where('curso_alfa',true); //nueva linea para cursos alfa 08052025
                     if($grupo->status_curso!='AUTORIZADO') $cursos = $cursos->where('cursos.estado', true);
                     $cursos = $cursos->where('modalidad','like',"%$mod%")
                     ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
@@ -203,8 +203,8 @@ class grupoController extends Controller
         ->WHERE('estado',true)
         ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
         ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
-        ->Where('instructor_alfa', true) // nueva linea para instructores alfa 08/05/2025
-        ->WHERE(DB::raw("datos_alfa->'subproyectos'->>'chiapas puede'"), '=', 'no_voluntario') // nueva linea para instructores alfa 08/05/2025
+        // ->Where('instructor_alfa', true) // nueva linea para instructores alfa 08/05/2025
+        // ->WHERE(DB::raw("datos_alfa->'subproyectos'->>'chiapas puede'"), '=', 'no_voluntario') // nueva linea para instructores alfa 08/05/2025
         //->where('especialidad_instructor_curso.activo', true)
         ->WHERE('fecha_validacion','<',$data->inicio)
         ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
@@ -327,7 +327,7 @@ class grupoController extends Controller
                 ->where('tipo_curso','like',"%$request->tipo%")
                 ->where('modalidad','like',"%$request->modalidad%")
                 ->where('cursos.estado', true)
-                ->Where('curso_alfa', true) // linea nueva para solo cursos alfa
+                // ->Where('curso_alfa', true) // linea nueva para solo cursos alfa
                 ->whereJsonContains('unidades_disponible', [$request->unidad])->orderby('cursos.nombre_curso')->get();
             $json = json_encode($cursos);
             //var_dump($json);exit;
@@ -373,15 +373,15 @@ class grupoController extends Controller
                 else $date = $request->inicio;
                 $alumno = DB::table('alumnos_pre')
                     ->select('id as id_pre', 'matricula', DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"),'ultimo_grado_estudios as escolaridad',
-                    'nombre','apellido_paterno','apellido_materno','requisitos','curso_extra','datos_alfa')
+                    'nombre','apellido_paterno','apellido_materno','requisitos','curso_extra')
                     ->where('curp', $curp)->where('activo', true)->first(); //dd($alumno);
                 $valida_alumno = $this->valida_alumno($curp, $request);
                 if ($valida_alumno['valido']) {//Validación del alummnos en multiples criterios.
                 //if ($alumno) {
                     if ($alumno->escolaridad AND ($alumno->escolaridad != ' ')) {
                         if ($alumno->edad >= 15) {
-                            $alumnoAlfa = json_decode($alumno->datos_alfa);
-                            if($alumnoAlfa->switch_alfa) {
+                            // $alumnoAlfa = json_decode($alumno->datos_alfa);
+                            // if($alumnoAlfa->switch_alfa) {
                                 $cursos = DB::table(DB::raw("(select a.id_curso as curso from alumnos_registro as a
                                                                 inner join alumnos_pre as ap on a.id_pre = ap.id
                                                                 where ap.curp = '$curp'
@@ -524,9 +524,9 @@ class grupoController extends Controller
                                 } else {
                                     $message = "El alumno excede con el limte de cursos que puede tomar";
                                 }
-                            }else {
-                                $message = "El alumno no es ALFA.";
-                            }
+                            // }else {
+                            //     $message = "El alumno no es ALFA.";
+                            // }
                         } else {
                             $message = "La edad del alumno no es valida";
                         }
