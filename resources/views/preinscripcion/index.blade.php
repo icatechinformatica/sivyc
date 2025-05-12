@@ -28,10 +28,10 @@
             $termino = $grupo->termino;
             $nombre_curso = $grupo->nombre_curso;
             $organismo = $grupo->depen;
-            $id_gvulnerable = $grupo->id_gvulnerable;            
+            $id_gvulnerable = $grupo->id_gvulnerable;
             if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
             elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
-            
+
 
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
@@ -221,7 +221,7 @@
                         <select name="instructor" id="instructor" class="form-control mr-sm--2">
                             @foreach ($instructores as $item)
                                 <option value="{{$item->id}}" {{ $item->id == $instructor->id ? 'selected' : '' }}> {{$item->instructor}} </option>
-                                @if ($item->id == $instructor->id)                                    
+                                @if ($item->id == $instructor->id)
                                     @php
                                         $encontrado = true
                                     @endphp
