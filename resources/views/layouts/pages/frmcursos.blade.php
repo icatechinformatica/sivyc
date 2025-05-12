@@ -188,7 +188,7 @@
                 @endforeach
             </select>
           </div>
-          <div class="form-group col-md-8">
+          <div class="form-group col-md-5">
             <label for="especialidadCurso" class="control-label">ESPECIALIDAD</label>
             <select class="form-control" id="especialidadCurso" name="especialidadCurso">
                 <option value="">--SELECCIONAR--</option>
@@ -196,6 +196,14 @@
                     <option  value="{{$itemespecialidades->id}}">{{$itemespecialidades->nombre}}</option>
                 @endforeach
             </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="curso_alfa" class="control-label">Curso Alfa</label>
+                <select class="form-control" id="curso_alfa" name="curso_alfa">
+                    <option value="">--SELECCIONAR--</option>
+                    <option value="si">SI</option>
+                    <option value="no">NO</option>
+                </select>
             </div>
         </div>
         <div class="form-row">
