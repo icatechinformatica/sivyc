@@ -336,8 +336,8 @@ class vbgruposController extends Controller
             $servicio = (new ValidacionServicioVb());
 
             // //pruebas
-            $respuesta = $servicio->InstNoRebase8Horas($instructores, $agenda);
-            return [$respuesta, 'cero'.count($respuesta)];
+            // $respuesta = $servicio->InstNoRebase8Horas($instructores, $agenda);
+            // return [$respuesta, 'cero'.count($respuesta)];
 
             //Validar si el curso es ALFA
             if ($data->programa == 'ALFA') {
