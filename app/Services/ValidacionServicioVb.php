@@ -12,114 +12,44 @@ class ValidacionServicioVb
         // $this->instructores = collect($instructores);
     }
 
-    // public function InstNoRebase8Horas($instructores, $agenda) {
-    //     $instructoresValidos = [];
-
-    //     foreach ($instructores as $ins) {
-    //         $excede = false;
-
-    //         foreach ($agenda as $value) {
-    //             $periodo = CarbonPeriod::create($value->start, $value->end);
-    //             $horaInicio = date("H:i", strtotime($value->start));
-    //             $horaTermino = date("H:i", strtotime($value->end));
-    //             $minutos_curso = Carbon::parse($horaTermino)->diffInMinutes($horaInicio);
-
-    //             foreach ($periodo as $fecha) {
-    //                 $fechaStr = $fecha->format('Y-m-d');
-    //                 // Obtener todas las actividades del instructor en esa fecha
-    //                 $actividades = DB::table('agenda')
-    //                     ->join('tbl_cursos', 'agenda.id_curso', '=', 'tbl_cursos.folio_grupo')
-    //                     ->select(
-    //                         DB::raw("CAST(agenda.start AS TIME) as hini"),
-    //                         DB::raw("CAST(agenda.end AS TIME) as hfin")
-    //                     )
-    //                     ->where('tbl_cursos.status', '<>', 'CANCELADO')
-    //                     ->where('agenda.id_instructor', $ins->id)
-    //                     ->whereDate('agenda.start', '<=', $fechaStr)
-    //                     ->whereDate('agenda.end', '>=', $fechaStr)
-    //                     ->get();
-    //                 $minutosTotales = 0;
-
-    //                 foreach ($actividades as $act) {
-    //                     $hiniAct = Carbon::parse($act->hini);
-    //                     $hfinAct = Carbon::parse($act->hfin);
-    //                     $minutosTotales += $hfinAct->diffInMinutes($hiniAct);
-    //                 }
-
-    //                 // Si rebasa las 8 horas con el curso nuevo
-    //                 if (($minutosTotales + $minutos_curso) > 480) {
-    //                     $excede = true;
-    //                     break 2; // Rompe ambos foreach anidados (fecha y agenda)
-    //                 }
-    //             }
-    //         }
-
-    //         if (!$excede) {
-    //             $instructoresValidos[] = $ins;
-    //         }
-    //     }
-    //     return $instructoresValidos;
-    // }
-
-    ##Nuevo codigo optimizado
-    public function InstNoRebase8Horas($instructores, $agenda)
-    {
+    public function InstNoRebase8Horas($instructores, $agenda) {
         $instructoresValidos = [];
 
-        // 1. Extraer fechas únicas del periodo total del nuevo curso
-        $fechasPeriodo = [];
-        foreach ($agenda as $value) {
-            $periodo = CarbonPeriod::create($value->start, $value->end);
-            foreach ($periodo as $fecha) {
-                $fechasPeriodo[$fecha->format('Y-m-d')] = true;
-            }
-        }
-
-        $fechasPeriodo = array_keys($fechasPeriodo);
-
-        // 2. Obtener todas las actividades de todos los instructores en esas fechas
-        $idsInstructores = collect($instructores)->pluck('id');
-        $agendaExistente = DB::table('agenda')
-            ->join('tbl_cursos', 'agenda.id_curso', '=', 'tbl_cursos.folio_grupo')
-            ->select(
-                'agenda.id_instructor',
-                DB::raw("DATE(agenda.start) as fecha"),
-                DB::raw("CAST(agenda.start AS TIME) as hini"),
-                DB::raw("CAST(agenda.end AS TIME) as hfin")
-            )
-            ->where('tbl_cursos.status', '<>', 'CANCELADO')
-            ->whereIn('agenda.id_instructor', $idsInstructores)
-            ->whereIn(DB::raw("DATE(agenda.start)"), $fechasPeriodo)
-            ->get();
-
-        // 3. Agrupar por instructor y fecha para saber cuánto tiempo ya tienen ocupado
-        $minutosOcupados = [];
-        foreach ($agendaExistente as $item) {
-            $hini = Carbon::parse($item->hini);
-            $hfin = Carbon::parse($item->hfin);
-            $minutos = $hfin->diffInMinutes($hini);
-
-            $minutosOcupados[$item->id_instructor][$item->fecha] =
-                ($minutosOcupados[$item->id_instructor][$item->fecha] ?? 0) + $minutos;
-        }
-
-        // 4. Revisar si el nuevo curso rebasa el límite en alguna fecha
         foreach ($instructores as $ins) {
             $excede = false;
 
             foreach ($agenda as $value) {
                 $periodo = CarbonPeriod::create($value->start, $value->end);
-                $horaInicio = Carbon::parse($value->start);
-                $horaTermino = Carbon::parse($value->end);
-                $minutosCurso = $horaTermino->diffInMinutes($horaInicio);
+                $horaInicio = date("H:i", strtotime($value->start));
+                $horaTermino = date("H:i", strtotime($value->end));
+                $minutos_curso = Carbon::parse($horaTermino)->diffInMinutes($horaInicio);
 
                 foreach ($periodo as $fecha) {
                     $fechaStr = $fecha->format('Y-m-d');
-                    $minutosExistentes = $minutosOcupados[$ins->id][$fechaStr] ?? 0;
+                    // Obtener todas las actividades del instructor en esa fecha
+                    $actividades = DB::table('agenda')
+                        ->join('tbl_cursos', 'agenda.id_curso', '=', 'tbl_cursos.folio_grupo')
+                        ->select(
+                            DB::raw("CAST(agenda.start AS TIME) as hini"),
+                            DB::raw("CAST(agenda.end AS TIME) as hfin")
+                        )
+                        ->where('tbl_cursos.status', '<>', 'CANCELADO')
+                        ->where('agenda.id_instructor', $ins->id)
+                        ->whereDate('agenda.start', '<=', $fechaStr)
+                        ->whereDate('agenda.end', '>=', $fechaStr)
+                        ->get();
+                    $minutosTotales = 0;
 
-                    if (($minutosExistentes + $minutosCurso) > 480) {
+                    foreach ($actividades as $act) {
+                        $hiniAct = Carbon::parse($act->hini);
+                        $hfinAct = Carbon::parse($act->hfin);
+                        $minutosTotales += $hfinAct->diffInMinutes($hiniAct);
+                    }
+
+                    // Si rebasa las 8 horas con el curso nuevo
+                    if (($minutosTotales + $minutos_curso) > 480) {
                         $excede = true;
-                        break 2; // Rompe ambos foreach
+                        break 2; // Rompe ambos foreach anidados (fecha y agenda)
                     }
                 }
             }
@@ -130,6 +60,76 @@ class ValidacionServicioVb
         }
         return $instructoresValidos;
     }
+
+    ##Nuevo codigo optimizado
+    // public function InstNoRebase8Horas($instructores, $agenda)
+    // {
+    //     $instructoresValidos = [];
+
+    //     // 1. Extraer fechas únicas del periodo total del nuevo curso
+    //     $fechasPeriodo = [];
+    //     foreach ($agenda as $value) {
+    //         $periodo = CarbonPeriod::create($value->start, $value->end);
+    //         foreach ($periodo as $fecha) {
+    //             $fechasPeriodo[$fecha->format('Y-m-d')] = true;
+    //         }
+    //     }
+
+    //     $fechasPeriodo = array_keys($fechasPeriodo);
+
+    //     // 2. Obtener todas las actividades de todos los instructores en esas fechas
+    //     $idsInstructores = collect($instructores)->pluck('id');
+    //     $agendaExistente = DB::table('agenda')
+    //         ->join('tbl_cursos', 'agenda.id_curso', '=', 'tbl_cursos.folio_grupo')
+    //         ->select(
+    //             'agenda.id_instructor',
+    //             DB::raw("DATE(agenda.start) as fecha"),
+    //             DB::raw("CAST(agenda.start AS TIME) as hini"),
+    //             DB::raw("CAST(agenda.end AS TIME) as hfin")
+    //         )
+    //         ->where('tbl_cursos.status', '<>', 'CANCELADO')
+    //         ->whereIn('agenda.id_instructor', $idsInstructores)
+    //         ->whereIn(DB::raw("DATE(agenda.start)"), $fechasPeriodo)
+    //         ->get();
+
+    //     // 3. Agrupar por instructor y fecha para saber cuánto tiempo ya tienen ocupado
+    //     $minutosOcupados = [];
+    //     foreach ($agendaExistente as $item) {
+    //         $hini = Carbon::parse($item->hini);
+    //         $hfin = Carbon::parse($item->hfin);
+    //         $minutos = $hfin->diffInMinutes($hini);
+
+    //         $minutosOcupados[$item->id_instructor][$item->fecha] =
+    //             ($minutosOcupados[$item->id_instructor][$item->fecha] ?? 0) + $minutos;
+    //     }
+
+    //     // 4. Revisar si el nuevo curso rebasa el límite en alguna fecha
+    //     foreach ($instructores as $ins) {
+    //         $excede = false;
+
+    //         foreach ($agenda as $value) {
+    //             $periodo = CarbonPeriod::create($value->start, $value->end);
+    //             $horaInicio = Carbon::parse($value->start);
+    //             $horaTermino = Carbon::parse($value->end);
+    //             $minutosCurso = $horaTermino->diffInMinutes($horaInicio);
+
+    //             foreach ($periodo as $fecha) {
+    //                 $fechaStr = $fecha->format('Y-m-d');
+    //                 $minutosExistentes = $minutosOcupados[$ins->id][$fechaStr] ?? 0;
+
+    //                 if (($minutosExistentes + $minutosCurso) > 480) {
+    //                     $excede = true;
+    //                     break 2; // Rompe ambos foreach
+    //                 }
+    //             }
+    //         }
+
+    //         if (!$excede) {
+    //             $instructoresValidos[] = $ins;
+    //         }
+    //     }
+    //     return $instructoresValidos;
+    // }
 
 
 
