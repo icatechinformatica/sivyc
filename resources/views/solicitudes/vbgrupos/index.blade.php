@@ -28,6 +28,12 @@
             line-height: normal !important; /* o usa el valor que quieras */
         }
 
+        .btn-outline-success{
+            color: #0f9986 !important;
+            border: 2px solid #0f9986 !important;
+        }
+
+
 
         /* Estilo del loader */
         #loader-overlay {
@@ -95,7 +101,7 @@
     <div class="card-header">
         Solicitudes / V.B. de Grupos de Capacitación
     </div>
-    <div class="card card-body">
+    <div class="card card-body pt-4">
         @if ($message)
             <div class="row ">
                 <div class="col-md-12 alert alert-success">
@@ -134,11 +140,10 @@
             if(isset($curso)) $clave = $curso->clave;
             else $clave = null;
         ?>
-        <div class="d-flex justify-content-end col-12 px-0">
-            <a href="{{ route('consultas.pagos') }}" target="_blank" title="Ver Pagos" class="btn btn-sm btn-outline-primary">VER PAGOS
+        <div class="row d-flex justify-content-end mt-2">
+            <a href="{{ route('consultas.pagos') }}" target="_blank" title="Ver Pagos" class="btn btn-sm btn-outline-success">VER PAGOS
                 <i class="fa fa-credit-card ml-1" aria-hidden="true"></i>
             </a>
-
         </div>
         {{ Form::open(['route' => 'solicitudes.vb.grupos', 'method' => 'post', 'id'=>'frm']) }}
             <div class="row form-inline">
