@@ -22,19 +22,23 @@
 
         {{ Form::open(['method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data','accept-charset'=>'UTF-8']) }}
             @csrf            
-            <div class="row form-inline">                
-                {{ Form::select('ejercicio', $anios, $request->ejercicio??null ,array('id'=>'ejercicio','class' => 'form-control  mr-sm-3')) }}
-                {{ Form::select('unidad', $unidades, $request->unidad??null,array('id'=>'unidad','placeholder' => '- UNIDAD -','class' => 'form-control  mr-sm-3')) }}                
-                {{ Form::text('valor',$request->valor??null, ['id'=>'valor', 'class' => 'form-control mr-sm-3', 'placeholder' => 'INSTRUCTOR', 'title' => 'DATO DE BUSQUEDA','size' => 45]) }}
-                {{ Form::button('BUSCAR', ['id'=>'filtrar','class' => 'btn', 'value'=>'filtrar']) }}
-                @foreach ($estatus as $key => $value)
-                    <div class="form-check d-flex mt-2 mr-4">
-                    <input type="radio" class="form-check-input col-md-6" name="status" value="{{ $key }}" {{ $key == $status ? 'checked' : '' }}>
-                    <label class="form-check-label col-md-6 mt-1" for="estatus{{ $key }}">
-                        {{ $value }}
-                    </label>
-                    </div>
-                @endforeach
+            <div class="row form-inline">  
+                <div class="d-flex flex-lg-row flex-column col-12 col-md-9 col-sm-12 justify-content-left">              
+                    {{ Form::select('ejercicio', $anios, $request->ejercicio??null ,array('id'=>'ejercicio','class' => 'form-control  mr-sm-3')) }}
+                    {{ Form::select('unidad', $unidades, $request->unidad??null,array('id'=>'unidad','placeholder' => '- UNIDAD -','class' => 'form-control  mr-sm-3')) }}                
+                    {{ Form::text('valor',$request->valor??null, ['id'=>'valor', 'class' => 'form-control mr-sm-3', 'placeholder' => 'INSTRUCTOR', 'title' => 'DATO DE BUSQUEDA','size' => 45]) }}
+                    {{ Form::button('BUSCAR', ['id'=>'filtrar','class' => 'btn', 'value'=>'filtrar']) }}
+                </div>
+                <div class="d-flex flex-lg-row flex-column col-12 col-md-3 col-sm-12 justify-content-end">
+                    @foreach ($estatus as $key => $value)
+                        <div class="form-check d-flex mt-2 mr-4">
+                            <input type="radio" class="form-check-input col-md-6" name="status" value="{{ $key }}" {{ $key == $status ? 'checked' : '' }}>
+                            <label class="form-check-label col-md-6 mt-1" for="estatus{{ $key }}">
+                                {{ $value }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
             </div>
 
             <div class="table-responsive p-0 m-0">
