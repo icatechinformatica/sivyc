@@ -118,9 +118,8 @@ class EFirmaService extends DocumentoService
         }
     }
 
-    public function setBody(array $param = [])
+    public function setBody($html)
     {
-        $html = $this->generarDocumento($param);
         $pdf = Pdf::loadHTML($html);
         return $pdf->stream('documento.pdf');
     }
