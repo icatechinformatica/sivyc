@@ -32,6 +32,12 @@
             color: #0f9986 !important;
             border: 2px solid #0f9986 !important;
         }
+        /* #009885 */
+        .btn-outline-success:hover {
+            color: white !important;
+            background-color: #009885 !important;
+            border-color: #009885 !important;
+        }
 
 
 
