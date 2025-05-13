@@ -134,12 +134,18 @@
             if(isset($curso)) $clave = $curso->clave;
             else $clave = null;
         ?>
+        <div class="d-flex justify-content-end col-12 px-0">
+            <a href="{{ route('consultas.pagos') }}" target="_blank" title="Ver Pagos" class="btn btn-sm btn-outline-primary">VER PAGOS
+                <i class="fa fa-credit-card ml-1" aria-hidden="true"></i>
+            </a>
+
+        </div>
         {{ Form::open(['route' => 'solicitudes.vb.grupos', 'method' => 'post', 'id'=>'frm']) }}
             <div class="row form-inline">
                 <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-left">
                     {{ Form::text('clave', $clave ?? '', ['id'=>'clave', 'class' => 'form-control', 'placeholder' => 'CURSO / INSTRUCTOR / UNIDAD', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 60]) }}
                 </div>
-                <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-end">
+                <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-end pr-4">
                     @foreach ($estatus as $key => $value)
                         <div class="form-check d-flex mt-2">
                             <input type="radio" class="form-check-input col-md-6" name="estatus" id="estatus{{ $key }}" value="{{ $key }}" {{ $key == $status ? 'checked' : '' }}>
