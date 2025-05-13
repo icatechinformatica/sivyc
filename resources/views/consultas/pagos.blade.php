@@ -130,13 +130,13 @@
         $(document).ready(function(){          
 
             $("#excel" ).click(function(){
-                 $('#frm').attr('action', "{{route('solicitudes.pagos.excel')}}");
+                 $('#frm').attr('action', "{{route('consultas.pagos.excel')}}");
                  $('#frm').attr('target', '_blank');
                  $('#frm').submit();
             });
 
             $("#filtrar" ).click(function(){
-                 $('#frm').attr('action', "{{route('solicitudes.pagos')}}");
+                 $('#frm').attr('action', "{{route('consultas.pagos')}}");
                  $('#frm').attr('target', '_self');
                  $('#frm').submit();
             });
