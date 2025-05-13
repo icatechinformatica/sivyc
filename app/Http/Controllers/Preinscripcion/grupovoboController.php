@@ -54,15 +54,16 @@ class grupovoboController extends Controller
         });
     }
 
-    public function index(Request $request){ 
+    public function index(Request $request){
         $curso = $cursos = $localidad  = $alumnos = $instructores = $instructor = $recibo =[];
         $message = $comprobante = $folio_pago = $fecha_pago = $grupo = $ValidaInstructorPDF = $folio_grupo = NULL;
         $es_vulnerable = $edicion_exo = false;
+        $msg_rechazo = "";
 
         $unidades = $this->data['unidades'];
         $unidad = $uni = $this->data['unidad'];
         if(!$unidad) $unidad = $uni = $request->unidad;
-        if (isset($_SESSION['folio_grupo'])) {  
+        if (isset($_SESSION['folio_grupo'])) {
             $folio_grupo = $_SESSION['folio_grupo'];
             list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);
             if (count($alumnos) > 0) {
@@ -82,23 +83,32 @@ class grupovoboController extends Controller
                 //CATALOGOS
                 $tipo = $grupo->tcapacitacion;
                 $mod = $grupo->mod;
-                
+
                 $clave = DB::table('tbl_municipios')->where('id', $grupo->id_municipio)->value('clave');
                 $localidad = DB::table('tbl_localidades')->where('id_estado', '7')->where('clave_municipio', '=', $clave)->pluck('localidad', 'clave');
                 $cursos = DB::table('cursos')->where('tipo_curso','like',"%$tipo%");
                     if($grupo->status_curso!='AUTORIZADO') $cursos = $cursos->where('cursos.estado', true);
                     $cursos = $cursos->where('modalidad','like',"%$mod%")
                     ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
-                if($grupo->status_curso =='AUTORIZADO')$cursos->put($grupo->id_curso, $grupo->nombre_curso);                
+                if($grupo->status_curso =='AUTORIZADO')$cursos->put($grupo->id_curso, $grupo->nombre_curso);
                 //FIN CATALOGOS
-                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();                
+                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
                 $edicion_exo = DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','EDICION')->exists();
-                
+
             } else {
-                $message = "No hay registro qwue mostrar para Grupo No." . $folio_grupo;
+                $message = "No hay registro que mostrar para Grupo No." . $folio_grupo;
                 $this->activar = true;
                 $_SESSION['folio_grupo'] = NULL;
             }
+
+            ##Mostrar mensaje de rechazo del modulo visto bueno
+            $movimiento_bv = DB::table('tbl_cursos')->where('folio_grupo', $folio_grupo)->where('vb_dg', false)->where('turnado','UNIDAD')->value('movimientos');
+            if ($movimiento_bv) {
+                $movimientoArray = json_decode($movimiento_bv, true);
+                $ultimoElem = end($movimientoArray);
+                $msg_rechazo = 'EL ENVÍO A VoBo FUÉ RECHAZADO, Mensaje => '.$ultimoElem['motivo']. ' | Fecha de rechazo => '.Carbon::parse($ultimoElem['fecha'])->format('d/m/Y H:i').' ';
+            }
+
         } else {
             $this->activar = true;
             $_SESSION['folio_grupo'] = NULL;
@@ -149,10 +159,10 @@ class grupovoboController extends Controller
         $planteles = $this->plantel();
         return view('preinscripcion.grupovb.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar',
             'es_vulnerable', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','edicion_exo','instructor',
-            'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo','programas','planteles', 'message'));
+            'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo','programas','planteles', 'message', 'msg_rechazo'));
     }
 
-   
+
     private function grupo_alumnos($folio_grupo){
         $grupo =  DB::table('alumnos_registro as ar')->where('ar.folio_grupo', $folio_grupo)
             ->select(//DE LA APERTURA
@@ -325,7 +335,7 @@ class grupovoboController extends Controller
                                 if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
                                     $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                                     return redirect()->route('preinscripcion.grupovobo')->with(['message' => $message]);
-                                }                            
+                                }
                                 if ($a_reg) {
                                     $id_especialidad = $a_reg->id_especialidad;
                                     $id_unidad = $a_reg->id_unidad;
@@ -345,7 +355,7 @@ class grupovoboController extends Controller
                                     $comprobante_pago = $a_reg->comprobante_pago;
                                     $modalidad = $a_reg->mod;
                                     $folio_pago = $a_reg->folio_pago;
-                                    $fecha_pago =  $a_reg->fecha_pago;                                    
+                                    $fecha_pago =  $a_reg->fecha_pago;
                                     $efisico = $a_reg->efisico;
                                     $medio_virtual = $a_reg->medio_virtual;
                                     $link_virtual = $a_reg->link_virtual;
@@ -356,7 +366,7 @@ class grupovoboController extends Controller
                                     $depen_repre = $a_reg->depen_repre;
                                     $depen_telrepre = $a_reg->depen_telrepre;
                                     $realizo = $a_reg->realizo;
-                                    $iduser_created = $a_reg->iduser_created;                                    
+                                    $iduser_created = $a_reg->iduser_created;
                                 } else {
                                     $id_especialidad = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
                                     $id_unidad = DB::table('tbl_unidades')->select('id', 'plantel')->where('unidad', $request->unidad)->value('id');
@@ -376,7 +386,7 @@ class grupovoboController extends Controller
                                     $comprobante_pago = null;
                                     $modalidad = $request->modalidad;
                                     $folio_pago = $request->folio_pago;
-                                    $fecha_pago =  $request->fecha_pago;                                    
+                                    $fecha_pago =  $request->fecha_pago;
                                     $efisico = str_replace('ñ','Ñ',strtoupper($request->efisico));
                                     $medio_virtual = $request->medio_virtual;
                                     $link_virtual = $request->link_virtual;
@@ -393,7 +403,7 @@ class grupovoboController extends Controller
                                     }
                                     $realizo = $this->realizo;
                                     $iduser_created =  $this->id_user;
-                                    
+
                                 }
                                 if ($id_cerss) $cerrs = true;
                                 else $cerrs = NULL;
@@ -410,7 +420,7 @@ class grupovoboController extends Controller
                                                         'created_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs, 'mod' => $modalidad,
                                                         'grupo' => $_SESSION['folio_grupo'], 'eliminado' => false, 'grupo_vulnerable' => $grupo_vulnerable, 'id_vulnerable' => $id_vulnerable,
                                                         'folio_pago'=>$folio_pago, 'fecha_pago'=>$fecha_pago, 'nombre'=>$alumno->nombre, 'apellido_paterno'=>$alumno->apellido_paterno,
-                                                        'apellido_materno'=>$alumno->apellido_materno,'curp'=>$curp,'escolaridad'=>$alumno->escolaridad,                                                        
+                                                        'apellido_materno'=>$alumno->apellido_materno,'curp'=>$curp,'escolaridad'=>$alumno->escolaridad,
                                                         'efisico'=>$efisico,'medio_virtual'=>$medio_virtual,'link_virtual'=>$link_virtual,'servicio'=>$servicio,'cespecifico'=>$cespecifico,
                                                         'fcespe'=>$fcespe, 'observaciones'=>$observaciones, 'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre, 'requisitos'=> $alumno->requisitos
                                                     ]
@@ -534,7 +544,7 @@ class grupovoboController extends Controller
                             $hini = date("h:i a", strtotime($request->hini));
                             $hfin = date("h:i a", strtotime($request->hfin));
                             $hini = str_replace(['am', 'pm'], ['a.m.', 'p.m.'], $hini);
-                            $hfin = str_replace(['am', 'pm'], ['a.m.', 'p.m.'], $hfin);                           
+                            $hfin = str_replace(['am', 'pm'], ['a.m.', 'p.m.'], $hfin);
                                 /*CALCULANDO CICLO*/
                                 $mes_dia1 = date("m-d", strtotime(date("Y-m-d")));
                                 $mes_dia2 = date("m-d", strtotime(date("Y") . "-07-01"));
@@ -612,7 +622,7 @@ class grupovoboController extends Controller
                                     $created_at = date('Y-m-d H:i:s');
                                     $updated_at = date('Y-m-d H:i:s');
                                 }
-                               
+
                                 $alus = DB::table('alumnos_registro')->where('folio_grupo',$folio)->first();
 
                                 $result_curso = $result_alumnos = null;
@@ -631,8 +641,8 @@ class grupovoboController extends Controller
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,
                                             'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel,
                                             'programa'=>$request->programa, 'plantel'=>$request->plantel
-                                            
-                                            ]);                                       
+
+                                            ]);
                                         if($result_curso){
                                             $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
                                                 [
@@ -642,7 +652,7 @@ class grupovoboController extends Controller
                                                     'id_organismo' => $id_organismo, 'id_vulnerable' => $request->grupo_vulnerable,
                                                     'id_cerss' => $request->cerss, 'cerrs' => $cerrs, 'id_muni' => $municipio->id, 'grupo_vulnerable' => $grupo_vulnerable,
                                                     'comprobante_pago' => $url_comprobante,'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago,
-                                                    'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual, 'efisico'=>str_replace('ñ','Ñ',strtoupper($request->efisico)),                                                    
+                                                    'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual, 'efisico'=>str_replace('ñ','Ñ',strtoupper($request->efisico)),
                                                     'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,
                                                     'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre
                                                 ]
@@ -663,7 +673,7 @@ class grupovoboController extends Controller
                                             'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'cespecifico' => $request->cespecifico,'fcespe' => $request->fcespe,
                                             'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,
                                             'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago
-                                        ]);                                      
+                                        ]);
                                         if ($result_curso) $message = "Operación Exitosa!!";
                                     }
 
@@ -696,7 +706,7 @@ class grupovoboController extends Controller
                                             'fecha_turnado' => null,'tipo_curso' => $request->tcurso,'clave_especialidad' => $curso->clave_especialidad,'id_especialidad' => $id_especialidad,
                                             'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,
                                             'id_municipio' => $municipio->id,'clave_localidad' => $request->localidad,'id_gvulnerable' => $request->grupo_vulnerable,
-                                            'id_cerss' => $request->cerss,'created_at' => $created_at,'updated_at' => $updated_at,                                            
+                                            'id_cerss' => $request->cerss,'created_at' => $created_at,'updated_at' => $updated_at,
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
                                             'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel,
                                             'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null,
@@ -718,7 +728,7 @@ class grupovoboController extends Controller
                     } else {
                         $message = 'La fecha de termino no puede ser menor a la de inicio';
                     }
-                
+
             } else {
                 $message  = "Si es una CERTIFICACIÓN, corrobore que cubra 10 horas.";
             }
@@ -740,15 +750,15 @@ class grupovoboController extends Controller
         return redirect()->route('preinscripcion.grupovobo');
     }
 
-    private function valida_grupo($folio_grupo=null){  
+    private function valida_grupo($folio_grupo=null){
         $message = $diferenciaHoras = null;
         $HorasAgenda  = DB::table('agenda')
             ->select(DB::raw("SUM( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
                 ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end))) as horas"))
-                 ->where('agenda.id_curso',$folio_grupo)->value('horas')*1;        
+                 ->where('agenda.id_curso',$folio_grupo)->value('horas')*1;
         if($HorasAgenda){  ///VALIDA SI TIENE HORAS AGENDADAS
             $HorasGrupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->value('dura');
-            $diferenciaHoras = $HorasGrupo - $HorasAgenda;    // VALIDA SI LAS HORAS DEL GRUPO COINCIDEN CON LAS HORAS AGENDADAS          
+            $diferenciaHoras = $HorasGrupo - $HorasAgenda;    // VALIDA SI LAS HORAS DEL GRUPO COINCIDEN CON LAS HORAS AGENDADAS
             if($diferenciaHoras) $message = "Las horas del curso, no coinciden con las horas agendadas. Favor de verificar.";
 
         }else $message = "Para turnar, se requiere que se registre la Agenda.";
@@ -761,10 +771,10 @@ class grupovoboController extends Controller
 
     public function vobo(Request $request){
         $message = 'Operación fallida, vuelva a intentar..';
-        $ValidaHoras = $this->valida_grupo($request->folio_grupo);        
-        if(!$ValidaHoras){        
+        $ValidaHoras = $this->valida_grupo($request->folio_grupo);
+        if(!$ValidaHoras){
             if($_SESSION['folio_grupo'] == $request->folio_grupo){
-                $result = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VoBo",'fecha_turnado' => date('Y-m-d')]);             
+                $result = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VoBo",'fecha_turnado' => date('Y-m-d')]);
                 if($result){
                     $message = "Grupo turnado para VoBo.";
                     //unset($_SESSION['folio_grupo']);
@@ -808,7 +818,7 @@ class grupovoboController extends Controller
                                     $conteo += 1;
                                 }
                             }
-                            
+
                             if($g->status_curso=="EDICION"){
                                 if($g->clave !='0') $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','!=','0')->update(['status_curso' => 'AUTORIZADO']);
                                 else $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','0')->update(['status_curso' => null]);
@@ -819,7 +829,7 @@ class grupovoboController extends Controller
                                 $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
                                 if(!$result) return redirect()->route('preinscripcion.grupovobo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
                             }
-                            
+
                         } else {
                             $message = "Las horas agendadas no corresponden a la duración del curso..";
                             return redirect()->route('preinscripcion.grupovobo')->with(['message' => $message]);
@@ -1049,7 +1059,7 @@ class grupovoboController extends Controller
             return "ACCIÓN INVÁlIDA";exit;
         }
     }
-   
+
 
     public function showCalendar($id){
         $folio = $id;
@@ -1079,7 +1089,7 @@ class grupovoboController extends Controller
         $fechaTermino = date("Y-m-d", strtotime($request->end));
         $horaInicio = date("H:i", strtotime($request->start));
         $horaTermino = date("H:i", strtotime($request->end));
-        
+
         $id_curso = $request->id_curso;
         $grupo = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->first();
         $period = CarbonPeriod::create($fechaInicio,$fechaTermino);
@@ -1121,7 +1131,7 @@ class grupovoboController extends Controller
         if (count($alumnos_ocupados) > 0) {
             return "Alumno(s) no disponible en fecha y hora: ".json_encode($alumnos_ocupados);
         }
-       
+
 
         try {
             $titulo = $request->title;
@@ -1130,7 +1140,7 @@ class grupovoboController extends Controller
             $agenda->start = $request->start;
             $agenda->end = $request->end;
             $agenda->textColor = $request->textColor;
-            $agenda->id_curso = $id_curso;            
+            $agenda->id_curso = $id_curso;
             $agenda->id_unidad = $id_unidad;
             $agenda->id_municipio = $id_municipio;
             $agenda->clave_localidad = $clave_localidad;
@@ -1452,7 +1462,7 @@ class grupovoboController extends Controller
                 $diferencia = 'web';
             }
         }
-        $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3', 'diferencia', 'part_firm_cer1', 'part_firm_cer2', 'part_firm_user', 'allcourses', 'array_folios', 'direccion'));        
+        $pdf = PDF::loadView('reportes.conv_esp_reg_grupo',compact('data1', 'data2', 'data3', 'diferencia', 'part_firm_cer1', 'part_firm_cer2', 'part_firm_user', 'allcourses', 'array_folios', 'direccion'));
         return $pdf->stream('Convenio');
     }
 
