@@ -21,13 +21,20 @@
         @endif
 
         {{ Form::open(['method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data','accept-charset'=>'UTF-8']) }}
-            @csrf
-            <div class="row form-inline pl-4">
+            @csrf            
+            <div class="row form-inline">                
                 {{ Form::select('ejercicio', $anios, $request->ejercicio??null ,array('id'=>'ejercicio','class' => 'form-control  mr-sm-3')) }}
-                {{ Form::select('unidad', $unidades, $request->unidad??null,array('id'=>'unidad','placeholder' => '- UNIDAD -','class' => 'form-control  mr-sm-3')) }}
-                {{ Form::select('status', ['PENDIENTE'=>'PENDIENTES','PAGADO'=>'PAGADOS'], $request->status??null ,['id'=>'status','placeholder' => '- ESTATUS -','class' => 'form-control  mr-sm-3']) }}
+                {{ Form::select('unidad', $unidades, $request->unidad??null,array('id'=>'unidad','placeholder' => '- UNIDAD -','class' => 'form-control  mr-sm-3')) }}                
                 {{ Form::text('valor',$request->valor??null, ['id'=>'valor', 'class' => 'form-control mr-sm-3', 'placeholder' => 'INSTRUCTOR', 'title' => 'DATO DE BUSQUEDA','size' => 45]) }}
-                {{ Form::button('FILTRAR', ['id'=>'filtrar','class' => 'btn', 'value'=>'filtrar']) }}                
+                {{ Form::button('BUSCAR', ['id'=>'filtrar','class' => 'btn', 'value'=>'filtrar']) }}
+                @foreach ($estatus as $key => $value)
+                    <div class="form-check d-flex mt-2 mr-4">
+                    <input type="radio" class="form-check-input col-md-6" name="status" value="{{ $key }}" {{ $key == $status ? 'checked' : '' }}>
+                    <label class="form-check-label col-md-6 mt-1" for="estatus{{ $key }}">
+                        {{ $value }}
+                    </label>
+                    </div>
+                @endforeach
             </div>
 
             <div class="table-responsive p-0 m-0">
@@ -53,10 +60,7 @@
                                     <td class="p-2">{{ $item->instructor }}</td>
                                     <td class="text-center p-2">{{ $item->unidad_capacitacion }}</td>      
                                     <td class=" text-right p-2">{{ number_format($item->importe_neto, 2, '.', ',') }}</td>                              
-                                </tr>
-                                @php
-                                    $total += $item->importe_neto;
-                                @endphp
+                                </tr>                                
                             @endforeach
                         @else
                             <tr>
@@ -125,9 +129,16 @@
             });
         }
 
+        $(document).ready(function(){ 
+            $('input[type=radio][name=status]').on('change', function() {
+                $('#frm').attr('target', '_self').submit();
+            });
 
-
-        $(document).ready(function(){          
+            $('#unidad, #ejercicio, #valor').on('change', function() {
+                if($('input[name="status"]:checked').length > 0){
+                    $('#frm').attr('target', '_self').submit();  
+                }                
+            });            
 
             $("#excel" ).click(function(){
                  $('#frm').attr('action', "{{route('consultas.pagos.excel')}}");
