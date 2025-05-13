@@ -24,27 +24,33 @@ use App\User;
 
 class pagosController extends Controller
 {
-    public function index(Request $request){ //dd($request->status);
+    public function index(Request $request){// dd($request->status);
         $data =  $message = [];
         $subtotal = $total = 0;
+        $status = null;
         $unidades = DB::table('tbl_unidades')->where('cct', 'LIKE', '%07EI%')->orderby('unidad')->pluck('unidad','unidad');
         $anios = MyUtility::ejercicios();
         if(session('ejercicio'))$request->ejercicio = session('ejercicio');
         if(!$request->ejercicio) $request->ejercicio = date('Y');
-
         
-        if(session('unidad'))$request->unidad = session('unidad');
-        if(session('status'))$request->status = session('status');
+        if(session('status'))$status = session('status');
+        elseif($request->status) $status = $request->status;
+        elseif(!$status) $status = null; //"PENDIENTE";
+        
+        if(session('unidad'))$request->unidad = session('unidad');        
         if(session('valor'))$request->valor = session('valor');
         
-        if($request->unidad OR $request->status OR $request->valor){
+        if($request->unidad OR $status OR $request->valor){
+            if(!$status) $status = "PENDIENTE";
+
             $data = $this->data($request);
             $subtotal = $data->sum('importe_neto');
             //$acumulado = $data->take($offset + $perPage)->sum('precio');
         }
-        if(session('message')) $message = session('message');        
+        if(session('message')) $message = session('message');
         
-        return view('consultas.pagos',compact('message','data','unidades', 'request', 'anios','subtotal','total'));
+        $estatus =  ['PENDIENTE'=>'PENDIENTES','PAGADO'=>'PAGADOS'];
+        return view('consultas.pagos',compact('message','data','unidades', 'request', 'anios','subtotal','total', 'estatus','status'));
     }
 
     public function excel(Request $request){ 
@@ -58,6 +64,7 @@ class pagosController extends Controller
 
     private function data(Request $request, $opcional = null){ //dd($request->status);
         $data =  [];
+        if(!$request->status) $request->status = "PENDIENTE";
         if($request->unidad OR $request->status OR $request->valor){
             $data = DB::table('pagos as p')           
             ->join('contratos as c','c.id_contrato','p.id_contrato')
