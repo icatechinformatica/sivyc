@@ -46,7 +46,7 @@
     </style>
 @endsection
 @section('content')
-    <div class="card-header">Consultas / Bolsa de Trabajo</div>        
+    <div class="card-header">Reportes / Incorporación Laboral de Egresados</div>        
     <div id="loader-overlay">
         <div id="loader"></div>
     </div>
