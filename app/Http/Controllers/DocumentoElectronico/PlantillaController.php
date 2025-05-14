@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\DocumentoService;
 use App\Services\EFirmaService;
+use PDF;
 
 class PlantillaController extends Controller
 {
@@ -23,11 +24,12 @@ class PlantillaController extends Controller
      */
     public function index(): JsonResponse
     {
-        //
-        $plantillas = $this->servicioPlantilla->obtenerPlantillas();
+        // TODO: MEJORAR CONSULTA Y AGREGAR A PDF
+        // $plantillas = $this->servicioPlantilla->obtenerPlantillas();
+        $plantillas = $this->servicioPlantilla->getPlantilla(5);
         return response()->json([
             'success' => true,
-            'data' => $allLayouts
+            'data' => $plantillas
         ], 200);
     }
 

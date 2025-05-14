@@ -364,7 +364,7 @@ class DocumentoService
     public function obtenerPlantillas()
     {
         // obtención de las plantillas TODAS
-        return $this->ElectronicDocument->getallData();
+        return $this->ElectronicDocument->obtenerTodosLosDatos();
     }
 
     public function procesarPlantilla($contenido, array $variables)

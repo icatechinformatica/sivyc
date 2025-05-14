@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class Rf001Model extends Model
 {
     //
-    protected $table = 'tbl_rf001';
+    protected $table = 'view_rf';
+
+     public $timestamps = false; // desactiva manejo de created_at y updated_at
 
     protected $fillable = [
         'id',
@@ -30,6 +32,9 @@ class Rf001Model extends Model
         'confirmed',
     ];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    // Opcional: si solo vas a leer datos
+    public $incrementing = false; // evita confusiones si la vista no tiene autoincremento
+
+    protected $primaryKey = 'id'; // asegúrate de que 'id' esté presente y sea único
 
 }

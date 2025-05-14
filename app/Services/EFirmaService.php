@@ -8,6 +8,7 @@ use App\Models\Tokens_icti;
 use Carbon\Carbon;
 use App\Utilities\MyUtility;
 use PDF;
+use Illuminate\Support\Str;
 
 
 class EFirmaService extends DocumentoService
@@ -118,10 +119,293 @@ class EFirmaService extends DocumentoService
         }
     }
 
-    public function setBody($html)
+    public function setBody(array $parameters = [])
     {
-        $pdf = Pdf::loadHTML($html);
-        return $pdf->stream('documento.pdf');
+        // $pdf = Pdf::loadHTML($html);
+        // return $pdf->stream('documento.pdf');
+        switch ($parameters['TYPE']) {
+            case 'RF001':
+                # REPORTE CONCENTRADO INGRESOS PROPIOS
+                # DESTRUCTURAR
+                [
+                    'unidadUbicacion'   => $unidadUbicacion,
+                    'memorandum'        => $memorandum,
+                    'municipio'         => $municipio,
+                    'fechaFormateada'   => $fechaFormateada,
+                    'titulo'            => $titulo,
+                    'nombre'            => $nombre,
+                    'cargo'             => $cargo,
+                    'importeMemo'       => $importeMemo,
+                    'periodo_inicio'    => $periodoInicio,
+                    'periodo_fin'       => $periodoFin,
+                    'id_unidad'         => $idUnidad,
+                    'movimientos'       => $movimientos,
+                    'creado'            => $creado
+                ] = $parameters;
+                # preparar valores con formato
+                $valores = [
+                    'unidad'    => ['value' => $unidadUbicacion, 'upper' => true],
+                    'memo'      => ['value' => $memorandum],
+                    'mun'       => ['value' => $municipio],
+                    'fecha'     => ['value' => $fechaFormateada],
+                    'tit'       => ['value' => $titulo, 'upper' => true],
+                    'nom'       => ['value' => $nombre, 'upper' => true],
+                    'car'       => ['value' => $cargo],
+                    'importeLetra' => ['value' => $this->letras($importeMemo)],
+                    'importe' => ['value' => number_format($importeMemo, 2, '.', ',')],
+                    'intervalo' => ['value' => $this->formatoIntervaloFecha($periodoInicio, $periodoFin)],
+                    'idUnidad' => ['value' => $idUnidad]
+                ];
+
+                $count = 0;
+                $ccpHtml = ''; // Aquí se guarda el contenido generado en el foreach
+                $validadores = ['DIRECTOR', 'DIRECTORA', 'ENCARGADO DE LA UNIDAD', 'ENCARGADA DE LA UNIDAD'];
+                $ccpValidador = '';
+                $bandera = false;
+                $elaboroHtml = '';
+                $instituto = \DB::table('tbl_instituto')->first();
+                // Decodificar el campo cuentas_bancarias
+                $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
+                $cuenta = $cuentas_bancarias[$unidadUbicacion]['BBVA'];
+
+                foreach ($valores as $key => $info) {
+                    $val = $info['value'];
+                    if (!empty($info['upper'])) {
+                        $val = strtoupper($val);
+                    }
+                    $$key = htmlspecialchars($val);
+                }
+
+                $ccp = $this->setCpp($idUnidad);
+
+                foreach ($ccp as $key => $value) {
+                    if ($count === 0) {
+                        $ccpHtml .= htmlspecialchars($value->nombre) . '. ' . htmlspecialchars($value->cargo) . '. Para su conocimiento. <br>';
+                    } elseif (
+                        !str_contains($value->cargo, 'DIRECTOR') &&
+                        !str_contains($value->cargo, 'DIRECTORA') &&
+                        !str_contains($value->cargo, 'ENCARGADO DE LA UNIDAD') &&
+                        !str_contains($value->cargo, 'ENCARGADA DE LA UNIDAD')
+                    ) {
+                        if ($key == 1) {
+                            $ccpHtml .= 'Archivo / Minutario. <br>';
+                        }
+                        $ccpHtml .= htmlspecialchars($value->nombre) . '. ' . htmlspecialchars($value->cargo) . '. Mismo fin. <br>';
+                    }
+                    $count++;
+                }
+
+
+                foreach ($ccp as $v) {
+                    foreach ($validadores as $validador) {
+                        if (str_contains($v->cargo, $validador)) {
+                            $ccpValidador .= 'Validó: ' . htmlspecialchars($v->nombre) . '. ' . htmlspecialchars($v->cargo) . '. <br>';
+                            break;
+                        }
+                    }
+                }
+
+                $ccpDelegado = $this->setFuncionarios($idUnidad);
+
+                foreach ($ccpDelegado as $ke => $val) {
+                    if (!$bandera) {
+                        if (str_contains($val->cargo, 'DELEGADO') || str_contains($val->cargo, 'DELEGADA')) {
+                            $elaboroHtml .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                            $bandera = true;
+                        } elseif (
+                            str_contains($val->cargo, 'DIRECTOR') ||
+                            str_contains($val->cargo, 'DIRECTORA') ||
+                            str_contains($val->cargo, 'ENCARGADO DE LA UNIDAD') ||
+                            str_contains($val->cargo, 'ENCARGADA DE LA UNIDAD')
+                        ) {
+                            $elaboroHtml .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                            $bandera = true;
+                        }
+                    }
+                }
+
+
+                $html = <<<HTML
+                            <div class="contenedor">
+                                <div class="bloque_dos" align="right" style="font-family: Arial, sans-serif; font-size: 14px;">
+                                    <p class="delet_space_p color_text"><b>UNIDAD DE CAPACITACIÓN {$unidad}</b></p>
+                                    <p class="delet_space_p color_text">MEMORÁNDUM No. {$memo}</p>
+                                    <p class="delet_space_p color_text">{$mun}, CHIAPAS; <span class="color_text">{$fecha}</span></p>
+                                </div>
+                                <br>
+                                <div class="bloque_dos" align="left" style="font-family: Arial, sans-serif; font-size: 14px;">
+                                    <p class="delet_space_p color_text"><b>{$tit} {$nom}</b></p>
+                                    <p class="delet_space_p color_text"><b>{$car}</b></p>
+                                    <p class="delet_space_p color_text"><b>PRESENTE.</b></p>
+                                </div>
+                                <div class="contenido" style="font-family: Arial, sans-serif; font-size: 14px; margin-top: 25px" align="justify">
+                                    Por medio del presente, me permito enviar a usted el Concentrado de Ingresos Propios (FORMA RF-001) de la Unidad de Capacitación
+                                    <span class="color_text"> {$unidad}, </span> correspondiente a la semana comprendida {$intervalo}.
+                                    El informe refleja un total de \${$importe} ({$importeLetra}), mismo que se adjunta para su conocimiento y trámite correspondiente.
+                                </div>
+                                <br>
+                                <div class="tabla_alumnos">
+                                    <p style="font-family: Arial, sans-serif; font-size: 14px;">Sin otro particular, aprovecho la ocasión para saludarlo.</p>
+                                </div>
+                                <br><br>
+                                <div class="ccp" style="font-size: 9px;">
+                                    C.c.p <br>
+                                    {$ccpHtml}
+                                    <br>
+                                    {$ccpValidador}
+                                    <br>
+                                    {$elaboroHtml}
+                                </div>
+                            </div>
+                        HTML;
+
+                # GENERAR FORMATO RF001
+
+                $fechaElaboracion = htmlspecialchars(Carbon::parse($creado)->format('d/m/Y'));
+
+                $fechaInicio = new \DateTime($periodoInicio);
+                $fechaFin = new \DateTime($periodoFin);
+                $dateCreacion = \Carbon\Carbon::parse($creado);
+                $dateCreacion->locale('es'); // Configurar el idioma a español
+                $nombreMesCreacion = $dateCreacion->translatedFormat('F');
+
+                $periodoTexto = htmlspecialchars($fechaInicio->format('d/m/Y')) . ' AL ' . htmlspecialchars($fechaFin->format('d/m/Y'));
+                $nombreUnidad = htmlspecialchars(strtoupper($unidadUbicacion));
+                $cuentaTexto = htmlspecialchars($cuenta);
+
+                // Ordenar movimientos por número en el folio
+                usort($movimientos, function ($a, $b) {
+                    preg_match('/\d+/', $a['folio'], $matchA);
+                    preg_match('/\d+/', $b['folio'], $matchB);
+                    return ((int)($matchA[0] ?? 0)) <=> ((int)($matchB[0] ?? 0));
+                });
+
+                $html .= <<<HTML
+                        <div class="contenedor">
+                            <div style="width: 100%; font-family: Arial, sans-serif; font-size: 10px; line-height: 1.2;">
+                                <div style="text-align: center; margin-bottom: 10px;">
+                                    <div style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">FORMA RF-001</div>
+                                    <div style="margin-bottom: 3px;">INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS</div>
+                                    <div style="margin-bottom: 5px;">UNIDAD DE CAPACITACIÓN {$unidad}</div>
+                                    <div style="font-weight: bold;">CONCENTRADO DE INGRESOS PROPIOS</div>
+                                </div>
+                            </div>
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                                <tr>
+                                    <td style="width: 20%; border: 1px solid black; padding: 3px;">FECHA DE ELABORACIÓN</td>
+                                    <td width="750px" colspan="8" style="border-left-style: dotted;"></td>
+                                    <td width="200px" style="text-align:center;">SEMANA</td>
+                                    <td colspan="13" style="border: inset 0pt;"></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;">$fechaElaboracion</td>
+                                    <td colspan="8" style="border-left-style: dotted;"></td>
+                                    <td style="text-align:center;">$periodoTexto</td>
+                                    <td colspan="13" style="border: inset 0pt;"></td>
+                                </tr>
+                            </table>
+                            <div style="border: 1px solid black; padding: 5px; margin-bottom: 10px;">
+                                <div style="text-align: center; font-weight: bold;">DEPÓSITO(S) EFECTUADO(S) A LA CUENTA BANCARIA:</div>
+                                <div style="text-align: center;">NO. CUENTA $cuentaTexto</div>
+                            </div>
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; border: 1px solid black;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20%; border: 1px solid black; padding: 2px; text-align: center; font-weight: bold;">Nº. RECIBO Y/O FACTURA</th>
+                                        <th style="width: 30%; border: 1px solid black; padding: 2px; text-align: center; font-weight: bold;">MOVTO BANCARIO Y/O<br>NÚMERO DE FOLIO</th>
+                                        <th style="width: 35%; border: 1px solid black; padding: 2px; text-align: center; font-weight: bold;">CONCEPTO DE COBRO</th>
+                                        <th style="width: 15%; border: 1px solid black; padding: 2px; text-align: center; font-weight: bold;">IMPORTE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        HTML;
+
+                $importeTotal = 0;
+                $counter = 0;
+
+                foreach ($movimientos as $item) {
+                    $depositos = json_decode($item['depositos'] ?? '[]', true);
+                    $foliosDeposito = [];
+
+                    foreach ($depositos as $k) {
+                        $counter++;
+                        $foliosDeposito[] = $k['folio'];
+                    }
+
+                    // Agrupar por cada 3 con salto de línea
+                    $foliosAgrupados = array_chunk($foliosDeposito, 3);
+                    $foliosHTML = implode('<br>', array_map(fn($chunk) => implode(', ', $chunk), $foliosAgrupados));
+
+                    $conceptoTexto = ($item['concepto'] === 'CURSO DE CAPACITACIÓN O CERTIFICACIÓN')
+                        ? htmlspecialchars($item['curso'])
+                        : htmlspecialchars($item['concepto']);
+
+                    $importeTotal += $item['importe'];
+                    $importeTexto = number_format($item['importe'], 2, '.', ',');
+
+                    $html .= <<<HTML
+                                                    <tr>
+                                                        <td style="border: 1px solid black; padding: 3px; text-align: center;">{$item['folio']}</td>
+                                                        <td style="border: 1px solid black; padding: 3px; text-align: center;">$foliosHTML</td>
+                                                        <td style="border: 1px solid black; padding: 3px; text-align: left;">$conceptoTexto</td>
+                                                        <td style="border: 1px solid black; padding: 3px; text-align: right;">$ $importeTexto</td>
+                                                    </tr>
+                                                HTML;
+                }
+
+                $totalTexto = number_format($importeTotal, 2, '.', ',');
+
+                $html .= <<<HTML
+                                                    <tr>
+                                                        <td style="border: 1px solid black; padding: 3px; font-weight: bold; text-align: right;" colspan="3"><b>TOTAL</b></td>
+                                                        <td style="border: 1px solid black; padding: 3px; text-align: right; font-weight: bold;"><b>$ $totalTexto</b></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <center class="espaciado"></center>
+                                            HTML;
+
+                // Observaciones
+                $recibos = implode(', ', array_map(fn($m) => htmlspecialchars($m['folio']), $movimientos));
+
+                $foliosDepositos = [];
+                foreach ($movimientos as $v) {
+                    $depositos = json_decode($v['depositos'] ?? '[]', true);
+                    foreach ($depositos as $j) {
+                        $foliosDepositos[] = htmlspecialchars($j['folio']);
+                    }
+                }
+                $fichas = implode(', ', $foliosDepositos);
+                $fechaObs = $dateCreacion->day . "/" . Str::upper($nombreMesCreacion) . "/" . $dateCreacion->year;
+
+                $html .= <<<HTML
+                                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; border: 1px solid black;">
+                                                <tr>
+                                                    <td colspan="3" style="border: 1px solid black; padding: 3px; text-align: center;">OBSERVACIONES:</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" style="border: 1px solid black; padding: 3px; vertical-align: top">
+                                                        <b>SE ENVIAN RECIBO OFICIAL:</b> $recibos
+                                                        <p><b>FICHAS DE DEPOSITO:&nbsp;</b>$fichas&nbsp; <b>$fechaObs</b></p>
+                                                    </td>
+                                                </tr>
+                                                <tr><td style="border: 1px solid black; padding: 3px; text-align: center;">&nbsp;</td><td style="border: 1px solid black; padding: 3px; text-align: center;">&nbsp;</td><td>&nbsp;</td></tr>
+                                            </table>
+                                            <div style="font-size: 9px; text-align: justify;">
+                                                DECLARO BAJO PRÓTESTA DE DECIR VERDAD, QUE LOS DATOS CONTENIDOS EN ESTE CONCENTRADO SON VERÍDICOS Y MANIFIESTO TENER CONOCIMIENTO DE LAS SANCIONES QUE SE APLICARÁN EN CASO CONTRAÍDO
+                                            </div>
+                                        </div>
+                                    HTML;
+
+                return $html;
+                break;
+            case 'REPORTE_FOTOGRAFICO':
+                # TODO:
+                break;
+            default:
+                # code...
+                break;
+        }
     }
 
     public static function letras($cantidad, $ver_decimal=true){
