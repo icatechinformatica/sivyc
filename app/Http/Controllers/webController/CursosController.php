@@ -190,6 +190,9 @@ class CursosController extends Controller
                 elseif($request->estado==2) $estado = false;
                 else $estado = null;
 
+                if($request->curso_alfa=='si') $curso_alfa = true;
+                else $curso_alfa = false;
+
                 $cursos = new curso;
                 $cursos->nombre_curso = trim($request->nombrecurso);
                 $cursos->modalidad = trim($request->modalidad);
@@ -234,7 +237,7 @@ class CursosController extends Controller
                 $cursos->servicio = json_encode($request->servicio);
                 $cursos->motivo = trim($request->motivo);
                 $cursos->iduser_created = Auth::user()->id;
-                $cursos->curso_alfa = $request->curso_alfa;
+                $cursos->curso_alfa = $curso_alfa;
 
                 $cursos->save();
 
@@ -516,6 +519,9 @@ class CursosController extends Controller
             elseif($request->estado==2) $estado = false;
             else $estado = null;
 
+            if($request->curso_alfa=='si') $curso_alfa = true;
+            else $curso_alfa = false;
+
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
@@ -549,7 +555,7 @@ class CursosController extends Controller
                 'motivo' => trim($request->motivo),
                 'updated_at' =>date('Y-m-d h:m:s'),
                 'iduser_updated' => Auth::user()->id,
-                'curso_alfa' => $request->curso_alfa
+                'curso_alfa' => $curso_alfa
 
             ];
             if($url_solicitud_autorizacion!=NULL) $array += ['documento_solicitud_autorizacion' => $url_solicitud_autorizacion];
