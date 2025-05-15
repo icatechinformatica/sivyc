@@ -2,7 +2,7 @@
 use Illuminate\Support\Facades\Route;
 Route::middleware(['auth'])->group(function(){
     // Seccion modulo RH
-    Route::get('/recursos-humanos/index', 'reportesController\RHController@index')->name('rh.index');
+    Route::get('/recursos-humanos/index', 'reportesController\RHController@index')->name('rh.index')->middleware('can:RH.tarjetatiempo');;
     Route::get('/recursos-humanos/catalogo/index', 'reportesController\RHController@catalogo_index')->name('rh.catalogo-index');
     Route::get('/recursos-humanos/descarga/nube', 'reportesController\RHController@descarga_nube')->name('rh.descarga.nube');
     Route::get('/recursos-humanos/reporte/quincenal', 'reportesController\RHController@reporte_quincenal')->name('rh.reporte.quincenal')->middleware('can:RH.tarjetatiempo');
