@@ -2,14 +2,14 @@
 namespace App\Services;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-use App\Interfaces\ElectronicDocument\ElectronicDocumentRepositoryInterface;
+use App\Factories\ElectronicDocumentFactory;
 
 class DocumentoService
 {
-    private $ElectronicDocument;
-    public function __construct(ElectronicDocumentRepositoryInterface $ElectronicDocument)
+    private $factory;
+    public function __construct(ElectronicDocumentFactory $factory)
     {
-        $this->ElectronicDocument = $ElectronicDocument;
+        $this->factory = $factory;
     }
 
     public function generarDocumento(array $parameters = [])
@@ -358,10 +358,13 @@ class DocumentoService
 
     public function getPlantilla(int $id)
     {
-        return $this->ElectronicDocument->obtenerPlantilla($id);
+        $modelo = 'Rf001Model';
+        $repositorio = $this->factory->make($modelo);
+        return $repositorio->obtenerPlantilla($id);
+
     }
 
-    public function obtenerPlantillas()
+    public function obtenerPlantillas(string $modelo)
     {
         // obtención de las plantillas TODAS
         return $this->ElectronicDocument->obtenerTodosLosDatos();
@@ -373,5 +376,39 @@ class DocumentoService
             $contenido = str_replace("@$key", $value, $contenido);
         }
         return $contenido;
+    }
+
+    protected function formatoFechaCrearMemo($fecha)
+    {
+        //parsear la fecha utilizando Carbon
+        $parserDate = Carbon::parse($fecha);
+        // configurar al idioma español
+        $parserDate->locale('es');
+
+        $formattedDate = $parserDate->translatedFormat('d'). ' DE '. mb_strtoupper($parserDate->translatedFormat('F'), 'UTF-8'). ' DEL '. $parserDate->translatedFormat('Y');
+        return $formattedDate;
+    }
+
+    protected function formatoIntervaloFecha($fechaIni, $fechaFin)
+    {
+        // Parsear las fechas usando Carbon
+        $dateInit = Carbon::parse($fechaIni);
+        $dateEnd = Carbon::parse($fechaFin);
+
+        // Configurar el idioma a español
+        $dateInit->locale('es');
+        $dateEnd->locale('es');
+
+        // Comparar si los meses de las fechas de inicio y fin son iguales
+        if($dateInit->translatedFormat('F') === $dateEnd->translatedFormat('F')) {
+            // Mismo mes, formato: "del 7 al 11 de octubre del 2024"
+            $formattedDates = 'del ' . $dateInit->translatedFormat('j') . ' al ' . $dateEnd->translatedFormat('j') . ' de ' . $dateEnd->translatedFormat('F') . ' del ' . $dateEnd->translatedFormat('Y');
+        } else {
+            // Meses diferentes, formato: "del 30 de septiembre al 4 de octubre del 2024"
+            $formattedDates = 'del ' . $dateInit->translatedFormat('j') . ' de ' . $dateInit->translatedFormat('F') . ' al ' . $dateEnd->translatedFormat('j') . ' de ' . $dateEnd->translatedFormat('F') . ' del ' . $dateEnd->translatedFormat('Y');
+        }
+
+        // Imprimir el resultado
+        return $formattedDates;
     }
 }

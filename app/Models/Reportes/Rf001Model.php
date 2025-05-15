@@ -12,7 +12,7 @@ class Rf001Model extends Model
     //
     protected $table = 'view_rf';
 
-     public $timestamps = false; // desactiva manejo de created_at y updated_at
+     public $timestamps = true; // desactiva manejo de created_at y updated_at
 
     protected $fillable = [
         'id',

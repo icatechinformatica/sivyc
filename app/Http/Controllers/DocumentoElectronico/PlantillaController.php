@@ -112,6 +112,11 @@ class PlantillaController extends Controller
     public function edit($id)
     {
         //
+        $plantillas = $this->servicioPlantilla->getPlantilla($id);
+        return response()->json([
+            'success' => true,
+            'data' => $plantillas
+        ], 200);
     }
 
     /**
@@ -135,5 +140,46 @@ class PlantillaController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function generarPdf($file)
+    {
+        return PDF::loadHTML($file);
+    }
+
+    public function loadFile($id, array $param = [])
+    {
+        #TODO: preferible pasar el parametro desde el controlador para no procesar en la capa de datos
+        switch ($param['TYPE']) {
+            case 'RF001':
+                #TODO: cada caso servirá para procesar contenido exclusivo del archivo deseado a cargar
+                $rfgetData = $this->servicioPlantilla->getPlantilla($id, 'Rf001Model'); // llamada del servicio con el metodo obtener plantilla parametro con el id y el nombre del modelo
+                $organismo = Auth::user()->id_organismo;
+                $unidad = $rfgetData->unidad;
+                $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
+                $dataunidades = \DB::table('tbl_unidades')->where('unidad', $rfgetData->unidad)->first();
+                $fechaActual = $rfgetData->created_at->format('Y-m-d');
+                $fechaFormateada = $this->servicioPlantilla->formatoFechaCrearMemo($fechaActual);
+                $municipio = mb_strtoupper($dataunidades->municipio, 'UTF-8');
+                $dirigido = \DB::table('tbl_funcionarios')->where('id', 114)->first();
+                $intervalo = $this->servicioPlantilla->formatoIntervaloFecha($rfgetData->periodo_inicio, $rfgetData->periodo_fin);
+                $variableArray = [
+                    'unidad' => strtoupper($dataunidades->ubicacion),
+                    'memo'  => htmlspecialchars($rfgetData->memorandum),
+                    'fecha' => $fechaFormateada,
+                    'mun' => $municipio,
+                    'tit' => htmlspecialchars(strtoupper($dirigido->titulo)),
+                    'nom' => htmlspecialchars(strtoupper($dirigido->nombre)),
+                    'car' => htmlspecialchars($dirigido->cargo),
+                    'intervalo' => $intervalo,
+                    'importe' => '',
+                    'importeLetra' => ''
+                ];
+                break;
+
+            default:
+                # code...
+                break;
+        }
     }
 }

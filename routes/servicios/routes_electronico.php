@@ -3,7 +3,6 @@ use Illuminate\Support\Facades\Route;
 use App\Services\EFirmaService;
 use App\Http\Controllers\DocumentoElectronico\PlantillaController;
 
-
 Route::get('/servicio/archivo/electronico', function () {
 
     $movimiento = json_decode('[
@@ -66,8 +65,11 @@ Route::get('/servicio/archivo/electronico', function () {
         'movimientos'      => $movimiento,
     ];
 
-    return (new EFirmaService())->setBody($param);
+    $documento = (new EFirmaService())->setBody($param);
+    $pdf = app(PlantillaController::class)->generarPdf($documento);
+    return $pdf->stream('documento.pdf');
+
 });
 // return (new EFirmaService())->setBody($param);
-Route::get('/servicio/archivo/electronico/{id}', [PlantillaController::class, 'show'])->name('archivo.electronico.show');
+Route::get('/servicio/archivo/electronico/{id}', [PlantillaController::class, 'edit'])->name('archivo.electronico.show');
 // Route::get('/servicio/archivo/electronico', [PlantillaController::class, 'index'])->name('archivo.electronico.index');
