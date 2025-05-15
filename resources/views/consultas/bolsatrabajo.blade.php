@@ -1,6 +1,6 @@
 <!--Creado por Jose Luis Moreno luisito08672@gmail.com-->
 @extends('theme.sivyc.layout')
-@section('title', 'Bolsa de Trabajo | SIVyC Icatech')
+@section('title', 'Incorporación Laboral | SIVyC Icatech')
 @section("content_script_css")
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
@@ -46,7 +46,7 @@
     </style>
 @endsection
 @section('content')
-    <div class="card-header">Consultas / Bolsa de Trabajo</div>        
+    <div class="card-header">Consultas / Incorporación Laboral de Egresados</div>        
     <div id="loader-overlay">
         <div id="loader"></div>
     </div>
@@ -82,16 +82,16 @@
 
                     <button class="btn btn-info" id="btnLimpiar">LIMPIAR</button>
 
-                    <button class="btn btn-warning text-dark" id="btnReporte"> <i class="far fa-file-excel fa-lg text-dark ml-1"></i> EXPORTAR REGISTROS</button>
+                    <button class="btn btn-warning text-dark" id="btnReporte"> <i class="far fa-file-excel fa-lg text-dark ml-1"></i> EXPORTAR</button>
                 </div>
             </form>
 
             {{-- Tabla --}}
             <div class="mt-5">
                 @if (count($results) > 0)
-                    <h5 class="float-right">Total de registros: <span class="badge badge-dark">{{ $total_reg }}</span></h5>
-                    <table class="table table-responsive table-hover" id='tableperfiles'>
-                        <thead class="thead-dark">
+                    <h5 class="float-right">Total de registros: <span class="badge badge-dark">{{ $total_reg }}</span></h5>                    
+                    <table class="table table-bordered table-striped" id='tableperfiles'>
+                        <thead>
                             <tr>
                                 <th class="text-center" scope="col">No</th>
                                 <th class="text-center" scope="col">NOMBRE</th>
@@ -101,8 +101,8 @@
                                 <th class="text-center" scope="col">SEXO</th>
                                 <th class="text-center" scope="col">CIUDAD</th>
                                 <th class="text-center" scope="col">DOMICILIO</th>
-                                <th class="text-center" scope="col">ESTADO CIVIL</th>
-                                <th class="text-center" scope="col">NIVEL EDUCATIVO</th>
+                                <th class="text-center" scope="col">EDO.CIVIL</th>
+                                <th class="text-center" scope="col">ESCOLARIDAD</th>
                                 <th class="text-center" scope="col">TELEFONO</th>
                                 <th class="text-center" scope="col">CORREO</th>
                             </tr>
