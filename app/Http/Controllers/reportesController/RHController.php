@@ -202,13 +202,17 @@ class RHController extends Controller
         $apiKey = ['oficinas centrales' => 'c4b5f541364d3f196899b116b0bebb2d',
                    'sancris' => 'd5ccfdba72c0f69c969838e83e5ca9bf',
                    'villaflores' => '8f1a94d4f51b3715100e04b832ccd8eb',
+                   'tapachula' => '75fe37dcb06624390152aa92c6ebf6de',
                    'jiquipilas' => '807fadc301799748f30e6d41e0967875',
-                   'yajalon' => '8b7615ce0f0e2417a09fbd5782ef8120'];
+                   'yajalon' => '8b7615ce0f0e2417a09fbd5782ef8120',
+                   'reforma' => 'd79918ba4899a2258daafed113f5e143'];
         $apiSecret = ['oficinas centrales' => 'd7e30cd8e81c98c580c3f5e57c35bd24',
                       'sancris' => '009ea37f8553c1348b51687d2db164df',
                       'villaflores' => '1b68aa6cab9a7fe4c7ed930ec7684a64',
+                      'tapachula' => '6eef6221ba2407db4064ceb70a55d50d',
                       'jiquipilas' => 'e3e23a53816132bbffbcf015caa707c4',
-                      'yajalon' => 'e39065bafa43f4e366189e83c2adb39d'];
+                      'yajalon' => 'e39065bafa43f4e366189e83c2adb39d',
+                      'reforma' => 'bb7c9be393ad891bbfe2175104ec76c5'];
 
         foreach($apiKey as $name => $ak) {
             $url = 'https://api.us.crosschexcloud.com/'; // Reemplaza con la URL correcta
