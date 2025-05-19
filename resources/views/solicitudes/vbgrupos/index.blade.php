@@ -28,6 +28,18 @@
             line-height: normal !important; /* o usa el valor que quieras */
         }
 
+        .btn-outline-success{
+            color: #0f9986 !important;
+            border: 2px solid #0f9986 !important;
+        }
+        /* #009885 */
+        .btn-outline-success:hover {
+            color: white !important;
+            background-color: #009885 !important;
+            border-color: #009885 !important;
+        }
+
+
 
         /* Estilo del loader */
         #loader-overlay {
@@ -95,7 +107,7 @@
     <div class="card-header">
         Solicitudes / V.B. de Grupos de Capacitación
     </div>
-    <div class="card card-body">
+    <div class="card card-body pt-4">
         @if ($message)
             <div class="row ">
                 <div class="col-md-12 alert alert-success">
@@ -134,12 +146,17 @@
             if(isset($curso)) $clave = $curso->clave;
             else $clave = null;
         ?>
+        <div class="row d-flex justify-content-end mt-2">
+            <a href="{{ route('consultas.pagos') }}" target="_blank" title="Ver Pagos" class="btn btn-sm btn-outline-success">VER PAGOS
+                <i class="fa fa-credit-card ml-1" aria-hidden="true"></i>
+            </a>
+        </div>
         {{ Form::open(['route' => 'solicitudes.vb.grupos', 'method' => 'post', 'id'=>'frm']) }}
             <div class="row form-inline">
                 <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-left">
                     {{ Form::text('clave', $clave ?? '', ['id'=>'clave', 'class' => 'form-control', 'placeholder' => 'CURSO / INSTRUCTOR / UNIDAD', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 60]) }}
                 </div>
-                <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-end">
+                <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-end pr-4">
                     @foreach ($estatus as $key => $value)
                         <div class="form-check d-flex mt-2">
                             <input type="radio" class="form-check-input col-md-6" name="estatus" id="estatus{{ $key }}" value="{{ $key }}" {{ $key == $status ? 'checked' : '' }}>

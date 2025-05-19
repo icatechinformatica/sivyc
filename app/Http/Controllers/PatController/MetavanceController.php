@@ -2842,8 +2842,8 @@ class MetavanceController extends Controller
                         $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
                     }
                 }else{
-                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('correo', $emailUser1)->where('activo', 'true')->value('cargo');
-                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('correo', $emailUser2)->where('activo', 'true')->value('cargo');
+                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
+                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
                 }
 
                 if(empty($puesto_firmUno) || empty($puesto_firmDos)){

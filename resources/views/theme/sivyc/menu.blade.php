@@ -355,6 +355,9 @@
                             @can('RH.tarjetatiempo')
                                 <a class="dropdown-item" href="{{ route('rh.reporte.quincenal') }}">RH - Tarjeta de Tiempo</a>
                             @endcan
+                            @can('RH.tarjetatiempo')
+                                <a class="dropdown-item" href="{{ route('rh.index') }}">RH - Registro de Checado</a>
+                            @endcan
                         </div>
                     </li>
                 @endcanany

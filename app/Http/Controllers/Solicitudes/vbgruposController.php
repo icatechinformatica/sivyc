@@ -71,28 +71,40 @@ class vbgruposController extends Controller
         return $msg;
     }
 
-    public function rechazar(Request $request){   // dd($request->motivo);
+    public function rechazar(Request $request){
         $id_curso = $request->id_curso;
         $motivo = $request->motivo;
-        if($id_curso and $motivo){
-            $result = DB::table('tbl_cursos')->where('id',$id_curso)
-                ->update([ 'turnado' => 'UNIDAD',
-                'movimientos' => DB::raw("
-                    COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
-                        jsonb_build_object(
-                            'fecha', '".Carbon::now()->format('Y-m-d H:i:s')."',
-                            'usuario', '".Auth::user()->name."',
-                            'operacion', 'RECHAZO VISTO BUENO',
-                            'motivo', '$motivo',
-                            'vb_dg' => false
+        try {
+            if (!empty($id_curso) && !empty($motivo)) {
+                $result = DB::statement("
+                    UPDATE tbl_cursos
+                    SET
+                        turnado = 'UNIDAD', vb_dg = false,
+                        movimientos = COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                            jsonb_build_object(
+                                'fecha', ?::timestamp,
+                                'usuario', ?::text,
+                                'operacion', 'RECHAZO VISTO BUENO',
+                                'motivo', ?::text,
+                                'vb_dg', false
+                            )
                         )
-                    )
-                ")
-            ]);
-            if($result) $message = "Operación Exitosa!";
-        }
+                    WHERE id = ?
+                ", [
+                    Carbon::now()->format('Y-m-d H:i:s'),
+                    Auth::user()->name,
+                    $motivo,
+                    $id_curso
+                ]);
 
-        return redirect()->route('solicitudes.vb.grupos')->with(['message' => $message]);
+                if ($result) $message = ""; return redirect()->route('solicitudes.vb.grupos')->with(['success' => '¡Operación Exitosa!']);
+            }else{
+                return redirect()->route('solicitudes.vb.grupos')->with(['error' => 'Favor de ingresar el motivo del rechazo.']);
+            }
+
+        } catch (\Throwable $th) {
+            return redirect()->route('solicitudes.vb.grupos')->with(['error' => 'Error: '.$th->getMessage()]);
+        }
     }
 
     public function autodata(Request $request){
@@ -114,7 +126,7 @@ class vbgruposController extends Controller
                 $modal_listinst = 'seleccion_instructor("'.$item->folio_grupo.'" )';
                 $modal_curso = 'ver_modal("CURSO", "'.$item->folio_grupo.'" )';
                 $modal_instructor = 'ver_modal("INSTRUCTOR", "'.$item->folio_grupo.'" )';
-                $modal_motivo =  'modal_motivo("'.$curso.'", "'.$item->id_curso.'" )';
+                $modal_motivo =  'modal_motivo("'.$curso.'", "'.$item->id.'" )';
 
                 $filas .= "
                     <tr>
@@ -142,8 +154,6 @@ class vbgruposController extends Controller
                             }
                             $filas .= "
                         </td>
-                        <td>".$item->inicio."</td>
-                        <td>".$item->termino."</td>
                         <td>".$item->unidad."</td>
                         <td class='text-center'>";
                         if($item->clave==0){
@@ -183,12 +193,16 @@ class vbgruposController extends Controller
         $head = null;
         $body = "Datos no encontrado.";
         if($folio){
-            $result = DB::table('tbl_cursos')->select('muni', 'hini', 'hfin', 'efisico', 'curso')->where('folio_grupo', $folio)->first();
+            $result = DB::table('tbl_cursos')->select('muni', 'hini', 'hfin', 'efisico', 'curso','inicio','termino')->where('folio_grupo', $folio)->first();
+            $fechaInicio = date('d/m/Y', strtotime($result->inicio));
+            $fechaTermino = date('d/m/Y', strtotime($result->termino));
             if($result){
                 if (strlen($result->curso) > 25) $head =  mb_substr($result->curso, 0, 25, 'UTF-8') . " ...";
                 else $head = $result->curso;
                 $body = "
                     <ul>
+                        <li> <b> Fecha de Inicio: </b>".$fechaInicio."</li>
+                        <li> <b> Fecha de Término: </b>".$fechaTermino."</li>
                         <li> <b> Municipio: </b>".$result->muni."</li>
                         <li> <b> Horario: </b>De ".$result->hini." A ".$result->hfin."</li>
                         <li> <p> <b> Lugar: </b>".$result->efisico."</p></li>
@@ -334,8 +348,8 @@ class vbgruposController extends Controller
             $servicio = (new ValidacionServicioVb());
 
             // //pruebas
-            // $respuesta = $servicio->InstNoTraslapeFechaHoraConOtroCurso($instructores, $agenda);
-            // return [$respuesta, ''];
+            // $respuesta = $servicio->InstNoRebase8Horas($instructores, $agenda);
+            // return [$respuesta, 'cero'.count($respuesta)];
 
             //Validar si el curso es ALFA
             if ($data->programa == 'ALFA') {

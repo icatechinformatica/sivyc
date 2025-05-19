@@ -20,7 +20,7 @@
 @section('content')
     @php
         $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = $id_gvulnerable= $checked = null;
-        $enviar_vobo = $turnar = false; 
+        $enviar_vobo = $turnar = false;
         if(isset($grupo)){
             $turnado = $grupo->turnado_grupo;
             $hini = $grupo->hini;
@@ -29,7 +29,7 @@
             $termino = $grupo->termino;
             $nombre_curso = $grupo->nombre_curso;
             $organismo = $grupo->depen;
-            $id_gvulnerable = $grupo->id_gvulnerable;            
+            $id_gvulnerable = $grupo->id_gvulnerable;
             if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
             elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
             if(!$grupo->vb_dg and $grupo->turnado_vb == "UNIDAD") $enviar_vobo= true ;
@@ -47,6 +47,13 @@
             <div class="row ">
                 <div class="col-md-12 alert alert-danger">
                     <p>{{ $message ?? '' }}</p>
+                </div>
+            </div>
+        @endif
+        @if($msg_rechazo ?? '')
+            <div class="row ">
+                <div class="col-md-12 alert alert-danger">
+                    <p>{{ $msg_rechazo ?? '' }}</p>
                 </div>
             </div>
         @endif
@@ -214,13 +221,13 @@
                     </div>
                     <input type="hidden" name="valid_cerss" value="{{$id_cerss}}"> --}}
                 </div>
-                
-                    @if($instructor)                    
+
+                    @if($instructor)
                     <div class="form-row bg-light form-inline p-3 mt-2 mb-4">
                         <label>INSTRUCTOR ASIGNADO:<b>&nbsp;&nbsp; {{ $instructor->instructor }}</b></label>
-                    </div>                    
+                    </div>
                     @endif
-                
+
                 @if($folio_grupo)
                     <div class="form-row">
                         <div class="form-group col-md-2">
@@ -437,7 +444,7 @@
                 $("#agregar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupovobo.save')}}",'target':'_self'}); $('#frm').submit(); });
                 $("#nuevo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupovobo.nuevo')}}",'target':'_self'}); $('#frm').submit(); });
                 $("#update").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupovobo.update')}}",'target':'_self'}); $('#frm').submit(); });
-                
+
                 $("#vobo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupovobo.vobo')}}",'target':'_self'}); $('#frm').submit(); });
 
                 $("#turnar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupovobo.turnar')}}",'target':'_self'}); $('#frm').submit(); });
