@@ -73,7 +73,7 @@ class grupovoboController extends Controller
                 });
 
 
-                if (($grupo->turnado_grupo == 'VINCULACION' or  $grupo->status_curso=='EDICION' )and isset($this->data['cct_unidad'])) $this->activar = true;
+                if (($grupo->turnado_grupo == 'VINCULACION' or  $grupo->status_curso=='EDICION' )and isset($this->data['cct_folio'])) $this->activar = true;
                 else $this->activar = false;
 
                 $curso = DB::table('cursos')->where('id', $grupo->id_curso);
@@ -415,7 +415,7 @@ class grupovoboController extends Controller
                                                     [
                                                         'id_unidad' =>  $id_unidad, 'id_curso' => $id_curso, 'id_especialidad' =>  $id_especialidad, 'organismo_publico' => $organismo, 'id_organismo'=>$id_organismo,
                                                         'horario'=>$horario, 'inicio' => $inicio, 'termino' => $termino, 'unidad' => $unidad, 'tipo_curso' => $tipo, 'clave_localidad' => $clave_localidad,
-                                                        'cct' => $this->data['cct_unidad'], 'realizo' => $realizo, 'no_control' => $matricula, 'ejercicio' => $this->ejercicio, 'id_muni' => $id_muni,
+                                                        'cct' => $this->data['cct_folio'], 'realizo' => $realizo, 'no_control' => $matricula, 'ejercicio' => $this->ejercicio, 'id_muni' => $id_muni,
                                                         'folio_grupo' => $_SESSION['folio_grupo'], 'iduser_created' => $iduser_created, 'comprobante_pago' => $comprobante_pago,
                                                         'created_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs, 'mod' => $modalidad,
                                                         'grupo' => $_SESSION['folio_grupo'], 'eliminado' => false, 'grupo_vulnerable' => $grupo_vulnerable, 'id_vulnerable' => $id_vulnerable,
@@ -738,9 +738,9 @@ class grupovoboController extends Controller
 
     public function genera_folio()
     {
-        $consec = DB::table('alumnos_registro')->where('ejercicio', $this->ejercicio)->where('cct', $this->data['cct_unidad'])->where('eliminado', false)->value(DB::RAW("cast(substring(max(folio_grupo) from '.{4}$') as int)")) + 1;
+        $consec = DB::table('alumnos_registro')->where('ejercicio', $this->ejercicio)->where('cct', $this->data['cct_folio'])->where('eliminado', false)->value(DB::RAW("cast(substring(max(folio_grupo) from '.{4}$') as int)")) + 1;
         $consec = str_pad($consec, 4, "0", STR_PAD_LEFT);
-        $folio = $this->data['cct_unidad'] . "-" . $this->ejercicio . $consec;
+        $folio = $this->data['cct_folio'] . "-" . $this->ejercicio . $consec;
         return $folio;
     }
 
