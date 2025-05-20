@@ -133,7 +133,7 @@ class grupoController extends Controller
 
         $activar = $this->activar;
 
-        if(str_starts_with($this->data['cct'] , '07000')) $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->orderby('muni')->pluck('muni', 'id');
+        if(str_starts_with($this->data['cct'] ?? 0, '07000')) $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->orderby('muni')->pluck('muni', 'id');
         else  $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$uni)->orderby('muni')->pluck('muni', 'id');
         
 
@@ -339,7 +339,7 @@ class grupoController extends Controller
 
     public function cmbmuni(Request $request){
         if (isset($request->uni)) {
-            if(str_starts_with($this->data['cct'] , '07000')) $municipio = DB::table('tbl_municipios')->select('muni','id')->where('id_estado', '7')->orderby('muni')->get();
+            if(str_starts_with($this->data['cct'] ?? 0, '07000')) $municipio = DB::table('tbl_municipios')->select('muni','id')->where('id_estado', '7')->orderby('muni')->get();
             else  $municipio = DB::table('tbl_municipios')->select('muni','id')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$request->uni)->orderby('muni')->get();
             
             $json = json_encode($municipio);
