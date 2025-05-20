@@ -3,6 +3,7 @@ namespace App\Services;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Factories\ElectronicDocumentFactory;
+use PDF;
 
 class DocumentoService
 {
@@ -356,11 +357,10 @@ class DocumentoService
 
     }
 
-    public function getPlantilla(int $id)
+    public function getPlantilla(int $id, string $modelo, array $params, string $directiva)
     {
-        $modelo = 'Rf001Model';
         $repositorio = $this->factory->make($modelo);
-        return $repositorio->obtenerPlantilla($id);
+        return $repositorio->obtenerPlantilla($id, $params, $directiva);
 
     }
 
@@ -378,7 +378,7 @@ class DocumentoService
         return $contenido;
     }
 
-    protected function formatoFechaCrearMemo($fecha)
+    public function formatoFechaCrearMemo($fecha)
     {
         //parsear la fecha utilizando Carbon
         $parserDate = Carbon::parse($fecha);
@@ -389,7 +389,7 @@ class DocumentoService
         return $formattedDate;
     }
 
-    protected function formatoIntervaloFecha($fechaIni, $fechaFin)
+    public function formatoIntervaloFecha($fechaIni, $fechaFin)
     {
         // Parsear las fechas usando Carbon
         $dateInit = Carbon::parse($fechaIni);
@@ -410,5 +410,95 @@ class DocumentoService
 
         // Imprimir el resultado
         return $formattedDates;
+    }
+
+    public function letras($cantidad, $ver_decimal=true){
+        $unidades = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
+        $decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];
+        $centenas = ["cien", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"];
+        $especiales = ["diez", "once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete","dieciocho", "diecinueve"];
+
+        $entero = floor($cantidad);//dd($entero);
+        $decimal = round(($cantidad - $entero) * 100);
+        $pesos = ($entero == 1) ? "peso" : "pesos";
+        $centavos = ($decimal == 1) ? "centavo" : "centavos";
+        $parteEntera = "";
+        $parteDecimal = "";
+
+        if ($entero >= 1 && $entero <= 999999999) {
+            $millones = floor($entero / 1000000);
+            $millar = floor(($entero % 1000000) / 1000); //dd($millar);
+            $centena =  floor(($entero % 1000) / 100); //dd($centena);
+            $decena = floor(($entero % 100) / 10); //dd($decena);
+            $unidad = $entero % 10; //dd($unidad);
+            //dd($millar);
+            if ($millones > 0){
+                $parteEntera .= MyUtility::letras($millones, false);
+                if($millones>1) $parteEntera .= " millones ";
+                else $parteEntera .= " millon ";
+            }
+
+            if ($millar > 0) {
+                if ($millar == 1) $parteEntera .= " un";
+                elseif ($millar >= 2 && $millar <= 9) $parteEntera .= $unidades[$millar];
+                elseif ($millar >= 10 && $millar <= 19) $parteEntera .= $especiales[$millar-10];
+                else $parteEntera .= MyUtility::letras($millar, false);
+
+                $parteEntera .= " mil ";
+            }
+
+            if ($centena > 0){
+                if($centena==1 and $decena==0) $parteEntera .=  $centenas[0] . " ";
+                else $parteEntera .= $centenas[$centena] . " ";
+            }
+            if ($decena > 0){
+                $parteEntera .= $decenas[$decena] . " ";
+            }
+            if ($unidad > 0) {
+                $d = floor($decena / 1);
+                $u = $unidad % 10; //dd($d);
+                if ($unidad == 1){
+                    if($d>0) $parteEntera .= " y un ";
+                    else $parteEntera .= " un ";
+                }
+                if ($unidad >= 2 && $unidad <= 9){
+                    if ($d > 0) $parteEntera .= " y ".$unidades[$u] ;
+                    else $parteEntera .= $unidades[$u];
+                }
+            }
+            $parteEntera .= " ";
+        } else $parteEntera = "No soportado";
+      //  dd($parteEntera);
+        if ($decimal > 0) {
+            if ($decimal >= 10 && $decimal <= 15) {
+                $parteDecimal .= $especiales[$decimal - 10];
+            } else {
+                $d = floor($decimal / 10);
+                $u = $decimal % 10;
+                if ($d > 0) $parteDecimal .= $decenas[$d] . " y ";
+                if ($u > 0) $parteDecimal .= $unidades[$u];
+            }
+            $parteDecimal = " $decimal/100 MN ";
+        }else $parteDecimal = " 00/100 MN ";
+
+        if(!$ver_decimal) $parteDecimal="";
+        else $parteDecimal = " $pesos" . $parteDecimal;
+
+        return strtoupper(trim($parteEntera) . $parteDecimal );
+    }
+
+    public function generarPdfDocument($contenido)
+    {
+        // generar el PDF
+        $pdf = PDF::loadview('formatoPdf.PlantillaRf', $contenido)
+            ->setPaper('a4', 'portrait'); //Configura el tamaño de papel y la orientación
+
+        $dompdf = $pdf->getDomPDF();
+        $options = $dompdf->getOptions();
+        $options->setIsHtml5ParserEnabled(true);  // Habilita el parser HTML5
+        $options->setIsRemoteEnabled(true);       // Permitir imágenes remotas
+        $dompdf->setOptions($options);
+        // reenderizar PDF
+        return $pdf;
     }
 }

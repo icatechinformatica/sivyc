@@ -12,58 +12,50 @@ class ElectronicDocumentRepository implements ElectronicDocumentRepositoryInterf
     {
         // Si recibe un string, construye la clase (resolver namespace si es nombre simple)
         if (is_string($modelo)) {
-            # Si el string no tiene namespace completo, se lo añade automáticamente
+
+            // Si no tiene un namespace completo (ej. "User" o "Reportes\Ejemplo")
             if (!str_contains($modelo, '\\')) {
-                $modelo = "App\\Models\\Reportes\\{$modelo}";
+                // Supone por defecto que está en App\Models
+                $modelo = "App\\Models\\{$modelo}";
+            } elseif (!str_starts_with($modelo, 'App\\')) {
+                // Si tiene subcarpetas pero no el namespace completo
+                $modelo = "App\\Models\\{$modelo}";
             }
 
             if (!class_exists($modelo)) {
-                throw new \Exception("El modelo $modelo no existe.");
+                throw new \Exception("El modelo {$modelo} no existe.");
             }
 
             $modelo = new $modelo();
         }
 
-        // si no recibe algo, usar un modelo por defecto
+        // Si no se proporciona nada, usar modelo por defecto
         if (is_null($modelo)) {
-            $modelo = new Eplantillas();
+            $modelo = new \App\Models\Reportes\Eplantillas(); // o el modelo que desees como fallback
         }
 
         $this->modelo = $modelo;
     }
+
     public function obtenerTodosLosDatos()
     {
         return $this->modelo->all();
     }
 
-    public function obtenerPlantilla(int $id)
+    public function obtenerPlantilla(int $id, array $seleccion, string $directiva)
     {
         $perPage = $id ? 10 : 5; // ejemplo
         $cacheKey = "plantilla_{$id}_{$perPage}";
 
-        // return (new Rf001Model())->where('id_unidad', $id)->orderByDesc('id')->paginate($perPage);
-        // return Eplantillas::findOrFail($id);
+        // return Cache::remember($cacheKey, now()->addHours(2), function() use ($id, $seleccion, $directiva) {
 
-        return Cache::remember($cacheKey, now()->addHours(2), function() use ($id, $perPage) {
+        //         // ->orderByDesc('id')
+        //         // ->paginate($perPage);
+        // });
+
         return $this->modelo
-            ->select([ 'id',
-        'memorandum',
-        'estado',
-        'movimientos',
-        'id_unidad',
-        'envia',
-        'dirigido',
-        'archivos',
-        'unidad',
-        'periodo_inicio',
-        'periodo_fin',
-        'realiza',
-        'movimiento',
-        'tipo',
-        'confirmed', 'created_at' ])
-            ->where('id_unidad', $id)
-            ->orderByDesc('id')
-            ->paginate($perPage);
-        });
+                ->select($seleccion)
+                ->where($directiva, $id)
+                ->first();
     }
 }

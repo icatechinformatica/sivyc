@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\DocumentoService;
 use App\Services\EFirmaService;
+use Illuminate\Support\Facades\Auth;
 use PDF;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class PlantillaController extends Controller
 {
@@ -147,13 +150,17 @@ class PlantillaController extends Controller
         return PDF::loadHTML($file);
     }
 
-    public function loadFile($id, array $param = [])
+    public function loadFile($id)
     {
+        $objEplantilla = ['id', 'tipo', 'cuerpo', 'vigencia'];
+        $dataQry = $this->servicioPlantilla->getPlantilla($id, 'Plantillas\EPlantilla', $objEplantilla, 'id'); // llamada del servicio con el metodo obtener plantilla parametro con el id y el nombre del modelo
         #TODO: preferible pasar el parametro desde el controlador para no procesar en la capa de datos
-        switch ($param['TYPE']) {
+        switch ($dataQry->tipo) {
             case 'RF001':
                 #TODO: cada caso servirá para procesar contenido exclusivo del archivo deseado a cargar
-                $rfgetData = $this->servicioPlantilla->getPlantilla($id, 'Rf001Model'); // llamada del servicio con el metodo obtener plantilla parametro con el id y el nombre del modelo
+                $arraySelect = [ 'id', 'memorandum', 'estado', 'movimientos', 'id_unidad', 'envia', 'dirigido', 'archivos', 'unidad', 'periodo_inicio', 'periodo_fin',  'realiza', 'movimiento', 'tipo', 'confirmed', 'created_at' ];
+
+                $rfgetData = $this->servicioPlantilla->getPlantilla(22, 'Reportes\Rf001Model', $arraySelect, 'id');
                 $organismo = Auth::user()->id_organismo;
                 $unidad = $rfgetData->unidad;
                 $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
@@ -163,6 +170,184 @@ class PlantillaController extends Controller
                 $municipio = mb_strtoupper($dataunidades->municipio, 'UTF-8');
                 $dirigido = \DB::table('tbl_funcionarios')->where('id', 114)->first();
                 $intervalo = $this->servicioPlantilla->formatoIntervaloFecha($rfgetData->periodo_inicio, $rfgetData->periodo_fin);
+                $importeTotal = 0;
+
+                $movimiento = json_decode($rfgetData->movimientos, true);
+                $importeMemo = 0;
+                $count = 0;
+                $ccpHtml = ''; // Aquí se guarda el contenido generado en el foreach
+                $validadores = ['DIRECTOR', 'DIRECTORA', 'ENCARGADO DE LA UNIDAD', 'ENCARGADA DE LA UNIDAD'];
+                $ccpValidador = '';
+                $ccp = $this->servicioPlantilla->setCpp($rfgetData->id_unidad);
+                $ccpDelegado = $this->servicioPlantilla->setFuncionarios($rfgetData->id_unidad);
+                $instituto = \DB::table('tbl_instituto')->first();
+                // Decodificar el campo cuentas_bancarias
+                $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
+                $cuenta = $cuentas_bancarias[$dataunidades->ubicacion]['BBVA'];
+                $creado = htmlspecialchars(Carbon::parse($rfgetData->created_at)->format('d/m/Y'));
+                $fechaInicio = new \DateTime($rfgetData->periodo_inicio);
+                $fechaFin = new \DateTime($rfgetData->periodo_fin);
+                $periodoTexto = htmlspecialchars($fechaInicio->format('d/m/Y')) . ' AL ' . htmlspecialchars($fechaFin->format('d/m/Y'));
+
+                $dateCreacion = Carbon::parse($rfgetData->created_at);
+                $dateCreacion->locale('es'); // Configurar el idioma a español
+                $nombreMesCreacion = $dateCreacion->translatedFormat('F');
+                $fechaObs = $dateCreacion->day . "/" . Str::upper($nombreMesCreacion) . "/" . $dateCreacion->year;
+
+                $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+                $leyenda = '';
+
+                $bandera = false;
+                $elaboroHtml = '';
+                $foliosDepositos = [];
+                $tbodyHTML = '';
+                $counter = 0;
+                $direccion = $dataunidades->direccion;
+                $direccionHtml = '';
+
+                if (is_array($movimiento)) {
+                    foreach ($movimiento as $key) {
+                        $importeMemo += $key['importe'] ?? 0;
+                    }
+                }
+
+                $importeLetra = $this->servicioPlantilla->letras($importeMemo);
+
+                if (!is_array($direccion)) {
+                    $direccion = explode('*', $direccion);
+                }
+
+                // Ordenar el array $movimiento de menor a mayor en base al número del campo 'folio'
+                usort($movimiento, function($a, $b) {
+                    // Extraer el número después del prefijo en el campo 'folio'
+                    preg_match('/\d+/', $a['folio'], $matchA);
+                    preg_match('/\d+/', $b['folio'], $matchB);
+                    $numA = isset($matchA[0]) ? (int) $matchA[0] : 0;
+                    $numB = isset($matchB[0]) ? (int) $matchB[0] : 0;
+
+                    return $numA <=> $numB;
+                });
+
+                // Observaciones
+                $recibos = implode(', ', array_map(fn($m) => htmlspecialchars($m['folio']), $movimiento));
+
+
+                foreach ($ccp as $key => $value) {
+                    if ($count === 0) {
+                        $ccpHtml .= htmlspecialchars($value->nombre) . '. ' . htmlspecialchars($value->cargo) . '. Para su conocimiento. <br>';
+                    } elseif (
+                        !str_contains($value->cargo, 'DIRECTOR') &&
+                        !str_contains($value->cargo, 'DIRECTORA') &&
+                        !str_contains($value->cargo, 'ENCARGADO DE LA UNIDAD') &&
+                        !str_contains($value->cargo, 'ENCARGADA DE LA UNIDAD')
+                    ) {
+                        if ($key == 1) {
+                            $ccpHtml .= 'Archivo / Minutario. <br>';
+                        }
+                        $ccpHtml .= htmlspecialchars($value->nombre) . '. ' . htmlspecialchars($value->cargo) . '. Mismo fin. <br>';
+                    }
+                    $count++;
+                }
+
+                foreach ($ccp as $v) {
+                    foreach ($validadores as $validador) {
+                        if (str_contains($v->cargo, $validador)) {
+                            $ccpValidador .= 'Validó: ' . htmlspecialchars($v->nombre) . '. ' . htmlspecialchars($v->cargo) . '. <br>';
+                            break;
+                        }
+                    }
+                }
+
+                foreach ($ccpDelegado as $ke => $val) {
+                    if (!$bandera) {
+                        if (str_contains($val->cargo, 'DELEGADO') || str_contains($val->cargo, 'DELEGADA')) {
+                            $elaboroHtml .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                            $bandera = true;
+                        } elseif (
+                            str_contains($val->cargo, 'DIRECTOR') ||
+                            str_contains($val->cargo, 'DIRECTORA') ||
+                            str_contains($val->cargo, 'ENCARGADO DE LA UNIDAD') ||
+                            str_contains($val->cargo, 'ENCARGADA DE LA UNIDAD')
+                        ) {
+                            $elaboroHtml .= 'Elaboró: '.htmlspecialchars($val->nombre).'. '.htmlspecialchars($val->cargo).'. <br>';
+                            $bandera = true;
+                        }
+                    }
+                }
+
+                foreach ($movimiento as $v) {
+                    $depositos = json_decode($v['depositos'] ?? '[]', true);
+                    foreach ($depositos as $j) {
+                        $foliosDepositos[] = htmlspecialchars($j['folio']);
+                    }
+                }
+
+                if (isset($distintivo)) {
+                    if (!is_array($distintivo)) {
+                        $distintivo = explode('*', $distintivo);
+                    }
+
+                    $leyenda .= '<small>';
+                    foreach ($distintivo as $keys => $part) {
+                        if ($keys != 0) {
+                            $leyenda .= '<br>';
+                        }
+                        $leyenda .= htmlspecialchars($part);
+                    }
+                    $leyenda .= '</small>';
+                }
+
+                $fichas = implode(', ', $foliosDepositos);
+
+
+                foreach ($movimiento as $item) {
+                    $depositos = json_decode($item['depositos'] ?? '[]', true);
+                    $foliosDeposito = [];
+
+                    foreach ($depositos as $k) {
+                        $counter++;
+                        $foliosDeposito[] = $k['folio'];
+                    }
+
+                    // Agrupar por cada 3 con salto de línea
+                    $foliosAgrupados = array_chunk($foliosDeposito, 3);
+                    $foliosHTML = implode('<br>', array_map(function($chunk) {
+                        return implode(', ', $chunk);
+                    }, $foliosAgrupados));
+
+                    $conceptoTexto = ($item['concepto'] === 'CURSO DE CAPACITACIÓN O CERTIFICACIÓN')
+                        ? htmlspecialchars($item['curso'])
+                        : htmlspecialchars($item['concepto']);
+
+                    $importeTotal += $item['importe'];
+                    $importeTexto = number_format($item['importe'], 2, '.', ',');
+
+                    $tbodyHTML .= '<tr>';
+                    $tbodyHTML .= '<td style="text-align: center;">' . $item['folio'] . '</td>';
+                    $tbodyHTML .= '<td style="text-align: center;">' . $foliosHTML . '</td>';
+                    $tbodyHTML .= '<td style="text-align: left; font-size: 9px;">' . $conceptoTexto . '</td>';
+                    $tbodyHTML .= '<td style="text-align: center;">$ ' . $importeTexto . '</td>';
+                    $tbodyHTML .= '</tr>';
+                }
+
+                foreach ($direccion as $point => $ari) {
+                    if ($point != 0) {
+                        $direccionHtml .= '<br>';
+                    }
+                    $direccionHtml .= htmlspecialchars($ari);
+                }
+
+                // Total al final
+                $totalTexto = number_format($importeTotal, 2, '.', ',');
+
+                $tbodyHTML .= '<tr>';
+                $tbodyHTML .= '<td></td>';
+                $tbodyHTML .= '<td></td>';
+                $tbodyHTML .= '<td style="text-align:right;"><b>TOTAL</b></td>';
+                $tbodyHTML .= '<td style="text-align:center;"><b>$ ' . $totalTexto . '</b></td>';
+                $tbodyHTML .= '</tr>';
+
+                //TODO: arreglo dinámico, tiene que ajustarce a las necesidades del documento a generar
                 $variableArray = [
                     'unidad' => strtoupper($dataunidades->ubicacion),
                     'memo'  => htmlspecialchars($rfgetData->memorandum),
@@ -172,9 +357,25 @@ class PlantillaController extends Controller
                     'nom' => htmlspecialchars(strtoupper($dirigido->nombre)),
                     'car' => htmlspecialchars($dirigido->cargo),
                     'intervalo' => $intervalo,
-                    'importe' => '',
-                    'importeLetra' => ''
+                    'importe' => number_format($importeMemo, 2, '.', ','),
+                    'letra' => $importeLetra,
+                    'ccpHtml' => $ccpHtml,
+                    'ccpValidador' => $ccpValidador,
+                    'elaboroHtml' => $elaboroHtml,
+                    'cuentaTexto' => htmlspecialchars($cuenta),
+                    'elaboracion' => $creado,
+                    'periodoTexto' => $periodoTexto,
+                    'fObservacion' => $fechaObs,
+                    'recibos' => $recibos,
+                    'fichas' => $fichas,
+                    'dinamico' => $tbodyHTML,
+                    'leyenda' => $leyenda,
+                    'direccion' => $direccionHtml,
                 ];
+
+                $contenidoProcesado = $this->servicioPlantilla->procesarPlantilla($dataQry->cuerpo, $variableArray);
+                $pdf = $this->servicioPlantilla->generarPdfDocument(['contenido' => $contenidoProcesado]);
+                return $pdf->stream('concentreado_de_ingresos_rf001_'.$rfgetData->memorandum.'.pdf');
                 break;
 
             default:

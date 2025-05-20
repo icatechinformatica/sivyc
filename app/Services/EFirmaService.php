@@ -483,7 +483,7 @@ class EFirmaService extends DocumentoService
         return strtoupper(trim($parteEntera) . $parteDecimal );
     }
 
-    protected function formatoIntervaloFecha($fechaIni, $fechaFin)
+    public function formatoIntervaloFecha($fechaIni, $fechaFin)
     {
         // Parsear las fechas usando Carbon
         $dateInit = Carbon::parse($fechaIni);

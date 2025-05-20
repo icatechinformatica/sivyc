@@ -3,5 +3,5 @@ namespace App\Interfaces\ElectronicDocument;
 
 interface ElectronicDocumentRepositoryInterface {
     public function obtenerTodosLosDatos(); //puede cambiar
-    public function obtenerPlantilla(int $id);
+    public function obtenerPlantilla(int $id, array $object, string $directiva);
 }
