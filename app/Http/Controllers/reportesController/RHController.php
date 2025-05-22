@@ -201,8 +201,8 @@ class RHController extends Controller
     public function descarga_nube() {
         set_time_limit(0); // para que no se acabe el tiempo de espera
         $apiKey = [
-                //    'oficinas centrales' => 'c4b5f541364d3f196899b116b0bebb2d',
-                //    'sancris' => 'd5ccfdba72c0f69c969838e83e5ca9bf',
+                   'oficinas centrales' => 'c4b5f541364d3f196899b116b0bebb2d',
+                   'sancris' => 'd5ccfdba72c0f69c969838e83e5ca9bf',
                    'villaflores' => '8f1a94d4f51b3715100e04b832ccd8eb',
                    'tapachula' => '75fe37dcb06624390152aa92c6ebf6de',
                    'jiquipilas' => '807fadc301799748f30e6d41e0967875',
@@ -210,8 +210,8 @@ class RHController extends Controller
                    'reforma' => 'd79918ba4899a2258daafed113f5e143'
                 ];
         $apiSecret = [
-                    //   'oficinas centrales' => 'd7e30cd8e81c98c580c3f5e57c35bd24',
-                    //   'sancris' => '009ea37f8553c1348b51687d2db164df',
+                      'oficinas centrales' => 'd7e30cd8e81c98c580c3f5e57c35bd24',
+                      'sancris' => '009ea37f8553c1348b51687d2db164df',
                       'villaflores' => '1b68aa6cab9a7fe4c7ed930ec7684a64',
                       'tapachula' => '6eef6221ba2407db4064ceb70a55d50d',
                       'jiquipilas' => 'e3e23a53816132bbffbcf015caa707c4',
@@ -224,10 +224,10 @@ class RHController extends Controller
             $hoy = Carbon::now()->format('Y-m-d');
             $dia = Carbon::now();
             $diaSemana = $dia->translatedFormat('l');
-            $beginTime = '2025-05-01T00:00:00+00:00';
-            $endTime = '2025-05-22T23:59:59+00:00';
-            // $beginTime = $hoy.'T00:00:00-06:00';
-            // $endTime = $hoy.'T23:59:59-06:00';
+            // $beginTime = '2025-05-01T00:00:00+00:00';
+            // $endTime = '2025-05-22T23:59:59+00:00';
+            $beginTime = $hoy.'T00:00:00-06:00';
+            $endTime = $hoy.'T23:59:59-06:00';
             $page = 1;
             $perPage = 100;
 
