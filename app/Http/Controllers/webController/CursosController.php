@@ -31,7 +31,7 @@ class CursosController extends Controller
 
     private $slug;
     function __construct() {
-        $this->categorias = ['OFICIOS','PROFESIONALIZACIÓN','ESPECIALIZACIÓN','SALUD'];
+        $this->categorias = ['OFICIOS','PROFESIONALIZACIÓN','ESPECIALIZACIÓN','SALUD','CURSO ALFA'];
         $this->perfil = [
             'PRIMARIA INCONCLUSA',
             'PRIMARIA TERMINADA',
@@ -325,7 +325,7 @@ class CursosController extends Controller
                     'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
                     'cursos.rango_criterio_pago_minimo', 'rango_criterio_pago_maximo','cursos.observacion',
                     'cursos.grupo_vulnerable', 'cursos.dependencia','cursos.proyecto','cursos.motivo',
-                    'cursos.servicio','cursos.file_carta_descriptiva','cursos.riesgo')
+                    'cursos.servicio','cursos.file_carta_descriptiva','cursos.riesgo','cursos.curso_alfa')
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')->ORDERBY ('cursos.updated_at','DESC')
                     ->GET();
