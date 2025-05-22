@@ -38,14 +38,14 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <td>#</td>
-                        <td>CONTRATO</td>
-                        <td>MEMO-ARC01</td>
-                        <td>CLAVE</td>
-                        <td>CURSO</td>
+                        <td class="text-center">CONTRATO</td>
+                        <td class="text-center">ARC01</td>
+                        <td class="text-center">CLAVE</td>
+                        <td >CURSO</td>
                         <td>INSTRUCTOR</td>
-                        <td>UNIDAD</td>
-                        <td>FIRMADO</td>
+                        <td class="text-center">UNIDAD</td>                        
                         <td>DTA</td>
+                        <td>FIRMADO</td>                     
                     </tr>
                     @isset($consulta)
                     @php
@@ -59,9 +59,9 @@
                         <td><div style="width: 125px;">{{$item->clave}}</div></td>
                         <td>{{$item->curso}}</td>
                         <td>{{$item->instructor}}</td>
-                        <td>{{$item->unidad}}</td>                      
-                        <td></td>
-                        <td></td>
+                        <td>{{$item->unidad}}</td>  
+                        <td>{{$item->dta}}</td>                    
+                        <td class="text-center">{{$item->firmado}}</td>                        
                     </tr>
                     @endforeach
                     <tr>
