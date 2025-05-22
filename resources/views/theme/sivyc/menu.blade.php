@@ -381,7 +381,7 @@
                                 <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
                             @endcan
                             @can('consultas.contratosfirmados')
-                                <a class="dropdown-item" href="{{ route('consultas.contratosfirmados') }}">Contratos</a>
+                                <a class="dropdown-item" href="{{ route('consultas.contratosfirmados') }}"> DTA - Contratos</a>
                             @endcan
                             @can('consultas.cursosefisico')
                                 <a class="dropdown-item" href="{{ route('consultas.cursosefisico') }}">Cursos EFisico</a>
