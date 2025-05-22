@@ -199,30 +199,35 @@ class RHController extends Controller
     }
 
     public function descarga_nube() {
-        $apiKey = ['oficinas centrales' => 'c4b5f541364d3f196899b116b0bebb2d',
-                   'sancris' => 'd5ccfdba72c0f69c969838e83e5ca9bf',
+        set_time_limit(0); // para que no se acabe el tiempo de espera
+        $apiKey = [
+                //    'oficinas centrales' => 'c4b5f541364d3f196899b116b0bebb2d',
+                //    'sancris' => 'd5ccfdba72c0f69c969838e83e5ca9bf',
                    'villaflores' => '8f1a94d4f51b3715100e04b832ccd8eb',
                    'tapachula' => '75fe37dcb06624390152aa92c6ebf6de',
                    'jiquipilas' => '807fadc301799748f30e6d41e0967875',
                    'yajalon' => '8b7615ce0f0e2417a09fbd5782ef8120',
-                   'reforma' => 'd79918ba4899a2258daafed113f5e143'];
-        $apiSecret = ['oficinas centrales' => 'd7e30cd8e81c98c580c3f5e57c35bd24',
-                      'sancris' => '009ea37f8553c1348b51687d2db164df',
+                   'reforma' => 'd79918ba4899a2258daafed113f5e143'
+                ];
+        $apiSecret = [
+                    //   'oficinas centrales' => 'd7e30cd8e81c98c580c3f5e57c35bd24',
+                    //   'sancris' => '009ea37f8553c1348b51687d2db164df',
                       'villaflores' => '1b68aa6cab9a7fe4c7ed930ec7684a64',
                       'tapachula' => '6eef6221ba2407db4064ceb70a55d50d',
                       'jiquipilas' => 'e3e23a53816132bbffbcf015caa707c4',
                       'yajalon' => 'e39065bafa43f4e366189e83c2adb39d',
-                      'reforma' => 'bb7c9be393ad891bbfe2175104ec76c5'];
+                      'reforma' => 'bb7c9be393ad891bbfe2175104ec76c5'
+                    ];
 
         foreach($apiKey as $name => $ak) {
             $url = 'https://api.us.crosschexcloud.com/'; // Reemplaza con la URL correcta
             $hoy = Carbon::now()->format('Y-m-d');
             $dia = Carbon::now();
             $diaSemana = $dia->translatedFormat('l');
-            // $beginTime = '2025-03-07T00:00:00+00:00';
-            // $endTime = '2025-03-07T23:59:59+00:00';
-            $beginTime = $hoy.'T00:00:00-06:00';
-            $endTime = $hoy.'T23:59:59-06:00';
+            $beginTime = '2025-05-01T00:00:00+00:00';
+            $endTime = '2025-05-22T23:59:59+00:00';
+            // $beginTime = $hoy.'T00:00:00-06:00';
+            // $endTime = $hoy.'T23:59:59-06:00';
             $page = 1;
             $perPage = 100;
 
@@ -237,8 +242,13 @@ class RHController extends Controller
 
                     if($timezone = '+00:00') { // si la timezone es 0 se le hara una resta a la hora de 6 para tenerla en -06:00
                         $hour = substr($time[1],0,2) - 6;
+                        if($hour < 0) { // si la hora es menor a 0 se le sumara 24 para que sea positiva
+                            $hour = $hour + 24;
+                            $time[0] = Carbon::parse($time[0])->subDay()->format('Y-m-d'); // se le resta un dia a la fecha
+                            $flag = true;
+                        }
                         if($hour < 10) {
-                            $hour = '0'.$hour;
+                            $hour = '0'.$hour;if($hour == 0-6) { dd($time, $hour, 'asd');}
                         }
                         $time[1] =  $hour . substr($time[1],2,7);
                     }
