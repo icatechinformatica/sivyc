@@ -364,7 +364,7 @@
                 @canany(['consultas.folios', 'consultas.lotes', 'consultas.cursosaperturados', 'planeacion.estadisticas',
                     'planeacion.grupos.vulnerables', 'planeacion.ingresos.propios', 'consultas.cursosefisico',
                     'consultas.instructor', 'consultas.instructores.disponibles', 'consultas.poa', 'show.cursos.validados',
-                    'consulta.bolsa.trabajo'.'consultas.cursos.exo'])
+                    'consulta.bolsa.trabajo'.'consultas.cursos.exo','consultas.contratosfirmados'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -377,8 +377,11 @@
                             @can('consulta.bolsa.trabajo')
                                 <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
                             @endcan
-                            @can('consultas.cursosaperturados')
-                                <a class="dropdown-item" href="{{ route('consultas.cursosaperturados') }}">Cursos Aperturados</a>
+                             @can('consulta.bolsa.trabajo')
+                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
+                            @endcan
+                            @can('consultas.contratosfirmados')
+                                <a class="dropdown-item" href="{{ route('consultas.contratosfirmados') }}">Contratos</a>
                             @endcan
                             @can('consultas.cursosefisico')
                                 <a class="dropdown-item" href="{{ route('consultas.cursosefisico') }}">Cursos EFisico</a>
