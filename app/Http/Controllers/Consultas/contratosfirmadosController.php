@@ -32,18 +32,18 @@ class contratosfirmadosController extends Controller
     }
 
     public function xls(Request $request){
-            list($data, $message) = $this->data($request);            
-            if(count($data)==0){ return "NO EXISTEN REGISTROS QUE MOSTRAR";exit;}
+            list($data, $message) = $this->data($request, true);            
+            if(!$data){ return "NO EXISTEN REGISTROS QUE MOSTRAR";exit;}
 
             $head = ['#','ARC01','CLAVE','CURSO','INSTRUCTOR','UNIDAD','DTA','FIRMADO'];
 
             $title = 'CONSULTA_CONTRATOS';
             $name = "CONSULTA_CONTRATOS".date('Ymd').".xlsx";
 
-            if(count($data)>0)return Excel::download(new xls($data,$head, $title), $name);
+            if($data)return Excel::download(new xls($data,$head, $title), $name);            
    }
 
-   private function data(Request $request){
+   private function data(Request $request, $xls=false){
         $unidad = $request->unidad;
         $estatus = $request->estatus;
         $inicio = $request->fecha_inicio;
@@ -89,9 +89,11 @@ class contratosfirmadosController extends Controller
             if($estatus=="AUTOGRAFOS") $data = $data->whereNULL('doc.id');
             if($buscar) $data = $data->whereRaw("CONCAT(c.numero_contrato, tc.clave, tc.nombre) LIKE ?", ["%$buscar%"]);
 
-            $data = $data->paginate(50);
-            $data->appends($request->only(['unidad', 'estatus', 'fecha_inicio','fecha_termino','busqueda']));
-            //dd($data);
+            if($xls) $data = $data->get();
+            else {
+                $data = $data->paginate(50);
+                $data->appends($request->only(['unidad', 'estatus', 'fecha_inicio','fecha_termino','busqueda']));
+            }
 
         } elseif(!$inicio AND !$termino AND $request->all()) $message = "Por favor, ingrese un rango de fechas para filtrar los contratos.";
         
