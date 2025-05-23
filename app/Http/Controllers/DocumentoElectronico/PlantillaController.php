@@ -377,7 +377,48 @@ class PlantillaController extends Controller
                 $pdf = $this->servicioPlantilla->generarPdfDocument(['contenido' => $contenidoProcesado]);
                 return $pdf->stream('concentreado_de_ingresos_rf001_'.$rfgetData->memorandum.'.pdf');
                 break;
-
+            case 'CONTRATO':
+                $id_contrato = 22713;
+                $params = ['table' => 'contratos',
+                    'select' => [
+                        'tbl_unidades.*',
+                        'tbl_cursos.clave',
+                        'tbl_cursos.nombre',
+                        'tbl_cursos.curp',
+                        'instructores.correo',
+                        'contratos.numero_contrato'
+                    ],
+                    'joins' => [
+                        ['table' => 'folios', 'first' => 'folios.id_folios', 'second' => 'contratos.id_folios'],
+                        ['table' => 'tabla_supre', 'first' => 'tabla_supre.id', 'second' => 'folios.id_supre'],
+                        ['table' => 'tbl_unidades', 'first' => 'tbl_unidades.unidad', 'second' => 'tabla_supre.unidad_capacitacion'],
+                        ['table' => 'tbl_cursos', 'first' => 'tbl_cursos.id', 'second' => 'folios.id_cursos'],
+                        ['table' => 'instructores', 'first' => 'instructores.id', 'second' => 'tbl_cursos.id_instructor']
+                    ],
+                    'where' => [
+                        ['column' => 'contratos.id_contrato', 'value' => $id_contrato]
+                    ],
+                    'first' => true
+                ];
+                $info = $this->servicioPlantilla->consultaDinamica($params);
+                $nameFileOriginal = 'contrato '.$info->clave.'.pdf';
+                $numDocsParam = [
+                    'where' => [
+                        ['column' => 'tipo_archivo', 'value' => 'Contrato'],
+                        ['column' => 'numero_o_clave', 'value' => $info->clave]
+                    ],
+                    'whereIn' => [
+                        ['column' => 'status', 'values' => ['CANCELADO', 'CANCELADO ICTI']]
+                    ],
+                    'count' => true
+                ];
+                $numDocs = $this->servicioPlantilla->obtenermultiplesCondiciones('DocumentosFirmar', $numDocsParam);
+                $numDocs = '0'.($numDocs+1);
+                $numOficioBuilder = explode('/',$info->numero_contrato);
+                $position = count($numOficioBuilder) - 2;
+                array_splice($numOficioBuilder, $position, 0, $numDocs);
+                $numOficio = implode('/',$numOficioBuilder);
+                break;
             default:
                 # code...
                 break;

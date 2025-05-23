@@ -4,6 +4,7 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Factories\ElectronicDocumentFactory;
 use PDF;
+use Illuminate\Support\Facades\DB;
 
 class DocumentoService
 {
@@ -364,6 +365,12 @@ class DocumentoService
 
     }
 
+    public function obtenermultiplesCondiciones(string $modelo, array $params)
+    {
+        $repositorio = $this->factory->make($modelo);
+        return $repositorio->consultaMultiple($params);
+    }
+
     public function obtenerPlantillas(string $modelo)
     {
         // obtención de las plantillas TODAS
@@ -500,5 +507,46 @@ class DocumentoService
         $dompdf->setOptions($options);
         // reenderizar PDF
         return $pdf;
+    }
+
+    public function consultaDinamica(array $params)
+    {
+        // usar DB o Eloquent Model
+        $query = isset($params['model']) && class_exists($params['model'])
+            ? app($params['model'])::query()
+            : DB::table($params['table']);
+
+        // agregar los joins
+         if (!empty($params['joins']) && is_array($params['joins'])) {
+            foreach ($params['joins'] as $join) {
+                $query->join(
+                    $join['table'],
+                    $join['first'],
+                    $join['operator'] ?? '=',
+                    $join['second'],
+                    $join['type'] ?? 'inner'
+                );
+            }
+        }
+
+        // campos a seleccionar
+        if (!empty($params['select'])) {
+            $query->select($params['select']);
+        }
+
+        // condiciones del where
+
+        if (!empty($params['where']) && is_array($params['where'])) {
+            foreach ($params['where'] as $condition) {
+                $query->where(
+                    $condition['column'],
+                    $condition['operator'] ?? '=',
+                    $condition['value']
+                );
+            }
+        }
+
+        // obtener first o get
+        return $params['first'] ?? true ? $query->first() : $query->get();
     }
 }
