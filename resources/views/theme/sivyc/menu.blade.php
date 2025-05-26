@@ -375,10 +375,10 @@
                                 <a class="dropdown-item" href="{{ route('consultas.lotes') }}">Actas de Folios</a>
                             @endcan
                             @can('consulta.bolsa.trabajo')
-                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
+                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Incorporación Laboral</a>
                             @endcan
-                             @can('consulta.bolsa.trabajo')
-                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
+                            @can('consultas.cursosaperturados')
+                                <a class="dropdown-item" href="{{ route('consultas.cursosaperturados') }}">Cursos Aperturados</a>
                             @endcan
                             @can('consultas.contratosfirmados')
                                 <a class="dropdown-item" href="{{ route('consultas.contratosfirmados') }}"> DTA - Contratos</a>
