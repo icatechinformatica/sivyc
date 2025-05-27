@@ -29,7 +29,7 @@
         </div>
         @if($grupos[0]->fecha_arc01??null AND $grupos[0]->status_curso??null !='VALIDADO')
             <div class="form-group col-md-2 d-flex">
-                {{ form::date('fecha_arc01', date('Y-m-d'), ['id'=>'fecha_arc01', 'class'=>'form-control']) }}
+                {{ form::date('fecha_arc01', $grupos[0]->fecha_arc01??null, ['id'=>'fecha_arc01', 'class'=>'form-control']) }}
                 <a onclick="guardar_fecha('{{ $grupos[0]->munidad??null }}')" title="Guardar Fecha"><i class="fas fa-save fa-lg m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a>
             </div>
         @endif
