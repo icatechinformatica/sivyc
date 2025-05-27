@@ -56,7 +56,7 @@ class aperturasController extends Controller
         $path = $this->path_files;
         if($memo){
             $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo')
+                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo','tc.fecha_arc01','tc.status_curso')
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                 ->leftjoin('convenios','convenios.no_convenio','=','tc.cgeneral')
                 ->leftJoin('exoneraciones as e','tc.mexoneracion','=','e.no_memorandum')
@@ -614,6 +614,33 @@ class aperturasController extends Controller
         ->pluck('clave','clave');
         if( DB::table('tbl_cursos')->where('munidad', $memo)->whereIn('clave', $maxs)->count() == count($maxs)) return true;
         else return false;
+
+    }
+     
+    public function guardar_fecha(Request $request){ 
+        $message = "Operación fallida, por favor intente de nuevo.";
+        if($request->fecha AND $request->memo){
+            $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->whereNotNull('fecha_arc01')
+            ->where(function ($query) {
+                    $query->whereNotIn('status_curso', ['AUTORIZADO', 'CANCELADO'])
+                        ->orWhereNull('status_curso');
+            })
+            ->update([
+                'fecha_arc01' => $request->fecha,
+                'movimientos' => DB::raw("
+                COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                    jsonb_build_object(
+                            'fecha', '".date('Y-m-d H:i:s')."',
+                            'usuario', '".Auth::user()->name."',
+                            'operacion', 'CAMBIO LA FECHA DEL ARC01',
+                            'motivo solicitud', 'SOLICITADO POR LA UNIDAD DE CAPACITACIÓN.'
+                            )
+                    )
+                ")
+            ]);
+            if($result) $message = "Operación Exitosa!";            
+        }else $message = "Por favor, ingrese una fecha válida.";
+        return $message;
 
     }
 
