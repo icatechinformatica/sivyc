@@ -25,20 +25,10 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">           
                 {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                        <select name="tipo_busqueda_instructor" class="form-control mr-sm-2" id="tipo_busqueda_instructor">
-                            <option value="">BUSCAR POR TIPO</option>
-                            <option value="nombre_curso" {{ $old['tipo_busqueda_instructor'] == 'nombre_curso' ? 'selected' : '' }}>CURSO</option>
-                            <option value="clave_instructor" {{ $old['tipo_busqueda_instructor'] == 'clave_instructor' ? 'selected' : '' }}>CLAVE</option>
-                            <option value="nombre_instructor" {{ $old['tipo_busqueda_instructor'] == 'nombre_instructor' ? 'selected' : '' }}>NOMBRE</option>
-                            <option value="curp" {{ $old['tipo_busqueda_instructor'] == 'curp' ? 'selected' : '' }}>CURP</option>
-                            <option value="telefono_instructor" {{ $old['tipo_busqueda_instructor'] == 'telefono_instructor' ? 'selected' : '' }}>TELÉFONO</option>
-                            <option value="estatus_instructor">ESTATUS</option>
-                            <option value="especialidad">ESPECIALIDAD</option>                            
-                        </select>
-                        
-                        <Div id="divcampo" name="divcampo" class="form-inline" style="width:300px">
-                            {!! Form::text('busquedaPorInstructor', null, ['class' => 'form-control mr-sm-2 w-100', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR','id' => 'busquedaPorInstructor']) !!}    
-                        </Div>
+                    {{ Form::select('tipo_busqueda_instructor', $tipo_busqueda, $old['tipo_busqueda_instructor']??0 ,['id'=>'tipo_busqueda_instructor','class' => 'form-control mr-sm-2','title' => 'BUSCAR POR','placeholder' => '- BUSCAR POR -']) }}    
+                    <Div id="divcampo" name="divcampo" class="form-inline" style="width:300px">
+                        {!! Form::text('busquedaPorInstructor', $busquedaPorInstructor??null, ['class' => 'form-control mr-sm-2 w-100', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR','id' => 'busquedaPorInstructor']) !!}
+                    </Div>
                         <Div id="divstat" name="divstat" class="d-none d-print-none">
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
                                 <option value="">BUSQUEDA POR STATUS</option>
@@ -62,8 +52,8 @@
                         <a class="btn ml-3" href="{{route('instructor-crear')}}"> Nuevo</a>
                     @endcan
                     @can('academico.exportar.instructores')                        
-                        <a class="btn ml-3" href="{{route('academico.exportar.instructores')}}">Instructores XLS</a>
-                        <a class="btn ml-3" href="{{route('academico.exportar.instructores.activos')}}">Activos XLS</a>                        
+                        <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores')}}">CATÁLOGO XLS</a>
+                        <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores.activos')}}">ACTIVOS XLS</a>                        
                     @endcan
                 {!! Form::close() !!}
             </div>
@@ -202,6 +192,13 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+
+            if ( document.getElementById('tipo_busqueda_instructor').value === 'especialidad') {
+                $('#divespecialidad').prop("class", "");
+                $('#divcampo').prop("class", "form-row d-none d-print-none")
+                $('#divstat').prop("class", "form-row d-none d-print-none")
+            }
 
             document.getElementById('tipo_busqueda_instructor').onchange = function() {
                 var index = this.selectedIndex;
