@@ -116,4 +116,21 @@ class MyUtility
         }
         return $data_file;
     }
+
+    public static function textoAltasBajas($texto)
+    {
+        $minisculas = ['de', 'del', 'la', 'y', 'en', 'el', 'a', 'con'];
+        
+        $palabras = explode(' ', mb_strtolower($texto, 'UTF-8'));
+        $resultado = [];
+        foreach ($palabras as $index => $palabra) {
+            if ($index === 0 || !in_array($palabra, $minisculas)) {
+                $resultado[] = mb_convert_case($palabra, MB_CASE_TITLE, 'UTF-8');
+            } else {
+                $resultado[] = $palabra;
+            }
+        }
+
+        return implode(' ', $resultado);
+    }
 }
