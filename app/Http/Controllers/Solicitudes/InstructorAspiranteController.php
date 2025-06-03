@@ -43,9 +43,16 @@ class InstructorAspiranteController extends Controller
 
     public function index(Request $request)
     {
-        // dd('asd');
-        $data = pre_instructor::WhereIn('status',['ENVIADO','PREVALIDADO','COTEJADO'])->Get();
-        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data'));
+        $unidades = tbl_unidades::select('ubicacion')->distinct()->pluck('ubicacion');
+        $query = pre_instructor::whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
+
+        if ($request->filled('unidad')) {
+            $query->where('unidad_asignada', $request->unidad);
+        }
+
+        $data = $query->get();
+
+        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades'));
     }
 
     public function prevalidar(Request $request)
@@ -81,6 +88,41 @@ class InstructorAspiranteController extends Controller
 
         return redirect()->route('aspirante.instructor.index')
             ->with('success', 'Aspirante aprobado correctamente.');
+    }
+
+    public function filter(Request $request)
+    {
+        $unidad = $request->input('unidad');
+        $data = pre_instructor::whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
+        if ($unidad) {
+            $data->where('unidad_asignada', $unidad);
+        }
+        $data = $data->get();
+
+        // Render only the tab-content partial
+        $html = view('solicitudes.instructorAspirante.partials.tabs', compact('data'))->render();
+        return response()->json(['html' => $html]);
+    }
+
+    public function rechazar(Request $request)
+    {
+        $id = $request->input('id');
+        $observacion = $request->input('observacion');
+        $context = $request->input('context');
+        $aspirante = pre_instructor::find($id);
+
+        if ($context === 'PREVALIDADO') {
+            $aspirante->status = 'RECHAZADO PREVALIDADO';
+        } elseif ($context === 'CONVOCADO') {
+            $aspirante->status = 'RECHAZADO CONVOCADO';
+        } else {
+            $aspirante->status = 'RECHAZADO ENVIADO';
+        }
+        $aspirante->rechazo = $observacion;
+        $aspirante->save();
+
+        return redirect()->route('aspirante.instructor.index')
+            ->with('success', 'Aspirante rechazado correctamente.');
     }
 }
 
