@@ -27,6 +27,12 @@
         <div class="form-group col-md-3 mt-1">
             {{ Form::text('memo', $memo, ['id'=>'memo', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM ARC', 'aria-label' => 'MEMORÁNDUM ARC', 'required' => 'required', 'size' => 25]) }}
         </div>
+        @if($grupos[0]->fecha_arc01??null AND $grupos[0]->status_curso??null !='VALIDADO')
+            <div class="form-group col-md-2 d-flex">
+                {{ form::date('fecha_arc01', $grupos[0]->fecha_arc01??null, ['id'=>'fecha_arc01', 'class'=>'form-control']) }}
+                <a onclick="guardar_fecha('{{ $grupos[0]->munidad??null }}')" title="Guardar Fecha"><i class="fas fa-save fa-lg m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a>
+            </div>
+        @endif
         <div class="form-group col-md-2 mr-sm-1">
             {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
         </div>
@@ -81,6 +87,29 @@
 </div>
 @section('script_content_js')
 <script language="javascript">
+     $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+    });
+
+    function guardar_fecha(memo){
+        if (confirm("Está seguro de guardar cambios, en la fecha del ARC-01?") == true) {
+            var fecha = $("#fecha_arc01").val();
+            $.ajax({
+                        url: "aperturas/guardar_fecha",
+                        method: 'POST',
+                        data: {
+                            memo: memo,
+                            fecha: fecha
+                        },
+                        success: function(data) {
+                        //$('#result_table').html(data);
+                        alert(data);
+                    }
+            });                    
+        }
+    }
     $(document).ready(function() {        
         //MOSTRAR BOTONES CONFORME AL MOVIMIENTO
         $("#mrespuesta").hide();

@@ -209,6 +209,7 @@
                                     Folios</a>
                             @endcan
                             @can('prevalidar_index-instructor')
+                                <a class="dropdown-item" href="{{ route('aspirante.instructor.index') }}">Prevalidacion de Aspirantes a Instructores</a>
                                 <a class="dropdown-item" href="{{ route('prevalidar-ins') }}">Validación de Instructores</a>
                             @endcan
                             @can('buzon.plane.pat')
@@ -364,7 +365,7 @@
                 @canany(['consultas.folios', 'consultas.lotes', 'consultas.cursosaperturados', 'planeacion.estadisticas',
                     'planeacion.grupos.vulnerables', 'planeacion.ingresos.propios', 'consultas.cursosefisico',
                     'consultas.instructor', 'consultas.instructores.disponibles', 'consultas.poa', 'show.cursos.validados',
-                    'consulta.bolsa.trabajo'.'consultas.cursos.exo'])
+                    'consulta.bolsa.trabajo'.'consultas.cursos.exo','consultas.contratosfirmados'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -375,10 +376,13 @@
                                 <a class="dropdown-item" href="{{ route('consultas.lotes') }}">Actas de Folios</a>
                             @endcan
                             @can('consulta.bolsa.trabajo')
-                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
+                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Incorporación Laboral</a>
                             @endcan
                             @can('consultas.cursosaperturados')
                                 <a class="dropdown-item" href="{{ route('consultas.cursosaperturados') }}">Cursos Aperturados</a>
+                            @endcan
+                            @can('consultas.contratosfirmados')
+                                <a class="dropdown-item" href="{{ route('consultas.contratosfirmados') }}"> DTA - Contratos</a>
                             @endcan
                             @can('consultas.cursosefisico')
                                 <a class="dropdown-item" href="{{ route('consultas.cursosefisico') }}">Cursos EFisico</a>

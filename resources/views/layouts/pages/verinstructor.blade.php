@@ -564,7 +564,7 @@
                     <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true" value="{{$datainstructor->fecha_nacimiento}}">
                 </div>
             </div>
-            <div class="form-row">
+            {{-- <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputentidad">País de Nacimiento</label>
                     <select class="form-control" name="pais_nacimiento" id="pais_nacimiento">
@@ -605,9 +605,9 @@
                         @endif
                     </select @if($datainstructor->status != "VALIDADO") disabled @endif>
                 </div>
-            </div>
+            </div> --}}
             <div class="form-row">
-                <div class="form-group col-md-3">
+                {{-- <div class="form-group col-md-3">
                     <label for="inputentidad">País de Residencia</label>
                     <select class="form-control" name="pais" id="pais">
                         <option value="">SELECCIONE</option>
@@ -615,7 +615,7 @@
                             <option value="{{$pais->id}}" @if((isset($datainstructor->datos_alfa['pais_residencia']) && $pais->id == $datainstructor->datos_alfa['pais_residencia']) || $pais->id == '115') selected @endif>{{$pais->nombre}}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Residencia</label>
                     <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="entidad" id="entidad" onchange="local2()">
@@ -634,7 +634,7 @@
                         @endforeach
                     </select @if($datainstructor->status != "VALIDADO") disabled @endif>
                 </div>
-                <div class="form-gorup col-md-3">
+                {{-- <div class="form-gorup col-md-3">
                     <label for="inputlocalidad">Localidad de Residencia</label>
                     <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="localidad" id="localidad">
                         <option value="sin especificar">Sin Especificar</option>
@@ -644,7 +644,7 @@
                             @endforeach
                         @endif
                     </select @if($datainstructor->status != "VALIDADO") disabled @endif>
-                </div>
+                </div> --}}
             </div>
             <div class="form-row">
                 <div class="form-group col-md-8">

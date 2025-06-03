@@ -96,11 +96,14 @@ class InstructorController extends Controller
                   AND especialidad_instructores.status = \'VALIDADO\'
                   ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
             ]);
-        $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
-        $old = $request->query->all(); //dd($old);
-        if(!$old)  $old['tipo_busqueda_instructor'] = null;
+            $data->appends($request->only(['unidadbusquedaPorInstructor', 'tipo_busqueda_instructor']));
 
-        return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old'));
+        $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
+        $old = $request->all(); //dd($old['tipo_busqueda_instructor']);
+        if(!$old)  $old['tipo_busqueda_instructor'] = null;
+        $tipo_busqueda = ['nombre_curso'=>'CURSO','clave_instructor'=>'CLAVE','nombre_instructor'=>'NOMBRE','curp'=>'CURP','telefono_instructor'=>'TELÉFONO','estatus_instructor'=>'ESTATUS','especialidad'=>'ESPECIALIDAD'];
+        $busquedaPorInstructor = $request->busquedaPorInstructor;
+        return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old','tipo_busqueda','busquedaPorInstructor'));
     }
 
     public function cursosAutocomplete(Request $request) {

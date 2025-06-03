@@ -150,6 +150,21 @@
 
     @if($grupo)
         <button type="button" class="btn mt-3 bg-warning text-dark" id="generar"><i  class="far fa-file-pdf  fa-1x text-mute"></i> LISTA ALUMNOS</button>
+        {{--
+        <div class="dropdown show mt-3">
+            <a class="btn btn-warning dropdown-toggle text-dark" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                REFERENCIAS PAGOS
+            </a>
+            <div class="dropdown-menu bg-warning" aria-labelledby="dropdownMenuLink">                       
+                <a class="dropdown-item border-bottom text-dark "  href="{{ route('preinscripcion.grupo.referencias.alumno', ['folio' => $grupo->folio_grupo,'alumno'=>'alumno']) }}" target="_blank" method="POST">
+                    <i  class="far fa-file-pdf fa-1x fa-sm"></i> POR ALUMNO
+                </a>
+                <a class="dropdown-item border-bottom text-dark"  href="{{ route('preinscripcion.grupo.referencias', ['folio' => $grupo->folio_grupo]) }}" target="_blank">
+                    <i  class="far fa-file-pdf fa-1x fa-sm"></i> POR GRUPO
+                </a>
+            </div>
+        </div>
+        --}}
         <button id="btnShowCalendar" type="button" class="btn btn-info mt-3">AGENDAR</button>
     @endif
     <button type="button" class="btn mt-3" id="nuevo" >NUEVO</button>
