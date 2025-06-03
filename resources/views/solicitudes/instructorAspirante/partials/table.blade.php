@@ -29,11 +29,13 @@
                     <td>{{ $rise->unidad_asignada }}</td>
                     <td>
                         <ul class="mb-0 ps-3">
-                            @foreach ($rise->data_especialidad as $esp)
-                                @if (isset($especialidades[$esp['especialidad_id']]))
-                                    <li>{{ $especialidades[$esp['especialidad_id']] }}</li>
-                                @endif
-                            @endforeach
+                            @if(is_array($rise->data_especialidad))
+                                @foreach ($rise->data_especialidad as $esp)
+                                    @if (isset($especialidades[$esp['especialidad_id']]))
+                                        <li>{{ $especialidades[$esp['especialidad_id']] }}</li>
+                                    @endif
+                                @endforeach
+                            @endif
                         </ul>
                     </td>
                     <td>{{ $rise->updated_at}}</td>
