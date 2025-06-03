@@ -284,7 +284,7 @@ class InstructorController extends Controller
                 $nrevisiones = NULL;
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','DTA')
-                                                ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO'])
+                                                ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO','ENVIADO'])
                                                 ->WHERE('registro_activo', ['true'])
                                                 ->GET();
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
