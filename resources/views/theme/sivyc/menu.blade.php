@@ -382,7 +382,7 @@
                             @endcan
                             @can('consultas.cursosaperturados')
                                 <a class="dropdown-item" href="{{ route('consultas.cursosaperturados') }}">Cursos Aperturados</a>
-                            @endcanñ
+                            @endcan
                             @can('consultas.contratosfirmados')
                                 <a class="dropdown-item" href="{{ route('consultas.contratosfirmados') }}"> DTA - Contratos</a>
                             @endcan
