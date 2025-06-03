@@ -6,9 +6,42 @@
 <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+    #unidad-select {
+        max-width: 300px;
+        margin-bottom: 20px;
+        border-radius: 0.5rem;
+        border: 1px solid #000000;
+        font-size: 1.1rem;
+        color: #000000;
+        background-color: #f8f9fa;
+        box-shadow: 0 2px 6px rgba(179,0,92,0.08);
+        transition: border-color 0.2s;
+    }
+    #unidad-select:focus {
+        border-color: #000000;
+        box-shadow: 0 0 0 0.2rem rgba(179,0,92,0.15);
+        outline: none;
+    }
+</style>
 <div class="card-header">
     Prevalidacion de Aspirante a Instructor
 </div>
+<form method="GET" action="{{ route('aspirante.instructor.index') }}" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="unidad-select" class="form-label" style="color:#000000;font-weight:bold; margin: 0% 0% 0% 10%;">Filtrar por Unidad:</label>
+            <select name="unidad" id="unidad-select" class="form-select">
+                <option value="">-- Todas las Unidades --</option>
+                @foreach($unidades as $unidad)
+                    <option value="{{ $unidad }}" {{ request('unidad') == $unidad ? 'selected' : '' }}>
+                        {{ $unidad }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+</form>
 <div class="card card-body" style=" min-height:450px;">
     @if (Session::has('success'))
         <div class="alert alert-info alert-block">
@@ -21,150 +54,8 @@
         </div>
     @endif
     <!-- Nav Tabs Start -->
-    <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="recepcion-tab" data-bs-toggle="tab" data-bs-target="#recepcion" type="button" role="tab" aria-controls="recepcion" aria-selected="true">
-                Recepcion
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="prevalidado-tab" data-bs-toggle="tab" data-bs-target="#prevalidado" type="button" role="tab" aria-controls="prevalidado" aria-selected="false">
-                Prevalidado
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="cotejado-tab" data-bs-toggle="tab" data-bs-target="#cotejado" type="button" role="tab" aria-controls="cotejado" aria-selected="false">
-                Cotejado
-            </button>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <!-- Recepcion Tab -->
-        <div class="tab-pane fade show active" id="recepcion" role="tabpanel" aria-labelledby="recepcion-tab">
-            <table class="table table-responsive-md">
-                <thead>
-                    <tr>
-                        <th scope="col">INSTRUCTOR</th>
-                        {{-- <th scope="col">NUMERO DE REVISIÓN</th> --}}
-                        <th scope="col">UNIDAD SOLICITA</th>
-                        <th scope="col">STATUS</th>
-                        <th scope="col">FECHA</th>
-                        <th scope="col">ACCION</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($data as $rise)
-                        @if($rise->status == 'ENVIADO')
-                            <tr>
-                                <td>{{ $rise->nombre }} {{$rise->apellidoPaterno}} {{$rise->apellidoMaterno}}</td>
-                                {{-- <td>{{ $rise->nrevision }}</td> --}}
-                                <td>{{ $rise->unidad_solicita }}</td>
-                                <td>{{ $rise->status }} {{ $rise->turnado }}</td>
-                                <td>{{ $rise->updated_at}}</td>
-                                <td>
-                                    <a style="color: white;" target="_blank" class="fa fa-eye fa-2x fa-lg text-success" title="MOSTRAR INFORMACION" href="{{route('instructor-ver', ['id' => $rise->id])}}"></a> &nbsp;
-                                    <a class="prevalidar-btn"
-                                    style="color: white; cursor:pointer;"
-                                    data-id="{{ $rise->id }}"
-                                    data-name="{{ $rise->nombre }} {{ $rise->apellidoPaterno }} {{ $rise->apellidoMaterno }}"
-                                    title="PREVALIDAR">
-                                        <i class="fa fa-edit fa-2x fa-lg text-primary"></i>
-                                    </a> &nbsp;
-                                </td>
-                            </tr>
-                        @endif
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">No Hay Datos</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <!-- Prevalidado Tab -->
-        <div class="tab-pane fade" id="prevalidado" role="tabpanel" aria-labelledby="prevalidado-tab">
-            <table class="table table-responsive-md">
-                <thead>
-                    <tr>
-                        <th scope="col">INSTRUCTOR</th>
-                        {{-- <th scope="col">NUMERO DE REVISIÓN</th> --}}
-                        <th scope="col">UNIDAD SOLICITA</th>
-                        <th scope="col">STATUS</th>
-                        <th scope="col">FECHA</th>
-                        <th scope="col">ACCION</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($data as $rise)
-                        @if($rise->status == 'PREVALIDADO')
-                            <tr>
-                                <td>{{ $rise->nombre }} {{$rise->apellidoPaterno}} {{$rise->apellidoMaterno}}</td>
-                                {{-- <td>{{ $rise->nrevision }}</td> --}}
-                                <td>{{ $rise->unidad_solicita }}</td>
-                                <td>{{ $rise->status }} {{ $rise->turnado }}</td>
-                                <td>{{ $rise->updated_at}}</td>
-                                <td>
-                                    <a style="color: white;" target="_blank" class="fa fa-eye fa-2x fa-lg text-success" title="MOSTRAR INFORMACION" href="{{route('instructor-ver', ['id' => $rise->id])}}"></a> &nbsp;
-                                    <a class="cotejar-btn"
-                                        style="color: white; cursor:pointer;"
-                                        data-id="{{ $rise->id }}"
-                                        data-name="{{ $rise->nombre }} {{ $rise->apellidoPaterno }} {{ $rise->apellidoMaterno }}"
-                                        title="COTEJAR">
-                                        <i class="fa fa-check fa-2x fa-lg text-primary"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endif
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">No Hay Datos</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <!-- Cotejado Tab -->
-        <div class="tab-pane fade" id="cotejado" role="tabpanel" aria-labelledby="cotejado-tab">
-            <table class="table table-responsive-md">
-                <thead>
-                    <tr>
-                        <th scope="col">INSTRUCTOR</th>
-                        {{-- <th scope="col">NUMERO DE REVISIÓN</th> --}}
-                        <th scope="col">UNIDAD SOLICITA</th>
-                        <th scope="col">STATUS</th>
-                        <th scope="col">FECHA</th>
-                        <th scope="col">ACCION</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($data as $rise)
-                        @if($rise->status == 'COTEJADO')
-                            <tr>
-                                <td>{{ $rise->nombre }} {{$rise->apellidoPaterno}} {{$rise->apellidoMaterno}}</td>
-                                {{-- <td>{{ $rise->nrevision }}</td> --}}
-                                <td>{{ $rise->unidad_solicita }}</td>
-                                <td>{{ $rise->status }} {{ $rise->turnado }}</td>
-                                <td>{{ $rise->updated_at}}</td>
-                                <td>
-                                    <a style="color: white;" target="_blank" class="fa fa-eye fa-2x fa-lg text-success" title="MOSTRAR INFORMACION" href="{{route('instructor-ver', ['id' => $rise->id])}}"></a> &nbsp;
-                                    <a class="aprobar-btn"
-                                        style="color: white; cursor:pointer;"
-                                        data-id="{{ $rise->id }}"
-                                        data-name="{{ $rise->nombre }} {{ $rise->apellidoPaterno }} {{ $rise->apellidoMaterno }}"
-                                        title="APROBAR">
-                                        <i class="fa fa-thumbs-up fa-2x fa-lg text-primary"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endif
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">No Hay Datos</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    <div id="tabs-container">
+        @include('solicitudes.instructorAspirante.partials.tabs', ['data' => $data])
     </div>
     <!-- Nav Tabs End -->
 </div>
@@ -247,6 +138,36 @@
   </div>
 </div>
 
+<!-- Rechazo Modal (shared for both statuses) -->
+<div class="modal fade" id="rechazoModal" tabindex="-1" aria-labelledby="rechazoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('aspirante.instructor.rechazar') }}">
+        @csrf
+        <input type="hidden" id="rechazar-context" name="context" value="ENVIADO">
+        <div class="modal-header">
+          <h5 class="modal-title w-100 text-center" id="rechazoModalLabel">Rechazar</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <input type="hidden" id="rechazar-id" name="id" value="">
+          <div class="mb-3">
+            Aspirante seleccionado: <b><span id="show-rechazar-name"></span></b>
+          </div>
+          <div class="mb-3">
+            <label for="observacion-rechazo" class="form-label">Observación de rechazo:</label>
+            <textarea class="form-control" id="observacion-rechazo" name="observacion" rows="3" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-danger">Confirmar Rechazo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
     $(document).on('click', '.prevalidar-btn', function() {
         var id = $(this).data('id');
@@ -269,5 +190,41 @@
         $('#show-aprobar-name').text(name);
         $('#aprobarModal').modal('show');
     });
+    // For ENVIADO
+    $(document).on('click', '.rechazar-btn', function() {
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+        $('#rechazar-id').val(id);
+        $('#show-rechazar-name').text(name);
+        $('#observacion-rechazo').val('');
+        $('#rechazar-context').val('ENVIADO');
+        $('#rechazoModal').modal('show');
+    });
+    // For PREVALIDADO
+    $(document).on('click', '.rechazar-prevalidado-btn', function() {
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+        $('#rechazar-id').val(id);
+        $('#show-rechazar-name').text(name);
+        $('#observacion-rechazo').val('');
+        $('#rechazar-context').val('PREVALIDADO');
+        $('#rechazoModal').modal('show');
+    });
+    // For CONVOCADO
+    $(document).on('click', '.rechazar-convocado-btn', function() {
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+        $('#rechazar-id').val(id);
+        $('#show-rechazar-name').text(name);
+        $('#observacion-rechazo').val('');
+        $('#rechazar-context').val('CONVOCADO');
+        $('#rechazoModal').modal('show');
+    });
+    $('#unidad-select').on('change', function() {
+    var unidad = $(this).val();
+    $.get("{{ route('aspirante.instructor.filter') }}", { unidad: unidad }, function(response) {
+        $('#tabs-container').html(response.html);
+    });
+});
 </script>
 @endsection
