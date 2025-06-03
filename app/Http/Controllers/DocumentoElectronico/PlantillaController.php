@@ -154,7 +154,7 @@ class PlantillaController extends Controller
     {
         $objEplantilla = ['id', 'tipo', 'cuerpo', 'vigencia'];
         $dataQry = $this->servicioPlantilla->getPlantilla($id, 'Plantillas\EPlantilla', $objEplantilla, 'id'); // llamada del servicio con el metodo obtener plantilla parametro con el id y el nombre del modelo
-        #TODO: preferible pasar el parametro desde el controlador para no procesar en la capa de datos
+        #TODO: preferible pasar el parametro desde el controlador para no procesar en la capa de datos - Modificar procesos
         switch ($dataQry->tipo) {
             case 'RF001':
                 #TODO: cada caso servirá para procesar contenido exclusivo del archivo deseado a cargar
@@ -378,7 +378,7 @@ class PlantillaController extends Controller
                 return $pdf->stream('concentreado_de_ingresos_rf001_'.$rfgetData->memorandum.'.pdf');
                 break;
             case 'CONTRATO':
-                $id_contrato = 22713;
+                $id_contrato = 20912;
                 $params = ['table' => 'contratos',
                     'select' => [
                         'tbl_unidades.*',
@@ -418,6 +418,100 @@ class PlantillaController extends Controller
                 $position = count($numOficioBuilder) - 2;
                 array_splice($numOficioBuilder, $position, 0, $numDocs);
                 $numOficio = implode('/',$numOficioBuilder);
+                $contratoParam = [
+                    'table' => 'contratos',
+                    'select' => [
+                        'id_contrato','numero_contrato','cantidad_letras1','fecha_firma','municipio',
+                        'id_folios','instructor_perfilid','unidad_capacitacion','docs','observacion','cantidad_numero','arch_factura','arch_factura_xml',
+                        'fecha_status','chk_rechazado','fecha_rechazo','arch_contrato','folio_fiscal','id_curso'
+                    ],
+                    'where' => [
+                        ['column' => 'contratos.id_contrato', 'value' => $id_contrato]
+                    ],
+                    'first' => true
+                ];
+                $dataContrato = $this->servicioPlantilla->consultaDinamica($contratoParam);
+                $paramsData = [
+                    'table' => 'contratos',
+                    'select' => [
+                        'folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','tbl_cursos.fecha_apertura','tbl_cursos.soportes_instructor',
+                        'tbl_cursos.tipo_curso','tbl_cursos.espe', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
+                        'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion','instructores.rfc','tbl_cursos.modinstructor',
+                        'instructores.curp','instructores.domicilio','tabla_supre.fecha_validacion'
+                    ],
+                    'joins' => [
+                        ['table' => 'folios', 'first' => 'folios.id_folios', 'second' => 'contratos.id_folios'],
+                        ['table' => 'tabla_supre', 'first' => 'tabla_supre.id', 'second' => 'folios.id_supre'],
+                        ['table' => 'tbl_cursos', 'first' => 'tbl_cursos.id', 'second' => 'folios.id_cursos'],
+                        ['table' => 'instructores', 'first' => 'instructores.id', 'second' => 'tbl_cursos.id_instructor']
+                    ],
+                    'where' => [
+                        ['column' => 'folios.id_folios', 'value' => $dataContrato->id_folios]
+                    ],
+                    'first' => true
+                ];
+                $dataQuery = $this->servicioPlantilla->consultaDinamica($paramsData);
+                // $especialidadParam = [
+                //     'table' => 'especialidad_instructores',
+                //     'select' => [
+                //         'especialidades.nombre'
+                //     ],
+                //     'joins' => [
+                //         ['table' => 'especialidades', 'first' => 'especialidades.id', 'second' => 'especialidad_instructores.especialidad_id'],
+                //     ],
+                //     'where' => [
+                //         ['column' => 'especialidad_instructores.id', 'value' => $dataContrato->instructor_perfilid]
+                //     ],
+                //     'first' => true
+                // ];
+                // $especialidad = $this->servicioPlantilla->consultaDinamica($especialidadParam);
+                $fecha_act = new Carbon('23-06-2022');
+                $fecha_fir = new Carbon($dataContrato->fecha_firma);
+                $nombreInstructor = $dataQuery->nombre . ' ' . $dataQuery->apellidoPaterno . ' ' . $dataQuery->apellidoMaterno;
+                $date = strtotime($dataContrato->fecha_firma);
+                $D = date('d', $date);
+                $M = $this->servicioPlantilla->paraMes(date('m', $date));
+                $Y = date("Y", $date);
+                $direccion_instituto = \DB::Table('tbl_instituto')->Where('id',1)->Value('direccion');
+                $direccion_instituto = str_replace('*',' ',$direccion_instituto);
+                $direccion_instituto = mb_strtoupper(str_replace('. Tuxtla',', en la ciudad de Tuxtla',$direccion_instituto), 'UTF-8');
+                $cantidad = $this->servicioPlantilla->formatoNumero($dataContrato->cantidad_numero);
+                $monto = explode(".",strval($dataContrato->cantidad_numero));
+                // obtencion de tipo de identificaion y folio dependiendo si esta en el json o en el capo a parte
+                $dataQuery->soportes_instructor = json_decode($dataQuery->soportes_instructor);
+                if(isset($dataQuery->soportes_instructor->tipo_identificacion)) {
+                    $tipo_identificacion =$dataQuery->soportes_instructor->tipo_identificacion;
+                    $folio_identificacion = $dataQuery->soportes_instructor->folio_identificacion;
+                } else {
+                    $tipo_identificacion = $dataQuery->instructor_tipo_identificacion;
+                    $folio_identificacion = $dataQuery->instructor_folio_identificacion;
+                }
+                $loadArray = [
+                    'no_contrato' => $dataContrato->numero_contrato,
+                    'titular_uc' => $info->dunidad,
+                    'cargo_titular_uc' => $info->pdunidad,
+                    'instructor' => $nombreInstructor,
+                    'cargo_dg' => $info->pdgeneral,
+                    'director_general' => $info->dgeneral,
+                    'gobernador' => 'DR. EDUARDO RAMÍREZ AGUILAR',
+                    'fecha_nom_dg' => '16 de enero de 2019',
+                    'espe_instructor' => $dataQuery->espe,
+                    'regimen_instructor' => 'SUELDOS Y SALARIOS E INGRESOS '.$dataQuery->modinstructor,
+                    'clave_grupo' => $dataQuery->clave,
+                    'tipo_identif_instructor' => $dataQuery->instructor_tipo_identificacion,
+                    'folio_identif_instructor' => $dataQuery->instructor_folio_identificacion,
+                    'rfc_instructor' => $dataQuery->rfc,
+                    'domicilio_instructor' => $dataQuery->domicilio,
+                    'importe_monto' => $cantidad,
+                    'importeMontoLetra' => $dataContrato->cantidad_letras1.' '. $monto[1].'/100 M.N.',
+                    'municipio' => $info->municipio,
+                ];
+                $contenidoProcesado = $this->servicioPlantilla->procesarPlantilla($dataQry->cuerpo, $loadArray);
+                $pdf = $this->servicioPlantilla->generarPdfDocument(['contenido' => $contenidoProcesado]);
+                return $pdf->stream('contrato_instrcutor_externo_'.$dataContrato->numero_contrato.'.pdf');
+                break;
+            case 'value':
+                # code...
                 break;
             default:
                 # code...

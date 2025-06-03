@@ -549,4 +549,54 @@ class DocumentoService
         // obtener first o get
         return $params['first'] ?? true ? $query->first() : $query->get();
     }
+
+    public function paraMes(int $mes)
+    {
+        switch ($mes) {
+            case 1:
+                return "Enero";
+            break;
+            case 2:
+                return "Febrero";
+            break;
+            case 3:
+                return "Marzo";
+            break;
+            case 4:
+                return "Abril";
+            break;
+            case 5:
+                return "Mayo";
+            break;
+            case 6:
+                return "Junio";
+            break;
+            case 7:
+                return "Julio";
+            break;
+            case 8:
+                return "Agosto";
+            break;
+            case 9:
+                return "Septiembre";
+            break;
+            case 10:
+                return "Octubre";
+            break;
+            case 11:
+                return "Noviembre";
+            break;
+            case 12:
+                return "Diciembre";
+            break;
+        }
+    }
+
+    public function formatoNumero(string $numero)
+    {
+        $part = explode(".", $numero);
+        $part[0] = number_format($part['0']);
+        $cadwell = implode(".", $part);
+        return ($cadwell);
+    }
 }
