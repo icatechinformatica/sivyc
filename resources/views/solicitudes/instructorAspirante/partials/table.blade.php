@@ -1,23 +1,41 @@
 {{-- filepath: resources/views/solicitudes/instructorAspirante/partials/table.blade.php --}}
+@php
+    $rechazadoStatus = [
+        'ENVIADO' => 'RECHAZADO ENVIADO',
+        'PREVALIDADO' => 'RECHAZADO PREVALIDADO',
+        'CONVOCADO' => 'RECHAZADO CONVOCADO'
+    ];
+@endphp
 <table class="table table-responsive-md">
     <thead>
         <tr>
             <th scope="col">INSTRUCTOR</th>
             {{-- <th scope="col">NUMERO DE REVISIÓN</th> --}}
             <th scope="col">UNIDAD ASIGNADA</th>
-            <th scope="col">STATUS</th>
+            <th scope="col">ESPECIALIDAD</th>
             <th scope="col">FECHA</th>
             <th scope="col">ACCION</th>
         </tr>
     </thead>
     <tbody>
         @forelse($data as $rise)
-            @if($rise->status == $status)
+            @php
+                $isRechazado = isset($rechazadoStatus[$status]) && $rise->status == $rechazadoStatus[$status];
+            @endphp
+            @if($rise->status == $status || (!empty($showRechazados) && $isRechazado))
                 <tr>
                     <td>{{ $rise->nombre }} {{$rise->apellidoPaterno}} {{$rise->apellidoMaterno}}</td>
                     {{-- <td>{{ $rise->nrevision }}</td> --}}
                     <td>{{ $rise->unidad_asignada }}</td>
-                    <td>{{ $rise->status }} {{ $rise->turnado }}</td>
+                    <td>
+                        <ul class="mb-0 ps-3">
+                            @foreach ($rise->data_especialidad as $esp)
+                                @if (isset($especialidades[$esp['especialidad_id']]))
+                                    <li>{{ $especialidades[$esp['especialidad_id']] }}</li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </td>
                     <td>{{ $rise->updated_at}}</td>
                     <td>
                         @if($status == 'ENVIADO')

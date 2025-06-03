@@ -6,10 +6,12 @@
 <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
     #unidad-select {
         max-width: 300px;
-        margin-bottom: 20px;
+        margin-bottom: 0 !important;
+        /* Remove extra margin if any */
         border-radius: 0.5rem;
         border: 1px solid #000000;
         font-size: 1.1rem;
@@ -23,25 +25,55 @@
         box-shadow: 0 0 0 0.2rem rgba(179,0,92,0.15);
         outline: none;
     }
+    /* Custom slider switch style */
+    .form-switch .form-check-input {
+        width: 50px;
+        height: 26px;
+        background-color: #e9ecef;
+        border-radius: 26px;
+        position: relative;
+        transition: background-color 0.3s;
+        box-shadow: none;
+        border: 1px solid #b3005c;
+    }
+
+    .form-switch .form-check-input:checked {
+        background-color: #b3005c;
+        border-color: #b3005c;
+    }
+
+    .form-switch .form-check-input:before {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 4px;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.3s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .form-switch .form-check-input:checked:before {
+        transform: translateX(24px);
+    }
+
+    /* Center the label text with the switch */
+    .form-switch .form-check-label {
+        margin-bottom: 0;
+        font-weight: bold;
+        color: #000000;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        height: 26px;
+        min-width: 170px; /* or adjust as needed */
+    }
 </style>
-<div class="card-header">
+<div class="card-header" style="color: white;">
     Prevalidacion de Aspirante a Instructor
 </div>
-<form method="GET" action="{{ route('aspirante.instructor.index') }}" class="mb-3">
-    <div class="row">
-        <div class="col-md-4">
-            <label for="unidad-select" class="form-label" style="color:#000000;font-weight:bold; margin: 0% 0% 0% 10%;">Filtrar por Unidad:</label>
-            <select name="unidad" id="unidad-select" class="form-select">
-                <option value="">-- Todas las Unidades --</option>
-                @foreach($unidades as $unidad)
-                    <option value="{{ $unidad }}" {{ request('unidad') == $unidad ? 'selected' : '' }}>
-                        {{ $unidad }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-</form>
 <div class="card card-body" style=" min-height:450px;">
     @if (Session::has('success'))
         <div class="alert alert-info alert-block">
@@ -53,9 +85,34 @@
             <strong>{{ Session::get('error') }}</strong>
         </div>
     @endif
+    <form method="GET" action="{{ route('aspirante.instructor.index') }}" class="mb-3">
+        <div class="row mb-3">
+            <div class="col-md-6 d-flex align-items-center">
+                <label for="unidad-select" class="mb-0 me-3" style="color:#000000;font-weight:bold; white-space:nowrap;">
+                    Filtrar por Unidad:
+                </label>
+                <select name="unidad" id="unidad-select" class="form-select" style="max-width: 200px;">
+                    <option value="">-- Todas las Unidades --</option>
+                    @foreach($unidades as $unidad)
+                        <option value="{{ $unidad }}" {{ request('unidad') == $unidad ? 'selected' : '' }}>
+                            {{ $unidad }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </form>
+    <form id="export-form" method="GET" action="{{ route('aspirante.instructor.export') }}" class="mb-3">
+        <input type="hidden" name="unidad" id="export-unidad" value="{{ request('unidad') }}">
+        <input type="hidden" name="status" id="export-status" value="ENVIADO">
+        <input type="hidden" name="showRechazados" id="export-showRechazados" value="0">
+        <button type="submit" class="btn btn-success">
+            <i class="fa fa-file-excel"></i> Exportar Excel
+        </button>
+    </form>
     <!-- Nav Tabs Start -->
     <div id="tabs-container">
-        @include('solicitudes.instructorAspirante.partials.tabs', ['data' => $data])
+        @include('solicitudes.instructorAspirante.partials.tabs', ['data' => $data, 'especialidades' => $especialidades])
     </div>
     <!-- Nav Tabs End -->
 </div>
@@ -220,11 +277,53 @@
         $('#rechazar-context').val('CONVOCADO');
         $('#rechazoModal').modal('show');
     });
-    $('#unidad-select').on('change', function() {
-    var unidad = $(this).val();
-    $.get("{{ route('aspirante.instructor.filter') }}", { unidad: unidad }, function(response) {
-        $('#tabs-container').html(response.html);
+    function attachRechazadosSwitchHandler() {
+    $('#showRechazadosSwitch, #unidad-select').off('change').on('change', function() {
+        // Get the currently active tab id
+        var activeTabId = $('#myTab .nav-link.active').attr('id');
+        var unidad = $('#unidad-select').val();
+        var showRechazados = $('#showRechazadosSwitch').is(':checked') ? 1 : 0;
+        $.get("{{ route('aspirante.instructor.filter') }}", { unidad: unidad, showRechazados: showRechazados }, function(response) {
+            $('#tabs-container').html(response.html);
+            // Restore switch state after AJAX update
+            $('#showRechazadosSwitch').prop('checked', showRechazados === 1);
+            // Re-attach the handler
+            attachRechazadosSwitchHandler();
+
+            // Restore the previously active tab
+            if (activeTabId) {
+                var newActiveTab = $('#' + activeTabId);
+                if (newActiveTab.length) {
+                    newActiveTab.tab('show');
+                }
+            }
+        });
     });
+}
+
+// Attach on first load
+$(document).ready(function() {
+    attachRechazadosSwitchHandler();
 });
+</script>
+<script>
+    function updateExportForm() {
+        $('#export-unidad').val($('#unidad-select').val());
+        $('#export-showRechazados').val($('#showRechazadosSwitch').is(':checked') ? 1 : 0);
+        // Get active tab status
+        let status = 'ENVIADO';
+        if ($('#prevalidado-tab').hasClass('active')) status = 'PREVALIDADO';
+        if ($('#convocado-tab').hasClass('active')) status = 'CONVOCADO';
+        $('#export-status').val(status);
+    }
+
+    $('#export-form').on('submit', function() {
+        updateExportForm();
+    });
+
+    // Also update on tab change
+    $('#myTab .nav-link').on('shown.bs.tab', function() {
+        updateExportForm();
+    });
 </script>
 @endsection
