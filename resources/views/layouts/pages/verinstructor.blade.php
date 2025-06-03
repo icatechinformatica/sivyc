@@ -98,6 +98,10 @@
                 {{ session('mensaje') }}
             </div>
         @endif
+        @php
+            //Ruta pathfiles
+            $path_files = 'https://sivyc.icatech.gob.mx/storage';
+        @endphp
 
         <div class="card card-body">
             @if($datainstructor->rechazo != NULL && $datainstructor->status == 'RETORNO')
@@ -824,7 +828,13 @@
                             @if($datainstructor->archivo_domicilio == NULL)
                                 <i id="arch_domicilio_pdf"  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_domicilio_pdf" href={{$datainstructor->archivo_domicilio}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_domicilio_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_domicilio, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_domicilio}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_domicilio}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -851,7 +861,13 @@
                             @if($datainstructor->archivo_curp == NULL)
                                 <i id="arch_curp_pdf"  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_curp_pdf" href={{$datainstructor->archivo_curp}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_curp_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_curp, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_curp}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_curp}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -878,7 +894,13 @@
                             @if($datainstructor->archivo_bancario == NULL)
                                 <i id="arch_banco_pdf"  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_banco_pdf" href={{$datainstructor->archivo_bancario}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_banco_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_bancario, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_bancario}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_bancario}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -905,7 +927,13 @@
                             @if($datainstructor->archivo_fotografia == NULL)
                                 <i id="arch_foto_jpg" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_foto_jpg" href={{$datainstructor->archivo_fotografia}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_foto_jpg" href="
+                                    @if (filter_var($datainstructor->archivo_fotografia, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_fotografia}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_fotografia}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -934,7 +962,13 @@
                             @if($datainstructor->archivo_otraid == NULL)
                                 <i id="arch_id_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_id_pdf" href={{$datainstructor->archivo_otraid}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_id_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_otraid, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_otraid}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_otraid}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -961,7 +995,13 @@
                             @if($datainstructor->archivo_rfc == NULL)
                                 <i id="arch_rfc_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_rfc_pdf" href={{$datainstructor->archivo_rfc}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_rfc_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_rfc, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_rfc}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_rfc}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -988,7 +1028,13 @@
                             @if($datainstructor->archivo_estudios == NULL)
                                 <i id="arch_estudio_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_estudio_pdf" href={{$datainstructor->archivo_estudios}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_estudio_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_estudios, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_estudios}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_estudios}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -1015,7 +1061,13 @@
                             @if($datainstructor->archivo_curriculum_personal == NULL)
                                 <i id="arch_curriculum_personal_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_curriculum_personal_pdf" href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_curriculum_personal_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_curriculum_personal, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_curriculum_personal}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_curriculum_personal}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
