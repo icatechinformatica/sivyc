@@ -209,6 +209,7 @@
                                     Folios</a>
                             @endcan
                             @can('prevalidar_index-instructor')
+                                <a class="dropdown-item" href="{{ route('aspirante.instructor.index') }}">Prevalidacion de Aspirantes a Instructores</a>
                                 <a class="dropdown-item" href="{{ route('prevalidar-ins') }}">Validación de Instructores</a>
                             @endcan
                             @can('buzon.plane.pat')
@@ -375,10 +376,10 @@
                                 <a class="dropdown-item" href="{{ route('consultas.lotes') }}">Actas de Folios</a>
                             @endcan
                             @can('consulta.bolsa.trabajo')
-                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Incorporación Laboral</a>
+                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
                             @endcan
-                            @can('consultas.cursosaperturados')
-                                <a class="dropdown-item" href="{{ route('consultas.cursosaperturados') }}">Cursos Aperturados</a>
+                             @can('consulta.bolsa.trabajo')
+                                <a class="dropdown-item" href="{{ route('consultas.bolsa.index') }}">Bolsa de trabajo</a>
                             @endcan
                             @can('consultas.contratosfirmados')
                                 <a class="dropdown-item" href="{{ route('consultas.contratosfirmados') }}"> DTA - Contratos</a>
