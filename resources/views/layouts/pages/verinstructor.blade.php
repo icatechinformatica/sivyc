@@ -517,7 +517,13 @@
                                     @if($datainstructor->archivo_ine == NULL)
                                         <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                                     @else
-                                    <a href={{$datainstructor->archivo_ine}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                        <a href="
+                                            @if (filter_var($datainstructor->archivo_ine, FILTER_VALIDATE_URL))
+                                                {{$datainstructor->archivo_ine}}
+                                            @else
+                                                {{$path_files.$datainstructor->archivo_ine}}
+                                            @endif
+                                            " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                     @endif
                                 </td>
                                 <td></td>
