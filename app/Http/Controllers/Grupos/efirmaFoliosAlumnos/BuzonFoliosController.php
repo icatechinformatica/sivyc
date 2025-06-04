@@ -28,8 +28,8 @@ class BuzonFoliosController extends Controller
         //Debemos obtener la unidad a la que pertenece el usuario para la visualizacion, firmado y sellado
         $data = $ids = $cad_original = $array_firm = [];
         $token = '';
-        $existcurp = $existmail = $existfirma = false;
-        $curpf = $emailf = '';
+        $existcurp = $existfirma = false;
+        $curpf = '';
 
         ## Obtenemos la unidad y el rol del usuario
         $unidad = Auth::user()->unidad;
@@ -38,19 +38,19 @@ class BuzonFoliosController extends Controller
         // $aceptados = ['admin', 'titular_unidad', 'director_unidad'];
 
         ##Obtenemos curp, email del firmante para validar si le pertenece firmar el documento
-        $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp', 'tbl_funcionarios.correo')
-        ->Join('tbl_funcionarios','tbl_funcionarios.correo','users.email')
+        $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
+        ->Join('tbl_funcionarios','tbl_funcionarios.curp','users.curp')
         ->Where('users.id', Auth::user()->id)
         ->First();
 
-        if($curpUser != null){$curpf = $curpUser->curp;$emailf = $curpUser->correo;}
+        if($curpUser != null){$curpf = $curpUser->curp;}
 
         ## Estados del documento
         $estados = ['EnFirma' => 'POR FIRMAR','firmado' => 'FIRMADO','sellado' => 'SELLADO','cancelado' => 'CANCELADO'];
 
         ### Recopilamos los datos del request
         if(session('ejercicio_e')) $ejercicio_e = session('ejercicio_e');
-        else $ejercicio_e = $request->anio;
+        else $ejercicio_e = date('Y');
         if($ejercicio_e) $_SESSION['ejercicio_e'] = $ejercicio_e;
 
         if(session('filtro_e')) $filtro_e = session('filtro_e');
@@ -136,7 +136,7 @@ class BuzonFoliosController extends Controller
         }
 
         return view('grupos.efirmafolios.efirmabuzon_folios', compact('ubicacion','estados','ejercicio_e','filtro_e','clave_e',
-        'data','ids','matricula','token', 'cad_original', 'array_firm', 'curpf','existcurp','existmail','slug', 'existfirma'));
+        'data','ids','matricula','token', 'cad_original', 'array_firm', 'curpf','existcurp','slug', 'existfirma'));
     }
 
 
@@ -258,7 +258,7 @@ class BuzonFoliosController extends Controller
                 }
 
                 $pdf = PDF::loadView('grupos.efirmafolios.pdfconstancia_efolios',compact('data', 'uuid', 'cadena_sello', 'fecha_sello', 'no_oficio', 'qrCodeBase64', 'firmantes', 'cont_tematico', 'url_uno_membretado', 'url_dos_membretado'));
-                return $pdf->stream('Constancia alumno');
+                return $pdf->stream('Constancia_'.$data['curp'].'.pdf');
             }else{
                 return "Error al realizar la consulta a la base de datos";
             }
