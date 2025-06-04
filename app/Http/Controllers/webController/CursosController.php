@@ -69,6 +69,13 @@ class CursosController extends Controller
         $data = $data->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
             ->leftJoin('users as user_created', 'cursos.iduser_created', '=', 'user_created.id')
             ->leftJoin('users as user_updated', 'cursos.iduser_updated', '=', 'user_updated.id')
+            ->leftJoin(DB::raw("(
+                                SELECT id_curso,
+                                    FLOOR(SUM(EXTRACT(EPOCH FROM duracion::interval)) / 3600)::int as horas_tematico
+                                FROM contenido_tematico
+                                WHERE id_parent = 0
+                                GROUP BY id_curso
+                            ) as duracion_total"), 'duracion_total.id_curso', '=', 'cursos.id')
             ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
                        'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
                        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
@@ -78,7 +85,8 @@ class CursosController extends Controller
                        'cursos.servicio','cursos.proyecto','cursos.file_carta_descriptiva',
                         DB::raw("REPLACE(user_created.name, 'BAJA', '') as user_created_name"),
                         DB::raw("REPLACE(user_updated.name, 'BAJA', '') as user_updated_name"),
-                        'cursos.created_at', 'cursos.updated_at'
+                        'cursos.created_at', 'cursos.updated_at',
+                        DB::raw("COALESCE(duracion_total.horas_tematico, 0) as horas_tematico")
                     ]);
         return view('layouts.pages.vstacursosinicio',compact('data'));
     }

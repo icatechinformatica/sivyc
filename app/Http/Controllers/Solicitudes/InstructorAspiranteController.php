@@ -33,7 +33,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\FormatoTReport;
 use ZipArchive;
 use PDF;
 use App\User;
@@ -43,9 +42,17 @@ class InstructorAspiranteController extends Controller
 
     public function index(Request $request)
     {
-        // dd('asd');
-        $data = pre_instructor::WhereIn('status',['ENVIADO','PREVALIDADO','COTEJADO'])->Get();
-        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data'));
+        $unidades = tbl_unidades::select('ubicacion')->distinct()->pluck('ubicacion');
+        $especialidades = especialidad::pluck('nombre', 'id')->toArray();
+        $query = pre_instructor::whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
+
+        if ($request->filled('unidad')) {
+            $query->where('unidad_asignada', $request->unidad);
+        }
+
+        $data = $query->get();
+
+        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades'));
     }
 
     public function prevalidar(Request $request)
@@ -81,6 +88,103 @@ class InstructorAspiranteController extends Controller
 
         return redirect()->route('aspirante.instructor.index')
             ->with('success', 'Aspirante aprobado correctamente.');
+    }
+
+    public function filter(Request $request)
+    {
+        $unidad = $request->input('unidad');
+        $showRechazados = $request->input('showRechazados', false);
+        $data = pre_instructor::whereIn('status', [
+            'ENVIADO', 'PREVALIDADO', 'CONVOCADO',
+            'RECHAZADO ENVIADO', 'RECHAZADO PREVALIDADO', 'RECHAZADO CONVOCADO'
+        ]);
+        if ($unidad) {
+            $data->where('unidad_asignada', $unidad);
+        }
+        $data = $data->get();
+
+        // Add this line to get especialidades
+        $especialidades = especialidad::pluck('nombre', 'id')->toArray();
+
+        $html = view('solicitudes.instructorAspirante.partials.tabs', [
+            'data' => $data,
+            'especialidades' => $especialidades, // <-- pass it here!
+            'showRechazados' => $showRechazados
+        ])->render();
+        return response()->json(['html' => $html]);
+    }
+
+    public function rechazar(Request $request)
+    {
+        $id = $request->input('id');
+        $observacion = $request->input('observacion');
+        $context = $request->input('context');
+        $aspirante = pre_instructor::find($id);
+
+        if ($context === 'PREVALIDADO') {
+            $aspirante->status = 'RECHAZADO PREVALIDADO';
+        } elseif ($context === 'CONVOCADO') {
+            $aspirante->status = 'RECHAZADO CONVOCADO';
+        } else {
+            $aspirante->status = 'RECHAZADO ENVIADO';
+        }
+        $aspirante->rechazo = $observacion;
+        $aspirante->save();
+
+        return redirect()->route('aspirante.instructor.index')
+            ->with('success', 'Aspirante rechazado correctamente.');
+    }
+
+    public function export(Request $request)
+    {
+        $unidad = $request->input('unidad');
+        $status = $request->input('status', 'ENVIADO');
+        $showRechazados = $request->input('showRechazados', false);
+
+        $rechazadoStatus = [
+            'ENVIADO' => 'RECHAZADO ENVIADO',
+            'PREVALIDADO' => 'RECHAZADO PREVALIDADO',
+            'CONVOCADO' => 'RECHAZADO CONVOCADO'
+        ];
+
+        $query = pre_instructor::query();
+
+        if ($unidad) {
+            $query->where('unidad_asignada', $unidad);
+        }
+
+        if ($showRechazados) {
+            $query->where(function($q) use ($status, $rechazadoStatus) {
+                $q->where('status', $status)
+                  ->orWhere('status', $rechazadoStatus[$status]);
+            });
+        } else {
+            $query->where('status', $status);
+        }
+
+        $data = $query->get();
+        $especialidades = \App\Models\especialidad::pluck('nombre', 'id')->toArray();
+
+        $exportData = [];
+        foreach ($data as $row) {
+            $especialidadNombres = [];
+            if (is_array($row->data_especialidad)) {
+                foreach ($row->data_especialidad as $esp) {
+                    if (isset($especialidades[$esp['especialidad_id']])) {
+                        $especialidadNombres[] = $especialidades[$esp['especialidad_id']];
+                    }
+                }
+            }
+            $exportData[] = [
+                $row->nombre . ' ' . $row->apellidoPaterno . ' ' . $row->apellidoMaterno,
+                $row->unidad_asignada,
+                implode(', ', $especialidadNombres),
+                $row->updated_at,
+                $row->status
+            ];
+        }
+
+        return Excel::download(new \App\Exports\AspirantesExport($exportData), 'aspirantes_'.$status.'.xlsx');
     }
 }
 
