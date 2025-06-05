@@ -281,18 +281,18 @@
     });
     function attachRechazadosSwitchHandler() {
     $('#showRechazadosSwitch, #unidad-select').off('change').on('change', function() {
-        // Get the currently active tab id
         var activeTabId = $('#myTab .nav-link.active').attr('id');
         var unidad = $('#unidad-select').val();
         var showRechazados = $('#showRechazadosSwitch').is(':checked') ? 1 : 0;
-        $.get("{{ route('aspirante.instructor.filter') }}", { unidad: unidad, showRechazados: showRechazados }, function(response) {
-            $('#tabs-container').html(response.html);
-            // Restore switch state after AJAX update
-            $('#showRechazadosSwitch').prop('checked', showRechazados === 1);
-            // Re-attach the handler
-            attachRechazadosSwitchHandler();
+        // Get current status from active tab
+        var status = 'ENVIADO';
+        if ($('#prevalidado-tab').hasClass('active')) status = 'PREVALIDADO';
+        if ($('#convocado-tab').hasClass('active')) status = 'CONVOCADO';
 
-            // Restore the previously active tab
+        $.get("{{ route('aspirante.instructor.filter') }}", { unidad: unidad, showRechazados: showRechazados, status: status }, function(response) {
+            $('#tabs-container').html(response.html);
+            $('#showRechazadosSwitch').prop('checked', showRechazados === 1);
+            attachRechazadosSwitchHandler();
             if (activeTabId) {
                 var newActiveTab = $('#' + activeTabId);
                 if (newActiveTab.length) {
