@@ -207,7 +207,11 @@ class RHController extends Controller
                    'tapachula' => '75fe37dcb06624390152aa92c6ebf6de',
                    'jiquipilas' => '807fadc301799748f30e6d41e0967875',
                    'yajalon' => '8b7615ce0f0e2417a09fbd5782ef8120',
-                   'reforma' => 'd79918ba4899a2258daafed113f5e143'
+                   'reforma' => 'd79918ba4899a2258daafed113f5e143',
+                   'comitan' => '7050ad0393c629d97d9ea841459d485f',
+                   'catazaja' => '49efff1fc80d439673f948cb0d9defe7',
+                   'tonala' => '7bbb8e4577db24e6c4d22062f51b663c',
+                   'ocosingo' => '91f5fca4bce6fad992d4bf86d52231f7'
                 ];
         $apiSecret = [
                       'oficinas centrales' => 'd7e30cd8e81c98c580c3f5e57c35bd24',
@@ -216,7 +220,11 @@ class RHController extends Controller
                       'tapachula' => '6eef6221ba2407db4064ceb70a55d50d',
                       'jiquipilas' => 'e3e23a53816132bbffbcf015caa707c4',
                       'yajalon' => 'e39065bafa43f4e366189e83c2adb39d',
-                      'reforma' => 'bb7c9be393ad891bbfe2175104ec76c5'
+                      'reforma' => 'bb7c9be393ad891bbfe2175104ec76c5',
+                      'comitan' => '762374d0490ce1e152071297464652f2',
+                      'catazaja' => '8224de6e0bcf925bc9c44285a10d1370',
+                      'tonala' => 'ecadb3908797c2229a636636370e4bb8',
+                      'ocosingo' => '2e64a27092374964f247d4db8833f4ef'
                     ];
 
         foreach($apiKey as $name => $ak) {
