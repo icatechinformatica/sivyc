@@ -29,8 +29,8 @@ class UmController extends Controller
         $texto = ucwords($request->get('busqueda_unidad'));
         $data = UnidadMedida::Busqueda($texto)
             ->select('unidades_medida.*')
-            ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
-            ->orderByDesc('unidades_medida.id')
+            // ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
+            ->orderBy('unidades_medida.id')
             ->paginate(15, ['unidades_medida.*']);
 
         return view('vistas_pat.um_pat', compact('data'));
