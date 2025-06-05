@@ -100,16 +100,18 @@
                     @endforeach
                 </select>
             </div>
+    </form>
+            <div class="col-md-6 d-flex justify-content-end">
+                <form id="export-form" method="GET" action="{{ route('aspirante.instructor.export') }}">
+                    <input type="hidden" name="unidad" id="export-unidad" value="{{ request('unidad') }}">
+                    <input type="hidden" name="status" id="export-status" value="ENVIADO">
+                    <input type="hidden" name="showRechazados" id="export-showRechazados" value="0">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-file-excel"></i> Exportar Excel
+                    </button>
+                </form>
+            </div>
         </div>
-    </form>
-    <form id="export-form" method="GET" action="{{ route('aspirante.instructor.export') }}" class="mb-3">
-        <input type="hidden" name="unidad" id="export-unidad" value="{{ request('unidad') }}">
-        <input type="hidden" name="status" id="export-status" value="ENVIADO">
-        <input type="hidden" name="showRechazados" id="export-showRechazados" value="0">
-        <button type="submit" class="btn btn-success">
-            <i class="fa fa-file-excel"></i> Exportar Excel
-        </button>
-    </form>
     <!-- Nav Tabs Start -->
     <div id="tabs-container">
         @include('solicitudes.instructorAspirante.partials.tabs', ['data' => $data, 'especialidades' => $especialidades])
