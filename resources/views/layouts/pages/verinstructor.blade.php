@@ -819,6 +819,32 @@
                     @endif
                 </tbody>
             </table>
+            <br>
+            <div class="pull-left">
+                        <h4>Estandares de Competencia</h4>
+                    </div>
+             <table class="table table-bordered table-responsive-md" id="espec-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Tipo de Estandar de Competencia</th>
+                        <th scope="col">Nombre del Estandar</th>
+                        <th scope="col">Institución que Expide</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ((array) $datainstructor->certificados as $certificado)
+                        <tr>
+                            <td>{{ $certificado['tipo'] }}</td>
+                            <td>{{ $certificado['nombre'] }}</td>
+                            <td>{{ $certificado['entidad'] }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="text-center">No hay certificados registrados</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
             <hr style="border-color:dimgray">
             <div>
                 <label><h2>Requisitos</h2></label>
