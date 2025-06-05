@@ -94,22 +94,36 @@ class InstructorAspiranteController extends Controller
     {
         $unidad = $request->input('unidad');
         $showRechazados = $request->input('showRechazados', false);
-        $data = pre_instructor::whereIn('status', [
-            'ENVIADO', 'PREVALIDADO', 'CONVOCADO',
-            'RECHAZADO ENVIADO', 'RECHAZADO PREVALIDADO', 'RECHAZADO CONVOCADO'
-        ]);
-        if ($unidad) {
-            $data->where('unidad_asignada', $unidad);
-        }
-        $data = $data->get();
+        $status = $request->input('status', 'ENVIADO'); // Get current tab status from request
 
-        // Add this line to get especialidades
+        $rechazadoStatus = [
+            'ENVIADO' => 'RECHAZADO ENVIADO',
+            'PREVALIDADO' => 'RECHAZADO PREVALIDADO',
+            'CONVOCADO' => 'RECHAZADO CONVOCADO'
+        ];
+
+        $query = pre_instructor::query();
+
+        if ($unidad) {
+            $query->where('unidad_asignada', $unidad);
+        }
+
+        if ($showRechazados) {
+            // Only show rechazados for the current status
+            $query->where('status', $rechazadoStatus[$status]);
+        } else {
+            // Only show normal for the current status
+            $query->where('status', $status);
+        }
+
+        $data = $query->get();
         $especialidades = especialidad::pluck('nombre', 'id')->toArray();
 
         $html = view('solicitudes.instructorAspirante.partials.tabs', [
             'data' => $data,
-            'especialidades' => $especialidades, // <-- pass it here!
-            'showRechazados' => $showRechazados
+            'especialidades' => $especialidades,
+            'showRechazados' => $showRechazados,
+            'status' => $status // Pass current status to view
         ])->render();
         return response()->json(['html' => $html]);
     }
