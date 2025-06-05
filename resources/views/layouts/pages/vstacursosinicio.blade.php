@@ -94,10 +94,10 @@
                         <th >&nbsp;EDIT&nbsp;</th>
                     @endcan
                     <th >&nbsp;VER&nbsp;</th>
-                    {{-- <th >CARTA DESCRI</th> --}}
                     @can('paqueteriasdidacticas')
                     <th >PAQUE TERÍA</th>
                     @endcan
+                    <th >CARTA DESCRI</th>
                 </tr>
             </thead>
             <tbody>
@@ -153,6 +153,20 @@
                             <i class="fa fa-2x fa-folder text-muted"></i></a>
                         </td>
                         @endcan
+
+                        <td>
+                            @if ($itemData->horas_tematico == $itemData->horas)
+                                {{-- <a class="nav-link"  alt="Ver pdf" href="" target="_blank">
+                                    <i  class="fa fa-file-pdf  fa-2x fa-lg text-danger"></i>
+                                </a> --}}
+                                <a class="" href="{{route('carta-descriptiva-pdf', ['id' => $itemData->id])}}" target="_blank">
+                                    <i  class="fa fa-file-pdf  fa-2x fa-lg text-danger"></i>
+                                </a>
+                            @else
+                                <i  class="fa fa-file-pdf  fa-2x fa-lg text-gray"></i>
+                            @endif
+
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

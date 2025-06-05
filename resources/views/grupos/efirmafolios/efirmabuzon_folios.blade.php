@@ -129,11 +129,13 @@
                                 @endif
                                 <button class="btn-sm btn-warning modal_cancelar font-weight-bold">Cancelar {{count($data) >= 2 ? 'Todo' : ''}}</button>
                             </div>
-                        @elseif($existcurp == true && $filtro_e == 'firmado' && $slug != 'director_unidad')
-                            <div class="d-flex justify-content-end mb-2">
-                                <button class="btn-sm btn-danger mr-1 font-weight-bold" data-toggle="modal" data-target="#modalsellar">Sellar {{count($data) >= 2 ? 'Todo' : ''}}</button>
-                                <button class="btn-sm btn-warning modal_cancelar font-weight-bold">Cancelar {{count($data) >= 2 ? 'Todo' : ''}}</button>
-                            </div>
+                        @elseif($existcurp == true && $filtro_e == 'firmado')
+                            @can('econstancias.sellar')
+                                <div class="d-flex justify-content-end mb-2">
+                                    <button class="btn-sm btn-danger mr-1 font-weight-bold" data-toggle="modal" data-target="#modalsellar">Sellar {{count($data) >= 2 ? 'Todo' : ''}}</button>
+                                    <button class="btn-sm btn-warning modal_cancelar font-weight-bold">Cancelar {{count($data) >= 2 ? 'Todo' : ''}}</button>
+                                </div>
+                            @endcan
                         @elseif($filtro_e == 'sellado')
                             <div class="d-flex justify-content-end mb-2">
                                 <button class="btn-sm btn-danger modal_cancelar font-weight-bold">Anular {{count($data) >= 2 ? 'Todo' : ''}}</button>
