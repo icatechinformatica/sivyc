@@ -1126,23 +1126,27 @@
                         </td>
                         @php
                             $dataVal = null;
-                            foreach($validado as $point => $latest) {
-                                if(isset($latest->hvalidacion)){
-                                    $hvalidacion = json_decode($latest->hvalidacion);
-                                } else {
-                                    $hvalidacion = null;
-                                }
-                                if(!is_null($hvalidacion)) {
-                                    if(!is_array($hvalidacion)) {
-                                        $hvalidacion = json_decode($hvalidacion);
+                            if($validado != false) {
+                                foreach($validado as $point => $latest) {
+                                    if(isset($latest->hvalidacion)){
+                                        $hvalidacion = json_decode($latest->hvalidacion);
+                                    } else {
+                                        $hvalidacion = null;
                                     }
-                                    $hvalidacion = end($hvalidacion);
-                                    if(is_null($dataVal) && !isset($hvalidacion->memo_baja)) {
-                                        $dataVal = $hvalidacion;
-                                    } elseif (isset($hvalidacion->memo_val) && !is_null($hvalidacion->memo_val) && $hvalidacion->fecha_val > $dataVal->fecha_val) {
-                                        $dataVal = $hvalidacion;
+                                    if(!is_null($hvalidacion)) {
+                                        if(!is_array($hvalidacion)) {
+                                            $hvalidacion = json_decode($hvalidacion);
+                                        }
+                                        $hvalidacion = end($hvalidacion);
+                                        if(is_null($dataVal) && !isset($hvalidacion->memo_baja)) {
+                                            $dataVal = $hvalidacion;
+                                        } elseif (isset($hvalidacion->memo_val) && !is_null($hvalidacion->memo_val) && $hvalidacion->fecha_val > $dataVal->fecha_val) {
+                                            $dataVal = $hvalidacion;
+                                        }
                                     }
                                 }
+                            } else {
+                                $validado = [];
                             }
                         @endphp
                         <td id="center" width="50px">
