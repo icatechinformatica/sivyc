@@ -1777,6 +1777,9 @@ class InstructorController extends Controller
 
             $perfil = $this->make_collection($datainstructor->data_perfil);
             $validado = $this->make_collection($datainstructor->data_especialidad);
+            if($validado != FALSE)
+        {
+
             foreach($validado as $key => $ges)
             {
                 $lista = null;
@@ -1816,6 +1819,7 @@ class InstructorController extends Controller
 
                 // dd($validado[$key]->cursos_impartir);
             }
+        }
             // dd($validado);
         }
         $idest = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad)->FIRST();
