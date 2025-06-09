@@ -75,7 +75,7 @@ class supreController extends Controller
 
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-            ->Select('tabla_supre.*','folios.permiso_editar')
+            ->Select('tabla_supre.*','folios.permiso_editar','tbl_cursos.curso','tbl_cursos.depen')
             ->selectSub(function($query) {
                 $query->From('documentos_firmar')
                     ->SelectRaw('CASE WHEN COUNT(*) > 0 THEN true ELSE false END')
@@ -123,9 +123,9 @@ class supreController extends Controller
             ->LeftJoin('pagos', 'pagos.id_curso', 'folios.id_cursos')
             ->OrderBy('tabla_supre.status','ASC')
             ->OrderBy('tabla_supre.updated_at','DESC')
-            ->GroupBy('tabla_supre.id','folios.permiso_editar','clave')
+            ->GroupBy('tabla_supre.id','folios.permiso_editar','clave','curso','depen')
             // ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion']);
-            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion']);
+            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion','curso','depen']);
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
