@@ -86,6 +86,8 @@
                 <tr>
                     <th scope="col">No. de Memorandum</th>
                     <th scope="col">Unidad de Capacitación</th>
+                    <th scope="col">Curso</th>
+                    <th scope="col">Dependencia</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Status</th>
                     <th scope="col">Ultima Modificación de Status</th>
@@ -99,6 +101,8 @@
                     <tr>
                         <th scope="row">{{$itemData->no_memo}}</th>
                         <td>{{$itemData->unidad_capacitacion}}</td>
+                        <td>{{$itemData->curso}}</td>
+                        <td>{{$itemData->depen}}</td>
                         <td>{{$itemData->fecha}}</td>
                         <td>
                             @if ($itemData->status == 'En_Proceso')
