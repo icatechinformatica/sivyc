@@ -284,7 +284,7 @@ class InstructorController extends Controller
                 $nrevisiones = NULL;
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','DTA')
-                                                ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO','ENVIADO'])
+                                                ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO','ENVIADO','RECHAZADO ENVIADO','RECHAZADO PREVALIDADO', 'RECHAZADO CONVOCADO','PREVALIDADO','CONVOCADO'])//A
                                                 ->WHERE('registro_activo', ['true'])
                                                 ->GET();
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
@@ -1777,6 +1777,9 @@ class InstructorController extends Controller
 
             $perfil = $this->make_collection($datainstructor->data_perfil);
             $validado = $this->make_collection($datainstructor->data_especialidad);
+            if($validado != FALSE)
+        {
+
             foreach($validado as $key => $ges)
             {
                 $lista = null;
@@ -1816,6 +1819,7 @@ class InstructorController extends Controller
 
                 // dd($validado[$key]->cursos_impartir);
             }
+        }
             // dd($validado);
         }
         $idest = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad)->FIRST();
