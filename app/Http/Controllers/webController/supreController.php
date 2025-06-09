@@ -1759,7 +1759,7 @@ class supreController extends Controller
 
         $data = DB::TABLE('tbl_cursos')
         ->SELECT(
-        'tbl_cursos.unidad',
+        'tbl_cursos.unidad',        
         'tbl_cursos.curso',
         'tbl_cursos.clave',
         'tbl_cursos.nombre',
@@ -1978,7 +1978,7 @@ class supreController extends Controller
                     'tabla_supre.created_at as prue',
                     'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
-                    'tbl_cursos.unidad',
+                    'tbl_cursos.unidad','tbl_cursos.depen',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
                     'tbl_cursos.curso',
                     \DB::raw('tbl_cursos.hombre + tbl_cursos.mujer'),
@@ -2171,7 +2171,7 @@ class supreController extends Controller
 
         $cabecera = [
             'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA DE CREACION EN EL SISTEMA', 'FECHA',
-            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'CURSO/CERTIFICACION', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
+            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.','DEPENDENCIA', 'CURSO/CERTIFICACION', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
             'Z.E.','HSM','MUNICIPIO','LOCALIDAD', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES','BENEFICIARIOS'
