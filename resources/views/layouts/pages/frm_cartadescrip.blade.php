@@ -310,11 +310,11 @@
                                     <div class="form-row">
                                         <div class="col">
                                             <label for="curso_hora">Horas</label>
-                                            <input type="number" class="form-control form-control-sm" name="curso_hora" id="curso_hora" placeholder="Hrs" min="0">
+                                            <input type="number" class="form-control form-control-sm" name="curso_hora" id="curso_hora" placeholder="Hrs" min="0" oninput="validarHoras(this)">
                                         </div>
                                         <div class="col">
                                             <label for="curso_minuto">Minutos</label>
-                                            <input type="number" class="form-control form-control-sm" name="curso_minuto" id="curso_minuto" placeholder="Min" min="0" max="59">
+                                            <input type="number" class="form-control form-control-sm" name="curso_minuto" id="curso_minuto" placeholder="Min" min="0" max="59" oninput="validarHoras(this)">
                                         </div>
                                     </div>
                                     {{-- a distancia --}}
@@ -322,19 +322,19 @@
                                     <span class="d-block text-center">(Sincronas)</span>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input type="number" class="form-control form-control-sm mb-1" name="hora_sincro" id="hora_sincro" placeholder="Hrs" min="0">
+                                            <input type="number" class="form-control form-control-sm mb-1" name="hora_sincro" id="hora_sincro" placeholder="Hrs" min="0" oninput="validarHoras(this)">
                                         </div>
                                         <div class="col">
-                                            <input type="number" class="form-control form-control-sm mb-1" name="minuto_sincro" id="minuto_sincro" placeholder="Min" min="0" max="59">
+                                            <input type="number" class="form-control form-control-sm mb-1" name="minuto_sincro" id="minuto_sincro" placeholder="Min" min="0" max="59" oninput="validarHoras(this)">
                                         </div>
                                     </div>
                                     <span class="d-block text-center">(Asincronas)</span>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input type="number" class="form-control form-control-sm mb-1" name="hora_asincro" id="hora_asincro" placeholder="Hrs" min="0">
+                                            <input type="number" class="form-control form-control-sm mb-1" name="hora_asincro" id="hora_asincro" placeholder="Hrs" min="0" oninput="validarHoras(this)">
                                         </div>
                                         <div class="col">
-                                            <input type="number" class="form-control form-control-sm mb-1" name="minuto_asincro" id="minuto_asincro" placeholder="Min" min="0" max="59">
+                                            <input type="number" class="form-control form-control-sm mb-1" name="minuto_asincro" id="minuto_asincro" placeholder="Min" min="0" max="59" oninput="validarHoras(this)">
                                         </div>
                                     </div>
                                 </div>
@@ -811,7 +811,11 @@
             }
         }
 
-
+        //Validar que solo se ingresen dos digitos numericos en los campos horas y minutos
+        function validarHoras(input) {
+            let valor = input.value.replace(/\D/g, '').slice(0, 2); // Solo números, máx 2 dígitos
+            input.value = valor;
+        }
 
     </script>
 @endsection
