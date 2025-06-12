@@ -112,6 +112,15 @@
                 </form>
             </div>
         </div>
+        @can('admins.conteo.aspirantes.instructor')
+            <div class="row mb-3">
+                <div class="col-md-6 d-flex align-items-center">
+                    <p class="mb-0 me-3" style="color:#000000; white-space:nowrap;">
+                        <b>Corte del día:</b> Se han registrado <b>{{ $total_aspirantes }} </b> aspirantes, de los cuales, <b>{{ $total_enviados }}</b> han enviado su informacion a DTA.
+                    </p>
+                </div>
+            </div>
+        @endcan
     <!-- Nav Tabs Start -->
     <div id="tabs-container">
         @include('solicitudes.instructorAspirante.partials.tabs', ['data' => $data, 'especialidades' => $especialidades])
