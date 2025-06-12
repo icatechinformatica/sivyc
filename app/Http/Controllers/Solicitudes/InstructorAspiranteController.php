@@ -44,6 +44,8 @@ class InstructorAspiranteController extends Controller
     {
         $unidades = tbl_unidades::select('ubicacion')->distinct()->pluck('ubicacion');
         $especialidades = especialidad::pluck('nombre', 'id')->toArray();
+        $total_aspirantes = pre_instructor::WhereNotNull('semaforo')->count();
+        $total_enviados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->count();
         $query = pre_instructor::whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
 
         if ($request->filled('unidad')) {
@@ -52,7 +54,7 @@ class InstructorAspiranteController extends Controller
 
         $data = $query->get();
 
-        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades'));
+        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades', 'total_aspirantes','total_enviados'));
     }
 
     public function prevalidar(Request $request)
@@ -71,11 +73,11 @@ class InstructorAspiranteController extends Controller
     {
         $id = $request->input('id');
         $aspirante = pre_instructor::find($id);
-        $aspirante->status = 'COTEJADO';
+        $aspirante->status = 'CONVOCADO';
         $aspirante->save();
 
         return redirect()->route('aspirante.instructor.index')
-            ->with('success', 'Aspirante cotejado correctamente.');
+            ->with('success', 'Aspirante convocado  correctamente.');
     }
 
     public function aprobar(Request $request)
@@ -84,6 +86,31 @@ class InstructorAspiranteController extends Controller
         $aspirante = pre_instructor::find($id);
         $aspirante->status = 'EN FIRMA';
         $aspirante->turnado = 'UNIDAD';
+
+        // --- nrevision logic start ---
+        $unidad = strtoupper($aspirante->unidad_asignada);
+        if ($unidad === 'SAN CRISTOBAL') {
+            $prefix = 'SC';
+        } else {
+            $prefix = substr($unidad, 0, 2);
+        }
+        $year = date('Y');
+        $base = "{$prefix}-{$year}-";
+
+        // Find last nrevision with this prefix and year
+        $last = pre_instructor::where('nrevision', 'like', "{$base}%")
+            ->orderByDesc('nrevision')
+            ->first();
+
+        if ($last && preg_match('/-(\d{4})$/', $last->nrevision, $matches)) {
+            $consecutive = str_pad(((int)$matches[1]) + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $consecutive = '0001';
+        }
+
+        $aspirante->nrevision = "{$base}{$consecutive}";
+        // --- nrevision logic end ---
+
         $aspirante->save();
 
         return redirect()->route('aspirante.instructor.index')
@@ -113,7 +140,7 @@ class InstructorAspiranteController extends Controller
             $query->where('status', $rechazadoStatus[$status]);
         } else {
             // Only show normal for the current status
-            $query->where('status', $status);
+            $query->whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
         }
 
         $data = $query->get();
