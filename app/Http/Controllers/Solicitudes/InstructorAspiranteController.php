@@ -140,7 +140,7 @@ class InstructorAspiranteController extends Controller
             $query->where('status', $rechazadoStatus[$status]);
         } else {
             // Only show normal for the current status
-            $query->where('status', $status);
+            $query->whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
         }
 
         $data = $query->get();
