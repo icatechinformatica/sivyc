@@ -208,7 +208,7 @@ class InstructorAspiranteController extends Controller
 
         $exportData = [];
         foreach ($data as $row) {
-            $especialidadNombres = [];
+            $especialidadNombres = $perfilProfesional = $areaCarrera = [];
             if (is_array($row->data_especialidad)) {
                 foreach ($row->data_especialidad as $esp) {
                     if (isset($especialidades[$esp['especialidad_id']])) {
@@ -216,10 +216,18 @@ class InstructorAspiranteController extends Controller
                     }
                 }
             }
+            if (is_array($row->data_perfil)) {
+                foreach ($row->data_perfil as $per) {
+                    $perfilProfesional[] = $per['grado_profesional'] . ' EN ' . $per['carrera'];
+                    $areaCarrera[] = $per['area_carrera'];
+                }
+            }
             $exportData[] = [
                 $row->nombre . ' ' . $row->apellidoPaterno . ' ' . $row->apellidoMaterno,
                 $row->unidad_asignada,
+                implode(', ', $perfilProfesional),
                 implode(', ', $especialidadNombres),
+                implode(', ', $areaCarrera),
                 $row->updated_at,
                 $row->status
             ];
