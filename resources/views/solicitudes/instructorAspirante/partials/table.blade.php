@@ -1,5 +1,6 @@
 {{-- filepath: resources/views/solicitudes/instructorAspirante/partials/table.blade.php --}}
 @php
+    $iteration = 0;
     $rechazadoStatus = [
         'ENVIADO' => 'RECHAZADO ENVIADO',
         'PREVALIDADO' => 'RECHAZADO PREVALIDADO',
@@ -26,8 +27,9 @@
                 $isRechazado = isset($rechazadoStatus[$status]) && $rise->status == $rechazadoStatus[$status];
             @endphp
             @if($rise->status == $status || (!empty($showRechazados) && $isRechazado))
+            @php  $iteration++; @endphp
                 <tr>
-                    <td>{{ $loop->iteration }}</td> <!-- Show consecutive number -->
+                    <td>{{ $iteration }}</td> <!-- Show consecutive number -->
                     <td>{{ $rise->nombre }} {{$rise->apellidoPaterno}} {{$rise->apellidoMaterno}}</td>
                     {{-- <td>{{ $rise->nrevision }}</td> --}}
                     <td>{{ $rise->unidad_asignada }}</td>
