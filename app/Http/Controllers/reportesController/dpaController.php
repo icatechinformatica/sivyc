@@ -62,7 +62,12 @@ class dpaController extends Controller
         if($request->fecha1 and $request->fecha2 ){              
             $data = DB::table('tbl_cursos as tc')                
                 //->selectRaw("((EXTRACT(MONTH FROM inicio) - 1) * 2 + CEIL(EXTRACT(DAY FROM inicio) / 15.0)) AS nqna")
-                ->selectRaw("((EXTRACT(MONTH FROM tc.fecha_turnado) - 1) * 2 + CEIL(EXTRACT(DAY FROM tc.fecha_turnado) / 15.0)) AS nqna")                
+                //->selectRaw("((EXTRACT(MONTH FROM tc.fecha_turnado) - 1) * 2 + CEIL(EXTRACT(DAY FROM tc.fecha_turnado) / 15.0)) AS nqna")
+                ->selectRaw("((EXTRACT(MONTH FROM tc.fecha_turnado) - 1) * 2 + 
+                    CASE 
+                        WHEN EXTRACT(DAY FROM tc.fecha_turnado) <= 15 THEN 1 
+                        ELSE 2 
+                    END) AS nqna")
                 ->selectRaw("'ICAT' as subsistema, 'CHIAPAS' as entidad")
                 ->selectRaw("MAX(CASE 
                                 WHEN ze = 'I' THEN 1
@@ -87,8 +92,8 @@ class dpaController extends Controller
                 //->selectRaw("TO_CHAR((memos->'TURNADO_PLANEACION'->'PLANEACION'->>'FECHA')::TIMESTAMP,'DD/MM/YYYY') as turnado_dta")
                 ->join('instructores as i','i.curp','tc.curp')                
                 ->where('status_curso', 'AUTORIZADO')                                
-                ->whereBetween('inicio', [$request->fecha1, $request->fecha2])
-                ->whereNotNull('memos->TURNADO_PLANEACION->PLANEACION->FECHA')                
+                ->whereBetween('tc.fecha_turnado', [$request->fecha1, $request->fecha2])
+                //->whereNotNull('memos->TURNADO_PLANEACION->PLANEACION->FECHA')                
                 ->groupBy('nqna','tc.rfc','tc.curp', 'cct','i.apellidoPaterno','i.apellidoMaterno','i.nombre'
                 //,'turnado_dta'
                 )
