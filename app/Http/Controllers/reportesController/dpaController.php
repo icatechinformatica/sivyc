@@ -93,6 +93,7 @@ class dpaController extends Controller
                 ->join('instructores as i','i.curp','tc.curp')                
                 ->where('status_curso', 'AUTORIZADO')                                
                 ->whereBetween('tc.fecha_turnado', [$request->fecha1, $request->fecha2])
+                ->where('proceso_terminado',true)                
                 //->whereNotNull('memos->TURNADO_PLANEACION->PLANEACION->FECHA')                
                 ->groupBy('nqna','tc.rfc','tc.curp', 'cct','i.apellidoPaterno','i.apellidoMaterno','i.nombre'
                 //,'turnado_dta'
