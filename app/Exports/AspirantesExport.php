@@ -21,6 +21,6 @@ class AspirantesExport implements FromArray, WithHeadings
 
     public function headings(): array
     {
-        return ['INSTRUCTOR', 'UNIDAD ASIGNADA', 'ESPECIALIDAD', 'FECHA', 'STATUS'];
+        return ['INSTRUCTOR', 'UNIDAD ASIGNADA', 'PERFIL PROFESIONAL', 'AREA DE CARRERA', 'ESPECIALIDAD', 'FECHA', 'STATUS'];
     }
 }
