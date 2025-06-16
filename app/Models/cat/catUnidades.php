@@ -60,4 +60,22 @@ trait catUnidades
         $data ['slug'] = $rol;
         return $data;
     }
+
+    protected function unidades($rol = null, $amovil = null){        
+        $id_user = Auth::user()->id;
+        $id_unidad= Auth::user()->unidad;
+        $unidades = $unidad = NULL;        
+        $unidades = DB::table('tbl_unidades');        
+        if($rol) $unidades = $unidades->where('id',$id_unidad);//unidades
+        if($amovil and $rol){ //acciones móviles
+            $unidades->orWhere('ubicacion', '=', function($query) use ($id_unidad) { 
+                $query->select('unidad')->from('tbl_unidades')->where('id', $id_unidad)->limit(1);
+            });
+        }elseif(!$amovil) $unidades->where('cct','ilike','07E%');            
+
+        $unidades = $unidades->orderby('unidad','ASC')->pluck('unidad','unidad');
+
+        return $unidades;
+    }
+
 }
