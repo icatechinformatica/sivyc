@@ -121,7 +121,7 @@
                                     <td class="text-center">{{ $item->estado_civil}}</td>
                                     <td class="text-center">{{ $item->ultimo_grado_est}}</td>
                                     <td class="text-center">{{ $item->telefono ?? 'SIN NUMERO' }}</td>
-                                    <td class="text-center">{{ $item->correo ?? 'SIN CORREO' }}</td>
+                                    <td class="text-center">{{ $item->correo }}</td>
                                     <td><div style="width: 300px;">{!!nl2br($item->especialidades)!!}</div></td>
                                     <td><div style="width: 350px;">{!!nl2br($item->grupos)!!}</div></td>
                                 </tr>

@@ -109,7 +109,7 @@ class BolsaTrabController extends Controller
             DB::raw('MAX(ap.estado_civil) as estado_civil'),
             DB::raw('MAX(ap.ultimo_grado_estudios) as ultimo_grado_est'),
             DB::raw('MAX(ap.telefono_personal) as telefono'),
-            DB::raw('MAX(ap.correo) as correo')            
+            DB::raw("COALESCE(MAX(ap.correo), 'SIN CORREO') as correo")
         )       
         ->selectRaw("STRING_AGG( DISTINCT tc.espe,  '\n' ORDER BY tc.espe ASC ) as especialidades")
         ->selectRaw("STRING_AGG( CONCAT( TO_CHAR(tc.inicio, 'DD/MM/YYYY'),' - ', tc.curso,' (', tc.unidad,') '),  '\n' ORDER BY tc.inicio DESC) as grupos");
