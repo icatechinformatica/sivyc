@@ -59,11 +59,12 @@
         {{ Form::open(['method' => 'post','id' =>'frmBolsaTrabajo', 'enctype' => 'multipart/form-data' ,'accept-charset'=>'UTF-8']) }}
             @csrf
             <div class="row form-inline ml-1">
-                {{ Form::date('fechaIniV', $fecha_inicio ?? null , ['id'=>'fechaIniV', 'class' => 'form-control datepicker  mr-sm-4 mb-2', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA INICIAL', 'required' => 'required']) }}
-                {{ Form::date('fechaFinV', $fecha_fin ?? null , ['id'=>'fechaFinV', 'class' => 'form-control datepicker  mr-sm-4 mb-2', 'placeholder' => 'FECHA FINAL', 'title' => 'FECHA FINAL', 'required' => 'required']) }}
-                {{ Form::text('text_buscar_curso', $textcurso ?? null, ['id'=>'text_buscar_curso', 'class' => 'form-control mr-sm-4 mb-2 text_buscar_curso', 'placeholder' => 'CURSO / ESPECIALIDAD', 'size' => 30]) }}                
-                {{ Form::button('FILTRAR', ['id' => 'btnBuscar', 'name'=> 'boton', 'title' => 'FILTRAR', 'class' => 'btn mr-sm-4 mb-2']) }}
-                {{ Form::button('LIMPIAR', ['id' => 'btnLimpiar', 'name'=> 'boton', 'title' => 'LIMPIAR CAJAS DE TEXTO', 'class' => 'btn mr-sm-4 btn-info mb-2']) }}                
+                {{ Form::select('unidad', $unidades, $old['unidad'] ?? null ,['id'=>'unidad','class' => 'form-control mr-sm-2 mb-2','title' => 'UNIDADES','placeholder' => 'UNIDADES']) }}
+                {{ Form::date('fechaIniV', $old['fechaIniV'] ?? null , ['id'=>'fechaIniV', 'class' => 'form-control datepicker mr-sm-2 mb-2 small', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA INICIAL', 'required' => 'required']) }}
+                {{ Form::date('fechaFinV', $old['fechaFinV'] ?? null , ['id'=>'fechaFinV', 'class' => 'form-control datepicker  mr-sm-2 mb-2', 'placeholder' => 'FECHA FINAL', 'title' => 'FECHA FINAL', 'required' => 'required']) }}
+                {{ Form::text('text_buscar_curso', $old['text_buscar_curso'] ?? null, ['id'=>'text_buscar_curso', 'class' => 'form-control mr-sm-2 mb-2 text_buscar_curso', 'placeholder' => 'CURSO / ESPECIALIDAD', 'size' => 25]) }}                
+                {{ Form::button('FILTRAR', ['id' => 'btnBuscar', 'name'=> 'boton', 'title' => 'FILTRAR', 'class' => 'btn mr-sm-2 mb-2']) }}
+                {{ Form::button('LIMPIAR', ['id' => 'btnLimpiar', 'name'=> 'boton', 'title' => 'LIMPIAR CAJAS DE TEXTO', 'class' => 'btn mr-sm-2 btn-info mb-2']) }}                
                 <button class="btn btn-warning text-dark mb-2" title="EXPORTAR EN FORMATO EXCEL" id="btnReporte">EXPORTAR <i class="far fa-file-excel fa-lg text-dark ml-1"></i></button>
             </div>
         {!! Form::close() !!}
@@ -80,8 +81,8 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th class="text-center" scope="col">No</th>                                
-                                <th class="text-center" scope="col">EJERCICIO</th>                                
+                                <th class="text-center" scope="col">No</th>
+                                <th class="text-center" scope="col">EJERCICIO</th>
                                 <th class="text-center" scope="col">NOMBRE</th>
                                 <th class="text-center" scope="col">EDAD</th>
                                 <th class="text-center" scope="col">CURP</th>
@@ -120,7 +121,7 @@
                                     <td class="text-center">{{ $item->estado_civil}}</td>
                                     <td class="text-center">{{ $item->ultimo_grado_est}}</td>
                                     <td class="text-center">{{ $item->telefono ?? 'SIN NUMERO' }}</td>
-                                    <td class="text-center">{{ $item->correo ?? 'SIN CORREO' }}</td>
+                                    <td class="text-center">{{ $item->correo }}</td>
                                     <td><div style="width: 300px;">{!!nl2br($item->especialidades)!!}</div></td>
                                     <td><div style="width: 350px;">{!!nl2br($item->grupos)!!}</div></td>
                                 </tr>
