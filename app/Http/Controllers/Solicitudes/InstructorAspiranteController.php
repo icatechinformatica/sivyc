@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Solicitudes;
 
 use App\Models\instructor;
 use App\Models\pre_instructor;
-use App\Models\cursoVALIDADO;
-use App\Models\curso;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -33,13 +31,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use ZipArchive;
-use PDF;
 use App\User;
-
+use Illuminate\Support\Facades\Http;
 class InstructorAspiranteController extends Controller
 {
-
     public function index(Request $request)
     {
         $unidades = tbl_unidades::select('ubicacion')->distinct()->pluck('ubicacion');
@@ -234,6 +229,45 @@ class InstructorAspiranteController extends Controller
         }
 
         return Excel::download(new \App\Exports\AspirantesExport($exportData), 'aspirantes_'.$status.'.xlsx');
+    }
+
+    public function whatsapp_msg(Request $request)
+    {
+        $numeros = [
+            '5219612134853',
+            '5219612255159',
+            // '5219611862423',
+        ];
+
+        $plantilla = "👋 Hola {{nombre}}, te escribimos desde ICATECH 📚 para recordarte tu cita el día {{fecha}}. ¡Gracias por confiar en nosotros! (PRUEBA DESDE EL SERVIDOR)";
+        $resultados = [];
+
+        foreach ($numeros as $index => $numero) {
+            // Variables simuladas por ejemplo
+            $nombre = "Usuario " . ($index + 1);
+            $fecha = now()->addDays($index + 1)->format('d/m/Y');
+
+            // Reemplazar variables en plantilla
+            $mensaje = str_replace(
+                ['{{nombre}}', '{{fecha}}'],
+                [$nombre, $fecha],
+                $plantilla
+            );
+
+            $response = Http::post('http://localhost:3000/send-message', [
+                'number' => $numero,
+                'message' => $mensaje,
+            ]);
+
+            $resultados[] = [
+                'numero' => $numero,
+                'status' => $response->successful(),
+                'respuesta' => $response->json(),
+            ];
+        }
+
+
+        return $response->json($resultados);
     }
 }
 
