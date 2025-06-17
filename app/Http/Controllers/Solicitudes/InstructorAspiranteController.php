@@ -254,7 +254,7 @@ class InstructorAspiranteController extends Controller
                 $plantilla
             );
 
-            $response = Http::post('http://localhost:3000/send-message', [
+            $response = Http::post('https://mensajeria.icatech.gob.mx/send-message', [
                 'number' => $numero,
                 'message' => $mensaje,
             ]);
