@@ -29,6 +29,8 @@ use App\Models\folio;
 use App\Models\pago;
 use App\Models\ISR;
 use Carbon\Carbon;
+use App\Excel\xls;
+
 use App\User;
 use PDF;
 
@@ -1833,7 +1835,9 @@ class supreController extends Controller
         $titulo = "formato de costeo ".$request->fecha1 . ' - '. $request->fecha2 . " creado el " . carbon::now();
         if(count($data)>0)
         {
-            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+            //return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+            return Excel::download(new xls($data,$cabecera, $titulo), $nombreLayout);
+            
         }
     }
 
@@ -2180,7 +2184,9 @@ class supreController extends Controller
         $nombreLayout = "formato de control".$fecha1 . ' - '. $fecha2 . " creado el " . carbon::now() . ".xlsx";
         $titulo = "formato de control ".$fecha1 . ' - '. $fecha2 . " creado el " . carbon::now();
         if(count($data)>0){
-            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+            //return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+            return Excel::download(new xls($data,$cabecera, $titulo), $nombreLayout);
+            
         }
     }
 
