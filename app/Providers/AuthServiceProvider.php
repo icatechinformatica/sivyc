@@ -25,18 +25,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        // Estas rutas permiten a Passport hacer issue y revoke de access tokens y clients.
-        Passport::routes();
-        //Passport::tokensExpireIn(Carbon::now()->addDays(10));
-        //Passport::refreshTokensExpireIn(Carbon::now()->addDays(10));
-        Passport::tokensCan([
-            'api' => 'User Type',
-            'api_sice' => 'sice User type',
-        ]);
-
-        \Illuminate\Support\Facades\Auth::provider('customuserprovider', function($app, array $config) {
-            return new AuthValidateStatusServiceProvider($app['hash'], $config['model']);
-        });
     }
 }
