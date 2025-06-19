@@ -49,6 +49,17 @@
                           </div>
 
                         </div>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name="menu" id="menu">
+                                <label class="custom-control-label form-control-label" for="menu">ES MENÚ</label>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
                       </div>
                       <hr class="my-4" />
                       <!-- Address -->

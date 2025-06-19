@@ -156,6 +156,7 @@ class PermissionController extends Controller
                 'name' => trim($request->permisoNameEdit),
                 'slug' => trim($request->permisoSlugEdit),
                 'description' => trim($request->permisoDescripcionEdit),
+                'menu' => $request->has('menu') ? true : false,
             ];
 
             $permisos->WHERE('id', $idpermisos)->UPDATE($arrayPermisos);
@@ -192,6 +193,7 @@ class PermissionController extends Controller
         $validator =  Validator::make($request->all(), [
             'permisoName' => 'required',
             'permisoSlug' => 'required',
+            'menu' => 'sometimes',
         ]);
         if ($validator->fails()) {
             # devolvemos un error
@@ -202,6 +204,8 @@ class PermissionController extends Controller
             $permisoRegistro = new Permission;
             $permisoRegistro->name = trim($request->get('permisoName'));
             $permisoRegistro->slug = trim($request->get('permisoSlug'));
+            $permisoRegistro->menu = $request->has('menu') ? true : false;
+            
             if (!empty($request->get('permisoDescripcion'))) {
                 # si no está vacio se le asigna a la variable...
                 $permisoRegistro->description = trim($request->get('permisoDescripcion'));
