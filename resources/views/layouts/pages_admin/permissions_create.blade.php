@@ -140,10 +140,8 @@
             $('#permiso_padre_container').hide(); // Ocultar el contenedor al cargar la página
             $('#menu').change(function() {
                 if ($(this).is(':checked')) {
-                  console.log('Checkbox is checked');
                   $('#permiso_padre_container').show();
                 } else {
-                  console.log('Checkbox is unchecked');
                   $('#permiso_padre_container').hide();
                   $('#permiso_padre').val('').trigger('change');
                 }

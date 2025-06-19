@@ -134,7 +134,8 @@ class PermissionController extends Controller
         //
         $idpermission = base64_decode($id);
         $permiso = Permission::findOrfail($idpermission);
-        return view('layouts.pages_admin.permisos_editar', compact('permiso'));
+        $permisos = Permission::menus()->get();
+        return view('layouts.pages_admin.permisos_editar', compact('permiso','permisos' ));
     }
 
     /**
@@ -159,6 +160,12 @@ class PermissionController extends Controller
                 'menu' => $request->has('menu') ? true : false,
             ];
 
+            if ($request->has('menu') && $request->filled('permiso_padre')) {
+                $arrayPermisos['id_padre'] = $request->get('permiso_padre');
+            } else {
+                $arrayPermisos['id_padre'] = null;
+            }
+            
             $permisos->WHERE('id', $idpermisos)->UPDATE($arrayPermisos);
             return redirect()->route('permisos.index')
                     ->with('success', 'PERMISO ACTUALIZADO EXTIOSAMENTE!');
