@@ -125,7 +125,6 @@
                   $('#permiso_padre_container').show();
                 } else {
                   $('#permiso_padre_container').hide();
-                  $('#permiso_padre').val('').trigger('change');
                 }
             });
         });

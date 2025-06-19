@@ -30,4 +30,12 @@ class Permission extends Model
     {
         return $query->where('menu', true);
     }
+    
+    /**
+     * Obtiene todos los permisos que tienen a este permiso como padre
+     */
+    public function hijos()
+    {
+        return $this->hasMany(Permission::class, 'id_padre', 'id');
+    }
 }

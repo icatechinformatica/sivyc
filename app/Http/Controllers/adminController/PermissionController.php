@@ -143,33 +143,50 @@ class PermissionController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
         // modificacion de un permiso guardado
-        if (isset($id)) {
-            $idpermisos = base64_decode($id);
-            $permisos = new Permission();
-
-            # code...
-            $arrayPermisos = [
-                'name' => trim($request->permisoNameEdit),
-                'slug' => trim($request->permisoSlugEdit),
-                'description' => trim($request->permisoDescripcionEdit),
-                'menu' => $request->has('menu') ? true : false,
-            ];
-
-            if ($request->has('menu') && $request->filled('permiso_padre')) {
-                $arrayPermisos['id_padre'] = $request->get('permiso_padre');
-            } else {
-                $arrayPermisos['id_padre'] = null;
-            }
-            
-            $permisos->WHERE('id', $idpermisos)->UPDATE($arrayPermisos);
-            return redirect()->route('permisos.index')
-                    ->with('success', 'PERMISO ACTUALIZADO EXTIOSAMENTE!');
+        if (!isset($id)) {
+            return redirect()->route('permisos.index')->withErrors('ID de permiso no proporcionado');
         }
+        
+        $idpermisos = base64_decode($id);
+        $permisoActual = Permission::find($idpermisos);
+        
+        if (!$permisoActual) {
+            return redirect()->route('permisos.index')->withErrors('El permiso no existe');
+        }
+        
+        # code...
+        $arrayPermisos = [
+            'name' => trim($request->permisoNameEdit),
+            'slug' => trim($request->permisoSlugEdit),
+            'description' => trim($request->permisoDescripcionEdit),
+            'menu' => $request->has('menu') ? true : false,
+        ];
+
+        // Verificar si el permiso era un menú y ahora ya no lo es
+        $eraMenu = $permisoActual->menu;
+        $ahoraEsMenu = $request->has('menu');
+        
+        if ($ahoraEsMenu && $request->filled('permiso_padre')) {
+            $arrayPermisos['id_padre'] = $request->get('permiso_padre');
+        } else {
+            $arrayPermisos['id_padre'] = null;
+        }
+        
+        // Actualizar el permiso actual
+        Permission::where('id', $idpermisos)->update($arrayPermisos);
+        
+        // Si el permiso deja de ser un menú, eliminamos la referencia como padre en todos sus hijos
+        if ($eraMenu && !$ahoraEsMenu) {
+            Permission::where('id_padre', $idpermisos)->update(['id_padre' => null]);
+        }
+        
+        return redirect()->route('permisos.index')
+                ->with('success', 'PERMISO ACTUALIZADO EXITOSAMENTE!');
     }
 
     /**
