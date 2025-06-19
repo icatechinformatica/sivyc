@@ -14,8 +14,8 @@
     "endroid/qr-code": "^4.6",
     "fakerphp/faker": "^1.9.1",
     "guzzlehttp/guzzle": "^7.0.1",
-    "laravel/framework": "^10.0",
-    "laravel/passport": "^11.0",
+    "laravel/framework": "^11.0",
+    "laravel/passport": "^12.0",
     "laravel/tinker": "^2.0",
     "laravel/ui": "^4.0",
     "lcobucci/jwt": "^4.0",
@@ -30,7 +30,7 @@
     "require-dev": {
         "spatie/laravel-ignition": "^2.0",
         "mockery/mockery": "^1.3.1",
-        "nunomaduro/collision": "^7.0",
+        "nunomaduro/collision": "^8.1",
         "phpunit/phpunit": "^10.0"
     },
     "config": {
