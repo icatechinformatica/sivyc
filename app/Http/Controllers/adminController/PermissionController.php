@@ -34,8 +34,8 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        //
-        return  view('layouts.pages_admin.permissions_create');
+        $permisos = Permission::menus()->get();
+        return view('layouts.pages_admin.permissions_create', compact('permisos'));
     }
 
     /**
@@ -194,6 +194,7 @@ class PermissionController extends Controller
             'permisoName' => 'required',
             'permisoSlug' => 'required',
             'menu' => 'sometimes',
+            'permiso_padre' => 'nullable|exists:permissions,id',
         ]);
         if ($validator->fails()) {
             # devolvemos un error
@@ -205,6 +206,10 @@ class PermissionController extends Controller
             $permisoRegistro->name = trim($request->get('permisoName'));
             $permisoRegistro->slug = trim($request->get('permisoSlug'));
             $permisoRegistro->menu = $request->has('menu') ? true : false;
+            
+            if ($request->has('menu') && $request->filled('permiso_padre')) {
+                $permisoRegistro->id_padre = $request->get('permiso_padre');
+            }
             
             if (!empty($request->get('permisoDescripcion'))) {
                 # si no está vacio se le asigna a la variable...

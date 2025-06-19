@@ -2,6 +2,15 @@
 @extends('theme.sivyc_admin.layout')
 <!--generado por Daniel Méndez-->
 @section('title', 'CREAR PERMISO | Sivyc Icatech')
+
+@section('styles_content')
+<style>
+  #permiso_padre_container {
+    display: none;
+  }
+</style>
+@endsection
+
 <!--contenido-->
 @section('content')
     <div class="container-fluid mt--6">
@@ -58,7 +67,21 @@
                               </div>
                             </div>
                           </div>
+                        </div>
 
+                        <div class="row" id="permiso_padre_container">
+                          <div class="col-lg-12">
+                            <div class="form-group">
+                              <label class="form-control-label" for="permiso_padre">PERMISO PADRE</label>
+                              <select class="form-control select2" id="permiso_padre" name="permiso_padre">
+                                <option value="">Seleccione un permiso padre</option>
+
+                                  @foreach($permisos as $permiso)
+                                    <option value="{{ $permiso->id }}">{{ $permiso->name }} ({{ $permiso->slug }})</option>
+                                  @endforeach
+                              </select>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <hr class="my-4" />
@@ -111,6 +134,20 @@
                 }
             });
 
+        });
+
+        $(document).ready(function() {
+            $('#permiso_padre_container').hide(); // Ocultar el contenedor al cargar la página
+            $('#menu').change(function() {
+                if ($(this).is(':checked')) {
+                  console.log('Checkbox is checked');
+                  $('#permiso_padre_container').show();
+                } else {
+                  console.log('Checkbox is unchecked');
+                  $('#permiso_padre_container').hide();
+                  $('#permiso_padre').val('').trigger('change');
+                }
+            });
         });
     </script>
 @endsection
