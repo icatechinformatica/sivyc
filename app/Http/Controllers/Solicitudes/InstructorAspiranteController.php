@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Solicitudes;
 
 use App\Models\instructor;
 use App\Models\pre_instructor;
-use App\Models\cursoVALIDADO;
-use App\Models\curso;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -33,19 +31,25 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\FormatoTReport;
-use ZipArchive;
-use PDF;
 use App\User;
-
+use Illuminate\Support\Facades\Http;
 class InstructorAspiranteController extends Controller
 {
-
     public function index(Request $request)
     {
-        // dd('asd');
-        $data = pre_instructor::WhereIn('status',['ENVIADO','PREVALIDADO','COTEJADO'])->Get();
-        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data'));
+        $unidades = tbl_unidades::select('ubicacion')->distinct()->pluck('ubicacion');
+        $especialidades = especialidad::pluck('nombre', 'id')->toArray();
+        $total_aspirantes = pre_instructor::WhereNotNull('semaforo')->count();
+        $total_enviados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->count();
+        $query = pre_instructor::whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
+
+        if ($request->filled('unidad')) {
+            $query->where('unidad_asignada', $request->unidad);
+        }
+
+        $data = $query->get();
+
+        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades', 'total_aspirantes','total_enviados'));
     }
 
     public function prevalidar(Request $request)
@@ -64,11 +68,11 @@ class InstructorAspiranteController extends Controller
     {
         $id = $request->input('id');
         $aspirante = pre_instructor::find($id);
-        $aspirante->status = 'COTEJADO';
+        $aspirante->status = 'CONVOCADO';
         $aspirante->save();
 
         return redirect()->route('aspirante.instructor.index')
-            ->with('success', 'Aspirante cotejado correctamente.');
+            ->with('success', 'Aspirante convocado  correctamente.');
     }
 
     public function aprobar(Request $request)
@@ -77,10 +81,193 @@ class InstructorAspiranteController extends Controller
         $aspirante = pre_instructor::find($id);
         $aspirante->status = 'EN FIRMA';
         $aspirante->turnado = 'UNIDAD';
+
+        // --- nrevision logic start ---
+        $unidad = strtoupper($aspirante->unidad_asignada);
+        if ($unidad === 'SAN CRISTOBAL') {
+            $prefix = 'SC';
+        } else {
+            $prefix = substr($unidad, 0, 2);
+        }
+        $year = date('Y');
+        $base = "{$prefix}-{$year}-";
+
+        // Find last nrevision with this prefix and year
+        $last = pre_instructor::where('nrevision', 'like', "{$base}%")
+            ->orderByDesc('nrevision')
+            ->first();
+
+        if ($last && preg_match('/-(\d{4})$/', $last->nrevision, $matches)) {
+            $consecutive = str_pad(((int)$matches[1]) + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $consecutive = '0001';
+        }
+
+        $aspirante->nrevision = "{$base}{$consecutive}";
+        // --- nrevision logic end ---
+
         $aspirante->save();
 
         return redirect()->route('aspirante.instructor.index')
             ->with('success', 'Aspirante aprobado correctamente.');
+    }
+
+    public function filter(Request $request)
+    {
+        $unidad = $request->input('unidad');
+        $showRechazados = $request->input('showRechazados', false);
+        $status = $request->input('status', 'ENVIADO'); // Get current tab status from request
+
+        $rechazadoStatus = [
+            'ENVIADO' => 'RECHAZADO ENVIADO',
+            'PREVALIDADO' => 'RECHAZADO PREVALIDADO',
+            'CONVOCADO' => 'RECHAZADO CONVOCADO'
+        ];
+
+        $query = pre_instructor::query();
+
+        if ($unidad) {
+            $query->where('unidad_asignada', $unidad);
+        }
+
+        if ($showRechazados) {
+            // Only show rechazados for the current status
+            $query->where('status', $rechazadoStatus[$status]);
+        } else {
+            // Only show normal for the current status
+            $query->whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
+        }
+
+        $data = $query->get();
+        $especialidades = especialidad::pluck('nombre', 'id')->toArray();
+
+        $html = view('solicitudes.instructorAspirante.partials.tabs', [
+            'data' => $data,
+            'especialidades' => $especialidades,
+            'showRechazados' => $showRechazados,
+            'status' => $status // Pass current status to view
+        ])->render();
+        return response()->json(['html' => $html]);
+    }
+
+    public function rechazar(Request $request)
+    {
+        $id = $request->input('id');
+        $observacion = $request->input('observacion');
+        $context = $request->input('context');
+        $aspirante = pre_instructor::find($id);
+
+        if ($context === 'PREVALIDADO') {
+            $aspirante->status = 'RECHAZADO PREVALIDADO';
+        } elseif ($context === 'CONVOCADO') {
+            $aspirante->status = 'RECHAZADO CONVOCADO';
+        } else {
+            $aspirante->status = 'RECHAZADO ENVIADO';
+        }
+        $aspirante->rechazo = $observacion;
+        $aspirante->save();
+
+        return redirect()->route('aspirante.instructor.index')
+            ->with('success', 'Aspirante rechazado correctamente.');
+    }
+
+    public function export(Request $request)
+    {
+        $unidad = $request->input('unidad');
+        $status = $request->input('status', 'ENVIADO');
+        $showRechazados = $request->input('showRechazados', false);
+
+        $rechazadoStatus = [
+            'ENVIADO' => 'RECHAZADO ENVIADO',
+            'PREVALIDADO' => 'RECHAZADO PREVALIDADO',
+            'CONVOCADO' => 'RECHAZADO CONVOCADO'
+        ];
+
+        $query = pre_instructor::query();
+
+        if ($unidad) {
+            $query->where('unidad_asignada', $unidad);
+        }
+
+        if ($showRechazados) {
+            $query->where(function($q) use ($status, $rechazadoStatus) {
+                $q->where('status', $status)
+                  ->orWhere('status', $rechazadoStatus[$status]);
+            });
+        } else {
+            $query->where('status', $status);
+        }
+
+        $data = $query->get();
+        $especialidades = \App\Models\especialidad::pluck('nombre', 'id')->toArray();
+
+        $exportData = [];
+        foreach ($data as $row) {
+            $especialidadNombres = $perfilProfesional = $areaCarrera = [];
+            if (is_array($row->data_especialidad)) {
+                foreach ($row->data_especialidad as $esp) {
+                    if (isset($especialidades[$esp['especialidad_id']])) {
+                        $especialidadNombres[] = $especialidades[$esp['especialidad_id']];
+                    }
+                }
+            }
+            if (is_array($row->data_perfil)) {
+                foreach ($row->data_perfil as $per) {
+                    $perfilProfesional[] = $per['grado_profesional'] . ' EN ' . $per['carrera'];
+                    $areaCarrera[] = $per['area_carrera'];
+                }
+            }
+            $exportData[] = [
+                $row->nombre . ' ' . $row->apellidoPaterno . ' ' . $row->apellidoMaterno,
+                $row->unidad_asignada,
+                implode(', ', $perfilProfesional),
+                implode(', ', $especialidadNombres),
+                implode(', ', $areaCarrera),
+                $row->updated_at,
+                $row->status
+            ];
+        }
+
+        return Excel::download(new \App\Exports\AspirantesExport($exportData), 'aspirantes_'.$status.'.xlsx');
+    }
+
+    public function whatsapp_msg(Request $request)
+    {
+        $numeros = [
+            '5219612134853',
+            '5219612255159',
+            // '5219611862423',
+        ];
+
+        $plantilla = "👋 Hola {{nombre}}, te escribimos desde ICATECH 📚 para recordarte tu cita el día {{fecha}}. ¡Gracias por confiar en nosotros! (PRUEBA DESDE EL SERVIDOR)";
+        $resultados = [];
+
+        foreach ($numeros as $index => $numero) {
+            // Variables simuladas por ejemplo
+            $nombre = "Usuario " . ($index + 1);
+            $fecha = now()->addDays($index + 1)->format('d/m/Y');
+
+            // Reemplazar variables en plantilla
+            $mensaje = str_replace(
+                ['{{nombre}}', '{{fecha}}'],
+                [$nombre, $fecha],
+                $plantilla
+            );
+
+            $response = Http::post('https://mensajeria.icatech.gob.mx/send-message', [
+                'number' => $numero,
+                'message' => $mensaje,
+            ]);
+
+            $resultados[] = [
+                'numero' => $numero,
+                'status' => $response->successful(),
+                'respuesta' => $response->json(),
+            ];
+        }
+
+
+        return $response->json($resultados);
     }
 }
 

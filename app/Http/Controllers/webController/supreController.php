@@ -29,6 +29,8 @@ use App\Models\folio;
 use App\Models\pago;
 use App\Models\ISR;
 use Carbon\Carbon;
+use App\Excel\xls;
+
 use App\User;
 use PDF;
 
@@ -75,7 +77,7 @@ class supreController extends Controller
 
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-            ->Select('tabla_supre.*','folios.permiso_editar')
+            ->Select('tabla_supre.*','folios.permiso_editar','tbl_cursos.curso','tbl_cursos.depen')
             ->selectSub(function($query) {
                 $query->From('documentos_firmar')
                     ->SelectRaw('CASE WHEN COUNT(*) > 0 THEN true ELSE false END')
@@ -123,9 +125,9 @@ class supreController extends Controller
             ->LeftJoin('pagos', 'pagos.id_curso', 'folios.id_cursos')
             ->OrderBy('tabla_supre.status','ASC')
             ->OrderBy('tabla_supre.updated_at','DESC')
-            ->GroupBy('tabla_supre.id','folios.permiso_editar','clave')
+            ->GroupBy('tabla_supre.id','folios.permiso_editar','clave','curso','depen')
             // ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion']);
-            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion']);
+            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion','curso','depen']);
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
@@ -1759,7 +1761,7 @@ class supreController extends Controller
 
         $data = DB::TABLE('tbl_cursos')
         ->SELECT(
-        'tbl_cursos.unidad',
+        'tbl_cursos.unidad',        
         'tbl_cursos.curso',
         'tbl_cursos.clave',
         'tbl_cursos.nombre',
@@ -1833,7 +1835,9 @@ class supreController extends Controller
         $titulo = "formato de costeo ".$request->fecha1 . ' - '. $request->fecha2 . " creado el " . carbon::now();
         if(count($data)>0)
         {
-            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+            //return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+            return Excel::download(new xls($data,$cabecera, $titulo), $nombreLayout);
+            
         }
     }
 
@@ -1978,7 +1982,7 @@ class supreController extends Controller
                     'tabla_supre.created_at as prue',
                     'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
-                    'tbl_cursos.unidad',
+                    'tbl_cursos.unidad','tbl_cursos.depen',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
                     'tbl_cursos.curso',
                     \DB::raw('tbl_cursos.hombre + tbl_cursos.mujer'),
@@ -2171,7 +2175,7 @@ class supreController extends Controller
 
         $cabecera = [
             'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA DE CREACION EN EL SISTEMA', 'FECHA',
-            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'CURSO/CERTIFICACION', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
+            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.','DEPENDENCIA', 'CURSO/CERTIFICACION', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
             'Z.E.','HSM','MUNICIPIO','LOCALIDAD', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES','BENEFICIARIOS'
@@ -2180,7 +2184,9 @@ class supreController extends Controller
         $nombreLayout = "formato de control".$fecha1 . ' - '. $fecha2 . " creado el " . carbon::now() . ".xlsx";
         $titulo = "formato de control ".$fecha1 . ' - '. $fecha2 . " creado el " . carbon::now();
         if(count($data)>0){
-            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+            //return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+            return Excel::download(new xls($data,$cabecera, $titulo), $nombreLayout);
+            
         }
     }
 

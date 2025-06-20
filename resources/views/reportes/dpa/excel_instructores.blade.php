@@ -21,7 +21,8 @@
             <th style="{{$hestilo}} width: 120px;">Código de <br/>la plaza</th>
             <th style="{{$hestilo}} width: 120px;">Número de <br/>horas <br/>(Docente)</th>
             <th style="{{$hestilo}} width: 140px;">CCT de <br/>adscripción</th>
-            <th style="{{$hestilo}} width: 140px;">Turnado DTA</th>
+            <th style="{{$hestilo}} width: 140px;">Repotado</th>
+            <th style="{{$hestilo}} width: 140px;">Mes</th>
         </tr>                          
     </thead>
     @php
@@ -44,7 +45,8 @@
                 <td style="{{$bestilo}}">{{ $item->codigo_plaza}}</td>                                        
                 <td style="{{$bestilo}}">{{ $item->horas}}</td>
                 <td style="{{$bestilo}}">{{ $item->cct}}</td>
-                <td style="{{$bestilo}}">{{ $item->turnado_dta}}</td>
+                <td style="{{$bestilo}}">{{ $item->fecha}}</td>
+                <td style="{{$bestilo}}">{{ $item->mes}}</td>
             </tr>     
         @endforeach 
     </tbody>

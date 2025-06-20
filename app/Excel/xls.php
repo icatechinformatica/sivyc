@@ -61,7 +61,8 @@ class xls implements FromCollection, WithHeadings, WithStrictNullComparison, Wit
                     
                     // Establecer ancho de columnas
                     $contador = 0;
-                    foreach (range('A', 'Z') as $columnID) {
+                    //foreach (range('A', 'Z') as $columnID) {
+                    foreach ($this->excelColumnRange('A', 'AZ') as $columnID) {
                         $contador++;
                         $event->sheet->getColumnDimension($columnID)->setAutoSize(true);
                         $col2 = $columnID."1";
@@ -80,6 +81,21 @@ class xls implements FromCollection, WithHeadings, WithStrictNullComparison, Wit
                     ]); 
                 },
             ];
+    }
+
+    function excelColumnRange($start, $end) {
+        $columns = [];
+        $current = $start;
+
+        while ($current !== $end) {
+            $columns[] = $current;
+            $current++;
+        }
+
+        // Incluir el final también
+        $columns[] = $end;
+
+        return $columns;
     }
         
 }

@@ -284,7 +284,7 @@ class InstructorController extends Controller
                 $nrevisiones = NULL;
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','DTA')
-                                                ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO','ENVIADO'])
+                                                ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO','ENVIADO','RECHAZADO ENVIADO','RECHAZADO PREVALIDADO', 'RECHAZADO CONVOCADO','PREVALIDADO','CONVOCADO','SEMAFORO CORRECCION'])//A
                                                 ->WHERE('registro_activo', ['true'])
                                                 ->GET();
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
@@ -1777,6 +1777,9 @@ class InstructorController extends Controller
 
             $perfil = $this->make_collection($datainstructor->data_perfil);
             $validado = $this->make_collection($datainstructor->data_especialidad);
+            if($validado != FALSE)
+        {
+
             foreach($validado as $key => $ges)
             {
                 $lista = null;
@@ -1816,6 +1819,7 @@ class InstructorController extends Controller
 
                 // dd($validado[$key]->cursos_impartir);
             }
+        }
             // dd($validado);
         }
         $idest = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad)->FIRST();
@@ -3930,9 +3934,9 @@ class InstructorController extends Controller
         $ubicacion = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', $useruni)->FIRST();
         $unidadregistra = DB::TABLE('tbl_unidades')->SELECT('cct')->WHERE('unidad', '=', $ubicacion->ubicacion)->FIRST();
         $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad)->FIRST();
-        $estado_nac = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad_nacimiento)->FIRST();
-        $munic_nac = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio_nacimiento)->FIRST();
-        $locali_nac = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad_nacimiento)->FIRST();
+        // $estado_nac = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad_nacimiento)->FIRST();
+        // $munic_nac = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio_nacimiento)->FIRST();
+        // $locali_nac = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad_nacimiento)->FIRST();
         # Proceso de Guardado
         #----- Personal -----
         $saveInstructor->id = $id;
@@ -3949,12 +3953,12 @@ class InstructorController extends Controller
         $saveInstructor->fecha_nacimiento = $request->fecha_nacimientoins;
         $saveInstructor->entidad = $estado->nombre;
         $saveInstructor->municipio = $munic->muni;
-        $saveInstructor->clave_loc = $request->localidad;
-        $saveInstructor->localidad = $locali->localidad;
-        $saveInstructor->entidad_nacimiento = $estado_nac->nombre;
-        $saveInstructor->municipio_nacimiento = $munic_nac->muni;
-        $saveInstructor->clave_loc_nacimiento = $request->localidad_nacimiento;
-        $saveInstructor->localidad_nacimiento = $locali_nac->localidad;
+        // $saveInstructor->clave_loc = $request->localidad;
+        // $saveInstructor->localidad = $locali->localidad;
+        // $saveInstructor->entidad_nacimiento = $estado_nac->nombre;
+        // $saveInstructor->municipio_nacimiento = $munic_nac->muni;
+        // $saveInstructor->clave_loc_nacimiento = $request->localidad_nacimiento;
+        // $saveInstructor->localidad_nacimiento = $locali_nac->localidad;
         $saveInstructor->domicilio = $request->domicilio;
         $saveInstructor->telefono = $request->telefono;
         $saveInstructor->correo = $request->correo;
