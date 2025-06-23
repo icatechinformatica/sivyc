@@ -79,22 +79,6 @@
                                     title="RECHAZAR">
                                     <i class="fa fa-times fa-2x fa-lg text-danger"></i>
                                 </a>
-                            @elseif($status == 'CONVOCADO')
-                                <a style="color: white;" target="_blank" class="fa fa-eye fa-2x fa-lg text-success" title="MOSTRAR INFORMACION" href="{{route('instructor-ver', ['id' => $rise->id])}}"></a> &nbsp;
-                                <a class="aprobar-btn"
-                                    style="color: white; cursor:pointer;"
-                                    data-id="{{ $rise->id }}"
-                                    data-name="{{ $rise->nombre }} {{ $rise->apellidoPaterno }} {{ $rise->apellidoMaterno }}"
-                                    title="APROBAR">
-                                    <i class="fa fa-thumbs-up fa-2x fa-lg text-primary"></i>
-                                </a> &nbsp;
-                                <a class="rechazar-convocado-btn"
-                                    style="color: white; cursor:pointer;"
-                                    data-id="{{ $rise->id }}"
-                                    data-name="{{ $rise->nombre }} {{ $rise->apellidoPaterno }} {{ $rise->apellidoMaterno }}"
-                                    title="RECHAZAR">
-                                    <i class="fa fa-times fa-2x fa-lg text-danger"></i>
-                                </a>
                             @endif
                         @else
                             <span class="badge bg-success">RECHAZADO: {{ $rise->rechazo }}</span>

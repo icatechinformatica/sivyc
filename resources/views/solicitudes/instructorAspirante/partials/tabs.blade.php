@@ -40,12 +40,4 @@
             'showRechazados' => $showRechazados ?? false
         ])
     </div>
-    <div class="tab-pane fade" id="convocado" role="tabpanel" aria-labelledby="convocado-tab">
-        @include('solicitudes.instructorAspirante.partials.table', [
-            'data' => $data,
-            'especialidades' => $especialidades,
-            'status' => 'CONVOCADO',
-            'showRechazados' => $showRechazados ?? false
-        ])
-    </div>
 </div>

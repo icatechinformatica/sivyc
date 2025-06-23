@@ -64,52 +64,73 @@ class InstructorAspiranteController extends Controller
             ->with('success', 'Aspirante prevalidado correctamente.');
     }
 
-    public function cotejar(Request $request)
+    public function convocar(Request $request)
     {
+        $direccionUnidad = null;
         $id = $request->input('id');
         $aspirante = pre_instructor::find($id);
-        $aspirante->status = 'CONVOCADO';
-        $aspirante->save();
-
-        return redirect()->route('aspirante.instructor.index')
-            ->with('success', 'Aspirante convocado  correctamente.');
-    }
-
-    public function aprobar(Request $request)
-    {
-        $id = $request->input('id');
-        $aspirante = pre_instructor::find($id);
-        $aspirante->status = 'EN FIRMA';
+        $aspirante->status = 'EN CAPTURA';
         $aspirante->turnado = 'UNIDAD';
-
-        // --- nrevision logic start ---
-        $unidad = strtoupper($aspirante->unidad_asignada);
-        if ($unidad === 'SAN CRISTOBAL') {
-            $prefix = 'SC';
-        } else {
-            $prefix = substr($unidad, 0, 2);
+        $aspirante->fecha_entrevista = $request->input('fecha_entrevista');
+        if(!is_null($aspirante->data_especialidad)) {
+            $data = $aspirante->data_especialidad;
+            foreach($data as $key => $especialidad)
+            {
+                if($especialidad['status'] == 'VALIDADO') {
+                    $especialidad['status'] = 'REVALIDACION EN CAPTURA';
+                    $especialidad['fecha_solicitud'] = $especialidad['fecha_validacion'] = $especialidad['memorandum_solicitud'] = $especialidad['memorandum_validacion'] = null;
+                    $especialidad['unidad_solicita'] = $aspirante->unidad_asignada;
+                }
+                $data[$key] = $especialidad;
+            }
+            $aspirante->data_especialidad = $data;
         }
-        $year = date('Y');
-        $base = "{$prefix}-{$year}-";
 
-        // Find last nrevision with this prefix and year
-        $last = pre_instructor::where('nrevision', 'like', "{$base}%")
-            ->orderByDesc('nrevision')
-            ->first();
+        //proceso para generar nrevision
+        $unidad_inicial = substr($aspirante->unidad_asignada,0,2);
+        if($unidad_inicial === 'SA') { $unidad_inicial = 'SC'; }
+        $last_nrevision = pre_instructor::Where('nrevision', 'like', $unidad_inicial.'-'.date('Y').'-%')
+            ->orderBy('nrevision', 'desc')
+            ->value('nrevision');
 
-        if ($last && preg_match('/-(\d{4})$/', $last->nrevision, $matches)) {
-            $consecutive = str_pad(((int)$matches[1]) + 1, 4, '0', STR_PAD_LEFT);
+        if ($last_nrevision) {
+            $last_consecutive = explode('-', $last_nrevision)[2];
+            $consecutive = str_pad((int)$last_consecutive + 1, 4, '0', STR_PAD_LEFT);
         } else {
             $consecutive = '0001';
         }
 
-        $aspirante->nrevision = "{$base}{$consecutive}";
-        // --- nrevision logic end ---
+        $aspirante->nrevision = $unidad_inicial . '-' . date('Y') . '-' . $consecutive;
+        $direcbd = explode('*',tbl_unidades::where('unidad', $aspirante->unidad_asignada)->value('direccion'));
+        foreach ($direcbd as $key => $value) {
+            $direccionUnidad = $direccionUnidad . $value;
+            if(str_contains($value, 'C.P.')) {
+                break;
+            }
+        }
+
+
+        $infowhats = [
+            'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
+            'unidad' => $aspirante->unidad_asignada,
+            'fecha' => $aspirante->fecha_entrevista,
+            'telefono' => $aspirante->telefono,
+            'direccionUnidad' => $direccionUnidad,
+        ];
+
+        try {
+            $response = $this->whatsapp_convocado_msg($infowhats);
+        } catch (\Exception $e) {
+            $response = [
+                'status' => false,
+                'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
+            ];
+        }
 
         $aspirante->save();
 
         return redirect()->route('aspirante.instructor.index')
-            ->with('success', 'Aspirante aprobado correctamente.');
+            ->with('success', 'Aspirante convocado correctamente.');
     }
 
     public function filter(Request $request)
@@ -165,6 +186,11 @@ class InstructorAspiranteController extends Controller
             $aspirante->status = 'RECHAZADO ENVIADO';
         }
         $aspirante->rechazo = $observacion;
+
+        // Send WhatsApp message if rejected in PREVALIDADO
+        if ($context === 'PREVALIDADO') {
+            $responsewsp = $this->whatsapp_rechazo_msg($aspirante);
+        }
         $aspirante->save();
 
         return redirect()->route('aspirante.instructor.index')
@@ -231,41 +257,53 @@ class InstructorAspiranteController extends Controller
         return Excel::download(new \App\Exports\AspirantesExport($exportData), 'aspirantes_'.$status.'.xlsx');
     }
 
-    public function whatsapp_msg(Request $request)
+    public function whatsapp_convocado_msg($instructor)
     {
-        $numeros = [
-            '5219612134853',
-            '5219612255159',
-            // '5219611862423',
-        ];
-
-        $plantilla = "👋 Hola {{nombre}}, te escribimos desde ICATECH 📚 para recordarte tu cita el día {{fecha}}. ¡Gracias por confiar en nosotros! (PRUEBA DESDE EL SERVIDOR)";
+        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\nEstimado(a) {{nombre}}, Aspirante a Instructor Externo del ICATECH:\n\nPor medio de la presente, le informamos que ha sido seleccionado(a) para continuar a la siguiente etapa del proceso de selección de instructores externos, la cual consiste en la entrevista personal y el cotejo de documentación en la Unidad de Capacitación {{unidad}}, con la finalidad de corroborar la documentación cargada en el sistema y con base en el soporte documental validar la especialidad que le corresponde.\nLe solicitamos presentarse el día {{fecha}}, en nuestras oficinas ubicadas en {{direccionUnidad}}\nDeberá llevar consigo en copia legible los siguientes documentos:\n[Lista de documentos requeridos: CV Personal, certificados de estudios (secundaria, preparatoria, licenciatura, maestría, doctorado), constancias de cursos, acta de nacimiento, Identificación oficial (Preferentemente INE), CURP (Del mes en curso), comprobante de domicilio, constancia de situación fiscal con Régimen de Sueldos y Salarios e Ingresos Asimilados a Salarios, con actividad económica Asalariado (Del mes en curso), Caratula del Estado de Cuenta Bancario, etc.]\nAgradecemos su interés en formar parte de nuestro equipo y le recordamos que la puntualidad y la presentación de la documentación completa son requisitos indispensables para continuar en el proceso.\nQuedamos atentos a cualquier duda. Sea usted bienvenido a esta familia Icatech.\n\nAtentamente,\nDR. CÉSAR ARTURO ESPINOSA MORALES\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
         $resultados = [];
 
-        foreach ($numeros as $index => $numero) {
-            // Variables simuladas por ejemplo
-            $nombre = "Usuario " . ($index + 1);
-            $fecha = now()->addDays($index + 1)->format('d/m/Y');
+        $fecha_formateada = Carbon::parse($instructor['fecha'])->translatedFormat('j \d\e F \d\e\l Y');
+        $telefono_formateado = '521'.$instructor['telefono'];
+        // Reemplazar variables en plantilla
+        $mensaje = str_replace(
+            ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{direccionUnidad}}'],
+            [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $instructor['direccionUnidad']],
+            $plantilla
+        );
 
-            // Reemplazar variables en plantilla
-            $mensaje = str_replace(
-                ['{{nombre}}', '{{fecha}}'],
-                [$nombre, $fecha],
-                $plantilla
-            );
+        $callback = $this->whatsapp_msg($telefono_formateado, $mensaje);
 
-            $response = Http::post('https://mensajeria.icatech.gob.mx/send-message', [
-                'number' => $numero,
-                'message' => $mensaje,
-            ]);
+        return $callback;
+    }
+    private function whatsapp_rechazo_msg($aspirante)
+    {
+        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\n Estimado(a) {{nombre}}, Aspirante a Instructor Externo del ICATECH:\n\n Agradecemos sinceramente su interés y participación en la convocatoria para la selección de instructores externos del ICATECH. Despues de revisar cuidadosamente los perfiles recibidos, lamentamos informarle que en esta ocasión no ha sido seleccionado(a) para continuar a la segunda etapa del proceso. Valoramos el tiempo y el esfuerzo que dedicó al presentar su postulación, y lo(a) invitamos cordialmente a participar en futuras convocatorias\n\nLe reiteramos nuestro agradecimiento por su disposición y compromiso con la formación y el desarrollo profesional. \n\nAtentamente,\nDR. CÉSAR ARTURO ESPINOSA MORALES\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
+        $nombre = $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno;
+        $telefono_formateado = '521'.$aspirante->telefono;
 
-            $resultados[] = [
-                'numero' => $numero,
-                'status' => $response->successful(),
-                'respuesta' => $response->json(),
-            ];
-        }
+        $mensaje = str_replace(
+            ['{{nombre}}'],
+            [$nombre],
+            $plantilla
+        );
 
+        $callback = $this->whatsapp_msg($telefono_formateado, $mensaje);
+
+        return $callback;
+    }
+
+    private function whatsapp_msg($telefono_formateado, $mensaje)
+    {
+        $response = Http::post('https://mensajeria.icatech.gob.mx/send-message', [
+            'number' => $telefono_formateado,
+            'message' => $mensaje,
+        ]);
+
+        $resultados[] = [
+            'numero' => $telefono_formateado,
+            'status' => $response->successful(),
+            'respuesta' => $response->json(),
+        ];
 
         return $response->json($resultados);
     }
