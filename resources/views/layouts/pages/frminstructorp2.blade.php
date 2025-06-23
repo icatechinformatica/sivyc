@@ -712,49 +712,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputentidad">País de Nacimiento</label>
-                    <select class="form-control" name="pais_nacimiento" id="pais_nacimiento">
-                        <option value="">SELECCIONE</option>
-                        @foreach ($paises as $pais)
-                            <option value="{{$pais->id}}" @if($pais->id == $datainstructor->pais_nacimiento || $pais->id == '115') selected @endif>{{$pais->nombre}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputentidad">Entidad de Nacimiento</label>
-                    <select class="form-control" name="entidad_nacimiento" id="entidad_nacimiento" onchange="local2_nacimiento()">
-                        <option value="">SELECCIONE</option>
-                        @foreach ($estados as $cadwell)
-                            <option value="{{$cadwell->id}}" @if($datainstructor->entidad_nacimiento == $cadwell->nombre) selected @endif>{{$cadwell->nombre}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputmunicipio">Municipio de Nacimiento</label>
-                    <select class="form-control" name="municipio_nacimiento" id="municipio_nacimiento" onchange="local_nacimiento()">
-                        <option value="sin especificar">Sin Especificar</option>
-                        @if(isset($municipios_nacimiento))
-                            @foreach ($municipios_nacimiento as $cadwell)
-                                <option value="{{$cadwell->id}}" @if($datainstructor->municipio_nacimiento == $cadwell->muni) selected @endif>{{$cadwell->muni}}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
-                <div class="form-gorup col-md-3">
-                    <label for="inputlocalidad">Localidad de Nacimiento</label>
-                    <select class="form-control" name="localidad_nacimiento" id="localidad_nacimiento">
-                        <option value="sin especificar">Sin Especificar</option>
-                        @if(isset($localidades_nacimiento))
-                            @foreach ($localidades_nacimiento as $cadwell)
-                                <option value="{{$cadwell->clave}}" @if($datainstructor->localidad_nacimiento == $cadwell->localidad) selected @endif>{{$cadwell->localidad}}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-3">
+                {{-- <div class="form-group col-md-3">
                     <label for="inputentidad">País de Residencia</label>
                     <select class="form-control" name="pais" id="pais">
                         <option value="">SELECCIONE</option>
@@ -762,7 +720,7 @@
                             <option value="{{$pais->id}}" @if((isset($datainstructor->datos_alfa['pais_residencia']) && $pais->id == $datainstructor->datos_alfa['pais_residencia']) || $pais->id == '115') selected @endif>{{$pais->nombre}}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Residencia</label>
                     <select class="form-control" name="entidad" id="entidad" onchange="local2()">
@@ -781,7 +739,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-gorup col-md-3">
+                {{-- <div class="form-gorup col-md-3">
                     <label for="inputlocalidad">Localidad de Residencia</label>
                     <select class="form-control" name="localidad" id="localidad">
                         <option value="sin especificar">Sin Especificar</option>
@@ -789,7 +747,7 @@
                             <option value="{{$cadwell->clave}}" @if($datainstructor->localidad == $cadwell->localidad) selected @endif>{{$cadwell->localidad}}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
