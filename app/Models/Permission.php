@@ -11,7 +11,7 @@ class Permission extends Model
     protected $table = 'permissions';
 
     protected $fillable = [
-        'id', 'name', 'slug', 'description', 'menu', 'icon', 'id_padre'
+        'id', 'name', 'slug', 'description', 'menu', 'icon', 'id_padre', 'clave_orden', 'activo'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -31,11 +31,4 @@ class Permission extends Model
         return $query->where('menu', true);
     }
     
-    /**
-     * Obtiene todos los permisos que tienen a este permiso como padre
-     */
-    public function hijos()
-    {
-        return $this->hasMany(Permission::class, 'id_padre', 'id');
-    }
 }
