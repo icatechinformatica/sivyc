@@ -57,7 +57,7 @@ class vbgruposController extends Controller
             if (is_numeric($id)){
                 $result =  DB::table('tbl_cursos')->where('id',$id)->whereNull('status_curso');
                 if($estado == true)
-                    $result->update(['vb_dg' => $estado, 'turnado' => 'UNIDAD']);
+                    $result->update(['vb_dg' => $estado, 'turnado' => 'DGA']);
                 else
                     $result->update(['vb_dg' => $estado, 'turnado' => 'VoBo']);
                 if($result){
@@ -144,7 +144,7 @@ class vbgruposController extends Controller
                             <a onclick='".$modal_listinst."' title='Seleccionar Instructor'>
                                 <i class='fa fa-address-book mr-2 $show_btninst' aria-hidden='true' style='color:rgb(1, 95, 84);'></i>
                             </a>";
-                            if(!empty($item->nombre)){
+                            if(!empty($item->nombre) && $item->vb_dg == true){
                                 $filas.= "
                                     <a onclick='".$modal_instructor."' style='color:rgb(1, 95, 84);'>
                                         <b>".$item->nombre."</b>
@@ -309,8 +309,20 @@ class vbgruposController extends Controller
     public function modal_instructores(Request $request) {
         $folio_grupo = $request->folio_grupo;
         $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
-        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa')->where('folio_grupo', $folio_grupo)->first();
+        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor')->where('folio_grupo', $folio_grupo)->first();
         list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+
+        //Agregar en el array el instructor asigando por la unidad, en caso de que exista.
+        if(!empty($grupo->id_instructor)){
+            $instructor_unidad = DB::Table('instructores')->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id')->Where('id', $grupo->id_instructor)->first();
+            if (!empty($instructor_unidad)) {
+                //Agregamos la instructor asignado por la unidad, al array de instructores
+                $nuevoInstructor = new \stdClass();
+                $nuevoInstructor->instructor = $instructor_unidad->instructor;
+                $nuevoInstructor->id = $instructor_unidad->id;
+                $instructores[] = $nuevoInstructor;
+            }
+        }
 
         return response()->json([
             'instructores' => $instructores,
@@ -398,9 +410,8 @@ class vbgruposController extends Controller
     }
 
     public function guardar_instructor(Request $request) {
-        //En espera de soltar el guardado de datos
-        return redirect()->route('solicitudes.vb.grupos')->with('success', 'En espera de autorización, para habilitar esta función');
-
+        // En espera de soltar el guardado de datos
+        // return redirect()->route('solicitudes.vb.grupos')->with('success', 'En espera de autorización, para habilitar esta función');
 
         $folio_grupo = $request->val_folio_grupo;
         $id_instructor = $request->sel_instructor;
@@ -418,10 +429,10 @@ class vbgruposController extends Controller
             ## Realizar el guardado de datos a las tablas alumnos_registro, tbl_cursos, agenda
             $respuesta = $this->InstUpdateDatos($dataInstructor, $dataCurso);
             if ($respuesta) {
-                $message = 'Instructor actualizado => '.$dataInstructor->instructor. ' | Curso => '.$dataCurso->curso;
+                $message = 'El Curso => '.$dataCurso->curso.' ha sido autorizado '.'con el Instructor => '.$dataInstructor->instructor;
                 return redirect()->route('solicitudes.vb.grupos')->with('success', $message);
             }else{
-                $message = 'Error al actualizar los datos del instructor.';
+                $message = 'Error al autorizar el curso y actualizar los datos del instructor.';
                 return redirect()->route('solicitudes.vb.grupos')->with('success', $message);
             }
         }else{
@@ -494,13 +505,13 @@ class vbgruposController extends Controller
                                     'banco'=>$dataInstructor->banco,'no_cuenta'=>$dataInstructor->no_cuenta,'interbancaria'=>$dataInstructor->interbancaria,'tipo_honorario'=>$dataInstructor->tipo_honorario];
 
             //Guarda datos del instructor en tbl_cursos
-            $result_curso = DB::table('tbl_cursos')->where('folio_grupo', $dataCurso->folio_grupo)->Update(
+            $result_curso = DB::table('tbl_cursos')->where('folio_grupo', $dataCurso->folio_grupo)->whereNull('status_curso')->Update(
                 [
                 'id_instructor' => $dataInstructor->id,'modinstructor' => $tipo_honorario,
                 'nombre' => $dataInstructor->instructor,'curp' => $dataInstructor->curp,'rfc' => $dataInstructor->rfc,
                 'instructor_escolaridad' => $dataInstructor->escolaridad,'instructor_titulo' => $dataInstructor->titulo,'instructor_sexo' => $dataInstructor->sexo,
                 'instructor_mespecialidad' => $dataInstructor->mespecialidad,'instructor_tipo_identificacion' => $dataInstructor->tipo_identificacion,
-                'instructor_folio_identificacion' => $dataInstructor->folio_ine,'soportes_instructor'=>json_encode($soportes_instructor)
+                'instructor_folio_identificacion' => $dataInstructor->folio_ine,'soportes_instructor'=>json_encode($soportes_instructor), 'vb_dg' => true, 'turnado' => 'DGA'
                 ]);
 
             if (!$result_curso) {
@@ -534,6 +545,7 @@ class vbgruposController extends Controller
             }
 
             DB::commit(); // Todo salió bien, confirmar cambios
+
             if ($result_curso and $result_alumnos and $result_agenda) {
                 return true;
             }else{
