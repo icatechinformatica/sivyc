@@ -34,7 +34,7 @@
                     <td>
                         <a onclick="seleccion_instructor('{{ $item->folio_grupo }}')" title="Seleccionar Instructor"><i class="fa fa-address-book mr-2" aria-hidden="true" style="color:rgb(1, 95, 84);"></i></a>
 
-                        @if (!empty($item->nombre))
+                        @if (!empty($item->nombre) && $item->vb_dg == true)
                             <a onclick="ver_modal('INSTRUCTOR', '{{ $item->folio_grupo}}')" style="color:rgb(1, 95, 84);">
                                 <b>{{ $item->nombre }}</b>
                             </a>

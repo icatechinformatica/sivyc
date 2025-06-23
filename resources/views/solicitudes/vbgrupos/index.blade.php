@@ -237,7 +237,7 @@
                             </select>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-sm btn-outline-success">GUARDAR CAMBIOS</button>
+                            <button type="submit" class="btn btn-sm btn-outline-success">ASIGNAR Y AUTORIZAR</button>
                         </div>
 
                     </form>
