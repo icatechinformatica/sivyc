@@ -41,32 +41,6 @@
                           </div>
 
                         </div>
-                        <div class="row">
-                          <div class="col-lg-6">
-                            <div class="form-group">
-                              <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" name="menu" id="menu" {{ $permiso->menu ? 'checked' : '' }}>
-                                <label class="custom-control-label form-control-label" for="menu">ES MENÚ</label>
-                              </div>
-                            </div>
-                          </div>
-                        
-                        </div>
-                        <div class="row" id="permiso_padre_container">
-                          <div class="col-lg-12">
-                            <div class="form-group">
-                              <label class="form-control-label" for="permiso_padre">PERMISO PADRE</label>
-                              <select class="form-control select2" id="permiso_padre" name="permiso_padre">
-                                <option value="">Seleccione un permiso padre</option>
-                                <?php foreach($permisos as $permisoFor): ?>
-                                    <option value="{{ $permisoFor->id }}" {{ $permisoFor->id == $permiso->id_padre ? 'selected' : '' }}>
-                                        {{ $permisoFor->name }} ({{ $permisoFor->slug }})
-                                    </option>
-                                <?php endforeach; ?>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
                       </div>
                       <hr class="my-4" />
                       <!-- Address -->
@@ -117,16 +91,6 @@
                 }
             });
 
-        });
-        $(document).ready(function() {
-            $('#menu').is(':checked') ? $('#permiso_padre_container').show() : $('#permiso_padre_container').hide();
-            $('#menu').change(function() {
-                if ($(this).is(':checked')) {
-                  $('#permiso_padre_container').show();
-                } else {
-                  $('#permiso_padre_container').hide();
-                }
-            });
         });
     </script>
 @endsection

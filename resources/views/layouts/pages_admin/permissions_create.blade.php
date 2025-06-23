@@ -26,7 +26,8 @@
                                 <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                        </div><br />
+                        </div>
+                      <br/>
                     @endif
                     <div class="row align-items-center">
                       <div class="col-8">
@@ -57,31 +58,6 @@
                             </div>
                           </div>
 
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-6">
-                            <div class="form-group">
-                              <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" name="menu" id="menu">
-                                <label class="custom-control-label form-control-label" for="menu">ES MENÚ</label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="row" id="permiso_padre_container">
-                          <div class="col-lg-12">
-                            <div class="form-group">
-                              <label class="form-control-label" for="permiso_padre">PERMISO PADRE</label>
-                              <select class="form-control select2" id="permiso_padre" name="permiso_padre">
-                                <option value="">Seleccione un permiso padre</option>
-
-                                  @foreach($permisos as $permiso)
-                                    <option value="{{ $permiso->id }}">{{ $permiso->name }} ({{ $permiso->slug }})</option>
-                                  @endforeach
-                              </select>
-                            </div>
-                          </div>
                         </div>
                       </div>
                       <hr class="my-4" />
@@ -134,18 +110,6 @@
                 }
             });
 
-        });
-
-        $(document).ready(function() {
-            $('#permiso_padre_container').hide(); // Ocultar el contenedor al cargar la página
-            $('#menu').change(function() {
-                if ($(this).is(':checked')) {
-                  $('#permiso_padre_container').show();
-                } else {
-                  $('#permiso_padre_container').hide();
-                  $('#permiso_padre').val('').trigger('change');
-                }
-            });
         });
     </script>
 @endsection
