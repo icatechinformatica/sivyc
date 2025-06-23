@@ -158,48 +158,26 @@
 <div class="modal fade" id="cotejarModal" tabindex="-1" aria-labelledby="cotejarModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="POST" action="{{ route('aspirante.instructor.cotejar') }}">
+      <form method="POST" action="{{ route('aspirante.instructor.convocar') }}">
         @csrf
         <div class="modal-header">
-          <h5 class="modal-title w-100 text-center" id="cotejarModalLabel">Cotejar</h5>
+          <h5 class="modal-title w-100 text-center" id="cotejarModalLabel">Convocar</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-center">
-          ¿Desea cotejar este registro?
+          ¿Desea convocar al aspirante?
           <input type="hidden" id="cotejar-id" name="id" value="">
           <div class="mt-2">
             Aspirante seleccionado: <b><span id="show-cotejar-name"></span></b>
           </div>
-        </div>
-        <div class="modal-footer justify-content-center">
-          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-primary">Cotejar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Aprobar Modal -->
-<div class="modal fade" id="aprobarModal" tabindex="-1" aria-labelledby="aprobarModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form method="POST" action="{{ route('aspirante.instructor.aprobar') }}">
-        @csrf
-        <div class="modal-header">
-          <h5 class="modal-title w-100 text-center" id="aprobarModalLabel">Aprobar</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center">
-          ¿Desea aprobar este registro?
-          <input type="hidden" id="aprobar-id" name="id" value="">
           <div class="mt-2">
-            Aspirante seleccionado: <b><span id="show-aprobar-name"></span></b>
+           Fecha de entrevista:
+           <input type="date" class="form-control" id="fecha-entrevista" name="fecha_entrevista" required style="max-width: 200px; margin: auto;">
           </div>
         </div>
         <div class="modal-footer justify-content-center">
-          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-primary">Aprobar</button>
+          <button type="button" class="btn btn-success" data-bs-dismixss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary">Convocar</button>
         </div>
       </form>
     </div>
@@ -250,13 +228,6 @@
         $('#cotejar-id').val(id);
         $('#show-cotejar-name').text(name);
         $('#cotejarModal').modal('show');
-    });
-    $(document).on('click', '.aprobar-btn', function() {
-        var id = $(this).data('id');
-        var name = $(this).data('name');
-        $('#aprobar-id').val(id);
-        $('#show-aprobar-name').text(name);
-        $('#aprobarModal').modal('show');
     });
     // For ENVIADO
     $(document).on('click', '.rechazar-btn', function() {
