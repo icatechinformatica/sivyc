@@ -1,7 +1,7 @@
 <!--Creado por Daniel Méndez Cruz-->
 @extends('theme.sivyc_admin.layout')
 <!--generado por Daniel Méndez-->
-@section('title', 'PERMISOS | Sivyc Icatech')
+@section('title', 'Menus | Sivyc Icatech')
 <!--contenido-->
 @section('content')
 <div class="container-fluid mt--6">
@@ -130,6 +130,10 @@
                 });
                 // console.log('Status toggle clicked for menu ID:', this.getAttribute('data-id-menu'));
             });
+        });
+        // Solo un formulario open a la vez
+        $(document).on('show.bs.collapse', '[id^="add-form-"]', function() {
+            $('[id^="add-form-"]').not(this).collapse('hide');
         });
     });
 </script>

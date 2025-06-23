@@ -74,6 +74,57 @@ class MenuController extends Controller
         return response()->json(['success' => false, 'message' => 'Menu no encontrado'], 404);
     }
 
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'permisoName'       => 'required|string|max:255',
+            'permisoSlug'       => 'required|string|max:255',
+            'permisoDescripcion' => 'nullable|string',
+            'permiso_padre'     => 'required|exists:permissions,id',
+        ]);
+        $menu = new Permission;
+        $menu->name        = trim($data['permisoName']);
+        $menu->slug        = trim($data['permisoSlug']);
+        $menu->description = trim($data['permisoDescripcion'] ?? '');
+        // Calcular clave_orden para el menú basado en padre y hermanos
+        $parentId = $data['permiso_padre'];
+        $parent = Permission::find($parentId);
+        if ($parent && $parent->clave_orden) {
+            $parentClave = $parent->clave_orden;
+
+            if (substr($parentClave, 2, 2) === '00' && substr($parentClave, 4, 2) === '00') {
+                $prefixLen = 2;
+            } elseif (substr($parentClave, 4, 2) === '00') {
+                $prefixLen = 4;
+            } else {
+                $prefixLen = 6;
+            }
+            $childPos = $prefixLen;
+            $prefix = substr($parentClave, 0, $prefixLen);
+            $suffix = ($childPos + 2 < strlen($parentClave)) ? substr($parentClave, $childPos + 2) : '';
+            // Obtener claves de hermanos
+            $siblings = Permission::where('clave_orden', 'like', $prefix . '%')->pluck('clave_orden');
+            $max = 0;
+            foreach ($siblings as $clave) {
+                if (strlen($clave) >= $childPos + 2) {
+                    $seg = substr($clave, $childPos, 2);
+                    if (is_numeric($seg)) {
+                        $max = max($max, (int) $seg);
+                    }
+                }
+            }
+            $newSeg = str_pad($max + 1, 2, '0', STR_PAD_LEFT);
+            $menu->clave_orden = $prefix . $newSeg . $suffix;
+        } else {
+            // Fallback: sin padre o sin clave asignada
+            $menu->clave_orden = '010000';
+        }
+        $menu->activo      = true;
+        $menu->save();
+        return redirect()->route('menus.index')
+            ->with('success', 'Menú agregado correctamente.');
+    }
+
     /**
      * Actualiza el estado de los submenus y devuelve IDs actualizados.
      *

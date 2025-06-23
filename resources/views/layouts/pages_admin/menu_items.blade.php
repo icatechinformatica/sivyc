@@ -9,7 +9,7 @@
             @else
             <span class="d-inline-block mr-3"></span>
             @endif
-            <div>
+            <div data-toggle="collapse" data-target="#submenu-{{ $menu['clave_orden'] }}" style="cursor: pointer;">
                 <strong class="menu-name">{{ $menu['name'] }}</strong>
                 <small class="text-muted">({{ $menu['slug'] }})</small>
                 <small class="text-muted mr-3">({{ $menu['clave_orden'] }})</small>
@@ -31,13 +31,37 @@
         @endforeach
     </ul>
     @endif
+    @if ($level < 2) 
+        
     <ul>
         <li class="tree-level-{{ $level + 1 }} mb-1">
-            <a href="{{ route('permisos.crear', ['parent' => $menu['id']]) }}" class="text-muted small p-0"
-                title="Añadir menú">
+            <button class="btn btn-link p-0 text-muted small" data-toggle="collapse"
+                data-target="#add-form-{{ $menu['id'] }}">
                 <i class="fas fa-plus"></i>
                 <span class="text-sm">Añadir</span>
-            </a>
+            </button>
+            <div id="add-form-{{ $menu['id'] }}" class="collapse mt-2">
+                <form method="POST" action="{{ route('menus.store') }}">
+                    @csrf
+                    <input type="hidden" name="menu" value="1">
+                    <input type="hidden" name="activo" value="1">
+                    <input type="hidden" name="permiso_padre" value="{{ $menu['id'] }}">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" name="permisoName" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Slug</label>
+                        <input type="text" name="permisoSlug" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea name="permisoDescripcion" class="form-control form-control-sm" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
+                </form>
+            </div>
         </li>
     </ul>
+    @endif
 </li>

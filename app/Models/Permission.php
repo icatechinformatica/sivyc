@@ -11,7 +11,7 @@ class Permission extends Model
     protected $table = 'permissions';
 
     protected $fillable = [
-        'id', 'name', 'slug', 'description', 'menu', 'icon', 'id_padre', 'clave_orden', 'activo'
+        'id', 'name', 'slug', 'description', 'menu', 'icon', 'clave_orden', 'activo'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

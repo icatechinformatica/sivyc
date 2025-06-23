@@ -147,6 +147,7 @@ Route::middleware(['admin'])->group(function(){
     Route::put('/personal/update/{id}', 'adminController\PersonalController@update')->name('personal.update');
     Route::get('/menus/index', 'adminController\MenuController@index')->name('menus.index');
     Route::post('/menus/{id}/status-update', 'adminController\MenuController@statusUpdate')->name('menus.status.update');
+    Route::post('/menus/store', 'adminController\MenuController@store')->name('menus.store');
 });
 });
 /**
