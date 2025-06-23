@@ -34,8 +34,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        $permisos = Permission::menus()->get();
-        return view('layouts.pages_admin.permissions_create', compact('permisos'));
+        return view('layouts.pages_admin.permissions_create');
     }
 
     /**
@@ -134,8 +133,7 @@ class PermissionController extends Controller
         //
         $idpermission = base64_decode($id);
         $permiso = Permission::findOrfail($idpermission);
-        $permisos = Permission::menus()->get();
-        return view('layouts.pages_admin.permisos_editar', compact('permiso','permisos' ));
+        return view('layouts.pages_admin.permisos_edsitar', compact('permiso'));
     }
 
     /**
@@ -164,29 +162,12 @@ class PermissionController extends Controller
             'name' => trim($request->permisoNameEdit),
             'slug' => trim($request->permisoSlugEdit),
             'description' => trim($request->permisoDescripcionEdit),
-            'menu' => $request->has('menu') ? true : false,
         ];
-
-        // Verificar si el permiso era un menú y ahora ya no lo es
-        $eraMenu = $permisoActual->menu;
-        $ahoraEsMenu = $request->has('menu');
-        
-        if ($ahoraEsMenu && $request->filled('permiso_padre')) {
-            $arrayPermisos['id_padre'] = $request->get('permiso_padre');
-        } else {
-            $arrayPermisos['id_padre'] = null;
-        }
         
         // Actualizar el permiso actual
         Permission::where('id', $idpermisos)->update($arrayPermisos);
         
-        // Si el permiso deja de ser un menú, eliminamos la referencia como padre en todos sus hijos
-        if ($eraMenu && !$ahoraEsMenu) {
-            Permission::where('id_padre', $idpermisos)->update(['id_padre' => null]);
-        }
-        
-        return redirect()->route('permisos.index')
-                ->with('success', 'PERMISO ACTUALIZADO EXITOSAMENTE!');
+        return redirect()->route('permisos.index')->with('success', 'PERMISO ACTUALIZADO EXITOSAMENTE!');
     }
 
     /**
@@ -217,8 +198,6 @@ class PermissionController extends Controller
         $validator =  Validator::make($request->all(), [
             'permisoName' => 'required',
             'permisoSlug' => 'required',
-            'menu' => 'sometimes',
-            'permiso_padre' => 'nullable|exists:permissions,id',
         ]);
         if ($validator->fails()) {
             # devolvemos un error
@@ -229,11 +208,6 @@ class PermissionController extends Controller
             $permisoRegistro = new Permission;
             $permisoRegistro->name = trim($request->get('permisoName'));
             $permisoRegistro->slug = trim($request->get('permisoSlug'));
-            $permisoRegistro->menu = $request->has('menu') ? true : false;
-            
-            if ($request->has('menu') && $request->filled('permiso_padre')) {
-                $permisoRegistro->id_padre = $request->get('permiso_padre');
-            }
             
             if (!empty($request->get('permisoDescripcion'))) {
                 # si no está vacio se le asigna a la variable...
