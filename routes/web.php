@@ -145,6 +145,8 @@ Route::middleware(['admin'])->group(function(){
     Route::get('/organo/organo_administrativo/{id}', 'adminController\PersonalController@getAdscripcion');
     Route::get('/personal/edit/{id}', 'adminController\PersonalController@edit')->name('personal.edit');
     Route::put('/personal/update/{id}', 'adminController\PersonalController@update')->name('personal.update');
+    Route::get('/menus/index', 'adminController\MenuController@index')->name('menus.index');
+    Route::post('/menus/{id}/status-update', 'adminController\MenuController@statusUpdate')->name('menus.status.update');
 });
 });
 /**
@@ -735,24 +737,6 @@ Route::post('/areas/guardar', 'webController\AreasController@save')->name('areas
 Route::post('/areas/modificar/save', 'webController\AreasController@update_save')->name('areas.update_save')->middleware('can:areas.guardar-modificacion');
 Route::get('/areas/{id}', 'webController\AreasController@destroy')->name('areas.destroy');
 
-/* Modulo especialidades */
-Route::get('/especialidades/inicio', 'webController\EspecialidadesController@index')->name('especialidades.inicio')->middleware('can:especialidades.inicio');
-Route::get('/especialidades/agregar', 'webController\EspecialidadesController@create')->name('especialidades.agregar')->middleware('can:especialidades.formulario-creacion');
-Route::post('/especialidades/guardar', 'webController\EspecialidadesController@store')->name('especialidades.guardar')->middleware('can:especialidades.guardar-nueva-especialidad');
-Route::get('/especialidades/modificar/{id}', 'webController\EspecialidadesController@edit')->name('especialidades.modificar')->middleware('can:especialidades.formulario-actualizar');
-Route::post('/especialidades/modificar/save/{id}', 'webController\EspecialidadesController@update')->name('especialidades.update')->Middleware('can:especialidades.guardar-modificacion');
-Route::get('/especialidades/{id}', 'webController\EspecialidadesController@destroy')->name('especialidades.destroy');
-
-
-/* Modulo instituto*/
-Route::get('/instituto/inicio', 'webController\InstitutoController@index')->name('instituto.inicio')->middleware('can:instituto.inicio');
-Route::post('/instituto/guardar', 'webController\InstitutoController@store')->name('instituto.guardar')->middleware('can:instituto.guardar-modificacion');
-
-/*c Modulo tbl_unidades 0302021*/
-Route::get('/unidades/inicio', 'webController\UnidadesController@index')->name('unidades.inicio')->middleware('can:unidades.index');
-Route::get('/unidades/modificar/{id}', 'webController\UnidadesController@editar')->name('unidades.editar')->middleware('can:unidades.editar');
-Route::post('/unidades/modificar/guardar', 'webController\UnidadesController@update')->name('unidades-actualizar');
-
 /* Modulo exoneraciones */
 Route::get('/exoneraciones/inicio', 'webController\ExoneracionesController@index')->name('exoneraciones.inicio')
     ->middleware('can:exoneraciones.inicio');
@@ -834,10 +818,6 @@ Route::get('/IngresosPropiosReporteXls/reporte', 'Validacion\ReportesPlaneacionF
 Route::get('/Estadisticas/inicio', 'Validacion\ReportesPlaneacionFormatoT@indexEstadisticas')->name('reportes.planeacion.estadisticas');
 Route::get('/Estadisticas/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreatePdf')->name('reportes.planeacion.estadisticasPdf');
 Route::get('/EstadisticasXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreateXls')->name('reportes.planeacion.estadisticasXls');
-
-//armando
-//Route::get('/password/new','passwordController@index')->name('password.view')->middleware('can:password.update');
-//Route::post('/password/update','passwordController@updatePassword')->name('update.password');
 
 /**MODULO DE ESTADISTICAS */
 Route::get('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
