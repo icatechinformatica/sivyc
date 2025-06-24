@@ -133,7 +133,7 @@ class PermissionController extends Controller
         //
         $idpermission = base64_decode($id);
         $permiso = Permission::findOrfail($idpermission);
-        return view('layouts.pages_admin.permisos_edsitar', compact('permiso'));
+        return view('layouts.pages_admin.permisos_editar', compact('permiso'));
     }
 
     /**

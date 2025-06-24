@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
+use App\User;
 use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -37,6 +38,14 @@ class AuthServiceProvider extends ServiceProvider
 
         \Illuminate\Support\Facades\Auth::provider('customuserprovider', function($app, array $config) {
             return new AuthValidateStatusServiceProvider($app['hash'], $config['model']);
+        });
+
+        Gate::define('permission', function (User $user, $permission) {
+            return $user->hasPermission($permission);
+        });
+
+        Gate::before(function ($user, $ability) {
+            return $user->hasPermission($ability) ?: null;
         });
     }
 }

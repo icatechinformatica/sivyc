@@ -120,6 +120,9 @@ Route::middleware(['auth'])->group(function(){
 Route::middleware(['admin'])->group(function(){
     Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
     Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
+    Route::get('/usuarios/permisos/{id}', 'adminController\userController@gestorPermisosUsuarios')->name('usuarios.permisos.index');
+    Route::post('/usuarios/permisos/{id}', 'adminController\userController@updatePermisosUsuario')->name('usuarios.permisos.update');
+
     Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
     Route::post('/update/activo', 'adminController\userController@updateActivo')->name('update.activo');
     Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
@@ -738,6 +741,23 @@ Route::post('/areas/guardar', 'webController\AreasController@save')->name('areas
 Route::post('/areas/modificar/save', 'webController\AreasController@update_save')->name('areas.update_save')->middleware('can:areas.guardar-modificacion');
 Route::get('/areas/{id}', 'webController\AreasController@destroy')->name('areas.destroy');
 
+/* Modulo especialidades */
+Route::get('/especialidades/inicio', 'webController\EspecialidadesController@index')->name('especialidades.inicio')->middleware('can:especialidades.inicio');
+Route::get('/especialidades/agregar', 'webController\EspecialidadesController@create')->name('especialidades.agregar')->middleware('can:especialidades.formulario-creacion');
+Route::post('/especialidades/guardar', 'webController\EspecialidadesController@store')->name('especialidades.guardar')->middleware('can:especialidades.guardar-nueva-especialidad');
+Route::get('/especialidades/modificar/{id}', 'webController\EspecialidadesController@edit')->name('especialidades.modificar')->middleware('can:especialidades.formulario-actualizar');
+Route::post('/especialidades/modificar/save/{id}', 'webController\EspecialidadesController@update')->name('especialidades.update')->Middleware('can:especialidades.guardar-modificacion');
+Route::get('/especialidades/{id}', 'webController\EspecialidadesController@destroy')->name('especialidades.destroy');
+
+/* Modulo instituto*/
+Route::get('/instituto/inicio', 'webController\InstitutoController@index')->name('instituto.inicio')->middleware('can:instituto.inicio');
+Route::post('/instituto/guardar', 'webController\InstitutoController@store')->name('instituto.guardar')->middleware('can:instituto.guardar-modificacion');
+
+/*c Modulo tbl_unidades 0302021*/
+Route::get('/unidades/inicio', 'webController\UnidadesController@index')->name('unidades.inicio')->middleware('can:unidades.index');
+Route::get('/unidades/modificar/{id}', 'webController\UnidadesController@editar')->name('unidades.editar')->middleware('can:unidades.editar');
+Route::post('/unidades/modificar/guardar', 'webController\UnidadesController@update')->name('unidades-actualizar');
+
 /* Modulo exoneraciones */
 Route::get('/exoneraciones/inicio', 'webController\ExoneracionesController@index')->name('exoneraciones.inicio')
     ->middleware('can:exoneraciones.inicio');
@@ -819,6 +839,10 @@ Route::get('/IngresosPropiosReporteXls/reporte', 'Validacion\ReportesPlaneacionF
 Route::get('/Estadisticas/inicio', 'Validacion\ReportesPlaneacionFormatoT@indexEstadisticas')->name('reportes.planeacion.estadisticas');
 Route::get('/Estadisticas/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreatePdf')->name('reportes.planeacion.estadisticasPdf');
 Route::get('/EstadisticasXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreateXls')->name('reportes.planeacion.estadisticasXls');
+
+//armando
+//Route::get('/password/new','passwordController@index')->name('password.view')->middleware('can:password.update');
+//Route::post('/password/update','passwordController@updatePassword')->name('update.password');
 
 /**MODULO DE ESTADISTICAS */
 Route::get('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
@@ -915,3 +939,25 @@ Route::post('/recursos-humanos/reporte/quincenal/pdf', 'RH\RHController@reporte_
 Route::get('/recursos-humanos/reporte/quincenal/detalles/{id}', 'RH\RHController@reporte_quincenal_detalles')->name('rh.reporte.detalles');
 Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
 Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->name('rh.agregar.justificante');
+
+Route::get('/pruebas' , function () {
+    $user = \App\User::find(654);
+
+    // Permisos directos
+    $directPermissions = $user->permissions()->pluck('slug')->toArray();
+
+    // Permisos por roles
+    $rolePermissions = $user->roles()
+        ->with('permissions')
+        ->get()
+        ->pluck('permissions')
+        ->flatten()
+        ->pluck('slug')
+        ->toArray();
+
+    // Unir y quitar duplicados
+    $allPermissions = array_unique(array_merge($directPermissions, $rolePermissions));
+
+    dd($allPermissions);
+    
+})->name('pruebas');

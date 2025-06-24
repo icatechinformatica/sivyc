@@ -2,16 +2,16 @@
 
 namespace App;
 
-use Caffeinated\Shinobi\Concerns\HasRolesAndPermissions;
+use App\Models\Rol;
+use App\Models\Unidad;
+use App\Models\Permission;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use App\Models\Unidad;
-use App\Models\Rol;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRolesAndPermissions;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -45,10 +45,10 @@ class User extends Authenticatable
         return $this->belongsTo(Unidad::class, 'unidad');
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id')->withPivot('user_id ', 'role_id');
-    }
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id')->withPivot('user_id ', 'role_id');
+    // }
 
     public function unidadTo() //Romelia
     {
@@ -82,4 +82,40 @@ class User extends Authenticatable
             }
         }
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id');
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'permission_user', 'user_id', 'permission_id');
+    }
+
+    // Métodos de ayuda (opcional)
+    public function hasRole($role)
+    {
+        return $this->roles()->where('name', $role)->exists();
+    }
+
+    public function hasPermission($permission)
+    {
+        // Si algún rol tiene all-access, retorna true
+        if ($this->roles()->where('special', 'all-access')->exists()) {
+            return true;
+        }
+
+        // Si algún rol tiene no-access, retorna false
+        if ($this->roles()->where('special', 'no-access')->exists()) {
+            return false;
+        }
+
+        // Permisos directos o por rol
+        return $this->permissions()->where('slug', $permission)->exists() ||
+               $this->roles()->whereHas('permissions', function($q) use ($permission) {
+                   $q->where('slug', $permission);
+               })->exists();
+    }
+
 }
