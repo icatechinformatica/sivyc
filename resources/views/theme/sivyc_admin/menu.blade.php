@@ -47,12 +47,12 @@
               <span class="nav-link-text">Permisos</span>
             </a>
           </li>
-          <li class="nav-item">
+          {{-- <li class="nav-item">
             <a class="nav-link" href="{{ route('permisos.roles.index') }}">
               <i class="fa fa-link text-info"></i>
               <span class="nav-link-text">permisos-roles</span>
             </a>
-          </li>
+          </li> --}}
 
           {{-- <li class="nav-item">
             <a class="nav-link" href="{{ route('personal.index') }}">
