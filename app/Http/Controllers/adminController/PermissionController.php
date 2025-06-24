@@ -182,7 +182,7 @@ class PermissionController extends Controller
     }
 
     public function permiso_rol(){
-        $rol = Rol::PAGINATE(15, ['id', 'name', 'slug', 'description']);
+        $rol = Rol::PAGINATE(15, ['id', 'nombre', 'ruta_corta', 'descripcion']);
         // $permisos = Permission::PAGINATE(5);
         return  view('layouts.pages_admin.permiso_rol', compact('rol'));
     }

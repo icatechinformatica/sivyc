@@ -13,7 +13,7 @@ class MenuController extends Controller
     public function index()
     {
         $menus = Permission::whereNotNull('clave_orden')
-            ->select('id', 'name', 'slug', 'description', 'activo', 'clave_orden')
+            ->select('id', 'nombre', 'ruta_corta', 'descripcion', 'activo', 'clave_orden')
             ->orderBy('clave_orden')
             ->get();
 
@@ -77,15 +77,16 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'permisoName'       => 'required|string|max:255',
-            'permisoSlug'       => 'required|string|max:255',
+            'permisoName'        => 'required|string|max:255',
+            'permisoSlug'        => 'required|string|max:255',
             'permisoDescripcion' => 'nullable|string',
-            'permiso_padre'     => 'required|exists:permissions,id',
+            'permiso_padre'      => 'required|exists:permissions,id',
         ]);
+
         $menu = new Permission;
-        $menu->name        = trim($data['permisoName']);
-        $menu->slug        = trim($data['permisoSlug']);
-        $menu->description = trim($data['permisoDescripcion'] ?? '');
+        $menu->nombre = trim($data['permisoName']);
+        $menu->ruta_corta = trim($data['permisoSlug']);
+        $menu->descripcion = trim($data['permisoDescripcion'] ?? '');
         // Calcular clave_orden para el menú basado en padre y hermanos
         $parentId = $data['permiso_padre'];
         $parent = Permission::find($parentId);
@@ -119,7 +120,7 @@ class MenuController extends Controller
             // Fallback: sin padre o sin clave asignada
             $menu->clave_orden = '010000';
         }
-        $menu->activo      = true;
+        $menu->activo = true;
         $menu->save();
         return redirect()->route('menus.index')
             ->with('success', 'Menú agregado correctamente.');

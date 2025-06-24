@@ -23,15 +23,15 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">ROL</th>
-                                    <th scope="col">SLUG</th>
+                                    <th scope="col">RUTA CORTA</th>
                                     <th scope="col">PERMISOS</th>
                                 </tr>
                             </thead>
                             <tbody class="list">
                                 @foreach ($rol as $itemRol)
                                     <tr>
-                                        <td scope="row">{{$itemRol->name}}</td>
-                                        <td scope="row">{{$itemRol->slug}}</td>
+                                        <td scope="row">{{$itemRol->nombre}}</td>
+                                        <td scope="row">{{$itemRol->ruta_corta}}</td>
                                         <td>
                                             <a href="{{route('gestor.permisos.roles', ['id' => base64_encode($itemRol->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="OTORGAR PERMISOS">
                                                 <i class="fa fa-cogs" aria-hidden="true"></i>

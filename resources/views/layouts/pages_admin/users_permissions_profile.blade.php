@@ -26,7 +26,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-8">
                                 <label for="numero_control_edit" class="control-label">USUARIO</label>
-                                <input type="text" name="numero_control_edit" id="numero_control_edit" class="form-control" value="{{ $usuario->name }}" readonly placeholder="NÚMERO DE CONTROL PARA MODIFICAR">
+                                <input type="text" name="numero_control_edit" id="numero_control_edit" class="form-control" value="{{ $usuario->nombre }}" readonly placeholder="NÚMERO DE CONTROL PARA MODIFICAR">
                             </div>
                             <div class="form-group col-md-8">
                                 <label for="codigo_verificacion_edit" class="control-label">ROL</label>
@@ -35,9 +35,9 @@
                                     @foreach ($roles as $itemRol)
                                         <option
                                             @foreach ($usuario->roles as $itemUserRol)
-                                                {{ ($itemUserRol->pivot->role_id == $itemRol->id) ? 'selected' : '' }}
+                                                {{ ($itemUserRol->pivot->rol_id == $itemRol->id) ? 'selected' : '' }}
                                             @endforeach
-                                            value="{{ $itemRol->id }}">{{ $itemRol->name }}
+                                            value="{{ $itemRol->id }}">{{ $itemRol->nombre }}
                                         </option>
                                     @endforeach
                                 </select>

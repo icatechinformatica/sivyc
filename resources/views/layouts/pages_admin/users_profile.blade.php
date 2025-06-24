@@ -72,7 +72,7 @@
                     </div>
                     <div class="text-center">
                       <h5 class="h3">
-                        {{ $usuario->name }}
+                        {{ $usuario->nombre }}
                       </h5>
                       <div class="h5 font-weight-300">
                         <i class="ni location_pin mr-2"></i>{{ $usuario->email }}
@@ -117,7 +117,7 @@
                           <div class="col-lg-6">
                             <div class="form-group">
                               <label class="form-control-label" for="inputNameUpdate">Nombre</label>
-                              <input type="text" id="inputNameUpdate" name="inputNameUpdate" class="form-control" value="{{ $usuario->name }}">
+                              <input type="text" id="inputNameUpdate" name="inputNameUpdate" class="form-control" value="{{ $usuario->nombre }}">
                             </div>
                           </div>
 

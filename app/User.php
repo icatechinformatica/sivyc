@@ -18,8 +18,19 @@ class User extends Authenticatable
      *
      * @var array
      */
+
+    protected $table = 'tblz_usuarios';
     protected $fillable = [
-        'name', 'email', 'password', 'unidad', 'puesto','unidades','status','telefono', 'curp', 'activo'
+        'nombre',
+        'email',
+        'password',
+        'unidad',
+        'puesto',
+        'unidades',
+        'status',
+        'telefono',
+        'curp',
+        'activo'
     ];
 
     /**
@@ -28,7 +39,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -73,7 +85,7 @@ class User extends Authenticatable
                     case 'nombres':
                         # code...
                         // return $query->where(\DB::raw("upper(name)"), 'LIKE', "%$buscar%");
-                        return $query->where(\DB::raw("upper(concat(name, ' ', curp, ' ', email))"), 'LIKE', '%'.strtoupper($buscar).'%');
+                        return $query->where(\DB::raw("upper(concat(nombre, ' ', curp, ' ', email))"), 'LIKE', '%' . strtoupper($buscar) . '%');
                         break;
                     default:
                         # code...
@@ -85,37 +97,36 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id');
+        return $this->belongsToMany(\App\Models\Rol::class, 'tblz_rol_usuario', 'usuario_id', 'rol_id');
     }
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'permission_user', 'user_id', 'permission_id');
+        return $this->belongsToMany(\App\Models\Permission::class, 'tblz_permiso_usuario', 'usuario_id', 'permiso_id');
     }
 
     // Métodos de ayuda (opcional)
     public function hasRole($role)
     {
-        return $this->roles()->where('name', $role)->exists();
+        return $this->roles()->where('nombre', $role)->exists();
     }
 
     public function hasPermission($permission)
     {
         // Si algún rol tiene all-access, retorna true
-        if ($this->roles()->where('special', 'all-access')->exists()) {
+        if ($this->roles()->where('especial', 'all-access')->exists()) {
             return true;
         }
 
         // Si algún rol tiene no-access, retorna false
-        if ($this->roles()->where('special', 'no-access')->exists()) {
+        if ($this->roles()->where('especial', 'no-access')->exists()) {
             return false;
         }
 
         // Permisos directos o por rol
-        return $this->permissions()->where('slug', $permission)->exists() ||
-               $this->roles()->whereHas('permissions', function($q) use ($permission) {
-                   $q->where('slug', $permission);
-               })->exists();
+        return $this->permissions()->where('ruta_corta', $permission)->exists() ||
+            $this->roles()->whereHas('permissions', function ($q) use ($permission) {
+                $q->where('ruta_corta', $permission);
+            })->exists();
     }
-
 }

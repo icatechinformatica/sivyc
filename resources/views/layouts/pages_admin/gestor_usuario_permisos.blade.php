@@ -56,7 +56,7 @@
                     <input class="custom-control-input" id="permiso_{{ $itemPermisos->id }}" name="permisos[]"
                       type="checkbox" value="{{ $itemPermisos->id }}" {{ $checked }} {{ $disabled }}>
                     <label class="custom-control-label" for="permiso_{{ $itemPermisos->id }}">
-                      <span class="text-muted">{{ $itemPermisos->name }}
+                      <span class="text-muted">{{ $itemPermisos->nombre }}
                         @if($disabled)
                         <small class="text-info">(asignado por rol)</small>
                         @endif

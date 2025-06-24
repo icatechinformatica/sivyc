@@ -38,9 +38,9 @@
                             <tbody class="list">
                                 @foreach ($permisos as $itemPermisos)
                                     <tr>
-                                        <td scope="row">{{$itemPermisos->name}}</td>
-                                        <td scope="row">{{$itemPermisos->slug}}</td>
-                                        <td scope="row">{{$itemPermisos->description}}</td>
+                                        <td scope="row">{{$itemPermisos->nombre}}</td>
+                                        <td scope="row">{{$itemPermisos->ruta_corta}}</td>
+                                        <td scope="row">{{$itemPermisos->descripcion}}</td>
                                         <td>
                                             <a href="{{route('permisos.editar', ['id' => base64_encode($itemPermisos->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>

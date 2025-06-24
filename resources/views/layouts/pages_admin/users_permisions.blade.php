@@ -124,7 +124,7 @@
                                 @foreach ($usuarios as $itemUsuarios)
                                     <div class="row" role="row">
                                         <div class="col-md-6" role="gridcell">
-                                            <div class="form-control-plaintext text-truncate">{{$itemUsuarios->name}}</div>
+                                            <div class="form-control-plaintext text-truncate">{{$itemUsuarios->nombre}}</div>
                                         </div>
 
                                         <div class="col-md-2" role="gridcell">

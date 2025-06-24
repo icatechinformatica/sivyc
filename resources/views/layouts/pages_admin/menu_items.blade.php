@@ -10,8 +10,8 @@
             <span class="d-inline-block mr-3"></span>
             @endif
             <div data-toggle="collapse" data-target="#submenu-{{ $menu['clave_orden'] }}" style="cursor: pointer;">
-                <strong class="menu-name">{{ $menu['name'] }}</strong>
-                <small class="text-muted">({{ $menu['slug'] }})</small>
+                <strong class="menu-name">{{ $menu['nombre'] }}</strong>
+                <small class="text-muted">({{ $menu['ruta_corta'] }})</small>
                 <small class="text-muted mr-3">({{ $menu['clave_orden'] }})</small>
                 {{-- <div><small>{{ $menu['description'] }}</small></div> --}}
             </div>
