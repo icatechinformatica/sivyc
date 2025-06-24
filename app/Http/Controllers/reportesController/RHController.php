@@ -232,8 +232,8 @@ class RHController extends Controller
             $hoy = Carbon::now()->format('Y-m-d');
             $dia = Carbon::now();
             $diaSemana = $dia->translatedFormat('l');
-            // $beginTime = '2025-05-01T00:00:00+00:00';
-            // $endTime = '2025-05-22T23:59:59+00:00';
+            // $beginTime = '2025-06-14T00:00:00+00:00';
+            // $endTime = '2025-06-23T23:59:59+00:00';
             $beginTime = $hoy.'T00:00:00-06:00';
             $endTime = $hoy.'T23:59:59-06:00';
             $page = 1;
@@ -243,6 +243,7 @@ class RHController extends Controller
             $totalPages = $data['pageCount'];
 
             for ($x = 1; $x <= $totalPages; $x++) {
+                if(!isset($data['list'])) {dd($data);}
                 foreach($data['list'] as $record) {
                     $time = explode('T',$record['checktime']); //se procesa la fecha y hora
                     $timezone = substr($time[1],8,13); // se extrae la timezone para generarla en -06
@@ -269,8 +270,10 @@ class RHController extends Controller
                     }
                 }
                 $page++;
+                sleep(35);
                 $data = $this->get_api($url, $ak, $apiSecret[$name], $beginTime, $endTime, $page, $perPage); // consulta de la segunda hoja
             }
+            sleep(35);
         }
         // dd('complete'); // quitar para subir a produccion
     }
