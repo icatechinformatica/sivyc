@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Database\Seeders\RolesTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // PermissionsTableSeeder::class,
             // RoleTableSeeder::class
-            CalendarioFormatotSeeder::class,
+            //CalendarioFormatotSeeder::class,
+            // RolesTableSeeder::class,
+            RolesTableSeeder::class,
         ]);
     }
 }
