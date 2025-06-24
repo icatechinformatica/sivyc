@@ -47,11 +47,11 @@
                                             <input class="custom-control-input" id="{{ $itemPermisos->id }}" name="permisos[]"
                                             type="checkbox"
                                             @foreach ($itemPermisos->roles as $item)
-                                                {{( $item->pivot->permission_id == $itemPermisos->id && $item->pivot->role_id == $idRol ) ? 'checked': ''}}
+                                                {{( $item->pivot->permiso_id == $itemPermisos->id && $item->pivot->rol_id == $idRol ) ? 'checked': ''}}
                                             @endforeach
                                             value="{{ $itemPermisos->id }}">
                                         <label class="custom-control-label" for="{{ $itemPermisos->id }}">
-                                        <span class="text-muted">{{ $itemPermisos->name }}</span>
+                                        <span class="text-muted">{{ $itemPermisos->nombre }}</span>
 
                                         </label>
                                     </div>
