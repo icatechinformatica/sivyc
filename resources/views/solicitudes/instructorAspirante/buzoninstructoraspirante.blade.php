@@ -172,7 +172,7 @@
           </div>
           <div class="mt-2">
            Fecha de entrevista:
-           <input type="date" class="form-control" id="fecha-entrevista" name="fecha_entrevista" required style="max-width: 200px; margin: auto;">
+           <input type="datetime-local" class="form-control" id="fecha-entrevista" name="fecha_entrevista" required style="max-width: 200px; margin: auto;">
           </div>
         </div>
         <div class="modal-footer justify-content-center">
