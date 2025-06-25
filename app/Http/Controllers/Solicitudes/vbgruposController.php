@@ -129,17 +129,23 @@ class vbgruposController extends Controller
                 $modal_motivo =  'modal_motivo("'.$curso.'", "'.$item->id.'" )';
 
                 $filas .= "
-                    <tr>
-                        <td class='text-center'>
-                            <div class='form-check'>
-                                <input class='form-check-input' type='checkbox' value='".$item->id."' name='activo_curso'   onchange='cambia_estado(".$item->id.",$(this))' $checked>
-                            </div>
-                        </td>
+                    <tr>";
+                        if ($status == 'AUTORIZADOS') {
+                            $filas .= "<td class='text-center'>
+                                <div class='form-check'>
+                                    <input class='form-check-input' type='checkbox' value='".$item->id."' name='activo_curso'   onchange='cambia_estado(".$item->id.",$(this))' $checked>
+                                </div>
+                            </td>";
+                        }
+                        $filas .= "
+
                         <td>
                             <a onclick='".$modal_curso."' style='color:rgb(1, 95, 84);'>
                                 <b>".$item->curso."</b>
                             </a>
                         </td>
+                        <td>".'DE '.$item->inicio = Carbon::parse($item->inicio)->format('d/m/Y').' AL '.$item->termino = Carbon::parse($item->termino)->format('d/m/Y')."</td>
+                        <td>".'DE '.$item->hini.' A '.$item->hfin."</td>
                         <td>
                             <a onclick='".$modal_listinst."' title='Seleccionar Instructor'>
                                 <i class='fa fa-address-book mr-2 $show_btninst' aria-hidden='true' style='color:rgb(1, 95, 84);'></i>
@@ -309,22 +315,60 @@ class vbgruposController extends Controller
     public function modal_instructores(Request $request) {
         $folio_grupo = $request->folio_grupo;
         $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
-        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor')->where('folio_grupo', $folio_grupo)->first();
+        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
+        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+        ->where('folio_grupo', $folio_grupo)->first();
         list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
 
         //Agregar en el array el instructor asigando por la unidad, en caso de que exista.
         if(!empty($grupo->id_instructor)){
-            $instructor_unidad = DB::Table('instructores')->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id')->Where('id', $grupo->id_instructor)->first();
+            $instructor_unidad = DB::Table('instructores')->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad')
+            ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+            ->Where('instructores.id', $grupo->id_instructor)->first();
+
             if (!empty($instructor_unidad)) {
                 //Agregamos la instructor asignado por la unidad, al array de instructores
                 $nuevoInstructor = new \stdClass();
                 $nuevoInstructor->instructor = $instructor_unidad->instructor;
                 $nuevoInstructor->id = $instructor_unidad->id;
+                $nuevoInstructor->telefono = $instructor_unidad->telefono;
+                $nuevoInstructor->unidad = $instructor_unidad->unidad;
                 $instructores[] = $nuevoInstructor;
             }
         }
 
+        if (!empty($grupo->unidad)) {
+            try {
+                $unidad_prioritaria = $grupo->unidad;
+                usort($instructores, function ($a, $b) use ($unidad_prioritaria) {
+                    // Si ambos son de la unidad prioritaria o ambos no lo son, ordenar alfabéticamente por unidad
+                    if (($a->unidad === $unidad_prioritaria) && ($b->unidad !== $unidad_prioritaria)) {
+                        return -1; // $a primero
+                    }
+                    if (($a->unidad !== $unidad_prioritaria) && ($b->unidad === $unidad_prioritaria)) {
+                        return 1; // $b primero
+                    }
+                    // Si ambos son iguales o ninguno es de la unidad prioritaria, ordenar por nombre de unidad
+                    return strcmp($a->unidad, $b->unidad);
+                });
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => 500,
+                    'mensaje' => 'Error al ordenar la lista de instructores '.$th->getMessage()
+                ]);
+            }
+        }
+
+        //Validar si el array instructores esta vacio
+        if (count($instructores) === 0) {
+            return response()->json([
+                'status' => 500,
+                'mensaje' => $mensaje
+            ]);
+        }
+
         return response()->json([
+            'status' => 200,
             'instructores' => $instructores,
             'mensaje' => $mensaje
         ]);
@@ -340,7 +384,7 @@ class vbgruposController extends Controller
             ->groupby('i.id');
 
             $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id') //DB::raw('count(id_curso) as total')
+            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad') //DB::raw('count(id_curso) as total')
             ->rightJoin('instructores','t.id_instructor','=','instructores.id')
             ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
             ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
@@ -351,7 +395,7 @@ class vbgruposController extends Controller
             ->WHERE('fecha_validacion','<',$data->inicio)
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
             ->whereNotIn('instructores.id', $internos)
-            ->groupBy('t.id_instructor','instructores.id')
+            ->groupBy('t.id_instructor','instructores.id', 'instructores.telefono', 'tbl_unidades.unidad')
             ->orderBy('instructor')
             ->get();
 
