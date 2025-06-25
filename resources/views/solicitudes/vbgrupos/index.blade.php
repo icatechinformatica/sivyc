@@ -136,7 +136,7 @@
         @endif
         <div id="mensajeInstructor" style="display: none;">
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <button type="button" class="close" onclick="$('#mensajeInstructor').hide();">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <strong id="textoMensajeInstructor"></strong>
@@ -218,7 +218,7 @@
 
         {{-- Modal elegir instructor --}}
         <div class="modal fade" id="modalElegirInstruc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md modal-notify modal-danger" id="" role="document">
+            <div class="modal-dialog modal-lg modal-notify modal-danger" id="" role="document">
                 <div class="modal-content text-center">
                     <!--Header-->
                     <div class="modal-header d-flex justify-content-center" style="background-color:rgb(201, 1, 102);">
@@ -342,28 +342,36 @@
                         },
                         success: function(data) {
                             loader('hide');
-                            if (data.instructores.length === 0) {
+
+                            // Limpiar mensaje previo
+                            $('#mensajeInstructor').hide();
+                            $('#textoMensajeInstructor').text('');
+                            if (data.status === 200) {
+
+                                console.log(data);
+                                let options = '<option value="0">Seleccionar Instructor</option>'; // Dejar siempre el primer option
+
+                                data.instructores.forEach(function(item) {
+                                    options += `<option value="${item.id}">${item.instructor} / ${item.unidad} / ${item.telefono}</option>`;
+                                });
+                                $(".sel_instructor").html(options);
+
+                                // Inicializar o reinicializar Select2
+                                $(".sel_instructor").select2({
+                                    dropdownParent: $('#modalElegirInstruc'), // Importante si el select está en un modal
+                                    width: '100%',
+                                    placeholder: "Seleccionar Instructor"
+                                });
+
+                                $("#val_folio_grupo").val(folio_grupo);
+                                $("#modalElegirInstruc").modal("show");
+                            }else{
+                                // if (data.instructores.length === 0) {
                                 $('#textoMensajeInstructor').text(data.mensaje);
                                 $('#mensajeInstructor').show();
                                 return;
+                                // }
                             }
-                            console.log(data);
-                            let options = '<option value="0">Seleccionar Instructor</option>'; // Dejar siempre el primer option
-
-                            data.instructores.forEach(function(item) {
-                                options += `<option value="${item.id}">${item.instructor}</option>`;
-                            });
-                            $(".sel_instructor").html(options);
-
-                            // Inicializar o reinicializar Select2
-                            $(".sel_instructor").select2({
-                                dropdownParent: $('#modalElegirInstruc'), // Importante si el select está en un modal
-                                width: '100%',
-                                placeholder: "Seleccionar Instructor"
-                            });
-
-                            $("#val_folio_grupo").val(folio_grupo);
-                            $("#modalElegirInstruc").modal("show");
                         }
                     });
 
