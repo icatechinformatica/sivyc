@@ -208,8 +208,12 @@ class InstructorAspiranteController extends Controller
 
         // Send WhatsApp message if rejected in PREVALIDADO
         if ($context === 'PREVALIDADO') {
+            $infowhats = [
+                'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
+                'telefono' => $aspirante->telefono,
+            ];
             try {
-                $response = $this->whatsapp_rechazo_msg($aspirante, app(WhatsAppService::class));
+                $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
             } catch (\Exception $e) {
                 $response = [
                     'status' => false,
@@ -304,21 +308,42 @@ class InstructorAspiranteController extends Controller
 
         return $callback;
     }
-    private function whatsapp_rechazo_msg($aspirante, WhatsAppService $whatsapp)
+    private function whatsapp_rechazo_msg($instructor, WhatsAppService $whatsapp)
     {
         $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\n Estimado(a) *{{nombre}}*, Aspirante a Instructor Externo del ICATECH:\n\n Agradecemos sinceramente su interés y participación en la convocatoria para la selección de instructores externos del ICATECH. Despues de revisar cuidadosamente los perfiles recibidos, lamentamos informarle que en esta ocasión no ha sido seleccionado(a) para continuar a la segunda etapa del proceso. Valoramos el tiempo y el esfuerzo que dedicó al presentar su postulación, y lo(a) invitamos cordialmente a participar en futuras convocatorias\n\nLe reiteramos nuestro agradecimiento por su disposición y compromiso con la formación y el desarrollo profesional. \n\nAtentamente\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
-        $nombre = $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno;
-        $telefono_formateado = '521'.$aspirante->telefono;
+        $telefono_formateado = '521'.$instructor['telefono'];
 
         $mensaje = str_replace(
             ['{{nombre}}'],
-            [$nombre],
+            [$instructor['nombre']],
             $plantilla
         );
 
         $callback = $whatsapp->send($telefono_formateado, $mensaje);
 
         return $callback;
+    }
+
+    public function whatsapp_rechazo_masivo() {
+        $id_rechazados = []; //aqui meter los ids de los rechazados por tandas
+        $rechazados = pre_instructor::WhereIn('id',$id_rechazados)->Select('telefono','nombre',"apellidoPaterno","apellidoMaterno")->Get();
+        foreach($rechazados as $aspirante) {
+            $infowhats = [
+                'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
+                'telefono' => $aspirante->telefono,
+            ];
+
+            try {
+                $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
+            } catch (\Exception $e) {
+                $response = [
+                    'status' => false,
+                    'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
+                ];
+                dd($response, $infowhats);
+            }
+        }
+        dd('complete');
     }
 }
 
