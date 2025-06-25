@@ -45,7 +45,7 @@
                     @csrf
                     <input type="hidden" name="menu" value="1">
                     <input type="hidden" name="activo" value="1">
-                    <input type="hidden" name="permiso_padre" value="{{ $menu['id'] }}">
+                    <input type="hidden" name="clave_orden_padre" value="{{ $menu['clave_orden'] }}">
                     <div class="form-group">
                         <label>Nombre</label>
                         <input type="text" name="permisoName" class="form-control form-control-sm" required>

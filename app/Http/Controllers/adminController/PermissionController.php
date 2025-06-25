@@ -72,7 +72,7 @@ class PermissionController extends Controller
                     $idPermisosRoles += 1;
                     $arreglo = [
                         'id' => $idPermisosRoles,
-                        'permission_id' => $arraPermisos,
+                        'permiso_id' => $arraPermisos,
                     ];
                     array_push($arrayPermisosRol, $arreglo);
                 }
@@ -94,7 +94,7 @@ class PermissionController extends Controller
                     $idPermisosRoles += 1;
                     $arreglo = [
                         'id' => $idPermisosRoles,
-                        'permission_id' => $arraPermisos,
+                        'permiso_id' => $arraPermisos,
                     ];
                     array_push($arrayPermisosRol, $arreglo);
                 }

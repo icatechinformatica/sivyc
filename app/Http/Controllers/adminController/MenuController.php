@@ -80,16 +80,19 @@ class MenuController extends Controller
             'permisoName'        => 'required|string|max:255',
             'permisoSlug'        => 'required|string|max:255',
             'permisoDescripcion' => 'nullable|string',
-            'permiso_padre'      => 'required|exists:permissions,id',
+            'clave_orden_padre'  => 'nullable|string|max:6',
         ]);
 
         $menu = new Permission;
         $menu->nombre = trim($data['permisoName']);
         $menu->ruta_corta = trim($data['permisoSlug']);
         $menu->descripcion = trim($data['permisoDescripcion'] ?? '');
-        // Calcular clave_orden para el menú basado en padre y hermanos
-        $parentId = $data['permiso_padre'];
-        $parent = Permission::find($parentId);
+
+        $parentClave = $data['clave_orden_padre'] ?? null;
+        $parent = null;
+        if ($parentClave) {
+            $parent = Permission::where('clave_orden', $parentClave)->first();
+        }
         if ($parent && $parent->clave_orden) {
             $parentClave = $parent->clave_orden;
 
