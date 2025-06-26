@@ -85,7 +85,7 @@ class InstructorAspiranteController extends Controller
 
         //verifica que el id_oficial sea diferente de 0
         if($aspirante->id_oficial == 0) {
-            if($id_oficial->id) {
+            if($ins_oficial) {
                 $aspirante->id_oficial = $ins_oficial->id;
             }
 
