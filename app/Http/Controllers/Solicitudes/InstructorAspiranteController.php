@@ -48,7 +48,7 @@ class InstructorAspiranteController extends Controller
             $query->where('unidad_asignada', $request->unidad);
         }
 
-        $data = $query->get();
+        $data = $query->OrderBy('nombre', 'ASC')->get();
 
         return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades', 'total_aspirantes','total_enviados'));
     }
