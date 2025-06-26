@@ -4,9 +4,9 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                @if ($status == 'AUTORIZADOS')
-                    <th scope="col">Vo.Bo.</th>
-                @endif
+                {{-- @if ($status == 'AUTORIZADOS') --}}
+                {{-- <th scope="col">Vo.Bo.</th> --}}
+                {{-- @endif --}}
                 <th scope="col">CURSO</th>
                 <th scope="col">FECHAS</th>
                 <th scope="col">HORARIO</th>
@@ -25,13 +25,13 @@
                     else $curso = $item->curso;
                 @endphp
                 <tr>
-                    @if ($status == 'AUTORIZADOS')
+                    {{-- @if ($status == 'AUTORIZADOS')
                         <td class="text-center">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="{{ $item->id }}" name="activo_curso"   onchange="cambia_estado({{$item->id}},$(this))"  @if($item->vb_dg==true){{'checked'}} @endif >
                             </div>
                         </td>
-                    @endif
+                    @endif --}}
                     <td>
                         <a onclick="ver_modal('CURSO', '{{ $item->folio_grupo}}')" style="color:rgb(1, 95, 84);">
                             <b>{{ $item->curso }}</b>

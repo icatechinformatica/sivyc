@@ -129,16 +129,7 @@ class vbgruposController extends Controller
                 $modal_motivo =  'modal_motivo("'.$curso.'", "'.$item->id.'" )';
 
                 $filas .= "
-                    <tr>";
-                        if ($status == 'AUTORIZADOS') {
-                            $filas .= "<td class='text-center'>
-                                <div class='form-check'>
-                                    <input class='form-check-input' type='checkbox' value='".$item->id."' name='activo_curso'   onchange='cambia_estado(".$item->id.",$(this))' $checked>
-                                </div>
-                            </td>";
-                        }
-                        $filas .= "
-
+                    <tr>
                         <td>
                             <a onclick='".$modal_curso."' style='color:rgb(1, 95, 84);'>
                                 <b>".$item->curso."</b>
@@ -337,27 +328,65 @@ class vbgruposController extends Controller
         //     }
         // }
 
+        // if (!empty($grupo->unidad)) {
+        //     try {
+        //         $unidad_prioritaria = $grupo->unidad;
+        //         usort($instructores, function ($a, $b) use ($unidad_prioritaria) {
+        //             // Si ambos son de la unidad prioritaria o ambos no lo son, ordenar alfabéticamente por unidad
+        //             if (($a->unidad === $unidad_prioritaria) && ($b->unidad !== $unidad_prioritaria)) {
+        //                 return -1; // $a primero
+        //             }
+        //             if (($a->unidad !== $unidad_prioritaria) && ($b->unidad === $unidad_prioritaria)) {
+        //                 return 1; // $b primero
+        //             }
+        //             // Si ambos son iguales o ninguno es de la unidad prioritaria, ordenar por nombre de unidad
+        //             return strcmp($a->unidad, $b->unidad);
+        //         });
+        //     } catch (\Throwable $th) {
+        //         return response()->json([
+        //             'status' => 500,
+        //             'mensaje' => 'Error al ordenar la lista de instructores '.$th->getMessage()
+        //         ]);
+        //     }
+        // }
+
+
+        //Ordenar por nombre y unidad
         if (!empty($grupo->unidad)) {
             try {
                 $unidad_prioritaria = $grupo->unidad;
+
                 usort($instructores, function ($a, $b) use ($unidad_prioritaria) {
-                    // Si ambos son de la unidad prioritaria o ambos no lo son, ordenar alfabéticamente por unidad
-                    if (($a->unidad === $unidad_prioritaria) && ($b->unidad !== $unidad_prioritaria)) {
-                        return -1; // $a primero
+                    // Verificar si alguno pertenece a la unidad prioritaria
+                    $a_es_prioritario = $a->unidad === $unidad_prioritaria;
+                    $b_es_prioritario = $b->unidad === $unidad_prioritaria;
+
+                    // Priorizar unidad
+                    if ($a_es_prioritario && !$b_es_prioritario) {
+                        return -1;
                     }
-                    if (($a->unidad !== $unidad_prioritaria) && ($b->unidad === $unidad_prioritaria)) {
-                        return 1; // $b primero
+                    if (!$a_es_prioritario && $b_es_prioritario) {
+                        return 1;
                     }
-                    // Si ambos son iguales o ninguno es de la unidad prioritaria, ordenar por nombre de unidad
+
+                    // Ambos son prioritarios o no lo son, ordenar por unidad
+                    if ($a->unidad === $b->unidad) {
+                        // Misma unidad: ordenar por nombre
+                        return strcmp($a->instructor, $b->instructor);
+                    }
+
+                    // Diferente unidad (pero misma prioridad): ordenar por unidad
                     return strcmp($a->unidad, $b->unidad);
                 });
+
             } catch (\Throwable $th) {
                 return response()->json([
                     'status' => 500,
-                    'mensaje' => 'Error al ordenar la lista de instructores '.$th->getMessage()
+                    'mensaje' => 'Error al ordenar la lista de instructores: ' . $th->getMessage()
                 ]);
             }
         }
+
 
         //Validar si el array instructores esta vacio
         if (count($instructores) === 0) {
