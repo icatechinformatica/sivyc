@@ -72,7 +72,12 @@
                             @if($data->clave==0) <b class="text-danger">{{$data->status_clave}} &nbsp;</b> @else <b>{{$data->clave}} &nbsp;</b> @endif
                             @if($data->status_curso) ESTATUS: <b class="text-danger"> {{$data->status_curso}} </b> @endif 
                         </div>
-                        <div class="form-group col-md-6">INSTRUCTOR: <b>{{ $data->nombre }}</b></div>
+                        <div class="form-group col-md-6">INSTRUCTOR: <b>
+                        @if($data->vb_dg==true or $data->clave!='0')
+                            {{ $data->nombre }}
+                        @endif
+                        
+                        </b></div>
                         <div class="form-group col-md-6">ARC-01: <b>{{ $data->munidad }}</b></div>
                         <div class="form-group col-md-6">TOTAL BENEFICIADOS: <b>{{ $data->hombre+$data->mujer }}</b></div>
                         <div class="form-group col-md-6">FECHAS: <b>{{ $data->inicio }} AL {{ $data->termino }}</b></div> 

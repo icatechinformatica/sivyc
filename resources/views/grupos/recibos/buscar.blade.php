@@ -64,7 +64,11 @@
                                     <td>{{ $item->folio_grupo }}</td>
                                     <td>{{ $item->clave }}</td>
                                     <td>{{ $item->curso }}</td>
-                                    <td>{{ $item->nombre }}</td>
+                                    <td>
+                                        @if($item->vb_dg==true or $item->clave!='0')
+                                            {{ $item->nombre }}
+                                        @endif
+                                    </td>
                                     <td>{{ $item->hombre+$item->mujer }}</td>
                                     <td>{{number_format($item->costo, 2, '.', ',') }}</td>
                                     <td>{{ date('d/m/Y', strtotime($item->inicio)) }} - {{ date('d/m/Y', strtotime($item->termino)) }}</td>

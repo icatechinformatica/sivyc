@@ -131,7 +131,7 @@
         var inicio =$('#inicio').val();
         var termino =$('#termino').val();
         $("#instructor").empty();
-        $("#instructor").append('<option value="">SELECCIONAR</option>');
+        //VOBO $("#instructor").append('<option value="">SELECCIONAR</option>');
         if(id && inicio && termino){
             $.ajax({
                 type: "GET",
@@ -140,7 +140,8 @@
                 contentType: "application/json",              
                 dataType: "json",
                 success: function (data) {// console.log(data);                    
-                    $.each(data, function () {                                    
+                    $.each(data, function () {      
+                        console.log(data);
                         $("#instructor").append('<option value="'+this['id']+'">'+this['instructor']+'</option>');
                     });
                     

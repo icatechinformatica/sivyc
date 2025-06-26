@@ -9,9 +9,11 @@
                 <th scope="col">UNIDAD</th>    
                 <th scope="col">TURNADO A</th>
                 <th scope="col" class="text-center">OPCIONES</th>
+                {{--
                 @can('enviar.grupo.vobo')
                     <th scope="col" class="text-center">VoBo</th>
                 @endcan
+                --}}
             </tr>
         </thead>
         <tbody>
@@ -30,6 +32,7 @@
                             @endif
                         @endif
                     </td>
+                    {{--
                     @can('preinscripcion.grupovobo')
                         <td class="text-center">                            
                             @if($item->turnado == 'VINCULACION')                       
@@ -40,6 +43,7 @@
                             
                         </td>
                     @endcan
+                    --}}
                 </tr>
             @endforeach
                 <tr>

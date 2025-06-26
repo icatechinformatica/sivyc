@@ -50,19 +50,21 @@ class turnarAperturaController extends Controller
         $grupos = $mextemporaneo = [];
         $ids_extemp = [];
         if($memo){
-            $grupos = DB::table('tbl_cursos as tc')->select(db::raw("(select sum(hours) from
-			    (select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
-			    ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )
-			        as hours
- 			        from agenda
-			        where id_curso = tc.folio_grupo) as t) as horas_agenda"),
-                    'tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                    DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"),'tr.status_folio')
-                    ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
-                    ->leftJoin('tbl_recibos as tr', function ($join) {
-                        $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
-                             ->where('tr.status_folio','ENVIADO');
-                    });
+            $grupos = DB::table('tbl_cursos as tc')->select(
+                    'tc.*','tc.turnado as turnado_solicitud','tr.status_folio',
+                    DB::raw("(select sum(hours) from
+                        (select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
+                        ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )
+                        as hours from agenda where id_curso = tc.folio_grupo) as t) as horas_agenda"),                
+                    DB::raw("'$opt' as option"),
+                    DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"),
+                    DB::raw("COALESCE(tc.status_curso, tc.status_solicitud) as status_sol")
+                )
+                ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
+                ->leftJoin('tbl_recibos as tr', function ($join) {
+                $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
+                    ->where('tr.status_folio','ENVIADO');
+                });
                 if($opt == 'ARC01'){
                    $grupos = $grupos->whereRaw("(tc.num_revision = '$memo' OR (tc.munidad = '$memo'))");
                    //->where('tc.munidad',$memo);
