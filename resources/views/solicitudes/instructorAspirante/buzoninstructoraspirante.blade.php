@@ -116,7 +116,7 @@
             <div class="row mb-3">
                 <div class="col-md-6 d-flex align-items-center">
                     <p class="mb-0 me-3" style="color:#000000; white-space:nowrap;">
-                        <b>Corte del día:</b> Se han registrado <b>{{ $total_aspirantes }} </b> aspirantes, de los cuales, <b>{{ $total_enviados }}</b> han enviado su informacion a DTA y de estos, {{ $total_convocados }} se han convocado.
+                        <b>Corte del día:</b> Se han registrado <b>{{ $total_aspirantes }} </b> aspirantes, de los cuales, <b>{{ $total_enviados }}</b> han enviado su informacion a DTA y de estos, <b>{{ $total_convocados }}</b> se han convocado.
                     </p>
                 </div>
             </div>
