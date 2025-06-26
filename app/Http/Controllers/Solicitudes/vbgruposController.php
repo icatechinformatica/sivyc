@@ -321,21 +321,21 @@ class vbgruposController extends Controller
         list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
 
         //Agregar en el array el instructor asigando por la unidad, en caso de que exista.
-        if(!empty($grupo->id_instructor)){
-            $instructor_unidad = DB::Table('instructores')->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad')
-            ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-            ->Where('instructores.id', $grupo->id_instructor)->first();
+        // if(!empty($grupo->id_instructor)){
+        //     $instructor_unidad = DB::Table('instructores')->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad')
+        //     ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+        //     ->Where('instructores.id', $grupo->id_instructor)->first();
 
-            if (!empty($instructor_unidad)) {
-                //Agregamos la instructor asignado por la unidad, al array de instructores
-                $nuevoInstructor = new \stdClass();
-                $nuevoInstructor->instructor = $instructor_unidad->instructor;
-                $nuevoInstructor->id = $instructor_unidad->id;
-                $nuevoInstructor->telefono = $instructor_unidad->telefono;
-                $nuevoInstructor->unidad = $instructor_unidad->unidad;
-                $instructores[] = $nuevoInstructor;
-            }
-        }
+        //     if (!empty($instructor_unidad)) {
+        //         //Agregamos la instructor asignado por la unidad, al array de instructores
+        //         $nuevoInstructor = new \stdClass();
+        //         $nuevoInstructor->instructor = $instructor_unidad->instructor;
+        //         $nuevoInstructor->id = $instructor_unidad->id;
+        //         $nuevoInstructor->telefono = $instructor_unidad->telefono;
+        //         $nuevoInstructor->unidad = $instructor_unidad->unidad;
+        //         $instructores[] = $nuevoInstructor;
+        //     }
+        // }
 
         if (!empty($grupo->unidad)) {
             try {
