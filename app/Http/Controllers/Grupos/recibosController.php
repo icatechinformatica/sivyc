@@ -108,7 +108,10 @@ class recibosController extends Controller
                                 WHEN tr.status_folio IS NOT NULL AND tr.status_folio<>'ENVIADO' THEN true                                        
                             ELSE false
                             END) as editar"),
-                        'tu.unidad','tr.id');         
+                        'tu.unidad','tr.id',
+                        DB::raw("COALESCE(tc.clave, '0') as clave"),///NUEVO VOBO
+                        DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
+                    );         
                 $data = $data->wherein('tc.unidad',$this->unidades);
                 if($request->folio_grupo){
                     $data = $data->where(DB::raw('CONCAT(folio_recibo,tc.folio_grupo,tc.clave)'), 'ILIKE', '%'.$request->folio_grupo.'%');
@@ -444,7 +447,9 @@ class recibosController extends Controller
                                 WHEN tc.status_curso IS NULL AND tr.status_folio IS DISTINCT FROM 'CANCELADO' THEN true
                                 WHEN tr.status_folio IN ('ACEPTADO', 'ASIGNADO') THEN true                                
                                 ELSE false
-                            END) as editar")
+                            END) as editar"),
+                        DB::raw("COALESCE(tc.clave, '0') as clave"),///NUEVO VOBO
+                        DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
                     );
                     if($request->folio_grupo)
                         $data = $data->where(DB::raw('CONCAT(tr.folio_recibo,tc.folio_grupo)'), 'ILIKE', '%'.$request->folio_grupo.'%'); 

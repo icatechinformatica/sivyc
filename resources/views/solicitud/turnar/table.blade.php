@@ -29,10 +29,9 @@
                 <th scope="col" class="text-center">MUNICIPIO</th>
                 <th scope="col" class="text-center">ZE</th>
                 <th scope="col" class="text-center">DEPENDENCIA</th>
-                <th scope="col" class="text-center">TIPO</th>
-                <th scope="col" class="text-center">TURNADO</th>
+                <th scope="col" class="text-center">TIPO</th>                
                 <th scope="col" class="text-center">SOLICITUD</th>
-                <th scope="col" class="text-center">ESTATUS</th>
+                <th scope="col" class="text-center">FORMATOT</th>
                 <th scope="col" class="text-center">LUGAR</th>
                 <th scope="col" class="text-center">OBSERVACIONES</th>
                 <th scope="col" class="text-center">AVISO</th>
@@ -121,7 +120,11 @@
                         <td class="text-center"> {{ $g->tipo_curso }} </td>
                         <td> {{ $g->espe }} </td>
                         <td> <div style="width:200px;">{{ $g->curso }} </div></td>
-                        <td><div style="width:120px;">{{ $g->nombre }}</div></td>
+                        <td><div style="width:120px;">
+                            @if($g->vb_dg==true or  $g->clave!='0')
+                                {{ $g->nombre }}
+                            @endif                        
+                        </div></td>
                         <td class="text-center"> {{ $g->mod }} </td>
                         <td class="text-center">
                             @if ($g->tipo=='EXO') {{"EXONERACION"}} @elseif($g->tipo=='EPAR') {{"REDUCCION DE CUOTA"}}  @else {{"PAGO ORDINARIO"}}   @endif
@@ -137,9 +140,8 @@
                         <td> {{ $g->muni }} </td>
                         <td class="text-center"> {{ $g->ze}} </td>
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
-                        <td class="text-center"> {{ $g->tcapacitacion }} </td>
-                        <td class="text-center"> {{ $g->turnado_solicitud }} </td>
-                        <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif </td>
+                        <td class="text-center"> {{ $g->tcapacitacion }} </td>                        
+                        <td class="text-center"> @if($g->status_sol) {{ $g->status_sol }} @else {{"EN CAPTURA" }} @endif </td>
                         <td class="text-center"> {{ $g->status }} </td>
                         <td > <div style="width:350px;">{{ $g->efisico }} </div></td>
                         <td class="text-left">
@@ -160,7 +162,7 @@
 
 <div class="form-row col-md-12 mt-4">
     @if($activar)
-        @if ((($opt=='ARC01')&&($grupos[0]->status_solicitud!='VALIDADO')) OR ($opt=='ARC02' && ($grupos[0]->status_solicitud_arc02 !='VALIDADO')) )
+        @if (($opt=='ARC01'&& is_null($grupos[0]->status_solicitud)) OR ($opt=='ARC02' && is_null($grupos[0]->status_solicitud_arc02)) )
             <div class=" form-group col-md-2"></div>
             <div class="form-group col-md-4"></div>
             <div class="custom-file mt-1 form-group col-md-3">
@@ -168,14 +170,10 @@
                 <label for="file_autorizacion" class="custom-file-label">ANEXOS PDF</label>
             </div>
             <div class="form-group col-md-3">
-                @if ($opt=='ARC01')
-                {{ Form::button('ENVIAR PRELIMINAR ARC 01 >>', ['id'=>'preliminar','class' => 'btn  bg-danger mx-4']) }}
-                @else
-                {{ Form::button('ENVIAR PRELIMINAR ARC 02 >>', ['id'=>'preliminar','class' => 'btn  bg-danger mx-4']) }}
-                @endif
+                {{ Form::button('ENVIAR PRELIMINAR '.$g->option.' >>', ['id'=>'preliminar','class' => 'btn  bg-danger mx-4']) }}
             </div>
-        @else
-            @if($activar OR Auth::user()->roles[0]->slug=='admin')
+        @elseif (($opt=='ARC01'&& ($grupos[0]->status_solicitud=='VALIDADO')) OR ($opt=='ARC02' && $grupos[0]->status_solicitud_arc02=='VALIDADO')) 
+            @if(Auth::user()->roles[0]->slug=='admin')
                 <div class="form-group col-md-12 p-2 pl-3 bg-light">
                     <h5> USUARIO ADMINISTRADOR </h5>
                 </div>

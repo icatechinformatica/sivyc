@@ -28,6 +28,7 @@ use App\Utilities\Algoritmo35;
 use App\Utilities\MyUtility;
 
 use function PHPSTORM_META\type;
+use App\Http\Controllers\Solicitudes\vbgruposController;
 
 class grupoController extends Controller
 {
@@ -58,8 +59,11 @@ class grupoController extends Controller
     public function index(Request $request){
 
         //$digitov = Algoritmo35::digito_verificador('2B25000100004');
-        
-
+        /*
+        $inst = (new vbgruposController());
+        $instructores = $inst->modal_instructores($request);
+        dd($instructores);
+*/
         $curso = $cursos = $localidad  = $alumnos = $instructores = $instructor = $recibo =[];
         $message = $comprobante = $folio_pago = $fecha_pago = $grupo = $ValidaInstructorPDF = $folio_grupo = NULL;
         $es_vulnerable = $edicion_exo = false;
@@ -106,6 +110,8 @@ class grupoController extends Controller
                 $instructores = $this->data_instructores($grupo);
                 //FIN CATALOGOS
                 $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
+
+                
                 //$grupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->first();
                 //dd($instructor_mespecialidad);
                 $edicion_exo = DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','EDICION')->exists();
@@ -247,7 +253,8 @@ class grupoController extends Controller
         ->whereNotIn('instructores.id', $internos)
         ->groupBy('t.id_instructor','instructores.id')
         ->orderBy('instructor')
-        ->get();
+        //VOBO ->get();
+        ->limit(1)->get(); //NUEVO
         return $instructores;
     }
 
@@ -267,7 +274,7 @@ class grupoController extends Controller
         $grupo =  DB::table('alumnos_registro as ar')->where('ar.folio_grupo', $folio_grupo)
             ->select(//DE LA APERTURA
                 DB::raw('COALESCE(tc.folio_grupo, ar.folio_grupo) as folio_grupo'),
-                DB::raw('COALESCE(tc.clave, null) as clave'),
+                DB::raw("COALESCE(tc.clave, '0') as clave"),
                 DB::raw('COALESCE(tc.tdias, null) as tdias'),
                 DB::raw('COALESCE(tc.mexoneracion, null) as mexoneracion'),
                 DB::raw('COALESCE(tc.dia, null) as dia'),
@@ -330,7 +337,8 @@ class grupoController extends Controller
                 DB::raw('ar.observaciones as obs_vincula'),
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
                 DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital"),
-                'exo.status as exo_status','exo.nrevision as exo_nrevision'
+                'exo.status as exo_status','exo.nrevision as exo_nrevision',
+                DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
 
             )
             ->leftjoin('tbl_cursos as tc','tc.folio_grupo','ar.folio_grupo')
@@ -584,7 +592,7 @@ class grupoController extends Controller
     }
 
     public function update(Request $request)
-    {
+    { 
         //dd($request->all()); dd($request->folio_grupo);
          $message = "Operación fallida, por favor intente de nuevo!!";
         if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
@@ -907,8 +915,13 @@ class grupoController extends Controller
                                 if ($result_alumnos) {
                                     if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
                                     ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {
+                                        
+                                        DB::table('agenda')->where('id_curso',$folio)->update(['id_instructor' => $alus->id_instructor]); //NUEVO VOBO
+
+                                        /* VOBO
                                         DB::table('agenda')->where('id_curso', $folio)->delete();
                                         DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
+                                        */
                                     }
                                 }
 
@@ -974,8 +987,8 @@ class grupoController extends Controller
                                     $conteo += 1;
                                 }
                             }
-                            $instructor_valido = $this->valida_instructor($g->id_instructor);
-                            if($instructor_valido['valido']){
+                            //VOBO $instructor_valido = $this->valida_instructor($g->id_instructor);
+                            //VOBO if($instructor_valido['valido']){
                                 if($g->status_curso=="EDICION"){
                                     if($g->clave !='0') $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','!=','0')->update(['status_curso' => 'AUTORIZADO']);
                                     else $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','0')->update(['status_curso' => null]);
@@ -987,7 +1000,7 @@ class grupoController extends Controller
                                     if($result) DB::table('instructores')->where('id',$g->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
                                     else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
                                 }
-                            }else return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
+                            //VOBO }else return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
                         } else {
                             $message = "Las horas agendadas no corresponden a la duración del curso..";
                             return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
@@ -1149,7 +1162,8 @@ class grupoController extends Controller
                         DB::raw("to_char(DATE (ar.inicio)::date, 'dd/mm/YYYY') as inicio"),
                         DB::raw("to_char(DATE (ar.termino)::date, 'dd/mm/YYYY') as termino"),
                         'ar.horario',
-                        'ar.mod', 'ar.costo','ar.tipo_curso','ar.organismo_publico as depe')
+                        'ar.mod', 'ar.costo','ar.tipo_curso','ar.organismo_publico as depe'                        
+                        )
                 ->leftJoin('alumnos_pre as ap','ar.id_pre','ap.id')
                 ->leftJoin('cursos as c','ar.id_curso','c.id')
                 ->leftJoin('tbl_cursos as tc','tc.folio_grupo','ar.folio_grupo')
@@ -1196,14 +1210,18 @@ class grupoController extends Controller
                     ->select(
                         'tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                         'tc.costo',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante as depen_repre',
-                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita'
+                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita',                        
+                        DB::raw('COALESCE(tc.vb_dg, false) as vb_dg'), //NUEVO VOBO
+                        DB::raw("COALESCE(tc.clave, '0') as clave") //NUEVO VOBO
                     )
                     ->leftJoin('alumnos_registro as ar', 'tc.folio_grupo', 'ar.folio_grupo')
                     ->where('ar.mpreapertura', $memo)
                     ->where('ar.eliminado', false)
                     ->groupBy('tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                     'tc.costo','tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante','tc.depen_telrepre','tc.nombre','ar.realizo',
-                    'ar.observaciones','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita')
+                    'ar.observaciones','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita',
+                    'tc.vb_dg','tc.clave' //NUEVO VOBO
+                    )
                     ->orderBy('folio_grupo')
                     ->get(); //dd($cursos);
                 if (count($cursos) > 0) {
@@ -1248,6 +1266,8 @@ class grupoController extends Controller
                         $data[$key]['observaciones'] = $value->nota_vincu;
                         $data[$key]['efisico'] = $value->efisico;
                         $data[$key]['unidad'] = $value->unidad;
+                        $data[$key]['vb_dg'] = $value->vb_dg; //NUEVO VOBO
+                        $data[$key]['clave'] = $value->clave; //NUEVO VOBO
                     }
                 }// dd($cursos[0]->fecha_turnado);
                 if (count($data) > 0) {
@@ -1264,6 +1284,7 @@ class grupoController extends Controller
                         $reg_unidad->pvinculacion = mb_strtoupper($cargo, 'UTF-8');
                     }
                     $direccion = $reg_unidad->direccion;
+                    //dd($data);
                     $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion'));
                     $pdf->setpaper('letter', 'landscape');
                     return $pdf->stream('SOLICITUD.pdf');
@@ -1349,11 +1370,16 @@ class grupoController extends Controller
         if (count($alumnos_ocupados) > 0) {
             return "Alumno(s) no disponible en fecha y hora: ".json_encode($alumnos_ocupados);
         }
+
+        /* VOBO
         //CRITERIOS INSTRUCTOR ::
 
         // INSTRUCTORES INTERNOS,MÁXIMO 2 CURSOS EN EL MES y 5 MESES DE ACTIVIDAD
+
+        
         $instructor_valido = $this->valida_instructor($id_instructor);
         if(!$instructor_valido['valido'])  return $instructor_valido['message'];
+        
 
         //DISPONIBILIDAD FECHA Y HORA
         $duplicado = DB::table('agenda as a')
@@ -1522,6 +1548,7 @@ class grupoController extends Controller
                 }
             }
         }
+        FIN VOBO*/
 
         try {
             $titulo = $request->title;

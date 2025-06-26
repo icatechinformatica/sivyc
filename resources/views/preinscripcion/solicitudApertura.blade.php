@@ -99,7 +99,12 @@
                         <td>@if ($item['cespecifico']) {{$item['cespecifico']}} @else {{"N/A"}} @endif </td>
                         <td>{{$item['depen']}}</td>
                         <td>{{$item['depen_repre']}} / {{$item['tel_repre']}}</td>
-                        <td>{{$item['instructor']}}</td>
+                        <td>
+                            @if($item['vb_dg']==true or $item['clave']!='0')
+                                {{$item['instructor']}}
+                            @endif
+                        
+                        </td>
                         <td>{{$item['vincu']}}</td>
                         <td width='auto'>{{$item['efisico']}}</td>
                         <td width='auto'>{{$item['observaciones']}}</td>
