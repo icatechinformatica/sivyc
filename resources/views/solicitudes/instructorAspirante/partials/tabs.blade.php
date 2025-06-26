@@ -1,12 +1,12 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-bottom:0;">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="recepcion-tab" data-bs-toggle="tab" data-bs-target="#recepcion" type="button" role="tab" aria-controls="recepcion" aria-selected="true">
+            <button class="nav-link" id="recepcion-tab" data-bs-toggle="tab" data-bs-target="#recepcion" type="button" role="tab" aria-controls="recepcion" aria-selected="true">
                 RECEPCION
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="prevalidado-tab" data-bs-toggle="tab" data-bs-target="#prevalidado" type="button" role="tab" aria-controls="prevalidado" aria-selected="false">
+            <button class="nav-link active" id="prevalidado-tab" data-bs-toggle="tab" data-bs-target="#prevalidado" type="button" role="tab" aria-controls="prevalidado" aria-selected="false">
                 PREVALIDADO
             </button>
         </li>
@@ -24,7 +24,7 @@
     </div>
 </div>
 <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="recepcion" role="tabpanel" aria-labelledby="recepcion-tab">
+    <div class="tab-pane fade" id="recepcion" role="tabpanel" aria-labelledby="recepcion-tab">
         @include('solicitudes.instructorAspirante.partials.table', [
             'data' => $data,
             'especialidades' => $especialidades,
@@ -32,7 +32,7 @@
             'showRechazados' => $showRechazados ?? false
         ])
     </div>
-    <div class="tab-pane fade" id="prevalidado" role="tabpanel" aria-labelledby="prevalidado-tab">
+    <div class="tab-pane fade show active" id="prevalidado" role="tabpanel" aria-labelledby="prevalidado-tab">
         @include('solicitudes.instructorAspirante.partials.table', [
             'data' => $data,
             'especialidades' => $especialidades,
