@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\User;
 use Illuminate\Support\Facades\Http;
+use App\Services\WhatsAppService;
 class InstructorAspiranteController extends Controller
 {
     public function index(Request $request)
@@ -72,6 +73,18 @@ class InstructorAspiranteController extends Controller
         $aspirante->status = 'EN CAPTURA';
         $aspirante->turnado = 'UNIDAD';
         $aspirante->fecha_entrevista = $request->input('fecha_entrevista');
+        $aspirante->numero_control = 'Pendiente';
+
+        //verifica que el id_oficial sea diferente de 0
+        if($aspirante->id_oficial == 0) {
+            $id_oficial = instructor::Where('curp', $aspirante->curp)->value('id');
+            if($id_oficial) {
+                $aspirante->id_oficial = $id_oficial;
+            }
+
+        }
+
+        //verifica si ya tiene especialidades validadas anteriormente y las cambia a REVALIDACION EN CAPTURA
         if(!is_null($aspirante->data_especialidad)) {
             $data = $aspirante->data_especialidad;
             foreach($data as $key => $especialidad)
@@ -85,6 +98,7 @@ class InstructorAspiranteController extends Controller
             }
             $aspirante->data_especialidad = $data;
         }
+        // termina proceso de revalidacion de especialidades
 
         //proceso para generar nrevision
         $unidad_inicial = substr($aspirante->unidad_asignada,0,2);
@@ -101,6 +115,9 @@ class InstructorAspiranteController extends Controller
         }
 
         $aspirante->nrevision = $unidad_inicial . '-' . date('Y') . '-' . $consecutive;
+        //termina proceso de generacion de nrevision
+
+        //proceso para enviar mensaje de WhatsApp
         $direcbd = explode('*',tbl_unidades::where('unidad', $aspirante->unidad_asignada)->value('direccion'));
         foreach ($direcbd as $key => $value) {
             $direccionUnidad = $direccionUnidad . $value;
@@ -108,7 +125,6 @@ class InstructorAspiranteController extends Controller
                 break;
             }
         }
-
 
         $infowhats = [
             'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
@@ -119,13 +135,16 @@ class InstructorAspiranteController extends Controller
         ];
 
         try {
-            $response = $this->whatsapp_convocado_msg($infowhats);
+            $response = $this->whatsapp_convocado_msg($infowhats, app(WhatsAppService::class));
         } catch (\Exception $e) {
             $response = [
                 'status' => false,
                 'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
             ];
+            return redirect()->route('aspirante.instructor.index')
+                ->with('error', 'Error al enviar mensaje de WhatsApp: ' . $e->getMessage());
         }
+        //termina proceso de envio de mensaje de WhatsApp
 
         $aspirante->save();
 
@@ -189,7 +208,20 @@ class InstructorAspiranteController extends Controller
 
         // Send WhatsApp message if rejected in PREVALIDADO
         if ($context === 'PREVALIDADO') {
-            $responsewsp = $this->whatsapp_rechazo_msg($aspirante);
+            $infowhats = [
+                'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
+                'telefono' => $aspirante->telefono,
+            ];
+            try {
+                $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
+            } catch (\Exception $e) {
+                $response = [
+                    'status' => false,
+                    'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
+                ];
+                return redirect()->route('aspirante.instructor.index')
+                    ->with('error', 'Error al enviar mensaje de WhatsApp: ' . $e->getMessage());
+            }
         }
         $aspirante->save();
 
@@ -257,55 +289,61 @@ class InstructorAspiranteController extends Controller
         return Excel::download(new \App\Exports\AspirantesExport($exportData), 'aspirantes_'.$status.'.xlsx');
     }
 
-    public function whatsapp_convocado_msg($instructor)
+    public function whatsapp_convocado_msg($instructor, WhatsAppService $whatsapp)
     {
-        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\nEstimado(a) {{nombre}}, Aspirante a Instructor Externo del ICATECH:\n\nPor medio de la presente, le informamos que ha sido seleccionado(a) para continuar a la siguiente etapa del proceso de selección de instructores externos, la cual consiste en la entrevista personal y el cotejo de documentación en la Unidad de Capacitación {{unidad}}, con la finalidad de corroborar la documentación cargada en el sistema y con base en el soporte documental validar la especialidad que le corresponde.\nLe solicitamos presentarse el día {{fecha}}, en nuestras oficinas ubicadas en {{direccionUnidad}}\nDeberá llevar consigo en copia legible los siguientes documentos:\n[Lista de documentos requeridos: CV Personal, certificados de estudios (secundaria, preparatoria, licenciatura, maestría, doctorado), constancias de cursos, acta de nacimiento, Identificación oficial (Preferentemente INE), CURP (Del mes en curso), comprobante de domicilio, constancia de situación fiscal con Régimen de Sueldos y Salarios e Ingresos Asimilados a Salarios, con actividad económica Asalariado (Del mes en curso), Caratula del Estado de Cuenta Bancario, etc.]\nAgradecemos su interés en formar parte de nuestro equipo y le recordamos que la puntualidad y la presentación de la documentación completa son requisitos indispensables para continuar en el proceso.\nQuedamos atentos a cualquier duda. Sea usted bienvenido a esta familia Icatech.\n\nAtentamente,\nDR. CÉSAR ARTURO ESPINOSA MORALES\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
+        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\nEstimado(a) *{{nombre}}*, Aspirante a Instructor Externo del ICATECH:\n\nPor medio de la presente, le informamos que ha sido seleccionado(a) para continuar a la siguiente etapa del proceso de selección de instructores externos, la cual consiste en la entrevista personal y el cotejo de documentación en la *Unidad de Capacitación {{unidad}}*, con la finalidad de corroborar la documentación cargada en el sistema y con base en el soporte documental validar la especialidad que le corresponde.\nLe solicitamos presentarse el día *{{fecha}} a las {{horas}}* horas, en nuestras oficinas ubicadas en {{direccionUnidad}}\nDeberá llevar consigo en original y copia legible los siguientes documentos:\n[Lista de documentos requeridos: CV Personal, certificados de estudios (secundaria, preparatoria, licenciatura, maestría, doctorado), constancias de cursos, acta de nacimiento, Identificación oficial (Preferentemente INE), CURP (Del mes en curso), comprobante de domicilio, constancia de situación fiscal con Régimen de Sueldos y Salarios e Ingresos Asimilados a Salarios, con actividad económica Asalariado (Del mes en curso), Caratula del Estado de Cuenta Bancario, etc.]\nAgradecemos su interés en formar parte de nuestro equipo y le recordamos que la puntualidad y la presentación de la documentación completa son requisitos indispensables para continuar en el proceso.\nQuedamos atentos a cualquier duda. Sea usted bienvenido a esta familia Icatech.\n\nAtentamente\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
         $resultados = [];
 
         $fecha_formateada = Carbon::parse($instructor['fecha'])->translatedFormat('j \d\e F \d\e\l Y');
+        $hora_formateada = Carbon::parse($instructor['fecha'])->format('H:i');
         $telefono_formateado = '521'.$instructor['telefono'];
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
-            ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{direccionUnidad}}'],
-            [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $instructor['direccionUnidad']],
+            ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{horas}}', '{{direccionUnidad}}'],
+            [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $hora_formateada, $instructor['direccionUnidad']],
             $plantilla
         );
 
-        $callback = $this->whatsapp_msg($telefono_formateado, $mensaje);
+        $callback = $whatsapp->send($telefono_formateado, $mensaje);
 
         return $callback;
     }
-    private function whatsapp_rechazo_msg($aspirante)
+    private function whatsapp_rechazo_msg($instructor, WhatsAppService $whatsapp)
     {
-        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\n Estimado(a) {{nombre}}, Aspirante a Instructor Externo del ICATECH:\n\n Agradecemos sinceramente su interés y participación en la convocatoria para la selección de instructores externos del ICATECH. Despues de revisar cuidadosamente los perfiles recibidos, lamentamos informarle que en esta ocasión no ha sido seleccionado(a) para continuar a la segunda etapa del proceso. Valoramos el tiempo y el esfuerzo que dedicó al presentar su postulación, y lo(a) invitamos cordialmente a participar en futuras convocatorias\n\nLe reiteramos nuestro agradecimiento por su disposición y compromiso con la formación y el desarrollo profesional. \n\nAtentamente,\nDR. CÉSAR ARTURO ESPINOSA MORALES\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
-        $nombre = $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno;
-        $telefono_formateado = '521'.$aspirante->telefono;
+        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\n Estimado(a) *{{nombre}}*, Aspirante a Instructor Externo del ICATECH:\n\n Agradecemos sinceramente su interés y participación en la convocatoria para la selección de instructores externos del ICATECH. Después de revisar cuidadosamente los perfiles recibidos, lamentamos informarle que en esta ocasión no ha sido seleccionado(a) para continuar a la segunda etapa del proceso. Valoramos el tiempo y el esfuerzo que dedicó al presentar su postulación, y lo(a) invitamos cordialmente a participar en futuras convocatorias\n\nLe reiteramos nuestro agradecimiento por su disposición y compromiso con la formación y el desarrollo profesional. \n\nAtentamente\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
+        $telefono_formateado = '521'.$instructor['telefono'];
 
         $mensaje = str_replace(
             ['{{nombre}}'],
-            [$nombre],
+            [$instructor['nombre']],
             $plantilla
         );
 
-        $callback = $this->whatsapp_msg($telefono_formateado, $mensaje);
+        $callback = $whatsapp->send($telefono_formateado, $mensaje);
 
         return $callback;
     }
 
-    private function whatsapp_msg($telefono_formateado, $mensaje)
-    {
-        $response = Http::post('https://mensajeria.icatech.gob.mx/send-message', [
-            'number' => $telefono_formateado,
-            'message' => $mensaje,
-        ]);
+    public function whatsapp_rechazo_masivo() {
+        $id_rechazados = []; //aqui meter los ids de los rechazados por tandas
+        $rechazados = pre_instructor::WhereIn('id',$id_rechazados)->Select('telefono','nombre',"apellidoPaterno","apellidoMaterno")->Get();
+        foreach($rechazados as $aspirante) {
+            $infowhats = [
+                'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
+                'telefono' => $aspirante->telefono,
+            ];
 
-        $resultados[] = [
-            'numero' => $telefono_formateado,
-            'status' => $response->successful(),
-            'respuesta' => $response->json(),
-        ];
-
-        return $response->json($resultados);
+            try {
+                $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
+            } catch (\Exception $e) {
+                $response = [
+                    'status' => false,
+                    'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
+                ];
+                dd($response, $infowhats);
+            }
+        }
+        dd('complete');
     }
 }
 
