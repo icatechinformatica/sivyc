@@ -70,16 +70,22 @@ class InstructorAspiranteController extends Controller
         $direccionUnidad = null;
         $id = $request->input('id');
         $aspirante = pre_instructor::find($id);
-        $aspirante->status = 'EN CAPTURA';
-        $aspirante->turnado = 'UNIDAD';
+        $ins_oficial = instructor::Where('curp', $aspirante->curp)->First();
+
+        $aspirante->status = $ins_oficial->status = 'EN CAPTURA';
+        $aspirante->turnado = $ins_oficial->turnado = 'UNIDAD';
         $aspirante->fecha_entrevista = $request->input('fecha_entrevista');
         $aspirante->numero_control = 'Pendiente';
 
+        $ins_oficial->nombre = $aspirante->nombre;
+        $ins_oficial->apellidoPaterno = $aspirante->apellidoPaterno;
+        $ins_oficial->apellidoMaterno = $aspirante->apellidoMaterno;
+        $ins_oficial->estado = TRUE;
+
         //verifica que el id_oficial sea diferente de 0
         if($aspirante->id_oficial == 0) {
-            $id_oficial = instructor::Where('curp', $aspirante->curp)->value('id');
             if($id_oficial) {
-                $aspirante->id_oficial = $id_oficial;
+                $aspirante->id_oficial = $ins_oficial->id;
             }
 
         }
@@ -114,7 +120,7 @@ class InstructorAspiranteController extends Controller
             $consecutive = '0001';
         }
 
-        $aspirante->nrevision = $unidad_inicial . '-' . date('Y') . '-' . $consecutive;
+        $aspirante->nrevision = $ins_oficial->nrevision = $unidad_inicial . '-' . date('Y') . '-' . $consecutive;
         //termina proceso de generacion de nrevision
 
         //proceso para enviar mensaje de WhatsApp
@@ -136,6 +142,12 @@ class InstructorAspiranteController extends Controller
 
         try {
             $response = $this->whatsapp_convocado_msg($infowhats, app(WhatsAppService::class));
+            // Check if the response indicates an error
+            if (isset($response['status']) && $response['status'] === false) {
+                // Handle the error as you wish
+                return redirect()->route('aspirante.instructor.index')
+                    ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
+            }
         } catch (\Exception $e) {
             $response = [
                 'status' => false,
@@ -147,6 +159,7 @@ class InstructorAspiranteController extends Controller
         //termina proceso de envio de mensaje de WhatsApp
 
         $aspirante->save();
+        $ins_oficial->save();
 
         return redirect()->route('aspirante.instructor.index')
             ->with('success', 'Aspirante convocado correctamente.');
@@ -214,11 +227,14 @@ class InstructorAspiranteController extends Controller
             ];
             try {
                 $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
+                // Check if the response indicates an error
+                if (isset($response['status']) && $response['status'] === false) {
+                    // Handle the error as you wish
+                    return redirect()->route('aspirante.instructor.index')
+                        ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
+                }
             } catch (\Exception $e) {
-                $response = [
-                    'status' => false,
-                    'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
-                ];
+                // This only runs if an actual exception is thrown
                 return redirect()->route('aspirante.instructor.index')
                     ->with('error', 'Error al enviar mensaje de WhatsApp: ' . $e->getMessage());
             }
