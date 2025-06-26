@@ -42,6 +42,7 @@ class InstructorAspiranteController extends Controller
         $especialidades = especialidad::pluck('nombre', 'id')->toArray();
         $total_aspirantes = pre_instructor::WhereNotNull('semaforo')->count();
         $total_enviados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->count();
+        $total_convocados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->Where('status','EN CAPTURA')->count();dd($total_convocados);
         $query = pre_instructor::whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
 
         if ($request->filled('unidad')) {
@@ -84,7 +85,7 @@ class InstructorAspiranteController extends Controller
 
         //verifica que el id_oficial sea diferente de 0
         if($aspirante->id_oficial == 0) {
-            if($id_oficial) {
+            if($id_oficial->id) {
                 $aspirante->id_oficial = $ins_oficial->id;
             }
 
