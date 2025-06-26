@@ -42,7 +42,7 @@ class InstructorAspiranteController extends Controller
         $especialidades = especialidad::pluck('nombre', 'id')->toArray();
         $total_aspirantes = pre_instructor::WhereNotNull('semaforo')->count();
         $total_enviados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->count();
-        $total_convocados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->Where('status','EN CAPTURA')->count();dd($total_convocados);
+        $total_convocados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->Where('status','EN CAPTURA')->count();
         $query = pre_instructor::whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
 
         if ($request->filled('unidad')) {
@@ -51,7 +51,7 @@ class InstructorAspiranteController extends Controller
 
         $data = $query->OrderBy('nombre', 'ASC')->get();
 
-        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades', 'total_aspirantes','total_enviados'));
+        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades', 'total_aspirantes','total_enviados','total_convocados'));
     }
 
     public function prevalidar(Request $request)
