@@ -98,7 +98,8 @@
                     <!--can('password.update')-->
                     <a class="dropdown-item" href="{{ route('password.view') }}">Cambiar Contraseña</a>
                     <!--endcan-->
-                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <a class="dropdown-item" href="{{ route('logout') }}"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         {{ __('Cerrar Sesión') }}
                     </a>
 
