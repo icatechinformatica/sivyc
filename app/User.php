@@ -2,17 +2,17 @@
 
 namespace App;
 
-
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Unidad;
 use App\Models\Rol;
+use Icatech\PermisoRolMenu\Traits\ConfiguresSpanishUserModel;
 use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, ConfiguresSpanishUserModel;
     protected $guard_name = 'web'; // Añade esto específicamente
 
     /**
