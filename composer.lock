@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "76e71374ab0848c213c08d98e82bc037",
+    "content-hash": "6f186b3d16c699017741c20fe41ebd15",
     "packages": [
         {
             "name": "aferrandini/phpqrcode",
@@ -2208,6 +2208,49 @@
                 }
             ],
             "time": "2023-04-17T16:00:37+00:00"
+        },
+        {
+            "name": "icatech/permiso-rol-menu",
+            "version": "dev-feature/menu-dinamico",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RicardoSauceda/permiso-rol-menu.git",
+                "reference": "7ddc46157c2213c0d50f54834f84d0f78c25b113"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/7ddc46157c2213c0d50f54834f84d0f78c25b113",
+                "reference": "7ddc46157c2213c0d50f54834f84d0f78c25b113",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "^7.0|^8.0|^9.0|^10.0",
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Icatech\\PermisoRolMenu\\Providers\\PermisoRolMenuServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Icatech\\PermisoRolMenu\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Paquete para manejo de permisos, roles y menús con convenciones en español",
+            "support": {
+                "issues": "https://github.com/RicardoSauceda/permiso-rol-menu/issues",
+                "source": "https://github.com/RicardoSauceda/permiso-rol-menu/tree/feature/menu-dinamico"
+            },
+            "time": "2025-06-27T18:42:32+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
@@ -10001,7 +10044,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "icatech/permiso-rol-menu": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
