@@ -47,11 +47,6 @@ class User extends Authenticatable
         return $this->belongsTo(Unidad::class, 'unidad');
     }
 
-    // public function roles()
-    // {
-    //     return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id')->withPivot('user_id ', 'role_id');
-    // }
-
     public function unidadTo() //Romelia
     {
         return $this->belongsTo(Unidad::class, 'unidad');

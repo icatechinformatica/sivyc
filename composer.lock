@@ -11257,7 +11257,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "icatech/permiso-rol-menu": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

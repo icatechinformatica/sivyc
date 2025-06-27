@@ -14,6 +14,7 @@
         "endroid/qr-code": "^4.6",
         "fakerphp/faker": "^1.9.1",
         "guzzlehttp/guzzle": "^7.0.1",
+        "icatech/permiso-rol-menu": "dev-feature/menu-dinamico",
         "laravel/framework": "^12.0",
         "laravel/passport": "^12.0",
         "laravel/tinker": "^2.0",
