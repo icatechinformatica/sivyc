@@ -32,14 +32,4 @@ class Permission extends Model
     {
         return $this->belongsToMany(\App\User::class, 'tblz_permiso_usuario', 'permiso_id', 'usuario_id');
     }
-
-    public function esMenu()
-    {
-        return $this->menu ?? false;
-    }
-
-    public function scopeMenus($query)
-    {
-        return $query->where('menu', true);
-    }
 }
