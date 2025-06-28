@@ -139,6 +139,8 @@ class InstructorAspiranteController extends Controller
             'fecha' => $aspirante->fecha_entrevista,
             'telefono' => $aspirante->telefono,
             'direccionUnidad' => $direccionUnidad,
+            'sexo' => $aspirante->sexo,
+            'telefono_unidad' => tbl_unidades::where('unidad', $aspirante->unidad_asignada)->value('telefono'),
         ];
 
         try {
@@ -225,6 +227,7 @@ class InstructorAspiranteController extends Controller
             $infowhats = [
                 'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
                 'telefono' => $aspirante->telefono,
+                'sexo' => $aspirante->sexo,
             ];
             try {
                 $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
@@ -308,7 +311,8 @@ class InstructorAspiranteController extends Controller
 
     public function whatsapp_convocado_msg($instructor, WhatsAppService $whatsapp)
     {
-        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\nEstimado(a) *{{nombre}}*, Aspirante a Instructor Externo del ICATECH:\n\nPor medio de la presente, le informamos que ha sido seleccionado(a) para continuar a la siguiente etapa del proceso de selección de instructores externos, la cual consiste en la entrevista personal y el cotejo de documentación en la *Unidad de Capacitación {{unidad}}*, con la finalidad de corroborar la documentación cargada en el sistema y con base en el soporte documental validar la especialidad que le corresponde.\nLe solicitamos presentarse el día *{{fecha}} a las {{horas}}* horas, en nuestras oficinas ubicadas en {{direccionUnidad}}\nDeberá llevar consigo en original y copia legible los siguientes documentos:\n[Lista de documentos requeridos: CV Personal, certificados de estudios (secundaria, preparatoria, licenciatura, maestría, doctorado), constancias de cursos, acta de nacimiento, Identificación oficial (Preferentemente INE), CURP (Del mes en curso), comprobante de domicilio, constancia de situación fiscal con Régimen de Sueldos y Salarios e Ingresos Asimilados a Salarios, con actividad económica Asalariado (Del mes en curso), Caratula del Estado de Cuenta Bancario, etc.]\nAgradecemos su interés en formar parte de nuestro equipo y le recordamos que la puntualidad y la presentación de la documentación completa son requisitos indispensables para continuar en el proceso.\nQuedamos atentos a cualquier duda. Sea usted bienvenido a esta familia Icatech.\n\nAtentamente\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
+        $plantilla = "🎉 ¡FELICIDADES, *{{nombre}}*! 🎉, Es un gusto enorme saludarte y decirte que has sido "; if($instructor['sexo'] == 'MASCULINO') {$plantilla = $plantilla."seleccionado ";} else {$plantilla = $plantilla."seleccionada ";}
+        $plantilla = $plantilla."para avanzar a la siguiente etapa del proceso para convertirte en Instructora Externa del ICATECH. ¡Tu talento y tu esfuerzo te han traído hasta aquí, y eso ya es motivo de orgullo!\n\nLa próxima etapa consiste en tu entrevista personal y el cotejo de documentos en la Unidad de Capacitación *{{unidad}}*, donde revisaremos lo que subiste al sistema y validaremos oficialmente tu especialidad.\n\n📍 Te esperamos con entusiasmo el día *{{fecha}} a las {{horas}}* horas, en nuestras oficinas ubicadas en:\n{{direccionUnidad}} 📞 {{telefono_unidad}}\n\n📝 Es indispensable que acudas puntual, con original y copia legible de todos los documentos que registraste en el sistema de prerregistro de la convocatoria. Además, deberás llevar contigo la carátula actual de tu estado de cuenta bancario (donde se visualicen claramente tu nombre completo, número de cuenta y CLABE interbancaria). Este paso es vital para validar tu participación y asegurar tu avance en el proceso.\n\nGracias por confiar en el ICATECH. Estamos emocionados de tenerte cerca y de ver tu vocación crecer. Bienvenida a esta gran familia, donde juntos capacitamos, empoderamos y transformamos a Chiapas.\n\n¡Un abrazo fuerte, combativo y lleno de esperanza!\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\n\n*DIRECTOR GENERAL*\n*INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS*";
         $resultados = [];
 
         $fecha_formateada = Carbon::parse($instructor['fecha'])->translatedFormat('j \d\e F \d\e\l Y');
@@ -316,8 +320,8 @@ class InstructorAspiranteController extends Controller
         $telefono_formateado = '521'.$instructor['telefono'];
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
-            ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{horas}}', '{{direccionUnidad}}'],
-            [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $hora_formateada, $instructor['direccionUnidad']],
+            ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{horas}}', '{{direccionUnidad}}','{{telefono_unidad}}'],
+            [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $hora_formateada, $instructor['direccionUnidad'], $instructor['telefono_unidad']],
             $plantilla
         );
 
@@ -327,7 +331,9 @@ class InstructorAspiranteController extends Controller
     }
     private function whatsapp_rechazo_msg($instructor, WhatsAppService $whatsapp)
     {
-        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\n Estimado(a) *{{nombre}}*, Aspirante a Instructor Externo del ICATECH:\n\n Agradecemos sinceramente su interés y participación en la convocatoria para la selección de instructores externos del ICATECH. Después de revisar cuidadosamente los perfiles recibidos, lamentamos informarle que en esta ocasión no ha sido seleccionado(a) para continuar a la segunda etapa del proceso. Valoramos el tiempo y el esfuerzo que dedicó al presentar su postulación, y lo(a) invitamos cordialmente a participar en futuras convocatorias\n\nLe reiteramos nuestro agradecimiento por su disposición y compromiso con la formación y el desarrollo profesional. \n\nAtentamente\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
+        if($instructor['sexo'] == 'MASCULINO'){$plantilla = "🙏🏼 estimado ";}else{$plantilla = "🙏🏼 estimada ";}
+        $plantilla = $plantilla."*{{nombre}}*🙏🏼,\n\nAspirante a Instructor Externo del ICATECH:\n\nAntes que nada, gracias de corazón por tu interés, tu tiempo y tu entusiasmo al participar en nuestra convocatoria para la selección de Instructores Externos del ICATECH.\n\nDespués de revisar cuidadosamente cada perfil recibido, lamentamos informarte que en esta ocasión no has sido "; if($instructor['sexo'] == 'MASCULINO'){$plantilla = $plantilla."seleccionado ";}else{$plantilla = $plantilla."seleccionada ";}
+        $plantilla = $plantilla."para continuar a la siguiente etapa del proceso. Sin embargo, valoramos profundamente tu esfuerzo, tu vocación y tu deseo de formar parte de esta gran familia que trabaja cada día por capacitar y empoderar a Chiapas.\n\nQueremos que sepas que tu camino no termina aquí. El ICATECH siempre tendrá las puertas abiertas para ti, y te invitamos cordialmente a estar pendiente y participar en futuras convocatorias.\n\nGracias por confiar en nosotros y por compartir con nosotros tu compromiso con la educación y el desarrollo de nuestro estado.\n\n¡Un abrazo fuerte, combativo y lleno de esperanza!\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\n\n*DIRECTOR GENERAL*\n\n*INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS*";
         $telefono_formateado = '521'.$instructor['telefono'];
 
         $mensaje = str_replace(
