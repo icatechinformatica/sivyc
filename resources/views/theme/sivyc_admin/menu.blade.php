@@ -3,7 +3,7 @@
       <!-- Brand -->
       <div class="sidenav-header  align-items-center">
         <a class="navbar-brand" href="javascript:void(0)">
-          <img alt="sivyc" class="navbar-brand-img" src="{{asset("img/icatech-imagen.png")}}">
+          <img alt="sivyc" class="navbar-brand-img" src="{{ asset('img/icatech-imagen.png') }}">
         </a>
       </div>
       <div class="navbar-inner">
@@ -18,11 +18,17 @@
               </a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="{{ route('menus.index') }}">
+                <i class="fa fa-list text-primary"></i>
+                <span class="nav-link-text">Menus</span>
+              </a>
+            </li>
+            {{-- <li class="nav-item">
               <a class="nav-link" href="{{ route('alumno_registrado.modificar.index') }}">
                 <i class="fa fa-list-alt text-red"></i>
                 <span class="nav-link-text">CURSOS</span>
               </a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('usuario_permisos.index') }}" >
                     <i class="fa fa-users text-primary"></i>
@@ -41,18 +47,19 @@
                     <span class="nav-link-text">Permisos</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('permisos.roles.index') }}" >
-                    <i class="fa fa-link text-info"></i>
-                    <span class="nav-link-text">permisos-roles</span>
-                </a>
-            </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
+              <a class="nav-link" href="{{ route('permisos.roles.index') }}">
+                <i class="fa fa-link text-info"></i>
+                <span class="nav-link-text">permisos-roles</span>
+              </a>
+            </li> --}}
+
+            {{-- <li class="nav-item">
               <a class="nav-link" href="{{ route('personal.index') }}">
                 <i class="fa fa-list-alt text-primary"></i>
                 <span class="nav-link-text">Recursos Humanos</span>
               </a>
-            </li>
+            </li> --}}
 
           </ul>
         </div>

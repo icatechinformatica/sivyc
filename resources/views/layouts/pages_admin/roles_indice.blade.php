@@ -37,9 +37,9 @@
                             <tbody class="list">
                                 @foreach ($rol as $itemRol)
                                     <tr>
-                                        <td scope="row">{{$itemRol->name}}</td>
-                                        <td scope="row">{{$itemRol->slug}}</td>
-                                        <td scope="row">{{$itemRol->description}}</td>
+                                        <td scope="row">{{$itemRol->nombre}}</td>
+                                        <td scope="row">{{$itemRol->ruta_corta}}</td>
+                                        <td scope="row">{{$itemRol->descripcion}}</td>
                                         <td>
                                             <a href="{{route('roles.edit', ['id' => base64_encode($itemRol->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>

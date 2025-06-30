@@ -103,40 +103,50 @@
                         <div class="card card-grid mb-4" role="grid" aria-labelledby="gridLabel">
                             <div class="card-header">
                                 <div class="row" role="row" style="width: 100%">
-                                    <div class="col-md-4" role="columnheader">
+                                    <div class="col-md-6" role="columnheader">
                                         <p class="form-control-plaintext">NOMBRE</p>
                                     </div>
-                                    <div class="col-md-4" role="columnheader">
-                                        <p class="form-control-plaintext">INFORMACIÓN</p>
+                                    <div class="col-md-2" role="columnheader">
+                                        <p class="form-control-plaintext text-center">INFORMACIÓN</p>
                                     </div>
-                                    <div class="col-md-4" role="columnheader">
-                                        <p class="form-control-plaintext">MODIFICAR</p>
+                                    <div class="col-md-2" role="columnheader">
+                                        <p class="form-control-plaintext text-center">MODIFICAR</p>
+                                    </div>
+                                    <div class="col-md-2" role="columnheader">
+                                        <p class="form-control-plaintext text-center">PERMISOS</p>
                                     </div>
                                 </div>
-                                <div id="gridLabel" class="card-grid-caption">
+                                {{-- <div id="gridLabel" class="card-grid-caption">
                                     <p class="form-control-plaintext">USUARIOS</p>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="card-body">
                                 @foreach ($usuarios as $itemUsuarios)
                                     <div class="row" role="row">
-                                        <div class="col-md-4" role="gridcell">
-
-                                            <div class="form-control-plaintext text-truncate">{{$itemUsuarios->name}}</div>
+                                        <div class="col-md-6" role="gridcell">
+                                            <div class="form-control-plaintext text-truncate">{{$itemUsuarios->nombre}}</div>
                                         </div>
-                                        <div class="col-md-4" role="gridcell">
 
+                                        <div class="col-md-2" role="gridcell">
                                             <div class="form-control-plaintext text-truncate">
                                                 <a href="{{route('usuarios.perfil.modificar', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR USUARIO">
                                                     <i class="fa fa-user" aria-hidden="true"></i>
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="col-md-4" role="gridcell">
 
+                                        <div class="col-md-2" role="gridcell">
                                             <div class="form-control-plaintext text-truncate">
                                                 <a href="{{route('usuarios_permisos.show', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
                                                     <i class="fa fa-wrench" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" role="gridcell">
+                                            <div class="form-control-plaintext text-truncate">
+                                                <a href="{{route('usuarios.permisos.index', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="VER Y MODIFICAR PERMISOS">
+                                                    <i class="fa fa-braille" aria-hidden="true"></i>
                                                 </a>
                                             </div>
                                         </div>
