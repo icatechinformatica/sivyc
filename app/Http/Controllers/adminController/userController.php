@@ -199,4 +199,27 @@ class userController extends Controller
 
         return response()->json(['success' => false], 404);
     }
+
+    public function gestorPermisosUsuarios($id)
+    {
+        $idUsuario = base64_decode($id);
+        $usuario = User::findOrfail($idUsuario);
+        $permisos = Permission::all();
+        return view('layouts.pages_admin.gestor_usuario_permisos', compact('usuario', 'permisos', 'idUsuario'));
+    }
+
+    public function updatePermisosUsuario(Request $request, $id)
+    {
+        $idUsuario = base64_decode($id);
+        $usuario = User::findOrFail($idUsuario);
+
+        // Obtén los permisos enviados desde el formulario
+        $permisosSeleccionados = $request->input('permisos', []);
+
+        // Sincroniza los permisos (elimina los que no están y agrega los nuevos)
+        $usuario->permissions()->sync($permisosSeleccionados);
+
+        return redirect()->route('usuarios.permisos.index', ['id' => $id])
+            ->with('success', 'Permisos actualizados correctamente.');
+    }
 }

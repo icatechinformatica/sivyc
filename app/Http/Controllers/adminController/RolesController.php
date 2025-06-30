@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\adminController;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Rol;
+use App\Http\Controllers\Controller;
+use Icatech\PermisoRolMenu\Models\Rol;
 use Illuminate\Support\Facades\Validator;
 
 class RolesController extends Controller
@@ -16,7 +16,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $rol = Rol::PAGINATE(15, ['id', 'name', 'slug', 'description']);
+        $rol = Rol::PAGINATE(15, ['id', 'nombre', 'ruta_corta', 'descripcion']);
         //
         return view('layouts.pages_admin.roles_indice', compact('rol'));
     }
