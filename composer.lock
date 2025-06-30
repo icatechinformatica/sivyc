@@ -2215,12 +2215,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/RicardoSauceda/permiso-rol-menu.git",
-                "reference": "3c2e23892dadd82b1b6e44b571270c10eca1bf0e"
+                "reference": "4f416b98271f4ca77912205d076a848b2d6d38ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/7ddc46157c2213c0d50f54834f84d0f78c25b113",
-                "reference": "7ddc46157c2213c0d50f54834f84d0f78c25b113",
+                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/4f416b98271f4ca77912205d076a848b2d6d38ff",
+                "reference": "4f416b98271f4ca77912205d076a848b2d6d38ff",
                 "shasum": ""
             },
             "require": {
@@ -2250,7 +2250,7 @@
                 "issues": "https://github.com/RicardoSauceda/permiso-rol-menu/issues",
                 "source": "https://github.com/RicardoSauceda/permiso-rol-menu/tree/feature/menu-dinamico"
             },
-            "time": "2025-06-30T14:56:31+00:00"
+            "time": "2025-06-30T20:11:13+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
