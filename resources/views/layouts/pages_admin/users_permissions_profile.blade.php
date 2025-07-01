@@ -35,9 +35,9 @@
                                     @foreach ($roles as $itemRol)
                                         <option
                                             @foreach ($usuario->roles as $itemUserRol)
-                                                {{ ($itemUserRol->pivot->role_id == $itemRol->id) ? 'selected' : '' }}
+                                                {{ ($itemUserRol->pivot->rol_id == $itemRol->id) ? 'selected' : '' }}
                                             @endforeach
-                                            value="{{ $itemRol->id }}">{{ $itemRol->name }}
+                                            value="{{ $itemRol->id }}">{{ $itemRol->nombre }}
                                         </option>
                                     @endforeach
                                 </select>

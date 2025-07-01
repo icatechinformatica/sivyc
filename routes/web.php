@@ -120,6 +120,8 @@ Route::middleware(['auth'])->group(function(){
 Route::middleware(['admin'])->group(function(){
     Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
     Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
+    Route::get('/usuarios/permisos/{id}', 'adminController\userController@gestorPermisosUsuarios')->name('usuarios.permisos.index');
+    Route::post('/usuarios/permisos/{id}', 'adminController\userController@updatePermisosUsuario')->name('usuarios.permisos.update');
     Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
     Route::post('/update/activo', 'adminController\userController@updateActivo')->name('update.activo');
     Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
@@ -145,6 +147,7 @@ Route::middleware(['admin'])->group(function(){
     Route::get('/organo/organo_administrativo/{id}', 'adminController\PersonalController@getAdscripcion');
     Route::get('/personal/edit/{id}', 'adminController\PersonalController@edit')->name('personal.edit');
     Route::put('/personal/update/{id}', 'adminController\PersonalController@update')->name('personal.update');
+    Route::get('/menus/index', 'adminController\MenuController@index')->name('menus.index');
 });
 });
 /**
@@ -934,3 +937,7 @@ Route::post('/recursos-humanos/reporte/quincenal/pdf', 'RH\RHController@reporte_
 Route::get('/recursos-humanos/reporte/quincenal/detalles/{id}', 'RH\RHController@reporte_quincenal_detalles')->name('rh.reporte.detalles');
 Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
 Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->name('rh.agregar.justificante');
+
+Route::get('/test', function () {
+    dd('Test route is working!');
+})->name('cursos.archivado');
