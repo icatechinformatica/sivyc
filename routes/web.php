@@ -117,35 +117,38 @@ Route::get('/unidades/unidad_by_ubicacion/{ubicacion}', 'webController\UnidadCon
  * modificación de roles y permisos -- nuevos registros
  */
 Route::middleware(['auth'])->group(function(){
-    Route::middleware(['admin'])->group(function(){
-        Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
-        Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
-        Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
-        Route::post('/update/activo', 'adminController\userController@updateActivo')->name('update.activo');
-        Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
-        Route::get('/roles/index', 'adminController\RolesController@index')->name('roles.index');
-        Route::get('/roles/modificacion/{id}', 'adminController\RolesController@edit')->name('roles.edit');
-        Route::get('/roles/create', 'adminController\RolesController@create')->name('roles.create');
-        Route::get('/permisos/create', 'adminController\PermissionController@create')->name('permisos.crear');
-        Route::get('/permisos/edit/{id}', 'adminController\PermissionController@edit')->name('permisos.editar');
-        Route::get('/permisos/roles/index', 'adminController\PermissionController@permiso_rol')->name('permisos.roles.index');
-        Route::get('/gestor/permisos/roles/profile/{id}', 'adminController\PermissionController@gestorPermisosRoles')->name('gestor.permisos.roles');
-        Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
-        Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
-        Route::post('/gestor/permisos/roles/profile/add', 'adminController\PermissionController@store')->name('gestor.permisos.roles.create');
-        Route::post('/roles/create/store', 'adminController\RolesController@store')->name('roles.store');
-        Route::put('/roles/modificacion/update/{id}', 'adminController\RolesController@update')->name('roles.update');
-        Route::put('/usuarios/profile/update/{id}', 'adminController\userController@update')->name('usuarios_permisos.update');
-        Route::post('/permisos/store', 'adminController\PermissionController@storePermission')->name('permission.store');
-        Route::put('/permisos/update/{id}', 'adminController\PermissionController@update')->name('permiso.update');
-        Route::put('/usuarios/permisos/perfil/rol/{id}', 'adminController\userController@updateRol')->name('usuarios_permisos.rol.edit');
-        Route::get('/personal/index', 'adminController\PersonalController@index')->name('personal.index');
-        Route::get('/personal/create', 'adminController\PersonalController@create')->name('personal.crear');
-        Route::post('/personal/store', 'adminController\PersonalController@store')->name('personal.store');
-        Route::get('/organo/organo_administrativo/{id}', 'adminController\PersonalController@getAdscripcion');
-        Route::get('/personal/edit/{id}', 'adminController\PersonalController@edit')->name('personal.edit');
-        Route::put('/personal/update/{id}', 'adminController\PersonalController@update')->name('personal.update');
-    });
+Route::middleware(['admin'])->group(function(){
+    Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
+    Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
+    Route::get('/usuarios/permisos/{id}', 'adminController\userController@gestorPermisosUsuarios')->name('usuarios.permisos.index');
+    Route::post('/usuarios/permisos/{id}', 'adminController\userController@updatePermisosUsuario')->name('usuarios.permisos.update');
+    Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
+    Route::post('/update/activo', 'adminController\userController@updateActivo')->name('update.activo');
+    Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
+    Route::get('/roles/index', 'adminController\RolesController@index')->name('roles.index');
+    Route::get('/roles/modificacion/{id}', 'adminController\RolesController@edit')->name('roles.edit');
+    Route::get('/roles/create', 'adminController\RolesController@create')->name('roles.create');
+    Route::get('/permisos/create', 'adminController\PermissionController@create')->name('permisos.crear');
+    Route::get('/permisos/edit/{id}', 'adminController\PermissionController@edit')->name('permisos.editar');
+    Route::get('/permisos/roles/index', 'adminController\PermissionController@permiso_rol')->name('permisos.roles.index');
+    Route::get('/gestor/permisos/roles/profile/{id}', 'adminController\PermissionController@gestorPermisosRoles')->name('gestor.permisos.roles');
+    Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
+    Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
+    Route::post('/gestor/permisos/roles/profile/add', 'adminController\PermissionController@store')->name('gestor.permisos.roles.create');
+    Route::post('/roles/create/store', 'adminController\RolesController@store')->name('roles.store');
+    Route::put('/roles/modificacion/update/{id}', 'adminController\RolesController@update')->name('roles.update');
+    Route::put('/usuarios/profile/update/{id}', 'adminController\userController@update')->name('usuarios_permisos.update');
+    Route::post('/permisos/store', 'adminController\PermissionController@storePermission')->name('permission.store');
+    Route::put('/permisos/update/{id}', 'adminController\PermissionController@update')->name('permiso.update');
+    Route::put('/usuarios/permisos/perfil/rol/{id}', 'adminController\userController@updateRol')->name('usuarios_permisos.rol.edit');
+    Route::get('/personal/index', 'adminController\PersonalController@index')->name('personal.index');
+    Route::get('/personal/create', 'adminController\PersonalController@create')->name('personal.crear');
+    Route::post('/personal/store', 'adminController\PersonalController@store')->name('personal.store');
+    Route::get('/organo/organo_administrativo/{id}', 'adminController\PersonalController@getAdscripcion');
+    Route::get('/personal/edit/{id}', 'adminController\PersonalController@edit')->name('personal.edit');
+    Route::put('/personal/update/{id}', 'adminController\PersonalController@update')->name('personal.update');
+    Route::get('/menus/index', 'adminController\MenuController@index')->name('menus.index');
+});
 });
 /**
  * UNIDADES DE CAPACITACION
@@ -1089,3 +1092,7 @@ Route::post('/recursos-humanos/reporte/quincenal/pdf', 'RH\RHController@reporte_
 Route::get('/recursos-humanos/reporte/quincenal/detalles/{id}', 'RH\RHController@reporte_quincenal_detalles')->name('rh.reporte.detalles');
 Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
 Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->name('rh.agregar.justificante');
+
+Route::get('/test', function () {
+    dd('Test route is working!');
+})->name('cursos.archivado');

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\adminController;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\User;
-use App\Models\Permission;
-use App\Models\Rol;
 use App\Models\Unidad;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Icatech\PermisoRolMenu\Models\Rol;
+use Icatech\PermisoRolMenu\Models\Permiso;
 
 class userController extends Controller
 {
@@ -203,8 +203,8 @@ class userController extends Controller
     public function gestorPermisosUsuarios($id)
     {
         $idUsuario = base64_decode($id);
-        $usuario = User::findOrfail($idUsuario);
-        $permisos = Permission::all();
+        $usuario = User::with(['roles.permisos', 'permissions'])->findOrfail($idUsuario);
+        $permisos = Permiso::all();
         return view('layouts.pages_admin.gestor_usuario_permisos', compact('usuario', 'permisos', 'idUsuario'));
     }
 
