@@ -1,0 +1,25 @@
+/* Estilos para la navbar */
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+}
+
+.dropdown-submenu>a:after {
+    content: "▶";
+    float: right;
+    margin-left: 5px;
+    font-size: 0.7em;
+}
+
+.navbar-brand img {
+    height: 45px;
+}
+
+.nav-link.g-color-2025--hover:hover {
+    color: #d8026d !important;
+}
