@@ -348,11 +348,10 @@
                             $('#textoMensajeInstructor').text('');
                             if (data.status === 200) {
 
-                                console.log(data);
                                 let options = '<option value="0">Seleccionar Instructor</option>'; // Dejar siempre el primer option
 
                                 data.instructores.forEach(function(item) {
-                                    options += `<option value="${item.id}">${item.instructor} / ${item.unidad} / ${item.telefono}</option>`;
+                                    options += `<option value="${item.id}">${item.instructor} / ${item.unidad} / ${item.telefono} </option>`;
                                 });
                                 $(".sel_instructor").html(options);
 

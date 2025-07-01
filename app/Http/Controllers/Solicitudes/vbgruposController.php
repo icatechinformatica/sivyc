@@ -306,10 +306,16 @@ class vbgruposController extends Controller
     public function modal_instructores(Request $request) {
         $folio_grupo = $request->folio_grupo;
         $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
-        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
+        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
         ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
         ->where('folio_grupo', $folio_grupo)->first();
         list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+        // pruebas
+        // return response()->json([
+        //     'status' => 200,
+        //     'instructores' => $instructores,
+        //     'mensaje' => $mensaje
+        // ]);
 
         //Agregar en el array el instructor asigando por la unidad, en caso de que exista.
         // if(!empty($grupo->id_instructor)){
@@ -353,15 +359,47 @@ class vbgruposController extends Controller
 
         //Ordenar por nombre y unidad
         if (!empty($grupo->unidad)) {
+            // try {
+            //     $unidad_prioritaria = $grupo->unidad;
+
+            //     usort($instructores, function ($a, $b) use ($unidad_prioritaria) {
+            //         // Verificar si alguno pertenece a la unidad prioritaria
+            //         $a_es_prioritario = $a->unidad === $unidad_prioritaria;
+            //         $b_es_prioritario = $b->unidad === $unidad_prioritaria;
+
+            //         // Priorizar unidad
+            //         if ($a_es_prioritario && !$b_es_prioritario) {
+            //             return -1;
+            //         }
+            //         if (!$a_es_prioritario && $b_es_prioritario) {
+            //             return 1;
+            //         }
+
+            //         // Ambos son prioritarios o no lo son, ordenar por unidad
+            //         if ($a->unidad === $b->unidad) {
+            //             // Misma unidad: ordenar por nombre
+            //             return strcmp($a->instructor, $b->instructor);
+            //         }
+
+            //         // Diferente unidad (pero misma prioridad): ordenar por unidad
+            //         return strcmp($a->unidad, $b->unidad);
+            //     });
+
+            // } catch (\Throwable $th) {
+            //     return response()->json([
+            //         'status' => 500,
+            //         'mensaje' => 'Error al ordenar la lista de instructores: ' . $th->getMessage()
+            //     ]);
+            // }
+
+            ##Otro ordenamiento por total de cursos y unidad
             try {
                 $unidad_prioritaria = $grupo->unidad;
 
-                usort($instructores, function ($a, $b) use ($unidad_prioritaria) {
-                    // Verificar si alguno pertenece a la unidad prioritaria
+                $instructores = collect($instructores)->sort(function ($a, $b) use ($unidad_prioritaria) {
                     $a_es_prioritario = $a->unidad === $unidad_prioritaria;
                     $b_es_prioritario = $b->unidad === $unidad_prioritaria;
 
-                    // Priorizar unidad
                     if ($a_es_prioritario && !$b_es_prioritario) {
                         return -1;
                     }
@@ -369,15 +407,11 @@ class vbgruposController extends Controller
                         return 1;
                     }
 
-                    // Ambos son prioritarios o no lo son, ordenar por unidad
                     if ($a->unidad === $b->unidad) {
-                        // Misma unidad: ordenar por nombre
-                        return strcmp($a->instructor, $b->instructor);
+                        return $a->total_cursos <=> $b->total_cursos;
                     }
-
-                    // Diferente unidad (pero misma prioridad): ordenar por unidad
                     return strcmp($a->unidad, $b->unidad);
-                });
+                })->values();
 
             } catch (\Throwable $th) {
                 return response()->json([
@@ -413,11 +447,18 @@ class vbgruposController extends Controller
             ->groupby('i.id');
 
             $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad') //DB::raw('count(id_curso) as total')
+            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', // Subquery para contar cursos en 2025
+            DB::raw("(SELECT COUNT(tc.id) FROM tbl_cursos AS tc WHERE tc.id_instructor = instructores.id and tc.status_curso = 'AUTORIZADO' AND EXTRACT(YEAR FROM tc.created_at) = {$this->ejercicio}) AS total_cursos") ) //DB::raw('count(id_curso) as total')
             ->rightJoin('instructores','t.id_instructor','=','instructores.id')
             ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
             ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
             ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+
+            // ->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
+            // ->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
+            //Nueva linea para filtrar por cursos a impartir, no por especialidad
+            ->whereJsonContains('especialidad_instructores.cursos_impartir', $data->id_curso)
+
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
             ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
@@ -432,7 +473,6 @@ class vbgruposController extends Controller
             #### Validacion de criterios de instructor
             $servicio = (new ValidacionServicioVb());
 
-            // //pruebas
             // $respuesta = $servicio->InstNoRebase8Horas($instructores, $agenda);
             // return [$respuesta, 'cero'.count($respuesta)];
 
@@ -442,6 +482,10 @@ class vbgruposController extends Controller
                 if (count($instructores) == 0) {
                     return [[], 'No se encontraron Instructores Alfa'];
                 }
+            }
+
+            if (count($instructores) == 0) {
+                return [[], 'No se encontraron instructores disponibles para este curso'];
             }
 
             //Primer criterio
