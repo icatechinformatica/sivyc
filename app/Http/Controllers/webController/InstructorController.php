@@ -37,6 +37,8 @@ use App\Exports\FormatoTReport;
 use ZipArchive;
 use PDF;
 use App\User;
+use Illuminate\Support\Facades\Hash;
+use App\Services\WhatsAppService;
 
 class InstructorController extends Controller
 {
@@ -1042,8 +1044,8 @@ class InstructorController extends Controller
                 $perfil->capacitador_icatech = $perfiles[$llave]->capacitador_icatech;
                 $perfil->recibidos_icatech = $perfiles[$llave]->recibidos_icatech;
                 $perfil->cursos_impartidos = $perfiles[$llave]->cursos_impartidos;
-                $perfil->numero_control = $perfiles[$llave]->numero_control;
-                $perfil->lastUserId = $perfiles[$llave]->lastUserId;
+                $perfil->numero_control = $saveInstructor->id;
+                // $perfil->lastUserId = $perfiles[$llave]->lastUserId;
                 $perfil->status = $perfiles[$llave]->status;
                 $perfil->periodo = $perfiles[$llave]->periodo;
                 $perfil->carrera = $perfiles[$llave]->carrera;
@@ -4736,6 +4738,39 @@ class InstructorController extends Controller
             }
         }
 
+         //Create the user here
+
+        $userInstructor = DB::Connection('mysql')->Table('users')->Where('curp', $instructor->curp)->First();
+        if(is_null($userInstructor)) {
+            $userId = DB::Connection('mysql')->Table('users')->InsertGetId([
+                'name' => $instructor->nombre . ' ' . $instructor->apellidoPaterno . ' ' . $instructor->apellidoMaterno,
+                'email' => $instructor->correo,
+                'password' => Hash::make($instructor->rfc), // Always hash passwords!
+                'created_at' => now(),
+                'updated_at' => now(),
+                'tipo_usuario' => '3',
+                'curp' => $instructor->curp,
+                'id_sivyc' => $instructor->id
+            ]);
+
+                $infowhats = [
+                'nombre' => $instructor->nombre . ' ' . $instructor->apellidoPaterno . ' ' . $instructor->apellidoMaterno,
+                'correo' => $instructor->correo,
+                'pwd' => $instructor->rfc,
+                'telefono' => $instructor->telefono
+            ];
+
+            try {
+                $response = $this->whatsapp_alta_usuario_msg($infowhats, app(WhatsAppService::class));
+            } catch (\Exception $e) {
+                $response = [
+                    'status' => false,
+                    'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
+                ];
+            }
+            //end of create user
+        }
+
         return $instructor;
     }
 
@@ -4896,6 +4931,22 @@ class InstructorController extends Controller
             "nombre_asentamiento_humano" => null
         ];
         return $datos_null;
+    }
+
+    private function whatsapp_alta_usuario_msg($instructor, WhatsAppService $whatsapp)
+    {
+        $plantilla = "Asunto: Alta de usuario para Accesso eFirma\n\nPor medio de la presente, le enviamos sus credenciales de acceso al módulo de *eFirma* para instructores, junto con las instrucciones que debe seguir para realizar la firma electrónica:\n\nURL: https://instructores.icatech.gob.mx\n\nInstructor: {{nombre}}\nUsuario: {{correo}}\nContraseña: {{pwd}}\n\nPor favor, siga los siguientes pasos:\n\n*Primer Paso:* Ingrese al módulo utilizando las credenciales proporcionadas y verifique que su CURP esté escrita correctamente. En caso de encontrar algún error, le solicitamos que informe a la unidad para que el equipo de desarrollo realice la corrección correspondiente.\n\n*Segundo Paso:* Valide su firma electrónica ante el SAT. Utilice la siguiente URL:\nhttps://wwwmatnp.sat.gob.mx/tramites/19941/valida-la-vigencia-de-tu-e.firma-(antes-firma-electronica)\n\nProceda a la validación de su firma. Si esta se encuentra vencida o inhabilitada, proceda a realizar el trámite correspondiente ante la instancia adecuada.\n\n*Tercer Paso:* Si ha completado con éxito los dos pasos anteriores, está listo para llevar a cabo su primera práctica de firmado en el módulo de eFirma. Por favor, notifique a la unidad una vez haya realizado este proceso.\n\nAgradecemos su atención y quedamos a su disposición para cualquier consulta adicional.\n\n*ICATECH*";
+        $telefono_formateado = '521'.$instructor['telefono'];
+        // Reemplazar variables en plantilla
+        $mensaje = str_replace(
+            ['{{nombre}}', '{{correo}}', '{{pwd}}'],
+            [$instructor['nombre'], $instructor['correo'], $instructor['pwd']],
+            $plantilla
+        );
+
+         $callback = $whatsapp->send($telefono_formateado, $mensaje);
+
+        return $callback;
     }
 }
 

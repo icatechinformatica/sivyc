@@ -148,7 +148,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{$data->localidad}}. {{$data->municipio}}, {{$data->entidad}}</td>
+                            <td>{{$data->municipio}}, {{$data->entidad}}</td>
                             <td>{{$data->codigo_postal}}</td>
                         </tr>
                     </tbody>

@@ -15,11 +15,13 @@
         .custom-font-size { font-size: 18px; }
         #tblAlumnos tr th{ text-align: center; padding:5px;}
         .btn { font-size: 11px;}
+        #div_instructor {  display: none; }
     </style>
 @endsection
 @section('content')
     @php
         $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = $id_gvulnerable= $checked = null;
+        $ocultar = false;
         if(isset($grupo)){
             $turnado = $grupo->turnado_grupo;
             $hini = $grupo->hini;
@@ -31,8 +33,7 @@
             $id_gvulnerable = $grupo->id_gvulnerable;
             if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
             elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
-
-
+            if($grupo->vb_dg==false and $grupo->clave=='0') $ocultar = true;            
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
@@ -62,7 +63,7 @@
                 @endif
                 <br/>
                 @if(isset($grupo))
-                    @if(isset($instructor))
+                    @if(isset($instructor) and ($grupo->vb_dg==true or $grupo->clave!='0'))
                         <h5>DEL INSTRUCTOR</h5>
                         <div class="row bg-light form-inline" style="padding:15px 0 15px 0; text-indent:1.8em; line-height: 2.1em;">
                             @if(isset($instructor->tipo_honorario))
@@ -212,9 +213,9 @@
                     </div>
                     <input type="hidden" name="valid_cerss" value="{{$id_cerss}}"> --}}
                 </div>
-                <div class="form-row">
+                <div class="form-row" @if($ocultar) id="div_instructor" @endif>
                     <div class="form-group col-md-4">
-                        <label>INSTRUCTOR DISPONIBLE:</label>
+                        <label>INSTRUCTOR ASIGNADO:</label>
                         @php
                             $encontrado = false
                         @endphp

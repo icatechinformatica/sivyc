@@ -17,7 +17,7 @@
                 <th scope="col" class="text-center">FECHA ARC01</th>
                 <th scope="col" class="text-center" >CLAVE</th>
                 <!--<th scope="col" class="text-center" >MOTIVO</th> -->
-                <th scope="col" class="text-center">CURSO /CERTIFICACIÓN</th>
+                <th scope="col" class="text-center">CURSO/ CERTIFICACIÓN</th>
                 <th scope="col" class="text-center">UNIDAD</th>
                 <th scope="col" class="text-center">ESPECIALIDAD</th>
                 <th scope="col" class="text-center">CURSO</th>
@@ -35,9 +35,9 @@
                 <th scope="col" class="text-center">MUNICIPIO</th>
                 <th scope="col" class="text-center">ZE</th>
                 <th scope="col" class="text-center">DEPENDENCIA</th>
-                <th scope="col" class="text-center">TIPO</th>
-                <th scope="col" class="text-center">TURNADO</th>
-                <th scope="col" class="text-center">ESTATUS</th>
+                <th scope="col" class="text-center">TIPO</th>                
+                <th scope="col" class="text-center">SOLICITUD</th>
+                <th scope="col" class="text-center">VoBo</th>                
                 <th scope="col" class="text-center">FORMATO T</th>
                 <th scope="col" class="text-center">PLANTEL</th>
                 <th scope="col" class="text-center">LUGAR</th>
@@ -92,7 +92,7 @@
                         <td class="text-center">{{$g->folio_grupo}}</td>
                         @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
                             <td>
-                                <div style="width: 400px;">{{ Form::textarea('prespuesta['.$g->id.']', $g->obspreliminar, ['id' => 'prespuesta['.$g->id.']' ,'class' => 'form-control', 'placeholder' => 'OBSERVACIONES','rows' =>'3']) }}</div>
+                                <div style="width: 400px;">{{ Form::textarea('prespuesta['.$g->id.']', $g->obspreliminar ?? $g->motivo_vobo, ['id' => 'prespuesta['.$g->id.']' ,'class' => 'form-control', 'placeholder' => 'OBSERVACIONES','rows' =>'3']) }}</div>
                             </td>
                         @elseif($extemporaneo)
                             <td class="text-center">{{$mextemporaneo }}</td>
@@ -119,7 +119,11 @@
                         <td> <div style="width:100px;">{{ $g->unidad }} </div></td>
                         <td> <div style="width:148px;">{{ $g->espe }} </div></td>
                         <td><div style="width:220px;"> {{ $g->curso }}</div></td>
-                        <td><div style="width:150px;">{{ $g->nombre }}. {{ $g->instructor_mespecialidad}}</div></td>
+                        <td><div style="width:150px;">
+                            @if($g->vb_dg==true or $g->clave!='0')
+                                {{ $g->nombre }}. {{ $g->instructor_mespecialidad}}
+                            @endif
+                        </div></td>
                         <td class="text-center"> {{ $g->mod }} </td>
                         <td class="text-center"> @if ($g->tipo=='EXO') {{"EXONERACION"}} @elseif($g->tipo=='EPAR') {{"REDUCCION DE CUOTA"}}  @else {{"PAGO ORDINARIO"}}   @endif </td>
                         <td class="text-center"> {{ $g->dura }} </td>
@@ -133,15 +137,22 @@
                         <td> {{ $g->muni }} </td>
                         <td class="text-center"> {{ $g->ze}} </td>
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
-                        <td class="text-center"> {{ $g->tcapacitacion }} </td>
+                        <td class="text-center"> {{ $g->tcapacitacion }} </td>                        
                         <td class="text-center">
-                            @if($g->clave=='0')
-                                {{ $g->turnado_solicitud }}
-                            @else
-                                {{ $g->turnado }}
-                            @endif
+                            @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif
+                            @if( $g->turnado=='VoBo' OR  $g->turnado=='DGA' ){{ $g->turnado }} @endif    
                         </td>
-                        <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif</td>
+                        <td class="text-center">
+                            @php
+                                $movs = json_decode($g->movimientos);
+                            @endphp
+                            @if($g->vb_dg)
+                                {{ 'AUTORIZADO'}}
+                            @elseif($g->vb_dg == false and $g->turnado=='DGA')
+                                <span class="text-danger">{{ 'RECHAZADO'}} <br/>({{ $g->motivo_vobo}})</span>
+                            @endif
+
+                        </td>
                         <td class="text-center"> {{ $g->status}}</td>
                         <td class="text-center">{{$g->plantel }}</td>
                         <td> <div style="width:300px;"> {{ $g->efisico }} </div></td>
@@ -178,23 +189,23 @@
             </div>
             <div class="form-group col-md-4 my-2">
                 {{ Form::select('movimiento', $movimientos, $opt, ['id'=>'movimiento','class' => 'form-control' ] ) }}
+            </div>        
+            <div class="form-group col-md-4 my-2" id='observaciones' style="display:none">
+                {{ Form::text('observaciones', null, [ 'class' => 'form-control', 'placeholder' => 'OBSERVACIONES',  'required' => 'required', 'size' => 45]) }}
             </div>
+            <div class="form-group col-md-2 my-2" id='mrespuesta' style="display:none">
+                {{ Form::text('mrespuesta', null, [ 'class' => 'form-control', 'placeholder' => 'NÚMERO DEMEMORÁNDUM',  'required' => 'required', 'size' => 35]) }}
+            </div>
+            <div class="form-group col-md-2" id="fecha" style="display:none">
+                {{ form::date('fecha', date('Y-m-d'), ['class'=>'form-control mx-3']) }}
+            </div>
+            <div class="custom-file form-group col-md-3 text-center my-2" id="file" style="display:none">
+                <input type="file" id="file_autorizacion" name="file_autorizacion" accept="application/pdf" class="custom-file-input" required />
+                <label for="file_autorizacion" class="custom-file-label">AUTORIZACIÓN FIRMADA PDF</label>
+            </div>
+            <div class="form-group col-md-1 ">
+                {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger']) }}
+            </div>   
         @endif
-        <div class="form-group col-md-4 my-2" id='observaciones' style="display:none">
-            {{ Form::text('observaciones', null, [ 'class' => 'form-control', 'placeholder' => 'OBSERVACIONES',  'required' => 'required', 'size' => 45]) }}
-        </div>
-        <div class="form-group col-md-2 my-2" id='mrespuesta' style="display:none">
-            {{ Form::text('mrespuesta', null, [ 'class' => 'form-control', 'placeholder' => 'NÚMERO DEMEMORÁNDUM',  'required' => 'required', 'size' => 35]) }}
-        </div>
-        <div class="form-group col-md-2" id="fecha" style="display:none">
-            {{ form::date('fecha', date('Y-m-d'), ['class'=>'form-control mx-3']) }}
-        </div>
-        <div class="custom-file form-group col-md-3 text-center my-2" id="file" style="display:none">
-            <input type="file" id="file_autorizacion" name="file_autorizacion" accept="application/pdf" class="custom-file-input" required />
-            <label for="file_autorizacion" class="custom-file-label">AUTORIZACIÓN FIRMADA PDF</label>
-        </div>
-        <div class="form-group col-md-1 ">
-            {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger']) }}
-        </div>   
     @endif
 </div>
