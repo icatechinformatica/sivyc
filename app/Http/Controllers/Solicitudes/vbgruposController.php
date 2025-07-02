@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Services\ValidacionServicioVb;
+use App\Services\WhatsAppService;
 
 class vbgruposController extends Controller
 {
@@ -471,6 +472,42 @@ class vbgruposController extends Controller
             ## Realizar el guardado de datos a las tablas alumnos_registro, tbl_cursos, agenda
             $respuesta = $this->InstUpdateDatos($dataInstructor, $dataCurso);
             if ($respuesta) {
+                // función para enviar mensaje de WhatsApp
+                $infowhats = [
+                    'nombre' => $dataInstructor->instructor,
+                    'unidad' => $dataCurso->unidad,
+                    'curso' => $dataCurso->curso,
+                    'inicio' => $dataCurso->inicio,
+                    'termino' => $dataCurso->termino,
+                    'dias' => $dataCurso->dia,
+                    'hini' => $dataCurso->hini,
+                    'hfin' => $dataCurso->hfin,
+                    'telefono' => $dataInstructor->telefono,
+                    'direccion' => $dataCurso->efisico,
+                    'tcapacitacion' => $dataCurso->tcapacitacion,
+                    'mediovirtual' => $dataCurso->medio_virtual,
+                    'linkvirtual' => $dataCurso->link_virtual,
+                    'sexo' => $dataInstructor->sexo
+                ];
+
+                try {
+                    $response = $this->whatsapp_autorizar_msg($infowhats, app(WhatsAppService::class));
+                    // Check if the response indicates an error
+                    if (isset($response['status']) && $response['status'] === false) {
+                        // Handle the error as you wish
+                        return redirect()->route('solicitudes.vb.grupos')
+                            ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
+                    }
+                } catch (\Exception $e) {
+                    $response = [
+                        'status' => false,
+                        'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
+                    ];
+                    return redirect()->route('solicitudes.vb.grupos')
+                        ->with('error', 'Error al enviar mensaje de WhatsApp: ' . $e->getMessage());
+                }
+                // termina el envio de mensaje de WhatsApp
+
                 $message = 'El Curso => '.$dataCurso->curso.' ha sido autorizado '.'con el Instructor => '.$dataInstructor->instructor;
                 return redirect()->route('solicitudes.vb.grupos')->with('success', $message);
             }else{
@@ -501,7 +538,7 @@ class vbgruposController extends Controller
                 'especialidad_instructores.criterio_pago_id as cp',
                 'tipo_identificacion',
                 'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
-                'banco','no_cuenta','interbancaria','tipo_honorario'
+                'banco','no_cuenta','interbancaria','tipo_honorario','telefono'
                 )
             ->WHERE('instructores.status', '=', 'VALIDADO')
             ->where('instructores.nombre', '!=', '')
@@ -601,6 +638,48 @@ class vbgruposController extends Controller
             return redirect()->route('solicitudes.vb.grupos')->with('error', $message);
         }
 
+    }
+
+    public function whatsapp_autorizar_msg($instructor, WhatsAppService $whatsapp)
+    {
+        if($instructor['tcapacitacion'] == 'PRESENCIAL') {
+            $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'asignacion_curso_presencial')->Value('plantilla');
+            $mensaje = str_replace(
+                ['{{direccion}}'],
+                [$instructor['direccion']],
+                $plantilla
+            );
+        } else {
+            $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'asignacion_curso_virtual')->Value('plantilla');
+            $mensaje = str_replace(
+                ['{{mediovirtual}}', '{{linkvirtual}}'],
+                [$instructor['mediovirtual'], $instructor['linkvirtual']],
+                $plantilla
+            );
+        }
+        $resultados = [];
+
+        $fechaini_formateada = Carbon::parse($instructor['inicio'])->translatedFormat('j \d\e F \d\e\l Y');
+        $fechater_formateada = Carbon::parse($instructor['termino'])->translatedFormat('j \d\e F \d\e\l Y');
+        $telefono_formateado = '521'.$instructor['telefono'];
+
+        // Reemplazar variables generales en plantilla
+        $mensaje = str_replace(
+            ['{{nombre}}', '{{curso}}', '{{unidad}}', '{{direccion}}', '{{inicio}}', '{{termino}}', '{{dias}}', '{{hini}}', '{{hfin}}','\n'],
+            [$instructor['nombre'], $instructor['curso'], $instructor['unidad'], $instructor['direccion'], $fechaini_formateada, $fechater_formateada, $instructor['dias'], $instructor['hini'], $instructor['hfin'],"\n"],
+            $mensaje
+        );
+
+        //cambiar pronombres por sexo
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','r'], $mensaje);
+        }
+
+        $callback = $whatsapp->send($telefono_formateado, $mensaje);
+
+        return $callback;
     }
 
 }
