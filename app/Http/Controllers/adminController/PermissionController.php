@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\adminController;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Permission;
 use App\Models\Rol;
 use App\Models\PermisosRol;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Icatech\PermisoRolMenu\Models\Permiso;
 
 class PermissionController extends Controller
 {
@@ -22,7 +22,7 @@ class PermissionController extends Controller
     {
         //
 
-        $permisos = Permission::PAGINATE(15);
+        $permisos = Permiso::PAGINATE(15);
         return  view('layouts.pages_admin.permissions_roles', compact('permisos'));
 
     }
@@ -63,7 +63,7 @@ class PermissionController extends Controller
                 // arreglo permisos rol
                 $arrayPermisosRol = array();
                 // borrar los permisos de dicho rol
-                $roles->permissions()->detach();
+                $roles->Permisos()->detach();
                 $permiso_rol = new PermisosRol;
                 $pr = $permiso_rol->latest('id')->first();
                 $idPermisosRoles = $pr->id;
@@ -73,13 +73,13 @@ class PermissionController extends Controller
                     $idPermisosRoles += 1;
                     $arreglo = [
                         'id' => $idPermisosRoles,
-                        'permission_id' => $arraPermisos,
+                        'Permiso_id' => $arraPermisos,
                     ];
                     array_push($arrayPermisosRol, $arreglo);
                 }
 
                 // guardar los registros
-                $roles->permissions()->attach($arrayPermisosRol);
+                $roles->Permisos()->attach($arrayPermisosRol);
                 // Eliminar todos los elementos del array
                 unset($arrayPermisosRol);
             } else {
@@ -95,18 +95,18 @@ class PermissionController extends Controller
                     $idPermisosRoles += 1;
                     $arreglo = [
                         'id' => $idPermisosRoles,
-                        'permission_id' => $arraPermisos,
+                        'Permiso_id' => $arraPermisos,
                     ];
                     array_push($arrayPermisosRol, $arreglo);
                 }
 
                 // guardar los registros
-                $roles->permissions()->attach($arrayPermisosRol);
+                $roles->Permisos()->attach($arrayPermisosRol);
                 // Eliminar todos los elementos del array
                 unset($arrayPermisosRol);
             }
 
-            return redirect()->route('gestor.permisos.roles', ['id' => base64_encode($idRol)])
+            return redirect()->route('gestor.permissions.roles', ['id' => base64_encode($idRol)])
             ->with('success', 'PERMISOS OTORGADOS CORRECTAMENTE!');
         }
 
@@ -133,7 +133,7 @@ class PermissionController extends Controller
     {
         //
         $idpermission = base64_decode($id);
-        $permiso = Permission::findOrfail($idpermission);
+        $permiso = Permiso::findOrfail($idpermission);
         return view('layouts.pages_admin.permisos_editar', compact('permiso'));
     }
 
@@ -149,7 +149,7 @@ class PermissionController extends Controller
         // modificacion de un permiso guardado
         if (isset($id)) {
             $idpermisos = base64_decode($id);
-            $permisos = new Permission();
+            $permisos = new Permiso();
 
             # code...
             $arrayPermisos = [
@@ -177,18 +177,18 @@ class PermissionController extends Controller
 
     public function permiso_rol(){
         $rol = Rol::PAGINATE(15, ['id', 'name', 'slug', 'description']);
-        // $permisos = Permission::PAGINATE(5);
+        // $permisos = Permiso::PAGINATE(5);
         return  view('layouts.pages_admin.permiso_rol', compact('rol'));
     }
 
     public function gestorPermisosRoles($id){
         $idRol = base64_decode($id);
-        $permisos = Permission::all();
+        $permisos = Permiso::all();
         $roles = Rol::findOrfail($idRol);
         return view('layouts.pages_admin.gestor_rol_permisos', compact('roles', 'permisos', 'idRol'));
     }
 
-    public function storePermission(Request $request){
+    public function storePermiso(Request $request){
         $validator =  Validator::make($request->all(), [
             'permisoName' => 'required',
             'permisoSlug' => 'required',
@@ -199,7 +199,7 @@ class PermissionController extends Controller
                     ->withInput();
         } else {
             // guardar registro en la base de datos
-            $permisoRegistro = new Permission;
+            $permisoRegistro = new Permiso;
             $permisoRegistro->name = trim($request->get('permisoName'));
             $permisoRegistro->slug = trim($request->get('permisoSlug'));
             if (!empty($request->get('permisoDescripcion'))) {

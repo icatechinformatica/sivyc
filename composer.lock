@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f186b3d16c699017741c20fe41ebd15",
+    "content-hash": "e1c00a8ec620c4c64b77305335266e5c",
     "packages": [
         {
             "name": "aferrandini/phpqrcode",
@@ -2211,16 +2211,16 @@
         },
         {
             "name": "icatech/permiso-rol-menu",
-            "version": "dev-feature/menu-dinamico",
+            "version": "dev-feature/control-funciones",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RicardoSauceda/permiso-rol-menu.git",
-                "reference": "05e4624523246c0e1efaf7308977d11e4ef033a0"
+                "reference": "e3e22b5b3768474214a643e40769155988ef1765"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/05e4624523246c0e1efaf7308977d11e4ef033a0",
-                "reference": "05e4624523246c0e1efaf7308977d11e4ef033a0",
+                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/e3e22b5b3768474214a643e40769155988ef1765",
+                "reference": "e3e22b5b3768474214a643e40769155988ef1765",
                 "shasum": ""
             },
             "require": {
@@ -2248,9 +2248,9 @@
             "description": "Paquete para manejo de permisos, roles y menús con convenciones en español",
             "support": {
                 "issues": "https://github.com/RicardoSauceda/permiso-rol-menu/issues",
-                "source": "https://github.com/RicardoSauceda/permiso-rol-menu/tree/feature/menu-dinamico"
+                "source": "https://github.com/RicardoSauceda/permiso-rol-menu/tree/feature/control-funciones"
             },
-            "time": "2025-07-01T19:04:06+00:00"
+            "time": "2025-07-02T19:14:23+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
