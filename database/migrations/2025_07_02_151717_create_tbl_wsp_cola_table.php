@@ -19,7 +19,7 @@ class CreateTblWspColaTable extends Migration
             $table->text('mensaje');
             $table->string('estatus', 20)->default('cola'); // pendiente, enviado, error
             $table->timestamp('sent_at');
-            $table->id('id_user_sent');
+            $table->integer('id_user_sent');
             $table->timestamps();
         });
     }
