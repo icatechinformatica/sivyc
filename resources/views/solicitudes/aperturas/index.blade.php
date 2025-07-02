@@ -166,6 +166,10 @@
                     case "EDICION":
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
                         $('#frm').attr('target', '_self').submit();
+                        break;   
+                    case "VoBo":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
+                        $('#frm').attr('target', '_self').submit();
                         break;                        
                     case "RETORNADO":
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.retornar')}}");

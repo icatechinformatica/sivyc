@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}">
     <style>
         table th, table td{font-size: 11px; padding:0px; margin:0px;}
+        #div_instructor {  display: none; }
     </style>
 @endsection
 @section('content')
@@ -130,7 +131,8 @@
                 @if($grupo->munidad)
                     <span>CUOTA TOTAL: &nbsp;&nbsp;<strong>{{ $grupo->costo }}</strong></span>
                     <span>TIPO CUOTA: &nbsp;&nbsp;<strong>{{ $tcuota }}</strong></span>
-                @endif                
+                @endif           
+            @if($grupo->vb_dg==true or  $grupo->clave!='0')     
                 @if(isset($instructor->tipo_honorario))
                     <span>RÉGIMEN DEL INSTRUCTOR :&nbsp;&nbsp;<strong>{{$instructor->tipo_honorario}}</strong></span>
                 @endif
@@ -145,10 +147,11 @@
                         <i  class="far fa-file-pdf  fa-1x text-mute"  title='VALIDACIÓN DEL INSTRUCTOR.'></i>
                         <strong>&nbsp;&nbsp; {{ $grupo->instructor_mespecialidad }}</strong>  
                     @endif                                                         
-                </span>                 
+                </span>   
+            @endif              
             </div>        
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6" @if($grupo->vb_dg==false and $grupo->clave=='0') id="div_instructor" @endif>
                     <label>INSTRUCTOR:</label>
                     <select name="instructor" id="instructor" class="form-control mr-sm--2" @if ($exonerado) style="background-color: lightGray;" @endif>
                         @if($instructor)

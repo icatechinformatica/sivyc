@@ -55,8 +55,13 @@ class aperturasController extends Controller
         //echo $memo;
         $path = $this->path_files;
         if($memo){
-            $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo','tc.fecha_arc01','tc.status_curso')
+            $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'tc.turnado as turnado_solicitud',
+                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo','tc.fecha_arc01', 
+                DB::raw("COALESCE(tc.status_curso, tc.status_solicitud) as status_curso"),
+                DB::raw("COALESCE(tc.movimientos->'VoBo'->0->>'motivo', null) as motivo_vobo"),
+                DB::raw("COALESCE(tc.clave, '0') as clave"),///NUEVO VOBO
+                DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
+                )
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                 ->leftjoin('convenios','convenios.no_convenio','=','tc.cgeneral')
                 ->leftJoin('exoneraciones as e','tc.mexoneracion','=','e.no_memorandum')
@@ -136,18 +141,26 @@ class aperturasController extends Controller
                      $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
                      $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
                 } 
-                //dd($status_solicitud);
-                if($status_solicitud =='TURNADO'){ //TURNADO PRELIMINAR
+
+                if($status_solicitud =='TURNADO' and $grupos[0]->motivo_vobo and $grupos[0]->vb_dg==false){ //RECHADADO VoBo                    
+                    $movimientos = ['' => '- SELECCIONAR -', 'PRETORNADO'=>'RETORNAR A UNIDAD'];
+                }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado!='VoBo' and $grupos[0]->vb_dg==false){ //TURNADO PRELIMINAR                    
                     $movimientos += ['' => '- SELECCIONAR -']; 
-                    if($grupos[0]->arc == '02')  $movimientos += ['EDICION' =>'AUTORIZAR EDICION']; 
-                     $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'];
+                    if($grupos[0]->arc == '02'){
+                        $movimientos += ['EDICION' =>'AUTORIZAR EDICION', 'PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
+                    }else{
+                        //$movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
+                        $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
+                    }
+                }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG
+                    $movimientos = ['' => '- SELECCIONAR -', 'VALIDADO'=>'TURNAR UNIDAD'];
                 }
                 
             }else $message = "No se encuentran registros que mostrar.";
         }
 
         if(session('message')) $message = session('message');
-        //var_dump($grupos);exit;
+        //dd($grupos);
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
     }
 
@@ -536,10 +549,14 @@ class aperturasController extends Controller
         $opt = $request->opt;
         $message = 'Operación fallida, vuelva a intentar..';
         if ($memo AND ($opt == 'ARC01' OR $opt == 'ARC02')) {
-            switch($request->pmovimiento){
+            switch($request->movimiento){
                 case "EDICION":
                     $result = DB::table('tbl_cursos')->where('nmunidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['status_curso' => 'EDICION']);
                     if($result)$message = "SOLICITUD ENVIADA PARA EDICION.";
+                break;
+                case "VoBo":                    
+                    $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['turnado' => 'VoBo']);                    
+                    if($result)$message = "SOLICITUD ENVIADA PARA VoBo.";
                 break;
                 default:
                     if ($opt == 'ARC01') {
@@ -550,7 +567,7 @@ class aperturasController extends Controller
                         $llave = 'nmunidad';
                     }
                     $ids = array_keys($request->prespuesta);
-                    $result = DB::table('tbl_cursos')->where($llave,$memo)->wherein('id',$ids)->update([$status => 'VALIDADO', 'obspreliminar' => null]);
+                    $result = DB::table('tbl_cursos')->where($llave,$memo)->wherein('id',$ids)->update([$status => 'VALIDADO', 'turnado'=>'UNIDAD', 'obspreliminar' => null]);
                     if ($result){
                             $result2 = DB::table('tbl_cursos_history')
                                 ->where($llave,$memo)
@@ -584,7 +601,7 @@ class aperturasController extends Controller
                 $result = DB::table('tbl_cursos')
                     ->where($llave,$memo)
                     ->where('id',$key)
-                    ->update([$status => 'RETORNO', 'obspreliminar' => $value]);
+                    ->update([$status => 'RETORNO', 'obspreliminar' => $value ,'turnado'=>'UNIDAD']);
                 if ($result) {
                     $result2 = DB::table('tbl_cursos_history')
                         ->where($llave,$memo)
