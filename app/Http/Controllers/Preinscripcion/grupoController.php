@@ -863,7 +863,7 @@ class grupoController extends Controller
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
                                             'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago, 'status_solicitud' =>null
                                         ]);
                                       //  dd($instructor);
                                         if ($result_curso) $message = "Operación Exitosa!!";
@@ -904,7 +904,7 @@ class grupoController extends Controller
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
                                             'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>json_encode($soportes_instructor),
                                             'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel, 'status_solicitud' =>null
                                             //,'programa' => null,'nota' => null,'plantel' => null
                                             ]
                                         );

@@ -449,7 +449,10 @@ class turnarAperturaController extends Controller
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
                 DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
-                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01','status_solicitud');
+                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01','status_solicitud',
+                DB::raw("COALESCE(clave, '0') as clave"), //NUEVO VOBO
+                DB::raw('COALESCE(vb_dg, false) as vb_dg')//NUEVO VOBO
+                );
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
 

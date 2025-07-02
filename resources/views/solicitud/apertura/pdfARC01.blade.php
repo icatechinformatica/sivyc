@@ -104,7 +104,11 @@
                 <td>{{ $a->mujer + $a->hombre }}</td>
                 <td>{{ $a->mujer }}</td>
                 <td>{{ $a->hombre }}</td>
-                <td>{{ $a->nombre }}</td>
+                <td>
+                    @if($a->vb_dg==true or $a->clave!='0')
+                        {{ $a->nombre }}
+                    @endif
+                </td>
                 <td>{{ $a->cp }}</td>
                 <td>{{ $a->muni }}</td>
                 <td>{{ $a->ze }}</td>
