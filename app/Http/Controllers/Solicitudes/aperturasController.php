@@ -601,7 +601,7 @@ class aperturasController extends Controller
                 $result = DB::table('tbl_cursos')
                     ->where($llave,$memo)
                     ->where('id',$key)
-                    ->update([$status => 'RETORNO', 'obspreliminar' => $value]);
+                    ->update([$status => 'RETORNO', 'obspreliminar' => $value ,'turnado'=>'UNIDAD']);
                 if ($result) {
                     $result2 = DB::table('tbl_cursos_history')
                         ->where($llave,$memo)
