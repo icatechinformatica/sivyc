@@ -383,7 +383,8 @@ class vbgruposController extends Controller
             // ->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
             // ->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
             //Nueva linea para filtrar por cursos a impartir, no por especialidad
-            ->whereJsonContains('especialidad_instructores.cursos_impartir', $data->id_curso)
+            // ->whereJsonContains('especialidad_instructores.cursos_impartir', $data->id_curso)
+            ->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $data->id_curso)
 
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
