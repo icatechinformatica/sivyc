@@ -9,10 +9,10 @@ class User extends Model
 {
     use Notifiable;
     //
-    protected $table = 'users';
+    protected $table = 'tblz_usuarios';
 
     protected $fillable = [
-        'id','name', 'email', 'unidad', 'puesto', 'token_movil','correo_institucional','activo'
+        'id','nombre', 'email', 'unidad', 'puesto', 'token_movil','correo_institucional','activo'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

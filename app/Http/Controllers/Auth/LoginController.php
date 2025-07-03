@@ -67,9 +67,9 @@ class LoginController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if(isset($user->id)) {
-            $roles = DB::Table('role_user')->Where('user_id', $user->id)->Get();
+            $roles = DB::Table('tblz_usuario_rol')->Where('usuario_id', $user->id)->Get();
             foreach($roles as $rol) {
-                if(in_array($rol->role_id, [11, 44, 5, 55])) {
+                if(in_array($rol->rol_id, [11, 44, 5, 55])) {
                     throw ValidationException::withMessages([
                         'email' => [new HtmlString('S I V y C &nbsp;&nbsp;&nbsp;&nbsp; E N &nbsp;&nbsp;&nbsp;&nbsp; M A N T E N I M I E N T O.')],
                     ]);
