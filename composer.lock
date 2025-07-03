@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1c00a8ec620c4c64b77305335266e5c",
+    "content-hash": "6ddd9e516b3310bdd692a23b6c246d0b",
     "packages": [
         {
             "name": "aferrandini/phpqrcode",
@@ -2211,16 +2211,16 @@
         },
         {
             "name": "icatech/permiso-rol-menu",
-            "version": "dev-feature/control-funciones",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RicardoSauceda/permiso-rol-menu.git",
-                "reference": "e3e22b5b3768474214a643e40769155988ef1765"
+                "reference": "1873b3234ffb6c32782552f7c6d2669d6a1bcebc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/e3e22b5b3768474214a643e40769155988ef1765",
-                "reference": "e3e22b5b3768474214a643e40769155988ef1765",
+                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/1873b3234ffb6c32782552f7c6d2669d6a1bcebc",
+                "reference": "1873b3234ffb6c32782552f7c6d2669d6a1bcebc",
                 "shasum": ""
             },
             "require": {
@@ -2228,6 +2228,7 @@
                 "illuminate/support": "^7.0|^8.0|^9.0|^10.0",
                 "php": "^7.3|^8.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -2248,9 +2249,9 @@
             "description": "Paquete para manejo de permisos, roles y menús con convenciones en español",
             "support": {
                 "issues": "https://github.com/RicardoSauceda/permiso-rol-menu/issues",
-                "source": "https://github.com/RicardoSauceda/permiso-rol-menu/tree/feature/control-funciones"
+                "source": "https://github.com/RicardoSauceda/permiso-rol-menu/tree/main"
             },
-            "time": "2025-07-02T19:14:23+00:00"
+            "time": "2025-07-03T16:07:36+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",

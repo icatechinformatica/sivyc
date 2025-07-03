@@ -3,7 +3,7 @@
       <!-- Brand -->
       <div class="sidenav-header  align-items-center">
         <a class="navbar-brand" href="javascript:void(0)">
-          <img alt="sivyc" class="navbar-brand-img" src="{{ asset('img/icatech-imagen.png') }}">
+          <img alt="sivyc" class="navbar-brand-img" src="{{ asset('img/sivyc.png') }}" >
         </a>
       </div>
       <div class="navbar-inner">

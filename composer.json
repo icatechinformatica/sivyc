@@ -17,7 +17,7 @@
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
-        "icatech/permiso-rol-menu": "dev-feature/control-funciones",
+        "icatech/permiso-rol-menu": "dev-main",
         "laravel/framework": "^7.0",
         "laravel/passport": "^9.0",
         "laravel/tinker": "^2.0",
