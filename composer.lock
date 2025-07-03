@@ -2333,6 +2333,7 @@
                 "phpunit/phpunit": "^8.5.36 || ^9.6.15",
                 "uri-template/tests": "1.0.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "bamarni-bin": {

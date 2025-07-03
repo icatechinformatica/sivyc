@@ -14,8 +14,6 @@
     <!-- FOOTER PORTAL DE GOBIERNO END-->
 </div>
 @endsection
-
+@push('scripts')
 <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
-<script src="{{asset('vendor/jquery-migrate/jquery-migrate.min.js')}}"></script>
-<script src="{{asset('js/components/popper.min.js')}}"></script>
-@stack('scripts')
+@endpush
