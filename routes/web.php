@@ -654,6 +654,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01');
     Route::get('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01');
+    //visualizar instructores por ajax dentro del modulo arc01
+    Route::post('/solicitud/apertura/getinstruc', 'Solicitud\turnarAperturaController@modal_instructores')->name('solicitud.intruc.modal')->middleware('can:solicitud.apertura.turnar');
 
     Route::post('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
     Route::get('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
