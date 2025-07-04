@@ -21,7 +21,7 @@
 @section('content')
     @php
         $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = $id_gvulnerable= $checked = null;
-        $ocultar = false;
+        $ocultar = true;
         if(isset($grupo)){
             $turnado = $grupo->turnado_grupo;
             $hini = $grupo->hini;
@@ -33,7 +33,8 @@
             $id_gvulnerable = $grupo->id_gvulnerable;
             if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
             elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
-            if($grupo->vb_dg==false and $grupo->clave=='0') $ocultar = true;            
+            if($grupo->vb_dg==false and $grupo->clave=='0') $ocultar = true;    
+            else $ocultar = false;        
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
