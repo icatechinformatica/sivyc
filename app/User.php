@@ -9,10 +9,12 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Unidad;
 use App\Models\Rol;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
     use Notifiable,  HasRoles;
+    protected $guard_name = 'web'; // Añade esto específicamente
 
     /**
      * The attributes that are mass assignable.
@@ -46,10 +48,10 @@ class User extends Authenticatable
         return $this->belongsTo(Unidad::class, 'unidad');
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id')->withPivot('user_id ', 'role_id');
-    }
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id')->withPivot('user_id ', 'role_id');
+    // }
 
     public function unidadTo() //Romelia
     {
@@ -74,7 +76,7 @@ class User extends Authenticatable
                     case 'nombres':
                         # code...
                         // return $query->where(\DB::raw("upper(name)"), 'LIKE', "%$buscar%");
-                        return $query->where(\DB::raw("upper(concat(name, ' ', curp, ' ', email))"), 'LIKE', '%'.strtoupper($buscar).'%');
+                        return $query->where(DB::raw("upper(concat(name, ' ', curp, ' ', email))"), 'LIKE', '%'.strtoupper($buscar).'%');
                         break;
                     default:
                         # code...

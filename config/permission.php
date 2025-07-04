@@ -199,4 +199,7 @@ return [
 
         'store' => 'default',
     ],
+
+    // Añade esto:
+    'guards' => ['web'], // Especifica que solo use el guard web
 ];
