@@ -16,6 +16,7 @@ use App\Models\tbl_curso;
 use App\User;
 use PDF;
 use Carbon\Carbon;
+use App\Services\ValidacionServicioVb;
 
 class turnarAperturaController extends Controller
 {
@@ -55,7 +56,7 @@ class turnarAperturaController extends Controller
                     DB::raw("(select sum(hours) from
                         (select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
                         ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )
-                        as hours from agenda where id_curso = tc.folio_grupo) as t) as horas_agenda"),                
+                        as hours from agenda where id_curso = tc.folio_grupo) as t) as horas_agenda"),
                     DB::raw("'$opt' as option"),
                     DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"),
                     DB::raw("COALESCE(tc.status_curso, tc.status_solicitud) as status_sol")
@@ -581,4 +582,70 @@ class turnarAperturaController extends Controller
                     ) as global WHERE now()::date>=fecha_extemp or now()::date>termino",[$memo]);
         return $resultArray = array_column(json_decode(json_encode($result), true),'id');
     }
+
+    public function modal_instructores(Request $request) {
+
+        $folio_grupo = $request->folio_grupo;
+        $totalInstruc = 0;
+        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
+        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
+        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+        ->where('folio_grupo', $folio_grupo)->first();
+
+        // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+
+         #### Llamamos la validacion de instructor desde el servicio
+        $servicio = (new ValidacionServicioVb());
+        // $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
+
+        list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
+
+        // Ordenar por nombre y unidad
+        if (!empty($grupo->unidad)) {
+            ##Otro ordenamiento por total de cursos y unidad
+            try {
+                $unidad_prioritaria = $grupo->unidad;
+
+                $instructores = collect($instructores)->sort(function ($a, $b) use ($unidad_prioritaria) {
+                    $a_es_prioritario = $a->unidad === $unidad_prioritaria;
+                    $b_es_prioritario = $b->unidad === $unidad_prioritaria;
+
+                    if ($a_es_prioritario && !$b_es_prioritario) {
+                        return -1;
+                    }
+                    if (!$a_es_prioritario && $b_es_prioritario) {
+                        return 1;
+                    }
+
+                    if ($a->unidad === $b->unidad) {
+                        return $a->total_cursos <=> $b->total_cursos;
+                    }
+                    return strcmp($a->unidad, $b->unidad);
+                })->values();
+
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => 500,
+                    'mensaje' => 'Error al ordenar la lista de instructores: ' . $th->getMessage()
+                ]);
+            }
+        }
+
+        //Validar si el array instructores esta vacio
+        if (count($instructores) === 0) {
+            return response()->json([
+                'status' => 500,
+                'mensaje' => $mensaje,
+                'totalInstruc' => count($instructores)
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'instructores' => $instructores,
+            'mensaje' => $mensaje,
+            'totalInstruc' => count($instructores)
+        ]);
+    }
+
 }
