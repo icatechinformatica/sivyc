@@ -4757,7 +4757,8 @@ class InstructorController extends Controller
                 'nombre' => $instructor->nombre . ' ' . $instructor->apellidoPaterno . ' ' . $instructor->apellidoMaterno,
                 'correo' => $instructor->correo,
                 'pwd' => $instructor->rfc,
-                'telefono' => $instructor->telefono
+                'telefono' => $instructor->telefono,
+                'sexo' => $instructor->sexo
             ];
 
             try {
@@ -4935,14 +4936,20 @@ class InstructorController extends Controller
 
     private function whatsapp_alta_usuario_msg($instructor, WhatsAppService $whatsapp)
     {
-        $plantilla = "Asunto: Alta de usuario para Accesso eFirma\n\nPor medio de la presente, le enviamos sus credenciales de acceso al módulo de *eFirma* para instructores, junto con las instrucciones que debe seguir para realizar la firma electrónica:\n\nURL: https://instructores.icatech.gob.mx\n\nInstructor: {{nombre}}\nUsuario: {{correo}}\nContraseña: {{pwd}}\n\nPor favor, siga los siguientes pasos:\n\n*Primer Paso:* Ingrese al módulo utilizando las credenciales proporcionadas y verifique que su CURP esté escrita correctamente. En caso de encontrar algún error, le solicitamos que informe a la unidad para que el equipo de desarrollo realice la corrección correspondiente.\n\n*Segundo Paso:* Valide su firma electrónica ante el SAT. Utilice la siguiente URL:\nhttps://wwwmatnp.sat.gob.mx/tramites/19941/valida-la-vigencia-de-tu-e.firma-(antes-firma-electronica)\n\nProceda a la validación de su firma. Si esta se encuentra vencida o inhabilitada, proceda a realizar el trámite correspondiente ante la instancia adecuada.\n\n*Tercer Paso:* Si ha completado con éxito los dos pasos anteriores, está listo para llevar a cabo su primera práctica de firmado en el módulo de eFirma. Por favor, notifique a la unidad una vez haya realizado este proceso.\n\nAgradecemos su atención y quedamos a su disposición para cualquier consulta adicional.\n\n*ICATECH*";
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'alta_efirma_instructores')->Value('plantilla');
         $telefono_formateado = '521'.$instructor['telefono'];
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
-            ['{{nombre}}', '{{correo}}', '{{pwd}}'],
-            [$instructor['nombre'], $instructor['correo'], $instructor['pwd']],
+            ['{{nombre}}', '{{correo}}', '{{pwd}}','\n'],
+            [$instructor['nombre'], $instructor['correo'], $instructor['pwd'],"\n"],
             $plantilla
         );
+
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
+        }
 
          $callback = $whatsapp->send($telefono_formateado, $mensaje);
 
