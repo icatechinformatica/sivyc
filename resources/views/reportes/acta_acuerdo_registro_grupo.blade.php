@@ -48,7 +48,10 @@
         if ($data1->hini) $hini = $data1->hini;
         if ($data1->hfin) $hfin = $data1->hfin;
         if ($data1->tcapacitacion) $tcapacitacion = $data1->tcapacitacion;
-        if ($data1->nombre) $instructor = $data1->nombre;
+        if ($data1->vb_dg == true || $data1->clave != '0') {
+            $instructor = $data1->nombre;
+        }
+        // if ($data1->nombre) $instructor = $data1->nombre;
         if ($data1->curso) $curso = $data1->curso;
         if ($data1->cespecifico) $cespecifico = $data1->cespecifico;
         if ($data1->efisico) $efisico = $data1->efisico;
