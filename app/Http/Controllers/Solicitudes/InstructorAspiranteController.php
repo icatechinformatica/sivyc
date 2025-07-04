@@ -34,6 +34,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\User;
 use Illuminate\Support\Facades\Http;
 use App\Services\WhatsAppService;
+use Illuminate\Support\Facades\Hash;
 class InstructorAspiranteController extends Controller
 {
     public function index(Request $request)
@@ -348,12 +349,15 @@ class InstructorAspiranteController extends Controller
     }
 
     public function whatsapp_rechazo_masivo() {
-        $id_rechazados = []; //aqui meter los ids de los rechazados por tandas
-        $rechazados = pre_instructor::WhereIn('id',$id_rechazados)->Select('telefono','nombre',"apellidoPaterno","apellidoMaterno")->Get();
-        foreach($rechazados as $aspirante) {
+        set_time_limit(0);
+        $id_rechazados = [
+            ]; //aqui meter los ids de los rechazados por tandas
+        $rechazados = pre_instructor::WhereIn('id',$id_rechazados)->Select('id','telefono','nombre',"apellidoPaterno","apellidoMaterno",'sexo')->Get();
+        foreach($rechazados as $key => $aspirante) {
             $infowhats = [
                 'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
                 'telefono' => $aspirante->telefono,
+                'sexo' => $aspirante->sexo
             ];
 
             try {
@@ -363,10 +367,31 @@ class InstructorAspiranteController extends Controller
                     'status' => false,
                     'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
                 ];
-                dd($response, $infowhats);
+
             }
+            sleep('5');
         }
         dd('complete');
+    }
+
+    //funcion que ira en el controlador de superadministrador para enviar mensajes de WhatsApp de restablecimiento de contraseña a los instructores
+    public function whatsapp_restablecer_pwd() {
+        dd('prueba');
+        $user = DB::Connection('mysql')->Table('users')->Where('curp', 'MAMG570608HCSTRL04')->First();
+        $instructor = DB::Table('instructores')->Where('curp', 'MAMG570608HCSTRL04')->Select('rfc','nombre',"apellidoPaterno","apellidoMaterno",'telefono')->First();
+        $user->password = Hash::make($instructor->rfc);
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'restablecer_pwd_instructor')->Value('plantilla');
+        $telefono_formateado = '521'.$instructor->telefono;
+
+        $mensaje = str_replace(
+            ['{{nombre}}','{{usuario}}','{{pwd}}','\n'],
+            [$instructor->nombre,$user->email,$instructor->rfc,"\n"],
+            $plantilla
+        );
+        $whatsapp = app(WhatsAppService::class);
+        $callback = $whatsapp->send($telefono_formateado, $mensaje);
+        dd($callback);
+        $user->save();
     }
 }
 
