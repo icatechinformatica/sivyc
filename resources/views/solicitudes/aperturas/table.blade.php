@@ -35,9 +35,9 @@
                 <th scope="col" class="text-center">MUNICIPIO</th>
                 <th scope="col" class="text-center">ZE</th>
                 <th scope="col" class="text-center">DEPENDENCIA</th>
-                <th scope="col" class="text-center">TIPO</th>                
+                <th scope="col" class="text-center">TIPO</th>
                 <th scope="col" class="text-center">SOLICITUD</th>
-                <th scope="col" class="text-center">VoBo</th>                
+                <th scope="col" class="text-center">VoBo</th>
                 <th scope="col" class="text-center">FORMATO T</th>
                 <th scope="col" class="text-center">PLANTEL</th>
                 <th scope="col" class="text-center">LUGAR</th>
@@ -123,7 +123,9 @@
                             @if($g->vb_dg==true or $g->clave!='0')
                                 {{ $g->nombre }}. {{ $g->instructor_mespecialidad}}
                             @endif
-                        </div></td>
+                            </div>
+                        <a class="mt-2 text-center" onclick="seleccion_instructor('{{ $g->folio_grupo }}')" title="Seleccionar Instructor"><i class="fa fa-address-book mr-2" aria-hidden="true" style="color:rgb(1, 95, 84);"></i> Ver Instructores</a>
+                        </td>
                         <td class="text-center"> {{ $g->mod }} </td>
                         <td class="text-center"> @if ($g->tipo=='EXO') {{"EXONERACION"}} @elseif($g->tipo=='EPAR') {{"REDUCCION DE CUOTA"}}  @else {{"PAGO ORDINARIO"}}   @endif </td>
                         <td class="text-center"> {{ $g->dura }} </td>
@@ -137,10 +139,10 @@
                         <td> {{ $g->muni }} </td>
                         <td class="text-center"> {{ $g->ze}} </td>
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
-                        <td class="text-center"> {{ $g->tcapacitacion }} </td>                        
+                        <td class="text-center"> {{ $g->tcapacitacion }} </td>
                         <td class="text-center">
                             @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif
-                            @if( $g->turnado=='VoBo' OR  $g->turnado=='DGA' ){{ $g->turnado }} @endif    
+                            @if( $g->turnado=='VoBo' OR  $g->turnado=='DGA' ){{ $g->turnado }} @endif
                         </td>
                         <td class="text-center">
                             @php
@@ -189,7 +191,7 @@
             </div>
             <div class="form-group col-md-4 my-2">
                 {{ Form::select('movimiento', $movimientos, $opt, ['id'=>'movimiento','class' => 'form-control' ] ) }}
-            </div>        
+            </div>
             <div class="form-group col-md-4 my-2" id='observaciones' style="display:none">
                 {{ Form::text('observaciones', null, [ 'class' => 'form-control', 'placeholder' => 'OBSERVACIONES',  'required' => 'required', 'size' => 45]) }}
             </div>
@@ -205,7 +207,7 @@
             </div>
             <div class="form-group col-md-1 ">
                 {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger']) }}
-            </div>   
+            </div>
         @endif
     @endif
 </div>
