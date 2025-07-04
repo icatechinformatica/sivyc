@@ -316,7 +316,7 @@ class vbgruposController extends Controller
         ->where('folio_grupo', $folio_grupo)->first();
         list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
 
-        //Ordenar por nombre y unidad
+        // Ordenar por nombre y unidad
         if (!empty($grupo->unidad)) {
             ##Otro ordenamiento por total de cursos y unidad
             try {
@@ -383,7 +383,6 @@ class vbgruposController extends Controller
             // ->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
             // ->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
             //Nueva linea para filtrar por cursos a impartir, no por especialidad
-            // ->whereJsonContains('especialidad_instructores.cursos_impartir', $data->id_curso)
             ->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $data->id_curso)
 
             ->WHERE('estado',true)
@@ -399,9 +398,6 @@ class vbgruposController extends Controller
 
             #### Validacion de criterios de instructor
             $servicio = (new ValidacionServicioVb());
-
-            // $respuesta = $servicio->InstNoRebase8Horas($instructores, $agenda);
-            // return [$respuesta, 'cero'.count($respuesta)];
 
             //Validar si el curso es ALFA
             if ($data->programa == 'ALFA') {
@@ -420,7 +416,7 @@ class vbgruposController extends Controller
             if (count($respuesta8Horas) > 0) {
 
                 //Segundo Criterio
-                $respuesta40Horas = $servicio->InstNoRebase40HorasSem($respuesta8Horas, $agenda);
+                $respuesta40Horas = $servicio->InstNoRebase40HorasSem($respuesta8Horas, $data->folio_grupo);
                 if (count($respuesta40Horas) > 0) {
 
                     //Tercer criterio
@@ -460,10 +456,6 @@ class vbgruposController extends Controller
         $folio_grupo = $request->val_folio_grupo;
         $id_instructor = $request->sel_instructor;
         $message = '';
-
-        //Pruebas
-        // $folio_grupo = '6Y-250063'; // de este grupo tiene como instructor al id 919 ZUART PONCE JOSE EDGARDO, cambiaremos de instructor al 1189  LOPEZ PASCACIO GILBERTO ANTONIO
-        // $id_instructor = 1189;
 
         ### Obtener los datos del curso y del instructor
         $dataCurso = DB::table('tbl_cursos')->where('folio_grupo', $folio_grupo)->first();
