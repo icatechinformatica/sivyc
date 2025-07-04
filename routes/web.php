@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+//reset password modal
+Route::post('/reset-password-modal', 'Auth\LoginController@resetPasswordModal')->name('reset.password.modal');
 //Ruta Pago 25/09/2020
 Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@historial_validacion')->name('pago.historial-verificarpago');
 
