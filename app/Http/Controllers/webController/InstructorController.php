@@ -4951,7 +4951,7 @@ class InstructorController extends Controller
             $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
         }
 
-         $callback = $whatsapp->send($telefono_formateado, $mensaje);dd($callback);
+         $callback = $whatsapp->send($telefono_formateado, $mensaje);
 
         return $callback;
     }
