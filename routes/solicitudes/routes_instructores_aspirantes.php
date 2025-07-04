@@ -10,4 +10,6 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/instructores/aspirantes/filter', 'Solicitudes\InstructorAspiranteController@filter')->name('aspirante.instructor.filter');
     Route::get('/instructores/aspirantes/export', 'Solicitudes\InstructorAspiranteController@export')->name('aspirante.instructor.export');
     Route::get('/instructores/whatsapp/rechazomasivo', 'Solicitudes\InstructorAspiranteController@whatsapp_rechazo_masivo')->name('whatsapp.rechazo.masivo');
+    //ruta que sera movida para superadministrador
+    Route::get('/instructores/whatsapp/restablecerpwd', 'Solicitudes\InstructorAspiranteController@whatsapp_restablecer_pwd')->name('whatsapp.restablecer.pwd');
 });
