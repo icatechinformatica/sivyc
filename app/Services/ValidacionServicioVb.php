@@ -278,7 +278,7 @@ class ValidacionServicioVb
             ->groupby('i.id');
 
             $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', // Subquery para contar cursos en 2025
+            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', 'especialidad_instructores.fecha_validacion', // Subquery para contar cursos en 2025
             DB::raw("(SELECT COUNT(tc.id) FROM tbl_cursos AS tc WHERE tc.id_instructor = instructores.id and tc.status_curso = 'AUTORIZADO' AND EXTRACT(YEAR FROM tc.created_at) = {$ejercicio}) AS total_cursos") ) //DB::raw('count(id_curso) as total')
             ->rightJoin('instructores','t.id_instructor','=','instructores.id')
             ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
@@ -296,7 +296,7 @@ class ValidacionServicioVb
             ->WHERE('fecha_validacion','<',$curso->inicio)
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$curso->termino)
             ->whereNotIn('instructores.id', $internos)
-            ->groupBy('t.id_instructor','instructores.id', 'instructores.telefono', 'tbl_unidades.unidad')
+            ->groupBy('t.id_instructor','instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', 'especialidad_instructores.fecha_validacion')
             ->orderBy('instructor')
             ->get();
 
