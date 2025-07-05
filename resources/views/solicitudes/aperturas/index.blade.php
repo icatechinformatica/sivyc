@@ -331,7 +331,7 @@
         loader('show');
         if (folio_grupo.length >0){
             $.ajax({
-                url: "/solicitud/apertura/getinstruc",
+                url: "/solicitudes/aperturas/getinstruc",
                 method: 'POST',
                 data: {
                     folio_grupo : folio_grupo
