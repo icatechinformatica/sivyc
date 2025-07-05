@@ -16,6 +16,7 @@ use App\Models\Permission;
 use App\Models\tbl_curso;
 use App\User;
 use PDF;
+use App\Services\ValidacionServicioVb;
 
 class aperturasController extends Controller
 {
@@ -40,7 +41,7 @@ class aperturasController extends Controller
         });
     }
 
-    public function index(Request $request){ 
+    public function index(Request $request){
         $opt = $memo = $message = $file = $status_solicitud = $extemporaneo = $motivo_soporte = NULL;
 
         if($request->memo)  $memo = $request->memo;
@@ -56,7 +57,7 @@ class aperturasController extends Controller
         $path = $this->path_files;
         if($memo){
             $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'tc.turnado as turnado_solicitud',
-                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo','tc.fecha_arc01', 
+                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo','tc.fecha_arc01',
                 DB::raw("COALESCE(tc.status_curso, tc.status_solicitud) as status_curso"),
                 DB::raw("COALESCE(tc.movimientos->'VoBo'->0->>'motivo', null) as motivo_vobo"),
                 DB::raw("COALESCE(tc.clave, '0') as clave"),///NUEVO VOBO
@@ -140,12 +141,12 @@ class aperturasController extends Controller
                     if(!$movimientos) $movimientos []='- SELECCIONAR -';
                      $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
                      $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
-                } 
+                }
 
-                if($status_solicitud =='TURNADO' and $grupos[0]->motivo_vobo and $grupos[0]->vb_dg==false){ //RECHADADO VoBo                    
+                if($status_solicitud =='TURNADO' and $grupos[0]->motivo_vobo and $grupos[0]->vb_dg==false){ //RECHADADO VoBo
                     $movimientos = ['' => '- SELECCIONAR -', 'PRETORNADO'=>'RETORNAR A UNIDAD'];
-                }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado!='VoBo' and $grupos[0]->vb_dg==false){ //TURNADO PRELIMINAR                    
-                    $movimientos += ['' => '- SELECCIONAR -']; 
+                }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado!='VoBo' and $grupos[0]->vb_dg==false){ //TURNADO PRELIMINAR
+                    $movimientos += ['' => '- SELECCIONAR -'];
                     if($grupos[0]->arc == '02'){
                         $movimientos += ['EDICION' =>'AUTORIZAR EDICION', 'PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
                     }else{
@@ -155,7 +156,7 @@ class aperturasController extends Controller
                 }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG
                     $movimientos = ['' => '- SELECCIONAR -', 'VALIDADO'=>'TURNAR UNIDAD'];
                 }
-                
+
             }else $message = "No se encuentran registros que mostrar.";
         }
 
@@ -554,8 +555,8 @@ class aperturasController extends Controller
                     $result = DB::table('tbl_cursos')->where('nmunidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['status_curso' => 'EDICION']);
                     if($result)$message = "SOLICITUD ENVIADA PARA EDICION.";
                 break;
-                case "VoBo":                    
-                    $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['turnado' => 'VoBo']);                    
+                case "VoBo":
+                    $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['turnado' => 'VoBo']);
                     if($result)$message = "SOLICITUD ENVIADA PARA VoBo.";
                 break;
                 default:
@@ -633,8 +634,8 @@ class aperturasController extends Controller
         else return false;
 
     }
-     
-    public function guardar_fecha(Request $request){ 
+
+    public function guardar_fecha(Request $request){
         $message = "Operación fallida, por favor intente de nuevo.";
         if($request->fecha AND $request->memo){
             $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->whereNotNull('fecha_arc01')
@@ -655,10 +656,76 @@ class aperturasController extends Controller
                     )
                 ")
             ]);
-            if($result) $message = "Operación Exitosa!";            
+            if($result) $message = "Operación Exitosa!";
         }else $message = "Por favor, ingrese una fecha válida.";
         return $message;
 
+    }
+
+    ##Funcion para mostrar la lista de instructores validados
+    public function modal_instructores(Request $request) {
+
+        $folio_grupo = $request->folio_grupo;
+        $totalInstruc = 0;
+        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
+        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
+        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+        ->where('folio_grupo', $folio_grupo)->first();
+
+        // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+
+         #### Llamamos la validacion de instructor desde el servicio
+        $servicio = (new ValidacionServicioVb());
+        // $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
+
+        list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
+
+        // Ordenar por nombre y unidad
+        if (!empty($grupo->unidad)) {
+            ##Otro ordenamiento por total de cursos y unidad
+            try {
+                $unidad_prioritaria = $grupo->unidad;
+
+                $instructores = collect($instructores)->sort(function ($a, $b) use ($unidad_prioritaria) {
+                    $a_es_prioritario = $a->unidad === $unidad_prioritaria;
+                    $b_es_prioritario = $b->unidad === $unidad_prioritaria;
+
+                    if ($a_es_prioritario && !$b_es_prioritario) {
+                        return -1;
+                    }
+                    if (!$a_es_prioritario && $b_es_prioritario) {
+                        return 1;
+                    }
+
+                    if ($a->unidad === $b->unidad) {
+                        return $a->total_cursos <=> $b->total_cursos;
+                    }
+                    return strcmp($a->unidad, $b->unidad);
+                })->values();
+
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => 500,
+                    'mensaje' => 'Error al ordenar la lista de instructores: ' . $th->getMessage()
+                ]);
+            }
+        }
+
+        //Validar si el array instructores esta vacio
+        if (count($instructores) === 0) {
+            return response()->json([
+                'status' => 500,
+                'mensaje' => $mensaje,
+                'totalInstruc' => count($instructores)
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'instructores' => $instructores,
+            'mensaje' => $mensaje,
+            'totalInstruc' => count($instructores)
+        ]);
     }
 
 }
