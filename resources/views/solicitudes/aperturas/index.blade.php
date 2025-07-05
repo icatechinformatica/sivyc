@@ -344,7 +344,7 @@
                         let options = '<option value="0">Ver Instructores</option>'; // Dejar siempre el primer option
 
                         data.instructores.forEach(function(item) {
-                            options += `<option value="${item.id}">${item.instructor} / ${item.unidad} / ${item.telefono} </option>`;
+                            options += `<option value="${item.id}">${item.instructor} / ${item.unidad} / ${item.telefono} / ${item.fecha_validacion} </option>`;
                         });
                         $(".sel_instructor").html(options);
 
