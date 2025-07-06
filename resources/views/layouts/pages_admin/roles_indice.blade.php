@@ -42,7 +42,7 @@
                                         <td scope="row">{{$itemRol->ruta_corta}}</td>
                                         <td scope="row">{{$itemRol->descripcion}}</td>
                                         <td>
-                                            <a href="{{route('gestor.permisos.roles', ['id' => base64_encode($itemRol->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="OTORGAR PERMISOS">
+                                            <a href="{{route('permiso-rol-menu.rol.menus.show', ['id' => $itemRol->id])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="OTORGAR PERMISOS">
                                                 <i class="fa fa-cogs" aria-hidden="true"></i>
                                             </a>
                                         </td>
