@@ -131,7 +131,6 @@ Route::middleware(['admin'])->group(function(){
     Route::get('/permisos/create', 'adminController\PermissionController@create')->name('permisos.crear');
     Route::get('/permisos/edit/{id}', 'adminController\PermissionController@edit')->name('permisos.editar');
     Route::get('/permisos/roles/index', 'adminController\PermissionController@permiso_rol')->name('permisos.roles.index');
-    Route::get('/gestor/permisos/roles/profile/{id}', 'adminController\PermissionController@gestorPermisosRoles')->name('gestor.permisos.roles');
     Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
     Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
     Route::post('/gestor/permisos/roles/profile/add', 'adminController\PermissionController@store')->name('gestor.permisos.roles.create');

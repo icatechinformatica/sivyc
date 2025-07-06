@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\adminController;
 
-use App\Models\Rol;
 use App\Models\PermisosRol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Icatech\PermisoRolMenu\Models\Rol;
 use Illuminate\Support\Facades\Validator;
 use Icatech\PermisoRolMenu\Models\Permiso;
 
@@ -73,7 +73,7 @@ class PermissionController extends Controller
                     $idPermisosRoles += 1;
                     $arreglo = [
                         'id' => $idPermisosRoles,
-                        'Permiso_id' => $arraPermisos,
+                        'permiso_id' => $arraPermisos,
                     ];
                     array_push($arrayPermisosRol, $arreglo);
                 }
@@ -95,7 +95,7 @@ class PermissionController extends Controller
                     $idPermisosRoles += 1;
                     $arreglo = [
                         'id' => $idPermisosRoles,
-                        'Permiso_id' => $arraPermisos,
+                        'permiso_id' => $arraPermisos,
                     ];
                     array_push($arrayPermisosRol, $arreglo);
                 }
