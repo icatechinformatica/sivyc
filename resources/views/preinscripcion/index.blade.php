@@ -16,6 +16,61 @@
         #tblAlumnos tr th{ text-align: center; padding:5px;}
         .btn { font-size: 11px;}
         #div_instructor {  display: none; }
+
+        /* Estilo del loader */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+            z-index: 9999; /* Asegura que esté por encima de otros elementos */
+            display: none; /* Ocultar inicialmente */
+        }
+
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 6px solid #fff;
+            border-top: 6px solid #621132;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {transform: translate(-50%, -50%) rotate(0deg);}
+            100% {transform: translate(-50%, -50%) rotate(360deg);}
+        }
+
+        #loader-text {
+            color: #fff;
+            margin-top: 150px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        /* Texto loader */
+        #loader-text span {
+            opacity: 0; /* Inicia los puntos como invisibles */
+            font-size: 30px;
+            font-weight: bold;
+            animation: fadeIn 1s infinite; /* Aplica la animación de aparecer */
+        }
+
+        @keyframes fadeIn {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        #loader-text span:nth-child(1) {animation-delay: 0.5s; }
+        #loader-text span:nth-child(2) {animation-delay: 1s; }
+        #loader-text span:nth-child(3) {animation-delay: 1.5s;}
+
     </style>
 @endsection
 @section('content')
@@ -33,12 +88,18 @@
             $id_gvulnerable = $grupo->id_gvulnerable;
             if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
             elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
-            if($grupo->vb_dg==false and $grupo->clave=='0') $ocultar = true;    
-            else $ocultar = false;        
+            if($grupo->vb_dg==false and $grupo->clave=='0') $ocultar = true;
+            else $ocultar = false;
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
     @endphp
+    <div id="loader-overlay">
+        <div id="loader"></div>
+        <div id="loader-text">
+            Espere un momento mientras se valida la información .<span> . </span><span> . </span><span> . </span>
+        </div>
+    </div>
     <div class="card-header">
         Preinscripci&oacute;n / Registro de Grupo
     </div>
@@ -438,6 +499,7 @@
         <script language="javascript">
 
             $(document).ready(function(){
+                var folio_g = @json($folio_grupo);
                 $('#costoX').on('input', function() {
                     var text = $(this).val();
                     $('.costo').val(text);
@@ -450,8 +512,19 @@
 
                 $("#agregar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.save')}}",'target':'_self'}); $('#frm').submit(); });
                 $("#nuevo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.nuevo')}}",'target':'_self'}); $('#frm').submit(); });
-                $("#update").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'}); $('#frm').submit(); });
-                $("#turnar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'}); $('#frm').submit(); });
+
+                $("#update").click(function(e){
+                    e.preventDefault();
+                    consulta_instructores(folio_g, 'update');
+                    // $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'});
+                    // $('#frm').submit();
+                });
+                $("#turnar").click(function(){
+                    e.preventDefault();
+                    consulta_instructores(folio_g, 'turnar');
+                    // $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'});
+                    // $('#frm').submit();
+                });
                 $("#comprobante").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.comprobante')}}"); $('#frm').submit(); });
                 $("#btnremplazo").click(function(){if (confirm("Est\u00E1 seguro de ejecutar la acci\u00F3n?")==true) {$('#frm').attr({'action':"{{route('preinscripcion.grupo.remplazar')}}",'target':'_self'}); $('#frm').submit();}});
                 $("#generar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.generar')}}", 'target':'_target'}); $('#frm').submit(); });
@@ -786,6 +859,45 @@
                     }
                 });
             }
+
+            function consulta_instructores(folio_grupo, tipo){
+                loader('show');
+                if (folio_grupo.length >0){
+                    $.ajax({
+                        url: "/preinscripcion/grupo/getinstruc",
+                        method: 'POST',
+                        data: {
+                            folio_grupo : folio_grupo,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            loader('hide');
+                            // console.log(data);
+
+                            if (data.status === 200) {
+                                // alert("si pasa, entonces puede guardar los cambios sin problemas: " + data.instructores.length);
+                                if(tipo == 'update'){
+                                    $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'});
+                                    $('#frm').submit();
+                                }else if (tipo == 'turnar'){
+                                    $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'});
+                                    $('#frm').submit();
+                                }
+                            }else{
+                                alert("No se encontraron instructores disponibles para este curso. Favor de comunicarse con Dirección Técnica Académica");
+                                return;
+                            }
+                        }
+                    });
+
+                }
+            }
+
+        function loader(make) {
+            if(make == 'hide') make = 'none';
+            if(make == 'show') make = 'block';
+            document.getElementById('loader-overlay').style.display = make;
+        }
 
         </script>
     @endsection

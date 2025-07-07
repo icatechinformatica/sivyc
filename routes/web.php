@@ -603,6 +603,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/preinscripcion/grupo/cmbinstructor', 'Preinscripcion\grupoController@cmbinstructor')->name('preinscripcion.grupo.cmbinstructor');
     Route::get('/preinscripcion/grupo/cmbmuni', 'Preinscripcion\grupoController@cmbmuni')->name('preinscripcion.grupo.cmbmunicipio');
     Route::get('/preinscripcion/grupo/cmbrepre', 'Preinscripcion\grupoController@cmbrepre')->name('preinscripcion.grupo.cmbrepresentante');
+    //Consultar el total de instructores disponibles en el modulo de preinscripcion
+    Route::post('/preinscripcion/grupo/getinstruc', 'Preinscripcion\grupoController@consultar_instructores')->name('preinscripcion.grupo.intruc')->middleware('can:preinscripcion.grupo');
+
     /*VINCULACION->PREINSCRIPCION=>AGENDAR INSTRUCTOR*/
     Route::get('/preinscripcion/calendarioShow/{id}','Preinscripcion\grupoController@showCalendar')->middleware('can:preinscripcion.grupo');
     Route::post('/preinscripcion/calendario/guardar','Preinscripcion\grupoController@storeCalendar')->middleware('can:agenda.vinculacion');
