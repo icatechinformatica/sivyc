@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c8f46b81d15efa366eb99c803f817d28",
+    "content-hash": "f582dc34b5dc12cb5b4d4ef0e890378e",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2396,6 +2396,49 @@
                 }
             ],
             "time": "2025-02-03T10:55:03+00:00"
+        },
+        {
+            "name": "icatech/permiso-rol-menu",
+            "version": "dev-feature/roles-permisos-arbol",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RicardoSauceda/permiso-rol-menu.git",
+                "reference": "199af73ef5e7b14d738fdcadd7b5f5b5625f8c20"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/199af73ef5e7b14d738fdcadd7b5f5b5625f8c20",
+                "reference": "199af73ef5e7b14d738fdcadd7b5f5b5625f8c20",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+                "php": "^8.1|^8.2|^8.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Icatech\\PermisoRolMenu\\Providers\\PermisoRolMenuServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Icatech\\PermisoRolMenu\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Paquete para manejo de permisos, roles y menús con convenciones en español",
+            "support": {
+                "issues": "https://github.com/RicardoSauceda/permiso-rol-menu/issues",
+                "source": "https://github.com/RicardoSauceda/permiso-rol-menu/tree/feature/roles-permisos-arbol"
+            },
+            "time": "2025-07-07T16:28:48+00:00"
         },
         {
             "name": "laravel/framework",

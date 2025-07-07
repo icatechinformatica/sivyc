@@ -60,18 +60,12 @@ class User extends Authenticatable
                 # empezamos
                 switch ($tipo) {
                     case 'matricula_aspirante':
-                        # code...
                         return $query->where('matricula', '=', $buscar);
-                        break;
                     case 'curp_aspirante':
-                        # code...
                         return $query->where('curp', '=', $buscar);
-                        break;
                     case 'nombres':
-                        # code...
                         // return $query->where(\DB::raw("upper(name)"), 'LIKE', "%$buscar%");
-                        return $query->where(DB::raw("upper(concat(name, ' ', curp, ' ', email))"), 'LIKE', '%'.strtoupper($buscar).'%');
-                        break;
+                        return $query->where(DB::raw("upper(concat(nombre, ' ', curp, ' ', email))"), 'LIKE', '%'.strtoupper($buscar).'%');
                     default:
                         # code...
                         break;

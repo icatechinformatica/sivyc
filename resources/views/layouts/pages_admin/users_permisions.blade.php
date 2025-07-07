@@ -82,14 +82,13 @@
     <div class="col-md-12">
         <div class="main-card mb-3 card">
             <div class="card-header">
-                {!! Form::open(['route' => 'usuario_permisos.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                {!! html()->form('GET', route('usuario_permisos.index'))->class('form-inline')->open() !!}
                     {{--<select name="tipo_busqueda_personal" class="form-control mr-sm-2" id="tipo_busqueda_personal">
                         <option value="nombres">NOMBRE COMPLETO</option>
                     </select>--}}
-
-                    {!! Form::text('busquedaPersonal', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'NOMBRE / CURP / EMAIL', 'aria-label' => 'BUSCAR']) !!}
+                    {!! html()->text('busquedaPersonal')->class('form-control mr-sm-2')->placeholder('NOMBRE / CURP / EMAIL')->attribute('aria-label', 'BUSCAR') !!}
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
-                {!! Form::close() !!}
+                {!! html()->form()->close() !!}
                 <br>
                 <div class="btn-actions-pane-right">
                     <div role="group" class="btn-group-sm btn-group">
@@ -155,7 +154,7 @@
                             </div>
                             <div class="d-block text-center card-footer">
                                 <!--footer-->
-                                {{ $usuarios->appends(request()->query())->links() }}
+                                {{ $usuarios->appends(request()->query())->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>

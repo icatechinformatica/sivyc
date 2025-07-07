@@ -61,7 +61,7 @@
                         <nav aria-label="...">
                             <ul class="pagination justify-content-end mb-0">
                                 <li class="page-item">
-                                    {{ $rol->appends(request()->query())->links() }}
+                                    {{ $rol->appends(request()->query())->links('pagination::bootstrap-4') }}
                                 </li>
                             </ul>
                         </nav>

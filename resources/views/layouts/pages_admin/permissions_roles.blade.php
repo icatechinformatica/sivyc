@@ -56,7 +56,7 @@
                         <nav aria-label="...">
                             <ul class="pagination justify-content-end mb-0">
                                 <li class="page-item">
-                                    {{ $permisos->appends(request()->query())->links() }}
+                                    {{ $permisos->appends(request()->query())->links('pagination::bootstrap-4') }}
                                 </li>
                             </ul>
                         </nav>
