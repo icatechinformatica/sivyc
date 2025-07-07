@@ -345,7 +345,8 @@ class aperturaController extends Controller
                     'nota' => $request->observaciones,
                     'realizo' => strtoupper($this->realizo),
                     'updated_at' => date('Y-m-d H:m:s'),
-                    'num_revision' => $request->munidad
+                    'num_revision' => $request->munidad,
+                    'status_solicitud' =>null
                 ]
             );
             if ($result) $message = 'Operación Exitosa!!';

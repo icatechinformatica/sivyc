@@ -314,9 +314,16 @@ class vbgruposController extends Controller
         $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
         ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
         ->where('folio_grupo', $folio_grupo)->first();
-        list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
 
-        //Ordenar por nombre y unidad
+        // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+
+         #### Llamamos la validacion de instructor desde el servicio
+        $servicio = (new ValidacionServicioVb());
+        // $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
+
+        list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
+
+        // Ordenar por nombre y unidad
         if (!empty($grupo->unidad)) {
             ##Otro ordenamiento por total de cursos y unidad
             try {
@@ -363,95 +370,65 @@ class vbgruposController extends Controller
         ]);
     }
 
-    public function data_instructores($data, $agenda){
-        try {
-            $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
-            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
-            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($data->inicio)))
-            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($data->inicio)))
-            ->havingRaw('count(*) >= 2')
-            ->groupby('i.id');
+    // public function data_instructores($data, $agenda){
+    //     try {
 
-            $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', // Subquery para contar cursos en 2025
-            DB::raw("(SELECT COUNT(tc.id) FROM tbl_cursos AS tc WHERE tc.id_instructor = instructores.id and tc.status_curso = 'AUTORIZADO' AND EXTRACT(YEAR FROM tc.created_at) = {$this->ejercicio}) AS total_cursos") ) //DB::raw('count(id_curso) as total')
-            ->rightJoin('instructores','t.id_instructor','=','instructores.id')
-            ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-            ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-            ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+    //         #### Validacion de criterios de instructor
+    //         $servicio = (new ValidacionServicioVb());
 
-            // ->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
-            // ->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
-            //Nueva linea para filtrar por cursos a impartir, no por especialidad
-            // ->whereJsonContains('especialidad_instructores.cursos_impartir', $data->id_curso)
-            ->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $data->id_curso)
-
-            ->WHERE('estado',true)
-            ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
-            ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
-            ->WHERE('fecha_validacion','<',$data->inicio)
-            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
-            ->whereNotIn('instructores.id', $internos)
-            ->groupBy('t.id_instructor','instructores.id', 'instructores.telefono', 'tbl_unidades.unidad')
-            ->orderBy('instructor')
-            ->get();
+    //         ## Consulta general de instructores
+    //         $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
 
 
-            #### Validacion de criterios de instructor
-            $servicio = (new ValidacionServicioVb());
+    //         //Validar si el curso es ALFA
+    //         if ($data->programa == 'ALFA') {
+    //             $instructores = $servicio->InstAlfaNoBecados($instructores);
+    //             if (count($instructores) == 0) {
+    //                 return [[], 'No se encontraron Instructores Alfa'];
+    //             }
+    //         }
 
-            // $respuesta = $servicio->InstNoRebase8Horas($instructores, $agenda);
-            // return [$respuesta, 'cero'.count($respuesta)];
+    //         if (count($instructores) == 0) {
+    //             return [[], 'No se encontraron instructores disponibles para este curso'];
+    //         }
 
-            //Validar si el curso es ALFA
-            if ($data->programa == 'ALFA') {
-                $instructores = $servicio->InstAlfaNoBecados($instructores);
-                if (count($instructores) == 0) {
-                    return [[], 'No se encontraron Instructores Alfa'];
-                }
-            }
+    //         //Primer criterio
+    //         $respuesta8Horas = $servicio->InstNoRebase8Horas($instructores, $agenda);
+    //         if (count($respuesta8Horas) > 0) {
 
-            if (count($instructores) == 0) {
-                return [[], 'No se encontraron instructores disponibles para este curso'];
-            }
+    //             //Segundo Criterio
+    //             $respuesta40Horas = $servicio->InstNoRebase40HorasSem($respuesta8Horas, $data->folio_grupo);
+    //             if (count($respuesta40Horas) > 0) {
 
-            //Primer criterio
-            $respuesta8Horas = $servicio->InstNoRebase8Horas($instructores, $agenda);
-            if (count($respuesta8Horas) > 0) {
+    //                 //Tercer criterio
+    //                 $respuestaTraslape = $servicio->InstNoTraslapeFechaHoraConOtroCurso($respuesta40Horas, $agenda);
+    //                 if (count($respuestaTraslape) >0 ) {
 
-                //Segundo Criterio
-                $respuesta40Horas = $servicio->InstNoRebase40HorasSem($respuesta8Horas, $agenda);
-                if (count($respuesta40Horas) > 0) {
+    //                     //Cuarto Criterio
+    //                     $respuesta150dias = $servicio->InstValida150Dias($respuestaTraslape, $data->folio_grupo);
+    //                     if (count($respuesta150dias) > 0 ) {
 
-                    //Tercer criterio
-                    $respuestaTraslape = $servicio->InstNoTraslapeFechaHoraConOtroCurso($respuesta40Horas, $agenda);
-                    if (count($respuestaTraslape) >0 ) {
+    //                         return [$respuesta150dias , '']; //Retornamos la respuesta
 
-                        //Cuarto Criterio
-                        $respuesta150dias = $servicio->InstValida150Dias($respuestaTraslape, $data->folio_grupo);
-                        if (count($respuesta150dias) > 0 ) {
+    //                     }else{
+    //                         return [[], 'No se encontraron Instructores, Rebasan los 150 dias'];
+    //                     }
+    //                 }else{
+    //                     return [[], 'No se encontraron Instructores, Traslapa con otros cursos'];
+    //                 }
 
-                            return [$respuesta150dias , '']; //Retornamos la respuesta
+    //             }else{
+    //                 return [[], 'No se encontraron Instructores, Rebasan las 40 Horas por Semana'];
+    //             }
 
-                        }else{
-                            return [[], 'No se encontraron Instructores, Rebasan los 150 dias'];
-                        }
-                    }else{
-                        return [[], 'No se encontraron Instructores, Traslapa con otros cursos'];
-                    }
+    //         }else{
+    //             return [[], 'No se encontraron Instructores, Rebasan las 8 Horas Diarias'];
+    //         }
 
-                }else{
-                    return [[], 'No se encontraron Instructores, Rebasan las 40 Horas por Semana'];
-                }
-
-            }else{
-                return [[], 'No se encontraron Instructores, Rebasan las 8 Horas Diarias'];
-            }
-
-        } catch (\Throwable $th) {
-            return [[], 'Error: '.$th->getMessage()];
-        }
-    }
+    //     } catch (\Throwable $th) {
+    //         return [[], 'Error: '.$th->getMessage()];
+    //     }
+    // }
 
     public function guardar_instructor(Request $request) {
         // En espera de soltar el guardado de datos
@@ -460,10 +437,6 @@ class vbgruposController extends Controller
         $folio_grupo = $request->val_folio_grupo;
         $id_instructor = $request->sel_instructor;
         $message = '';
-
-        //Pruebas
-        // $folio_grupo = '6Y-250063'; // de este grupo tiene como instructor al id 919 ZUART PONCE JOSE EDGARDO, cambiaremos de instructor al 1189  LOPEZ PASCACIO GILBERTO ANTONIO
-        // $id_instructor = 1189;
 
         ### Obtener los datos del curso y del instructor
         $dataCurso = DB::table('tbl_cursos')->where('folio_grupo', $folio_grupo)->first();

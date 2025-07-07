@@ -55,7 +55,7 @@ class turnarAperturaController extends Controller
                     DB::raw("(select sum(hours) from
                         (select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
                         ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )
-                        as hours from agenda where id_curso = tc.folio_grupo) as t) as horas_agenda"),                
+                        as hours from agenda where id_curso = tc.folio_grupo) as t) as horas_agenda"),
                     DB::raw("'$opt' as option"),
                     DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"),
                     DB::raw("COALESCE(tc.status_curso, tc.status_solicitud) as status_sol")
@@ -581,4 +581,6 @@ class turnarAperturaController extends Controller
                     ) as global WHERE now()::date>=fecha_extemp or now()::date>termino",[$memo]);
         return $resultArray = array_column(json_decode(json_encode($result), true),'id');
     }
+
+
 }

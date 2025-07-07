@@ -29,6 +29,7 @@ use App\Utilities\MyUtility;
 
 use function PHPSTORM_META\type;
 use App\Http\Controllers\Solicitudes\vbgruposController;
+use App\Services\ValidacionServicioVb;
 
 class grupoController extends Controller
 {
@@ -72,7 +73,7 @@ class grupoController extends Controller
         $unidad = $uni = $this->data['unidad'];
         if(!$unidad) $unidad = $uni = $request->unidad;
 
-        if (isset($_SESSION['folio_grupo'])) { 
+        if (isset($_SESSION['folio_grupo'])) {
 
             $folio_grupo = $_SESSION['folio_grupo'];
 
@@ -86,7 +87,7 @@ class grupoController extends Controller
 
                 if (($grupo->turnado_grupo == 'VINCULACION' or  $grupo->status_curso=='EDICION' )and isset($this->data['cct_folio'])) $this->activar = true;
                 else $this->activar = false;
-                
+
                 $curso = DB::table('cursos')->where('id', $grupo->id_curso);
                     if($grupo->status_curso!='AUTORIZADO') $curso = $curso->where('cursos.estado', true);
                 $curso = $curso->first();
@@ -111,7 +112,7 @@ class grupoController extends Controller
                 //FIN CATALOGOS
                 $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
 
-                
+
                 //$grupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->first();
                 //dd($instructor_mespecialidad);
                 $edicion_exo = DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','EDICION')->exists();
@@ -144,10 +145,10 @@ class grupoController extends Controller
 
         if(str_starts_with($this->data['cct'] ?? 0, '07000')) $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->orderby('muni')->pluck('muni', 'id');
         else  $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$uni)->orderby('muni')->pluck('muni', 'id');
-        
 
 
-        
+
+
         $dependencia = DB::table('organismos_publicos')
             ->where('activo', true)
             ->orderby('organismo')
@@ -191,40 +192,40 @@ class grupoController extends Controller
     }
 
 
-    public function referencias($folio, $alumno =null){ 
+    public function referencias($folio, $alumno =null){
         if($alumno){
             $data  = DB::table('alumnos_registro as ar')
             ->select('ar.id_pre','ar.folio_grupo', DB::raw("CONCAT(nombre,' ',apellido_paterno,' ',apellido_materno) as alumno"), 'ar.costo', 'ar.inicio')
             ->where('folio_grupo',$folio)->get();
             $n=0;
             foreach ($data as $fila) {
-                $folio = $fila->folio_grupo.$fila->id_pre;                
+                $folio = $fila->folio_grupo.$fila->id_pre;
                 $f = str_replace('-','', $folio);
-                $data[$n++]->referencia =  $f.Algoritmo35::digito_verificador($folio);        
-            }  
+                $data[$n++]->referencia =  $f.Algoritmo35::digito_verificador($folio);
+            }
         }else{
             $f = $folio.'0000';
             $f = str_replace('-','', $f);
-            $referencia =  $f.Algoritmo35::digito_verificador($f);            
+            $referencia =  $f.Algoritmo35::digito_verificador($f);
             $costo = DB::table('alumnos_registro as ar')->where('folio_grupo',$folio)->sum('costo');
 
             $data[]  = DB::table('alumnos_registro as ar')
             ->select('ar.id_pre','ar.folio_grupo', DB::raw("CONCAT(nombre,' ',apellido_paterno,' ',apellido_materno) as alumno"), DB::raw("$costo as costo"), 'ar.inicio', DB::raw("'".$referencia."' as referencia"))
             ->where('folio_grupo',$folio)->orderby(DB::raw("CONCAT(apellido_paterno,' ',apellido_materno,' ',nombre)"),'ASC')->first();
-        }        
-        if($data ?? 0){            
+        }
+        if($data ?? 0){
             if($alumno) $nombre = 'Alumno';
             else $nombre = 'Representante';
-            
+
             $instituto = DB::table('tbl_instituto')->where('id',1)->value('name');
             $instituto = MyUtility::textoAltasBajas($instituto);
             $pdf = PDF::loadView('preinscripcion.grupo.pdfReferencia',compact('data','nombre','instituto'));
-            $pdf->setpaper('letter','portrait');            
+            $pdf->setpaper('letter','portrait');
             return $pdf->stream('$folio.pdf');
         }else return "No se encontraron datos que mostrar, por favor intente de nuevo.";
 
     }
-    
+
 
     private function data_instructores($data){
         $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
@@ -237,20 +238,20 @@ class grupoController extends Controller
         $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
         ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
         ->rightJoin('instructores','t.id_instructor','=','instructores.id')
-        ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-        ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-        ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+        ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
+        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+        ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
         //->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
         //->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
-        ->WHERE('estado',true)
-        ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
+        //->WHERE('estado',true)
+        //->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
         ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
         // ->Where('instructor_alfa', true) // nueva linea para instructores alfa 08/05/2025
         // ->WHERE(DB::raw("datos_alfa->'subproyectos'->>'chiapas puede'"), '=', 'no_voluntario') // nueva linea para instructores alfa 08/05/2025
         //->where('especialidad_instructor_curso.activo', true)
-        ->WHERE('fecha_validacion','<',$data->inicio)
-        ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
-        ->whereNotIn('instructores.id', $internos)
+        //->WHERE('fecha_validacion','<',$data->inicio)
+        //->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
+        //->whereNotIn('instructores.id', $internos)
         ->groupBy('t.id_instructor','instructores.id')
         ->orderBy('instructor')
         //VOBO ->get();
@@ -386,7 +387,7 @@ class grupoController extends Controller
         if (isset($request->uni)) {
             if(str_starts_with($this->data['cct'] ?? 0, '07000')) $municipio = DB::table('tbl_municipios')->select('muni','id')->where('id_estado', '7')->orderby('muni')->get();
             else  $municipio = DB::table('tbl_municipios')->select('muni','id')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$request->uni)->orderby('muni')->get();
-            
+
             $json = json_encode($municipio);
         } else {
             $json = json_encode(["No hay registros que mostrar!"]);
@@ -484,7 +485,7 @@ class grupoController extends Controller
                                         $modalidad = $a_reg->mod;
                                         $folio_pago = $a_reg->folio_pago;
                                         $fecha_pago =  $a_reg->fecha_pago;
-                                        $instructor = $a_reg->id_instructor;
+                                        $instructor = $a_reg->id_instructor ?? 1;
                                         $efisico = $a_reg->efisico;
                                         $medio_virtual = $a_reg->medio_virtual;
                                         $link_virtual = $a_reg->link_virtual;
@@ -592,7 +593,7 @@ class grupoController extends Controller
     }
 
     public function update(Request $request)
-    { 
+    {
         //dd($request->all()); dd($request->folio_grupo);
          $message = "Operación fallida, por favor intente de nuevo!!";
         if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
@@ -916,7 +917,7 @@ class grupoController extends Controller
                                 if ($result_alumnos) {
                                     if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
                                     ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {
-                                        
+
                                         DB::table('agenda')->where('id_curso',$folio)->update(['id_instructor' => $alus->id_instructor]); //NUEVO VOBO
 
                                         /* VOBO
@@ -1163,7 +1164,7 @@ class grupoController extends Controller
                         DB::raw("to_char(DATE (ar.inicio)::date, 'dd/mm/YYYY') as inicio"),
                         DB::raw("to_char(DATE (ar.termino)::date, 'dd/mm/YYYY') as termino"),
                         'ar.horario',
-                        'ar.mod', 'ar.costo','ar.tipo_curso','ar.organismo_publico as depe'                        
+                        'ar.mod', 'ar.costo','ar.tipo_curso','ar.organismo_publico as depe'
                         )
                 ->leftJoin('alumnos_pre as ap','ar.id_pre','ap.id')
                 ->leftJoin('cursos as c','ar.id_curso','c.id')
@@ -1211,7 +1212,7 @@ class grupoController extends Controller
                     ->select(
                         'tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                         'tc.costo',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante as depen_repre',
-                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita',                        
+                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita',
                         DB::raw('COALESCE(tc.vb_dg, false) as vb_dg'), //NUEVO VOBO
                         DB::raw("COALESCE(tc.clave, '0') as clave") //NUEVO VOBO
                     )
@@ -1377,10 +1378,10 @@ class grupoController extends Controller
 
         // INSTRUCTORES INTERNOS,MÁXIMO 2 CURSOS EN EL MES y 5 MESES DE ACTIVIDAD
 
-        
+
         $instructor_valido = $this->valida_instructor($id_instructor);
         if(!$instructor_valido['valido'])  return $instructor_valido['message'];
-        
+
 
         //DISPONIBILIDAD FECHA Y HORA
         $duplicado = DB::table('agenda as a')
@@ -1736,7 +1737,7 @@ class grupoController extends Controller
         $folio_grupo =  $_SESSION['folio_grupo'];
 
         //Busqueda 1,2,3
-        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino', 'efisico',
+        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino', 'efisico', 'vb_dg', 'clave',
         DB::raw("extract(day from fcespe) as diaes, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
         DB::raw("(hombre + mujer) as totalp"),
         DB::raw("extract(day from inicio) as diaini, to_char(inicio, 'TMmonth') as mesini, extract(year from inicio) as anioini"),
@@ -2248,6 +2249,37 @@ class grupoController extends Controller
 
         $json_vacios = [$vinculacion, $academico, $administrativa];
         return $json_vacios;
+    }
+
+    ##Función para la validacion de instructores
+    public function consultar_instructores (Request $request){
+        $folio_grupo = $request->folio_grupo;
+        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
+        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
+        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+        ->where('folio_grupo', $folio_grupo)->first();
+
+        // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+
+         #### Llamamos la validacion de instructor desde el servicio
+        $servicio = (new ValidacionServicioVb());
+        // $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
+
+        list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
+
+        //Validar si el array instructores esta vacio
+        if (count($instructores) === 0) {
+            return response()->json([
+                'status' => 500,
+                'mensaje' => $mensaje,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'mensaje' => $mensaje,
+        ]);
+
     }
 
 
