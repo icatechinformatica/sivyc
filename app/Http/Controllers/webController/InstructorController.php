@@ -292,16 +292,16 @@ class InstructorController extends Controller
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','UNIDAD')
                                                 ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO']);
-            }
 
-            if($request->seluni) {
-                if($request->seluni == 'SAN CRISTOBAL') { $seluni = 'SC'; } else {$seluni = $request->seluni[0] . $request->seluni[1];}
-                $databuzon = $databuzon->Where('nrevision', 'LIKE', $seluni . '%');
-                $buzonhistory = $buzonhistory->Where('nrevision', 'LIKE', $seluni . '%');
-            }
+                if($request->seluni) {
+                    if($request->seluni == 'SAN CRISTOBAL') { $seluni = 'SC'; } else {$seluni = $request->seluni[0] . $request->seluni[1];}
+                    $databuzon = $databuzon->Where('nrevision', 'LIKE', $seluni . '%');
+                    $buzonhistory = $buzonhistory->Where('nrevision', 'LIKE', $seluni . '%');
+                }
 
             $databuzon = $databuzon->Get();
             $buzonhistory = $buzonhistory->Get();
+            }
 
             foreach($databuzon as $contador => $ari)
         {
@@ -313,7 +313,6 @@ class InstructorController extends Controller
         }
         $valor = $request->valor;
         $seluni = $request->seluni;
-
 
         return view('layouts.pages.initprevalidarinstructor', compact('data','valor','message','id_list','unidades','seluni','nrevisiones','rol','arch_sol','especialidadeslist','critpag','especialidades','perfiles','databuzon','userunidad','buzonhistory','daesp','chk_mod_espec','regimen_actual'));
     }
