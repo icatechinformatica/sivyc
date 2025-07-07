@@ -144,21 +144,12 @@ class InstructorAspiranteController extends Controller
             'telefono_unidad' => tbl_unidades::where('unidad', $aspirante->unidad_asignada)->value('telefono'),
         ];
 
-        try {
-            $response = $this->whatsapp_convocado_msg($infowhats, app(WhatsAppService::class));
-            // Check if the response indicates an error
-            if (isset($response['status']) && $response['status'] === false) {
-                // Handle the error as you wish
-                return redirect()->route('aspirante.instructor.index')
-                    ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
-            }
-        } catch (\Exception $e) {
-            $response = [
-                'status' => false,
-                'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
-            ];
+        $response = $this->whatsapp_convocado_msg($infowhats, app(WhatsAppService::class));
+        // Check if the response indicates an error
+        if (isset($response['status']) && $response['status'] === false) {
+            // Handle the error as you wish
             return redirect()->route('aspirante.instructor.index')
-                ->with('error', 'Error al enviar mensaje de WhatsApp: ' . $e->getMessage());
+                ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
         }
         //termina proceso de envio de mensaje de WhatsApp
 
@@ -230,18 +221,12 @@ class InstructorAspiranteController extends Controller
                 'telefono' => $aspirante->telefono,
                 'sexo' => $aspirante->sexo,
             ];
-            try {
-                $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
-                // Check if the response indicates an error
-                if (isset($response['status']) && $response['status'] === false) {
-                    // Handle the error as you wish
-                    return redirect()->route('aspirante.instructor.index')
-                        ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
-                }
-            } catch (\Exception $e) {
-                // This only runs if an actual exception is thrown
+            $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
+            // Check if the response indicates an error
+            if (isset($response['status']) && $response['status'] === false) {
+                // Handle the error as you wish
                 return redirect()->route('aspirante.instructor.index')
-                    ->with('error', 'Error al enviar mensaje de WhatsApp: ' . $e->getMessage());
+                    ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
             }
         }
         $aspirante->save();
@@ -312,38 +297,43 @@ class InstructorAspiranteController extends Controller
 
     public function whatsapp_convocado_msg($instructor, WhatsAppService $whatsapp)
     {
-        $plantilla = "🎉 ¡FELICIDADES, *{{nombre}}*! 🎉, Es un gusto enorme saludarte y decirte que has sido "; if($instructor['sexo'] == 'MASCULINO') {$plantilla = $plantilla."seleccionado ";} else {$plantilla = $plantilla."seleccionada ";}
-        $plantilla = $plantilla."para avanzar a la siguiente etapa del proceso para convertirte en Instructora Externa del ICATECH. ¡Tu talento y tu esfuerzo te han traído hasta aquí, y eso ya es motivo de orgullo!\n\nLa próxima etapa consiste en tu entrevista personal y el cotejo de documentos en la Unidad de Capacitación *{{unidad}}*, donde revisaremos lo que subiste al sistema y validaremos oficialmente tu especialidad.\n\n📍 Te esperamos con entusiasmo el día *{{fecha}} a las {{horas}}* horas, en nuestras oficinas ubicadas en:\n{{direccionUnidad}} 📞 {{telefono_unidad}}\n\n📝 Es indispensable que acudas puntual, con original y copia legible de todos los documentos que registraste en el sistema de prerregistro de la convocatoria. Además, deberás llevar contigo la carátula actual de tu estado de cuenta bancario (donde se visualicen claramente tu nombre completo, número de cuenta y CLABE interbancaria). Este paso es vital para validar tu participación y asegurar tu avance en el proceso.\n\nGracias por confiar en el ICATECH. Estamos emocionados de tenerte cerca y de ver tu vocación crecer. Bienvenida a esta gran familia, donde juntos capacitamos, empoderamos y transformamos a Chiapas.\n\n¡Un abrazo fuerte, combativo y lleno de esperanza!\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\n\n*DIRECTOR GENERAL*\n*INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS*";
-        $resultados = [];
-
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'aspirante_instructor_convocado')->First();
         $fecha_formateada = Carbon::parse($instructor['fecha'])->translatedFormat('j \d\e F \d\e\l Y');
         $hora_formateada = Carbon::parse($instructor['fecha'])->format('H:i');
-        $telefono_formateado = '521'.$instructor['telefono'];
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
-            ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{horas}}', '{{direccionUnidad}}','{{telefono_unidad}}'],
-            [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $hora_formateada, $instructor['direccionUnidad'], $instructor['telefono_unidad']],
-            $plantilla
+            ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{horas}}', '{{direccionUnidad}}','{{telefono_unidad}}','\n'],
+            [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $hora_formateada, $instructor['direccionUnidad'], $instructor['telefono_unidad'],"\n"],
+            $plantilla->plantilla
         );
 
-        $callback = $whatsapp->send($telefono_formateado, $mensaje);
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
+        }
+
+        $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
 
         return $callback;
     }
     private function whatsapp_rechazo_msg($instructor, WhatsAppService $whatsapp)
     {
-        if($instructor['sexo'] == 'MASCULINO'){$plantilla = "🙏🏼 estimado ";}else{$plantilla = "🙏🏼 estimada ";}
-        $plantilla = $plantilla."*{{nombre}}*🙏🏼,\n\nAspirante a Instructor Externo del ICATECH:\n\nAntes que nada, gracias de corazón por tu interés, tu tiempo y tu entusiasmo al participar en nuestra convocatoria para la selección de Instructores Externos del ICATECH.\n\nDespués de revisar cuidadosamente cada perfil recibido, lamentamos informarte que en esta ocasión no has sido "; if($instructor['sexo'] == 'MASCULINO'){$plantilla = $plantilla."seleccionado ";}else{$plantilla = $plantilla."seleccionada ";}
-        $plantilla = $plantilla."para continuar a la siguiente etapa del proceso. Sin embargo, valoramos profundamente tu esfuerzo, tu vocación y tu deseo de formar parte de esta gran familia que trabaja cada día por capacitar y empoderar a Chiapas.\n\nQueremos que sepas que tu camino no termina aquí. El ICATECH siempre tendrá las puertas abiertas para ti, y te invitamos cordialmente a estar pendiente y participar en futuras convocatorias.\n\nGracias por confiar en nosotros y por compartir con nosotros tu compromiso con la educación y el desarrollo de nuestro estado.\n\n¡Un abrazo fuerte, combativo y lleno de esperanza!\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\n\n*DIRECTOR GENERAL*\n\n*INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS*";
-        $telefono_formateado = '521'.$instructor['telefono'];
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'aspirante_instructor_rechazado')->First();
 
         $mensaje = str_replace(
             ['{{nombre}}'],
             [$instructor['nombre']],
-            $plantilla
+            $plantilla->plantilla
         );
 
-        $callback = $whatsapp->send($telefono_formateado, $mensaje);
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
+        }
+
+        $callback = $whatsapp->cola($telefono_formateado, $mensaje, $plantilla->prueba);
 
         return $callback;
     }
