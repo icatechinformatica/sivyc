@@ -464,21 +464,12 @@ class vbgruposController extends Controller
                     'sexo' => $dataInstructor->sexo
                 ];
 
-                try {
-                    $response = $this->whatsapp_autorizar_msg($infowhats, app(WhatsAppService::class));
-                    // Check if the response indicates an error
-                    if (isset($response['status']) && $response['status'] === false) {
-                        // Handle the error as you wish
-                        return redirect()->route('solicitudes.vb.grupos')
-                            ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
-                    }
-                } catch (\Exception $e) {
-                    $response = [
-                        'status' => false,
-                        'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
-                    ];
+                $response = $this->whatsapp_autorizar_msg($infowhats, app(WhatsAppService::class));
+                // Check if the response indicates an error
+                if (isset($response['status']) && $response['status'] === false) {
+                    // Handle the error as you wish
                     return redirect()->route('solicitudes.vb.grupos')
-                        ->with('error', 'Error al enviar mensaje de WhatsApp: ' . $e->getMessage());
+                        ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
                 }
                 // termina el envio de mensaje de WhatsApp
 
@@ -617,18 +608,18 @@ class vbgruposController extends Controller
     public function whatsapp_autorizar_msg($instructor, WhatsAppService $whatsapp)
     {
         if($instructor['tcapacitacion'] == 'PRESENCIAL') {
-            $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'asignacion_curso_presencial')->Value('plantilla');
+            $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'asignacion_curso_presencial')->First();
             $mensaje = str_replace(
                 ['{{direccion}}'],
                 [$instructor['direccion']],
-                $plantilla
+                $plantilla->plantilla
             );
         } else {
-            $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'asignacion_curso_virtual')->Value('plantilla');
+            $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'asignacion_curso_virtual')->First();
             $mensaje = str_replace(
                 ['{{mediovirtual}}', '{{linkvirtual}}'],
                 [$instructor['mediovirtual'], $instructor['linkvirtual']],
-                $plantilla
+                $plantilla->plantilla
             );
         }
         $resultados = [];
@@ -651,7 +642,7 @@ class vbgruposController extends Controller
             $mensaje = str_replace(['o(a)','r(a)'], ['a','r'], $mensaje);
         }
 
-        $callback = $whatsapp->send($telefono_formateado, $mensaje);
+        $callback = $whatsapp->cola($telefono_formateado, $mensaje, $plantilla->prueba);
 
         return $callback;
     }

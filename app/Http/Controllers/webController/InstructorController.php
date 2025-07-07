@@ -4761,14 +4761,7 @@ class InstructorController extends Controller
                 'sexo' => $instructor->sexo
             ];
 
-            try {
-                $response = $this->whatsapp_alta_usuario_msg($infowhats, app(WhatsAppService::class));
-            } catch (\Exception $e) {
-                $response = [
-                    'status' => false,
-                    'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
-                ];
-            }
+            $response = $this->whatsapp_alta_usuario_msg($infowhats, app(WhatsAppService::class));
             //end of create user
         }
 
@@ -4936,13 +4929,13 @@ class InstructorController extends Controller
 
     private function whatsapp_alta_usuario_msg($instructor, WhatsAppService $whatsapp)
     {
-        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'alta_efirma_instructores')->Value('plantilla');
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'alta_efirma_instructores')->First();
         $telefono_formateado = '521'.$instructor['telefono'];
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
             ['{{nombre}}', '{{correo}}', '{{pwd}}','\n'],
             [$instructor['nombre'], $instructor['correo'], $instructor['pwd'],"\n"],
-            $plantilla
+            $plantilla->plantilla
         );
 
         if ($instructor['sexo'] == 'MASCULINO') {
@@ -4951,7 +4944,7 @@ class InstructorController extends Controller
             $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
         }
 
-         $callback = $whatsapp->send($telefono_formateado, $mensaje);
+         $callback = $whatsapp->cola($telefono_formateado, $mensaje, $plantilla->prueba);
 
         return $callback;
     }
