@@ -287,13 +287,21 @@ class InstructorController extends Controller
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','DTA')
                                                 ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO','ENVIADO','RECHAZADO ENVIADO','RECHAZADO PREVALIDADO', 'RECHAZADO CONVOCADO','PREVALIDADO','CONVOCADO','SEMAFORO CORRECCION'])//A
-                                                ->WHERE('registro_activo', ['true'])
-                                                ->GET();
+                                                ->WHERE('registro_activo', ['true']);
+
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','UNIDAD')
-                                                ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO'])
-                                                ->GET();
+                                                ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO']);
             }
+
+            if($request->seluni) {
+                if($request->seluni == 'SAN CRISTOBAL') { $seluni = 'SC'; } else {$seluni = $request->seluni[0] . $request->seluni[1];}
+                $databuzon = $databuzon->Where('nrevision', 'LIKE', $seluni . '%');
+                $buzonhistory = $buzonhistory->Where('nrevision', 'LIKE', $seluni . '%');
+            }
+
+            $databuzon = $databuzon->Get();
+            $buzonhistory = $buzonhistory->Get();
 
             foreach($databuzon as $contador => $ari)
         {
