@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PlantillaController extends Controller
 {
@@ -163,12 +164,12 @@ class PlantillaController extends Controller
                 $rfgetData = $this->servicioPlantilla->getPlantilla(22, 'Reportes\Rf001Model', $arraySelect, 'id');
                 $organismo = Auth::user()->id_organismo;
                 $unidad = $rfgetData->unidad;
-                $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
-                $dataunidades = \DB::table('tbl_unidades')->where('unidad', $rfgetData->unidad)->first();
+                $organismoPublico = DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
+                $dataunidades = DB::table('tbl_unidades')->where('unidad', $rfgetData->unidad)->first();
                 $fechaActual = $rfgetData->created_at->format('Y-m-d');
                 $fechaFormateada = $this->servicioPlantilla->formatoFechaCrearMemo($fechaActual);
                 $municipio = mb_strtoupper($dataunidades->municipio, 'UTF-8');
-                $dirigido = \DB::table('tbl_funcionarios')->where('id', 114)->first();
+                $dirigido = DB::table('tbl_funcionarios')->where('id', 114)->first();
                 $intervalo = $this->servicioPlantilla->formatoIntervaloFecha($rfgetData->periodo_inicio, $rfgetData->periodo_fin);
                 $importeTotal = 0;
 
@@ -180,7 +181,7 @@ class PlantillaController extends Controller
                 $ccpValidador = '';
                 $ccp = $this->servicioPlantilla->setCpp($rfgetData->id_unidad);
                 $ccpDelegado = $this->servicioPlantilla->setFuncionarios($rfgetData->id_unidad);
-                $instituto = \DB::table('tbl_instituto')->first();
+                $instituto = DB::table('tbl_instituto')->first();
                 // Decodificar el campo cuentas_bancarias
                 $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
                 $cuenta = $cuentas_bancarias[$dataunidades->ubicacion]['BBVA'];
@@ -194,7 +195,7 @@ class PlantillaController extends Controller
                 $nombreMesCreacion = $dateCreacion->translatedFormat('F');
                 $fechaObs = $dateCreacion->day . "/" . Str::upper($nombreMesCreacion) . "/" . $dateCreacion->year;
 
-                $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+                $distintivo = DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
                 $leyenda = '';
 
                 $bandera = false;
@@ -375,7 +376,12 @@ class PlantillaController extends Controller
 
                 $contenidoProcesado = $this->servicioPlantilla->procesarPlantilla($dataQry->cuerpo, $variableArray);
                 $pdf = $this->servicioPlantilla->generarPdfDocument(['contenido' => $contenidoProcesado]);
-                return $pdf->stream('concentreado_de_ingresos_rf001_'.$rfgetData->memorandum.'.pdf');
+                $filename = 'concentreado_de_ingresos_rf001_'. $rfgetData->memorandum .'.pdf';
+
+                // Reemplaza cualquier / o \ por guion bajo (o espacio u otro carácter válido)
+                $filename = str_replace(['/', '\\'], '_', $filename);
+
+                return $pdf->stream($filename);
                 break;
             case 'CONTRATO':
                 $id_contrato = 20912;
@@ -472,7 +478,7 @@ class PlantillaController extends Controller
                 $D = date('d', $date);
                 $M = $this->servicioPlantilla->paraMes(date('m', $date));
                 $Y = date("Y", $date);
-                $direccion_instituto = \DB::Table('tbl_instituto')->Where('id',1)->Value('direccion');
+                $direccion_instituto = DB::Table('tbl_instituto')->Where('id',1)->Value('direccion');
                 $direccion_instituto = str_replace('*',' ',$direccion_instituto);
                 $direccion_instituto = mb_strtoupper(str_replace('. Tuxtla',', en la ciudad de Tuxtla',$direccion_instituto), 'UTF-8');
                 $cantidad = $this->servicioPlantilla->formatoNumero($dataContrato->cantidad_numero);
@@ -508,7 +514,12 @@ class PlantillaController extends Controller
                 ];
                 $contenidoProcesado = $this->servicioPlantilla->procesarPlantilla($dataQry->cuerpo, $loadArray);
                 $pdf = $this->servicioPlantilla->generarPdfDocument(['contenido' => $contenidoProcesado]);
-                return $pdf->stream('contrato_instrcutor_externo_'.$dataContrato->numero_contrato.'.pdf');
+                $filename = 'contrato_instrcutor_externo_' . $dataContrato->numero_contrato . '.pdf';
+
+                // Reemplaza cualquier / o \ por guion bajo (o espacio u otro carácter válido)
+                $filename = str_replace(['/', '\\'], '_', $filename);
+
+                return $pdf->stream($filename);
                 break;
             case 'value':
                 # code...
