@@ -182,7 +182,6 @@ return [
         App\Providers\DocumentacionPagoInstructorProvider::class,
         // App\Providers\StorageServiceProvider::class,
         App\Providers\CredencialProvider::class,
-        Spatie\Html\HtmlServiceProvider::class,
     ],
 
     /*
