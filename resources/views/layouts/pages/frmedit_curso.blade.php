@@ -216,7 +216,7 @@
                 @endforeach
             </select>
           </div>
-          <div class="form-group col-md-8">
+          <div class="form-group col-md-5">
             <label for="especialidadCurso" class="control-label">ESPECIALIDAD</label>
             <select class="form-control" id="especialidadCurso" name="especialidadCurso">
                 <option value="">--SELECCIONAR--</option>
@@ -224,6 +224,13 @@
                     <option {{( $cursos[0]->id_especialidad == $itemespecialidades->id) ? "selected" : ""}} value="{{$itemespecialidades->id}}">{{$itemespecialidades->nombre}}</option>
                 @endforeach
             </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="curso_alfa" class="control-label">Curso Alfa</label>
+                <select class="form-control" id="curso_alfa" name="curso_alfa">
+                    <option value="si" @if($cursos[0]->curso_alfa)selected @endif>SI</option>
+                    <option value="no" @if(!$cursos[0]->curso_alfa)selected @endif>NO</option>
+                </select>
             </div>
         </div>
         <div class="form-row">
@@ -452,11 +459,15 @@
             </div>
             <div class="form-group col-md-2">
                 <label for="categoria" class="control-label h6">ESTATUS DEL CURSO</label>
-                <select class="form-control" aria-label="estado" name="estado" id="estado">
+                <select class="form-control" aria-label="estado" name="estado" id="estado"
+                    @can('cursos.activar') @else disabled @endcan>
                     <option value='1' @if($cursos[0]->estado==true){{"selected"}} @endif >ACTIVO</option>
                     <option value='2' @if($cursos[0]->estado==false){{"selected"}} @endif >INACTIVO</option>
                     <option value='3' @if(is_null($cursos[0]->estado)){{"selected"}} @endif >BAJA</option>
                 </select>
+                @unless(auth()->user()->can('cursos.activar'))
+                    <input type="hidden" name="estado" value="{{ $cursos[0]->estado === true ? '1' : ($cursos[0]->estado === false ? '2' : '3') }}">
+                @endunless
             </div>
             <div class="form-group col-md-8">
                 <label for="motivo" class="control-label h6">MOTIVO</label>
@@ -475,18 +486,15 @@
             <p class="font-weight-bold">HORAS CAPTURADAS DE CONTENIDO TEMATICO: <span class="{{$horas_tematico == $cursos[0]->horas ? 'text-success' : 'text-danger'}}">{{$horas_tematico}} HRS de {{$cursos[0]->horas}} HRS (duración del curso)</span></p>
         @endcan
         <hr style="border-color:dimgray">
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <a class="btn" href="{{URL::previous()}}"><< Regresar</a>
-                </div>
-                <div class="pull-center">
-                    <a class="btn" href="{{ route('curso-alta_baja', ['id' => $cursos[0]->id]) }}" >Activar por Unidad</a>                </div>
-                <div class="pull-right">
-                    @can('cursos.update')
-                        <button type="submit" class="btn btn-danger" >Guardar Cambios</button>
-                    @endcan
-                </div>
+        <div class="form-row">
+            <div class="d-flex flex-lg-row flex-column col-6 col-lg-3 justify-content-left">
+                <a class="btn" href="{{URL::previous()}}"><< Regresar</a>
+            </div>
+            <div class="d-flex flex-lg-row flex-column col-6 col-lg-9 justify-content-end">
+                <a class="btn" href="{{ route('curso-alta_baja', ['id' => $cursos[0]->id]) }}" >Activar por Unidad</a>
+                @can('cursos.update')
+                    <button type="submit" class="btn btn-danger" >Guardar Cambios</button>
+                @endcan
             </div>
         </div>
     </form>

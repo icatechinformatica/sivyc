@@ -30,6 +30,8 @@ class Rf001Model extends Model
         'movimiento',
         'tipo',
         'confirmed',
+        'contador_firma',
+        'firmante',
     ];
 
     // Opcional: si solo vas a leer datos

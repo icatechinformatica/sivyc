@@ -98,6 +98,10 @@
                 {{ session('mensaje') }}
             </div>
         @endif
+        @php
+            //Ruta pathfiles
+            $path_files = 'https://sivyc.icatech.gob.mx/storage';
+        @endphp
 
         <div class="card card-body">
             @if($datainstructor->rechazo != NULL && $datainstructor->status == 'RETORNO')
@@ -399,12 +403,12 @@
                             </div>
                             <label><strong>Incorporado a:</strong></label>
                             <div class="form-row">
-                                <label class="col-form-label">Unidad Operativa:</label>
+                                <label class="col-form-label">Unidad de Capacitación:</label>
                                 <div class="col-sm-5 form-group">
                                     <input name="unidad_operativa" id="unidad_operativa" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['unidad_operativa']}}">
                                     {{-- <small class="form-text text-muted" style="text-align: center;">Tipo</small> --}}
                                 </div>
-                                <label class="col-form-label">No. de Círculo de estudio:</label>
+                                <label class="col-form-label">Clave del Centro de Trabajo:</label>
                                 <div class="col-sm-3 form-group">
                                     <input name="circulo_estudio" id="circulo_estudio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['circulo_estudio']}}">
                                 </div>
@@ -420,9 +424,13 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <label class="col-form-label">Fecha de inicio:</label>
+                                <label class="col-form-label">Fecha de Registro Alfa:</label>
                                 <div class="col-sm-3 form-group">
                                     <input name="fecha_inicio" id="fecha_inicio" type="date" class="form-control" aria-required="true" value="{{$datainstructor->datos_alfa['fecha_inicio']}}">
+                                </div>
+                                <label class="col-form-label">No. de Folio:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="no_folio" id="no_folio" type="text" class="form-control" aria-required="true" @if(isset($datainstructor->datos_alfa['numero_folio'])) value="{{$datainstructor->datos_alfa['numero_folio']}}" @endif>
                                 </div>
                             </div>
                         </div>
@@ -509,7 +517,13 @@
                                     @if($datainstructor->archivo_ine == NULL)
                                         <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                                     @else
-                                    <a href={{$datainstructor->archivo_ine}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                        <a href="
+                                            @if (filter_var($datainstructor->archivo_ine, FILTER_VALIDATE_URL))
+                                                {{$datainstructor->archivo_ine}}
+                                            @else
+                                                {{$path_files.$datainstructor->archivo_ine}}
+                                            @endif
+                                            " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                                     @endif
                                 </td>
                                 <td></td>
@@ -560,7 +574,7 @@
                     <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true" value="{{$datainstructor->fecha_nacimiento}}">
                 </div>
             </div>
-            <div class="form-row">
+            {{-- <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputentidad">País de Nacimiento</label>
                     <select class="form-control" name="pais_nacimiento" id="pais_nacimiento">
@@ -601,9 +615,9 @@
                         @endif
                     </select @if($datainstructor->status != "VALIDADO") disabled @endif>
                 </div>
-            </div>
+            </div> --}}
             <div class="form-row">
-                <div class="form-group col-md-3">
+                {{-- <div class="form-group col-md-3">
                     <label for="inputentidad">País de Residencia</label>
                     <select class="form-control" name="pais" id="pais">
                         <option value="">SELECCIONE</option>
@@ -611,7 +625,7 @@
                             <option value="{{$pais->id}}" @if((isset($datainstructor->datos_alfa['pais_residencia']) && $pais->id == $datainstructor->datos_alfa['pais_residencia']) || $pais->id == '115') selected @endif>{{$pais->nombre}}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Residencia</label>
                     <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="entidad" id="entidad" onchange="local2()">
@@ -630,7 +644,7 @@
                         @endforeach
                     </select @if($datainstructor->status != "VALIDADO") disabled @endif>
                 </div>
-                <div class="form-gorup col-md-3">
+                {{-- <div class="form-gorup col-md-3">
                     <label for="inputlocalidad">Localidad de Residencia</label>
                     <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="localidad" id="localidad">
                         <option value="sin especificar">Sin Especificar</option>
@@ -640,7 +654,7 @@
                             @endforeach
                         @endif
                     </select @if($datainstructor->status != "VALIDADO") disabled @endif>
-                </div>
+                </div> --}}
             </div>
             <div class="form-row">
                 <div class="form-group col-md-8">
@@ -805,6 +819,32 @@
                     @endif
                 </tbody>
             </table>
+            <br>
+            <div class="pull-left">
+                        <h4>Estandares de Competencia</h4>
+                    </div>
+             <table class="table table-bordered table-responsive-md" id="espec-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Tipo de Estandar de Competencia</th>
+                        <th scope="col">Nombre del Estandar</th>
+                        <th scope="col">Institución que Expide</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ((array) $datainstructor->certificados as $certificado)
+                        <tr>
+                            <td>{{ $certificado['tipo'] }}</td>
+                            <td>{{ $certificado['nombre'] }}</td>
+                            <td>{{ $certificado['entidad'] }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="text-center">No hay certificados registrados</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
             <hr style="border-color:dimgray">
             <div>
                 <label><h2>Requisitos</h2></label>
@@ -820,7 +860,13 @@
                             @if($datainstructor->archivo_domicilio == NULL)
                                 <i id="arch_domicilio_pdf"  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_domicilio_pdf" href={{$datainstructor->archivo_domicilio}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_domicilio_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_domicilio, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_domicilio}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_domicilio}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -847,7 +893,13 @@
                             @if($datainstructor->archivo_curp == NULL)
                                 <i id="arch_curp_pdf"  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_curp_pdf" href={{$datainstructor->archivo_curp}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_curp_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_curp, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_curp}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_curp}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -874,7 +926,13 @@
                             @if($datainstructor->archivo_bancario == NULL)
                                 <i id="arch_banco_pdf"  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_banco_pdf" href={{$datainstructor->archivo_bancario}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_banco_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_bancario, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_bancario}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_bancario}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -901,7 +959,13 @@
                             @if($datainstructor->archivo_fotografia == NULL)
                                 <i id="arch_foto_jpg" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_foto_jpg" href={{$datainstructor->archivo_fotografia}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_foto_jpg" href="
+                                    @if (filter_var($datainstructor->archivo_fotografia, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_fotografia}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_fotografia}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -930,7 +994,13 @@
                             @if($datainstructor->archivo_otraid == NULL)
                                 <i id="arch_id_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_id_pdf" href={{$datainstructor->archivo_otraid}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_id_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_otraid, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_otraid}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_otraid}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -957,7 +1027,13 @@
                             @if($datainstructor->archivo_rfc == NULL)
                                 <i id="arch_rfc_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_rfc_pdf" href={{$datainstructor->archivo_rfc}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_rfc_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_rfc, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_rfc}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_rfc}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -984,7 +1060,13 @@
                             @if($datainstructor->archivo_estudios == NULL)
                                 <i id="arch_estudio_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_estudio_pdf" href={{$datainstructor->archivo_estudios}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_estudio_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_estudios, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_estudios}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_estudios}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -1011,7 +1093,13 @@
                             @if($datainstructor->archivo_curriculum_personal == NULL)
                                 <i id="arch_curriculum_personal_pdf" class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
                             @else
-                                <a id="arch_curriculum_personal_pdf" href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
+                                <a id="arch_curriculum_personal_pdf" href="
+                                    @if (filter_var($datainstructor->archivo_curriculum_personal, FILTER_VALIDATE_URL))
+                                        {{$datainstructor->archivo_curriculum_personal}}
+                                    @else
+                                        {{$path_files.$datainstructor->archivo_curriculum_personal}}
+                                    @endif
+                                    " target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
                         <td id="center" width="160px">
@@ -1038,23 +1126,27 @@
                         </td>
                         @php
                             $dataVal = null;
-                            foreach($validado as $point => $latest) {
-                                if(isset($latest->hvalidacion)){
-                                    $hvalidacion = json_decode($latest->hvalidacion);
-                                } else {
-                                    $hvalidacion = null;
-                                }
-                                if(!is_null($hvalidacion)) {
-                                    if(!is_array($hvalidacion)) {
-                                        $hvalidacion = json_decode($hvalidacion);
+                            if($validado != false) {
+                                foreach($validado as $point => $latest) {
+                                    if(isset($latest->hvalidacion)){
+                                        $hvalidacion = json_decode($latest->hvalidacion);
+                                    } else {
+                                        $hvalidacion = null;
                                     }
-                                    $hvalidacion = end($hvalidacion);
-                                    if(is_null($dataVal) && !isset($hvalidacion->memo_baja)) {
-                                        $dataVal = $hvalidacion;
-                                    } elseif (isset($hvalidacion->memo_val) && !is_null($hvalidacion->memo_val) && $hvalidacion->fecha_val > $dataVal->fecha_val) {
-                                        $dataVal = $hvalidacion;
+                                    if(!is_null($hvalidacion)) {
+                                        if(!is_array($hvalidacion)) {
+                                            $hvalidacion = json_decode($hvalidacion);
+                                        }
+                                        $hvalidacion = end($hvalidacion);
+                                        if(is_null($dataVal) && !isset($hvalidacion->memo_baja)) {
+                                            $dataVal = $hvalidacion;
+                                        } elseif (isset($hvalidacion->memo_val) && !is_null($hvalidacion->memo_val) && $hvalidacion->fecha_val > $dataVal->fecha_val) {
+                                            $dataVal = $hvalidacion;
+                                        }
                                     }
                                 }
+                            } else {
+                                $validado = [];
                             }
                         @endphp
                         <td id="center" width="50px">
@@ -2981,7 +3073,7 @@
                 request2.done(( respuesta) =>
                 {
                     position = document.getElementById("row").value;
-                    console.log(position);
+                    // console.log(position);
                     $('#modperprofModal').modal('hide');
                         var table = document.getElementById('tableperfiles')
                         var row = table.rows[position];
@@ -3343,7 +3435,15 @@
         $('#modperprofModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget);
             var id = button.data('id');
-            // console.log(id);
+            if (!Array.isArray(id)) {
+                if (!Array.isArray(id)) {
+                    try {
+                        id = JSON.parse(id);
+                    } catch (e) {
+                        id = id.split(",").map(item => item.trim().replace(/^"|"$/g, ''));
+                    }
+                }
+            }
             $('#modperprofwarning').prop("class", "d-none d-print-none")
             document.getElementById('grado_prof2').value = id['0'];
             document.getElementById('area_carrera2').value = id['1'];

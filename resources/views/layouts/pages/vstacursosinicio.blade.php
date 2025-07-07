@@ -24,7 +24,7 @@
         @endif
         <div class="row">
             <div class="form-group col-md-6 margin-tb">
-                    {!! Form::open(['route' => 'curso-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                    {!! html()->form('GET', route('curso-inicio'))->class('form-inline')->open() !!}
                         <select name="tipo_curso" class="form-control mr-sm-2" id="tipo_curso">
                             <option value="">BUSCAR POR</option>
                             <option value="especialidad">ESPECIALIDAD</option>
@@ -34,9 +34,13 @@
                             <option value="clasificacion">CLASIFICACIÓN</option>
                             <option value="anio">AÑO</option>
                         </select>
-                        {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
-                        {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-                    {!! Form::close() !!}
+                        {!! html()->text('busquedaPorCurso')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('BUSCAR')
+                            ->attribute('aria-label', 'BUSCAR')
+                            ->value(1) !!}
+                        {!! html()->button('BUSCAR')->id('buscar')->class('btn')->type('submit') !!}
+                    {!! html()->form()->close() !!}
             </div>
             <div class="form-group col-md-3">
                 <div class="dropdown show">
@@ -94,10 +98,10 @@
                         <th >&nbsp;EDIT&nbsp;</th>
                     @endcan
                     <th >&nbsp;VER&nbsp;</th>
-                    <th >CARTA DESCRI</th>
                     @can('paqueteriasdidacticas')
                     <th >PAQUE TERÍA</th>
                     @endcan
+                    <th >CARTA DESCRI</th>
                 </tr>
             </thead>
             <tbody>
@@ -108,9 +112,10 @@
                     else $prog = 'NO';
 
                     $fecha = null;
-                    if($itemData->updated_at) $fecha = date('d/m/Y H:i', strtotime($itemData->updated_at));                         
+                    // if($itemData->created_at) $fecha_crea = date('d/m/Y H:i', strtotime($itemData->created_at));
+                    if($itemData->updated_at) $fecha = date('d/m/Y H:i', strtotime($itemData->updated_at));
                     elseif($itemData->created_at) $fecha = date('d/m/Y H:i', strtotime($itemData->created_at));
-                     
+
                 @endphp
                     <tr>
                         <th scope="row">{{$itemData->nombre}}</th>
@@ -123,7 +128,7 @@
                         <td>{{$itemData->estado}}</td>
                         <td>{{$servicio}}</td>
                         <td>{{$prog}}</td>
-                        <td>{{$itemData->user_name}} {{ $fecha }}</td>
+                        <td>{{ $itemData->user_updated_name ?: $itemData->user_created_name }} {{ $fecha }} </td>
                         @can('cursos.show')
                         <td>
                             <a class="nav-link" alt="Editar Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}">
@@ -137,7 +142,7 @@
                                 <i  class="fa fa-search  fa-2x fa-lg text-primary"></i>
                             </a>
                         </td>
-                        <td>
+                        {{-- <td>
                             @if($itemData->file_carta_descriptiva)
 
                                 <a class="nav-link"  alt="Descargar PDF" href="{{env('APP_URL').'/'.'storage'.$itemData->file_carta_descriptiva}}" target="_blank">
@@ -145,20 +150,34 @@
                                 </a>
 
                             @endif
-                        </td>
+                        </td> --}}
                         @can('paqueteriasdidacticas')
                         <td>
                             <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="nav-link" title="Paquetes">
                             <i class="fa fa-2x fa-folder text-muted"></i></a>
                         </td>
                         @endcan
+
+                        <td>
+                            @if ($itemData->horas_tematico == $itemData->horas)
+                                {{-- <a class="nav-link"  alt="Ver pdf" href="" target="_blank">
+                                    <i  class="fa fa-file-pdf  fa-2x fa-lg text-danger"></i>
+                                </a> --}}
+                                <a class="" href="{{route('carta-descriptiva-pdf', ['id' => $itemData->id])}}" target="_blank">
+                                    <i  class="fa fa-file-pdf  fa-2x fa-lg text-danger"></i>
+                                </a>
+                            @else
+                                <i  class="fa fa-file-pdf  fa-2x fa-lg text-gray"></i>
+                            @endif
+
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="8">
-                        {{ $data->appends(request()->query())->links() }}
+                    <td colspan="14">
+                        {{ $data->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </td>
                 </tr>
             </tfoot>

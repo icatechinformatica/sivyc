@@ -33,6 +33,7 @@ class Reporterf001Repository implements Reporterf001Interface
     public function getReciboQry($unidad)
     {
         return Recibo::where('tbl_recibos.status_recibo', 'PAGADO')
+            ->where('tbl_recibos.status_folio', 'ENVIADO')
             ->where('tbl_unidades.unidad', $unidad)
             ->where(function($query) {
                 $query->whereNull('tbl_recibos.estado_reportado')
@@ -116,6 +117,7 @@ class Reporterf001Repository implements Reporterf001Interface
             'movimiento' => json_encode($movimientoAdd, JSON_UNESCAPED_UNICODE),
             'tipo' => trim($request->get('tipoSolicitud')),
             'envia' => trim($usuario->name),
+            'contador_firma' => 0,
         ]);
     }
 
@@ -182,6 +184,11 @@ class Reporterf001Repository implements Reporterf001Interface
                     ) {
                         unset($arrayDatos[$i]);
                         $arrayDatos = array_values($arrayDatos);
+                        // dejarlo null
+                        Recibo::where('folio_recibo', '=', $arrayDatos[$i]['folio'])
+                        ->update([
+                            'estado_reportado' => null
+                        ]);
                         break;
                     }
                 }
@@ -300,6 +307,7 @@ class Reporterf001Repository implements Reporterf001Interface
 
         // Obtener el campo JSON y decodificarlo
         $datosExistentes  = json_decode($rf001->movimiento, true);
+        $curpExistente = json_decode($rf001->firmante, true);
 
         $jsonObject = [
             'fecha' => $fechaUnica,
@@ -309,9 +317,17 @@ class Reporterf001Repository implements Reporterf001Interface
         ];
         $datosExistentes[] = $jsonObject;
 
+        $jsonCurpFirmante = [
+            'curp' => $request->curpObtenido,
+        ];
+
+        $curpExistente[] = $jsonCurpFirmante;
+
         return (new Rf001Model())->where('id', $request->idRf)->update([
             'estado' => 'ENSELLADO',
             'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
+            'contador_firma' => \DB::raw('contador_firma + 1'),
+            'firmante' => json_encode($curpExistente, JSON_UNESCAPED_UNICODE),
         ]);
     }
 
@@ -370,10 +386,19 @@ class Reporterf001Repository implements Reporterf001Interface
 
             // fin de la generación
             foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
-                $puesto = \DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+
+                $puesto = \DB::table('tbl_funcionarios as funcionarios')
+                ->select('funcionarios.cargo')
+                ->join('tbl_organismos as tblOrganismo', 'funcionarios.id_org', '=', 'tblOrganismo.id')
+                ->where(function ($query) {
+                    $query->where('funcionarios.cargo', 'LIKE', '%DELEGA%')
+                        ->orWhere('tblOrganismo.id_parent', 1);
+                })
+                ->where('funcionarios.curp', $moist['_attributes']['curp_firmante'])
+                ->distinct()
+                ->first();
                 if(!is_null($puesto)) {
                     array_push($puestos,$puesto->cargo);
-                    // <td height="25px;">{{$search_puesto->cargo}}</td>
                 } else {
                     array_push($puestos,'ENCARGADO');
                 }
@@ -407,7 +432,7 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function getFirmadoFormat($request)
     {
-        return (new Rf001Model())->whereIn('estado', ['REVISION', 'PARASELLAR', 'ENSELLADO', 'SELLADO'])->paginate(10 ?? 5);
+        return (new Rf001Model())->whereIn('estado', ['REVISION', 'PARASELLAR', 'ENSELLADO', 'SELLADO'])->whereYear('periodo_fin', Carbon::now()->year)->orderBy('updated_at', 'desc')->paginate(10 ?? 5);
     }
 
     public function reenviarSolicitud($request)

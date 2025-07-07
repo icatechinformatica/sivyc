@@ -200,17 +200,14 @@ class Rf001Controller extends Controller
             $dataFirmantes = $firmantes['firmantes']['firmante'] ?? [];
             $procesados = null;
 
-            if (!empty($dataFirmantes)) {
-                # code...
-                $procesados = [];
-                foreach ($dataFirmantes as $grupoFirmantes) {
-                    foreach ($grupoFirmantes as $firmante) {
-                        $procesados[] = [
-                            'curp_firmante' => $firmante['_attributes']['curp_firmante'],
-                            'nombre_firmante' => $firmante['_attributes']['nombre_firmante'],
-                            'email_firmante' => $firmante['_attributes']['email_firmante'],
-                        ];
-                    }
+            $procesados = [];
+            foreach ($dataFirmantes as $grupoFirmantes) {
+                foreach ($grupoFirmantes as $firmante) {
+                    $procesados[] = [
+                        'curp_firmante' => $firmante['_attributes']['curp_firmante'],
+                        'nombre_firmante' => $firmante['_attributes']['nombre_firmante'],
+                        'email_firmante' => $firmante['_attributes']['email_firmante'],
+                    ];
                 }
             }
 
@@ -267,17 +264,18 @@ class Rf001Controller extends Controller
             $token = $getToken->token;
         }
 
+        $curpFirmante = isset($getSigner) ? ($getSigner->curp ?? null) : null; //modificaciones en la curp
+        $countFirma = $getConcentrado->contador_firma;
+
         // obtener revision
-        $revisionLocal = collect(json_decode($getConcentrado->movimiento, true))->first(function ($item) {
-            return isset($item['tipo'], $item['usuario']) &&
-                (
-                    ($item['tipo'] === 'REVISION_LOCAL' && $item['usuario'] != Auth::user()->email) ||
-                    ($item['tipo'] === 'GENERADO' && $item['usuario'] != Auth::user()->email)
-                );
+        $curps = collect(json_decode($getConcentrado->firmante, true))
+        ->first(function ($item) use ($curpFirmante) {
+            return isset($item['curp']) && $item['curp'] === $curpFirmante;
         });
+
         $pathFile = $this->path_files;
-        $curpFirmante = $getSigner->curp ?? null; //modificaciones en la curp
-        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'revisionLocal', 'pathCancelado'))->render();
+
+        return view('reportes.rf001.detalles', compact('getConcentrado', 'pathFile', 'id', 'data', 'token', 'curpFirmante', 'curps', 'pathCancelado', 'countFirma'))->render();
     }
 
     /**

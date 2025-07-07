@@ -56,17 +56,15 @@ class supreController extends Controller
         $tipoStatus = $request->get('tipo_status');
         $unidad = $request->get('unidad');
 
-        if($request->ejercicio == NULL)
-        {
-            $año_referencia = '01-01-' . CARBON::now()->format('Y');
-            $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
-        }
-        else
-        {
-            $año_referencia = '01-01-' . $request->ejercicio;
-            $año_referencia2 = '31-12-' . $request->ejercicio;
+        if ($request->ejercicio == NULL) {
+            $año_pointer = CARBON::now()->format('Y');
+        } else {
             $año_pointer = $request->ejercicio;
         }
+
+        $año_referencia = $año_pointer . '-01-01';
+        $año_referencia2 = $año_pointer . '-12-31';
+
 
         for($x = 2020; $x <= intval(CARBON::now()->format('Y')); $x++)
         {
@@ -75,7 +73,7 @@ class supreController extends Controller
 
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-            ->Select('tabla_supre.*','folios.permiso_editar')
+            ->Select('tabla_supre.*','folios.permiso_editar','tbl_cursos.curso','tbl_cursos.depen')
             ->selectSub(function($query) {
                 $query->From('documentos_firmar')
                     ->SelectRaw('CASE WHEN COUNT(*) > 0 THEN true ELSE false END')
@@ -87,7 +85,9 @@ class supreController extends Controller
                 $query->From('documentos_firmar')
                     ->Select('status')
                     ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
-                    ->Where('documentos_firmar.tipo_archivo', 'supre');
+                    ->Where('documentos_firmar.tipo_archivo', 'supre')
+                    ->OrderBy('documentos_firmar.id', 'desc')
+                    ->Limit(1);
                     // ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
                 }, 'efirma_status_supre')
             ->SelectSub(function($query) {
@@ -102,6 +102,7 @@ class supreController extends Controller
                     ->Select('status')
                     ->WhereColumn('documentos_firmar.numero_o_clave', 'tbl_cursos.clave')
                     ->Where('documentos_firmar.tipo_archivo', 'valsupre')
+                    ->OrderBy('documentos_firmar.id', 'desc')
                     ->Limit(1);
                     // ->WhereIn('documentos_firmar.status', ['VALIDADO','EnFirma']);
                 }, 'efirma_status_valsupre')
@@ -120,9 +121,9 @@ class supreController extends Controller
             ->LeftJoin('pagos', 'pagos.id_curso', 'folios.id_cursos')
             ->OrderBy('tabla_supre.status','ASC')
             ->OrderBy('tabla_supre.updated_at','DESC')
-            ->GroupBy('tabla_supre.id','folios.permiso_editar','clave')
+            ->GroupBy('tabla_supre.id','folios.permiso_editar','clave','curso','depen')
             // ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion']);
-            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion']);
+            ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion','curso','depen']);
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
@@ -336,7 +337,7 @@ class supreController extends Controller
 
         foreach($status_doc as $mxs) {
             if(!is_null($mxs)) {
-                if(in_array($mxs->status, ['CANCELADO ICTI','VALIDADO'])) {
+                if(in_array($mxs->status, ['VALIDADO'])) {
                     $generarEfirmaSupre = FALSE;
                 } elseif($mxs->status == 'EnFirma') {
                     $firmantes = json_decode($mxs->obj_documento, true);
@@ -610,7 +611,7 @@ class supreController extends Controller
 
         foreach($status_doc as $mxs) {
             if(!is_null($mxs)) {
-                if(in_array($mxs->status, ['CANCELADO ICTI','VALIDADO'])) {
+                if(in_array($mxs->status, ['VALIDADO'])) {
                     $generarEfirmaValsupre = FALSE;
                 } elseif($mxs->status == 'EnFirma') {
                     $firmantes = json_decode($mxs->obj_documento, true);
@@ -1272,7 +1273,7 @@ class supreController extends Controller
 
     public function supre_pdf($id){
         $id = base64_decode($id);
-        $uuid = $objeto = $qrCodeBase64 = $bodyCcp = null;
+        $uuid = $objeto = $qrCodeBase64 = $bodyCcp = $firmante =  null;
         $user_data = DB::Table('users')->Select('ubicacion','role_user.role_id')
             ->Join('tbl_unidades','tbl_unidades.id','users.unidad')
             ->Join('role_user','role_user.user_id','users.id')
@@ -1314,9 +1315,16 @@ class supreController extends Controller
         } else {
             $firma_electronica = true;
             $body_html = json_decode($documento->obj_documento_interno);
-            $bodySupre = $body_html->supre;
-            $bodyTabla = $body_html->tabla;
-            $bodyCcp = $body_html->ccp;
+            if(isset($body_html->firmantes)) {
+                $bodySupre = $body_html->body->supre;
+                $bodyTabla = $body_html->body->tabla;
+                $bodyCcp = $body_html->body->ccp;
+                $firmante = $body_html->firmantes;
+            } else {
+                $bodySupre = $body_html->supre;
+                $bodyTabla = $body_html->tabla;
+                $bodyCcp = $body_html->ccp;
+            }
         }
 
 
@@ -1359,8 +1367,8 @@ class supreController extends Controller
         // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
         // return $pdf2->stream("prueba.pdf");
 
-        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))->setPaper('letter', 'portrait')->output();
-        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64'))
+        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante'))->setPaper('letter', 'portrait')->output();
+        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante'))
             ->setPaper('a4', 'landscape')  // Configurar tamaño y orientación
             ->output();
 
@@ -1968,7 +1976,7 @@ class supreController extends Controller
                     'tabla_supre.created_at as prue',
                     'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
-                    'tbl_cursos.unidad',
+                    'tbl_cursos.unidad','tbl_cursos.depen',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
                     'tbl_cursos.curso',
                     \DB::raw('tbl_cursos.hombre + tbl_cursos.mujer'),
@@ -2161,7 +2169,7 @@ class supreController extends Controller
 
         $cabecera = [
             'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA DE CREACION EN EL SISTEMA', 'FECHA',
-            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'CURSO/CERTIFICACION', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
+            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.','DEPENDENCIA', 'CURSO/CERTIFICACION', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
             'Z.E.','HSM','MUNICIPIO','LOCALIDAD', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES','BENEFICIARIOS'

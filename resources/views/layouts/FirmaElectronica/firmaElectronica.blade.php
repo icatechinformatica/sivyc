@@ -2,7 +2,7 @@
 @section('title', 'FIRMAR ELECTRONICAMENTE | Sivyc Icatech')
 
 @section('content_script_css')
-
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         .colorTop {
             background-color: #541533;
@@ -107,7 +107,7 @@
             <div class="card-header">Mis documentos</div>
             {{-- Buscador --}}
             <div class="card">
-                <div class="card-body">
+                <div class="mt-5 ml-4 mb-2">
                     <form action="" class="form-inline" id="frmBuscar" method="get">
                         <input type="text" class="form-control" placeholder="CLAVE DE CURSO" name="txtBusqueda" id="txtBusqueda" value="{{($busqueda_clave != null) ? $busqueda_clave : ''}}">
                         <input type="hidden" name="seccion" id="seccion">
@@ -117,7 +117,7 @@
                         </a>
                         <a class="btn btn-danger" data-toggle="tooltip"
                                 data-placement="top" title="Limpiar" href="#" onclick="Limpiar(event)">
-                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                <i class="fa fa-trash" aria-hidden="true"></i>
                         </a>
                     </form>
                 </div>
@@ -173,6 +173,7 @@
                                                     @php
                                                         $firmantes = [];
                                                         $nameArchivo = '';
+                                                        $visibleDta = true; // para control de DTA y que solo vea contratos firmados por todosy solo falte el director
                                                         $obj = json_decode($docFirmar->obj_documento, true);
                                                         if(!isset($obj['archivo'])) {dd($docFirmar);}
                                                         $nameArchivo = $obj['archivo']['_attributes']['nombre_archivo'];
@@ -186,6 +187,9 @@
                                                             if(empty($value['_attributes']['firma_firmante'])){
                                                                 // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (NO), ';
                                                                 array_push($firmantes, $value['_attributes']['nombre_firmante'].' (NO)');
+                                                                if($rol->role_id == 22 && $value['_attributes']['curp_firmante'] != $curpUser->curp) { // visible data cambia a falso cuando alguien de los contratos no ha firmado, exceptuando al Director de dTA
+                                                                    $visibleDta = false;
+                                                                }
                                                             } else {
                                                                 // $firmantes = $firmantes.$value['_attributes']['nombre_firmante'].' (SI), ';
                                                                 array_push($firmantes, $value['_attributes']['nombre_firmante'].' (SI)');
@@ -193,75 +197,77 @@
                                                         }
                                                         // $firmantes = substr($firmantes, 0, -2);
                                                     @endphp
-                                                    <tr>
-                                                        <td><p>{{ isset($docFirmar->folio_grupo) ? $docFirmar->folio_grupo : '' }}</p></td>
-                                                        <td><p>{{ !in_array($docFirmar->tipo_archivo, ['supre','valsupre']) ? $docFirmar->numero_o_clave : $docFirmar->folio_validacion }}</p></td>
-                                                        <td><small>{{$nameArchivo}}</small></td>
-                                                        <td>
-                                                            @switch($docFirmar->tipo_archivo)
-                                                                @case('Lista de asistencia')
-                                                                    <a href="{{route('asistencia-pdf', ['id' => $docFirmar->idcursos])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('Lista de calificaciones')
-                                                                    <a href="{{route('calificacion-pdf', ['id' => $docFirmar->idcursos])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('Reporte fotografico')
-                                                                    <a href="{{route('reportefoto-pdf', ['id' => $docFirmar->idcursos])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('Solicitud Pago')
-                                                                    <a href="{{route('solpa-pdf', ['id' => $docFirmar->id_folios])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('supre')
-                                                                    @php $ids =  base64_encode($docFirmar->id_supre) @endphp
-                                                                    <a href="{{route('supre-pdf', ['id' => $ids])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @case('valsupre')
-                                                                    @php $ids =  base64_encode($docFirmar->id_supre) @endphp
-                                                                    <a href="{{route('valsupre-pdf', ['id' => $ids])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                                @default {{-- Contratos --}}
-                                                                    <a href="{{route('contrato-pdf', ['id' => $docFirmar->id_contrato])}}" target="_blank">
-                                                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
-                                                                    </a>
-                                                                @break
-                                                            @endswitch
-                                                        </td>
-                                                        <td>
-                                                            <small>
-                                                                @foreach ($firmantes as $item)
-                                                                    <p class="my-0">{{$item}}</p>
-                                                                @endforeach
-                                                            </small>
-                                                        </td>
-                                                        <td><small>{{$docFirmar->created_at->format('d-m-Y')}}</small></td>
-                                                        @if(!in_array($rol->role_id, [31, 47]))
+                                                    @if($visibleDta == true)
+                                                        <tr>
+                                                            <td><p>{{ isset($docFirmar->folio_grupo) ? $docFirmar->folio_grupo : '' }}</p></td>
+                                                            <td><p>{{ !in_array($docFirmar->tipo_archivo, ['supre','valsupre']) ? $docFirmar->numero_o_clave : $docFirmar->folio_validacion }}</p></td>
+                                                            <td><small>{{$nameArchivo}}</small></td>
+                                                            <td>
+                                                                @switch($docFirmar->tipo_archivo)
+                                                                    @case('Lista de asistencia')
+                                                                        <a href="{{route('asistencia-pdf', ['id' => $docFirmar->idcursos])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @break
+                                                                    @case('Lista de calificaciones')
+                                                                        <a href="{{route('calificacion-pdf', ['id' => $docFirmar->idcursos])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @break
+                                                                    @case('Reporte fotografico')
+                                                                        <a href="{{route('reportefoto-pdf', ['id' => $docFirmar->idcursos])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @break
+                                                                    @case('Solicitud Pago')
+                                                                        <a href="{{route('solpa-pdf', ['id' => $docFirmar->id_folios])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @break
+                                                                    @case('supre')
+                                                                        @php $ids =  base64_encode($docFirmar->id_supre) @endphp
+                                                                        <a href="{{route('supre-pdf', ['id' => $ids])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @break
+                                                                    @case('valsupre')
+                                                                        @php $ids =  base64_encode($docFirmar->id_supre) @endphp
+                                                                        <a href="{{route('valsupre-pdf', ['id' => $ids])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @break
+                                                                    @default {{-- Contratos --}}
+                                                                        <a href="{{route('contrato-pdf', ['id' => $docFirmar->id_contrato])}}" target="_blank">
+                                                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="30px" height="30px">
+                                                                        </a>
+                                                                    @break
+                                                                @endswitch
+                                                            </td>
+                                                            <td>
+                                                                <small>
+                                                                    @foreach ($firmantes as $item)
+                                                                        <p class="my-0">{{$item}}</p>
+                                                                    @endforeach
+                                                                </small>
+                                                            </td>
+                                                            <td><small>{{$docFirmar->created_at->format('d-m-Y')}}</small></td>
                                                             <td>
                                                                 <button class="btn btn-outline-danger" type="button" onclick="cancelarDocumento('{{$docFirmar->id}}', '{{$nameArchivo}}', '{{$docFirmar->tipo_archivo}}', '{{$docFirmar->numero_o_clave}}')">Cancelar</button>
                                                             </td>
-                                                            <td>
-                                                                <button class="btn btn-outline-primary" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal('{{$key}}')">firmar</button>
-                                                            </td>
-                                                        @else
-                                                            <td></td>
-                                                            <td></td>
-                                                        @endif
-                                                        <input class="d-none" value="{{$docFirmar->id}}" name="idFile{{$key}}" id="idFile{{$key}}" type="text">
-                                                        <input class="d-none" value="{{$docFirmar->cadena_original}}" name="cadena{{$key}}" id="cadena{{$key}}" type="text">
-                                                        <input class="d-none" value="{{$docFirmar->base64xml}}" name="xml{{$key}}" id="xml{{$key}}" type="text">
-                                                        <input class="d-none" value="{{$curpUser->curp}}" name="curp{{$key}}" id="curp{{$key}}" type="text">
-                                                    </tr>
+                                                            @if(!in_array($rol->role_id, [31, 47]))
+                                                                <td>
+                                                                    <button class="btn btn-outline-primary" href="#" data-toggle="modal" data-target="#mdlLoadViewSignature" onclick="abriModal('{{$key}}')">firmar</button>
+                                                                </td>
+                                                            @else
+                                                                <td></td>
+                                                                <td></td>
+                                                            @endif
+                                                            <input class="d-none" value="{{$docFirmar->id}}" name="idFile{{$key}}" id="idFile{{$key}}" type="text">
+                                                            <input class="d-none" value="{{$docFirmar->cadena_original}}" name="cadena{{$key}}" id="cadena{{$key}}" type="text">
+                                                            <input class="d-none" value="{{$docFirmar->base64xml}}" name="xml{{$key}}" id="xml{{$key}}" type="text">
+                                                            <input class="d-none" value="{{$curpUser->curp}}" name="curp{{$key}}" id="curp{{$key}}" type="text">
+                                                        </tr>
+                                                    @endif
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -273,9 +279,15 @@
                                         </div>
                                     </div>
                                 @else
-                                    <div class="alert alert-primary" role="alert">
-                                        <strong class="d-block text-center">No se encontraron documentos en esta sección</strong>
-                                    </div>
+                                    @if($curpUser->curp == 'N/A')
+                                        <div class="alert alert-danger" role="alert">
+                                            <strong class="d-block text-center">ERROR: No se ha encontrado una CURP relacionada a este usuario</strong>
+                                        </div>
+                                    @else
+                                        <div class="alert alert-primary" role="alert">
+                                            <strong class="d-block text-center">No se encontraron documentos en esta sección</strong>
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
 

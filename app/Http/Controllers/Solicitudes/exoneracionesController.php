@@ -13,7 +13,7 @@ class exoneracionesController extends Controller
 {
     function __construct()
     {
-        session_start();       
+        session_start();
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
     }
 
@@ -45,7 +45,7 @@ class exoneracionesController extends Controller
                 $file = $this->path_files.$cursos[0]->memo_soporte_dependencia;
                 $valor = $_SESSION['valor'];
                 $_SESSION['revision'] = $nrevision;
-                $_SESSION['memo'] = $memo;                
+                $_SESSION['memo'] = $memo;
                 if ($status == 'PREVALIDACION') {
                     $movimientos = ['RETORNAR'=>'RETORNAR', 'VALIDAR'=>'VALIDAR'];
                 }elseif(in_array($status, ['REINICIAR','CANCELAR','EDITAR','SOPORTES'])){
@@ -53,11 +53,11 @@ class exoneracionesController extends Controller
                 }else {
                     $movimientos = ['SOPORTES'=>'RETORNAR POR SOPORTES','CANCELAR'=>'CANCELAR SOLICITUD','AUTORIZAR'=>'AUTORIZAR SOLICITUD'];
                 }
-               
+
             } else {
                 $message = "No se encuentran registros que mostrar.";
             }
-            
+
         }
         if(session('message')) $message = session('message');
         $razon = ['MS'=>'MADRES SOLTERAS','AM'=>'ADULTOS MAYORES', 'BR'=>'BAJOS RECURSOS', 'D'=>'DISCAPACITADOS', 'PPL'=>'PERSONAS PRIVADAS DE LA LIBERTAD',
@@ -67,28 +67,28 @@ class exoneracionesController extends Controller
     public function denegar(Request $request){
         $message = 'Operación fallida, vuelva a intentar..';
         $mov = $request->movimiento;
-        if($mov){ 
+        if($mov){
             if(isset($_SESSION['revision']) AND ($request->valor == $_SESSION['revision'] OR $request->valor == $_SESSION['memo'] )){
 
                 $result = DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])
                 ->update(['pobservacion'=>'MSG: MOVIMIENTO DE '.$mov.' DENEGADO']);
 
-                $this->reverse_exo($_SESSION['revision']);  
+                $this->reverse_exo($_SESSION['revision']);
                 if($result)$message = "SOLICITUD DE  $mov DENEGADO.";
             }
-        }else $message = "No existe solicitud de movimiento que atender."; 
+        }else $message = "No existe solicitud de movimiento que atender.";
         return redirect()->route('solicitudes.exoneracion')->with(['message' => $message]);
     }
     public function aceptar(Request $request){
-        $message = 'Operación fallida, vuelva a intentar..';  
+        $message = 'Operación fallida, vuelva a intentar..';
         $mov = $request->movimiento;
         if(isset($_SESSION['revision']) AND ($request->valor == $_SESSION['revision'] OR $request->valor == $_SESSION['memo'] )){
             $status = ['EDITAR'=>'EDICION','EDICION DE ALUMNOS'=>'EDICION','SOPORTES'=>'VALIDADO','CAMBIO DE SOPORTES'=>'VALIDADO'];
-            if($mov){                
-                $this->history( $_SESSION['revision']);//PARA PODER REVERTIR ESTADO ANTERIOR            
-                switch($mov){                    
-                    case 'RETORNAR':                        
-                        foreach ($request->respuesta as $key => $value) {                            
+            if($mov){
+                $this->history( $_SESSION['revision']);//PARA PODER REVERTIR ESTADO ANTERIOR
+                switch($mov){
+                    case 'RETORNAR':
+                        foreach ($request->respuesta as $key => $value) {
                             $result = DB::table('exoneraciones')->where('nrevision', $_SESSION['revision'])->where('folio_grupo', $key)
                                 ->update([
                                     'status' => 'CAPTURA', 'frespuesta' => date('Y-m-d H:i:s'), 'pobservacion' => $value, 'turnado' => 'UNIDAD', 'activo'=>null,
@@ -96,25 +96,25 @@ class exoneracionesController extends Controller
                                 ]);
                             if($result)$message = "La solicitud fue RETORNADA a la Unidad.";
                         }
-                    break; 
+                    break;
                     case 'VALIDAR':
                         $result = DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])
                         ->update(['status'=>'VALIDADO', 'valido'=>strtoupper(Auth::user()->name), 'frespuesta'=>date('Y-m-d H:i:s'), 'pobservacion'=>null, 'turnado'=>'UNIDAD']);
-                        if($result)$message = 'Operación Exitosa!!';                    
-                    break;                     
-                    case 'REINICIAR':                    
+                        if($result)$message = 'Operación Exitosa!!';
+                    break;
+                    case 'REINICIAR':
                         $result = DB::table('exoneraciones')
                         ->where('nrevision', $_SESSION['revision'])->wherein('status',['REINICIAR'])
                         ->update(['status' => 'CAPTURA', 'turnado' => 'UNIDAD','frespuesta' => date('Y-m-d H:i:s'), 'activo'=>null,'no_memorandum'=>null, 'fecha_memorandum'=>null]);
                         if($result)$message = "Solicitud REINICIADA.";
-                    break; 
+                    break;
                     case $mov=='EDITAR' || $mov=='EDICION DE ALUMNOS' || $mov=='SOPORTES' || $mov=='CAMBIO DE SOPORTES':
-                        $status = $status[$request->movimiento]; 
+                        $status = $status[$request->movimiento];
                         $result = DB::table('exoneraciones')->where('nrevision', $_SESSION['revision'])
                         ->update(['status' => $status, 'turnado' => 'UNIDAD', 'frespuesta' => date('Y-m-d H:i:s')]);
                         if($result)$message = "SOLICITUD DE ".$mov." ATENDIDA.";
                     break;
-                    case $mov=='CANCELAR' || $mov=='CANCELACION': 
+                    case $mov=='CANCELAR' || $mov=='CANCELACION':
                         $result = DB::table('exoneraciones')
                         ->where('nrevision', $_SESSION['revision'])->whereIn('status',['CANCELAR','SOLICITADO'])
                         ->update(['status' => 'CANCELADO', 'activo' => 'false','frespuesta' => date('Y-m-d H:i:s'),'motivo' => $request->motivo]);
@@ -124,19 +124,19 @@ class exoneracionesController extends Controller
                             ->update(['c.mexoneracion'=>'0']);
                             if($c)$message = "Solicitud CANCELADA.";
                         }
-                    break;                      
+                    break;
                     case 'AUTORIZAR':
-                        if ($request->hasFile('file_autorizacion')) { 
-                            $name_file = Auth::user()->unidad."_".str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".Auth::user()->id;                                
+                        if ($request->hasFile('file_autorizacion')) {
+                            $name_file = Auth::user()->unidad."_".str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".Auth::user()->id;
                             $file = $request->file('file_autorizacion');
-                            $path = "/UNIDAD/exoneracion/"; 
-                            $file_result = $this->upload_file($file,$name_file, $path);                
+                            $path = "/UNIDAD/exoneracion/";
+                            $file_result = $this->upload_file($file,$name_file, $path);
                             $url_file = $file_result["url_file"];
-                            if ($file_result) {                                
+                            if ($file_result) {
                                 $result = DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->where('status','SOLICITADO')
                                     ->update(['status'=>'AUTORIZADO', 'frespuesta'=>date('Y-m-d H:i:s'), 'memo_soporte_dependencia'=>$url_file,
                                             'valido'=>strtoupper(Auth::user()->name), 'activo'=>'true']);
-                                if ($result) {                                    
+                                if ($result) {
                                     $c = DB::table('tbl_cursos as c')->join('exoneraciones as e', 'c.folio_grupo', '=', 'e.folio_grupo')
                                         ->where('e.no_memorandum', $_SESSION['memo'])
                                         ->where('e.status','AUTORIZADO')
@@ -144,12 +144,12 @@ class exoneracionesController extends Controller
                                         ->update(['c.mexoneracion' => $_SESSION['memo']]);
                                     if($c)$message = 'Operación Exitosa!!';
                                 }
-                                
+
                             } else $message = "Archivo inválido";
                         } else $message = "Favor de adjuntar el archivo de Autorización";
-                    break;                
+                    break;
                 }
-            }else $message = "No existe solicitud de movimiento que atender."; 
+            }else $message = "No existe solicitud de movimiento que atender.";
         }
         return redirect()->route('solicitudes.exoneracion')->with(['message' => $message]);
     }
@@ -158,7 +158,8 @@ class exoneracionesController extends Controller
         if ($_SESSION['revision']) {
             $mexoneracion = $date = $alumnos = null;
             $marca = true;  $data = [];
-            $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
+            $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
+            $director= DB::table('tbl_instituto')->select('titular', 'cargo')->first();
             $cursos =  DB::table('exoneraciones as e')
                             ->select('tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura',
                                     DB::raw("to_char(DATE (tc.inicio)::date, 'DD-MM-YYYY') as inicio"),
@@ -210,13 +211,14 @@ class exoneracionesController extends Controller
             }
             $direccion = $reg_unidad->direccion;
             setlocale(LC_TIME, "spanish");
-            $fecha =date("Y-m-d");
-            
-            $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
-            $mes = $meses[date('m',strtotime($fecha))];
-            $fecha = date('d',strtotime($fecha)).' de '.$mes.' del '.date('Y',strtotime($fecha));
+            $fecha_act =date("Y-m-d");
 
-            $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha','reg_unidad','depen','marca','data','direccion'));
+            $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
+            $mes = $meses[date('m',strtotime($fecha_act))];
+            $fecha_doc = date('d',strtotime($fecha_act)).' de '.$mes.' del '.date('Y',strtotime($fecha_act));
+            $fecha = '09-12-2024';
+
+            $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha_doc','reg_unidad','depen','marca','data','direccion','director','fecha'));
             $pdf->setpaper('letter','landscape');
             return $pdf->stream('EXONERACION.pdf');
         } else {
@@ -224,7 +226,7 @@ class exoneracionesController extends Controller
         }
     }
 
-    protected function upload_file($file,$name,$path){       
+    protected function upload_file($file,$name,$path){
         $ext = $file->getClientOriginalExtension(); // extension de la imagen
         $ext = strtolower($ext);
         $url = $mgs= null;
@@ -233,8 +235,8 @@ class exoneracionesController extends Controller
             $path = $path.$name;
             Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
             //echo $url = Storage::disk('custom_folder_1')->url($path); exit;
-            $msg = "El archivo ha sido cargado o reemplazado correctamente.";            
-        }else $msg= "Formato de Archivo no válido, sólo PDF.";      
+            $msg = "El archivo ha sido cargado o reemplazado correctamente.";
+        }else $msg= "Formato de Archivo no válido, sólo PDF.";
         $data_file = ["message"=>$msg, 'url_file'=>$path];
         return $data_file;
     }
@@ -261,7 +263,7 @@ class exoneracionesController extends Controller
             fecha_memorandum,tipo_exoneracion,razon_exoneracion,observaciones,no_convenio,memo_soporte_dependencia,
             iduser_created,iduser_updated,created_at,updated_at,status,nrevision,noficio,foficio,fini,ffin,
             realizo,valido,fenvio,frespuesta,pobservacion,cct,ejercicio,activo,turnado,motivo
-        ) 
+        )
         select e.id,e.folio_grupo,e.id_unidad_capacitacion,e.no_memorandum,
         e.fecha_memorandum,e.tipo_exoneracion,e.razon_exoneracion,e.observaciones,e.no_convenio,e.memo_soporte_dependencia,
         e.iduser_created,e.iduser_updated,e.created_at,e.updated_at,e.status,e.nrevision,e.noficio,e.foficio,e.fini,e.ffin,
@@ -280,7 +282,7 @@ class exoneracionesController extends Controller
         $history = DB::update("update exoneraciones SET
             status = h. status, motivo = h.motivo, updated_at = h.updated_at, iduser_updated = h.iduser_updated,
             activo = h.activo, fenvio = h. fenvio, frespuesta= h.frespuesta, turnado = h.turnado
-        from( 
+        from(
             select status, motivo, updated_at, iduser_updated, activo, fenvio, frespuesta, turnado, folio_grupo, nrevision
             from history_exoneraciones where id in ($ids)
             ) as h

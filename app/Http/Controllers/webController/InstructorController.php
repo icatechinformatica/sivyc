@@ -40,23 +40,6 @@ use App\User;
 
 class InstructorController extends Controller
 {
-    public function prueba()
-    {
-        $data = User::Select('id')->Get();
-        foreach($data as $item)
-        {
-            $user = User::find($item->id);
-            if(str_contains($user->password,'BAJA') || str_contains($user->email,'BAJA')) {
-                $user->activo = FALSE;
-            } else {
-                $user->activo = TRUE;
-            }
-
-            $user->save();
-        }
-        dd('complete');
-
-    }
 
     private function honorarios($total)
     {
@@ -71,7 +54,7 @@ class InstructorController extends Controller
         $tipoStatus = $request->get('tipo_status');
         $tipoEspecialidad = $request->get('tipo_especialidad');
         $unidadUser = Auth::user()->unidad;
-
+        $message = null;
         $userId = Auth::user()->id;
 
         $roles = DB::table('role_user')
@@ -85,13 +68,27 @@ class InstructorController extends Controller
                 $join->on('instructores.id','=','especialidad_instructores.id_instructor');
                 $join->where('especialidad_instructores.status','=','VALIDADO');
                 $join->groupby('especialidad_instructores.id_instructor');
-            })
-            //->JOIN('especialidad_instructores','instructores.id','especialidad_instructores.id_instructor')
-            //->WHERE('especialidad_instructores','especialidad_instructores.status','VALIDADO')
-            ->WHEREIN('estado', [true,false])
-            ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
-                'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado', DB::raw('min(fecha_validacion) as fecha_validacion'),
+            });
+
+            if(!Auth::user()->can('instructores.all')){   //RESTRICCION PARA UNIDADES
+                $data = $data->whereIn('instructores.estado', [true])
+                ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA']);
+            }else{
+                //$data = $data->WHEREIN('estado', [true,false])
+                $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA','INHABILITADO']);
+            }
+            if($tipoInstructor=='nombre_curso'){
+                $buscando = explode(' - ', $busquedaInstructor);
+                if (isset($buscando[0]) && is_numeric($buscando[0])){
+                    $data = $data->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
+                    ->where('especialidad_instructor_curso.activo','true')
+                    ->where('curso_id', $buscando[0]);
+                }else $message = "SELECCIONE UNA OPCIÓN DE LA LISTA DE CURSOS";
+
+            }
+
+            $data = $data->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
+                'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado','activo_curso', DB::raw('min(fecha_validacion) as fecha_validacion'),
                 DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
                 DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia"),
                 DB::raw('(SELECT hvalidacion FROM especialidad_instructores
@@ -99,9 +96,35 @@ class InstructorController extends Controller
                   AND especialidad_instructores.status = \'VALIDADO\'
                   ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
             ]);
+            $data->appends($request->only(['unidadbusquedaPorInstructor', 'tipo_busqueda_instructor']));
 
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
-        return view('layouts.pages.initinstructor', compact('data', 'especialidades'));
+        $old = $request->all(); //dd($old['tipo_busqueda_instructor']);
+        if(!$old)  $old['tipo_busqueda_instructor'] = null;
+        $tipo_busqueda = ['nombre_curso'=>'CURSO','clave_instructor'=>'CLAVE','nombre_instructor'=>'NOMBRE','curp'=>'CURP','telefono_instructor'=>'TELÉFONO','estatus_instructor'=>'ESTATUS','especialidad'=>'ESPECIALIDAD'];
+        $busquedaPorInstructor = $request->busquedaPorInstructor;
+        return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old','tipo_busqueda','busquedaPorInstructor'));
+    }
+
+    public function cursosAutocomplete(Request $request) {
+        $buscar = $request->buscar;
+        $tipo = $request->tipo;
+
+        if($tipo == 'nombre_curso' && $buscar){
+            $data = Curso::select(DB::raw("CONCAT(id, ' - ', nombre_curso) as curso"))->where('estado',true);
+
+            if (is_numeric($buscar)) $data->where('id', $buscar);
+            else $data->where(DB::raw("CONCAT(nombre_curso)"), 'like', '%'.$buscar.'%');
+            $data = $data->limit(10)->get();
+
+            $response = array();
+            foreach ($data as $value) {
+                $response[] = array('label' => $value->curso);
+            }
+            return json_encode($response);
+        }
+
+            return [];
     }
 
     public function prevalidar_index(Request $request)
@@ -261,7 +284,8 @@ class InstructorController extends Controller
                 $nrevisiones = NULL;
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','DTA')
-                                                ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO'])
+                                                ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO','ENVIADO','RECHAZADO ENVIADO','RECHAZADO PREVALIDADO', 'RECHAZADO CONVOCADO','PREVALIDADO','CONVOCADO','SEMAFORO CORRECCION'])//A
+                                                ->WHERE('registro_activo', ['true'])
                                                 ->GET();
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','UNIDAD')
@@ -1753,6 +1777,9 @@ class InstructorController extends Controller
 
             $perfil = $this->make_collection($datainstructor->data_perfil);
             $validado = $this->make_collection($datainstructor->data_especialidad);
+            if($validado != FALSE)
+        {
+
             foreach($validado as $key => $ges)
             {
                 $lista = null;
@@ -1792,6 +1819,7 @@ class InstructorController extends Controller
 
                 // dd($validado[$key]->cursos_impartir);
             }
+        }
             // dd($validado);
         }
         $idest = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad)->FIRST();
@@ -2483,8 +2511,7 @@ class InstructorController extends Controller
         $instructor->lastUserId = Auth::user()->id;
         $instructor->status = 'EN CAPTURA';
         $instructor->registro_activo = TRUE;
-        $instructor->save();
-
+        $respo = $instructor->save();
 
         $cue = '<button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO"
         data-toggle="modal"
@@ -3531,6 +3558,10 @@ class InstructorController extends Controller
             }
             if($item->memorandum_solicitud != $request->nomemo)
             {
+                if(is_null($request->nomemo)) { // mejora para evitar que memorandum de solicitud quede sin numero
+                    return back()->with('mensaje', 'Error: No se ha especificado el numero de memorandum');
+                }
+
                 $item->memorandum_solicitud = $request->nomemo;
             }
 
@@ -3608,6 +3639,9 @@ class InstructorController extends Controller
     public function validacion_instructor_pdf(Request $request)
     {
         // dd($request);
+        if(is_null($request->memovali)) {
+            return back()->with('mensaje', 'Error: No se ha especificado el numero de memorandum');
+        }
         $rplc = array('[',']','"');
         $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA','BAJA EN FIRMA');
         $especialidades = $arrtemp = array();
@@ -3873,7 +3907,7 @@ class InstructorController extends Controller
             $instructor_ofc->turnado = $temp->turnado = 'UNIDAD';
             $instructor_ofc->estado = $temp->estado = FALSE;
         }
-
+        unset($temp->activo_curso);
         $temp->save();
         $instructor_ofc->save();
 
@@ -3900,9 +3934,9 @@ class InstructorController extends Controller
         $ubicacion = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', $useruni)->FIRST();
         $unidadregistra = DB::TABLE('tbl_unidades')->SELECT('cct')->WHERE('unidad', '=', $ubicacion->ubicacion)->FIRST();
         $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad)->FIRST();
-        $estado_nac = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad_nacimiento)->FIRST();
-        $munic_nac = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio_nacimiento)->FIRST();
-        $locali_nac = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad_nacimiento)->FIRST();
+        // $estado_nac = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad_nacimiento)->FIRST();
+        // $munic_nac = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio_nacimiento)->FIRST();
+        // $locali_nac = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad_nacimiento)->FIRST();
         # Proceso de Guardado
         #----- Personal -----
         $saveInstructor->id = $id;
@@ -3919,12 +3953,12 @@ class InstructorController extends Controller
         $saveInstructor->fecha_nacimiento = $request->fecha_nacimientoins;
         $saveInstructor->entidad = $estado->nombre;
         $saveInstructor->municipio = $munic->muni;
-        $saveInstructor->clave_loc = $request->localidad;
-        $saveInstructor->localidad = $locali->localidad;
-        $saveInstructor->entidad_nacimiento = $estado_nac->nombre;
-        $saveInstructor->municipio_nacimiento = $munic_nac->muni;
-        $saveInstructor->clave_loc_nacimiento = $request->localidad_nacimiento;
-        $saveInstructor->localidad_nacimiento = $locali_nac->localidad;
+        // $saveInstructor->clave_loc = $request->localidad;
+        // $saveInstructor->localidad = $locali->localidad;
+        // $saveInstructor->entidad_nacimiento = $estado_nac->nombre;
+        // $saveInstructor->municipio_nacimiento = $munic_nac->muni;
+        // $saveInstructor->clave_loc_nacimiento = $request->localidad_nacimiento;
+        // $saveInstructor->localidad_nacimiento = $locali_nac->localidad;
         $saveInstructor->domicilio = $request->domicilio;
         $saveInstructor->telefono = $request->telefono;
         $saveInstructor->correo = $request->correo;
@@ -4220,6 +4254,7 @@ class InstructorController extends Controller
                 'fecha_inicio' => $request->fecha_inicio,
                 'archivo_alfa' => $urlalfa,
                 'pais_residencia' => $request->pais,
+                'numero_folio' => $request->no_folio
                 // 'pais_residecia' = $request->
                 // 'horario_circulo' => $horarios_circulo,
 
@@ -4439,10 +4474,17 @@ class InstructorController extends Controller
     public function iestado(Request $request)
     {
         if($request->id_instructor and $request->estado){
-
             $id_instructor = $request->id_instructor;
             $estado = $request->estado;
-            $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
+            $field = $request->field;
+            if($field == "estado"){
+                $result =  instructor::where('id', '=', $request->id_instructor)->update(['estado' => $estado]);
+                $result2 =  pre_instructor::where('id', '=', $request->id_instructor)->update(['registro_activo' => $estado]);
+                if($estado == true) $result3 =  instructor::where('id', '=', $request->id_instructor)->where('status','INHABILITADO')->update(['status' => 'EN CAPTURA']);
+
+            }elseif($field == "activo_curso"){
+                $result =  instructor::where('id', '=', $request->id_instructor)->update(['activo_curso' => $estado]);
+            }
         }
         if($result){
             if($estado == "true") $msg = "INSTRUCTOR ACTIVADO.";

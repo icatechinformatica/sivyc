@@ -3,12 +3,13 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Http\Controllers\RH\RHController;
+
+use App\Http\Controllers\reportesController\RHController;
 
 class DescargarNube extends Command
 {
     protected $signature = 'descarga:nube';
-    protected $description = 'Ejecuta la función descarga_nube en RHController a las 8PM';
+    protected $description = 'Ejecuta la función descarga_nube en RHController a las 9:31AM y 8PM';
 
     public function __construct()
     {

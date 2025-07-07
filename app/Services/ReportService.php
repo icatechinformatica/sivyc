@@ -1096,8 +1096,8 @@ class ReportService
 
     public function getFirmanteFinanciero($idRfUnidad)
     {
-        $UnidadesAtendidasNarj8 = ['CATAZAJA', 'JIQUIPILAS', 'OCOSINGO', 'TAPACHULA', 'VILLAFLORES', 'YAJALON'];
-        $UnidadesAtendidasCucc8 = ['TUXTLA', 'TONALA', 'SAN CRISTOBAL', 'COMITAN', 'REFORMA'];
+        $UnidadesAtendidasNarj8 = ['CATAZAJA', 'JIQUIPILAS', 'OCOSINGO', 'TAPACHULA', 'VILLAFLORES', 'YAJALON', 'TUXTLA', 'TONALA', 'SAN CRISTOBAL', 'COMITAN', 'REFORMA'];
+        $UnidadesAtendidasCucc8 = [];
 
         $qry = DB::table('tbl_organismos AS tblOrganismo')->Select('funcionarios.nombre', 'funcionarios.correo', 'funcionarios.curp', 'funcionarios.cargo')
         ->Join('tbl_funcionarios AS funcionarios', 'funcionarios.id_org', 'tblOrganismo.id')
@@ -1248,7 +1248,7 @@ class ReportService
                 foreach ($movimiento as $item) {
                     Recibo::where('folio_recibo', '=', $item['folio'])
                         ->update([
-                            'estado_reportado' => ''
+                            'estado_reportado' => null
                         ]);
                 }
 

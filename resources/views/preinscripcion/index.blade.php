@@ -29,11 +29,12 @@
             $nombre_curso = $grupo->nombre_curso;
             $organismo = $grupo->depen;
             $id_gvulnerable = $grupo->id_gvulnerable;
-            //if($id_gvulnerable == 0 and $grupo->plantel) $es_vulnerable = false;
-            if(($grupo->plantel and $id_gvulnerable) OR !$grupo->plantel) $checked = 'checked';            
-            
+            if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
+            elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
+
+
         }
-        if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;        
+        if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
     @endphp
     <div class="card-header">
@@ -90,7 +91,7 @@
                             @elseif ($grupo->exo_nrevision )
                                 <span>EXONERACIÓN/REDUCCIÓN No. REVISIÓN:&nbsp;&nbsp;<strong>{{$grupo->exo_nrevision}}</strong></span>
                             @elseif ($grupo->tipo != 'PINS' )
-                                <span>EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong class="text-danger">TRÁMITE PENDIENTE</strong></span>                                
+                                <span>EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong class="text-danger">TRÁMITE PENDIENTE</strong></span>
                             @endif
                             @if($grupo->tdias)<span>TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></span>@endif
                             @if($grupo->dia)<span>DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></span>@endif
@@ -104,33 +105,69 @@
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label>TIPO DE CURSO</label>
-                        {{ Form::select('tipo', ['PRESENCIAL'=>'PRESENCIAL','A DISTANCIA'=>'A DISTANCIA'], $grupo->tcapacitacion ?? '', ['id'=>'tipo', 'class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
+                        {!! html()->select('tipo')
+                            ->options(['PRESENCIAL'=>'PRESENCIAL','A DISTANCIA'=>'A DISTANCIA'])
+                            ->value($grupo->tcapacitacion ?? '')
+                            ->id('tipo')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('SELECIONAR') !!}
                     </div>
                     <div class="form-group col-md-2">
                         <label>CURSO/CERTIFICACIÓN:</label>
-                        {{ Form::select('tcurso', ["CURSO"=>"CURSO","CERTIFICACION"=>"CERTIFICACION"], $grupo->tipo_curso ?? '', ['id'=>'tcurso','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
+                        {!! html()->select('tcurso')
+                            ->options(["CURSO"=>"CURSO","CERTIFICACION"=>"CERTIFICACION"])
+                            ->value($grupo->tipo_curso ?? '')
+                            ->id('tcurso')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('SELECIONAR') !!}
                     </div>
                     <div class="form-group col-md-2">
                         <label>UNIDAD/ACCI&Oacute;N M&Oacute;VIL</label>
-                        {{ Form::select('unidad', $unidades, $grupo->unidad ?? '', ['id'=>'unidad','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
+                        {!! html()->select('unidad')
+                            ->options($unidades)
+                            ->value($grupo->unidad ?? '')
+                            ->id('unidad')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('SELECIONAR') !!}
                     </div>
                     <div class="form-group col-md-3">
                         <label>MUNICIPIO:</label>
-                        {{ Form::select('id_municipio', $municipio, $grupo->id_municipio ?? '', ['id'=>'id_municipio','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                        {!! html()->select('id_municipio')
+                            ->options($municipio)
+                            ->value($grupo->id_municipio ?? '')
+                            ->id('id_municipio')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('- SELECCIONAR -') !!}
                     </div>
                     <div class="form-group col-md-3">
                         <label for="localidad" class="control-label">LOCALIDAD</label>
-                        {{ Form::select('localidad', $localidad, $grupo->clave_localidad ?? '', ['id'=>'localidad','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                        {!! html()->select('localidad')
+                            ->options($localidad)
+                            ->value($grupo->clave_localidad ?? '')
+                            ->id('localidad')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('- SELECCIONAR -') !!}
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label>MODALIDAD</label>
-                        {{ Form::select('modalidad', ['EXT'=>'EXTENSION','CAE'=>'CAE'], $grupo->mod ?? '', ['id'=>'modalidad', 'class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
+                        {!! html()->select('modalidad')
+                            ->options(['EXT'=>'EXTENSION','CAE'=>'CAE'])
+                            ->value($grupo->mod ?? '')
+                            ->id('modalidad')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('SELECIONAR') !!}
                     </div>
                     <div class="form-group col-md-6">
                         <label>CURSO</label>
-                        {{ Form::select('id_curso', $cursos, $grupo->id_curso ?? '', ['id'=>'id_curso','old'=>'curso', 'class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
+                        {!! html()->select('id_curso')
+                            ->options($cursos)
+                            ->value($grupo->id_curso ?? '')
+                            ->id('id_curso')
+                            ->attribute('old', 'curso')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('SELECIONAR') !!}
                     </div>
                     <div class="form-group col-md-2">
                         <label>FECHA INICIO:</label>
@@ -149,24 +186,41 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label>ORGANISMO PUBLICO:</label>
-                        {{ Form::select('dependencia', $dependencia, $grupo->depen ?? '', ['id'=>'dependencia','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                        {!! html()->select('dependencia')
+                            ->options($dependencia)
+                            ->value($grupo->depen ?? '')
+                            ->id('dependencia')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('- SELECCIONAR -') !!}
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="">NOMBRE DEL REPRESENTANTE:</label>
-                        {!! Form::text('repre_depen', $grupo->depen_repre ?? '', ['id'=>'repre_depen', 'class'=>'form-control']) !!}
+                        <label for="repre_depen">NOMBRE DEL REPRESENTANTE:</label>
+                        {{ html()->text('repre_depen', $grupo->depen_repre ?? '')->id('repre_depen')->class('form-control') }}
                     </div>
+
                     <div class="form-group col-md-2">
-                        <label for="">TELEFONO REPRESENT:</label>
-                        {!! Form::text('repre_tel', $grupo->depen_telrepre ?? '', ['id'=>'repre_tel', 'class'=>'form-control col-md-10']) !!}
+                        <label for="repre_tel">TELEFONO REPRESENT:</label>
+                        {{ html()->text('repre_tel', $grupo->depen_telrepre ?? '')->id('repre_tel')->class('form-control col-md-10') }}
                     </div>
                     <div class="form-group col-md-4">
                         @if($es_vulnerable==true)
                             <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" {{ $checked }} >&nbsp;&nbsp;GRUPO VULNERABLE</label>
-                            {{ Form::select('grupo_vulnerable', $grupo_vulnerable, $grupo->id_gvulnerable ?? '', ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
+                            {!! html()->select('grupo_vulnerable')
+                                ->options($grupo_vulnerable)
+                                ->value($grupo->id_gvulnerable ?? '')
+                                ->id('grupo_vulnerable')
+                                ->class('form-control mr-sm-2')
+                                ->placeholder('SELECIONAR') !!}
                         @else
                             <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($grupo->id_gvulnerable ?? ''){{'checked'}}@endif disabled>&nbsp;&nbsp;GRUPO VULNERABLE</label>
-                            {{ Form::select('grupo_vulnerable', $grupo_vulnerable, '', ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
-                        @endif                        
+                            {!! html()->select('grupo_vulnerable')
+                                ->options($grupo_vulnerable)
+                                ->value('')
+                                ->id('grupo_vulnerable')
+                                ->class('form-control mr-sm-2')
+                                ->placeholder('SELECIONAR')
+                                ->attribute('disabled', 'disabled') !!}
+                        @endif
                     </div>
                     <div class="form-group col-md-6">
                         <label>DOMICILIO, LUGAR O ESPACIO FÍSICO:</label>
@@ -175,7 +229,11 @@
                     </div>
                     <div class="form-group col-md-2">
                         <label>MEDIO VIRTUAL:</label>
-                        {{ Form::select('medio_virtual', $medio_virtual, $grupo->medio_virtual ?? '', ['id'=>'medio_virtual','class' => 'form-control mr-sm-2'] ) }}
+                        {!! html()->select('medio_virtual')
+                            ->options($medio_virtual)
+                            ->value($grupo->medio_virtual ?? '')
+                            ->id('medio_virtual')
+                            ->class('form-control mr-sm-2') !!}
                     </div>
                     <div class="form-group col-md-3">
                         <label>LINK VIRTUAL:</label>
@@ -191,7 +249,13 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label><input type="checkbox" value="cerss" id="cerss_ok" @if($grupo->id_cerss ?? ''){{'checked'}}@endif>&nbsp;&nbsp;CERSS</label>
-                        {{ Form::select('cerss', $cerss, $grupo->id_cerss ?? '', ['id'=>'cerss','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}
+                        {!! html()->select('cerss')
+                            ->options($cerss)
+                            ->value($grupo->id_cerss ?? '')
+                            ->id('cerss')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('SELECIONAR')
+                            ->attribute('disabled', 'disabled') !!}
                     </div>
                     {{-- Jose Luis Moreno / Agregar campo de firmante  --}}
                     {{-- temporalmente se comentó hasta que se homologue se descomenta. --}}
@@ -214,15 +278,21 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label>INSTRUCTOR DISPONIBLE:</label>
+                        @php
+                            $encontrado = false
+                        @endphp
                         <select name="instructor" id="instructor" class="form-control mr-sm--2">
-                            @if ($instructor)
-                                <option value="{{$instructor->id}}">{{$instructor->instructor}}</option>
-                            @else
-                                <option value="">- SELECCIONAR -</option>
-                            @endif
                             @foreach ($instructores as $item)
-                                <option value="{{$item->id}}">{{$item->instructor}}</option>
+                                <option value="{{$item->id}}" {{ $item->id == $instructor->id ? 'selected' : '' }}> {{$item->instructor}} </option>
+                                @if ($item->id == $instructor->id)
+                                    @php
+                                        $encontrado = true
+                                    @endphp
+                                @endif
                             @endforeach
+                            @if (!$encontrado && $instructor)
+                                <option value="{{$instructor->id}}" selected>{{$instructor->instructor}}</option>
+                            @endif
                         </select>
                     </div>
                 </div>
@@ -269,15 +339,25 @@
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="">MEMORÁNDUM DE SOLICITUD DE APERTURA:</label>
-                                {!! Form::text('mapertura', $grupo->mpreapertura ?? '', ['id'=>'mapertura', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM APERTURA', 'aria-label' => 'No. Memorándum']) !!}
+                                {!! html()->text('mapertura', $grupo->mpreapertura ?? '')
+                                    ->id('mapertura')
+                                    ->class('form-control')
+                                    ->placeholder('No. MEMORÁNDUM APERTURA')
+                                    ->attribute('aria-label', 'No. Memorándum') !!}
                             </div>
                             <div class="form-group col-md-3">
                                 <label>PLANTEL:</label>
-                                {{ Form::select('plantel', $planteles, $grupo->plantel ?? '', ['id'=>'plantel','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                                {!! html()->select('plantel', $planteles, $grupo->plantel ?? '')
+                                    ->id('plantel')
+                                    ->class('form-control mr-sm-2')
+                                    ->placeholder('- SELECCIONAR -') !!}
                             </div>
                             <div class="form-group col-md-4">
                                 <label>PROGRAMA ESTRAT&Eacute;GICO:</label>
-                                {{ Form::select('programa', $programas, $grupo->programa ?? '', ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                                {!! html()->select('programa', $programas, $grupo->programa ?? '')
+                                    ->id('programa')
+                                    ->class('form-control mr-sm-2')
+                                    ->placeholder('- SELECCIONAR -') !!}
                             </div>
                         </div>
                         <div class="form-row">
@@ -286,13 +366,13 @@
                                 <textarea name="observaciones" id="observaciones" rows="5" class="form-control">{{$grupo->obs_vincula}}</textarea>
                             </div>
                         </div>
-                        <div class="form-row">
+                        {{-- <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="">SOLICITANTE (NOMBRE,CARGO):</label>
 
                                 {!! Form::text('solicita', $grupo->solicita ?? '', ['id'=>'solicita', 'class' => 'form-control', 'placeholder' => 'NOMBRE,CARGO', 'aria-label' => 'SOLICITANTE', $grupo->editar_solicita ? '' : 'readonly' => 'readonly']) !!}
                             </div>
-                        </div>
+                        </div> --}}
                         <br>
                         <br>
                     @endif
@@ -317,7 +397,7 @@
                     @include('preinscripcion.tableAlumnos')
                 </div>
                 <br />
-                {{ Form::hidden('IDE', $grupo->IDE ?? '') }}
+               {{ html()->hidden('IDE', $grupo->IDE ?? '') }}
             </form>
         </div>
         <!-- modal para mostrar el calendario -->

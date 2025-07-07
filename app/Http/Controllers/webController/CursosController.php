@@ -31,7 +31,7 @@ class CursosController extends Controller
 
     private $slug;
     function __construct() {
-        $this->categorias = ['OFICIOS','PROFESIONALIZACIÓN','ESPECIALIZACIÓN','SALUD'];
+        $this->categorias = ['OFICIOS','PROFESIONALIZACIÓN','ESPECIALIZACIÓN','SALUD','CURSO ALFA'];
         $this->perfil = [
             'PRIMARIA INCONCLUSA',
             'PRIMARIA TERMINADA',
@@ -67,10 +67,15 @@ class CursosController extends Controller
             $data = $data->WHERE('cursos.estado', '=', true);
         }
         $data = $data->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
-            ->leftJoin('users', function($join) {
-                $join->on('cursos.iduser_updated', '=', 'users.id')
-                    ->orOn('cursos.iduser_created', '=', 'users.id'); 
-            })            
+            ->leftJoin('users as user_created', 'cursos.iduser_created', '=', 'user_created.id')
+            ->leftJoin('users as user_updated', 'cursos.iduser_updated', '=', 'user_updated.id')
+            ->leftJoin(DB::raw("(
+                                SELECT id_curso,
+                                    FLOOR(SUM(EXTRACT(EPOCH FROM duracion::interval)) / 3600)::int as horas_tematico
+                                FROM contenido_tematico
+                                WHERE id_parent = 0
+                                GROUP BY id_curso
+                            ) as duracion_total"), 'duracion_total.id_curso', '=', 'cursos.id')
             ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
                        'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
                        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
@@ -78,7 +83,11 @@ class CursosController extends Controller
                        'cursos.tipo_curso', 'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo',
                        DB::raw("CASE WHEN cursos.estado ='true' THEN 'ACTIVO' ELSE (CASE WHEN cursos.estado='false' THEN  'INACTIVO' ELSE 'BAJA' END) END as estado"),
                        'cursos.servicio','cursos.proyecto','cursos.file_carta_descriptiva',
-                       DB::raw("REPLACE(users.name, 'BAJA', '') as user_name"),'cursos.created_at','cursos.updated_at']);
+                        DB::raw("REPLACE(user_created.name, 'BAJA', '') as user_created_name"),
+                        DB::raw("REPLACE(user_updated.name, 'BAJA', '') as user_updated_name"),
+                        'cursos.created_at', 'cursos.updated_at',
+                        DB::raw("COALESCE(duracion_total.horas_tematico, 0) as horas_tematico")
+                    ]);
         return view('layouts.pages.vstacursosinicio',compact('data'));
     }
 
@@ -189,6 +198,9 @@ class CursosController extends Controller
                 elseif($request->estado==2) $estado = false;
                 else $estado = null;
 
+                if($request->curso_alfa=='si') $curso_alfa = true;
+                else $curso_alfa = false;
+
                 $cursos = new curso;
                 $cursos->nombre_curso = trim($request->nombrecurso);
                 $cursos->modalidad = trim($request->modalidad);
@@ -233,6 +245,7 @@ class CursosController extends Controller
                 $cursos->servicio = json_encode($request->servicio);
                 $cursos->motivo = trim($request->motivo);
                 $cursos->iduser_created = Auth::user()->id;
+                $cursos->curso_alfa = $curso_alfa;
 
                 $cursos->save();
 
@@ -320,7 +333,7 @@ class CursosController extends Controller
                     'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
                     'cursos.rango_criterio_pago_minimo', 'rango_criterio_pago_maximo','cursos.observacion',
                     'cursos.grupo_vulnerable', 'cursos.dependencia','cursos.proyecto','cursos.motivo',
-                    'cursos.servicio','cursos.file_carta_descriptiva','cursos.riesgo')
+                    'cursos.servicio','cursos.file_carta_descriptiva','cursos.riesgo','cursos.curso_alfa')
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')->ORDERBY ('cursos.updated_at','DESC')
                     ->GET();
@@ -514,6 +527,9 @@ class CursosController extends Controller
             elseif($request->estado==2) $estado = false;
             else $estado = null;
 
+            if($request->curso_alfa=='si') $curso_alfa = true;
+            else $curso_alfa = false;
+
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
@@ -546,7 +562,8 @@ class CursosController extends Controller
                 'servicio' => json_encode($request->servicio),
                 'motivo' => trim($request->motivo),
                 'updated_at' =>date('Y-m-d h:m:s'),
-                'iduser_updated' => Auth::user()->id
+                'iduser_updated' => Auth::user()->id,
+                'curso_alfa' => $curso_alfa
 
             ];
             if($url_solicitud_autorizacion!=NULL) $array += ['documento_solicitud_autorizacion' => $url_solicitud_autorizacion];

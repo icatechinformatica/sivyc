@@ -32,15 +32,15 @@
                 <table style="text-align: right; border-collapse: collapse; font-family: sans-serif; font-size: 12px;" align="right">
                     <tr><td>Unidad de Capacitación {{$reg_unidad->ubicacion}}.</td></tr>
                     <tr><td style="font-weight:normal;">@if ($marca) {{ "Revisión No. "}} @else {{ "Memorándum No. "}} @endif{{$mexoneracion}}.</td></tr>
-                    <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha}}.</td></tr>
+                    <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha_doc}}.</td></tr>
                 </table>
             </div>
             <table style="border-collapse: collapse;">
                 <tr>
-                    <td><b>{{$reg_unidad->dgeneral}}.</b></td>
+                    <td><b>{{$director->titular}}.</b></td>
                 </tr>
                 <tr>
-                    <td><b>Encargado de la Dirección General</b></td>
+                    <td><b>{{$director->cargo}}.</b></td>
                 </tr>
                 <tr>
                     <td><b>Presente.</b></td>

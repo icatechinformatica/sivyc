@@ -180,6 +180,8 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         App\Providers\ReporteRf001Provider::class,
         App\Providers\DocumentacionPagoInstructorProvider::class,
+        // App\Providers\StorageServiceProvider::class,
+        App\Providers\CredencialProvider::class,
     ],
 
     /*
@@ -231,7 +233,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class,
+        // 'PDF' => Barryvdh\DomPDF\Facade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 

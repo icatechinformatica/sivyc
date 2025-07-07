@@ -411,7 +411,7 @@ class CalificacionController extends Controller
                     CICLO ESCOLAR: <span class="tab1">'. $curso->ciclo. '</span>
                     FECHA INICIO: <span class="tab1">'. $curso->fechaini. '</span>
                     FECHA TERMINO: &nbsp;&nbsp;'. $curso->fechafin. '<br />
-                    GRUPO: <span class="tab2">'. $curso->grupo. '</span>
+                    GRUPO: <span class="tab2">'. $curso->folio_grupo. '</span>
                     HORARIO: '. $curso->dia. ' DE '. $curso->hini. ' A '. $curso->hfin. '&nbsp;&nbsp;&nbsp;
                     CURP: &nbsp;&nbsp;'. $curso->curp. '&nbsp;&nbsp;&nbsp;
                 </div>

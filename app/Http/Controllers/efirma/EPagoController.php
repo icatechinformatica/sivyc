@@ -45,6 +45,7 @@ class EPagoController extends Controller
         $body = $this->create_body($info->id_folios, $info->no_memo); //creacion de body hemos reemplazado numOficio por $info->no_memo mientras se autoriza el uso del consecutivo electronico
         $numFirmantes = '1';
         $arrayFirmantes = [];
+        $firmanteInterno = array();
 
         $funcionarios = $this->funcionarios($info->ubicacion);
         $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre AS funcionario','fun.curp','fun.cargo','fun.correo','org.nombre','fun.incapacidad')
@@ -73,6 +74,7 @@ class EPagoController extends Controller
         ];
 
         array_push($arrayFirmantes, $temp);
+        array_push($firmanteInterno, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
@@ -127,7 +129,7 @@ class EPagoController extends Controller
                     // 'checksum_archivo' => utf8_encode($text)
                 ],
                 // 'cuerpo' => ['Por medio de la presente me permito solicitar el archivo '.$nameFile]
-                'cuerpo' => [strip_tags($body['header']). strip_tags($body['body']).strip_tags($body['ccp']).strip_tags($body['footer'])]
+                'cuerpo' => [strip_tags($body['header']). strip_tags($body['body']).strip_tags($body['ccp']).strip_tags($body['footer']).strip_tags($body['sello'])]
             ],
             'firmantes' => [
                 '_attributes' => [
@@ -196,6 +198,8 @@ class EPagoController extends Controller
             if(!$sobrescribir) {
                 $dataInsert = new DocumentosFirmar();
             }
+
+            $body['firmantes'] = $firmanteInterno;
 
             $dataInsert->obj_documento = json_encode($ArrayXml);
             // $dataInsert->obj_documento_interno = json_encode($body);
@@ -373,15 +377,15 @@ class EPagoController extends Controller
                 </tr>')) .
             '</tbody>
         </table>
-        <p class="text-left"><p>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;">'.$tipo.'</font>, obra en poder de la Unidad de Capacitación.</p></p>';
+        <p class="text-left"><p><small>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;">'.$tipo.'</font>, obra en poder de la Unidad de Capacitación.</small></p></p>';
 
-        $body_html['ccp'] = '<p style="line-height:0.8em;">
-            <b><small>C.c.p. '. $funcionarios['ccp1']. '.- '. $funcionarios['ccp1p']. '.-Para su conocimiento.</small></b><br/>
-            <b><small>C.c.p. '. $funcionarios['ccp2']. '.- '. $funcionarios['ccp2p']. '.-Mismo fin.</small></b><br/>
-            <b><small>C.c.p. '. $funcionarios['delegado']. '.- '. $funcionarios['delegadop']. '.-Mismo fin.</small></b><br/>
-            <b><small>Archivo/ Minutario<small></b><br/>
-            <b><small>Validó: '. $funcionarios['director']. '.- '. $funcionarios['directorp']. '.</small></b><br/>
-            <b><small>Elaboró: '. $funcionarios['delegado']. '.- '.$funcionarios['delegadop']. '.</small></b>
+        $body_html['ccp'] = '<p style="font-size: 8px;">
+            C.c.p. '. $funcionarios['ccp1']. '.- '. $funcionarios['ccp1p']. '.-Para su conocimiento.<br/>
+            C.c.p. '. $funcionarios['ccp2']. '.- '. $funcionarios['ccp2p']. '.-Mismo fin.<br/>
+            C.c.p. '. $funcionarios['delegado']. '.- '. $funcionarios['delegadop']. '.-Mismo fin.<br/>
+            Archivo/ Minutario<br/>
+            Validó: '. $funcionarios['director']. '.- '. $funcionarios['directorp']. '.<br/>
+            Elaboró: '. $funcionarios['delegado']. '.- '.$funcionarios['delegadop']. '.
         </p>';
 
         $body_html['footer'] = '<footer>
@@ -395,6 +399,8 @@ class EPagoController extends Controller
             }
             $body_html['footer'] = $body_html['footer']. '</b></p>
         </footer>';
+
+        $body_html['sello'] = 'I C A T E C H "DIRECCIÓN ADMINISTRATIVA" OPERADO CONVENIO DE DESCENTRALIZACIÓN RAMO 11: EDUCACIÓN';
 
         return $body_html;
     }

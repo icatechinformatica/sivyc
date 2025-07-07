@@ -51,18 +51,28 @@ class poaController extends Controller
         if($fecha1 AND $fecha2){
             switch($request->opciones){
                 case "CUOTA":
-                    $data = DB::table('tbl_cursos as tc')->select('tc.unidad','ti.costo',
-                    DB::raw('count(distinct(tc.id)) as cursos_reportados'),
-                    DB::raw("sum(CASE WHEN ti.status ='INSCRITO' THEN 1 ELSE 0 END) as inscritos"),
-                    DB::raw("sum(CASE WHEN ti.calificacion ='NP' AND ti.status ='INSCRITO' THEN 1 ELSE 0 END) as desercion")
-                    )
-                    ->join('tbl_inscripcion as ti','ti.id_curso','tc.id')
-                    ->where('tc.proceso_terminado',true)->where('tc.status_curso','AUTORIZADO')
-                    ->where('tc.fecha_turnado','>=',$fecha1)
-                    ->where('tc.fecha_turnado','<=',$fecha2)
-                    ->groupby('tc.unidad','ti.costo')
-                    ->orderby('ti.costo','ASC')->orderby(DB::raw('count(distinct(tc.id))'),'DESC')->orderby('tc.unidad','ASC')
-                    ->get();
+                    $desercion = DB::table('tbl_inscripcion as d')
+                    ->select('d.id_curso', DB::raw('MIN(d.costo) as icosto'), DB::raw("sum(CASE WHEN d.status= 'INSCRITO' and d.calificacion='NP' THEN 1 ELSE 0 END)  as desercion"))
+                    ->groupby('d.id_curso');                   
+
+                    $data = DB::table('tbl_cursos as tc')                        
+                        ->select('tc.unidad',
+                        DB::raw('icosto as costo'),
+                        DB::raw('count(tc.id) as cursos_reportados'),
+                        DB::raw("sum(hombre+mujer) as inscritos"),                        
+                        DB::raw('sum(d.desercion) as desercion'),
+                        DB::raw('sum(c.costo*(hombre+mujer)) as importe')
+                        )
+                        ->leftjoin('cursos as c','c.id','tc.id_curso')
+                        ->leftjoinSub($desercion, 'd', function($join){
+                            $join->on('tc.id','=','d.id_curso');
+                        })
+                        ->where('tc.proceso_terminado',true)->where('tc.status_curso','AUTORIZADO')
+                        ->where('tc.fecha_turnado','>=',$fecha1)
+                        ->where('tc.fecha_turnado','<=',$fecha2)                                             
+                        ->groupby('tc.unidad','icosto')                        
+                        ->orderby('icosto','ASC')->orderby(DB::raw('count(tc.id)'),'DESC')->orderby('tc.unidad','ASC')                        
+                        ->get();                    
                 break;
                 default:
                     $desercion = DB::table('tbl_inscripcion as d')

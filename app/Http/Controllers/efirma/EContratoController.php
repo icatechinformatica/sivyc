@@ -46,11 +46,13 @@ class EContratoController extends Controller
 
         $numFirmantes = '4';
         $arrayFirmantes = [];
+        $firmante = array();
 
         $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
-                            ->Join('tbl_funcionarios AS fun','fun.id','org.id')
+                            ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
                             ->Where('org.id_unidad', $info->id)
                             ->Where('org.nombre', 'NOT LIKE', 'CENTRO%')
+                            ->Where('fun.activo','true')
                             ->Get();
         // Info de director firmante
         foreach($dataFirmantes as $dataFirmante) {
@@ -72,6 +74,7 @@ class EContratoController extends Controller
                 ];
                 array_push($arrayFirmantes, $temp);
                 $emisor = [ 'nombre' => $dataFirmante->nombre, 'cargo' => $dataFirmante->cargo];
+                array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
             }
         }
 
@@ -105,6 +108,7 @@ class EContratoController extends Controller
                 ];
                 array_push($arrayFirmantes, $temp);
                 $emisor = [ 'nombre' => $dataFirmante->nombre, 'cargo' => $dataFirmante->cargo];
+                array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
             }
         }
 
@@ -127,12 +131,13 @@ class EContratoController extends Controller
         //             ]
         //         ];
         //         array_push($arrayFirmantes, $temp);
+        //         array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
         //     }
         // }
 
         //Llenado de delegacion firmante
         foreach($dataFirmantes as $dataFirmante) {
-            if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE DELEGA') || str_contains($dataFirmante->cargo, 'ENCARGADA DE DELEGA')) {
+            if (str_contains($dataFirmante->cargo, 'DELEGADO') || str_contains($dataFirmante->cargo, 'DELEGADA') || str_contains($dataFirmante->cargo, 'ENCARGADO DE LA DELEGA') || str_contains($dataFirmante->cargo, 'ENCARGADA DE LA DELEGA')) {
                 if(isset($dataFirmante->incapacidad)) {
                     $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
                     if($incapacidadFirmante != FALSE) {
@@ -148,8 +153,33 @@ class EContratoController extends Controller
                     ]
                 ];
                 array_push($arrayFirmantes, $temp);
+                array_push($firmante, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
             }
         }
+
+        //Llenado de directo de técnica académica
+        $dataFirmanteDTA = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
+            ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
+            ->Where('org.id', '16')
+            ->Where('fun.activo','true')
+            ->Where('titular', true)
+            ->First();
+        if(isset($dataFirmanteDTA->incapacidad)) {
+            $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmanteDTA->incapacidad), $dataFirmanteDTA->nombre);
+            if($incapacidadFirmante != FALSE) {
+                $dataFirmanteDTA = $incapacidadFirmante;
+            }
+        }
+        $temp = ['_attributes' =>
+            [
+                'curp_firmante' => $dataFirmanteDTA->curp,
+                'nombre_firmante' => $dataFirmanteDTA->nombre,
+                'email_firmante' => $dataFirmanteDTA->correo,
+                'tipo_firmante' => 'FM'
+            ]
+        ];
+        array_push($arrayFirmantes, $temp);
+        array_push($firmante, ['nombre' => $dataFirmanteDTA->nombre, 'curp' => $dataFirmanteDTA->curp, 'cargo' => $dataFirmanteDTA->cargo]);
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
@@ -247,8 +277,10 @@ class EContratoController extends Controller
                 $dataInsert = new DocumentosFirmar();
             }
 
+            $body_html = ['body' => $body, 'firmantes' => $firmante];
+
             $dataInsert->obj_documento = json_encode($ArrayXml);
-            $dataInsert->obj_documento_interno = json_encode($body);
+            $dataInsert->obj_documento_interno = json_encode($body_html);
             $dataInsert->status = 'EnFirma';
             // $dataInsert->link_pdf = $urlFile;
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
@@ -317,12 +349,12 @@ class EContratoController extends Controller
             DECLARACIONES \n
                 I.  “ICATECH” declara que: \n
                     I.1 Es un Organismo Descentralizado de la Administración Pública Estatal, con personalidad jurídica y patrimonio propios, conforme a lo dispuesto en el artículo 1 del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas. \n
-                    I.2 El LCDO. GERARDO JIMENÉZ VILLALOBOS, en su carácter de Encargado de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, cuenta con personalidad juridica que acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 07 de octubre de 2024, por lo que se encuentra plenamente facultado en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo" . ($fecha_fir >= $fecha_act ? '42 fracción I' : '29 fracción I')." del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas. \n
-                    I.3 " . $firmantes->dunidad .', '.$firmantes->pdunidad. ' '. $data_contrato->unidad_capacitacion.' tiene personalidad jurídica para representar en este acto a “ICATECH”, como lo acredita con el nombramiento expedido por la Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, y cuenta con plena facultad legal para suscribir el presente Instrumento conforme a lo dispuesto por los artículos ' . ($fecha_fir >= $fecha_act ? '42 fracción I' : '29 fracción I') . " del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas y 12 fracción V, de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas. \n
+                    I.2 El DR. CÉSAR ARTURO ESPINOSA MORALES, en su carácter de Director General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, cuenta con personalidad juridica que acredita con nombramiento expedido a su favor por el DR. EDUARDO RAMÍREZ AGUILAR, Gobernador Constitucional del Estado de Chiapas, de fecha 08 de diciembre de 2024, por lo que se encuentra plenamente facultado en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo" . ($fecha_fir >= $fecha_act ? '42 fracción I' : '29 fracción I')." del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas. \n
+                    I.3 " . $firmantes->dunidad .', '.$firmantes->pdunidad. ' '. $data_contrato->unidad_capacitacion.' tiene personalidad jurídica para representar en este acto a “ICATECH”, como lo acredita con el nombramiento expedido por el Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, y cuenta con plena facultad legal para suscribir el presente Instrumento conforme a lo dispuesto por los artículos ' . ($fecha_fir >= $fecha_act ? '42 fracción I' : '29 fracción I') . " del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas y 12 fracción V, de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas. \n
                     I.4 Tiene por objetivo impartir e impulsar la capacitación para la formación en el trabajo, propiciando la mejor calidad y vinculación de este servicio con el aparato productivo y las necesidades de desarrollo regional, estatal y nacional; actuar como organismo promotor en materia de capacitación para el trabajo, conforme a lo establecido por la Secretaría de Educación Pública; promover la capacitación que permita adquirir, reforzar o potencializar los conocimientos, habilidades y destrezas necesarias para elevar el nivel de vida, competencia laboral y productividad en el Estado; promover el surgimiento de nuevos perfiles académicos, que correspondan a las necesidades del mercado laboral. \n
                     I.5 De acuerdo a las necesidades de “ICATECH”, se requiere contar con los servicios de una persona física con conocimientos en ". $data->espe. ', por lo que se ha determinado llevar a cabo la Contratación por HONORARIOS en la modalidad de horas curso como "PRESTADOR DE SERVICIOS".' . "\n
                     I.6 Para los efectos del presente contrato se cuenta con la clave de grupo ". $data->clave." y validación del instructor emitido por la Dirección Técnica Académica de “ICATECH” conforme a lo dispuesto por el artículo 4 fracción III de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, emitido por la Dirección Técnica Académica de “ICATECH”.\n
-                    I.7 Para los efectos del presente contrato se cuenta con la suficiencia presupuestal, conforme al presupuesto de egresos autorizado, emitido por la Dirección de Planeación de “ICATECH”.\n
+                    I.7 Para los efectos del presente contrato se cuenta con la suficiencia presupuestal, conforme al presupuesto de egresos autorizado, emitida por la Dirección de Planeación de “ICATECH”.\n
                     I.8 Para los efectos del presente Contrato señala como su domicilio legal, el ubicado en la $direccion_instituto.\n
                 II.". '"PRESTADOR DE SERVICIOS"'. "declara que: \n
                     II.1 Es una persona física, de nacionalidad Mexicana, que acredita mediante ". ($data->instructor_tipo_identificacion == 'INE'? ' credencial para votar' : $data->instructor_tipo_identificacion).' con número de folio '. $data->instructor_folio_identificacion.', con plena capacidad jurídica y facultades que le otorga la ley, para contratar y obligarse, así como también con los estudios, conocimientos y la experiencia necesaria en la materia de '.$data->espe." y conoce plenamente las necesidades de los servicios objeto del presente contrato, así como que ha considerado todos los factores que intervienen para desarrollar eficazmente las actividades que desempeñará. \n
@@ -393,12 +425,12 @@ class EContratoController extends Controller
                 <dl>
                     <dt>I.  <b>“ICATECH”</b> declara que:<br>
                     <br><dd>I.1 Es un Organismo Descentralizado de la Administración Pública Estatal, con personalidad jurídica y patrimonio propio, conforme a lo dispuesto en el artículo 1 del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
-                    <br><dd>I.2 El LCDO. GERARDO JIMENÉZ VILLALOBOS, en su carácter de ENCARGADO DE LA DIRECCIÓN GENERAL DEL INSTITUTO DE CAPACITACIÓN y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, cuenta con personalidad jurídica que acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 07 de octubre de 2024, por lo que se encuentra plenamente facultado en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
-                    <br><dd>I.3 '. $firmantes->dunidad.', '.$firmantes->pdunidad.' '.$data_contrato->unidad_capacitacion.', tiene personalidad jurídica para representar en este acto a <b>“ICATECH”</b>, como lo acredita con el nombramiento expedido por la Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, y cuenta con plena facultad legal para suscribir el presente Instrumento conforme a lo dispuesto por los artículos 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas y 12 fracción V, de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
+                    <br><dd>I.2 El DR. CÉSAR ARTURO ESPINOSA MORALES, en su carácter de DIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, cuenta con personalidad jurídica que acredita con nombramiento expedido a su favor por el DR. EDUARDO RAMÍREZ AGUILAR, Gobernador Constitucional del Estado de Chiapas, de fecha 08 de diciembre de 2024, por lo que se encuentra plenamente facultado en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas por lo que, delega su representación a los Titulares de las Unidades de Capacitación conforme a lo dispuesto por el artículo 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
+                    <br><dd>I.3 '. $firmantes->dunidad.', '.$firmantes->pdunidad.' '.$data_contrato->unidad_capacitacion.', tiene personalidad jurídica para representar en este acto a <b>“ICATECH”</b>, como lo acredita con el nombramiento expedido por el Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, y cuenta con plena facultad legal para suscribir el presente Instrumento conforme a lo dispuesto por los artículos 42 fracción I del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas y 12 fracción V, de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.</dd>
                     <br><dd>I.4 Tiene por objetivo impartir e impulsar la capacitación para la formación en el trabajo, propiciando la mejor calidad y vinculación de este servicio con el aparato productivo y las necesidades de desarrollo Regional, Estatal y Nacional; actuar como Organismo promotor en materia de capacitación para el trabajo, conforme a lo establecido por la Secretaría de Educación Pública; promover la capacitación que permita adquirir, reforzar o potencializar los conocimientos, habilidades y destrezas necesarias para elevar el nivel de vida, competencia laboral y productividad en el Estado; promover el surgimiento de nuevos perfiles académicos, que correspondan a las necesidades del mercado laboral.</dd>
                     <br><dd>I.5  De acuerdo a las necesidades de <b>“ICATECH”</b>, se requiere contar con los servicios de una persona física con conocimientos en '. $data->espe .', por lo que se ha determinado llevar a cabo la Contratación bajo el régimen de <b>SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS,</b> en la modalidad de '.($data->tipo_curso == 'CURSO' ? 'horas curso' : 'certificación extraordinaria').' como <b>"PRESTADOR DE SERVICIOS"</b>.</dd>
-                    <br><dd>I.6  Para los efectos del presente contrato se cuenta con la clave de grupo No: '. $data->clave. ', así como la validación del instructor emitido por la Dirección Técnica Académica de <b>“ICATECH”</b> conforme a lo dispuesto por el artículo 4 fracción III de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, emitido por la Dirección Técnica Académica de <b>“ICATECH”</b>.</dd>
-                    <br><dd>I.7 Para los efectos del presente Contrato se cuenta con la suficiencia presupuestal, conforme al presupuesto de egresos autorizado, emitido por la Dirección de Planeación de <b>“ICATECH”</b>.</dd>
+                    <br><dd>I.6  Para los efectos del presente contrato se cuenta con la clave de grupo No: '. $data->clave. ', así como la validación del instructor emitida por la Dirección Técnica Académica de <b>“ICATECH”</b> conforme a lo dispuesto por el artículo 4 fracción III de los Lineamientos para los Procesos de Vinculación y Capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, emitida por la Dirección Técnica Académica de <b>“ICATECH”</b>.</dd>
+                    <br><dd>I.7 Para los efectos del presente Contrato se cuenta con la suficiencia presupuestal, conforme al presupuesto de egresos autorizado, emitida por la Dirección de Planeación de <b>“ICATECH”</b>.</dd>
                     <br><dd>I.8 Para los efectos del presente Contrato señala como su domicilio legal, el ubicado en la ' . $direccion_instituto . '</dd>
                 </dl>
                 <dl><dt>II. <b>"PRESTADOR DE SERVICIOS"</b> declara que:</dt>
@@ -415,7 +447,7 @@ class EContratoController extends Controller
             <br><div align="justify">
                 <dd><b>PRIMERA.- OBJETO DEL CONTRATO</b>. El presente instrumento tiene por objeto establecer al <b>“PRESTADOR DE SERVICIOS”</b> los términos y condiciones que se obliga con <b>“ICATECH”</b>, a brindar sus servicios profesionales bajo el régimen de <b>SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS,</b> para otorgar '. ($data->tipo_curso == 'CURSO' ? 'el curso establecido' : 'la certificación extraordinaria establecida'). '  en el ARC01 y/o ARC02.</dd>
                 <br><dd><b>SEGUNDA.- MONTO</b>. El monto que <b>“ICATECH”</b>, pagará al <b>“PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b>$'. $cantidad. ' ('. $data_contrato->cantidad_letras1. ' '. $monto['1']. '/100 M.N.)</b>; por '.($data->tipo_curso == 'CURSO' ? 'curso impartido' : 'certificación extraordinaria').', menos las retenciones que el <b>“ICATECH”</b> le realizará como pago provisional por concepto de Impuesto sobre la Renta, de conformidad con lo establecido al artículo 96 de la Ley del Impuesto sobre la Renta, enterando a las Autoridades Hacendarias las retenciones correspondientes.</dd>
-                <br><dd>El monto resultante señalado en el <b>párrafo primero</b> de esta cláusula se otorgará al <b>“PRESTADOR DE SERVICIOS”</b> conforme a la disponibilidad financiera de <b>“ICATECH”</b>; que se realizará en una sola exhibición, por medio de cheque y/o transferencia interbancaria a la cuenta que señala, y se agrega al presente Contrato. Así mismo, se expedirá el comprobante fiscal digital por internet (CFDI), el cual se hará llegar al correo que indique (el cual se agrega al presente Instrumento), mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que el <b>“PRESTADOR DE SERVICIOS”</b> no podrá exigir retribución alguna por ningún otro concepto.</dd>
+                <br><dd>El monto resultante señalado en el <b>párrafo primero</b> de esta cláusula se otorgará al <b>“PRESTADOR DE SERVICIOS”</b> conforme a la disponibilidad financiera de <b>“ICATECH”</b>; que se realizará en una sola exhibición, por medio de cheque y/o transferencia interbancaria a la cuenta que señala, y se agrega al presente Contrato. Así mismo, se expedirá el comprobante fiscal digital por internet (CFDI), el cual se agrega al presente Instrumento, mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que el <b>“PRESTADOR DE SERVICIOS”</b> no podrá exigir retribución alguna por ningún otro concepto.</dd>
                 <br><dd><b>TERCERA.- DE LA OBLIGACIÓN DEL “PRESTADOR DE SERVICIOS”</b>. Se obliga a desempeñar las obligaciones que contrae en este acto conforme a los procedimientos de control escolar y con todo el sentido ético y profesional que requiere <b>“ICATECH”</b>, de acuerdo con las políticas y reglamentos del mismo para:</dd>
                 <Ol type = "I">
                     <li> Diseñar, preparar e impartir '.($data->tipo_curso == 'CURSO' ? 'el curso' : 'la certificación extraordinaria').' a su cargo con toda la diligencia y esmero que exige la calidad de <b>“ICATECH”</b>.</li>
@@ -448,7 +480,7 @@ class EContratoController extends Controller
                 <li>Por no otorgar '.($data->tipo_curso == 'CURSO' ? 'el curso' : 'la certificación extraordinaria').' en el tiempo establecido. </li>
             </ol>
             <div align="justify"><dd>Asimismo; en caso de tener evidencias de que '.($data->tipo_curso == 'CURSO' ? 'el curso  no fue impartido' : 'la certificación extraordinaria  no fue impartida').', se procederá a dar por rescindido el contrato, y se interpondrá la acción legal que corresponda.</dd>
-                <br><dd>El <b>“ICATECH”</b> podrá dar por terminado las obligaciones contractuales contraídas con el <b>“PRESTADOR DE SERVICIOS”</b> de forma anticipada, previo aviso que realice por escrito con un mínimo de 10 días hábiles.</dd>
+                <br><dd>El <b>“ICATECH”</b> podrá dar por terminadas las obligaciones contractuales contraídas con el <b>“PRESTADOR DE SERVICIOS”</b> de forma anticipada.</dd>
                 <br><dd><b>“ICATECH”</b> se reservará el derecho de aceptar la terminación anticipada del contrato, sin que ello implique la renuncia a deducir las acciones legales que en su caso procedan.</dd>
                 <br><dd><b>NOVENA.- CESIÓN. “PRESTADOR DE SERVICIOS”</b> no podrá en ningún caso ceder total o parcialmente a terceros llámese persona física o persona moral, los derechos y obligaciones derivadas del presente contrato.</dd>
                 <br><dd><b>DÉCIMA.- RELACIONES PROFESIONALES. “ICATECH”</b> no adquiere ni reconoce obligación alguna de carácter laboral a favor del <b>“PRESTADOR DE SERVICIOS”</b>, en virtud de no ser aplicables a la relación contractual que consta en este instrumento, los artículos 1º y 8º de la Ley Federal del Trabajo y 123 apartado “A” y “B” de la Constitución Política de los Estados Unidos Mexicanos, por lo que no será considerado al <b>“PRESTADOR DE SERVICIOS”</b> como trabajador de <b>“ICATECH”</b> para los efectos legales y en particular para obtener las prestaciones establecidas en su artículo 5 A, fracciones V, VI y VII de la Ley del Instituto Mexicano del Seguro Social.</dd>

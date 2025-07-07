@@ -1,15 +1,16 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
 @section('title', 'Actualizar | Sivyc Icatech')
-
-@section('content')
-
-    <div class="container g-pt-50">
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+@endsection
+@section('content')       
+    <div class="card-header">
+        Catálogos / Actualizar Área
+    </div>
+    <div class="card card-body">  
         <form action="{{ route('areas.update_save') }}" method="post">
             @csrf
-
-            <h1>Actualizar Área</h1>
-
             <div class="row mt-5">
                 <div class="col">
                     <div class="form-group">
@@ -41,7 +42,7 @@
             <div class="row my-2">
                 <div class="col">
                     <div class="pull-right">
-                        <button type="submit" class="btn btn-primary">Actualizar área</button>
+                        <button type="submit" class="btn">Actualizar área</button>
                         <input type="text" name="idarea" id="idarea" hidden value="{{ $area->id }}">
                     </div>
                 </div>

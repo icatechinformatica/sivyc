@@ -101,6 +101,8 @@ Route::get('/vista/pat/buzon/pdf/general/{mes}/{opcion}', 'PatController\BuzonCo
 Route::post('/vista/pat/buzon/delete', 'PatController\BuzonController@cancelar_documento')->name('pat.buzon.cancel.doc');
 //Visualizar documento electronico pat planeación
 Route::get('/vista/pat/buzon/pdf/firma/{id?}/{org?}', 'PatController\BuzonController@ver_docfirmado')->name('pat.buzon.pdf.efirma');
+//Agregar autocomplete para la busqueda de organismos
+Route::post('/vista/pat/buzon/autocomplete', 'PatController\BuzonController@organismosAutocomplete')->name('consulta.orgpat.autocomp');
 
 
 
@@ -150,14 +152,6 @@ Route::middleware(['auth'])->group(function(){
 });
 /**Generar pdf expedientes unicos */
 Route::get('vista/expedientes/genpdf/{folio}', 'ExpeController\ExpedienteController@pdf_expediente')->name('expunico.gen.pdfexpe');
-
-
-/** MODULO DE CONSULTA DE ALUMNOS VINCULADOS CON LA BOLSA DE TRABAJO */
-Route::get('consultas/bolsa/alumnos', 'Consultas\BolsaTrabController@index')->name('consultas.bolsa.index');
-//Post para el autocompletado de cursos
-Route::post('autocomplet/bolsa/cursos', 'Consultas\BolsaTrabController@autocomplete_cursos')->name('consulta.bolsa.autocomp');
-//Generar reporte de excel
-Route::get('consultas/bolsa/reporte', 'Consultas\BolsaTrabController@crear_reporte_excel')->name('consulta.bolsa.reporte');
 
 /** MODULO DE EFIRMA BUZON FOLIO ALUMNOS */
 Route::get('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');

@@ -16,7 +16,7 @@ class curso extends Model
             'objetivo','perfil','solicitud_autorizacion','fecha_validacion','memo_validacion',
             'memo_actualizacion','fecha_actualizacion','unidad_amovil','descripcion','no_convenio','id_especialidad',
             'area', 'cambios_especialidad', 'categoria','tipo_curso', 'rango_criterio_pago_minimo',
-            'rango_criterio_pago_maximo','estado','observacion','servicio','riesgo','fecha_solicitud'
+            'rango_criterio_pago_maximo','estado','observacion','servicio','riesgo','fecha_solicitud','curso_alfa'
     ];
 
     protected $casts = [

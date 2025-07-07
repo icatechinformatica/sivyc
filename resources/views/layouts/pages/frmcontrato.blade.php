@@ -246,7 +246,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control" value="{{$funcionarios['ccp2']}}">
+                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control" value="{{$funcionarios['ccp2p']}}">
                         {{-- <input id="id_ccp2" name="id_ccp2" hidden> --}}
                     </div>
                 </div>

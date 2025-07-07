@@ -161,91 +161,6 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label><strong>Subproyecto:</strong></label>
-                                        {{-- <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="oportunidades" onclick="puestoOnOff(this, 'oportunidades_puesto')"> Oportunidades</label>
-                                            <select class="form-control col-md-4" name="oportunidades_puesto" id="oportunidades_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="conafe" onclick="puestoOnOff(this, 'conafe_puesto')"> CONAFE</label>
-                                            <select class="form-control col-md-4" name="conafe_puesto" id="conafe_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="sedena" onclick="puestoOnOff(this, 'sedena_puesto')"> SEDENA</label>
-                                            <select class="form-control col-md-4" name="sedena_puesto" id="sedena_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="profesores" onclick="puestoOnOff(this, 'profesores_puesto')"> Profesores</label>
-                                            <select class="form-control col-md-4" name="profesores_puesto" id="profesores_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="becarios" onclick="puestoOnOff(this, 'becarios_puesto')"> Jóvenes Becarios</label>
-                                            <select class="form-control col-md-4" name="becarios_puesto" id="becarios_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="osc" onclick="puestoOnOff(this, 'osc_puesto')"> Organizaciones de la Sociedad Civil (OSC)</label>
-                                            <select class="form-control col-md-4" name="osc_puesto" id="osc_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label style="opacity: 0.0;"><strong>Subproyecto:</strong></label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="ipf" onclick="puestoOnOff(this, 'ipf_puesto')"> Instituciones Públicas Federales</label>
-                                            <select class="form-control col-md-4" name="ipf_puesto" id="ipf_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="programas federales" onclick="puestoOnOff(this, 'programas federales_puesto')"> Programas Federales</label>
-                                            <select class="form-control col-md-4" name="programas federales_puesto" id="programas federales_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="conevyt" onclick="puestoOnOff(this, 'conevyt_puesto')"> Certificación CONEVyT (Empresas)</label>
-                                            <select class="form-control col-md-4" name="conevyt_puesto" id="conevyt_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="subproyecto[]" value="instituciones academicas" onclick="puestoOnOff(this, 'instituciones academicas_puesto')"> Instituciones Académicas</label>
-                                            <select class="form-control col-md-4" name="instituciones academicas_puesto" id="instituciones academicas_puesto" hidden>
-                                                @foreach ($puestos as $puesto)
-                                                    <option value="{{$puesto}}">{{$puesto}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div> --}}
                                         <div class="checkbox">
                                             <label><input type="checkbox" name="subproyecto[]" value="chiapas puede" {{--onclick="puestoOnOff(this, 'otrosub_puesto')"--}} checked>Chiapas Puede</label>
                                             {{-- <input type="text" class="form-control col-md-4" hidden name="otrosub" id="otrosub"> --}}
@@ -383,89 +298,17 @@
                                         <div class="checkbox">
                                             <label><input type="checkbox" name="roles_figura_operativa[]" value="aspirante_asesor" checked> Aspirante que apoya en asesoria educativa hispano 2024</label>
                                         </div>
-                                        {{-- <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo"> Asesor educativo</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="asesor_educativo_bilingüe"> Asesor educativo bilingüe</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_grupo"> orientador educativo de grupo</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="orientador_discapacidad"> orientador educativo para personas en situación de discapacidad</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="auxiliar_interprete"> auxiliar intérprete</label>
-                                        </div> --}}
                                     </div>
                                 </div>
-                                {{-- <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo"> Enlace educativo</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_educativo_bilingüe"> Enlace educativo bilingüe</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional"> Enlace regional</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_regional_bilingüe"> Enlace regional bilingüe</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="formador_especializado"> Formador especializado</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="promotor_comunitaria"> Promotor de una plaza comunitaria</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_tecnico"> Apoyo técnico</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes"> Aplicador de exámenes</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="aplicador_examenes_bilingüe"> aplicador de exámenes bilingüe</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_plaza"> Enlace de plaza</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label style="opacity: 0.0;"><strong>rol (es) de la figura operativa:</strong></label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="apoyo_regional"> Apoyo regional de plazas comunitarias</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="enlace_especifico"> Enlace o apoyo para determinadas actividades específicas</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="titular_promotor"> Titular promotor</label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" name="roles_figura_operativa[]" value="tecnico_docente"> Tecnico docente</label>
-                                        </div>
-                                    </div>
-                                </div> --}}
                             </div>
                             <label><strong>Incorporado a:</strong></label>
                             <div class="form-row">
-                                <label class="col-form-label">Unidad Operativa:</label>
+                                <label class="col-form-label">Unidad de Capacitación:</label>
                                 <div class="col-sm-3 form-group">
                                     <input name="unidad_operativa" id="unidad_operativa" type="text" class="form-control" aria-required="true">
                                     <small class="form-text text-muted" style="text-align: center;">Tipo</small>
                                 </div>
-                                <label class="col-form-label">No. de Círculo de estudio:</label>
+                                <label class="col-form-label">Clave del Centro de Trabajo:</label>
                                 <div class="col-sm-3 form-group">
                                     <input name="circulo_estudio" id="circulo_estudio" type="text" class="form-control" aria-required="true">
                                 </div>
@@ -481,100 +324,15 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <label class="col-form-label">Fecha de inicio:</label>
+                                <label class="col-form-label">Fecha de Registro Alfa:</label>
                                 <div class="col-sm-3 form-group">
                                     <input name="fecha_inicio" id="fecha_inicio" type="date" class="form-control" aria-required="true">
                                 </div>
-                            </div>
-                            {{-- <label><strong>Horario del Círculo de estudio:</strong></label>
-                            <div class="form-row">
-                                <div class="col-sm-3 form-group" style="text-align: center;">
-                                    <label class="col-form-label" style="text-align: center;">Día</label>
-                                </div>
-                                <div class="col-sm-3 form-group" style="text-align: center;">
-                                </div>
-                                <div class="col-sm-3 form-group" style="text-align: center;">
-                                    <label class="col-form-label" style="text-align: center;">Día</label>
+                                <label class="col-form-label">No. de Folio:</label>
+                                <div class="col-sm-3 form-group">
+                                    <input name="no_folio" id="no_folio" type="text" class="form-control" aria-required="true">
                                 </div>
                             </div>
-                            <div class="form-row">
-                                <label class="col-form-label">1.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia1" id="dia1" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio1" id="horario_inicio1" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino1" id="horario_termino1" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">1.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia1_2" id="dia1_2" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio1_2" id="horario_inicio1_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino1_2" id="horario_termino1_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <label class="col-form-label">2.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia2" id="dia2" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio2" id="horario_inicio2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino2" id="horario_termino2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">2.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia2_2" id="dia2_2" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio2_2" id="horario_inicio2_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino2_2" id="horario_termino2_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <label class="col-form-label">3.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia3" id="dia3" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio3" id="horario_inicio3" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino3" id="horario_termino3" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">3.-</label>
-                                <div class="col-sm-3 form-group">
-                                    <input name="dia3_2" id="dia3_2" type="text" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">De</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_inicio3_2" id="horario_inicio3_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                                <label class="col-form-label">a</label>
-                                <div class="col-sm-1 form-group">
-                                    <input name="horario_termino3_2" id="horario_termino3_2" type="time" class="form-control" aria-required="true">
-                                </div>
-                            </div> --}}
                         </div>
                     </div>
                 </div>

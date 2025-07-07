@@ -25,7 +25,9 @@
         @endif        
         {{ Form::open(['method' => 'post', 'id'=>'frm',  'enctype' => 'multipart/form-data']) }}
             @csrf                   
-            <div class="row form-inline">   
+            <h4>Filtrar con Fecha de Reportado:</h4>
+            <div class="row form-inline ml-1">   
+                
                 {{ Form::date('fecha1', $fecha1 ?? '' , ['id'=>'fecha1', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA INICIAL', 'required' => 'required']) }}
                 {{ Form::date('fecha2', $fecha2 ?? '', ['id'=>'fecha2', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA FINAL', 'title' => 'FECHA FINAL', 'required' => 'required']) }}                  
                 {{ Form::button('FILTRAR', ['class' => 'btn', 'onclick' => "filtrar('FILTRAR')"]) }}
@@ -46,14 +48,18 @@
                                 <th>Subsistema</th>
                                 <th>Entidad</th>
                                 <th>ZonaEconómica</th>
-                                <th>Trabajador</th>
-                                <th>CURP</th>
                                 <th>RFC</th>
+                                <th>CURP</th>
+                                <th>Primer Apellido</th>
+                                <th>Segundo Apellido</th>
+                                <th>Nombres</th>                                
                                 <th>Plaza</th>
                                 <th>Categoría</th>
                                 <th>Código</th>
                                 <th>Horas</th>
                                 <th>CCT</th>
+                                <th>Reportado</th>
+                                <th>Mes</th>
                             </tr>                            
                         </thead>                       
                             <tbody>
@@ -64,14 +70,19 @@
                                         <td>{{ $item->subsistema}}</td>                                        
                                         <td>{{ $item->entidad}}</td>
                                         <td>{{ $item->ze}}</td>
-                                        <td class="text-left">{{ $item->nombre}}</td>
-                                        <td class="text-left">{{ $item->curp}}</td>
                                         <td class="text-left">{{ $item->rfc}}</td>
+                                        <td class="text-left">{{ $item->curp}}</td>                                        
+                                        <td class="text-left">{{ $item->apaterno}}</td>
+                                        <td class="text-left">{{ $item->amaterno}}</td>
+                                        <td class="text-left">{{ $item->nombre}}</td>
+                                        
                                         <td>{{ $item->tipo_plaza}}</td>
                                         <td>{{ $item->plaza}}</td>
                                         <td>{{ $item->codigo_plaza}}</td>                                        
                                         <td>{{ $item->horas}}</td>
                                         <td>{{ $item->cct}}</td>
+                                        <td>{{ $item->fecha}}</td>
+                                        <td>{{ $item->mes}}</td>
                                     </tr>     
                                 @endforeach    
                             </tbody>
@@ -81,6 +92,12 @@
                                     </td>
                                 </tr>
                             </tfoot>
+                        @elseif(isset($fecha1))
+                            <div class="row mt-4">
+                                <div  class="col-md-12 alert alert-danger text-center" >
+                                    {{ "NO SE ENCONTRARON REGISTROS." }}
+                                </div>
+                            </div>
                         @endif
                     </table>
                 </div>

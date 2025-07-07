@@ -131,6 +131,14 @@ class MetavanceController extends Controller
         $consul_efirma = array('idEfirmaMeta' => '', 'cadena_original' => '', 'firmante_uno' => '', 'firmante_dos' => '', 'firmado_uno' => '', 'firmado_dos' => '', 'token_efirma' => '',
             'curp_activo' => '', 'status_firma' => '', 'status_doc' => '', 'pos_firm_activo' => '', 'id_meta_valid' => ''
         );
+        //idEfirmaMeta: id del registro en documentos firmar
+        //firmante_uno / firmante_dos: Nombre de ambos firmantes
+        //firmado_uno / firmado_dos: Contiene el valor si o no de acuerdo si ya ha firmado el documento
+        //curp_activo: contiene la curp activa del user logeado
+        //status_firma: contiene el valor FIRMADO en caso de que haya firmado y validado mediante la curp
+        //status_doc: contiene el status del documento puede ser EnFirma o VALIDADO
+        //pos_firm_activo: contiene la posicion activa de cuando es FIRMADO  validado la curp, puede ser valor de 0 o 1
+        //id_meta_valid: contiene el id del registro de documentos firmar, listo para ser enviado para mostrar el documento valido
 
         ## CONSULTAS
         $consulta_e_meta = false;
@@ -2834,8 +2842,8 @@ class MetavanceController extends Controller
                         $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
                     }
                 }else{
-                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('correo', $emailUser1)->where('activo', 'true')->value('cargo');
-                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('correo', $emailUser2)->where('activo', 'true')->value('cargo');
+                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
+                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
                 }
 
                 if(empty($puesto_firmUno) || empty($puesto_firmDos)){

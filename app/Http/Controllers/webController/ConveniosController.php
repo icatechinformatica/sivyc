@@ -6,6 +6,7 @@ use App\Excel\xlsConvenios;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Convenio;
+use App\Models\Unidad;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 // use Illuminate\Support\Facades\File;
@@ -13,6 +14,7 @@ use App\Models\Municipio;
 use App\Models\convenioAvailable;
 use App\Models\organismosPublicos;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToArray;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
@@ -36,10 +38,28 @@ class ConveniosController extends Controller
             'fecha1' => $request->get('fecha1'),
             'fecha2' => $request->get('fecha2')
         ];
+        
+        if(!Auth::user()->can('convenios.all')){            
+            $unidad = Auth::user()->unidadTo->unidad;
+            $unidades = Unidad::BusquedaUnidad('ubicacion', $unidad)->orWhere('unidad',$unidad)->pluck('unidad','unidad');            
+        }
 
+            
+            
+
+        
         $data = Convenio::Busqueda($request->get('busqueda'), $datos)
-            ->select('convenios.*')
-            ->orderByDesc('convenios.id')
+            ->select('convenios.*');
+            if(isset($unidades)){ //dd($unidades);
+                $data->where(function ($data) use ($unidades) {
+                    foreach ($unidades as $unidad) {
+                        $data->orWhereJsonContains('unidades', $unidad);
+                    }
+                });
+
+//                $data = $data->whereJsonContains('unidades',$unidades);    
+            }
+            $data = $data->orderByDesc('convenios.id')
             ->paginate(15, ['convenios.*']);
 
         return view('layouts.pages.vstconvenios', compact('data', 'datos', 'request'));

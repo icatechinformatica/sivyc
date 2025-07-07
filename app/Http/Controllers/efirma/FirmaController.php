@@ -46,15 +46,23 @@ class FirmaController extends Controller {
         $rol = DB::Table('role_user')->Select('role_id')->Where('user_id', Auth::user()->id)->First();
         $unidad_user = DB::Table('tbl_unidades')->Where('id',Auth::user()->unidad)->Value('ubicacion');
         $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
-            ->Join('tbl_funcionarios','tbl_funcionarios.correo','users.email')
+            ->Join('tbl_funcionarios','tbl_funcionarios.id_org','users.id_organismo')
             ->Where('users.id', Auth::user()->id)
+            ->Where('tbl_funcionarios.activo', 'true')
+            ->Where('tbl_funcionarios.titular', 'true')
             ->First();
+
+        if(is_null($curpUser)) {
+            $curpUser = new \stdClass();
+            $curpUser->curp = 'N/A';
+        }
 
         if($rol->role_id == '31' || $rol->role_id == '47' || $rol->role_id == '4'){
 
             $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
                 ->Join('tbl_funcionarios','tbl_funcionarios.id_org','users.id_organismo')
                 ->Where('users.id', Auth::user()->id)
+                ->Where('tbl_funcionarios.activo', 'true')
                 ->First();
             }
 
@@ -136,9 +144,18 @@ class FirmaController extends Controller {
             // $docsFirmados = $docsFirmados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
             // $docsValidados = $docsValidados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
             // $docsCancelados = $docsCancelados1->where('tipo_archivo', $tipo_documento)->orderBy('id', 'desc')->get();
-            $docsFirmar = $docsFirmar1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
-            $docsFirmados = $docsFirmados1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
-            $docsValidados = $docsValidados1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsFirmar = $docsFirmar1->where(function ($query) use ($busqueda_clave) {
+                $query->where('numero_o_clave', $busqueda_clave)
+                    ->OrWhere('folios.folio_validacion', $busqueda_clave);
+            })->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsFirmados = $docsFirmados1->where(function ($query) use ($busqueda_clave) {
+                $query->where('numero_o_clave', $busqueda_clave)
+                    ->OrWhere('folios.folio_validacion', $busqueda_clave);
+            })->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
+            $docsValidados = $docsValidados1->where(function ($query) use ($busqueda_clave) {
+                $query->where('numero_o_clave', $busqueda_clave)
+                    ->OrWhere('folios.folio_validacion', $busqueda_clave);
+            })->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
             $docsCancelados = $docsCancelados1->where('numero_o_clave', $busqueda_clave)->orderBy('id', 'desc')->paginate(15, ['documentos_firmar.*']);
         }
 

@@ -693,28 +693,12 @@
                 <div class="row">
                     <div class="col d-flex justify-content-end">
                         <div class="d-flex gap-1">
-                            @if (is_array($revisionLocal) && count($revisionLocal) > 0)
-                                @if (
-                                    $getConcentrado->estado == 'ENFIRMA' ||
-                                        ($getConcentrado->estado == 'APROBADO' && $getConcentrado->tipo != 'CANCELADO'))
-                                    @if (!empty($data['cadenaOriginal']))
-                                        <div class="padre">
-                                            @can('vobo.rf001')
-                                                {{-- Usar el componente creado --}}
-                                                <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                                    :token-data="$token" :id="$id" :curp-firmante="$curpFirmante" :duplicado="$data['controlduplicado']"></x-firma-componente>
-                                            @endcan
-                                        </div>
-                                    @endif
-                                @endif
-                            @else
-                                @if ((!empty($data['cadenaOriginal']) && $getConcentrado->estado == 'APROBADO') || $getConcentrado->estado == 'ENFIRMA')
-                                    <div class="padre">
-                                        @canany(['solicitud.rf001', 'vobo.rf001'])
-                                            <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
-                                                :token-data="$token" :id="$id" :curp-firmante="$curpFirmante" :duplicado="$data['controlduplicado']"></x-firma-componente>
-                                        @endcanany
-                                    </div>
+                            @if ($countFirma < 2 && ($getConcentrado->estado == 'APROBADO' || $getConcentrado->estado == 'ENFIRMA'))
+                                @if (is_null($curps))
+                                    @canany(['solicitud.rf001', 'vobo.rf001'])
+                                        <x-firma-componente :indice="$data['indice']" :cadena-original="$data['cadenaOriginal']" :base-xml="$data['baseXml']"
+                                        :token-data="$token" :id="$id" :curp-firmante="$curpFirmante" :duplicado="$data['controlduplicado']"></x-firma-componente>
+                                    @endcanany
                                 @endif
                             @endif
 
@@ -730,7 +714,7 @@
                                         id="enviarRevision">EDITAR CONCENTRADO</a>
                                 @endcan
                             @endif
-                            @if ($getConcentrado->estado == 'APROBADO')
+                            @if ($getConcentrado->estado !== 'SELLADO' || $getConcentrado->estado !== 'ENSELLADO' || $getConcentrado->estado !== 'GENERADO')
                                 @can('solicitud.rf001')
                                     <a href="javascript:;" class="btn btn-danger openModalPlaneacion btn-xs ml-2" id="retornoPlaneacion" data-memo="{{ $getConcentrado->memorandum }}">RETORNO PLANEACIÓN</a>
                                 @endcan

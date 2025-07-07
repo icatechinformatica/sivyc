@@ -40,7 +40,7 @@ class aperturasController extends Controller
         });
     }
 
-    public function index(Request $request){
+    public function index(Request $request){ 
         $opt = $memo = $message = $file = $status_solicitud = $extemporaneo = $motivo_soporte = NULL;
 
         if($request->memo)  $memo = $request->memo;
@@ -48,6 +48,7 @@ class aperturasController extends Controller
 
         if($request->opt)  $opt = $request->opt;
         elseif(isset($_SESSION['opt'])) $opt = $_SESSION['opt'];
+        else $opt = 'ARC01';
 
         $_SESSION['grupos'] = NULL;
         $grupos = $movimientos = [];
@@ -55,7 +56,7 @@ class aperturasController extends Controller
         $path = $this->path_files;
         if($memo){
             $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo')
+                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo','tc.fecha_arc01','tc.status_curso')
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                 ->leftjoin('convenios','convenios.no_convenio','=','tc.cgeneral')
                 ->leftJoin('exoneraciones as e','tc.mexoneracion','=','e.no_memorandum')
@@ -134,7 +135,14 @@ class aperturasController extends Controller
                     if(!$movimientos) $movimientos []='- SELECCIONAR -';
                      $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
                      $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
+                } 
+                //dd($status_solicitud);
+                if($status_solicitud =='TURNADO'){ //TURNADO PRELIMINAR
+                    $movimientos += ['' => '- SELECCIONAR -']; 
+                    if($grupos[0]->arc == '02')  $movimientos += ['EDICION' =>'AUTORIZAR EDICION']; 
+                     $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'];
                 }
+                
             }else $message = "No se encuentran registros que mostrar.";
         }
 
@@ -343,7 +351,7 @@ class aperturasController extends Controller
                         $folios = DB::table('tbl_cursos')->where('munidad',$rev)->pluck('folio_grupo');
                         //var_dump($folios);exit;
                         $rest = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "UNIDAD",'fecha_turnado' => date('Y-m-d')]);
-                        if($rest)$message = "La solicitud retonado a la Unidad.";
+                        if($rest)$message = "SOLICITUD ARC-01 RETORNADA EXITOSAMENTE.";
                         unset($_SESSION['memo']);
                      }
                 break;
@@ -359,7 +367,7 @@ class aperturasController extends Controller
                     ->where('nmunidad',$_SESSION['memo'])->update(['status_curso' => 'AUTORIZADO','updated_at'=>date('Y-m-d H:i:s'),'status_solicitud_arc02'=>null,
                                                                     'nmunidad' => $rev]);
                    // echo "pasa";exit;
-                    if($result)$message = "La solicitud retonado a la Unidad.";
+                    if($result)$message = "SOLICITUD ARC-02 RETORNADA EXITOSAMENTE.";
                     //unset($_SESSION['memo']);
                 break;
             }
@@ -587,7 +595,7 @@ class aperturasController extends Controller
                 }
             }
             if ($result2) {
-                $message = "La solicitud retonado a la Unidad.";
+                $message = "SOLICITUD RETORNADA EXITOSAMENTE.";
             }
         }
         return redirect('solicitudes/aperturas')->with('message',$message);
@@ -606,6 +614,33 @@ class aperturasController extends Controller
         ->pluck('clave','clave');
         if( DB::table('tbl_cursos')->where('munidad', $memo)->whereIn('clave', $maxs)->count() == count($maxs)) return true;
         else return false;
+
+    }
+     
+    public function guardar_fecha(Request $request){ 
+        $message = "Operación fallida, por favor intente de nuevo.";
+        if($request->fecha AND $request->memo){
+            $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->whereNotNull('fecha_arc01')
+            ->where(function ($query) {
+                    $query->whereNotIn('status_curso', ['AUTORIZADO', 'CANCELADO'])
+                        ->orWhereNull('status_curso');
+            })
+            ->update([
+                'fecha_arc01' => $request->fecha,
+                'movimientos' => DB::raw("
+                COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                    jsonb_build_object(
+                            'fecha', '".date('Y-m-d H:i:s')."',
+                            'usuario', '".Auth::user()->name."',
+                            'operacion', 'CAMBIO LA FECHA DEL ARC01',
+                            'motivo solicitud', 'SOLICITADO POR LA UNIDAD DE CAPACITACIÓN.'
+                            )
+                    )
+                ")
+            ]);
+            if($result) $message = "Operación Exitosa!";            
+        }else $message = "Por favor, ingrese una fecha válida.";
+        return $message;
 
     }
 

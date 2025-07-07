@@ -51,6 +51,7 @@ class ESupreController extends Controller
 
         $numFirmantes = '1';
         $arrayFirmantes = [];
+        $firmanteInterno = array();
 
         $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
                             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
@@ -78,6 +79,7 @@ class ESupreController extends Controller
         ];
 
         array_push($arrayFirmantes, $temp);
+        array_push($firmanteInterno, ['nombre' => $dataFirmante->nombre, 'curp' => $dataFirmante->curp, 'cargo' => $dataFirmante->cargo]);
 
         $anexos= ['_attributes' =>
             [
@@ -189,8 +191,10 @@ class ESupreController extends Controller
                 $dataInsert = new DocumentosFirmar();
             }
 
+            $body_construct = ['body' => $body, 'firmantes' => $firmanteInterno];
+
             $dataInsert->obj_documento = json_encode($ArrayXml);
-            $dataInsert->obj_documento_interno = json_encode($body);
+            $dataInsert->obj_documento_interno = json_encode($body_construct);
             $dataInsert->status = 'EnFirma';
             // $dataInsert->link_pdf = $urlFile;
             $dataInsert->cadena_original = $response->json()['cadenaOriginal'];

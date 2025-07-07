@@ -72,7 +72,7 @@
                                 <span class="block">UNIDAD DE CAPACITACI&Oacute;N: &nbsp;{{$curso->plantel}} {{ $curso->unidad }}</span>
                                 <span class="block">CLAVE CCT: &nbsp;{{ $curso->cct }}</span>
                                 <span class="block">CICLO ESCOLAR: &nbsp;{{ $curso->ciclo }}</span>
-                                <span class="block">GRUPO: &nbsp;{{ $curso->grupo }}</span>
+                                <span class="block">GRUPO: &nbsp;{{ $curso->folio_grupo }}</span>
                                 <span class="block">MES: &nbsp;@if(isset($mes[$m[1]])){{ $mes[$m[1]] }}@endif</span>
                                 <span class="block">A&Ntilde;O: &nbsp;{{ $m[0] }}</span>
                                 <span class="block">AREA: &nbsp;{{ $curso->area }}</span><br/>

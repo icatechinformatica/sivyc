@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController\Api\PassportController;
 use App\Http\Controllers\Api\FotosController;
+use App\Http\Controllers\Api\PreregistroinsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -57,6 +58,7 @@ use Illuminate\Support\Facades\Route;
      Route::post('folios/{curso}/{id}', 'ApiController\FolioController@update');
      Route::get('instructores/perfil/{id}', 'ApiController\InstructorPerfilController@show');
      Route::post('cursos/actualizar/{id}', 'ApiController\CursosController@updateCursosCalificaciones');
+     Route::get('/rh-api', 'RH\RHController@api_rh'); // rh para api de la nube
 
 
     //api app movil "supervision icatech"eb
@@ -107,4 +109,6 @@ Route::post('sivycMovil/getNotificaciones', 'ApiController\ApisMovil\HomeMovil@g
 Route::prefix('v1')->group(function (){
     //es decir /api/v1/*
     Route::post('catchimg', [FotosController::class, 'recibirimg']);
+    //api para recibir pdf desde web icatech del registro de instructores
+    Route::post('catchpdfs', [PreregistroinsController::class, 'recibirpdfs']);
 });

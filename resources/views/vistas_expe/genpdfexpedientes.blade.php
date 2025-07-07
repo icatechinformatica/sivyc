@@ -1,20 +1,18 @@
 {{-- Realizado por Jose Luis Morenoa Arcos --}}
-@extends('theme.formatos.vlayout2025')
+@extends('theme.formatos.vlayout_expeunico')
 @section('title', 'Expediente Unico | SIVyC Icatech')
 
 @section('content_script_css')
     <style>
         /* @page {margin: 0px 15px 15px 15px; } */
         .contenedor{
-            margin-left: 0.5cm;
-            margin-right: 0.5cm;
+            margin-left: -1.3cm;
+            margin-right: -0.6cm;
         }
-        /* body{
-            padding-bottom: 70px;
-        } */
 
         .bloque_uno{
             /* padding-top: 40px; */
+            margin-top: -45px;
             font-weight: bold;
             font-size: 14px;
             font: bold;
@@ -34,14 +32,14 @@
         }
 
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #2b2a2a;
             padding: 5px;
             /* text-align: left; */
             font-size: 12px;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #a4a1a1;
         }
 
         .negrita{
@@ -57,11 +55,8 @@
         <div class="bloque_uno" align="right">
             <p style="text-align: center">Lista de verificación de Expediente Único</p>
         </div>
-        <div class="contenido" align="justify">
-
-        </div>
         <br>
-
+        @php $distintivo = null;  @endphp
         {{-- Tabla encabezado --}}
         @if (isset($curso))
             <table>

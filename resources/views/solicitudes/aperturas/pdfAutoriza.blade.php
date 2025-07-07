@@ -41,14 +41,14 @@
                 $fecha = $fechaLayout = $reg_cursos[0]->fecha_apertura;
                 $memo = $reg_cursos[0]->mvalida;
                 $asunto = "AUTORIZACIÓN DE ASIGNACIÓN DE CLAVES DE APERTURAS";
-                $det = "Por este medio envió a Usted el formato de autorización de asignación de claves de apertura de servicios, en atención a la solicitud con número de memorándum $munidad.";
+                $det = "Por este medio envió a Usted el formato de autorización de asignación de claves de cursos de capacitación y/o certificación, en atención a la solicitud con número de memorándum $munidad.";
 
             break;
             case 'ARC-02':
-                $fecha = $reg_cursos[0]->fecha_modificacion;
+                $fecha = $fechaLayout = $reg_cursos[0]->fecha_modificacion;
                 $memo = $reg_cursos[0]->nmacademico;
                 $asunto = "REPROGRAMACIÓN, MODIFICACIÓN O CANCELACIÓN DE APERTURAS";
-                $det = "Por este medio envió a Usted el formato de autorización de reprogramación, modificación o cancelación de aperturas de servicios, en atención a la solicitud con número de memorándum $nmunidad.";
+                $det = "Por este medio envió a Usted el formato de autorización de reprogramación, modificación o cancelación de cursos de capacitación y/o certificación, en atención a la solicitud con número de memorándum $nmunidad.";
             break;
         }
         //CONVERSION DE FECHA
