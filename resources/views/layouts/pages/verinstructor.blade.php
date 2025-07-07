@@ -3815,64 +3815,64 @@
             });
         });
 
-        document.getElementById('reginstructor').addEventListener('submit', function (e) {
-            var fileInputs = [
-                'arch_domicilio',
-                'arch_curp',
-                'arch_banco',
-                'arch_foto',
-                'arch_id',
-                'arch_rfc',
-                'arch_estudio',
-                'arch_curriculum_personal'
-            ];
+        // document.getElementById('reginstructor').addEventListener('submit', function (e) {
+        //     var fileInputs = [
+        //         'arch_domicilio',
+        //         'arch_curp',
+        //         'arch_banco',
+        //         'arch_foto',
+        //         'arch_id',
+        //         'arch_rfc',
+        //         'arch_estudio',
+        //         'arch_curriculum_personal'
+        //     ];
 
-            for (var i = 0; i < fileInputs.length; i++) {
-                var inputId = fileInputs[i];
-                var fileInput = document.getElementById(inputId);
-                if (fileInput.files.length === 0) {
-                    switch(inputId) {
-                        case 'arch_domicilio':
-                            href = document.getElementById('arch_domicilio_pdf').getAttribute('href');
-                            inputIdName = 'Comprobande de Domicilio';
-                        break;
-                        case 'arch_curp':
-                            href = document.getElementById('arch_curp_pdf').getAttribute('href');
-                            inputIdName = 'CURP';
-                        break;
-                        case 'arch_banco':
-                            href = document.getElementById('arch_banco_pdf').getAttribute('href');
-                            inputIdName = 'Comprobante Bancario';
-                        break;
-                        case 'arch_foto':
-                            href = document.getElementById('arch_foto_jpg').getAttribute('href');
-                            inputIdName = 'Fotografía';
-                        break;
-                        case 'arch_id':
-                            href = document.getElementById('arch_id_pdf').getAttribute('href');
-                            inputIdName = 'Acta de Nacimiento';
-                        break;
-                        case 'arch_rfc':
-                            href = document.getElementById('arch_rfc_pdf').getAttribute('href');
-                            inputIdName = 'RFC';
-                        break;
-                        case 'arch_estudio':
-                            href = document.getElementById('arch_estudio_pdf').getAttribute('href');
-                            inputIdName = 'Comprobante de Estudios';
-                        break;
-                        case 'arch_curriculum_personal':
-                            href = document.getElementById('arch_curriculum_personal_pdf').getAttribute('href');
-                            inputIdName = 'Curriculum';
-                        break;
-                    }
-                    if(href == null) {
-                        e.preventDefault(); // Prevent form submission
-                        alert('El campo de ' + inputIdName + ' esta vacio. Favor de subir el documento.');
-                        return;
-                    }
-                }
-            }
-        });
+        //     for (var i = 0; i < fileInputs.length; i++) {
+        //         var inputId = fileInputs[i];
+        //         var fileInput = document.getElementById(inputId);
+        //         if (fileInput.files.length === 0) {
+        //             switch(inputId) {
+        //                 case 'arch_domicilio':
+        //                     href = document.getElementById('arch_domicilio_pdf').getAttribute('href');
+        //                     inputIdName = 'Comprobande de Domicilio';
+        //                 break;
+        //                 case 'arch_curp':
+        //                     href = document.getElementById('arch_curp_pdf').getAttribute('href');
+        //                     inputIdName = 'CURP';
+        //                 break;
+        //                 case 'arch_banco':
+        //                     href = document.getElementById('arch_banco_pdf').getAttribute('href');
+        //                     inputIdName = 'Comprobante Bancario';
+        //                 break;
+        //                 case 'arch_foto':
+        //                     href = document.getElementById('arch_foto_jpg').getAttribute('href');
+        //                     inputIdName = 'Fotografía';
+        //                 break;
+        //                 case 'arch_id':
+        //                     href = document.getElementById('arch_id_pdf').getAttribute('href');
+        //                     inputIdName = 'Acta de Nacimiento';
+        //                 break;
+        //                 case 'arch_rfc':
+        //                     href = document.getElementById('arch_rfc_pdf').getAttribute('href');
+        //                     inputIdName = 'RFC';
+        //                 break;
+        //                 case 'arch_estudio':
+        //                     href = document.getElementById('arch_estudio_pdf').getAttribute('href');
+        //                     inputIdName = 'Comprobante de Estudios';
+        //                 break;
+        //                 case 'arch_curriculum_personal':
+        //                     href = document.getElementById('arch_curriculum_personal_pdf').getAttribute('href');
+        //                     inputIdName = 'Curriculum';
+        //                 break;
+        //             }
+        //             if(href == null) {
+        //                 e.preventDefault(); // Prevent form submission
+        //                 alert('El campo de ' + inputIdName + ' esta vacio. Favor de subir el documento.');
+        //                 return;
+        //             }
+        //         }
+        //     }
+        // });
     </script>
     <script>
         document.getElementById('toggleAcordeon').addEventListener('change', function() {
