@@ -16,7 +16,12 @@
       <th class="h6" scope="col">Tipo Inscrip.</th>
       <th class="h6" scope="col">
         <div style="width: 80px;">
-          {{ Form::number('costoX', null , ['id'=>'costoX', 'maxlength' => '7', 'class' => 'form-control numero', 'placeholder' => 'Cuota']) }}
+            {{ html()->number('costoX')
+                ->id('costoX')
+                ->attribute('maxlength', '7')
+                ->class('form-control numero')
+                ->placeholder('Cuota')
+            }}
         </div>
       </th>
        @if($activar)<th class="h6" scope="col">{{'Eliminar'}}</th>@endif
@@ -155,7 +160,7 @@
             <a class="btn btn-warning dropdown-toggle text-dark" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 REFERENCIAS PAGOS
             </a>
-            <div class="dropdown-menu bg-warning" aria-labelledby="dropdownMenuLink">                       
+            <div class="dropdown-menu bg-warning" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item border-bottom text-dark "  href="{{ route('preinscripcion.grupo.referencias.alumno', ['folio' => $grupo->folio_grupo,'alumno'=>'alumno']) }}" target="_blank" method="POST">
                     <i  class="far fa-file-pdf fa-1x fa-sm"></i> POR ALUMNO
                 </a>

@@ -8,12 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Unidad;
 use App\Models\Rol;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
-    use Notifiable,  HasRoles;
+    use Notifiable;
     protected $guard_name = 'web'; // Añade esto específicamente
 
     /**

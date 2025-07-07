@@ -27,7 +27,6 @@
         "smalot/pdfparser": "^2.7",
         "spatie/array-to-xml": "^2.15",
         "spatie/laravel-html": "^3.12",
-        "spatie/laravel-permission": "^6.20",
         "vyuldashev/xml-to-array": "^1.0"
     },
     "require-dev": {
