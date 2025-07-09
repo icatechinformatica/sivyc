@@ -181,6 +181,9 @@ return [
         App\Providers\ReporteRf001Provider::class,
         App\Providers\DocumentacionPagoInstructorProvider::class,
         App\Providers\CredencialProvider::class,
+
+        // * Providers para repositorios usando Clean Architecture
+        App\Providers\FuncionariosServiceProvider::class,
     ],
 
     /*

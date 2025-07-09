@@ -24,6 +24,9 @@
                         <h3 class="mb-0">NUEVO USUARIO</h3>
                       </div>
                       <div class="col-4 text-right">
+                        <a class="btn btn-primary btn-sm" href="{{ route('usuarios.alta.funcionarios') }}">
+                            <i class="fas fa-plus"></i> Registrar funcionario
+                        </a>
                         <a href="{{URL::previous()}}" class="btn btn-sm btn-danger">REGRESAR</a>
                       </div>
                     </div>

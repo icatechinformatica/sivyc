@@ -133,6 +133,8 @@ Route::middleware(['admin'])->group(function(){
     Route::get('/permisos/roles/index', 'adminController\PermissionController@permiso_rol')->name('permisos.roles.index');
     Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
     Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
+    Route::get('/usuarios/alta/funcionarios', [App\Http\Controllers\adminController\userController::class, 'listadoUsuarios'])->name('usuarios.alta.funcionarios');
+    Route::post('/usuarios/alta/funcionarios', [App\Http\Controllers\adminController\userController::class, 'altaUsuario'])->name('usuarios.alta.funcionarios.post');
     Route::post('/gestor/permisos/roles/profile/add', 'adminController\PermissionController@store')->name('gestor.permisos.roles.create');
     Route::post('/roles/create/store', 'adminController\RolesController@store')->name('roles.store');
     Route::put('/roles/modificacion/update/{id}', 'adminController\RolesController@update')->name('roles.update');
