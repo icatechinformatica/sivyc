@@ -23,10 +23,12 @@ class userController extends Controller
      */
     public function index(Request $request)
     {
-        //
         $tipo = 'nombres';
         $busqueda = strtoupper($request->busquedaPersonal);
-        $usuarios = User::busquedapor($tipo, $busqueda)->PAGINATE(20);
+        
+        // Cargar la relación polimórfica para obtener los nombres
+        $usuarios = User::with('registro')->busquedapor($tipo, $busqueda)->paginate(20);
+        // dd($usuarios);
         return view('layouts.pages_admin.users_permisions', compact('usuarios'));
     }
 
