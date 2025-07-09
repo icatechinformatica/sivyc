@@ -55,22 +55,38 @@ class User extends Authenticatable
     public function scopeBusquedaPor($query, $tipo, $buscar)
     {
         if (!empty($tipo)) {
-            # entramos y validamos
             if (!empty(trim($buscar))) {
-                # empezamos
                 switch ($tipo) {
-                    case 'matricula_aspirante':
-                        return $query->where('matricula', '=', $buscar);
                     case 'curp_aspirante':
-                        return $query->where('curp', '=', $buscar);
+                        return $query->whereHas('registro', function($q) use ($buscar) {
+                            $q->where('curp_usuario', '=', $buscar);
+                        });
                     case 'nombres':
-                        // return $query->where(\DB::raw("upper(name)"), 'LIKE', "%$buscar%");
-                        return $query->where(DB::raw("upper(concat(nombre, ' ', curp, ' ', email))"), 'LIKE', '%'.strtoupper($buscar).'%');
+                        return $query->whereHas('registro', function($q) use ($buscar) {
+                            $q->where(DB::raw("upper(concat(tblz_usuarios.id, ' ', nombre_trabajador, ' ', curp_usuario, ' ', correo))"), 'LIKE', '%'.strtoupper($buscar).'%');
+                        });
                     default:
-                        # code...
                         break;
                 }
             }
         }
+        
+        return $query;
+    }
+    
+    public function registro()
+    {
+        return $this->morphTo();
+    }
+
+    // Accessor para obtener el nombre desde la tabla relacionada
+    public function getNameAttribute()
+    {
+        return $this->registro ? $this->registro->nombre_trabajador : null;
+    }
+
+    public function getNombreAttribute()
+    {
+        return $this->registro ? $this->registro->nombre_trabajador : null;
     }
 }
