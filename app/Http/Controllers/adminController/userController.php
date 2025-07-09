@@ -10,7 +10,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Icatech\PermisoRolMenu\Models\Rol;
 use Icatech\PermisoRolMenu\Models\Permiso;
-use App\Services\GetAllFuncionariosService;
+use App\Services\Funcionario\GetAllFuncionariosService;
+use App\Services\Funcionario\CreateFuncionarioUserService;
 use Google\Service\DriveActivity\Create;
 
 class userController extends Controller
@@ -23,9 +24,9 @@ class userController extends Controller
     public function index(Request $request)
     {
         //
-        $tipo='nombres';
-        $busqueda=strtoupper($request->busquedaPersonal);
-        $usuarios = User::busquedapor($tipo,$busqueda)->PAGINATE(20);
+        $tipo = 'nombres';
+        $busqueda = strtoupper($request->busquedaPersonal);
+        $usuarios = User::busquedapor($tipo, $busqueda)->PAGINATE(20);
         return view('layouts.pages_admin.users_permisions', compact('usuarios'));
     }
 
@@ -53,12 +54,12 @@ class userController extends Controller
         $user = User::where('email', '=', $request->get('emailInput'))->first();
         $curpuser = User::where('curp', '=', $request->get('curpInput'))->first();
 
-        if($user){
+        if ($user) {
             return redirect()->back()->withErrors([
                 sprintf('EL CORREO ELECTRÓNICO %s YA SE ENCUENTRA REGISTRADO EN EL SISTEMA', $request->get('emailInput'))
             ]);
         }
-        if($curpuser){
+        if ($curpuser) {
             return redirect()->back()->withErrors([
                 sprintf('LA CURP %s YA SE ENCUENTRA REGISTRADO EN EL SISTEMA', $request->get('curpInput'))
             ]);
@@ -79,7 +80,6 @@ class userController extends Controller
             // si funciona redireccionamos
             return redirect()->route('usuario_permisos.index')->with('success', 'NUEVO USUARIO AGREGADO!');
         }
-
     }
 
     /**
@@ -109,8 +109,8 @@ class userController extends Controller
         $iduser = base64_decode($id);
         $usuario = User::findOrfail($iduser);
         $ubicaciones = Unidad::groupBy('ubicacion')->GET(['ubicacion']);
-        $ubicacion = Unidad::Select('unidad','ubicacion')->Where('id',$usuario->unidad)->First();
-        $unidades = Unidad::Select('id','unidad')->Where('ubicacion',$ubicacion->ubicacion)->Get();
+        $ubicacion = Unidad::Select('unidad', 'ubicacion')->Where('id', $usuario->unidad)->First();
+        $unidades = Unidad::Select('id', 'unidad')->Where('ubicacion', $ubicacion->ubicacion)->Get();
         return view('layouts.pages_admin.users_profile', compact('usuario', 'ubicaciones', 'ubicacion', 'unidades'));
     }
 
@@ -154,9 +154,8 @@ class userController extends Controller
             // $usuario = User::WHERE('id', $idUsuario)->First();dd($usuario, $arrayUser);
             // dd($usuario);
             return redirect()->route('usuario_permisos.index')
-                    ->with('success', 'USUARIO ACTUALIZADO EXTIOSAMENTE!');
+                ->with('success', 'USUARIO ACTUALIZADO EXTIOSAMENTE!');
         }
-
     }
 
 
@@ -165,7 +164,8 @@ class userController extends Controller
         //
     }
 
-    public function updateRol(Request $request, $id){
+    public function updateRol(Request $request, $id)
+    {
         // roles usuarios
         $idUsuario = base64_decode($id);
         $usuario = User::findOrfail($idUsuario);
@@ -186,10 +186,10 @@ class userController extends Controller
         $user = User::find($userId);
         if ($user) {
             $user->activo = $isActive;
-            if($isActive) {
-                $user->password = str_replace('BAJA','',$user->password);
+            if ($isActive) {
+                $user->password = str_replace('BAJA', '', $user->password);
             } else {
-                $user->password = 'BAJA'.$user->password;
+                $user->password = 'BAJA' . $user->password;
             }
             $user->save();
             return response()->json(['success' => true]);
@@ -228,4 +228,25 @@ class userController extends Controller
         return view('layouts.pages_admin.users_listado', compact('funcionarios'));
     }
 
+    public function altaUsuario(Request $request, CreateFuncionarioUserService $service)
+    {
+        // Solo validaciones HTTP básicas
+        $request->validate([
+            'id_funcionario' => 'required|integer'
+        ], [
+            'id_funcionario.required' => 'El ID del funcionario es requerido.',
+            'id_funcionario.integer' => 'El ID del funcionario debe ser un número válido.'
+        ]);
+
+        try {
+            $data = $request->only(['id_funcionario']);
+            $result = $service->execute($data);
+            return redirect()->route('usuarios.alta.funcionarios')->with('success', 'Usuario funcionario creado exitosamente.');
+                
+        } catch (\InvalidArgumentException $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);    
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
 }
