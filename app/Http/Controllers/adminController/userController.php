@@ -5,10 +5,13 @@ namespace App\Http\Controllers\adminController;
 use App\User;
 use App\Models\Unidad;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Icatech\PermisoRolMenu\Models\Rol;
 use Icatech\PermisoRolMenu\Models\Permiso;
+use App\Services\GetAllFuncionariosService;
+use Google\Service\DriveActivity\Create;
 
 class userController extends Controller
 {
@@ -156,12 +159,7 @@ class userController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         //
@@ -222,4 +220,12 @@ class userController extends Controller
         return redirect()->route('usuarios.permisos.index', ['id' => $id])
             ->with('success', 'Permisos actualizados correctamente.');
     }
+
+
+    public function listadoUsuarios(GetAllFuncionariosService $service)
+    {
+        $funcionarios = $service->execute();
+        return view('layouts.pages_admin.users_listado', compact('funcionarios'));
+    }
+
 }

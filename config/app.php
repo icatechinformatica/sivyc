@@ -182,6 +182,9 @@ return [
         App\Providers\DocumentacionPagoInstructorProvider::class,
         App\Providers\CredencialProvider::class,
         App\Providers\MorphMapServiceProvider::class,
+
+        // * Providers para repositorios usando Clean Architecture
+        App\Providers\FuncionariosServiceProvider::class,
     ],
 
     /*
