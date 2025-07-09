@@ -603,6 +603,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/preinscripcion/grupo/cmbinstructor', 'Preinscripcion\grupoController@cmbinstructor')->name('preinscripcion.grupo.cmbinstructor');
     Route::get('/preinscripcion/grupo/cmbmuni', 'Preinscripcion\grupoController@cmbmuni')->name('preinscripcion.grupo.cmbmunicipio');
     Route::get('/preinscripcion/grupo/cmbrepre', 'Preinscripcion\grupoController@cmbrepre')->name('preinscripcion.grupo.cmbrepresentante');
+    //Consultar el total de instructores disponibles en el modulo de preinscripcion
+    Route::post('/preinscripcion/grupo/getinstruc', 'Preinscripcion\grupoController@consultar_instructores')->name('preinscripcion.grupo.intruc')->middleware('can:preinscripcion.grupo');
+
     /*VINCULACION->PREINSCRIPCION=>AGENDAR INSTRUCTOR*/
     Route::get('/preinscripcion/calendarioShow/{id}','Preinscripcion\grupoController@showCalendar')->middleware('can:preinscripcion.grupo');
     Route::post('/preinscripcion/calendario/guardar','Preinscripcion\grupoController@storeCalendar')->middleware('can:agenda.vinculacion');
@@ -654,6 +657,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01');
     Route::get('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01');
+    //visualizar instructores por ajax dentro del modulo arc01
+    Route::post('/solicitudes/aperturas/getinstruc', 'Solicitudes\aperturasController@modal_instructores')->name('solicitud.intruc.modal')->middleware('can:solicitudes.aperturas');
 
     Route::post('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
     Route::get('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');

@@ -29,6 +29,7 @@ use App\Utilities\MyUtility;
 
 use function PHPSTORM_META\type;
 use App\Http\Controllers\Solicitudes\vbgruposController;
+use App\Services\ValidacionServicioVb;
 
 class grupoController extends Controller
 {
@@ -484,7 +485,7 @@ class grupoController extends Controller
                                         $modalidad = $a_reg->mod;
                                         $folio_pago = $a_reg->folio_pago;
                                         $fecha_pago =  $a_reg->fecha_pago;
-                                        $instructor = $a_reg->id_instructor;
+                                        $instructor = $a_reg->id_instructor ?? 1;
                                         $efisico = $a_reg->efisico;
                                         $medio_virtual = $a_reg->medio_virtual;
                                         $link_virtual = $a_reg->link_virtual;
@@ -2248,6 +2249,37 @@ class grupoController extends Controller
 
         $json_vacios = [$vinculacion, $academico, $administrativa];
         return $json_vacios;
+    }
+
+    ##Función para la validacion de instructores
+    public function consultar_instructores (Request $request){
+        $folio_grupo = $request->folio_grupo;
+        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
+        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
+        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+        ->where('folio_grupo', $folio_grupo)->first();
+
+        // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+
+         #### Llamamos la validacion de instructor desde el servicio
+        $servicio = (new ValidacionServicioVb());
+        // $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
+
+        list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
+
+        //Validar si el array instructores esta vacio
+        if (count($instructores) === 0) {
+            return response()->json([
+                'status' => 500,
+                'mensaje' => $mensaje,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'mensaje' => $mensaje,
+        ]);
+
     }
 
 
