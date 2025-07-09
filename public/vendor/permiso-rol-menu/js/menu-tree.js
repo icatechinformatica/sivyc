@@ -15,8 +15,18 @@ class MenuTree {
     }
 
     bindFormCollapse() {
-        $(document).on('show.bs.collapse', '[id^="add-form-"]', function () {
+        $(document).on('show.bs.collapse', '[id^="add-form-"], #add-root-menu', function () {
             $('[id^="add-form-"]').not(this).collapse('hide');
+            $('[id^="edit-form-"]').collapse('hide');
+            if (this.id !== 'add-root-menu') {
+                $('#add-root-menu').collapse('hide');
+            }
+        });
+
+        $(document).on('show.bs.collapse', '[id^="edit-form-"]', function () {
+            $('[id^="edit-form-"]').not(this).collapse('hide');
+            $('[id^="add-form-"]').collapse('hide');
+            $('#add-root-menu').collapse('hide');
         });
     }
 
@@ -79,6 +89,13 @@ class MenuTree {
         } else {
             alert('Error al cambiar el estado del menú.');
         }
+    }
+}
+
+// Función global para confirmar eliminación
+function confirmDelete(menuId, menuName) {
+    if (confirm(`¿Estás seguro de que deseas eliminar el menú "${menuName}"?\n\n⚠️  ADVERTENCIA: Esta acción eliminará:\n• El menú seleccionado\n• TODOS los submenús y acciones asociadas\n\nEsta acción NO se puede deshacer.`)) {
+        document.getElementById(`delete-form-${menuId}`).submit();
     }
 }
 

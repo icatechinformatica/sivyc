@@ -48,14 +48,19 @@
                 </div>
             </div>
         @endif
-        <div class="row">
+        <div class="row p-3">
             <form method="post" id="frm" enctype="multipart/form-data" style="width: 100%;" >
                 @csrf
                 @if(isset($grupo->folio_grupo))
                     <div class="form-row p-0 mt-2">
                         <div class="form-group col-md-12 form-inline">
                             <h4 ><b>Grupo No.
-                            {{ Form::text('folio_grupo', $grupo->folio_grupo, ['id'=>'folio_grupo', 'class' => 'form-control custom-font-size  col-md-5', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required','readonly' => 'readonly']) }}
+                            {!! html()->text('folio_grupo', $grupo->folio_grupo)
+                                ->id('folio_grupo')
+                                ->class('form-control custom-font-size col-md-5')
+                                ->attribute('aria-label', 'CLAVE DEL CURSO')
+                                ->attribute('required', 'required')
+                                ->attribute('readonly', 'readonly') !!}
                             </b></h4>
                         </div>
                     </div>
