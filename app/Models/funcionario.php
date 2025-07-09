@@ -18,7 +18,7 @@ class funcionario extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function scopeBusquedaRH($query, $tipo, $buscar)
+    public function scopeBusquedaRH($query, $tipo, $buscar, $unidad)
     {
         if (!empty($tipo)) {
             # si tipo no es vacio se hace la busqueda
@@ -51,5 +51,10 @@ class funcionario extends Model
         if (!empty($tipo_status)) {
             return $query->WHERE('tabla_supre.status', '=', $tipo_status);
         }
+    }
+
+    public function user()
+    {
+        return $this->morphOne(User::class, 'registro');
     }
 }

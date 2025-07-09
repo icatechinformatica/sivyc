@@ -117,6 +117,11 @@ class instructor extends Model
 
     }
 
+    public function usuario()
+    {
+        return $this->morphOne(User::class, 'registro');
+    }
+
 
 }
 
