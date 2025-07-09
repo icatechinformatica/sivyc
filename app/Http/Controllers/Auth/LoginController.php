@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
+use App\Services\WhatsAppService;
 
 class LoginController extends Controller
 {
@@ -86,5 +87,57 @@ class LoginController extends Controller
         throw ValidationException::withMessages([
             'email' => ['La contraseña proporcionada es incorrecta.'],
         ]);
+    }
+
+    public function resetPasswordModal(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'resetTelefono' => 'required'
+        ], [
+            'email.exists' => 'El correo proporcionado para restablecer la contraseña es erróneo.',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        // Generate a new random password
+        $newPassword = \Str::random(6);
+        $user->password = \Hash::make($newPassword);
+        $user->telefono = $request->resetTelefono;
+
+        //mensaje via whatsapp
+        $infowhats = [
+            'nombre' => $user->name,
+            'correo' => $user->email,
+            'pwd' => $newPassword,
+            'telefono' => $user->telefono,
+        ];
+
+        $response = $this->whatsapp_restablecer_usuario_msg($infowhats, app(WhatsAppService::class));
+
+        // Check for WhatsApp sending errors in the response
+        if (isset($response['status']) && $response['status'] === false) {
+            return back()->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['message'] ?? 'Error desconocido'));
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Tu contraseña ha sido restablecida. Se ha enviado un mensaje de WhatsApp con tu nueva contraseña.');
+    }
+
+     private function whatsapp_restablecer_usuario_msg($instructor, WhatsAppService $whatsapp)
+    {
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'restablecer_pwd_sivyc')->First();
+
+        // Reemplazar variables en plantilla
+        $mensaje = str_replace(
+            ['{{nombre}}', '{{correo}}', '{{pwd}}','\n'],
+            [$instructor['nombre'], $instructor['correo'], $instructor['pwd'],"\n"],
+            $plantilla->plantilla
+        );
+
+         $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
+
+        return $callback;
     }
 }
