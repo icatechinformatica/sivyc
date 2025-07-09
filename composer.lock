@@ -2403,18 +2403,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/RicardoSauceda/permiso-rol-menu.git",
-                "reference": "199af73ef5e7b14d738fdcadd7b5f5b5625f8c20"
+                "reference": "e220cb1522a5411b89762e3b45f1e65820a4b412"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/199af73ef5e7b14d738fdcadd7b5f5b5625f8c20",
-                "reference": "199af73ef5e7b14d738fdcadd7b5f5b5625f8c20",
+                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/e220cb1522a5411b89762e3b45f1e65820a4b412",
+                "reference": "e220cb1522a5411b89762e3b45f1e65820a4b412",
                 "shasum": ""
             },
             "require": {
                 "illuminate/database": "^9.0|^10.0|^11.0|^12.0",
                 "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
-                "php": "^8.1|^8.2|^8.3"
+                "php": "^8.0.2|^8.1|^8.2|^8.3"
             },
             "type": "library",
             "extra": {
@@ -2438,7 +2438,7 @@
                 "issues": "https://github.com/RicardoSauceda/permiso-rol-menu/issues",
                 "source": "https://github.com/RicardoSauceda/permiso-rol-menu/tree/feature/roles-permisos-arbol"
             },
-            "time": "2025-07-07T16:28:48+00:00"
+            "time": "2025-07-08T18:41:37+00:00"
         },
         {
             "name": "laravel/framework",

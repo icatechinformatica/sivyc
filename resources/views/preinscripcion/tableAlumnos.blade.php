@@ -67,7 +67,12 @@
           <th  style="word-wrap: break-word; max-width: 60px;">{{$a->tinscripcion}}</th>
           <th>
             <div style="width: 80px;">
-              {{ Form::number('costo['.$a->id_reg.']', $a->costo ?? '0' , ['id'=>'costo['.$a->id_reg.']', 'size' => '7', 'maxlength' => '7', 'class' => $class]) }}
+                {{ html()->number('costo['.$a->id_reg.']', $a->costo ?? '0')
+                  ->id('costo['.$a->id_reg.']')
+                  ->attribute('size', '7')
+                  ->attribute('maxlength', '7')
+                  ->class($class)
+                }}
             </div>
           </th>
             @if($activar)
