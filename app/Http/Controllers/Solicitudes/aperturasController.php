@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
+use App\Utilities\MyUtility;
 use App\Models\cat\catUnidades;
 use App\Models\Permission;
 use App\Models\tbl_curso;
@@ -161,28 +162,33 @@ class aperturasController extends Controller
         }
 
         if(session('message')) $message = session('message');
-        //dd($grupos);
+        
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
     }
 
-    public function search(Request $request){
-        $_SESSION = null;
+    public function search(Request $request){        
+        $_SESSION = $ejercicio = null;
+        if($request->ejercicio)$ejercicio = $request->ejercicio;  
+        else  $ejercicio = date('Y');  
         $aperturas = DB::table('tbl_cursos as tc')
             ->select('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
             ->leftJoin('alumnos_registro as a','tc.folio_grupo','=','a.folio_grupo')
             ->where('a.turnado','!=','VINCULACION')
+            ->whereYear('tc.created_at', $ejercicio)
             ->where(function($query) {
                 $query->where('status_curso','!=',null)
-                      ->orWhere('status_solicitud','=','TURNADO');
+                      ->orWhere('status_solicitud','=','TURNADO')
+                      ->orWhere('tc.turnado','=','DGA');
             });
         if ($request->valor) {
             $aperturas = $aperturas->where('tc.munidad',$request->valor)
                 ->orWhere('tc.num_revision',$request->valor);
         }
         $aperturas = $aperturas->groupBy('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
-            ->orderBy('tc.fecha_apertura','desc')
-            ->paginate(50);
-        return view('solicitudes.aperturas.buzon',compact('aperturas'));
+            ->orderBy('tc.fecha_apertura','desc')            
+            ->paginate(50)->appends(['ejercicio' => $ejercicio]);
+        $anios = MyUtility::ejercicios();
+        return view('solicitudes.aperturas.buzon',compact('aperturas','anios','ejercicio'));
     }
 
     public function autorizar(Request $request){ //ENVIAR PDF DE AUTORIZACIÓN Y CAMBIAR ESTATUS A AUTORIZADO
