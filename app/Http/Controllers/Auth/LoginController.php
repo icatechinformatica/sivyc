@@ -92,10 +92,14 @@ class LoginController extends Controller
     public function resetPasswordModal(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => [
+                'required',
+                'email',
+                'exists:users,email,activo,1'
+            ],
             'resetTelefono' => 'required'
         ], [
-            'email.exists' => 'El correo proporcionado para restablecer la contraseña es erróneo.',
+            'email.exists' => 'El correo proporcionado para restablecer la contraseña es erróneo o el usuario no está activo.',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -139,5 +143,11 @@ class LoginController extends Controller
          $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
 
         return $callback;
+    }
+
+    public function getTelefonoByEmail(Request $request)
+    {
+        $user = \App\Models\User::where('email', $request->email)->first();
+        return response()->json(['telefono' => $user ? $user->telefono : '']);
     }
 }
