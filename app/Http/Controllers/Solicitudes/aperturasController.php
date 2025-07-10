@@ -162,14 +162,14 @@ class aperturasController extends Controller
         }
 
         if(session('message')) $message = session('message');
-        
+
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
     }
 
-    public function search(Request $request){        
+    public function search(Request $request){
         $_SESSION = $ejercicio = null;
-        if($request->ejercicio)$ejercicio = $request->ejercicio;  
-        else  $ejercicio = date('Y');  
+        if($request->ejercicio)$ejercicio = $request->ejercicio;
+        else  $ejercicio = date('Y');
         $aperturas = DB::table('tbl_cursos as tc')
             ->select('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
             ->leftJoin('alumnos_registro as a','tc.folio_grupo','=','a.folio_grupo')
@@ -185,7 +185,7 @@ class aperturasController extends Controller
                 ->orWhere('tc.num_revision',$request->valor);
         }
         $aperturas = $aperturas->groupBy('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
-            ->orderBy('tc.fecha_apertura','desc')            
+            ->orderBy('tc.fecha_apertura','desc')
             ->paginate(50)->appends(['ejercicio' => $ejercicio]);
         $anios = MyUtility::ejercicios();
         return view('solicitudes.aperturas.buzon',compact('aperturas','anios','ejercicio'));
@@ -674,9 +674,10 @@ class aperturasController extends Controller
         $folio_grupo = $request->folio_grupo;
         $totalInstruc = 0;
         $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
-        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
-        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
-        ->where('folio_grupo', $folio_grupo)->first();
+        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'tbl_cursos.id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad', 'cursos.curso_alfa')
+            ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+            ->JOIN('cursos', 'cursos.id', '=' ,'tbl_cursos.id_curso')
+            ->where('folio_grupo', $folio_grupo)->first();
 
         // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
 
