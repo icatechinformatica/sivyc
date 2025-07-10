@@ -342,7 +342,7 @@
                         },
                         success: function(data) {
                             loader('hide');
-                            console.log(data);
+                            // console.log(data);
 
                             // Limpiar mensaje previo
                             $('#mensajeInstructor').hide();
