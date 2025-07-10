@@ -6,20 +6,16 @@
     <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
 
     <div class="card-header">
-        Busqueda / Solicitud Clave de Apertura
+        Búsqueda / Solicitud Clave de Apertura
     </div>
-    <div class="card card-body" style=" min-height:450px;">
-    {{ Form::open(['route' => 'solicitudes.aperturas.search', 'method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data']) }}
-        @csrf
-        <div class="row">
-            <div class="form-group col-md-3">
-                {{ Form::text('valor', '', ['id'=>'valor', 'class' => 'form-control', 'placeholder' => 'No. Revisión o No. Memorándum', 'aria-label' => 'CLAVE DEL CURSO', 'size' => 25]) }}
-            </div>
-            <div class="form-group col-md-2">
-                    {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-            </div>
-        </div>
-        <div class="table-responsive">
+    <div class="card card-body" style=" min-height:450px;">        
+        
+    {{ Form::open(['route' => 'solicitudes.aperturas.search', 'method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data','class' => 'form-inline']) }}
+            @csrf            
+            {{ Form::select('ejercicio', $anios, $ejercicio ??'' ,['id'=>'ejercicio','class' => 'form-control mr-sm-2','title' => 'EJERCICIO','placeholder' => 'EJERCICIO']) }}
+            {{ Form::text('valor', '', ['id'=>'valor', 'class' => 'form-control', 'placeholder' => 'No. Revisión o No. Memorándum', 'aria-label' => 'CLAVE DEL CURSO', 'size' => 25]) }}            
+            {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
+        <div class="table-responsive mt-4">            
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
@@ -72,10 +68,10 @@
                         </tr>
                     @endforeach
                 </tbody>
-            </table>
-        </div>
-        <div>
-            {{ $aperturas->links() }}
+            </table>        
+            <div style="text-align: center; font-weight: bold; margin-top: 10px;">
+                {{ $aperturas->links() }}
+            </div>
         </div>
     {!! Form::close() !!}
     </div>

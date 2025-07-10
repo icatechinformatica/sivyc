@@ -309,26 +309,23 @@ class vbgruposController extends Controller
 
     ## Made by Jose Luis
     public function modal_instructores(Request $request) {
-        $folio_grupo = $request->folio_grupo;
-        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
-        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
-        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
-        ->where('folio_grupo', $folio_grupo)->first();
+        try {
+            #### Llamamos la validacion de instructor desde el servicio
+            $servicio = (new ValidacionServicioVb());
 
-        // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+            $folio_grupo = $request->folio_grupo;
+            $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
+            $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'tbl_cursos.id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad', 'cursos.curso_alfa')
+            ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+            ->JOIN('cursos', 'cursos.id', '=' ,'tbl_cursos.id_curso')
+            ->where('folio_grupo', $folio_grupo)->first();
 
-         #### Llamamos la validacion de instructor desde el servicio
-        $servicio = (new ValidacionServicioVb());
-        // $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
+            list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
 
-        list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
-
-        // Ordenar por nombre y unidad
-        if (!empty($grupo->unidad)) {
-            ##Otro ordenamiento por total de cursos y unidad
-            try {
+            // Ordenar por nombre y unidad
+            if (!empty($grupo->unidad)) {
+                ##Otro ordenamiento por total de cursos y unidad
                 $unidad_prioritaria = $grupo->unidad;
-
                 $instructores = collect($instructores)->sort(function ($a, $b) use ($unidad_prioritaria) {
                     $a_es_prioritario = $a->unidad === $unidad_prioritaria;
                     $b_es_prioritario = $b->unidad === $unidad_prioritaria;
@@ -345,13 +342,13 @@ class vbgruposController extends Controller
                     }
                     return strcmp($a->unidad, $b->unidad);
                 })->values();
+            }
 
-            } catch (\Throwable $th) {
+        } catch (\Throwable $th) {
                 return response()->json([
                     'status' => 500,
-                    'mensaje' => 'Error al ordenar la lista de instructores: ' . $th->getMessage()
+                    'mensaje' => 'Error al realizar el proceso: ' . $th->getMessage()
                 ]);
-            }
         }
 
 
@@ -534,12 +531,24 @@ class vbgruposController extends Controller
 
             $cp = null;
             $curso = DB::table('cursos as c')->select('c.id','c.nombre_curso','c.horas','c.rango_criterio_pago_maximo as cp','c.costo','e.nombre as espe',
-                    'a.formacion_profesional as area','c.memo_validacion as mpaqueteria','e.clave as clave_especialidad')
+                    'a.formacion_profesional as area','c.memo_validacion as mpaqueteria','e.clave as clave_especialidad', 'c.curso_alfa')
                     ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')
                     ->where('c.id',$dataCurso->id_curso)->first();
 
+
             //Validar criterio de pago
-            $cp = ($dataInstructor->cp > $curso->cp) ? $curso->cp : $dataInstructor->cp;
+            if (!empty($curso) && !empty($dataInstructor)) {
+                $cp = ($dataInstructor->cp > $curso->cp) ? $curso->cp : $dataInstructor->cp;
+                // if ($curso->curso_alfa == true) {
+                //     $cp = 12;
+                // }else{
+                //     $cp = ($dataInstructor->cp > $curso->cp) ? $curso->cp : $dataInstructor->cp;
+                // }
+
+            }else{
+                throw new \Exception('Error en la obtención de informacion del curso e instructor');
+            }
+
 
             //Validar Honorario
             $tipo_honorario = ($dataInstructor->tipo_honorario == 'ASIMILADOS A SALARIOS') ? 'ASIMILADOS A SALARIOS' : 'HONORARIOS';
@@ -551,7 +560,7 @@ class vbgruposController extends Controller
             //Guarda datos del instructor en tbl_cursos
             $result_curso = DB::table('tbl_cursos')->where('folio_grupo', $dataCurso->folio_grupo)->whereNull('status_curso')->Update(
                 [
-                'id_instructor' => $dataInstructor->id,'modinstructor' => $tipo_honorario,
+                'id_instructor' => $dataInstructor->id,'modinstructor' => $tipo_honorario, 'cp' => $cp,
                 'nombre' => $dataInstructor->instructor,'curp' => $dataInstructor->curp,'rfc' => $dataInstructor->rfc,
                 'instructor_escolaridad' => $dataInstructor->escolaridad,'instructor_titulo' => $dataInstructor->titulo,'instructor_sexo' => $dataInstructor->sexo,
                 'instructor_mespecialidad' => $dataInstructor->mespecialidad,'instructor_tipo_identificacion' => $dataInstructor->tipo_identificacion,

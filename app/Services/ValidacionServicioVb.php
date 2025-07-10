@@ -312,7 +312,7 @@ class ValidacionServicioVb
             $instructores = $this->consulta_general_instructores($data, $ejercicio);
 
             //Validar si el curso es ALFA
-            if ($data->programa == 'ALFA') {
+            if ($data->curso_alfa == true) {
                 $instructores = $this->InstAlfaNoBecados($instructores);
                 if (count($instructores) == 0) {
                     return [[], 'No se encontraron Instructores Alfa'];
