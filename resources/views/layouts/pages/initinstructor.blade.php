@@ -62,6 +62,7 @@
             <caption>Catalogo de Instructrores</caption>
             <thead>
                 <tr>
+                    <th scope="col">#</th>
                     <th scope="col">CLAVE</th>
                     <th scope="col">INSTRUCTOR</th>
                     <th scope="col">CURP</th>
@@ -81,7 +82,8 @@
             <tbody>
                 @foreach ($data as $key => $itemData)
                     <tr>
-                    <th scope="row">{{$itemData->numero_control}}</th>
+                        <td>{{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}</td>
+                        <th scope="row">{{$itemData->numero_control}}</th>
                         <td>{{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}} {{$itemData->nombre}}</td>
                         <td>{{$itemData->curp}}</td>
                         <td>{{$itemData->telefono}}</td>
