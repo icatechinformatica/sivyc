@@ -95,9 +95,9 @@
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                 {!! html()->form()->close() !!}
                 <br>
-                <div class="btn-actions-pane-right">
+                <div class="btn-actions-pane-right justify-content-end d-flex">
                     <div role="group" class="btn-group-sm btn-group">
-                        <button id="toggleNARows" class="btn btn-sm btn-secondary mr-2" type="button">
+                        <button id="toggleNARows" class="btn btn-sm btn-secondary mr-4" type="button">
                             <i class="fa fa-eye-slash" aria-hidden="true"></i> Mostrar Bajas
                         </button>
                         <a href="{{route('usuarios.perfil.crear')}}" class="btn btn-sm btn-success">Nuevo Usuario</a>

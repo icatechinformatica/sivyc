@@ -17,12 +17,34 @@ class DBFuncionariosRepository implements FuncionariosRepositoryInterface
 
     public function getWithOutUser(): LengthAwarePaginator
     {
-        // Obtener funcionarios sin usuario asociado
-        return DB::table('funcionarios_view')
-            ->leftJoin('tblz_usuarios', 'tblz_usuarios.registro_id', '=', 'funcionarios_view.f_id')
-            ->whereNull('tblz_usuarios.id')
-            ->select('funcionarios_view.*')
-            ->paginate(20);
+        // Obtener funcionarios sin usuario asociado o que tienen usuario pero NO como funcionario
+        return DB::table('funcionarios_view as fv')
+            ->leftJoin('tblz_usuarios as u', 'u.registro_id', '=', 'fv.f_id')
+            ->where(function($query) {
+                $query->whereNull('u.id')
+                      ->orWhere(function($subQuery) {
+                          $subQuery->whereNotNull('u.id')
+                                   ->where('u.registro_type', '!=', 'App\Models\funcionario');
+                      });
+            })
+            ->select('fv.*')
+            ->paginate(50); // Aumentar a 50 registros por página
+    }
+
+    public function getAllWithOutUser(): \Illuminate\Support\Collection
+    {
+        // Obtener TODOS los funcionarios sin usuario asociado o que tienen usuario pero NO como funcionario
+        return DB::table('funcionarios_view as fv')
+            ->leftJoin('tblz_usuarios as u', 'u.registro_id', '=', 'fv.f_id')
+            ->where(function($query) {
+                $query->whereNull('u.id')  // Sin usuario asociado
+                      ->orWhere(function($subQuery) {
+                          $subQuery->whereNotNull('u.id')  // Tiene usuario pero...
+                                   ->where('u.registro_type', '!=', 'App\Models\funcionario'); // NO es funcionario
+                      });
+            })
+            ->select('fv.*')
+            ->get(); // get() en lugar de paginate() para obtener todos
     }
 
     public function createUser(array $data): array
