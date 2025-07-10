@@ -538,11 +538,12 @@ class vbgruposController extends Controller
 
             //Validar criterio de pago
             if (!empty($curso) && !empty($dataInstructor)) {
-                if ($curso->curso_alfa == true) {
-                    $cp = 12;
-                }else{
-                    $cp = ($dataInstructor->cp > $curso->cp) ? $curso->cp : $dataInstructor->cp;
-                }
+                $cp = ($dataInstructor->cp > $curso->cp) ? $curso->cp : $dataInstructor->cp;
+                // if ($curso->curso_alfa == true) {
+                //     $cp = 12;
+                // }else{
+                //     $cp = ($dataInstructor->cp > $curso->cp) ? $curso->cp : $dataInstructor->cp;
+                // }
 
             }else{
                 throw new \Exception('Error en la obtención de informacion del curso e instructor');
