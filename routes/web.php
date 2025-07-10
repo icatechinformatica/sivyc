@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 */
 //reset password modal
 Route::post('/reset-password-modal', 'Auth\LoginController@resetPasswordModal')->name('reset.password.modal');
+Route::post('/get-telefono-by-email', 'Auth\LoginController@getTelefonoByEmail')->name('get.telefono.by.email');
 //Ruta Pago 25/09/2020
 Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@historial_validacion')->name('pago.historial-verificarpago');
 
