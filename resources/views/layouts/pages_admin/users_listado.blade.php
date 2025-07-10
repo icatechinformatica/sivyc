@@ -33,27 +33,23 @@
                             <thead>
                                 <tr>
                                     {{-- <th>ID Funcionario</th> --}}
-                                    <th>Clave Empleado</th>
+                                    {{-- <th>Clave Empleado</th> --}}
                                     <th>Nombre del Trabajador</th>
-                                    <th>Adscripción</th>
-                                    <th>Sexo</th>
                                     <th>Organización</th>
                                     <th class="text-center">Alta</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($funcionarios as $funcionario)
+                                @foreach ($registros as $registro)
                                 <tr>
                                     {{-- <td>{{ $funcionario->f_id }}</td> --}}
-                                    <td>{{ $funcionario->clave_empleado }}</td>
-                                    <td>{{ $funcionario->nombre_trabajador }}</td>
-                                    <td>{{ $funcionario->nombre_adscripcion }}</td>
-                                    <td>{{ $funcionario->sexo }}</td>
-                                    <td>{{ $funcionario->nombre }}</td>
+                                    {{-- <td>{{ $registro->clave_empleado }}</td> --}}
+                                    <td>{{ $registro->nombre_trabajador }}</td>
+                                    <td>{{ $registro->nombre}}</td>
                                     <td class="text-center">
                                         <form action="{{ route('usuarios.alta.funcionarios.post') }}" method="POST">
                                             @csrf
-                                            <input type="hidden" name="id_funcionario" value="{{ $funcionario->f_id }}">
+                                            <input type="hidden" name="id_funcionario" value="{{ $registro->f_id }}">
                                             <button type="submit" class="btn btn-sm btn-primary"
                                                 title="Dar de alta al funcionario">
                                                 <i class="fas fa-plus"></i>
@@ -68,7 +64,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="d-block text-center">
-                        {{ $funcionarios->appends(request()->query())->links('pagination::bootstrap-5') }}
+                        {{ $registros->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>

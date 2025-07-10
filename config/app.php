@@ -184,6 +184,8 @@ return [
 
         // * Providers para repositorios usando Clean Architecture
         App\Providers\FuncionariosServiceProvider::class,
+        App\Providers\InstructorServiceProvider::class,
+        App\Providers\UsuarioServiceProvider::class,
     ],
 
     /*

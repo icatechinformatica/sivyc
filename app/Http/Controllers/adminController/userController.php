@@ -11,7 +11,10 @@ use Illuminate\Support\Facades\Hash;
 use Icatech\PermisoRolMenu\Models\Rol;
 use Icatech\PermisoRolMenu\Models\Permiso;
 use App\Services\Funcionario\CreateUserService;
-use App\Services\Funcionario\GetWithOutUserService;
+use App\Services\Funcionario\GetWithOutUserService as FuncionarioGetWithOutUserService;
+use App\Services\Instructor\GetWithOutUserService as InstructorGetWithOutUserService;
+use App\Services\Usuario\ListadoUsuariosService;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Google\Service\DriveActivity\Create;
 
 class userController extends Controller
@@ -224,10 +227,16 @@ class userController extends Controller
     }
 
 
-    public function listadoUsuarios(GetWithOutUserService $service)
+    public function listadoUsuarios(ListadoUsuariosService $listadoService)
     {
-        $funcionarios = $service->execute();
-        return view('layouts.pages_admin.users_listado', compact('funcionarios'));
+        try {
+            $pagActual = request()->get('page', 1);
+            $registros = $listadoService->execute($pagActual);
+            
+            return view('layouts.pages_admin.users_listado', compact('registros'));
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Error al obtener el listado de usuarios']);
+        }
     }
 
     public function altaUsuario(Request $request, CreateUserService $service)

@@ -15,4 +15,12 @@ class GetWithOutUserService {
             throw new \RuntimeException('No se pudieron obtener los funcionarios');
         }
     }
+
+    public function executeAll(): \Illuminate\Support\Collection {
+        try {
+            return $this->funcionariosRepository->getAllWithOutUser();
+        } catch (\Exception $e) {
+            throw new \RuntimeException('No se pudieron obtener todos los funcionarios');
+        }
+    }
 }
