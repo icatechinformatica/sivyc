@@ -162,15 +162,10 @@ class aperturasController extends Controller
         }
 
         if(session('message')) $message = session('message');
-        
 
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
     }
 
-    public function search(Request $request){        
-        $_SESSION = $ejercicio = null;
-        if($request->ejercicio)$ejercicio = $request->ejercicio;  
-        else  $ejercicio = date('Y');  
     public function search(Request $request){
         $_SESSION = $ejercicio = null;
         if($request->ejercicio)$ejercicio = $request->ejercicio;
@@ -190,10 +185,6 @@ class aperturasController extends Controller
                 ->orWhere('tc.num_revision',$request->valor);
         }
         $aperturas = $aperturas->groupBy('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
-            ->orderBy('tc.fecha_apertura','desc')            
-            ->paginate(50)->appends(['ejercicio' => $ejercicio]);
-        $anios = MyUtility::ejercicios();
-        return view('solicitudes.aperturas.buzon',compact('aperturas','anios','ejercicio'));
             ->orderBy('tc.fecha_apertura','desc')
             ->paginate(50)->appends(['ejercicio' => $ejercicio]);
         $anios = MyUtility::ejercicios();
