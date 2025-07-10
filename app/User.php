@@ -15,13 +15,16 @@ class User extends Authenticatable
     use Notifiable, ConfiguresSpanishUserModel;
     protected $guard_name = 'web'; // Añade esto específicamente
 
+    protected $with = ['registro'];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'unidad', 'puesto','unidades','status','telefono', 'curp', 'activo'
+        'id','nombre', 'email', 'unidad', 'puesto', 'token_movil','correo_institucional','activo',
+        'registro_id', 'registro_type', 'fecha_caducidad'
     ];
 
     /**
@@ -72,5 +75,10 @@ class User extends Authenticatable
                 }
             }
         }
+    }
+
+    public function registro()
+    {
+        return $this->morphTo(__FUNCTION__, 'registro_type', 'registro_id');
     }
 }

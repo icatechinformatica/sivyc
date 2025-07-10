@@ -24,6 +24,6 @@ class User extends Model
 
     public function registro()
     {
-        return $this->morphTo();
+        return $this->morphTo(__FUNCTION__, 'registro_type', 'registro_id');
     }
 }

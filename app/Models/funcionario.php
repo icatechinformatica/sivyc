@@ -55,6 +55,6 @@ class funcionario extends Model
 
     public function user()
     {
-        return $this->morphOne(User::class, 'registro');
+        return $this->morphOne(User::class, 'registro', 'registro_type', 'registro_id');
     }
 }

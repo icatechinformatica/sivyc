@@ -5,6 +5,7 @@ use App\Http\Controllers\webController\InstructorController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 
 /*

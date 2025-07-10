@@ -181,6 +181,7 @@ return [
         App\Providers\ReporteRf001Provider::class,
         App\Providers\DocumentacionPagoInstructorProvider::class,
         App\Providers\CredencialProvider::class,
+        App\Providers\MorphMapServiceProvider::class,
     ],
 
     /*
