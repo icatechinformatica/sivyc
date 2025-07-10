@@ -4,7 +4,7 @@ namespace App\Services\Funcionario;
 
 use App\Interfaces\FuncionariosRepositoryInterface;
 
-class CreateFuncionarioUserService
+class CreateUserService
 {
     public function __construct(private FuncionariosRepositoryInterface $funcionariosRepository) {}
 

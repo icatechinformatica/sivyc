@@ -10,8 +10,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Icatech\PermisoRolMenu\Models\Rol;
 use Icatech\PermisoRolMenu\Models\Permiso;
-use App\Services\Funcionario\GetAllFuncionariosService;
-use App\Services\Funcionario\CreateFuncionarioUserService;
+use App\Services\Funcionario\CreateUserService;
+use App\Services\Funcionario\GetWithOutUserService;
 use Google\Service\DriveActivity\Create;
 
 class userController extends Controller
@@ -224,13 +224,13 @@ class userController extends Controller
     }
 
 
-    public function listadoUsuarios(GetAllFuncionariosService $service)
+    public function listadoUsuarios(GetWithOutUserService $service)
     {
         $funcionarios = $service->execute();
         return view('layouts.pages_admin.users_listado', compact('funcionarios'));
     }
 
-    public function altaUsuario(Request $request, CreateFuncionarioUserService $service)
+    public function altaUsuario(Request $request, CreateUserService $service)
     {
         // Solo validaciones HTTP básicas
         $request->validate([

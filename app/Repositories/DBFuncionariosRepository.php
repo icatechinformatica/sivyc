@@ -15,6 +15,16 @@ class DBFuncionariosRepository implements FuncionariosRepositoryInterface
         return DB::table('funcionarios_view')->select()->paginate(20);
     }
 
+    public function getWithOutUser(): LengthAwarePaginator
+    {
+        // Obtener funcionarios sin usuario asociado
+        return DB::table('funcionarios_view')
+            ->leftJoin('tblz_usuarios', 'tblz_usuarios.registro_id', '=', 'funcionarios_view.f_id')
+            ->whereNull('tblz_usuarios.id')
+            ->select('funcionarios_view.*')
+            ->paginate(20);
+    }
+
     public function createUser(array $data): array
     {
         // * Validación de integridad: verificar que el funcionario existe en la vista
@@ -26,7 +36,7 @@ class DBFuncionariosRepository implements FuncionariosRepositoryInterface
 
 
         // * Validación de duplicados: verificar si ya existe un usuario para este funcionario
-        $existingUser = User::where('registro_id', $data['id_funcionario'])->where('registro_type', 'funcionario')->first();
+        $existingUser = User::where('registro_id', $data['id_funcionario'])->where('registro_type', 'App\Models\funcionario')->first();
         if ($existingUser) {
             throw new \RuntimeException('Ya existe un usuario para este funcionario');
         }
@@ -36,7 +46,7 @@ class DBFuncionariosRepository implements FuncionariosRepositoryInterface
         try {
             $user = User::create([
                 'registro_id' => $data['id_funcionario'],
-                'registro_type' => 'funcionario',
+                'registro_type' => 'App\Models\funcionario',
                 'password' => bcrypt($defaultPassword),
                 'activo' => true,
             ]);

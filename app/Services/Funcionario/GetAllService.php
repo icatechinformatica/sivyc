@@ -5,7 +5,7 @@ namespace App\Services\Funcionario;
 use App\Interfaces\FuncionariosRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class GetAllFuncionariosService {
+class GetAllService {
     public function __construct(private FuncionariosRepositoryInterface $funcionariosRepository) {}
 
     public function execute(): LengthAwarePaginator {
