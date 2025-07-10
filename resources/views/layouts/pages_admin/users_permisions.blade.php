@@ -69,6 +69,11 @@
 				background-color: rgba(0, 0, 0, .075);
 			}
 		}
+		
+		/* Estilos para ocultar registros N/A por defecto */
+		.na-row {
+			display: none;
+		}
     </style>
 @endsection
 
@@ -92,6 +97,9 @@
                 <br>
                 <div class="btn-actions-pane-right">
                     <div role="group" class="btn-group-sm btn-group">
+                        <button id="toggleNARows" class="btn btn-sm btn-secondary mr-2" type="button">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i> Mostrar Bajas
+                        </button>
                         <a href="{{route('usuarios.perfil.crear')}}" class="btn btn-sm btn-success">Nuevo Usuario</a>
                     </div>
                 </div>
@@ -121,9 +129,10 @@
                             </div>
                             <div class="card-body">
                                 @foreach ($usuarios as $itemUsuarios)
-                                    <div class="row" role="row">
+
+                                    <div class="row {{ is_null($itemUsuarios->nombre) || trim($itemUsuarios->nombre) === '' ? 'na-row' : '' }}" role="row" data-nombre="{{ $itemUsuarios->nombre ?? 'N/A' }}">
                                         <div class="col-md-6" role="gridcell">
-                                            <div class="form-control-plaintext text-truncate">{{$itemUsuarios->nombre}}</div>
+                                            <div class="form-control-plaintext text-truncate">{{ $itemUsuarios->nombre ?? 'N/A' }}</div>
                                         </div>
 
                                         <div class="col-md-2 text-center" role="gridcell">
@@ -164,3 +173,49 @@
     </div>
 
 @endsection
+
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('toggleNARows');
+    let showingNA = false;
+    
+    function toggleNARows() {
+        // Buscar las filas N/A cada vez que se hace clic (por si hay paginación)
+        const naRows = document.querySelectorAll('.na-row');
+        console.log('Filas N/A encontradas:', naRows.length);
+        
+        showingNA = !showingNA;
+        
+        naRows.forEach(function(row) {
+            if (showingNA) {
+                row.style.display = 'flex';
+                row.classList.add('show');
+            } else {
+                row.style.display = 'none';
+                row.classList.remove('show');
+            }
+        });
+        
+        // Actualizar el texto y icono del botón
+        if (showingNA) {
+            toggleButton.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i> Ocultar N/A';
+        } else {
+            toggleButton.innerHTML = '<i class="fa fa-eye-slash" aria-hidden="true"></i> Mostrar N/A';
+        }
+    }
+    
+    // Asegurar que las filas N/A estén ocultas al cargar la página
+    setTimeout(function() {
+        const naRows = document.querySelectorAll('.na-row');
+        naRows.forEach(function(row) {
+            row.style.display = 'none';
+        });
+        console.log('Filas N/A inicialmente ocultas:', naRows.length);
+    }, 100);
+    
+    toggleButton.addEventListener('click', toggleNARows);
+});
+</script>
+@endpush
