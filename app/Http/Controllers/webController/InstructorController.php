@@ -1831,6 +1831,11 @@ class InstructorController extends Controller
         }
             // dd($validado);
         }
+
+        if($datainstructor->entidad == NULL)
+        {
+            $datainstructor->entidad = 'CHIAPAS';
+        }
         $idest = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad)->FIRST();
         $idestnac = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad_nacimiento)->FIRST();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)

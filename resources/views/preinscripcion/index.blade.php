@@ -884,7 +884,14 @@
                                 }
                             }else{
                                 alert("No se encontraron instructores disponibles para este curso. Favor de comunicarse con Dirección Técnica Académica");
-                                return;
+                                // return;
+                                if(tipo == 'update'){
+                                    $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'});
+                                    $('#frm').submit();
+                                }else if (tipo == 'turnar'){
+                                    $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'});
+                                    $('#frm').submit();
+                                }
                             }
                         }
                     });
