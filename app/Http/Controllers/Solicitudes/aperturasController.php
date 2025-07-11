@@ -160,7 +160,7 @@ class aperturasController extends Controller
 
             }else $message = "No se encuentran registros que mostrar.";
         }
-
+//dd($grupos);
         if(session('message')) $message = session('message');
 
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
