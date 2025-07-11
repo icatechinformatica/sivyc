@@ -131,7 +131,7 @@
                     {{ Form::button('ARC-02 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
                 @endif            
             @endif
-            {{-- Form::button('AGENDA-ANEXO', ['id'=>'AgendaAnexo','class' => 'btn']) --}}
+            {{ Form::button('AGENDA-ANEXO', ['id'=>'AgendaAnexo','class' => 'btn']) }}
             <div class="dropdown show">
                 <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-print" title="Imprimir Memorándum">&nbsp;<span style="font-family: Arial;font-weight: normal;">SOPORTES</span></i>
