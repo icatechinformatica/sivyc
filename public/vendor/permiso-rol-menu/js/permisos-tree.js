@@ -7,7 +7,6 @@ class PermisoRolManager {
         this.bindCheckboxEvents();
         this.setupCSRFToken();
         this.bindCollapseEvents();
-        this.bindToggleAllButton();
     }
 
     setupCSRFToken() {
@@ -20,15 +19,9 @@ class PermisoRolManager {
         });
     }
 
-    bindToggleAllButton() {
-        $(document).on('click', '#toggle-all-permisos', (e) => {
-            this.handleToggleAll(e);
-        });
-    }
-
     handleToggleAll(e) {
         const button = $(e.target);
-        const allCheckboxes = $('.permiso-checkbox');
+        const allCheckboxes = $('.permiso-checkbox:not(:disabled)'); // Excluir checkboxes deshabilitados
         const checkedCount = allCheckboxes.filter(':checked').length;
         const totalCount = allCheckboxes.length;
 
@@ -64,6 +57,12 @@ class PermisoRolManager {
 
     handleCheckboxChange(e) {
         const checkbox = e.target;
+        
+        // No procesar checkboxes deshabilitados
+        if (checkbox.disabled) {
+            return;
+        }
+        
         const permisoId = checkbox.value;
         const rolId = this.getRolId();
         const isChecked = checkbox.checked;

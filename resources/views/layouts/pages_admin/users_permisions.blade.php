@@ -98,9 +98,9 @@
                 <div class="btn-actions-pane-right justify-content-end d-flex">
                     <div role="group" class="btn-group-sm btn-group">
                         <button id="toggleNARows" class="btn btn-sm btn-secondary mr-4" type="button">
-                            <i class="fa fa-eye-slash" aria-hidden="true"></i> Mostrar Bajas
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i> Mostrar N/A
                         </button>
-                        <a href="{{route('usuarios.perfil.crear')}}" class="btn btn-sm btn-success">Nuevo Usuario</a>
+                        <a href="{{route('usuarios.alta.funcionarios')}}" class="btn btn-sm btn-success">Nuevo Usuario</a>
                     </div>
                 </div>
             </div>
@@ -153,7 +153,7 @@
 
                                         <div class="col-md-2 text-center" role="gridcell">
                                             <div class="form-control-plaintext text-truncate">
-                                                <a href="{{route('usuarios.permisos.index', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="VER Y MODIFICAR PERMISOS">
+                                                <a href="{{route('permiso-rol-menu.usuarios.permisos', ['id' => $itemUsuarios->id])}}" class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="VER Y MODIFICAR PERMISOS">
                                                     <i class="fa fa-braille" aria-hidden="true"></i>
                                                 </a>
                                             </div>
