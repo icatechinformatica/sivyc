@@ -23,7 +23,7 @@
         <link rel="stylesheet" href="{{asset("vendor/nucleo/css/nucleo.css") }}">
         <link rel="stylesheet" href="{{asset("vendor/@fortawesome/fontawesome-free/css/all.min.css") }}" type="text/css">
         <link rel="stylesheet" href="{{asset("css/mdb.min.css") }}">
-
+        @stack("css")
     </head>
 
     <body>
