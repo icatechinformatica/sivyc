@@ -112,6 +112,8 @@
         <div class="form-group col-md-2 mr-sm-1">
             {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
         </div>
+    </div>
+    <div class="row form-inline justify-content-end">
         @if(count($grupos)>0)
             @php
                 if($movimientos)$activar = true;
@@ -120,34 +122,30 @@
                 $nmunidad = $grupos[0]->nmunidad;
                 $status_curso = $grupos[0]->status_curso;
                 $pdf_curso = $grupos[0]->pdf_curso;
-            @endphp
-                <div class="form-group col-md-2 mr-sm-1">
-                    <div class="dropdown show">
-                        <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-print  text-white" title="Imprimir Memorándum">&nbsp;SOLICITUD</i>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="{{$file}}" target="_blank">
-                                {{ $grupos[0]->munidad."PDF" }}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
-            <div class="form-group col-md-2 mr-sm-1">
+            @endphp            
+            
+            @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))            
                 @if ($opt== "ARC01")
-                {{ Form::button('ARC-01 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
+                    {{ Form::button('ARC-01 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
                 @else
-                {{ Form::button('ARC-02 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
-                @endif
-            </div>
+                    {{ Form::button('ARC-02 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
+                @endif            
             @endif
-            @if($grupos[0]->pdf_curso AND $activar == false)
-                <div class="form-group col-md-2">
-                    <a href="{{ $grupos[0]->pdf_curso }}" target="_blank" class="btn bg-warning">PDF AUTORIZACIÓN</a>
+            {{-- Form::button('AGENDA-ANEXO', ['id'=>'AgendaAnexo','class' => 'btn']) --}}
+            <div class="dropdown show">
+                <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-print" title="Imprimir Memorándum">&nbsp;<span style="font-family: Arial;font-weight: normal;">SOPORTES</span></i>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item text-dark " href="{{$file}}" target="_blank">
+                        {{ $grupos[0]->munidad.".PDF" }}
+                    </a>
                 </div>
-            @endif
+            </div>            
+            @if($grupos[0]->pdf_curso AND $activar == false)            
+                <a href="{{ $grupos[0]->pdf_curso }}" target="_blank" class="btn bg-warning text-dark fw-bold">PDF AUTORIZACIÓN</a>            
+            @endif            
+            
         @endif
         {!! Form::hidden('fecha', date('Y-m-d')) !!}
     </div>
@@ -245,6 +243,11 @@
         $("#buscar").click(function() {
             $('#frm').attr('action', "{{route('solicitudes.aperturas')}}");
             $('#frm').attr('target', '_self').submit();
+        });
+
+        $("#AgendaAnexo").click(function() {            
+                $('#frm').attr('action', "{{route('solicitudes.generar.agenda.anexo')}}");
+                $('#frm').attr('target', '_blank').submit();
         });
         $("#BorradorARC").click(function() {
             if ($("#opt").val() == "ARC01") {
