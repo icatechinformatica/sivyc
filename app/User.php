@@ -23,8 +23,17 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id','nombre', 'email', 'unidad', 'puesto', 'token_movil','correo_institucional','activo',
-        'registro_id', 'registro_type', 'fecha_caducidad'
+        'id',
+        'nombre',
+        'email',
+        'unidad',
+        'puesto',
+        'token_movil',
+        'correo_institucional',
+        'activo',
+        'registro_id',
+        'registro_type',
+        'fecha_caducidad'
     ];
 
     /**
@@ -33,7 +42,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -58,29 +68,53 @@ class User extends Authenticatable
     public function scopeBusquedaPor($query, $tipo, $buscar)
     {
         if (!empty($tipo)) {
+            // Si hay búsqueda, filtrar
             if (!empty(trim($buscar))) {
                 switch ($tipo) {
-                    case 'curp_aspirante':
-                        return $query->whereHas('registro', function($q) use ($buscar) {
-                            $q->where('curp_usuario', '=', $buscar);
-                        });
                     case 'nombres':
-                        return $query->whereHas('registro', function($q) use ($buscar) {
-                            $q->where(DB::raw("upper(concat(tblz_usuarios.id, ' ', nombre_trabajador, ' ', curp_usuario, ' ', correo))"), 'LIKE', '%'.strtoupper($buscar).'%');
+                        return $query->where(function ($q) use ($buscar) {
+                            // Búsqueda en funcionarios
+                            $q->where(function ($subQ) use ($buscar) {
+                                $subQ->where('registro_type', 'App\\Models\\funcionario')
+                                    ->whereExists(function ($exists) use ($buscar) {
+                                        $exists->select(DB::raw(1))
+                                            ->from('tbl_funcionario')
+                                            ->whereRaw('tblz_usuarios.registro_id = tbl_funcionario.id')
+                                            ->whereRaw("upper(tbl_funcionario.id::text || ' ' || COALESCE(tbl_funcionario.nombre_trabajador, '') || ' ' || COALESCE(tbl_funcionario.curp_usuario, '') || ' ' || COALESCE(tbl_funcionario.correo, '')) LIKE ?", ['%' . strtoupper($buscar) . '%']);
+                                    });
+                            })
+                                ->orWhere(function ($subQ) use ($buscar) {
+                                    $subQ->where('registro_type', 'App\\Models\\instructor')
+                                        ->whereExists(function ($exists) use ($buscar) {
+                                            $exists->select(DB::raw(1))
+                                                ->from('instructores')
+                                                ->whereRaw('tblz_usuarios.registro_id = instructores.id')
+                                                ->whereRaw("upper(instructores.id::text || ' ' || COALESCE(instructores.nombre, '') || ' ' || COALESCE(instructores.curp, '') || ' ' || COALESCE(instructores.correo, '')) LIKE ?", ['%' . strtoupper($buscar) . '%']);
+                                        });
+                                })
+                                // Búsqueda en usuarios sin asociación polimórfica
+                                ->orWhere(function ($subQ) use ($buscar) {
+                                    $subQ->where(function ($nullQ) {
+                                        $nullQ->whereNull('registro_id')->orWhereNull('registro_type');
+                                    })
+                                        ->whereRaw("upper(COALESCE(email, '') || ' ' || COALESCE(nombre, '')) LIKE ?", ['%' . strtoupper($buscar) . '%']);
+                                })->ORDERBY('registro_type', 'ASC');
                         });
                     default:
                         break;
                 }
+            } else {
+                // Sin búsqueda: mostrar TODOS los usuarios (con y sin registro)
+                return $query;
             }
         }
-        
         return $query;
     }
-    
-    public function registro()
-    {
-        return $this->morphTo();
-    }
+
+    // public function registro()
+    // {
+    //     return $this->morphTo();
+    // }
 
     // Accessor para obtener el nombre desde la tabla relacionada
     public function getNameAttribute()

@@ -122,6 +122,10 @@ class instructor extends Model
         return $this->morphOne(User::class, 'registro', 'registro_type', 'registro_id');
     }
 
+    public function user()
+    {
+        return $this->morphOne(User::class, 'registro', 'registro_type', 'registro_id');
+    }
 
 }
 

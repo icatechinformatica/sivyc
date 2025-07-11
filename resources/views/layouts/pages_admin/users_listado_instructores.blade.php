@@ -1,7 +1,7 @@
 <!--Creado por Daniel Méndez Cruz-->
 @extends('theme.sivyc_admin.layout')
 <!--generado por Daniel Méndez-->
-@section('title', 'LISTADO DE FUNCIONARIOS | Sivyc Icatech')
+@section('title', 'LISTADO DE INSTRUCTORES | Sivyc Icatech')
 <!--contenido-->
 @section('content')
 <div class="container-fluid mt--6">
@@ -25,7 +25,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="mb-0">Listado de Funcionarios e Instructores</h3>
+                    <h3 class="mb-0">Listado de Instructores</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -34,7 +34,7 @@
                                 <tr>
                                     <th>CURP</th>
                                     <th>RFC</th>
-                                    <th>Nombre del Trabajador</th>
+                                    <th>Nombre del Instructor</th>
                                     <th class="text-center">Tipo</th>
                                     <th class="text-center">Alta</th>
                                 </tr>
@@ -53,25 +53,14 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        @if ($registro->tipo === 'Instructor')
-                                            <form action="{{ route('usuarios.alta.instructores.post') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="id_instructor" value="{{ $registro->f_id }}">
-                                                <button type="submit" class="btn btn-sm btn-primary"
-                                                    title="Dar de alta al instructor">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </form>
-                                        @else
-                                            <form action="{{ route('usuarios.alta.funcionarios.post') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="id_funcionario" value="{{ $registro->f_id }}">
-                                                <button type="submit" class="btn btn-sm btn-primary"
-                                                    title="Dar de alta al funcionario">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </form>
-                                        @endif
+                                        <form action="{{ route('usuarios.alta.instructores.post') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id_instructor" value="{{ $registro->f_id }}">
+                                            <button type="submit" class="btn btn-sm btn-primary"
+                                                title="Dar de alta al instructor">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 @endforeach

@@ -36,12 +36,14 @@ class ListadoUsuariosService
         // Transformar funcionarios
         $registrosFuncionarios = collect($funcionarios)->map(function ($item) {
             $item->tipo_registro = 'funcionario';
+            $item->tipo = 'Funcionario';
             return $item;
         });
         
         // Transformar instructores
         $registrosInstructores = collect($instructores)->map(function ($item) {
             $item->tipo_registro = 'instructor';
+            $item->tipo = 'Instructor';
             return $item;
         });
 

@@ -100,7 +100,7 @@
                         <button id="toggleNARows" class="btn btn-sm btn-secondary mr-4" type="button">
                             <i class="fa fa-eye-slash" aria-hidden="true"></i> Mostrar N/A
                         </button>
-                        <a href="{{route('usuarios.alta.funcionarios')}}" class="btn btn-sm btn-success">Nuevo Usuario</a>
+                        <a href="{{route('usuarios.alta.funcionarios-instructores')}}" class="btn btn-sm btn-success">Nuevo Usuario</a>
                     </div>
                 </div>
             </div>
@@ -130,9 +130,24 @@
                             <div class="card-body">
                                 @foreach ($usuarios as $itemUsuarios)
 
-                                    <div class="row {{ is_null($itemUsuarios->nombre) || trim($itemUsuarios->nombre) === '' ? 'na-row' : '' }}" role="row" data-nombre="{{ $itemUsuarios->nombre ?? 'N/A' }}">
+                                @php
+                                    // Obtener el nombre según el tipo de registro
+                                    $nombreCompleto = null;
+                                    if ($itemUsuarios->registro) {
+                                        if ($itemUsuarios->registro_type == 'App\Models\instructor') {
+                                            $nombreCompleto = $itemUsuarios->registro->nombre . ' ' . 
+                                                            ($itemUsuarios->registro->apellidoPaterno ?? '') . ' ' . 
+                                                            ($itemUsuarios->registro->apellidoMaterno ?? '');
+                                        } elseif ($itemUsuarios->registro_type == 'App\Models\funcionario') {
+                                            $nombreCompleto = $itemUsuarios->registro->nombre_trabajador;
+                                        }
+                                    }
+                                    $nombreCompleto = $nombreCompleto ? trim($nombreCompleto) : null;
+                                @endphp
+
+                                    <div class="row {{ is_null($nombreCompleto) || trim($nombreCompleto) === '' ? 'na-row' : '' }}" role="row" data-nombre="{{ $nombreCompleto ?? 'N/A' }}">
                                         <div class="col-md-6" role="gridcell">
-                                            <div class="form-control-plaintext text-truncate">{{ $itemUsuarios->nombre ?? 'N/A' }}</div>
+                                            <div class="form-control-plaintext text-truncate">{{ $nombreCompleto ?? 'N/A' }}</div>
                                         </div>
 
                                         <div class="col-md-2 text-center" role="gridcell">

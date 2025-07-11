@@ -134,8 +134,9 @@ Route::middleware(['admin'])->group(function(){
     Route::get('/permisos/roles/index', 'adminController\PermissionController@permiso_rol')->name('permisos.roles.index');
     Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
     Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
-    Route::get('/usuarios/alta/funcionarios', [App\Http\Controllers\adminController\userController::class, 'listadoUsuarios'])->name('usuarios.alta.funcionarios');
-    Route::post('/usuarios/alta/funcionarios', [App\Http\Controllers\adminController\userController::class, 'altaUsuario'])->name('usuarios.alta.funcionarios.post');
+    Route::get('/usuarios/alta/funcionarios-instructores', [App\Http\Controllers\adminController\userController::class, 'listadoUsuarios'])->name('usuarios.alta.funcionarios-instructores');
+    Route::post('/usuarios/alta/funcionarios', [App\Http\Controllers\adminController\userController::class, 'altaUsuarioFuncionario'])->name('usuarios.alta.funcionarios.post');
+    Route::post('/usuarios/alta/instructores', [App\Http\Controllers\adminController\userController::class, 'altaUsuarioInstructor'])->name('usuarios.alta.instructores.post');
     Route::post('/gestor/permisos/roles/profile/add', 'adminController\PermissionController@store')->name('gestor.permisos.roles.create');
     Route::post('/roles/create/store', 'adminController\RolesController@store')->name('roles.store');
     Route::put('/roles/modificacion/update/{id}', 'adminController\RolesController@update')->name('roles.update');
@@ -778,6 +779,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/organismo/municipio','organismosController@muni');
 
     /* Solicitudes exoneración y reducción de cuota AGC*/
+
     Route::get('/solicitud/exoneracion','Solicitud\exoneracionController@index')->name('solicitud.exoneracion');
     // ->middleware('can:solicitud.exoneracion');
     Route::get('/solicitud/exoneracion/busqueda','Solicitud\exoneracionController@search')->name('solicitud.exoneracion.search');
@@ -879,32 +881,6 @@ Route::post('/areas/modificar/save', 'webController\AreasController@update_save'
 // ->middleware('can:areas.guardar-modificacion');
 Route::get('/areas/{id}', 'webController\AreasController@destroy')->name('areas.destroy');
 
-/* Modulo especialidades */
-Route::get('/especialidades/inicio', 'webController\EspecialidadesController@index')->name('especialidades.inicio');
-// ->middleware('can:especialidades.inicio');
-Route::get('/especialidades/agregar', 'webController\EspecialidadesController@create')->name('especialidades.agregar');
-// ->middleware('can:especialidades.formulario-creacion');
-Route::post('/especialidades/guardar', 'webController\EspecialidadesController@store')->name('especialidades.guardar');
-// ->middleware('can:especialidades.guardar-nueva-especialidad');
-Route::get('/especialidades/modificar/{id}', 'webController\EspecialidadesController@edit')->name('especialidades.modificar');
-// ->middleware('can:especialidades.formulario-actualizar');
-Route::post('/especialidades/modificar/save/{id}', 'webController\EspecialidadesController@update')->name('especialidades.update')->Middleware('can:especialidades.guardar-modificacion');
-Route::get('/especialidades/{id}', 'webController\EspecialidadesController@destroy')->name('especialidades.destroy');
-
-
-/* Modulo instituto*/
-Route::get('/instituto/inicio', 'webController\InstitutoController@index')->name('instituto.inicio');
-// ->middleware('can:instituto.inicio');
-Route::post('/instituto/guardar', 'webController\InstitutoController@store')->name('instituto.guardar');
-// ->middleware('can:instituto.guardar-modificacion');
-
-/*c Modulo tbl_unidades 0302021*/
-Route::get('/unidades/inicio', 'webController\UnidadesController@index')->name('unidades.inicio');
-// ->middleware('can:unidades.index');
-Route::get('/unidades/modificar/{id}', 'webController\UnidadesController@editar')->name('unidades.editar');
-// ->middleware('can:unidades.editar');
-Route::post('/unidades/modificar/guardar', 'webController\UnidadesController@update')->name('unidades-actualizar');
-
 /* Modulo exoneraciones */
 Route::get('/exoneraciones/inicio', 'webController\ExoneracionesController@index')->name('exoneraciones.inicio')
     ->middleware('can:exoneraciones.inicio');
@@ -990,11 +966,6 @@ Route::get('/Estadisticas/inicio', 'Validacion\ReportesPlaneacionFormatoT@indexE
 Route::get('/Estadisticas/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreatePdf')->name('reportes.planeacion.estadisticasPdf');
 Route::get('/EstadisticasXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreateXls')->name('reportes.planeacion.estadisticasXls');
 
-//armando
-//Route::get('/password/new','passwordController@index')->name('password.view');
-// ->middleware('can:password.update');
-//Route::post('/password/update','passwordController@updatePassword')->name('update.password');
-
 /**MODULO DE ESTADISTICAS */
 Route::get('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos');
 // ->middleware('can:estadisticas.ecursos');
@@ -1023,9 +994,9 @@ Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoControl
 
  //Consulta de cursos validados por unidad y accion movil con XLS 17112021
  Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval');
-//  ->middleware('can:consultas.cursos.iniciados');
+ //  ->middleware('can:consultas.cursos.iniciados');
  Route::get('/consulta/xls/cursos-validados','webController\CursoValidadoController@xls_cursosiniciados')->name('xls-cursosiniciados');
-//  ->middleware('can:consultas.cursos.iniciados');
+ //  ->middleware('can:consultas.cursos.iniciados');
 
 //Consulta de Localidades en instructores
 Route::post('/instructores/busqueda/localidad', 'webController\InstructorController@getlocalidades')->name('instructores.busqueda.localidades');

@@ -10,9 +10,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Icatech\PermisoRolMenu\Models\Rol;
 use Icatech\PermisoRolMenu\Models\Permiso;
-use App\Services\Funcionario\CreateUserService;
-use App\Services\Funcionario\GetWithOutUserService as FuncionarioGetWithOutUserService;
-use App\Services\Instructor\GetWithOutUserService as InstructorGetWithOutUserService;
+use App\Services\Funcionario\CreateUserService as FuncionarioCreateUserService;
+use App\Services\Instructor\CreateUserService as InstructorCreateUserService;
 use App\Services\Usuario\ListadoUsuariosService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Google\Service\DriveActivity\Create;
@@ -27,11 +26,11 @@ class userController extends Controller
     public function index(Request $request)
     {
         $tipo = 'nombres';
-        $busqueda = strtoupper($request->busquedaPersonal);
+        $busqueda = $request->busquedaPersonal ? strtoupper($request->busquedaPersonal) : '';
         
         // Cargar la relación polimórfica para obtener los nombres
         $usuarios = User::with('registro')->busquedapor($tipo, $busqueda)->paginate(20);
-        // dd($usuarios);
+        // dd($usuarios->toArray());
         return view('layouts.pages_admin.users_permisions', compact('usuarios'));
     }
 
@@ -232,14 +231,13 @@ class userController extends Controller
         try {
             $pagActual = request()->get('page', 1);
             $registros = $listadoService->execute($pagActual);
-            
             return view('layouts.pages_admin.users_listado', compact('registros'));
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Error al obtener el listado de usuarios']);
         }
     }
 
-    public function altaUsuario(Request $request, CreateUserService $service)
+    public function altaUsuarioFuncionario(Request $request, FuncionarioCreateUserService $service)
     {
         // Solo validaciones HTTP básicas
         $request->validate([
@@ -252,7 +250,29 @@ class userController extends Controller
         try {
             $data = $request->only(['id_funcionario']);
             $result = $service->execute($data);
-            return redirect()->route('usuarios.alta.funcionarios')->with('success', 'Usuario funcionario creado exitosamente.');
+            return redirect()->route('usuarios.alta.funcionarios-instructores')->with('success', 'Usuario funcionario creado exitosamente.');
+                
+        } catch (\InvalidArgumentException $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);    
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function altaUsuarioInstructor(Request $request, InstructorCreateUserService $service)
+    {
+        // Solo validaciones HTTP básicas
+        $request->validate([
+            'id_instructor' => 'required|integer'
+        ], [
+            'id_instructor.required' => 'El ID del instructor es requerido.',
+            'id_instructor.integer' => 'El ID del instructor debe ser un número válido.'
+        ]);
+
+        try {
+            $data = $request->only(['id_instructor']);
+            $result = $service->execute($data);
+            return redirect()->route('usuarios.alta.funcionarios-instructores')->with('success', 'Usuario instructor creado exitosamente.');
                 
         } catch (\InvalidArgumentException $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);    
