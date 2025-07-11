@@ -294,7 +294,7 @@ class InstructorController extends Controller
                                                 ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO']);
 
                 if($request->seluni) {
-                    if($request->seluni == 'SAN CRISTOBAL') { $seluni = 'SC'; } else {$seluni = $request->seluni[0] . $request->seluni[1];}
+                    if($request->seluni == 'SAN CRISTOBAL') { $seluni = 'SA'; } else {$seluni = $request->seluni[0] . $request->seluni[1];}
                     $databuzon = $databuzon->Where('nrevision', 'LIKE', $seluni . '%');
                     $buzonhistory = $buzonhistory->Where('nrevision', 'LIKE', $seluni . '%');
                 }
