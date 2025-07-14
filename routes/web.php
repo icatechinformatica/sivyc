@@ -1096,3 +1096,5 @@ Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->nam
 Route::get('/test', function () {
     dd('Test route is working!');
 })->name('cursos.archivado');
+
+Route::get('/dummy/test', 'App\Http\Controllers\DummyController@index');
