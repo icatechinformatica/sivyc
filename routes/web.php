@@ -125,6 +125,7 @@ Route::middleware(['admin'])->group(function(){
     Route::post('/usuarios/permisos/{id}', 'adminController\userController@updatePermisosUsuario')->name('usuarios.permisos.update');
     Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
     Route::post('/update/activo', 'adminController\userController@updateActivo')->name('update.activo');
+    Route::post('/usuario/toggle/activo', [App\Http\Controllers\adminController\userController::class, 'toggleActivo'])->name('usuario.toggle.activo');
     Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
     Route::get('/roles/index', 'adminController\RolesController@index')->name('roles.index');
     Route::get('/roles/modificacion/{id}', 'adminController\RolesController@edit')->name('roles.edit');

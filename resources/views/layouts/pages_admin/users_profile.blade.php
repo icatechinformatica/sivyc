@@ -39,6 +39,10 @@
     background-color: #f8d7da;
     color: #721c24;
   }
+
+  #status-info {
+    cursor: pointer;
+  }
 </style>
 <div class="container-fluid mt--6">
   <div class="row">
@@ -131,7 +135,8 @@
                 <div class="form-group">
                   <label class="info-label">Estatus</label>
                   <div>
-                    <span class="status-badge @if($usuario->activo) status-active @else status-inactive @endif">
+                    <span class="status-badge @if($usuario->activo) status-active @else status-inactive @endif"
+                      id="status-info">
                       @if($usuario->activo) ACTIVO @else INACTIVO @endif
                     </span>
                   </div>
@@ -179,5 +184,29 @@
 </div>
 @endsection
 @section('scripts_content')
-{{-- No se requieren scripts para vista informativa --}}
+<script>
+  // Aquí puedes agregar cualquier script adicional si es necesario
+  document.addEventListener('DOMContentLoaded', function() {
+    $('#status-info').on('click', function() {
+        $.ajax({
+          url: '{{ route("usuario.toggle.activo") }}',
+          type: 'POST',
+          data: {
+            _token: '{{ csrf_token() }}',
+            usuario_id: '{{ $usuario->id }}',
+          },
+          success: function(response) {
+            if (response.success) {
+              location.reload();
+            } else {
+              alert('No se pudo cambiar el estatus.');
+            }
+          },
+          error: function(e) {
+            alert(e.responseJSON.message || 'Error al cambiar el estatus.');
+          }
+        });
+      });
+  });
+</script>
 @endsection

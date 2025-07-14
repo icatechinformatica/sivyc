@@ -297,4 +297,23 @@ class userController extends Controller
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+
+    public function toggleActivo(Request $request)
+    {
+        $request->validate([
+            'usuario_id' => 'required|integer|exists:tblz_usuarios,id'
+        ]);
+
+        $userId = $request->input('usuario_id');
+        $user = User::find($userId);
+        
+        if (!$user) {
+            return response()->json(['success' => false], 404);
+        }
+
+        $user->activo = !$user->activo;
+        $user->save();
+        
+        return response()->json(['success' => true, 'activo' => $user->activo]);
+    }
 }
