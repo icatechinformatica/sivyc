@@ -84,9 +84,18 @@
             {{ session('success') }}
         </div>
     @endif
-    <div class="col-md-12">
+    <div class="container-fluid mt--6">
         <div class="main-card mb-3 card">
             <div class="card-header">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 {!! html()->form('GET', route('usuario_permisos.index'))->class('form-inline')->open() !!}
                     {{--<select name="tipo_busqueda_personal" class="form-control mr-sm-2" id="tipo_busqueda_personal">
                         <option value="nombres">NOMBRE COMPLETO</option>
@@ -147,7 +156,8 @@
 
                                     <div class="row {{ is_null($nombreCompleto) || trim($nombreCompleto) === '' ? 'na-row' : '' }}" role="row" data-nombre="{{ $nombreCompleto ?? 'N/A' }}">
                                         <div class="col-md-6" role="gridcell">
-                                            <div class="form-control-plaintext text-truncate">{{ $nombreCompleto ?? 'N/A' }}</div>
+                                            <div class="form-control-plaintext text-truncate">{{ $nombreCompleto ?? 'N/A' }}
+                                            </div>
                                         </div>
 
                                         <div class="col-md-2 text-center" role="gridcell">

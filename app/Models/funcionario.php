@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\ModelPat\Organismos;
 use Illuminate\Database\Eloquent\Model;
 
 class funcionario extends Model
@@ -57,4 +58,36 @@ class funcionario extends Model
     {
         return $this->morphOne(User::class, 'registro', 'registro_type', 'registro_id');
     }
+
+    // Relación many-to-many con organismos
+    public function organismos()
+    {
+        return $this->belongsToMany(
+            Organismos::class,
+            'tbl_func_org',
+            'id_fun',
+            'id_org'
+        );
+    }
+
+    // Relación para obtener la unidad a través del organismo
+    public function unidad()
+    {
+        return $this->hasOneThrough(
+            Unidad::class,
+            Organismos::class,
+            'id', // Foreign key en tbl_organismos
+            'id', // Foreign key en tbl_unidades
+            'id', // Local key en tbl_funcionario
+            'id_unidad' // Local key en tbl_organismos
+        )->join('tbl_func_org', 'tbl_organismos.id', '=', 'tbl_func_org.id_org')
+         ->where('tbl_func_org.id_fun', $this->id);
+    }
+
+    // Método auxiliar para obtener la primera unidad (si un funcionario puede tener múltiples organismos)
+    public function getPrimeraUnidad()
+    {
+        return $this->organismos()->with('unidad')->first()?->unidad;
+    }
+
 }

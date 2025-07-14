@@ -109,12 +109,29 @@ class userController extends Controller
      */
     public function edit($id)
     {
-        //
         $iduser = base64_decode($id);
         $usuario = User::findOrfail($iduser);
         $ubicaciones = Unidad::groupBy('ubicacion')->GET(['ubicacion']);
-        $ubicacion = Unidad::Select('unidad', 'ubicacion')->Where('id', $usuario->unidad)->First();
-        $unidades = Unidad::Select('id', 'unidad')->Where('ubicacion', $ubicacion->ubicacion)->Get();
+        // Verificar si el usuario tiene unidad asignada y si existe en la tabla
+        $ubicacion = null;
+        $unidades = collect();
+        // dd($usuario->unidad);
+        if ($usuario->unidad) {
+            $ubicacion = Unidad::Select('unidad', 'ubicacion')->Where('id', $usuario->unidad)->First();
+        }
+        
+        // Si no se encontró ubicación por unidad directa, intentar obtenerla del registro polimórfico
+        if (!$ubicacion && $usuario->registro) {
+            $ubicacionNombre = $usuario->ubicacion; // Usa el accessor
+            if ($ubicacionNombre) {
+                $ubicacion = (object) ['ubicacion' => $ubicacionNombre, 'unidad' => null];
+            }
+        }
+        
+        // Solo buscar unidades si tenemos una ubicación válida
+        if ($ubicacion && $ubicacion->ubicacion) {
+            $unidades = Unidad::Select('id', 'unidad')->Where('ubicacion', $ubicacion->ubicacion)->Get();
+        }
         return view('layouts.pages_admin.users_profile', compact('usuario', 'ubicaciones', 'ubicacion', 'unidades'));
     }
 

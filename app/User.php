@@ -15,7 +15,7 @@ class User extends Authenticatable
     use Notifiable, ConfiguresSpanishUserModel;
     protected $guard_name = 'web'; // Añade esto específicamente
 
-    protected $with = ['registro'];
+    // Removido el protected $with para evitar errores de eager loading automático
 
     /**
      * The attributes that are mass assignable.
@@ -130,5 +130,43 @@ class User extends Authenticatable
     public function registro()
     {
         return $this->morphTo(__FUNCTION__, 'registro_type', 'registro_id');
+    }
+
+    public function getUbicacionAttribute()
+    {
+        if (!$this->registro) {
+            return null;
+        }
+
+        // Si es funcionario, usar query directo para obtener la ubicación
+        if ($this->registro_type === 'App\Models\funcionario') {
+            try {
+                // Intentar usar la relación primero
+                $unidad = $this->registro->getPrimeraUnidad();
+                if ($unidad && $unidad->ubicacion) {
+                    return $unidad->ubicacion;
+                }
+                
+            } catch (\Exception $e) {
+                // Si todo falla, retornar null
+                return null;
+            }
+        }
+
+        // Para instructores u otros tipos
+        return $this->registro->ubicacion ?? null;
+    }
+
+    public function organizmo()
+    {
+        if ($this->registro && method_exists($this->registro, 'organismo')) {
+            return $this->registro->organismo();
+        }
+        return null;
+    }
+
+    public function getPuestoAttribute()
+    {
+        return $this->registro ? $this->registro->puesto_estatal : null;
     }
 }
