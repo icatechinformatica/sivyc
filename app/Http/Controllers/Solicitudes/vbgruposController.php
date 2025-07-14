@@ -635,7 +635,6 @@ class vbgruposController extends Controller
 
         $fechaini_formateada = Carbon::parse($instructor['inicio'])->translatedFormat('j \d\e F \d\e\l Y');
         $fechater_formateada = Carbon::parse($instructor['termino'])->translatedFormat('j \d\e F \d\e\l Y');
-        $telefono_formateado = '521'.$instructor['telefono'];
 
         // Reemplazar variables generales en plantilla
         $mensaje = str_replace(
