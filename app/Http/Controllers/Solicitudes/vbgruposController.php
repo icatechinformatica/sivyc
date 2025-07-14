@@ -80,7 +80,7 @@ class vbgruposController extends Controller
                 $result = DB::statement("
                     UPDATE tbl_cursos
                     SET
-                        turnado = 'VoBo', vb_dg = false,
+                        turnado = 'DGA', vb_dg = false,
                          movimientos =COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
                             jsonb_build_object(
                                 'VoBo', jsonb_build_array(

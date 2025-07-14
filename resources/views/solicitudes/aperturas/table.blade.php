@@ -51,23 +51,27 @@
         @if(count($grupos)>0)
             <tbody>
                 @foreach($grupos as $g)
-                    <?php
-                    $rojo=null;
-                    if(!isset($soporte) AND $g->status_folio=="SOPORTE") $soporte = true;
+                    @php
+                        $rojo = $motivo = null;
+                        if(!isset($soporte) AND $g->status_folio=="SOPORTE") $soporte = true;
 
-                    switch($opt){
-                        case "ARC01":
-                            if(($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') AND $g->status_curso =='AUTORIZADO') $activar=false;
-                            $mextemporaneo = $g->mextemporaneo;
-                            $rextemporaneo = $g->rextemporaneo;
-                        break;
-                        case "ARC02":
-                            if(($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD') OR $g->turnado<>'UNIDAD' OR $status_solicitud<>'VALIDADO') $activar=false;
-                            $mextemporaneo = $g->mextemporaneo_arc02;
-                            $rextemporaneo = $g->rextemporaneo_arc02;
-                        break;
-                    }
-                    ?>
+                        switch($opt){
+                            case "ARC01":
+                                if(($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') AND $g->status_curso =='AUTORIZADO') $activar=false;
+                                $mextemporaneo = $g->mextemporaneo;
+                                $rextemporaneo = $g->rextemporaneo;
+                            break;
+                            case "ARC02":
+                                if(($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD') OR $g->turnado<>'UNIDAD' OR $status_solicitud<>'VALIDADO') $activar=false;
+                                $mextemporaneo = $g->mextemporaneo_arc02;
+                                $rextemporaneo = $g->rextemporaneo_arc02;
+                            break;
+                        }
+                        $mov = json_decode($g->movimientos, true); 
+                        if (!empty($mov[0]['VoBo'][0]['motivo'])) $motivo =  $mov[0]['VoBo'][0]['motivo'];
+                        
+                    @endphp
+
                     <tr @if($rojo)class='text-danger' @endif >
                         <td class='text-center'>
                             @if($g->file_pdf)
@@ -92,7 +96,7 @@
                         <td class="text-center">{{$g->folio_grupo}}</td>
                         @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
                             <td>
-                                <div style="width: 400px;">{{ Form::textarea('prespuesta['.$g->id.']', $g->obspreliminar ?? $g->motivo_vobo, ['id' => 'prespuesta['.$g->id.']' ,'class' => 'form-control', 'placeholder' => 'OBSERVACIONES','rows' =>'3']) }}</div>
+                                <div style="width: 400px;">{{ Form::textarea('prespuesta['.$g->id.']', $g->obspreliminar ?? $motivo, ['id' => 'prespuesta['.$g->id.']' ,'class' => 'form-control', 'placeholder' => 'OBSERVACIONES','rows' =>'3']) }}</div>
                             </td>
                         @elseif($extemporaneo)
                             <td class="text-center">{{$mextemporaneo }}</td>
@@ -151,7 +155,7 @@
                             @if($g->vb_dg)
                                 {{ 'AUTORIZADO'}}
                             @elseif($g->vb_dg == false and $g->turnado=='DGA')
-                                <span class="text-danger">{{ 'RECHAZADO'}} <br/>({{ $g->motivo_vobo}})</span>
+                                <span class="text-danger">{{ 'RECHAZADO'}} <br/>({{ $motivo}})</span>
                             @endif
 
                         </td>
