@@ -1,19 +1,30 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Actualizar especialidad | Sivyc Icatech')
-
+@section('title', 'Editar Especialidad | Sivyc Icatech')
+@section('content_script_css')
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
+    <style>
+        .table tr th { text-align: center; padding:12px;}       
+    </style>
+@endsection
 @section('content')
-
-    <div class="container g-pt-50 g-pb-20">
+    <div class="card-header">
+        Catálogos / Especialidades / Editar Especialidad
+    </div>
+    <div class="card card-body">
+        @if($message ?? '')
+            <div class="row ">
+                <div class="col-md-12 alert alert-success">
+                    <p>{{ $message }}</p>
+                </div>
+            </div>
+        @endif
         <form action="{{route('especialidades.update', $especialidad->id)}}" method="post">
             @csrf
-
-            <h1>ACTUALIZAR ESPECIALIDAD</h1>
-
             <div class="row mt-5 mb-4">
                 <div class="col">
                     <div class="form-group">
-                        <label for="clave" class="control-label">Clave de la especialidad</label>
+                        <label for="clave" class="control-label">Clave de la Especialidad</label>
                         <input type="text" class="form-control" id="clave" name="clave" placeholder="Clave de la especialidad"
                             value="{{$especialidad->clave}}" required>
                     </div>
@@ -21,7 +32,7 @@
 
                 <div class="col">
                     <div class="form-group">
-                        <label for="nombre" class="control-label">Nombre de la especialidad</label>
+                        <label for="nombre" class="control-label">Nombre de la Especialidad</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre de la especialidad"
                             value="{{$especialidad->nombre}}" required>
                     </div>
@@ -31,7 +42,7 @@
             <div class="row my-4">
                 <div class="col">
                     <div class="form-group">
-                        <label for="area" class="control-label">Campo de formación profesional</label>
+                        <label for="area" class="control-label">Campo de Formación Profesional</label>
                         <select name="area" id="area" class="custom-select">
                             @foreach ($areas as $area)
                                 <option {{$area->id == $especialidad->id_areas ? 'selected' : ''}}  value="{{$area->id}}">{{$area->formacion_profesional}}</option>
@@ -42,7 +53,7 @@
 
                 <div class="col">
                     <div class="form-group">
-                        <label for="status" class="control-label">Estado de la especialidad</label>
+                        <label for="status" class="control-label">Estado de la Especialidad</label>
 
                         @if ($especialidad->activo == 'true')
                             <select id="status" name="status" class="custom-select">
@@ -64,7 +75,7 @@
             <div class="row my-4">
                 <div class="col">
                     <div class="form-group">
-                        <label for="prefijo" class="control-label">Prefijo de la especialidad</label>
+                        <label for="prefijo" class="control-label">Prefijo de la Especialidad</label>
                         <input type="text" class="form-control" id="prefijo" name="prefijo" placeholder="Prefijo de la especialidad"
                             value="{{$especialidad->prefijo}}" required>
                     </div>
@@ -72,14 +83,10 @@
             </div>
 
             <div class="row my-2">
-                <div class="col">
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-primary">Actualiar especialidad</button>
-                    </div>
+                <div class="col d-flex justify-content-end">                    
+                    <button type="submit" class="btn">Actualizar Especialidad</button>                    
                 </div>
             </div>
         </form>
     </div>
-
-
 @endsection
