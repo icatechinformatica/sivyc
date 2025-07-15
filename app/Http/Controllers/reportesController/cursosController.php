@@ -15,6 +15,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 class cursosController extends Controller
 {
+    protected $discapacidad;
+    protected $escolaridad;
+    protected $periodo;
+    protected $mes;
+
     function __construct() {
         session_start();
         $this->discapacidad = ["VISUAL" => "1", "AUDITIVA" => "2", "DE COMUNICACIÓN" => "3", "MOTRIZ" => "4", "INTELECTUAL" => "5", "NINGUNA" => "6"];

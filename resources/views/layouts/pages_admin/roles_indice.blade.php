@@ -31,15 +31,21 @@
                                     <th scope="col">NOMBRE</th>
                                     <th scope="col">SLUG</th>
                                     <th scope="col">DESCRIPCIÓN</th>
+                                    <th scope="col">PERMISOS</th>
                                     <th scope="col">MODIFICACIÓN</th>
                                 </tr>
                             </thead>
                             <tbody class="list">
                                 @foreach ($rol as $itemRol)
                                     <tr>
-                                        <td scope="row">{{$itemRol->name}}</td>
-                                        <td scope="row">{{$itemRol->slug}}</td>
-                                        <td scope="row">{{$itemRol->description}}</td>
+                                        <td scope="row">{{$itemRol->nombre}}</td>
+                                        <td scope="row">{{$itemRol->ruta_corta}}</td>
+                                        <td scope="row">{{$itemRol->descripcion}}</td>
+                                        <td>
+                                            <a href="{{route('permiso-rol-menu.rol.menus.show', ['id' => $itemRol->id])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="OTORGAR PERMISOS">
+                                                <i class="fa fa-cogs" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
                                         <td>
                                             <a href="{{route('roles.edit', ['id' => base64_encode($itemRol->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
@@ -55,7 +61,7 @@
                         <nav aria-label="...">
                             <ul class="pagination justify-content-end mb-0">
                                 <li class="page-item">
-                                    {{ $rol->appends(request()->query())->links() }}
+                                    {{ $rol->appends(request()->query())->links('pagination::bootstrap-4') }}
                                 </li>
                             </ul>
                         </nav>

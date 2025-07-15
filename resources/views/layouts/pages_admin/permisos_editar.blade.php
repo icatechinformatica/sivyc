@@ -29,14 +29,14 @@
                           <div class="col-lg-6">
                             <div class="form-group">
                               <label class="form-control-label" for="permisoNameEdit">NOMBRE</label>
-                              <input type="text" id="permisoNameEdit" name="permisoNameEdit" class="form-control" value="{{ $permiso->name }}">
+                              <input type="text" id="permisoNameEdit" name="permisoNameEdit" class="form-control" value="{{ $permiso->nombre }}">
                             </div>
                           </div>
 {{--  --}}
                           <div class="col-lg-6">
                             <div class="form-group">
                               <label class="form-control-label" for="permisoSlugEdit">SLUG</label>
-                              <input type="text" id="permisoSlugEdit" name="permisoSlugEdit" class="form-control" value="{{ $permiso->slug }}" readonly>
+                              <input type="text" id="permisoSlugEdit" name="permisoSlugEdit" class="form-control" value="{{ $permiso->ruta_corta }}" readonly>
                             </div>
                           </div>
 
@@ -50,7 +50,7 @@
                           <div class="col-md-12">
                             <div class="form-group">
                               <label class="form-control-label" for="permisoDescripcionEdit">DESCRIPCIÓN</label>
-                              <textarea rows="4" class="form-control" name="permisoDescripcionEdit" id="permisoDescripcionEdit">{{ $permiso->description}}</textarea>
+                              <textarea rows="4" class="form-control" name="permisoDescripcionEdit" id="permisoDescripcionEdit">{{ $permiso->descripcion }}</textarea>
                             </div>
                           </div>
                           <input type="submit" value="Actualizar" class="btn btn-sm btn-warning">

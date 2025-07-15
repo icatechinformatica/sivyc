@@ -1,8 +1,9 @@
 <?php
 use Illuminate\Support\Facades\Route;
-Route::middleware(['auth'])->group(function(){           
+Route::middleware(['auth'])->group(function(){
     /*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/
-    Route::get('/preinscripcion/grupovb', 'Preinscripcion\grupovoboController@index')->name('preinscripcion.grupovobo')->middleware('can:preinscripcion.grupovobo');
+    Route::get('/preinscripcion/grupovb', 'Preinscripcion\grupovoboController@index')->name('preinscripcion.grupovobo');
+    // ->middleware('can:preinscripcion.grupovobo');
     Route::get('/preinscripcion/grupovb/cmbcursos', 'Preinscripcion\grupovoboController@cmbcursos')->name('preinscripcion.grupovobo.cmbcursos');
     Route::post('/preinscripcion/grupovb/guardar', 'Preinscripcion\grupovoboController@save')->name('preinscripcion.grupovobo.save')->middleware('can:preinscripcion.grupovobo');
     Route::post('/preinscripcion/grupovb/update', 'Preinscripcion\grupovoboController@update')->name('preinscripcion.grupovobo.update')->middleware('can:preinscripcion.grupovobo');

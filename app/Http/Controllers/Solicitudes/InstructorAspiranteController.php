@@ -44,6 +44,7 @@ class InstructorAspiranteController extends Controller
         $total_aspirantes = pre_instructor::WhereNotNull('semaforo')->count();
         $total_enviados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->count();
         $total_convocados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->Where('status','EN CAPTURA')->count();
+        $total_convocados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->Where('status','EN CAPTURA')->count();
         $query = pre_instructor::whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
 
         if ($request->filled('unidad')) {
@@ -51,7 +52,9 @@ class InstructorAspiranteController extends Controller
         }
 
         $data = $query->OrderBy('nombre', 'ASC')->get();
+        $data = $query->OrderBy('nombre', 'ASC')->get();
 
+        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades', 'total_aspirantes','total_enviados','total_convocados'));
         return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades', 'total_aspirantes','total_enviados','total_convocados'));
     }
 
@@ -68,10 +71,54 @@ class InstructorAspiranteController extends Controller
     }
 
     public function convocar(Request $request)
+    public function convocar(Request $request)
     {
+        $direccionUnidad = null;
         $direccionUnidad = null;
         $id = $request->input('id');
         $aspirante = pre_instructor::find($id);
+        $ins_oficial = instructor::Where('curp', $aspirante->curp)->First();
+
+        $aspirante->status = $ins_oficial->status = 'EN CAPTURA';
+        $aspirante->turnado = $ins_oficial->turnado = 'UNIDAD';
+        $aspirante->fecha_entrevista = $request->input('fecha_entrevista');
+        $aspirante->numero_control = 'Pendiente';
+
+        $ins_oficial->nombre = $aspirante->nombre;
+        $ins_oficial->apellidoPaterno = $aspirante->apellidoPaterno;
+        $ins_oficial->apellidoMaterno = $aspirante->apellidoMaterno;
+        $ins_oficial->estado = TRUE;
+
+        //verifica que el id_oficial sea diferente de 0
+        if($aspirante->id_oficial == 0) {
+            if($ins_oficial) {
+                $aspirante->id_oficial = $ins_oficial->id;
+            }
+
+        }
+
+        //verifica si ya tiene especialidades validadas anteriormente y las cambia a REVALIDACION EN CAPTURA
+        if(!is_null($aspirante->data_especialidad)) {
+            $data = $aspirante->data_especialidad;
+            foreach($data as $key => $especialidad)
+            {
+                if($especialidad['status'] == 'VALIDADO') {
+                    $especialidad['status'] = 'REVALIDACION EN CAPTURA';
+                    $especialidad['fecha_solicitud'] = $especialidad['fecha_validacion'] = $especialidad['memorandum_solicitud'] = $especialidad['memorandum_validacion'] = null;
+                    $especialidad['unidad_solicita'] = $aspirante->unidad_asignada;
+                }
+                $data[$key] = $especialidad;
+            }
+            $aspirante->data_especialidad = $data;
+        }
+        // termina proceso de revalidacion de especialidades
+
+        //proceso para generar nrevision
+        $unidad_inicial = substr($aspirante->unidad_asignada,0,2);
+        if($unidad_inicial === 'SA') { $unidad_inicial = 'SC'; }
+        $last_nrevision = pre_instructor::Where('nrevision', 'like', $unidad_inicial.'-'.date('Y').'-%')
+            ->orderBy('nrevision', 'desc')
+            ->value('nrevision');
         $ins_oficial = instructor::Where('curp', $aspirante->curp)->First();
 
         $aspirante->status = $ins_oficial->status = 'EN CAPTURA';
@@ -118,6 +165,9 @@ class InstructorAspiranteController extends Controller
         if ($last_nrevision) {
             $last_consecutive = explode('-', $last_nrevision)[2];
             $consecutive = str_pad((int)$last_consecutive + 1, 4, '0', STR_PAD_LEFT);
+        if ($last_nrevision) {
+            $last_consecutive = explode('-', $last_nrevision)[2];
+            $consecutive = str_pad((int)$last_consecutive + 1, 4, '0', STR_PAD_LEFT);
         } else {
             $consecutive = '0001';
         }
@@ -155,8 +205,10 @@ class InstructorAspiranteController extends Controller
 
         $aspirante->save();
         $ins_oficial->save();
+        $ins_oficial->save();
 
         return redirect()->route('aspirante.instructor.index')
+            ->with('success', 'Aspirante convocado correctamente.');
             ->with('success', 'Aspirante convocado correctamente.');
     }
 

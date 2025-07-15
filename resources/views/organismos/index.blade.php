@@ -1,30 +1,32 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Organismos Públicos | SIVyC Icatech')
 @section('content_script_css')
-    <link rel="stylesheet" href="{{asset('css/global.css') }}" />    
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
 @endsection
 @section('content')
     <div class="card-header">
         Catálogos / Organismos Públicos
     </div>
-    <div class="card card-body">    
+    <div class="card card-body">
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
             </div>
-        @endif       
+        @endif
         <div class="row">
             <div class="col">
-                {!! Form::open(['route' => 'organismos.index', 'method' => 'GET', 'class' => 'form-inline']) !!}
-                <select name="busqueda" class="form-control mr-sm-2" id="busqueda">
-                    <option value="">BUSCAR POR TIPO</option>
-                    <option value="nombre">NOMBRE</option>
-                    <option value="area">ÁREA</option>
-                </select>
-                {!! Form::text('busqueda_por', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR',
-                'aria-label' => 'BUSCAR']) !!}
-                <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
-                {!! Form::close() !!}
+                {!! html()->form('GET', route('organismos.index'))->class('form-inline')->open() !!}
+                    <select name="busqueda" class="form-control mr-sm-2" id="busqueda">
+                        <option value="">BUSCAR POR TIPO</option>
+                        <option value="nombre">NOMBRE</option>
+                        <option value="area">ÁREA</option>
+                    </select>
+                    {!! html()->text('busqueda_por')
+                        ->class('form-control mr-sm-2')
+                        ->placeholder('BUSCAR')
+                        ->attribute('aria-label', 'BUSCAR') !!}
+                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                {!! html()->form()->close() !!}
             </div>
             @can('organismo.agregar')
                 <div class="col">
@@ -78,7 +80,7 @@
         </table>
         <div class="row py-4">
             <div class="col d-flex justify-content-center">
-                {{ $organismos->links() }}
+                {{ $organismos->appends(request()->query())->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>

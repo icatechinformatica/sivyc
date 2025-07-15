@@ -73,14 +73,14 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'customuserprovider',
+            'driver' => 'eloquent',
             'model' => App\User::class,
             'table' => 'users',
         ],
-        'user_sice' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\api\UsuarioSice::class,
-        ]
+        // 'user_sice' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\Models\api\UsuarioSice::class,
+        // ]
 
         // 'users' => [
         //     'driver' => 'database',

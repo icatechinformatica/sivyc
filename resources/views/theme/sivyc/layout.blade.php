@@ -34,7 +34,8 @@
         @include('theme.sivyc.header')
         <!--HEADER DE LA PAGINA FIN-->
         <!--MENU-->
-        @include('theme.sivyc.menu')
+        {{-- @include('theme.sivyc.menu') --}}
+        @include('permiso-rol-menu::navbar')
         <!--MENU-->
 
         <!-- PAGINA -->

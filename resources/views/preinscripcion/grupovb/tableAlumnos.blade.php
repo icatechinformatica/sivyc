@@ -16,7 +16,12 @@
       <th class="h6" scope="col">Tipo Inscrip.</th>
       <th class="h6" scope="col">
         <div style="width: 80px;">
-          {{ Form::number('costoX', null , ['id'=>'costoX', 'maxlength' => '7', 'class' => 'form-control numero', 'placeholder' => 'Cuota']) }}
+            {{ html()->number('costoX')
+                ->id('costoX')
+                ->attribute('maxlength', '7')
+                ->class('form-control numero')
+                ->placeholder('Cuota')
+            }}
         </div>
       </th>
        @if($activar)<th class="h6" scope="col">{{'Eliminar'}}</th>@endif
@@ -155,11 +160,11 @@
     <button type="button" class="btn mt-3" id="nuevo" >NUEVO</button>
     @if($activar AND $folio_grupo)
         @if($enviar_vobo)
-            <button type="submit" class="btn mt-3" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;        
+            <button type="submit" class="btn mt-3" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;
         @endif
         @can('enviar.grupo.vobo')
             @if($enviar_vobo)
-                <button type="button" class="btn mt-3 btn-outline-danger " id="vobo" >ENVIAR A VOBO >></button>        
+                <button type="button" class="btn mt-3 btn-outline-danger " id="vobo" >ENVIAR A VOBO >></button>
             @elseif($turnar)
                 <button type="button" class="btn mt-3 bg-danger " id="turnar" >TURNAR A ACADEMICO >></button>
             @endif

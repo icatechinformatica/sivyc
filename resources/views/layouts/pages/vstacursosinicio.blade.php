@@ -24,7 +24,7 @@
         @endif
         <div class="row">
             <div class="form-group col-md-6 margin-tb">
-                    {!! Form::open(['route' => 'curso-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                    {!! html()->form('GET', route('curso-inicio'))->class('form-inline')->open() !!}
                         <select name="tipo_curso" class="form-control mr-sm-2" id="tipo_curso">
                             <option value="">BUSCAR POR</option>
                             <option value="especialidad">ESPECIALIDAD</option>
@@ -34,9 +34,13 @@
                             <option value="clasificacion">CLASIFICACIÓN</option>
                             <option value="anio">AÑO</option>
                         </select>
-                        {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
-                        {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-                    {!! Form::close() !!}
+                        {!! html()->text('busquedaPorCurso')
+                            ->class('form-control mr-sm-2')
+                            ->placeholder('BUSCAR')
+                            ->attribute('aria-label', 'BUSCAR')
+                            ->value(1) !!}
+                        {!! html()->button('BUSCAR')->id('buscar')->class('btn')->type('submit') !!}
+                    {!! html()->form()->close() !!}
             </div>
             <div class="form-group col-md-3">
                 <div class="dropdown show">
@@ -172,8 +176,8 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="8">
-                        {{ $data->appends(request()->query())->links() }}
+                    <td colspan="14">
+                        {{ $data->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </td>
                 </tr>
             </tfoot>
