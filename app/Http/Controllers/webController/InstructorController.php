@@ -294,7 +294,7 @@ class InstructorController extends Controller
                                                 ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO']);
 
                 if($request->seluni) {
-                    if($request->seluni == 'SAN CRISTOBAL') { $seluni = 'SC'; } else {$seluni = $request->seluni[0] . $request->seluni[1];}
+                    if($request->seluni == 'SAN CRISTOBAL') { $seluni = 'SA'; } else {$seluni = $request->seluni[0] . $request->seluni[1];}
                     $databuzon = $databuzon->Where('nrevision', 'LIKE', $seluni . '%');
                     $buzonhistory = $buzonhistory->Where('nrevision', 'LIKE', $seluni . '%');
                 }
@@ -1830,6 +1830,11 @@ class InstructorController extends Controller
             }
         }
             // dd($validado);
+        }
+
+        if($datainstructor->entidad == NULL)
+        {
+            $datainstructor->entidad = 'CHIAPAS';
         }
         $idest = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad)->FIRST();
         $idestnac = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad_nacimiento)->FIRST();
@@ -4937,7 +4942,6 @@ class InstructorController extends Controller
     private function whatsapp_alta_usuario_msg($instructor, WhatsAppService $whatsapp)
     {
         $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'alta_efirma_instructores')->First();
-        $telefono_formateado = '521'.$instructor['telefono'];
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
             ['{{nombre}}', '{{correo}}', '{{pwd}}','\n'],

@@ -28,9 +28,13 @@ class especialidad extends Model
             ->orwhere('area.formacion_profesional', 'like', '%' . $buscar . '%');
         }
     }
+    
+    public function cursos(){
+        return $this->hasMany(Curso::class, 'id_especialidad', 'id'); 
+    }
 
-    /**
-     * obtener el instructor que pertenece al perfil
-     */
+    public function tieneCursosActivos(){
+        return $this->cursos()->where('estado', true)->exists();
+    }
 
 }

@@ -160,7 +160,7 @@ class aperturasController extends Controller
 
             }else $message = "No se encuentran registros que mostrar.";
         }
-
+//dd($grupos);
         if(session('message')) $message = session('message');
 
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
@@ -735,4 +735,56 @@ class aperturasController extends Controller
         ]);
     }
 
+    public function pdfAgendaAnexo(Request $request){
+        if($request->memo){
+            $data = DB::table('tbl_cursos as tc')->select('tc.folio_grupo','tc.unidad','tc.curso',
+               DB::raw("
+                    (
+                        SELECT json_agg(
+                            json_build_object(
+                                'fecha', 
+                                CASE 
+                                    WHEN DATE(start) = DATE(\"end\") THEN 
+                                        TO_CHAR(DATE(start), 'DD/MM/YYYY')
+                                    ELSE 
+                                        TO_CHAR(DATE(start), 'DD/MM/YYYY') || ' AL ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                                END,
+                                'horario',
+                                'DE ' || TO_CHAR(start, 'HH24:MI') || ' A ' || TO_CHAR(\"end\", 'HH24:MI') || ' HRS.',
+                                'horas',
+                                ROUND(EXTRACT(EPOCH FROM (\"end\" - start)) / 3600, 2)
+
+                            )
+                            ORDER BY DATE(start)
+                        )
+                        FROM agenda
+                        WHERE id_curso = tc.folio_grupo
+                    ) AS agenda
+                "),
+                DB::raw("
+                    (
+                        SELECT SUM(EXTRACT(EPOCH FROM (\"end\" - start)) / 3600)
+                        FROM agenda
+                        WHERE id_curso = tc.folio_grupo
+                    ) AS total_horas
+                ")
+            );    
+         
+            if($request->opt=='ARC01'){
+                $data = $data->where('tc.munidad', $request->memo);
+            }elseif($request->opt=='ARC02'){
+                $data = $data->where('tc.nmunidad', $request->memo);
+            }            
+            $data = $data->get(); //dd($data);
+        }
+        
+        if($data){
+            $direccion = null;
+            $pdf = PDF::loadView('solicitudes.aperturas.pdfAgendaAnexo',compact('data','direccion'));
+            $pdf->setpaper('letter','landscape');
+            return $pdf->stream('Agenda-Anexo.pdf');
+        }else return "MEMORÁNDUM NO VÁLIDO";
+        
+    }
+    
 }

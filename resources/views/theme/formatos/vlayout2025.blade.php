@@ -44,7 +44,7 @@
 
         #fondo1 {
             background-image: url('img/membretado/membretado.jpg');
-            background-size: 103% 100%;
+            background-size: 100% 100%;
             background-position: center;
             /* width: 100%;
             margin: auto;
