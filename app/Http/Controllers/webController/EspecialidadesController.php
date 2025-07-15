@@ -74,12 +74,14 @@ class EspecialidadesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $especialidad = Especialidad::where('id', '=', $id)->first();
         $areas = DB::table('area')->where('activo', true)->get();
-
-        return view('layouts.pages.frmespecialidadupdate', compact('especialidad', 'areas'));
+        if(session('message')) $message = session('message');
+        else $message = null;
+        
+        return view('layouts.pages.frmespecialidadupdate', compact('especialidad', 'areas','message'));
     }
 
     /**
@@ -92,8 +94,12 @@ class EspecialidadesController extends Controller
     public function update(Request $request, $id)
     {
         $especialidad = Especialidad::find($id);
+        if ($especialidad->tieneCursosActivos() and $request->status == 'false') {
+            $message = "No puedes desactivar esta Especialidad, porque tiene cursos activos.";
+            return redirect()->route('especialidades.modificar',['id'=>$id])->with('message', $message);
+        }
+        
         $date = new DateTime();
-
         $especialidad->clave = $request->clave;
         $especialidad->nombre = $request->nombre;
         $especialidad->updated_at = $date;
@@ -101,9 +107,7 @@ class EspecialidadesController extends Controller
         $especialidad->iduser_updated = Auth::user()->id;
         $especialidad->activo = $request->status;
         $especialidad->prefijo = $request->prefijo;
-
         $especialidad->save();
-
         return redirect()->route('especialidades.inicio');
     }
 
