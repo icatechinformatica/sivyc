@@ -2306,12 +2306,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/RicardoSauceda/permiso-rol-menu.git",
-                "reference": "e220cb1522a5411b89762e3b45f1e65820a4b412"
+                "reference": "1aef5c517ea65862d02421794aa105798be2dc73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/e220cb1522a5411b89762e3b45f1e65820a4b412",
-                "reference": "e220cb1522a5411b89762e3b45f1e65820a4b412",
+                "url": "https://api.github.com/repos/RicardoSauceda/permiso-rol-menu/zipball/1aef5c517ea65862d02421794aa105798be2dc73",
+                "reference": "1aef5c517ea65862d02421794aa105798be2dc73",
                 "shasum": ""
             },
             "require": {
@@ -2341,7 +2341,7 @@
                 "issues": "https://github.com/RicardoSauceda/permiso-rol-menu/issues",
                 "source": "https://github.com/RicardoSauceda/permiso-rol-menu/tree/feature/roles-permisos-arbol"
             },
-            "time": "2025-07-08T18:41:37+00:00"
+            "time": "2025-07-15T19:37:53+00:00"
         },
         {
             "name": "laravel/framework",
@@ -11198,6 +11198,6 @@
     "platform": {
         "php": "^8.0"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

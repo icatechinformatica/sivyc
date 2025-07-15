@@ -87,7 +87,13 @@ class funcionario extends Model
     // Método auxiliar para obtener la primera unidad (si un funcionario puede tener múltiples organismos)
     public function getPrimeraUnidad()
     {
-        return $this->organismos()->with('unidad')->first()?->unidad;
+        $organismo = $this->organismos()->with('unidad')->first();
+        return $organismo?->unidad;
     }
 
+    // Método para obtener todas las unidades del funcionario
+    public function todasLasUnidades()
+    {
+        return $this->organismos()->with('unidad')->get()->pluck('unidad')->filter();
+    }
 }
