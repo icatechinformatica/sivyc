@@ -14,7 +14,7 @@ class DummyController extends Controller
         //cat\CatConcepto
         //Reportes\Recibo
         //Reportes\Rf001Model
-        $str = 'cat\CatConcepto'; // podemos llamar a diferentes modelos -- desde un mismo controlador
+        $str = 'Reportes\Rf001Model'; // podemos llamar a diferentes modelos -- desde un mismo controlador
         $this->transactionService = (new TransactionService($str, $factory));
     }
     /**
@@ -26,10 +26,11 @@ class DummyController extends Controller
     {
         //
         $var = $this->transactionService->obtenerTodoDatos();
-        foreach ($var as $key => $value) {
-            var_dump($value);
-        }
-        return view('vista_index', compact('var'));
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Productos.',
+            'producto' => $var,
+        ]);
     }
 
     /**
@@ -40,6 +41,7 @@ class DummyController extends Controller
     public function create()
     {
         //
+        return view('vista_dumy');
     }
 
     /**
@@ -51,6 +53,14 @@ class DummyController extends Controller
     public function store(Request $request)
     {
         //
+        $variable = ['concepto' => $reques->get('nombre'), ];
+        $data = $request->only(['concepto', 'importe', 'tipo', 'activo']);
+        $insertar = $this->transactionService->crearDato($data);
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Producto creado correctamente.',
+            'producto' => $insertar,
+        ]);
     }
 
     /**

@@ -17,5 +17,6 @@ class CatConcepto extends Model
         'activo'
     ];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    // protected $hidden = ['created_at', 'updated_at'];
+    public $timestamps = false;
 }
