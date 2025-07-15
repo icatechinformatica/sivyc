@@ -222,7 +222,6 @@ class supreController extends Controller
             //Guarda Folios
             foreach ($request->addmore as $key => $value)
             {
-                // dd($value);
                 $clavecurso = new Request(['valor' => $value['clavecurso']]);
                 $datos = json_decode($this->getcursostats($clavecurso));
                 $folio = new folio();
@@ -934,7 +933,6 @@ class supreController extends Controller
                     ->orderBy('fecha', 'DESC')
                     ->limit(1)
                     ->first();
-
                 if($criterio != NULL)
                 {
                     // if($inicio >= $criterio_fecha) {
@@ -948,8 +946,13 @@ class supreController extends Controller
                     }
                     else
                     {
+                        if($Cursos->cp == 12)
+                        {
+                            array_push($total, $criterio->monto);
+                        } else {
                             array_push($total, $criterio->monto * $Cursos->dura);
-                            array_push($total, $Cursos->modinstructor);
+                        }
+                        array_push($total, $Cursos->modinstructor);
                     }
                 }
                 else
@@ -1761,7 +1764,7 @@ class supreController extends Controller
 
         $data = DB::TABLE('tbl_cursos')
         ->SELECT(
-        'tbl_cursos.unidad',        
+        'tbl_cursos.unidad',
         'tbl_cursos.curso',
         'tbl_cursos.clave',
         'tbl_cursos.nombre',
@@ -1837,7 +1840,7 @@ class supreController extends Controller
         {
             //return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
             return Excel::download(new xls($data,$cabecera, $titulo), $nombreLayout);
-            
+
         }
     }
 
@@ -2186,7 +2189,7 @@ class supreController extends Controller
         if(count($data)>0){
             //return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
             return Excel::download(new xls($data,$cabecera, $titulo), $nombreLayout);
-            
+
         }
     }
 
