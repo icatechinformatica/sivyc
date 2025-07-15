@@ -352,7 +352,7 @@
                                 </div>
                                 <label class="col-form-label">C.P.</label>
                                 <div class="col-sm-2 form-group">
-                                    <input name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" value="{{$datainstructor->codigo_postal}}">
+                                    <input name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" @if($datainstructor->codigo_postal == '0') value="00000" @else value="{{$datainstructor->codigo_postal}}" @endif>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -663,7 +663,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputbanco">Codigo Postal</label>
-                    <input  @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" required value="{{$datainstructor->codigo_postal}}">
+                    <input  @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" required @if($datainstructor->codigo_postal == '0') value="00000" @else value="{{$datainstructor->codigo_postal}}" @endif>
                 </div>
             </div>
             <div class="form-row">
