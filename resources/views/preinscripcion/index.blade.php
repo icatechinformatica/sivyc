@@ -519,7 +519,7 @@
                     // $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'});
                     // $('#frm').submit();
                 });
-                $("#turnar").click(function(){
+                $("#turnar").click(function(e){
                     e.preventDefault();
                     consulta_instructores(folio_g, 'turnar');
                     // $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'});

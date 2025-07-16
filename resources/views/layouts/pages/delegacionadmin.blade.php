@@ -317,6 +317,7 @@ function textLabel(text) {
 
             request.fail(( jqXHR, textStatus ) =>
             {
+                console.log( "Hubo un error: " + textStatus );
                 //alert( "Hubo un error: " + textStatus );
             });
 
