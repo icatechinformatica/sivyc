@@ -282,7 +282,10 @@
                             estatus: estatus
                         },
                         success: function(data) {
-                            $('#result_table').html(data);
+                            // console.log(data);
+                            let encabezado_col = (data[1] == 'AUTORIZADOS') ? 'TURNADO A' : 'RECHAZAR';
+                            $('#estado_columna').text(encabezado_col);
+                            $('#result_table').html(data[0]);
                         }
                     });
                 }

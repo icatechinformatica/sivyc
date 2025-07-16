@@ -158,13 +158,13 @@ class vbgruposController extends Controller
                         </td>
                         <td>".$item->unidad."</td>
                         <td class='text-center'>";
-                        if($item->clave==0){
+                        if($item->clave==0 && $item->vb_dg == false){
                             $filas .= "
                                 <a onclick='".$modal_motivo."' >
                                     <i class='fas fa-window-close fa-2x fa-danger'></i>
                                 </a>";
                         }else{
-                            $filas .= $item->clave;
+                            $filas .= $item->turnado;
                         }
                         $filas .= "
                         </td>
@@ -174,7 +174,7 @@ class vbgruposController extends Controller
             }
         } else $filas = "Dato no encontrado, por favor intente de nuevo.";
 
-        return $filas;
+        return [$filas, $status];
     }
 
     public function modal_datos(Request $request){
@@ -278,15 +278,24 @@ class vbgruposController extends Controller
 
             $json_ze = json_decode($consulta_pago->ze_valor, true);
             $monto_pago = 0;
+            $tipo_pago = '';
             if (!empty($json_ze['vigencias'])) {
                 foreach ($json_ze['vigencias'] as $key => $value) {
                     if (Carbon::parse($consulta_pago->inicio)->gte(Carbon::parse($value['fecha']))) {
                         $monto_pago = intval($value['monto']);
+                        //Validamos si tiene un tipo de pago
+                        if (!empty($value['tipo_pago'])) {
+                            $tipo_pago = $value['tipo_pago'];
+                        }
                     }
                 }
             }
 
-            if($monto_pago > 0) $monto_pago = $monto_pago * $consulta_pago->dura;
+            if($monto_pago > 0){
+                if ($tipo_pago != 'UNICO') {
+                    $monto_pago = $monto_pago * $consulta_pago->dura;
+                }
+            }
 
             if($result){
                 if (strlen($result->instructor) > 25) $head = substr($result->instructor, 0, 25) . " ...";
@@ -650,7 +659,7 @@ class vbgruposController extends Controller
             $mensaje = str_replace(['o(a)','r(a)'], ['a','r'], $mensaje);
         }
 
-        $callback = $whatsapp->cola($telefono_formateado, $mensaje, $plantilla->prueba);
+        $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
 
         return $callback;
     }
