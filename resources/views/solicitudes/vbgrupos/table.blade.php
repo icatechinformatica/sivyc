@@ -14,7 +14,11 @@
                 {{-- <th scope="col" width="90px">INICIO</th>
                 <th scope="col" width="90px">TERMINO</th> --}}
                 <th scope="col" width="13%">UNIDAD/AM</th>
-                <th scope="col" width="0%">RECHAZAR</th>
+                @if ($status == 'PENDIENTES')
+                    <th scope="col" width="0%" id="estado_columna">RECHAZAR</th>
+                @else
+                    <th scope="col" width="0%" id="estado_columna">TURNADO</th>
+                @endif
                 <th scope="col" width="0%">ALFA</th>
             </tr>
         </thead>
@@ -59,7 +63,7 @@
                     <td>{{ date('d/m/Y', strtotime($item->termino)) }}</td> --}}
                     <td>{{ $item->unidad }}</td>
                     <td class="text-center">
-                        @if($item->clave == '0')
+                        @if($item->clave == '0' && $item->vb_dg == false)
                         <a onclick="modal_motivo('{{ $curso }}','{{ $item->id }}')">
                             <i class="fas fa-window-close fa-2x fa-danger"></i>
                         </a>
