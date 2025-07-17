@@ -4955,7 +4955,7 @@ class InstructorController extends Controller
             $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
         }
 
-         $callback = $whatsapp->cola($telefono_formateado, $mensaje, $plantilla->prueba);
+         $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
 
         return $callback;
     }
