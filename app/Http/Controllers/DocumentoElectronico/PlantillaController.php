@@ -521,8 +521,165 @@ class PlantillaController extends Controller
 
                 return $pdf->stream($filename);
                 break;
-            case 'value':
-                # code...
+            case 'SUPRE':
+                // Simulación de $distintivo
+                $distintivo = 'ICATECH';
+
+                // Simulación de $data_supre (objeto con propiedades)
+                $data_supre = (object)[
+                    'id' => 1,
+                    'no_memo' => 'MEMO-2025-001',
+                    'fecha' => '2025-07-16',
+                    'unidad_capacitacion' => 'TUXTLA',
+                ];
+
+                // Simulación de $data (arreglo de objetos)
+                $data = [
+                    (object)[
+                        'fecha' => '2025-07-10',
+                        'folio_validacion' => 'FOLIO-2025-001',
+                        'importe_hora' => 250.00,
+                        'iva' => 40.00,
+                        'importe_total' => 290.00,
+                        'comentario' => 'Sin observaciones',
+                        'nombre' => 'Juan',
+                        'apellidoPaterno' => 'Pérez',
+                        'apellidoMaterno' => 'García',
+                        'unidad' => 'TUXTLA',
+                        'curso_nombre' => 'Excel Básico',
+                        'clave' => 'EXC-001',
+                        'ze' => 'I',
+                        'dura' => 20,
+                        'tipo_curso' => 'CURSO',
+                        'modinstructor' => 'HONORARIOS',
+                        'fecha_apertura' => '2025-07-01',
+                        'cp' => 6
+                    ],
+                    (object)[
+                        'fecha' => '2025-07-12',
+                        'folio_validacion' => 'FOLIO-2025-002',
+                        'importe_hora' => 300.00,
+                        'iva' => 48.00,
+                        'importe_total' => 348.00,
+                        'comentario' => 'Pago pendiente',
+                        'nombre' => 'María',
+                        'apellidoPaterno' => 'López',
+                        'apellidoMaterno' => 'Hernández',
+                        'unidad' => 'TUXTLA',
+                        'curso_nombre' => 'Word Avanzado',
+                        'clave' => 'WRD-002',
+                        'ze' => 'II',
+                        'dura' => 30,
+                        'tipo_curso' => 'CERTIFICACION',
+                        'modinstructor' => 'ASIMILADOS',
+                        'fecha_apertura' => '2025-07-05',
+                        'cp' => 7
+                    ],
+                ];
+
+                // Simulación de otros datos necesarios
+                $unidad = (object)[
+                    'ubicacion' => 'TUXTLA',
+                    'cct' => '07EI'
+                ];
+
+                $funcionarios = [
+                    'destino' => 'LIC. ALGUIEN IMPORTANTE',
+                    'destinop' => 'JEFE DE DEPARTAMENTO DE FINANZAS'
+                ];
+
+                $numOficio = null;
+                $D = '16';
+                $M = 'julio';
+                $Y = '2025';
+
+                // Generar las filas de folio
+                $data_folio = [
+                    (object)[ 'folio_validacion' => 'FOLIO-2025-001' ],
+                    (object)[ 'folio_validacion' => 'FOLIO-2025-002' ],
+                    (object)[ 'folio_validacion' => 'FOLIO-2025-003' ],
+                    (object)[ 'folio_validacion' => 'FOLIO-2025-004' ],
+                ];
+
+                $filas_folio = '';
+                foreach ($data_folio as $value) {
+                    $filas_folio .= '<tr><td>' . $value->folio_validacion . '</td></tr>';
+                }
+
+                // Generar las filas de la tabla principal
+                $filas_tabla = '';
+                foreach ($data as $item) {
+                    $filas_tabla .= '<tr>
+                        <td class="text-center"><small style="font-size: 10px;">' . $item->folio_validacion . '</small></td>
+                        <td class="text-center"><small style="font-size: 10px;">' . $item->fecha . '</small></td>
+                        <td class="text-center"><small style="font-size: 10px;">' . $item->nombre . ' ' . $item->apellidoPaterno . ' ' . $item->apellidoMaterno . '</small></td>
+                        <td class="text-center"><small style="font-size: 10px;">' . $item->unidad . '</small></td>';
+
+                    $filas_tabla .= '<td><small style="font-size: 10px;">' . ($item->tipo_curso == 'CERTIFICACION' ? 'CERTIFICACIÓN' : 'CURSO') . '</small></td>';
+
+                    $filas_tabla .= '<td class="text-center"><small style="font-size: 10px;">' . $item->curso_nombre . '</small></td>
+                        <td class="text-center"><small style="font-size: 10px;">' . $item->clave . '</small></td>
+                        <td class="text-center"><small style="font-size: 10px;">' . $item->ze . '</small></td>
+                        <td class="text-center"><small style="font-size: 10px;">' . $item->dura . '</small></td>';
+
+                    if ($data[0]->fecha_apertura < '2023-10-12') {
+                        $filas_tabla .= '<td class="text-center"><small style="font-size: 10px;">' . number_format($item->importe_hora, 2, '.', ',') . '</small></td>';
+                        if ($item->modinstructor == 'HONORARIOS') {
+                            $filas_tabla .= '<td class="text-center"><small style="font-size: 10px;">' . number_format($item->iva, 2, '.', ',') . '</small></td>';
+                        }
+                        $filas_tabla .= '<td class="text-center"><small style="font-size: 10px;">' .
+                            ($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS'
+                                ? '12101 HONORARIOS'
+                                : '12101 ASIMILADOS A SALARIOS') .
+                            '</small></td>';
+                        $filas_tabla .= '<td class="text-center"><small style="font-size: 10px;">' . number_format($item->importe_total, 2, '.', ',') . '</small></td>';
+                    } else {
+                        $criterio = (object)['monto' => $item->importe_hora]; // Ajusta si hay otro origen
+                        $filas_tabla .= '<td class="text-center"><small style="font-size: 10px;">' . number_format($criterio->monto, 2, '.', ',') . '</small></td>';
+                        $filas_tabla .= '<td class="text-center"><small style="font-size: 10px;">' . number_format($item->importe_total, 2, '.', ',') . '</small></td>';
+                        $filas_tabla .= '<td class="text-center"><small style="font-size: 10px;">' .
+                            ($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS'
+                                ? '12101 HONORARIOS'
+                                : '12101 ASIMILADOS A SALARIOS') .
+                            '</small></td>';
+                    }
+
+                    $filas_tabla .= '<td class="text-center"><small style="font-size: 10px;">' . $item->comentario . '</small></td>
+                    </tr>';
+                }
+
+                $ubicacion = $unidad->ubicacion;
+                $numOficio = $data_supre->no_memo;
+                $unidadCapacitacion = $data_supre->unidad_capacitacion;
+                $fechaFormato = $D . ' de ' . $M . ' del ' . $Y;
+                $capacitacionAccionMovil = $unidad->cct == '07EI'
+                    ? 'Unidad de Capacitación <b>' . $unidad->ubicacion . '</b>,'
+                    : 'Acción Móvil <b>' . $data_supre->unidad_capacitacion . '</b>,';
+                $modinstructor = $data[0]->modinstructor;
+                $tipoCursoTexto = $data[0]->tipo_curso == 'CERTIFICACION' ? ' certificación extraordinaria' : ' curso';
+
+                $loadArray = [
+                    'distintivo' => $distintivo,
+                    'ubicacion' => $unidad->ubicacion,
+                    'numOficio' => $numOficio,
+                    'unidadCapacitacion' => $data_supre->unidad_capacitacion,
+                    'fechaFormato' => $fechaFormato,
+                    'destino' => $funcionarios['destino'],
+                    'destinop' => $funcionarios['destinop'],
+                    'modinstructor' => $modinstructor,
+                    'tipoCursoTexto' => $tipoCursoTexto,
+                    'capacitacionAccionMovil' => $capacitacionAccionMovil,
+                    'folios' => $filas_folio,
+                ];
+
+                $contenidoProcesado = $this->servicioPlantilla->procesarPlantilla($dataQry->cuerpo, $loadArray);
+                $pdf = $this->servicioPlantilla->generarPdfDocument(['contenido' => $contenidoProcesado]);
+                $filename = 'solicitud_de_suficiencia_presupuestal' . $numOficio . '.pdf';
+
+                // Reemplaza cualquier / o \ por guion bajo (o espacio u otro carácter válido)
+                $filename = str_replace(['/', '\\'], '_', $filename);
+
+                return $pdf->stream($filename);
                 break;
             default:
                 # code...
