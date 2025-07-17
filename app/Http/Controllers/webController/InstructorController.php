@@ -137,7 +137,7 @@ class InstructorController extends Controller
         $chk_mod_espec = FALSE;
         $userid = Auth::user()->id;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
-        $rol = DB::TABLE('role_user')->WHEREIN('role_id', ['3','1', '39'])->WHERE('user_id', '=', $userid)->FIRST();
+        $rol = DB::TABLE('role_user')->WHEREIN('role_id', ['3','1', '39','61'])->WHERE('user_id', '=', $userid)->FIRST();
         $unidades = DB::TABLE('tbl_unidades')->WHERE('cct', 'LIKE', '%07EI%')
                     ->SELECT('unidad')
                     ->ORDERBY('unidad', 'ASC')
