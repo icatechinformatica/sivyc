@@ -752,7 +752,7 @@ class aperturasController extends Controller
                                 'horario',
                                 'DE ' || TO_CHAR(start, 'HH24:MI') || ' A ' || TO_CHAR(\"end\", 'HH24:MI') || ' HRS.',
                                 'horas',
-                                ROUND(EXTRACT(EPOCH FROM (\"end\" - start)) / 3600, 2)
+                                (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600)*((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1)
 
                             )
                             ORDER BY DATE(start)
@@ -763,7 +763,9 @@ class aperturasController extends Controller
                 "),
                 DB::raw("
                     (
-                        SELECT SUM(EXTRACT(EPOCH FROM (\"end\" - start)) / 3600)
+                        SELECT SUM(                        
+                            (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600)*((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1)
+                        )
                         FROM agenda
                         WHERE id_curso = tc.folio_grupo
                     ) AS total_horas
