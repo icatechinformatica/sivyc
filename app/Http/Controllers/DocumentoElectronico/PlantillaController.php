@@ -657,6 +657,7 @@ class PlantillaController extends Controller
                     : 'Acción Móvil <b>' . $data_supre->unidad_capacitacion . '</b>,';
                 $modinstructor = $data[0]->modinstructor;
                 $tipoCursoTexto = $data[0]->tipo_curso == 'CERTIFICACION' ? ' certificación extraordinaria' : ' curso';
+                $fechaApertura = $data[0]->fecha_apertura;
 
                 $loadArray = [
                     'distintivo' => $distintivo,
