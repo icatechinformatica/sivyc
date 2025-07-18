@@ -154,7 +154,7 @@ class InstructorController extends Controller
                     ->ORDERBY('nrevision', 'ASC');
                     // ->GET();
 
-        if(isset($request->valor)) //ANALIZA SI FILTRARON
+        if(isset($request->valor) && $request->valor != 'SELECCIONE') //ANALIZA SI FILTRARON
         {
             if(isset($rol)) //ANALIZA SI ROL ESTA ASIGNADO
             {
@@ -4582,8 +4582,10 @@ class InstructorController extends Controller
             {
                $status = ['PREVALIDACION','EN FIRMA', 'BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN PREVALIDACION','REACTIVACION EN FIRMA'];
             }
+            $unidadRevision = $request->valor[0].$request->valor[1];
             $revisiones = pre_instructor::SELECT('nrevision')
-                        ->WhereJsonContains('data_especialidad', [['unidad_solicita' => $request->valor]])
+                        ->Where('nrevision', 'LIKE', $unidadRevision.'%')
+                        // ->WhereJsonContains('data_especialidad', [['unidad_solicita' => $request->valor]])
                         ->WHERE('registro_activo', TRUE)
                         ->WHERE('nrevision', '!=', NULL)
                         ->WHERE('turnado', 'DTA')

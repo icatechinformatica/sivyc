@@ -29,8 +29,9 @@
                     </select>
                 </div>
             @endif
-            {{-- <div class="form-group col-md-2">
+            <div class="form-group col-md-2">
                     <select name="valor" class="form-control mr-sm-2" id="valor">
+                        <option value="SELECCIONE">SELECCIONE</option>
                         @if(isset($nrevisiones))
                             @foreach($nrevisiones AS $nrevision)
                                 <option value="{{$nrevision->nrevision}}" @if($nrevision->nrevision == $valor) selected @endif>{{$nrevision->nrevision}}</option>
@@ -39,7 +40,7 @@
                             <option value="{{$valor}}">{{$valor}}</option>
                         @endif
                     </select>
-            </div> --}}
+            </div>
             <div class="form-group col-md-1">
                 <button type="submit" class="btn">BUSCAR</button>
             </div>
@@ -788,6 +789,10 @@
                 i = 0,
                 il = respuesta.length;
                 // console.log(il);
+                newOption = document.createElement('option');
+                newOption.value = 'SELECCIONE';
+                newOption.text= 'SELECCIONE';
+                selectL.add(newOption);
                 for (; i < il; i += 1)
                 {
                     newOption = document.createElement('option');
