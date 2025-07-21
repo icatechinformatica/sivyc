@@ -485,7 +485,7 @@ class grupoController extends Controller
                                         $modalidad = $a_reg->mod;
                                         $folio_pago = $a_reg->folio_pago;
                                         $fecha_pago =  $a_reg->fecha_pago;
-                                        $instructor = $a_reg->id_instructor ?? 1;
+                                        $instructor = !empty($a_reg->id_instructor) ? $a_reg->id_instructor : 1;
                                         $efisico = $a_reg->efisico;
                                         $medio_virtual = $a_reg->medio_virtual;
                                         $link_virtual = $a_reg->link_virtual;
