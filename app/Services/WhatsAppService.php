@@ -29,6 +29,10 @@ class WhatsAppService
         if($prueba) {
             $telefono = '9612255159';
         }
+
+        if(str_contains($mensaje,'\n')){
+            $mensaje = str_replace(['\n'],["\n"],$mensaje);
+        }
         // Validar el número de teléfono
         $telefono_formateado = '521'.$telefono;
 

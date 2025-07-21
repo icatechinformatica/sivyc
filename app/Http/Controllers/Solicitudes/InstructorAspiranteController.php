@@ -34,9 +34,15 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\User;
 use Illuminate\Support\Facades\Http;
 use App\Services\WhatsAppService;
+use App\Services\HerramientasService;
 use Illuminate\Support\Facades\Hash;
 class InstructorAspiranteController extends Controller
 {
+
+    public function __construct(){
+        $herramientas = new HerramientasService();
+        $whatsapp = new WhatsAppService();
+    }
     public function index(Request $request)
     {
         $unidades = tbl_unidades::select('ubicacion')->distinct()->pluck('ubicacion');
@@ -301,6 +307,14 @@ class InstructorAspiranteController extends Controller
         $fecha_formateada = Carbon::parse($instructor['fecha'])->translatedFormat('j \d\e F \d\e\l Y');
         $hora_formateada = Carbon::parse($instructor['fecha'])->format('H:i');
         // Reemplazar variables en plantilla
+        $array = [
+            '{{nombre}}' => $instructor['nombre'],
+            '{{unidad}}' => $instructor['unidad'],
+            '{{fecha}}' => $fecha_formateada,
+            '{{horas}}' => $hora_formateada,
+            '{{direccionUnidad}}' => $instructor['direccionUnidad'],
+            '{{telefono_unidad}}' => $instructor['telefono_unidad']
+        ];
         $mensaje = str_replace(
             ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{horas}}', '{{direccionUnidad}}','{{telefono_unidad}}','\n'],
             [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $hora_formateada, $instructor['direccionUnidad'], $instructor['telefono_unidad'],"\n"],
@@ -327,11 +341,8 @@ class InstructorAspiranteController extends Controller
             $plantilla->plantilla
         );
 
-        if ($instructor['sexo'] == 'MASCULINO') {
-            $mensaje = str_replace(['(a)'], [''], $mensaje);
-        } else {
-            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
-        }
+        //llamada de fu
+        $mensaje = $herramientas->define_genero($mensaje, $instructor['sexo']);
 
         $callback = $whatsapp->cola($telefono_formateado, $mensaje, $plantilla->prueba);
 
@@ -340,9 +351,44 @@ class InstructorAspiranteController extends Controller
 
     public function whatsapp_rechazo_masivo() {
         set_time_limit(0);
-        $id_rechazados = [
+        $id_rechazados = [790625,
+789852,
+789853,
+790780,
+790120,
+790734,
+790428,
+789980,
+790193,
+790823,
+790895,
+789809,
+789936,
+790315,
+790346,
+790634,
+790663,
+790543,
+790460,
+790619,
+790233,
+790128,
+252,
+790098,
+789715,
+790541,
+790447,
+76,
+790609,
+790757,
+790716,
+790245,
+790299,
+790891,
+790582,
+790421
             ]; //aqui meter los ids de los rechazados por tandas
-        $rechazados = pre_instructor::WhereNotNull('semaforo')->WhereIn('status',['EN CAPTURA','EN FIRMA','VALIDADO','RETORNO'])->Select('id','telefono','nombre',"apellidoPaterno","apellidoMaterno",'sexo','semaforo','status')->Get();
+        $rechazados = pre_instructor::WhereIn('id',$id_rechazados)->Select('id','telefono','nombre',"apellidoPaterno","apellidoMaterno",'sexo','semaforo','status')->Get();
         $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'invitacion_aniversario_icatech')->First();
         foreach($rechazados as $key => $aspirante) {
             $mensaje = str_replace(['\n'],["\n"],$plantilla->plantilla);
