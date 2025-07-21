@@ -25,10 +25,9 @@ class WhatsAppService
     }
 
     public function cola($telefono, $mensaje, $prueba) {
-
         //verificar si es prueba
         if($prueba) {
-            $telefono = '9612986322';
+            $telefono = '9612255159';
         }
         // Validar el número de teléfono
         $telefono_formateado = '521'.$telefono;
