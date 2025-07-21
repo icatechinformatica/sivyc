@@ -345,13 +345,15 @@ class InstructorAspiranteController extends Controller
         $rechazados = pre_instructor::WhereNotNull('semaforo')->WhereIn('status',['EN CAPTURA','EN FIRMA','VALIDADO','RETORNO'])->Select('id','telefono','nombre',"apellidoPaterno","apellidoMaterno",'sexo','semaforo','status')->Get();
         $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'invitacion_aniversario_icatech')->First();
         foreach($rechazados as $key => $aspirante) {
+            $mensaje = str_replace(['\n'],["\n"],$plantilla->plantilla);
             if ($aspirante['sexo'] == 'MASCULINO') {
-                $mensaje = str_replace(['(a)'], [''], $plantilla->plantilla);
+                $mensaje = str_replace(['(a)'], [''], $mensaje);
             } else {
-                $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $plantilla->plantilla);
+                $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
             }
             $whatsapp = app(WhatsAppService::class);
             $callback = $whatsapp->cola($aspirante->telefono, $mensaje, $plantilla->prueba);
+            dd('prueba');
         }
         dd('complete');
     }
