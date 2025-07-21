@@ -342,24 +342,16 @@ class InstructorAspiranteController extends Controller
         set_time_limit(0);
         $id_rechazados = [
             ]; //aqui meter los ids de los rechazados por tandas
-        $rechazados = pre_instructor::WhereIn('id',$id_rechazados)->Select('id','telefono','nombre',"apellidoPaterno","apellidoMaterno",'sexo')->Get();
+        $rechazados = pre_instructor::WhereNotNull('semaforo')->WhereIn('status',['EN CAPTURA','EN FIRMA','VALIDADO','RETORNO'])->Select('id','telefono','nombre',"apellidoPaterno","apellidoMaterno",'sexo','semaforo','status')->Get();
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'invitacion_aniversario_icatech')->First();
         foreach($rechazados as $key => $aspirante) {
-            $infowhats = [
-                'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
-                'telefono' => $aspirante->telefono,
-                'sexo' => $aspirante->sexo
-            ];
-
-            try {
-                $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
-            } catch (\Exception $e) {
-                $response = [
-                    'status' => false,
-                    'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
-                ];
-
+            if ($aspirante['sexo'] == 'MASCULINO') {
+                $mensaje = str_replace(['(a)'], [''], $plantilla->plantilla);
+            } else {
+                $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $plantilla->plantilla);
             }
-            sleep('5');
+            $whatsapp = app(WhatsAppService::class);
+            $callback = $whatsapp->cola($aspirante->telefono, $mensaje, $plantilla->prueba);
         }
         dd('complete');
     }
