@@ -916,14 +916,9 @@ class grupoController extends Controller
                                 ///AGREGAR PARA TODOS LOS CRITERIOS
                                 if ($result_alumnos) {
                                     if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
-                                    ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {
-
-                                        DB::table('agenda')->where('id_curso',$folio)->update(['id_instructor' => $alus->id_instructor]); //NUEVO VOBO
-
-                                        /* VOBO
+                                    ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {                                        
                                         DB::table('agenda')->where('id_curso', $folio)->delete();
-                                        DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
-                                        */
+                                        DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);                                        
                                     }
                                 }
 
