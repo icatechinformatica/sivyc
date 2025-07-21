@@ -353,7 +353,6 @@ class InstructorAspiranteController extends Controller
             }
             $whatsapp = app(WhatsAppService::class);
             $callback = $whatsapp->cola($aspirante->telefono, $mensaje, $plantilla->prueba);
-            dd('prueba');
         }
         dd('complete');
     }
