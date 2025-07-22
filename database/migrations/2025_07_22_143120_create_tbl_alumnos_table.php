@@ -63,7 +63,6 @@ return new class extends Migration
             $table->foreignId('id_discapacidad')->nullable()->references('id_discapacidad')->on('tbl_cat_discapacidades')->onDelete('set null');
             $table->foreignId('id_ultimo_grado_estudios')->nullable()->references('id_grado_estudio')->on('tbl_cat_grado_estudios')->onDelete('set null');
             $table->foreignId('id_nacionalidad')->references('id_nacionalidad')->on('tbl_cat_nacionalidades')->onDelete('set null');
-            $table->foreignId('id_etnia')->nullable()->references('id_etnia')->on('tbl_cat_etnias')->onDelete('set null');
             $table->foreignId('id_funcionario_relaizo')->nullable()->references('id')->on('tbl_funcionarios')->onDelete('set null');
         });
     }
