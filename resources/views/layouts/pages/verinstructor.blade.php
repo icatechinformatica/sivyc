@@ -352,7 +352,7 @@
                                 </div>
                                 <label class="col-form-label">C.P.</label>
                                 <div class="col-sm-2 form-group">
-                                    <input name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" value="{{$datainstructor->codigo_postal}}">
+                                    <input name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" @if($datainstructor->codigo_postal == '0') value="00000" @else value="{{$datainstructor->codigo_postal}}" @endif>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -446,29 +446,29 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre">Nombre {{$roluser->role_id}}</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='nombre' id='nombre' type="text" class="form-control" aria-required="true" value="{{$datainstructor->nombre}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name='nombre' id='nombre' type="text" class="form-control" aria-required="true" value="{{$datainstructor->nombre}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputapellido_paterno">Apellido Paterno</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='apellido_paterno' id='apellido_paterno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoPaterno}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name='apellido_paterno' id='apellido_paterno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoPaterno}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputapellido_materno">Apellido Materno</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='apellido_materno' id='apellido_materno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoMaterno}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name='apellido_materno' id='apellido_materno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoMaterno}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputcurp">CURP</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='curp' id='curp' type="text" class="form-control" aria-required="true" value="{{$datainstructor->curp}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name='curp' id='curp' type="text" class="form-control" aria-required="true" value="{{$datainstructor->curp}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputrfc">RFC/Constancia Fiscal</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='rfc' id='rfc' type="text" class="form-control" aria-required="true" value="{{$datainstructor->rfc}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name='rfc' id='rfc' type="text" class="form-control" aria-required="true" value="{{$datainstructor->rfc}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputhonorarios">Regimen</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="honorario" id="honorario">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
                         @foreach ($lista_regimen as $regimen)
                             <option value="{{$regimen->concepto}}" @if($datainstructor->tipo_honorario == $regimen->concepto) selected @endif>{{$regimen->concepto}}</option>
@@ -486,7 +486,7 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputtipo_identificacion">Tipo de Identificación</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="tipo_identificacion" id="tipo_identificacion">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="tipo_identificacion" id="tipo_identificacion">
                         <option value="">SIN ESPECIFICAR</option>
                         <option value="INE" @if($datainstructor->tipo_identificacion == 'INE') selected @endif>INE</option>
                         <option value="PASAPORTE" @if($datainstructor->tipo_identificacion == 'PASAPORTE') selected @endif>PASAPORTE</option>
@@ -497,11 +497,11 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputfolio_ine">Folio de Identificación</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true" value="{{$datainstructor->folio_ine}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true" value="{{$datainstructor->folio_ine}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputexpiracion_identificacion">Expiración de Identificación</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='expiracion_identificacion' id='expiracion_identificacion' type="date" class="form-control" aria-required="true" required value="{{$datainstructor->expiracion_identificacion}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name='expiracion_identificacion' id='expiracion_identificacion' type="date" class="form-control" aria-required="true" required value="{{$datainstructor->expiracion_identificacion}}">
                 </div>
                 <div class="form-group col-md-1">
                     {{-- <label for="inputarch_ine">Archivo Identificación</label> --}}
@@ -554,7 +554,7 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputsexo">Sexo</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="sexo" id="sexo">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="sexo" id="sexo">
                         <option value="">SELECCIONE</option>
                         <option value='MASCULINO' @if($datainstructor->sexo == 'MASCULINO')selected @endif>Masculino</option>
                         <option value='FEMENINO' @if($datainstructor->sexo == 'FEMENINO')selected @endif>Femenino</option>
@@ -562,7 +562,7 @@
                 </div>
                 <div class="form-gorup col-md-4">
                     <label for="inputestado_civil">Estado Civil</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="estado_civil" id="estado_civil">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="estado_civil" id="estado_civil">
                         <option value="">SELECCIONE</option>
                         @foreach ($lista_civil as $item)
                             <option value="{{$item->nombre}}" @if($datainstructor->estado_civil == $item->nombre)selected @endif>{{$item->nombre}}</option>
@@ -571,7 +571,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true" value="{{$datainstructor->fecha_nacimiento}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true" value="{{$datainstructor->fecha_nacimiento}}">
                 </div>
             </div>
             {{-- <div class="form-row">
@@ -586,7 +586,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Nacimiento</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="entidad_nacimiento" id="entidad_nacimiento" onchange="local2_nacimiento()">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="entidad_nacimiento" id="entidad_nacimiento" onchange="local2_nacimiento()">
                         <option value="">SELECCIONE</option>
                         @foreach ($estados as $cadwell)
                             <option value="{{$cadwell->id}}" @if($datainstructor->entidad_nacimiento == $cadwell->nombre) selected @endif>{{$cadwell->nombre}}</option>
@@ -595,7 +595,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputmunicipio">Municipio de Nacimiento</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="municipio_nacimiento" id="municipio_nacimiento" onchange="local_nacimiento()">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="municipio_nacimiento" id="municipio_nacimiento" onchange="local_nacimiento()">
                         <option value="sin especificar">Sin Especificar</option>
                         @if(isset($municipios_nacimiento))
                             @foreach ($municipios_nacimiento as $cadwell)
@@ -606,7 +606,7 @@
                 </div>
                 <div class="form-gorup col-md-3">
                     <label for="inputlocalidad">Localidad de Nacimiento</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="localidad_nacimiento" id="localidad_nacimiento">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="localidad_nacimiento" id="localidad_nacimiento">
                         <option value="sin especificar">Sin Especificar</option>
                         @if(!is_null($localidades_nacimiento))
                             @foreach ($localidades_nacimiento as $cadwell)
@@ -628,7 +628,7 @@
                 </div> --}}
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Residencia</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="entidad" id="entidad" onchange="local2()">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="entidad" id="entidad" onchange="local2()">
                         <option value="">SELECCIONE</option>
                         @foreach ($estados as $cadwell)
                             <option value="{{$cadwell->id}}" @if($datainstructor->entidad == $cadwell->nombre) selected @endif>{{$cadwell->nombre}}</option>
@@ -637,7 +637,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputmunicipio">Municipio de Residencia</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="municipio" id="municipio" onchange="local()">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="municipio" id="municipio" onchange="local()">
                         <option value="sin especificar">Sin Especificar</option>
                         @foreach ($municipios as $cadwell)
                             <option value="{{$cadwell->id}}" @if($datainstructor->municipio == $cadwell->muni) selected @endif>{{$cadwell->muni}}</option>
@@ -646,7 +646,7 @@
                 </div>
                 {{-- <div class="form-gorup col-md-3">
                     <label for="inputlocalidad">Localidad de Residencia</label>
-                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif class="form-control" name="localidad" id="localidad">
+                    <select @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif class="form-control" name="localidad" id="localidad">
                         <option value="sin especificar">Sin Especificar</option>
                         @if(!is_null($localidades))
                             @foreach ($localidades as $cadwell)
@@ -659,31 +659,31 @@
             <div class="form-row">
                 <div class="form-group col-md-8">
                     <label for="inputbanco">Dirección de Domicilio</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->domicilio}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->domicilio}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputbanco">Codigo Postal</label>
-                    <input  @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" required value="{{$datainstructor->codigo_postal}}">
+                    <input  @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" required @if($datainstructor->codigo_postal == '0') value="00000" @else value="{{$datainstructor->codigo_postal}}" @endif>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputtelefono">Numero de Telefono Personal</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name="telefono" id="telefono" type="tel" class="form-control" aria-required="true" value="{{$datainstructor->telefono}}" required>
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name="telefono" id="telefono" type="tel" class="form-control" aria-required="true" value="{{$datainstructor->telefono}}" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputtelefono">Numero de Telefono de Casa</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name="telefono_casa" id="telefono_casa" type="tel" class="form-control" aria-required="true" required value="{{$datainstructor->telefono_casa}}" required>
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name="telefono_casa" id="telefono_casa" type="tel" class="form-control" aria-required="true" required value="{{$datainstructor->telefono_casa}}" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputcorreo">Correo Electronico</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" value="{{$datainstructor->correo}}" required>
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" value="{{$datainstructor->correo}}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputbanco">Nombre del Banco</label>
-                    @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31']))
+                    @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61']))
                         <input disabled name="banco" id="banco" type="text" class="form-control" aria-required="true" value="{{$datainstructor->banco}}">
                     @else
                         <select class="form-control" name="banco" id="banco">
@@ -696,11 +696,11 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputclabe">Clabe Interbancaria</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name="clabe" id="clabe" type="text" class="form-control" aria-required="true" value="{{$datainstructor->interbancaria}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name="clabe" id="clabe" type="text" class="form-control" aria-required="true" value="{{$datainstructor->interbancaria}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputnumero_cuenta">Numero de Cuenta</label>
-                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31'])) disabled @endif name="numero_cuenta" id="numero_cuenta" type="text" class="form-control" aria-required="true" value="{{$datainstructor->no_cuenta}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || !in_array($roluser->role_id, ['30','31','61'])) disabled @endif name="numero_cuenta" id="numero_cuenta" type="text" class="form-control" aria-required="true" value="{{$datainstructor->no_cuenta}}">
                 </div>
             </div>
             <hr style="border-color:dimgray">

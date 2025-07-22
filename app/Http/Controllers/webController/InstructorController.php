@@ -137,7 +137,7 @@ class InstructorController extends Controller
         $chk_mod_espec = FALSE;
         $userid = Auth::user()->id;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
-        $rol = DB::TABLE('role_user')->WHEREIN('role_id', ['3','1', '39'])->WHERE('user_id', '=', $userid)->FIRST();
+        $rol = DB::TABLE('role_user')->WHEREIN('role_id', ['3','1', '39','61'])->WHERE('user_id', '=', $userid)->FIRST();
         $unidades = DB::TABLE('tbl_unidades')->WHERE('cct', 'LIKE', '%07EI%')
                     ->SELECT('unidad')
                     ->ORDERBY('unidad', 'ASC')
@@ -154,7 +154,7 @@ class InstructorController extends Controller
                     ->ORDERBY('nrevision', 'ASC');
                     // ->GET();
 
-        if(isset($request->valor)) //ANALIZA SI FILTRARON
+        if(isset($request->valor) && $request->valor != 'SELECCIONE') //ANALIZA SI FILTRARON
         {
             if(isset($rol)) //ANALIZA SI ROL ESTA ASIGNADO
             {
@@ -4582,8 +4582,10 @@ class InstructorController extends Controller
             {
                $status = ['PREVALIDACION','EN FIRMA', 'BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN PREVALIDACION','REACTIVACION EN FIRMA'];
             }
+            $unidadRevision = $request->valor[0].$request->valor[1];
             $revisiones = pre_instructor::SELECT('nrevision')
-                        ->WhereJsonContains('data_especialidad', [['unidad_solicita' => $request->valor]])
+                        ->Where('nrevision', 'LIKE', $unidadRevision.'%')
+                        // ->WhereJsonContains('data_especialidad', [['unidad_solicita' => $request->valor]])
                         ->WHERE('registro_activo', TRUE)
                         ->WHERE('nrevision', '!=', NULL)
                         ->WHERE('turnado', 'DTA')
@@ -4955,7 +4957,7 @@ class InstructorController extends Controller
             $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
         }
 
-         $callback = $whatsapp->cola($telefono_formateado, $mensaje, $plantilla->prueba);
+         $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
 
         return $callback;
     }
