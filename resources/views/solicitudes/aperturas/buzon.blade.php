@@ -19,6 +19,7 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
+                        <th class="text-center">#</th>
                         <th class="text-center">UNIDAD DE CAPACITACIÓN</th>
                         <th class="text-center">No. REVISIÓN</th>
                         <th class="text-center">No. MEMORÁNDUM</th>
@@ -29,6 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php $i = 1; @endphp
                     @foreach ($aperturas as $item)
                         @php
                             $pdf = $rojo = null;
@@ -42,11 +44,12 @@
                             }
                         @endphp
                         <tr @if($rojo)class='text-danger' @endif>
+                            <td class="text-center">{{$i++}}</td>
                             <td class="text-center">{{$item->unidad}}</td>
                             <td class="text-center">{{$item->num_revision}}</td>
                             <td class="text-center">{{$item->munidad}}</td>
                             <td class="text-center">{{$item->status}}</td>
-                            <td class="text-center"> @if($item->status_curso) {{$item->status_curso}} @else {{"PREVALIDACION" }} @endif </td>
+                            <td class="text-center">{{ $item->status_solicitud}}</td>
                             <td class="text-center">
                                 @if ($item->pdf_curso OR $item->file_arc01)
                                     <a  class="nav-link"   title="PDF"  href="{{$pdf}}">
