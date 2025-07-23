@@ -485,7 +485,7 @@ class grupoController extends Controller
                                         $modalidad = $a_reg->mod;
                                         $folio_pago = $a_reg->folio_pago;
                                         $fecha_pago =  $a_reg->fecha_pago;
-                                        $instructor = $a_reg->id_instructor ?? 1;
+                                        $instructor = !empty($a_reg->id_instructor) ? $a_reg->id_instructor : 1;
                                         $efisico = $a_reg->efisico;
                                         $medio_virtual = $a_reg->medio_virtual;
                                         $link_virtual = $a_reg->link_virtual;
@@ -916,14 +916,9 @@ class grupoController extends Controller
                                 ///AGREGAR PARA TODOS LOS CRITERIOS
                                 if ($result_alumnos) {
                                     if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
-                                    ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {
-
-                                        DB::table('agenda')->where('id_curso',$folio)->update(['id_instructor' => $alus->id_instructor]); //NUEVO VOBO
-
-                                        /* VOBO
+                                    ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {                                        
                                         DB::table('agenda')->where('id_curso', $folio)->delete();
-                                        DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
-                                        */
+                                        DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);                                        
                                     }
                                 }
 
