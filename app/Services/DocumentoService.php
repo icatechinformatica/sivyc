@@ -380,10 +380,21 @@ class DocumentoService
     public function procesarPlantilla($contenido, array $variables)
     {
         foreach ($variables as $key => $value) {
-            $contenido = str_replace("@$key", $value, $contenido);
+            if (is_array($value) || is_object($value)) {
+                // Si no puedes procesarlo como string, usa json_encode o maneja según el caso
+                $value = json_encode($value);
+            } elseif (is_bool($value)) {
+                $value = $value ? 'Sí' : 'No';
+            } elseif (is_null($value)) {
+                $value = '';
+            }
+
+            $contenido = str_replace("@$key", (string) $value, $contenido);
         }
+
         return $contenido;
     }
+
 
     public function formatoFechaCrearMemo($fecha)
     {
@@ -494,11 +505,11 @@ class DocumentoService
         return strtoupper(trim($parteEntera) . $parteDecimal );
     }
 
-    public function generarPdfDocument($contenido)
+    public function generarPdfDocument($contenido, $orientacion = 'portrait')
     {
         // generar el PDF
         $pdf = PDF::loadview('formatoPdf.PlantillaRf', $contenido)
-            ->setPaper('a4', 'portrait'); //Configura el tamaño de papel y la orientación
+            ->setPaper('A4', $orientacion); //Configura el tamaño de papel y la orientación
 
         $dompdf = $pdf->getDomPDF();
         $options = $dompdf->getOptions();

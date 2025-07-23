@@ -522,9 +522,6 @@ class PlantillaController extends Controller
                 return $pdf->stream($filename);
                 break;
             case 'SUPRE':
-                // Simulación de $distintivo
-                $distintivo = 'ICATECH';
-
                 // Simulación de $data_supre (objeto con propiedades)
                 $data_supre = (object)[
                     'id' => 1,
@@ -659,6 +656,48 @@ class PlantillaController extends Controller
                 $tipoCursoTexto = $data[0]->tipo_curso == 'CERTIFICACION' ? ' certificación extraordinaria' : ' curso';
                 $fechaApertura = $data[0]->fecha_apertura;
 
+                $columnas = '';
+
+                if ($data[0]->fecha_apertura < '2023-10-12') {
+                    $columnas .= '<td><small style="font-size: 10px;">IMPORTE POR HORA</small></td>';
+                    if ($data[0]->modinstructor == 'HONORARIOS'){
+                        $columnas .= '<td><small style="font-size: 10px;">IVA 16%</small></td>';
+                    }
+                    $columnas .= '<td><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
+                    <td><small style="font-size: 10px;">IMPORTE</small></td>';
+                } else {
+                    $columnas .= '<td><small style="font-size: 10px;">COSTO POR HORA</small></td>
+                    <td><small style="font-size: 10px;">TOTAL IMPORTE</small></td>
+                    <td><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>';
+                }
+
+                $unidad = DB::table('tbl_unidades')->SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
+                            ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
+                            ->FIRST();
+                $unidad->cct = substr($unidad->cct, 0, 4);
+                $direccion = explode("*", $unidad->direccion);
+
+                $direccionFormateada = collect(is_array($direccion) ? $direccion : explode('*', $direccion))->implode('<br>');
+                $distintivo = DB::table('tbl_instituto')->value('distintivo'); // más claro que pluck()->first()
+
+                $textoFormateado = '';
+
+                $contenido = null;
+
+                if (isset($leyenda)) {
+                    $contenido = is_array($leyenda) ? $leyenda : explode('*', $leyenda);
+                } elseif (isset($distintivo)) {
+                    $contenido = is_array($distintivo) ? $distintivo : explode('*', $distintivo);
+                }
+
+                if ($contenido) {
+                    foreach ($contenido as $linea) {
+                        $textoFormateado .= '<div>' . htmlspecialchars(trim($linea), ENT_QUOTES, 'UTF-8') . '</div>';
+                    }
+                }
+
+
+
                 $loadArray = [
                     'distintivo' => $distintivo,
                     'ubicacion' => $unidad->ubicacion,
@@ -671,6 +710,11 @@ class PlantillaController extends Controller
                     'tipoCursoTexto' => $tipoCursoTexto,
                     'capacitacionAccionMovil' => $capacitacionAccionMovil,
                     'folios' => $filas_folio,
+                    'filasTabla' => $filas_tabla,
+                    'columnas' => $columnas,
+                    'title' => 'Solicitud de Suficiencia Presupuestal',
+                    'direccionFormateada' => $direccionFormateada,
+                    'contenido_html' => $textoFormateado,
                 ];
 
                 $contenidoProcesado = $this->servicioPlantilla->procesarPlantilla($dataQry->cuerpo, $loadArray);
