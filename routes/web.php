@@ -1,11 +1,13 @@
 <?php
 //Rutas Orlando
 
-use App\Http\Controllers\webController\InstructorController;
 use GuzzleHttp\Middleware;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Alumno\AlumnoController;
+use App\Http\Controllers\Grupo\GrupoController;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Http\Controllers\webController\InstructorController;
 
 
 /*
@@ -232,9 +234,16 @@ Route::middleware(['auth'])->group(function () {
     //Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::post('/alumnos/exoneracion/permiso','webController\AlumnoController@activarPermiso')->name('activar.permiso.exo');
     Route::get('/alumnos/exoneracion/permiso/desactivar','webController\AlumnoController@quitarPermiso')->name('quitar.permiso.exo');
+    
+    // Nueva ruta para el controlador paginado
+    Route::get('/alumnos/paginado', [AlumnoController::class, 'index'])->name('alumnos.paginado')->middleware('can:alumnos.index');
+    
+    // Ruta original
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::get('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
     Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
+
+    Route::post('alumnos/valsid/registro/{curp}', 'webController\AlumnoController@redireccionAlumnoRegistro')->name('alumnos.vlid.registro');
     // Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.csid');
     Route::get('alumnos/sid', 'webController\AlumnoController@create')->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
     Route::get('alumnos/municipio_nov', 'webController\AlumnoController@showlm');
@@ -673,6 +682,7 @@ Route::middleware(['auth'])->group(function () {
     // ->middleware('can:preinscripcion.grupo');
     Route::get('/preinscripcion/grupo/cmbcursos', 'Preinscripcion\grupoController@cmbcursos')->name('preinscripcion.grupo.cmbcursos');
     Route::post('/preinscripcion/grupo/guardar', 'Preinscripcion\grupoController@save')->name('preinscripcion.grupo.save');
+    Route::get('/get/preinscripcion/grupo/guardar', 'Preinscripcion\grupoController@save')->name('preinscripcion.grupo.save.get');
     // ->middleware('can:preinscripcion.grupo.save');
     Route::post('/preinscripcion/grupo/update', 'Preinscripcion\grupoController@update')->name('preinscripcion.grupo.update');
     // ->middleware('can:preinscripcion.grupo.update');
@@ -1100,8 +1110,18 @@ Route::get('/recursos-humanos/reporte/quincenal/detalles/{id}', 'RH\RHController
 Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
 Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->name('rh.agregar.justificante');
 
-Route::get('/test', function () {
-    dd('Test route is working!');
-})->name('cursos.archivado');
-
 Route::get('/dummy/test', 'App\Http\Controllers\DummyController@index');
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'alumnos'], function () {
+    Route::get('/cosulta', [AlumnoController::class, 'index'])->name('alumnos.consulta.alumno');
+});
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'grupos'], function () {
+    Route::get('/crear', [GrupoController::class, 'create'])->name('grupos.crear');
+    Route::get('/registrar', [GrupoController::class, 'store'])->name('grupos.store');
+});
+
+Route::get('/mi/rol', function () {
+    $user = auth()->user();
+    dd($user->roles->first()->nombre);
+})->name('mi.rol')->middleware('auth');
