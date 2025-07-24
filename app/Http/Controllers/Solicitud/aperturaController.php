@@ -164,7 +164,7 @@ class aperturaController extends Controller
                 ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$grupo_mespecialidad') as pdfvalida"));
 
 
-        }else $message = "Grupo número ".$folio_grupo .", no disponible para este usuario.";
+        }else $message = "El folio de grupo ".$folio_grupo ." no está disponible. Por favor, verifique si el grupo ha sido turnado por Vinculación o si el folio es correcto.";
         $tinscripcion = $this->tinscripcion();
 
 
@@ -219,6 +219,7 @@ class aperturaController extends Controller
             })
             ->leftjoin('cursos as c','c.id','ar.id_curso')
             ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')
+            ->where('ar.turnado','=','UNIDAD')
             ->orderby('ar.id_vulnerable','DESC')
             ->first();
 //dd($grupo);

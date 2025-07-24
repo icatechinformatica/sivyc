@@ -171,7 +171,19 @@ class aperturasController extends Controller
         if($request->ejercicio)$ejercicio = $request->ejercicio;
         else  $ejercicio = date('Y');
         $aperturas = DB::table('tbl_cursos as tc')
-            ->select('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
+            ->select('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura',
+                DB::raw("
+                    (
+                    CASE
+                        WHEN BOOL_AND(tc.status_curso IS NOT NULL) THEN tc.status_curso
+                        WHEN BOOL_AND(tc.turnado = 'VoBo') THEN 'TURNADO VoBo'
+                        WHEN BOOL_AND(tc.turnado = 'DGA' AND tc.vb_dg = true) THEN 'AUTORIZADO DG'
+                        WHEN BOOL_AND(tc.turnado = 'DGA' AND tc.vb_dg = false) THEN 'RECHAZADO DG'
+                        ELSE 'PREVALIDACION'
+                        END                          
+                    ) as status_solicitud
+                ")
+            )
             ->leftJoin('alumnos_registro as a','tc.folio_grupo','=','a.folio_grupo')
             ->where('a.turnado','!=','VINCULACION')
             ->whereYear('tc.created_at', $ejercicio)
@@ -184,10 +196,11 @@ class aperturasController extends Controller
             $aperturas = $aperturas->where('tc.munidad',$request->valor)
                 ->orWhere('tc.num_revision',$request->valor);
         }
-        $aperturas = $aperturas->groupBy('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
+        $aperturas = $aperturas->groupBy('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status',
+            'tc.pdf_curso','tc.fecha_apertura')
             ->orderBy('tc.fecha_apertura','desc')
             ->paginate(50)->appends(['ejercicio' => $ejercicio]);
-        $anios = MyUtility::ejercicios();
+        $anios = MyUtility::ejercicios(); //dd($aperturas);
         return view('solicitudes.aperturas.buzon',compact('aperturas','anios','ejercicio'));
     }
 
@@ -479,10 +492,64 @@ class aperturasController extends Controller
             $fecha_memo=date('d/M/Y',strtotime($fecha_memo));
             $opt = $request->opt;
             $marca = true;
-            $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
+            $reg_cursos = DB::table('tbl_cursos as tc')->SELECT('id','unidad','nombre','mvalida','mod','espe','curso','inicio','termino','dia','dura',
                 DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','nmunidad','efisico','hombre','mujer','tipo','opcion',
                 'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_apertura','fecha_modificacion','observaciones','valido','realizo','mvalida','nmacademico',
-                'status_solicitud','status_solicitud_arc02','cct');
+                'status_solicitud','status_solicitud_arc02','cct','tc.folio_grupo','tc.instructor_mespecialidad','folio_grupo',
+                DB::raw("COALESCE(clave, '0') as clave"), //NUEVO VOBO
+                DB::raw('COALESCE(vb_dg, false) as vb_dg'),//NUEVO VOBO
+                DB::raw("
+                            (
+                                SELECT string_agg(
+                                TO_CHAR(DATE(start), 'DD/MM/YYYY') || ' ' ||
+                                CASE
+                                    WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
+                                    ELSE TO_CHAR(\"start\", 'HH24:MI')
+                                END || '-' ||
+                                CASE
+                                    WHEN TO_CHAR(\"end\", 'MI') = '00' THEN TO_CHAR(\"end\", 'HH24')
+                                    ELSE TO_CHAR(\"end\", 'HH24:MI')
+                                END || 'h.(' ||
+                                TO_CHAR(
+                                    (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
+                                    ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
+                                    'FM999990.##'
+                                ) || 'h)',
+                                E'\n'
+                                ORDER BY DATE(start)
+                                ) AS agenda_texto
+                                FROM agenda
+                                WHERE id_curso = tc.folio_grupo
+                            )::text AS agenda
+                        "),
+
+                        DB::raw("
+                            (
+                                CASE
+                                    WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
+                                    WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
+                                    ELSE ''
+                                END 
+                                || 
+                                CASE 
+                                    WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
+                                    WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
+                                    ELSE ''
+                                END                      
+                                ||
+                                CASE 
+                                    WHEN tc.tipo != 'EXO' THEN 
+                                        'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
+                                        'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') || '. ' 
+                                    ELSE '.'
+                                END
+                                /*||
+                                CASE 
+                                WHEN tc.nota is not null THEN ' ' || tc.nota
+                                END*/
+                            ) AS observaciones
+                        ")
+            );
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
             switch($_SESSION['opt'] ){
                 case "ARC01":
@@ -574,16 +641,8 @@ class aperturasController extends Controller
                         $llave = 'nmunidad';
                     }
                     $ids = array_keys($request->prespuesta);
-                    $result = DB::table('tbl_cursos')->where($llave,$memo)->wherein('id',$ids)->update([$status => 'VALIDADO', 'turnado'=>'UNIDAD', 'obspreliminar' => null]);
-                    if ($result){
-                            $result2 = DB::table('tbl_cursos_history')
-                                ->where($llave,$memo)
-                                ->where('id_tbl_cursos',$ids)
-                                ->orderBy('fenviado_preliminar', 'DESC')
-                                ->take(1)
-                                ->update(['status_solicitud' => 'VALIDADO', 'obspreliminar' => null, 'frespuesta_preliminar' => date('Y-m-d H:i:s')]);
-                    }
-                    if($result2)$message = "SOLICITUD ENVIADA COMO PREVALIDADA.";
+                    $result = DB::table('tbl_cursos')->where($llave,$memo)->wherein('id',$ids)->update([$status => 'VALIDADO', 'turnado'=>'UNIDAD', 'obspreliminar' => null]);                  
+                    if($result)$message = "SOLICITUD TURNADA A UNIDAD.";
                 break;
             }
         }
