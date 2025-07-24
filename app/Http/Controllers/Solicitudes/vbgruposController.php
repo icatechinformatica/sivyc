@@ -135,6 +135,8 @@ class vbgruposController extends Controller
 
                 $filas .= "
                     <tr>
+                        <td><span>".$item->folio_grupo."</span></td>
+                        <td><span>".$item->munidad."</span></td>
                         <td>
                             <a onclick='".$modal_curso."' style='color:rgb(1, 95, 84);'>
                                 <b>".$item->curso."</b>
@@ -169,6 +171,7 @@ class vbgruposController extends Controller
                         $filas .= "
                         </td>
                         <td class='text-center'><strong>".$esAlfa."</strong></td>
+                        <td><small>".$item->depen."</small></td>
                     </tr>";
             }
             $filas .= "
