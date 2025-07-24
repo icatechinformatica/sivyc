@@ -499,28 +499,33 @@ class aperturasController extends Controller
                 DB::raw("COALESCE(clave, '0') as clave"), //NUEVO VOBO
                 DB::raw('COALESCE(vb_dg, false) as vb_dg'),//NUEVO VOBO
                 DB::raw("
-                            (
-                                SELECT string_agg(
-                                TO_CHAR(DATE(start), 'DD/MM/YYYY') || ' ' ||
-                                CASE
-                                    WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
-                                    ELSE TO_CHAR(\"start\", 'HH24:MI')
-                                END || '-' ||
-                                CASE
-                                    WHEN TO_CHAR(\"end\", 'MI') = '00' THEN TO_CHAR(\"end\", 'HH24')
-                                    ELSE TO_CHAR(\"end\", 'HH24:MI')
-                                END || 'h.(' ||
-                                TO_CHAR(
-                                    (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
-                                    ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
-                                    'FM999990.##'
-                                ) || 'h)',
-                                E'\n'
-                                ORDER BY DATE(start)
-                                ) AS agenda_texto
-                                FROM agenda
-                                WHERE id_curso = tc.folio_grupo
-                            )::text AS agenda
+                          (
+                            SELECT string_agg(
+                            CASE 
+                                WHEN DATE(\"start\") = DATE(\"end\") THEN TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                                ELSE TO_CHAR(DATE(\"start\"), 'DD/MM/YYYY') || ' - ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                            END
+                            
+                            || ' ' ||
+                            CASE
+                                WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
+                                ELSE TO_CHAR(\"start\", 'HH24:MI')
+                            END || '-' ||
+                            CASE
+                                WHEN TO_CHAR(\"end\", 'MI') = '00' THEN TO_CHAR(\"end\", 'HH24')
+                                ELSE TO_CHAR(\"end\", 'HH24:MI')
+                            END || 'h.(' ||
+                            TO_CHAR(
+                                (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
+                                ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
+                                'FM999990.##'
+                            ) || 'h)',
+                            E'\n'
+                            ORDER BY DATE(start)
+                            ) AS agenda_texto
+                            FROM agenda
+                            WHERE id_curso = tc.folio_grupo
+                        )::text AS agenda
                         "),
 
                         DB::raw("
