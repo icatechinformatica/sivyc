@@ -505,7 +505,7 @@ class DocumentoService
         return strtoupper(trim($parteEntera) . $parteDecimal );
     }
 
-    public function generarPdfDocument($contenido, $orientacion = 'portrait')
+    public function generarPdfDocument($contenido, $orientacion = 'Landscape')
     {
         // generar el PDF
         $pdf = PDF::loadview('formatoPdf.PlantillaRf', $contenido)
@@ -515,7 +515,7 @@ class DocumentoService
         $options = $dompdf->getOptions();
         $options->setIsHtml5ParserEnabled(true);  // Habilita el parser HTML5
         $options->setIsRemoteEnabled(true);       // Permitir imágenes remotas
-        $dompdf->setOptions($options);
+        $dompdf->setOptions($options)->output();
         // reenderizar PDF
         return $pdf;
     }
