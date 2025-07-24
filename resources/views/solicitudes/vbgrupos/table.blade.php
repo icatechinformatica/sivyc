@@ -7,19 +7,22 @@
                 {{-- @if ($status == 'AUTORIZADOS') --}}
                 {{-- <th scope="col">Vo.Bo.</th> --}}
                 {{-- @endif --}}
+                <th scope="col" width="7%">GRUPO</th>
+                <th scope="col">MEMORÁNDUM</th>
                 <th scope="col">CURSO</th>
                 <th scope="col">FECHAS</th>
                 <th scope="col">HORARIO</th>
                 <th scope="col">INSTRUCTOR</th>
                 {{-- <th scope="col" width="90px">INICIO</th>
                 <th scope="col" width="90px">TERMINO</th> --}}
-                <th scope="col" width="13%">UNIDAD/AM</th>
+                <th scope="col" width="11%">UNIDAD/AM</th>
                 @if ($status == 'PENDIENTES')
                     <th scope="col" width="0%" id="estado_columna">RECHAZAR</th>
                 @else
                     <th scope="col" width="0%" id="estado_columna">TURNADO</th>
                 @endif
                 <th scope="col" width="0%">ALFA</th>
+                <th scope="col">DEPENDENCIA</th>
             </tr>
         </thead>
         <tbody id="result_table">
@@ -36,6 +39,12 @@
                             </div>
                         </td>
                     @endif --}}
+                    <td>
+                        <span>{{$item->folio_grupo}}</span>
+                    </td>
+                    <td>
+                        <span>{{$item->munidad}}</span>
+                    </td>
                     <td>
                         <a onclick="ver_modal('CURSO', '{{ $item->folio_grupo}}')" style="color:rgb(1, 95, 84);">
                             <b>{{ $item->curso }}</b>
@@ -72,6 +81,7 @@
                         @endif
                     </td>
                     <td class="text-center"><strong>{{$item->programa == 'ALFA' ? 'SI' : 'NO'}}</strong></td>
+                    <td><small>{{$item->depen}}</small></td>
                 </tr>
             @endforeach
             <tr>
