@@ -169,9 +169,16 @@ class vbgruposController extends Controller
                         $filas .= "
                         </td>
                         <td class='text-center'><strong>".$esAlfa."</strong></td>
+                    </tr>";
+            }
+            $filas .= "
+                    <tr>
+                        <td colspan='11' >
+                            " . $data->withPath('/solicitudes/vbgrupos')->render() . "
+                        </td>
                     </tr>
                 ";
-            }
+
         } else $filas = "Dato no encontrado, por favor intente de nuevo.";
 
         return [$filas, $status];
