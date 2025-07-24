@@ -18,4 +18,9 @@ class GrupoController extends Controller
     {
         dd('Registrando grupo...');
     }
+
+    public function asignarAlumnos()
+    {
+        return view('grupos.asignar_alumnos');
+    }
 }

@@ -1119,6 +1119,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'alumnos'], function () {
 Route::group(['middleware' => ['auth'], 'prefix' => 'grupos'], function () {
     Route::get('/crear', [GrupoController::class, 'create'])->name('grupos.crear');
     Route::get('/registrar', [GrupoController::class, 'store'])->name('grupos.store');
+    Route::get('/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar.alumnos');
 });
 
 Route::get('/mi/rol', function () {
