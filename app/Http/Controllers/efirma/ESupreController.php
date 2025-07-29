@@ -384,7 +384,7 @@ class ESupreController extends Controller
                                 if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS'){$body_html['tabla'] = $body_html['tabla'].'12101 HONORARIOS'; } else {$body_html['tabla'] = $body_html['tabla'].'12101 ASIMILADOS A SALARIOS'; } $body_html['tabla'] = $body_html['tabla'].'</td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($item->importe_total, 2, '.', ',') .'</td>';
                             } else {
-                                $body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($criterio->monto, 2, '.', ',').'</td>
+                                $body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($item->importe_hora, 2, '.', ',').'</td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($item->importe_total, 2, '.', ',') .'</td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">';
                                 if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS'){$body_html['tabla'] = $body_html['tabla'].'12101 HONORARIOS'; } else { $body_html['tabla'] = $body_html['tabla'].'12101 ASIMILADOS A SALARIOS'; }$body_html['tabla'] = $body_html['tabla'].'</td>';
