@@ -1546,13 +1546,12 @@ class grupoController extends Controller
             }
         }
         FIN VOBO*/
-
         try {
             $titulo = $request->title;
             $agenda = new Agenda();
             $agenda->title = $titulo;
-            $agenda->start = $request->start;
-            $agenda->end = $request->end;
+            $agenda->start = date("Y-m-d H:i:s", strtotime($request->start));
+            $agenda->end = date("Y-m-d H:i:s", strtotime($request->end));
             $agenda->textColor = $request->textColor;
             $agenda->id_curso = $id_curso;
             $agenda->id_instructor = $id_instructor;
@@ -1569,87 +1568,82 @@ class grupoController extends Controller
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_curso['nombre'], 'tdias' => $dias_curso['total']]);
     }
 
-    public function dias($id){
+    public function dias($id)
+    {
         $dias_agenda = DB::table('agenda')
             ->select(
-                db::raw("extract(dow from (generate_series(agenda.start, agenda.end, '1 day'::interval))) as dia"),
-                db::raw("generate_series(agenda.start, agenda.end, '1 day'::interval)::date as fecha")
+                DB::raw("extract(dow from (generate_series(agenda.start, agenda.end, '1 day'::interval))) as dia"),
+                DB::raw("generate_series(agenda.start, agenda.end, '1 day'::interval)::date as fecha")
             )
             ->where('id_curso', $id)
             ->orderBy('fecha')
             ->get();
+
         if (count($dias_agenda) > 0) {
-            $dias = [];
-            $temp = $dias_agenda[0]->dia;
-            $temp2 = null;
-            $save = false;
-            $conteo = count($dias_agenda);
-            $dias_a = [];
-            foreach ($dias_agenda as $key => $value) {
-                if ($key > 0) {
-                    if ((($temp + 1) == $value->dia) && ($temp2==null)) {
-                        $temp2 = $value->dia;
-                        $save = false;
-                    } elseif ($temp2 && (($temp2 + 1) == $value->dia)) {
-                        $temp2 = $value->dia;
-                        $save = false;
-                    } elseif ((($temp == '6') || ($temp2 == '6')) && ($value->dia == '0')) {
-                        $temp2 = $value->dia;
-                        $save = false;
-                    } elseif ((($temp == $value->dia) || ($temp2 == $value->dia)) && ($value->fecha == $dias_agenda[$key - 1]->fecha)) {
-                        $save = false;
-                    } else {
-                        $save = true;
-                    }
-                    if ($save == true) {
-                        $dias[] = [$temp, $temp2];
-                        $temp = $value->dia;
-                        $temp2 = null;
-                        $save = false;
-                    }
-                };
-                if ($key == ($conteo - 1)) {
-                    $dias[] = [$temp, $temp2];
-                }
-            }
-            foreach ($dias as $item) {
-                if (($item[0] + 1) < ($item[1])) {
-                    $dias_a[] = $this->dia($item[0]) . ' A ' . $this->dia($item[1]);
-                } elseif (($item[0] + 1) == ($item[1])) {
-                    $dias_a[] = $this->dia($item[0]) . ' Y ' . $this->dia($item[1]);
-                } elseif (($item[0] == '6') && ($item[1] == '0')) {
-                    $dias_a[] = $this->dia($item[0]) . ' Y ' . $this->dia($item[1]);
-                } elseif ((($item[0]) > ($item[1])) && isset($item[1])) {
-                    $dias_a[] = $this->dia($item[0]) . ' A ' . $this->dia($item[1]);
+            $grupos = [];
+            $inicio = null;
+            $fin = null;
+            $prev = null;
+
+            foreach ($dias_agenda as $item) {
+                $fecha = $item->fecha;
+                $dia = $item->dia;
+
+                if ($inicio === null) {
+                    $inicio = $fin = $item;
                 } else {
-                    $dias_a[] = $this->dia($item[0]);
+                    $prev_fecha = new \DateTime($prev->fecha);
+                    $curr_fecha = new \DateTime($fecha);
+                    $diff = $prev_fecha->diff($curr_fecha)->days;
+
+                    if ($diff == 1) {
+                        // Son consecutivos, extendemos el rango
+                        $fin = $item;
+                    } else {
+                        // No son consecutivos, guardamos el rango anterior
+                        $grupos[] = [$inicio, $fin];
+                        $inicio = $fin = $item;
+                    }
+                }
+                $prev = $item;
+            }
+            // Guardar el último rango
+            $grupos[] = [$inicio, $fin];
+
+            // Construir la cadena de días
+            $dias_a = [];
+            foreach ($grupos as $rango) {
+                $dia_ini = $this->dia($rango[0]->dia);
+                $dia_fin = $this->dia($rango[1]->dia);
+
+                if ($rango[0]->fecha == $rango[1]->fecha) {
+                    $dias_a[] = $dia_ini;
+                } else {
+                    // Si solo son dos días consecutivos, usar "Y"
+                    $fecha1 = new \DateTime($rango[0]->fecha);
+                    $fecha2 = new \DateTime($rango[1]->fecha);
+                    if ($fecha1->diff($fecha2)->days == 1) {
+                        $dias_a[] = $dia_ini . " Y " . $dia_fin;
+                    } else {
+                        $dias_a[] = $dia_ini . " A " . $dia_fin;
+                    }
                 }
             }
-            if (count(array_unique(array_count_values($dias_a))) == 1) {
-                $dias_a = array_unique($dias_a);
-            }
-            $dias_a = implode(", ", $dias_a);
+            $dias_str = implode(", ", $dias_a);
         } else {
-            $dias_a = 0;
+            $dias_str = 0;
         }
+
+        // Calcular el total de días
         $total_dias = DB::table('agenda')
             ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
             ->where('id_curso', $id)
             ->orderBy('dias')
             ->pluck('dias');
-        $tdias = 0;
+        $tdias = count($total_dias);
 
-        foreach ($total_dias as $key => $value) {
-            if ($key > 0) {
-                if ($value != $total_dias[$key - 1]) {
-                    $tdias += 1;
-                }
-            } else {
-                $tdias = 1;
-            }
-        }
-        $insert_dias ['nombre'] = $dias_a;
-        $insert_dias ['total'] = $tdias;
+        $insert_dias['nombre'] = $dias_str;
+        $insert_dias['total'] = $tdias;
         return $insert_dias;
     }
 

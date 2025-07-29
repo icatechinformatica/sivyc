@@ -136,7 +136,7 @@
                      <td colspan="4"><b>6. PROFESIONAL(TITULO Y/O CEDULA) &nbsp;7. MAESTRIA (PASANTE) &nbsp;8. MAESTRIA (TITULO Y/O CEDULA) 9. DOCTORADO (PASANTE) 10. DOCTORADO(TITULO Y/O CEDULA)</b></td>
             </tr>
             <tr>
-                     <td colspan="4"><b>11. PROFESIONAL CERTIFICADO DE COMPETENCIA LABORAL EN CAPACITACIÓN ESPECIALIZADA Y TEMAS ESPECÍFICOS </b><br/>&nbsp;</td>
+                     <td colspan="4"><b>11. PROFESIONAL CERTIFICADO DE COMPETENCIA LABORAL EN CAPACITACIÓN ESPECIALIZADA Y TEMAS ESPECÍFICOS 12. INSTRUCTOR ALFA</b><br/>&nbsp;</td>
             </tr>
         </table>
     </div>
