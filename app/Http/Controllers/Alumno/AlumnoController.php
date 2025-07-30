@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\ConsultaDatosCURPService;
 use App\Services\Alumno\AlumnoConsultaService;
-use App\Services\Alumno\RegistroTempService;
 
 class AlumnoController extends Controller
 {
@@ -15,11 +14,10 @@ class AlumnoController extends Controller
     protected $consultaDatosCURPService;
     protected $registroTempService;
 
-    public function __construct(AlumnoConsultaService $alumnoConsultaService, ConsultaDatosCURPService $consultaDatosCURPService, RegistroTempService $registroTempService)
+    public function __construct(AlumnoConsultaService $alumnoConsultaService, ConsultaDatosCURPService $consultaDatosCURPService)
     {
         $this->alumnoConsultaService = $alumnoConsultaService;
         $this->consultaDatosCURPService = $consultaDatosCURPService;
-        $this->registroTempService = $registroTempService;
     }
 
     public function index(Request $request)
@@ -85,7 +83,7 @@ class AlumnoController extends Controller
     {
         try {
             $datos = json_decode($request->datos, true);
-            $resultado = $this->registroTempService->guardarEnSeccion($request->seccion, $datos);
+            $resultado = null;
             if ($resultado === true) {
                 return response()->json(['success' => true, 'message' => 'Datos del alumno guardados correctamente.']);
             } else {
