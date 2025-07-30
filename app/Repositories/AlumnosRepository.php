@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Alumnopre;
 use App\Interfaces\AlumnosInterface;
+use Illuminate\Support\Facades\DB;
 
 class AlumnosRepository implements AlumnosInterface
 {
@@ -45,7 +46,8 @@ class AlumnosRepository implements AlumnosInterface
 
     public function buscarPorCURP($curp)
     {
-        return $this->alumno->where('curp', $curp)->first();
+        // return $this->alumno->where('curp', $curp)->first();
+        return DB::table('tbl_alumnos')->where('curp', $curp)->first();
     }
 
     public function crear(array $data)

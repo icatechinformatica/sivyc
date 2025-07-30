@@ -22,7 +22,7 @@ class AlumnoConsultaService
         return $this->alumnoRepository->obtenerTodos($registrosPorPagina);
     }
 
-    public function obtenerAlumnosPorCURP(string $curp)
+    public function obtenerAlumnoPorCURP(string $curp)
     {
         return $this->alumnoRepository->buscarPorCURP($curp);
     }

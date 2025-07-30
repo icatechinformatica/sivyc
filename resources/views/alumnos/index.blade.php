@@ -14,17 +14,22 @@
     </div>
 
     <div class="col-md-4 curp-nuevo-compacto justify-content-end">
-        <form class="w-100 m-0 p-0" style="display: contents;">
-            <input type="text" class="form-control d-none" placeholder="Ingrese la CURP" id="registro_curp">
-            <button class="btn btn-white btn-nuevo text-dark align-items-center" title="Crear nuevo registro" type="button"
-                id="btn_nuevo_registro_curp">
+        <form class="w-100 m-0 p-0" style="display: contents;" method="POST" action="{{ route('alumnos.consultar.curp') }}">
+            @csrf
+            {{-- * INPUT CURP --}}
+            <input type="text" class="form-control d-none" placeholder="Ingrese la CURP" id="registro_curp" name="curp">
+            {{-- * DESPLIEGUE NUEVO REGISTRO --}}
+            <button class="btn btn-white btn-nuevo text-dark align-items-center" title="Crear nuevo registro"
+                type="button" id="btn_nuevo_registro_curp">
                 <i class="fas fa-plus m-0 mr-2" style="font-size:1.1rem;"></i>
                 <span class="d-none d-md-inline">Nuevo registro</span>
             </button>
+            {{-- * REGISTRAR --}}
             <button class="btn btn-primary btn-interaccion d-none rounded" title="Iniciar registro CURP" type="submit"
                 id="btn_iniciar_registro_curp">
                 <i class="fas fa-user-plus" style="font-size:1.1rem;"></i>
             </button>
+            {{-- * CERRAR INPUT CURP --}}
             <button class="btn btn-danger btn-interaccion d-none rounded" title="Cerrar registro CURP" type="button"
                 id="btn_cerrar_registro_curp">
                 <i class="fas fa-times m-0" style="font-size:1.1rem;"></i>

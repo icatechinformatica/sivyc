@@ -15,162 +15,257 @@
     </div>
 </div>
 
+
 <div class="card card-body">
     {{ html()->form('POST', route('grupos.store'))->open() }}
-    <!-- Sección: Información general -->
-    <div class="px-3 rounded" style="border-left: 4px solid #007bff;">
-        <small class="text-primary font-weight-bold">Información general</small>
-        <div class="row my-1">
-            <div class="form-group col-md-2 mb-1">
-                {{ html()->label('IMPARTICIÓN', 'imparticion')->class('form-label mb-1') }}
-                {{ html()->select('imparticion', ['' => 'SELECCIONAR', 1 => 'PRESENCIAL', 2 =>'A DISTANCIA'])->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-2 mb-1">
-                {{ html()->label('CURSO/CERTIFICACIÓN', 'tipo')->class('form-label mb-1') }}
-                {{ html()->select('tipo', ['' => 'SELECCIONAR', 1 => 'CURSO', 2 => 'CERTIFICACIÓN'])->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-8 mb-1">
-                {{ html()->label('CURSO', 'curso')->class('form-label mb-1') }}
-                {{ html()->select('curso', ['' => 'SELECCIONAR', 1 => 'CURSO 1', 2 => 'CURSO 2'])->class('form-control form-control-sm')->required() }}
-            </div>
+    <div class="row">
+        <!-- Barra de pasos lateral -->
+        <div class="col-md-3 d-none d-md-block">
+            <nav id="step-progress" class="nav-sticky">
+                <ul class="list-group list-group-flush step-progress-nav">
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="info-general">
+                        <span class="step-circle mr-2" data-status="actual">1</span>
+                        <span class="fw-bold text-black">Información general</span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="ubicacion">
+                        <span class="step-circle mr-2" data-status="restante">2</span>
+                        <span class="fw-bold">Ubicación</span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="representante">
+                        <span class="step-circle mr-2" data-status="restante">3</span>
+                        <span class="fw-bold">Representante</span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="opciones">
+                        <span class="step-circle mr-2" data-status="restante">4</span>
+                        <span class="fw-bold">Opciones</span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="agenda">
+                        <span class="step-circle mr-2" data-status="restante">5</span>
+                        <span class="fw-bold">Agenda</span>
+                    </li>
+                </ul>
+            </nav>
         </div>
-    </div>
-
-    <!-- Sección: Ubicación -->
-    <div class="px-3 rounded" style="border-left: 4px solid #28a745;">
-        <small class="text-success font-weight-bold">Ubicación</small>
-        <div class="row my-1">
-            <div class="form-group col-md-3 mb-1">
-                {{ html()->label('UNIDAD/ACCIÓN MÓVIL', 'unidad_accion_movil')->class('form-label mb-1') }}
-                {{ html()->select('unidad_accion_movil', ['' => 'SELECCIONAR', 1 => 'UNIDAD 1', 2 => 'UNIDAD 2'])->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-3 mb-1">
-                {{ html()->label('MUNICIPIO', 'municipio')->class('form-label mb-1') }}
-                {{ html()->select('municipio', ['' => 'SELECCIONAR', 1 => 'MUNICIPIO 1', 2 => 'MUNICIPIO 2'])->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-3 mb-1">
-                {{ html()->label('LOCALIDAD', 'localidad')->class('form-label mb-1') }}
-                {{ html()->select('localidad', ['' => 'SELECCIONAR', 1 => 'LOCALIDAD 1', 2 => 'LOCALIDAD 2'])->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-3 mb-1">
-                {{ html()->label('MODALIDAD', 'modalidad')->class('form-label mb-1') }}
-                {{ html()->select('modalidad', ['' => 'SELECCIONAR', 1 => 'EXTENCIÓN', 2 => 'CAE'])->class('form-control form-control-sm')->required() }}
-            </div>
-        </div>
-
-        <div class="row my-1">
-            <div class="form-group col-md-6 mb-1">
-                {{ html()->label('NOMBRE DEL LUGAR O ESPACIO FÍSICO', 'nombre_lugar')->class('form-label mb-1') }}
-                {{ html()->text('nombre_lugar')->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-6 mb-1">
-                {{ html()->label('CALLE Y NÚMERO', 'calle_numero')->class('form-label mb-1') }}
-                {{ html()->text('calle_numero')->class('form-control form-control-sm')->required() }}
-            </div>
-        </div>
-        <div class="row my-1">
-            <div class="form-group col-md-6 mb-1">
-                {{ html()->label('COLONIA O BARRIO', 'colonia')->class('form-label mb-1') }}
-                {{ html()->text('colonia')->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-6 mb-1">
-                {{ html()->label('CÓDIGO POSTAL', 'codigo_postal')->class('form-label mb-1') }}
-                {{ html()->text('codigo_postal')->class('form-control form-control-sm') }}
-            </div>
-        </div>
-        <div class="form-group mb-1">
-            {{ html()->label('REFERENCIAS ADICIONALES', 'referencias')->class('form-label mb-1') }}
-            {{ html()->textarea('referencias')->class('form-control form-control-sm')->rows(2) }}
-        </div>
-    </div>
-
-    <!-- Sección: Fechas y horarios -->
-    <div class="p-2 mb-2 rounded" style="border-left: 4px solid #17a2b8;">
-        <small class="text-info font-weight-bold">Fechas y horarios</small>
-        <div class="form-row mt-2">
-            <div class="form-group col-md-2">
-                {{ html()->label('FECHA INICIO', 'fecha_inicio')->class('form-label mb-1') }}
-                {{ html()->date('fecha_inicio')->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-2">
-                {{ html()->label('FECHA FIN', 'fecha_fin')->class('form-label mb-1') }}
-                {{ html()->date('fecha_fin')->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-2">
-                {{ html()->label('HORA INICIO', 'hora_inicio')->class('form-label mb-1') }}
-                {{ html()->time('hora_inicio')->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-2">
-                {{ html()->label('HORA FIN', 'hora_fin')->class('form-label mb-1') }}
-                {{ html()->time('hora_fin')->class('form-control form-control-sm')->required() }}
-            </div>
-            <div class="form-group col-md-4">
-                <div class="d-flex justify-content-center align-items-center h-100">
-                    {!! html()->button('<i class="fa fa-calendar mr-2 rounded"></i> AGENDA', 'button')->class('btn btn-agenda btn-lg w-100')->id('btn-agenda')->toHtml() !!}
+        <div class="col-md-9">
+            <!-- Sección: Información general -->
+            <div class="col-12 mb-4 step-section" id="info-general">
+                <div class="p-3 mb-2">
+                    <h5 class="fw-bold border-bottom pb-1 mb-3">Información general</h5>
+                    <div class="row my-1">
+                        <div class="form-group col-md-6 mb-1">
+                            {{ html()->label('IMPARTICIÓN', 'imparticion')->class('form-label mb-1') }}
+                            {{ html()->select('imparticion', ['' => 'SELECCIONAR', 1 => 'PRESENCIAL', 2 =>'A DISTANCIA'])->class('form-control form-control-sm')->required() }}
+                        </div>
+                        <div class="form-group col-md-6 mb-1">
+                            {{ html()->label('TIPO CURSO', 'tipo')->class('form-label mb-1') }}
+                            {{ html()->select('tipo', ['' => 'SELECCIONAR', 1 => 'CURSO', 2 => 'CERTIFICACIÓN'])->class('form-control form-control-sm')->required() }}
+                        </div>
+                    </div>
+                    <div class="form-group mb-1">
+                        {{ html()->label('CURSO', 'curso')->class('form-label mb-1') }}
+                        {{ html()->select('curso', ['' => 'SELECCIONAR', 1 => 'CURSO 1', 2 => 'CURSO 2'])->class('form-control form-control-sm')->required() }}
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-info-general')->attribute('data-next-step', 'ubicacion')->type('button')->attribute('data-seccion', 'info-general') }}
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Sección: Representante y organización -->
-    <div class="p-2 mb-2 rounded" style="border-left: 4px solid #ffc107;">
-        <small class="text-warning font-weight-bold">Representante y organización</small>
-        <div class="row mt-2">
-            <div class="form-group col-md-4">
-                {{ html()->label('ORGANIZO PUBLICO', 'organizo_publico')->class('form-label') }}
-                {{ html()->select('organizo_publico', ['' => 'SELECCIONAR', 1 => 'ORGANIZO 1', 2 => 'ORGANIZO 2'])->class('form-control')->required() }}
-            </div>
-            <div class="form-group col-md-4">
-                {{ html()->label('NOMBRE DEL REPRESENTANTE', 'nombre_representante')->class('form-label') }}
-                {{ html()->text('nombre_representante')->class('form-control')->required() }}
-            </div>
-            <div class="form-group col-md-4">
-                {{ html()->label('TELÉFONO DEL REPRESENTANTE', 'telefono_representante')->class('form-label') }}
-                {{ html()->text('telefono_representante')->class('form-control')->required() }}
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección: Opciones adicionales -->
-    <div class="p-2 mb-2 rounded" style="border-left: 4px solid #6c757d;">
-        <small class="text-secondary font-weight-bold">Opciones adicionales</small>
-        <div class="row mt-2">
-            <div class="col-md-6">
-                <div class="mb-2">
-                    {{ html()->label('MEDIO VIRTUAL', 'medio_virtual')->class('form-label') }}
-                    {{ html()->select('medio_virtual', ['' => 'SELECCIONAR', 1 => 'VIRTUAL 1', 2 => 'VIRTUAL 2'])->class('form-control')->disabled() }}
-                </div>
-                <div class="mb-2">
-                    {{ html()->label('ENLACE VIRTUAL', 'enlace_virtual')->class('form-label') }}
-                    {{ html()->text('enlace_virtual')->class('form-control')->disabled() }}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-2">
-                    {{ html()->label('CONVENIO ESPECIFICO', 'convenio_especifico')->class('form-label') }}
-                    {{ html()->text('convenio_especifico')->class('form-control')->disabled() }}
-                </div>
-                <div class="mb-2">
-                    {{ html()->label('FECHA DE CONVENIO ESPECIFICO', 'fecha_convenio')->class('form-label') }}
-                    {{ html()->text('fecha_convenio')->class('form-control')->disabled() }}
-                </div>
-                <div class="form-check mb-2">
-                    {{ html()->checkbox('cerss', false, 'true')->class('form-check-input')->id('cerss_check') }}
-                    {{ html()->label('CERSS', 'cerss_check')->class('form-check-label ms-2') }}
-                </div>
-                <div>
-                    {{ html()->select('cerss', ['' => 'SELECCIONAR', 1 => 'CERS 1', 2 => 'CERS 2'])->class('form-control')->disabled() }}
+            <!-- Sección: Ubicación -->
+            <div class="col-12 mb-4 step-section" id="ubicacion" style="display:none;">
+                <div class="p-3 mb-2">
+                    <h5 class="fw-bold border-bottom pb-1 mb-3">Ubicación</h5>
+                    <div class="row my-1">
+                        <div class="form-group col-md-6 mb-1">
+                            {{ html()->label('UNIDAD/ACCIÓN MÓVIL', 'unidad_accion_movil')->class('form-label mb-1') }}
+                            {{ html()->select('unidad_accion_movil', ['' => 'SELECCIONAR', 1 => 'UNIDAD 1', 2 => 'UNIDAD 2'])->class('form-control form-control-sm')->required() }}
+                        </div>
+                        <div class="form-group col-md-6 mb-1">
+                            {{ html()->label('MUNICIPIO', 'municipio')->class('form-label mb-1') }}
+                            {{ html()->select('municipio', ['' => 'SELECCIONAR', 1 => 'MUNICIPIO 1', 2 => 'MUNICIPIO 2'])->class('form-control form-control-sm')->required() }}
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="form-group col-md-6 mb-1">
+                            {{ html()->label('LOCALIDAD', 'localidad')->class('form-label mb-1') }}
+                            {{ html()->select('localidad', ['' => 'SELECCIONAR', 1 => 'LOCALIDAD 1', 2 => 'LOCALIDAD 2'])->class('form-control form-control-sm')->required() }}
+                        </div>
+                        <div class="form-group col-md-6 mb-1">
+                            {{ html()->label('MODALIDAD', 'modalidad')->class('form-label mb-1') }}
+                            {{ html()->select('modalidad', ['' => 'SELECCIONAR', 1 => 'EXTENCIÓN', 2 => 'CAE'])->class('form-control form-control-sm')->required() }}
+                        </div>
+                    </div>
+                    <div class="form-group mb-1">
+                        {{ html()->label('LUGAR DONDE SE IMPARTIRÁ', 'nombre_lugar')->class('form-label mb-1') }}
+                        {{ html()->text('nombre_lugar')->class('form-control form-control-sm')->required() }}
+                    </div>
+                    <div class="form-group mb-1">
+                        {{ html()->label('CALLE Y NÚMERO', 'calle_numero')->class('form-label mb-1') }}
+                        {{ html()->text('calle_numero')->class('form-control form-control-sm')->required() }}
+                    </div>
+                    <div class="form-group mb-1">
+                        {{ html()->label('COLONIA O BARRIO', 'colonia')->class('form-label mb-1') }}
+                        {{ html()->text('colonia')->class('form-control form-control-sm')->required() }}
+                    </div>
+                    <div class="form-group mb-1">
+                        {{ html()->label('CÓDIGO POSTAL', 'codigo_postal')->class('form-label mb-1') }}
+                        {{ html()->text('codigo_postal')->class('form-control form-control-sm') }}
+                    </div>
+                    <div class="form-group mb-1">
+                        {{ html()->label('REFERENCIAS ADICIONALES', 'referencias')->class('form-label mb-1') }}
+                        {{ html()->textarea('referencias')->class('form-control form-control-sm')->rows(2) }}
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-ubicacion')->attribute('data-next-step', 'representante')->type('button')->attribute('data-seccion', 'ubicacion') }}
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-12 d-flex justify-content-end">
-            {!! html()->button('<i class="fa fa-save me-2"></i> Guardar grupo y asignar alumnos', 'submit')->class('btn btn-primary btn-lg rounded')->id('btn-guardar')->toHtml() !!}
+            <!-- Sección: Representante y organización -->
+            <div class="col-12 mb-4 step-section" id="representante" style="display:none;">
+                <div class="p-3 mb-2">
+                    <h5 class="fw-bold border-bottom pb-1 mb-3">Representante y organización</h5>
+                    <div class="row mt-2">
+                        <div class="form-group col-md-12 mb-2">
+                            {{ html()->label('ORGANIZO PUBLICO', 'organizo_publico')->class('form-label mb-1') }}
+                            {{ html()->select('organizo_publico', ['' => 'SELECCIONAR', 1 => 'ORGANIZO 1', 2 => 'ORGANIZO 2'])->class('form-control form-control-sm')->required() }}
+                        </div>
+                        <div class="form-group col-md-12 mb-2">
+                            {{ html()->label('NOMBRE DEL REPRESENTANTE', 'nombre_representante')->class('form-label mb-1') }}
+                            {{ html()->text('nombre_representante')->class('form-control form-control-sm')->required() }}
+                        </div>
+                        <div class="form-group col-md-12 mb-2">
+                            {{ html()->label('TELÉFONO DEL REPRESENTANTE', 'telefono_representante')->class('form-label mb-1') }}
+                            {{ html()->text('telefono_representante')->class('form-control form-control-sm')->required() }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-representante')->attribute('data-next-step', 'opciones')->type('button')->attribute('data-seccion', 'representante') }}
+                    </div>
+                </div>
+            </div>
+            <!-- Sección: Opciones adicionales -->
+            <div class="col-12 mb-4 step-section" id="opciones" style="display:none;">
+                <div class="p-3 mb-2">
+                    <h5 class="fw-bold border-bottom pb-1 mb-3">Opciones adicionales</h5>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <div class="mb-2">
+                                {{ html()->label('MEDIO VIRTUAL', 'medio_virtual')->class('form-label mb-1') }}
+                                {{ html()->select('medio_virtual', ['' => 'SELECCIONAR', 1 => 'VIRTUAL 1', 2 => 'VIRTUAL 2'])->class('form-control form-control-sm')->disabled() }}
+                            </div>
+                            <div class="mb-2">
+                                {{ html()->label('ENLACE VIRTUAL', 'enlace_virtual')->class('form-label mb-1') }}
+                                {{ html()->text('enlace_virtual')->class('form-control form-control-sm')->disabled() }}
+                            </div>
+                            <div class="mb-2">
+                                {{ html()->label('CONVENIO ESPECIFICO', 'convenio_especifico')->class('form-label') }}
+                                {{ html()->text('convenio_especifico')->class('form-control form-control-sm')->disabled() }}
+                            </div>
+                            <div class="mb-2">
+                                {{ html()->label('FECHA DE CONVENIO ESPECIFICO', 'fecha_convenio')->class('form-label mb-1') }}
+                                {{ html()->text('fecha_convenio')->class('form-control form-control-sm')->disabled() }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-opciones')->attribute('data-next-step', 'agenda')->type('button')->attribute('data-seccion', 'opciones') }}
+                    </div>
+                </div>
+            </div>
+            <!-- Sección: Agenda -->
+            <div class="col-12 mb-4 step-section" id="agenda" style="display:none;">
+                <div class="p-3 mb-2">
+                    <h5 class="fw-bold border-bottom pb-1 mb-3">Agenda</h5>
+                    <div class="form-row mt-2">
+                        <div class="form-group col-12">
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                {!! html()->button('<i class="fa fa-calendar mr-2 rounded"></i> AGENDA', 'button')->class('btn btn-agenda btn-lg w-100')->id('btn-agenda')->toHtml() !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-4">
+                        {!! html()->button('<i class="fa fa-save me-2"></i> Guardar grupo y asignar alumnos', 'submit')->class('btn btn-primary btn-lg rounded')->id('btn-guardar')->toHtml() !!}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     {{ html()->form()->close() }}
 </div>
+@push('content_css_sign')
+<link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
+@endpush
+@push('script_sign')
+<script>
+    // Secciones del formulario de grupos
+    function inicializarNavegacionSeccionesGrupos() {
+        const secciones = [
+            'info-general',
+            'ubicacion',
+            'representante',
+            'opciones',
+            'agenda'
+        ];
+        // Simulación de estados de captura
+        const estadosCaptura = {
+            'info-general': { estado: true },
+            'ubicacion': { estado: true },
+            'representante': { estado: true },
+            'opciones': { estado: true },
+            'agenda': { estado: false }
+        };
+        const navItems = document.querySelectorAll('.step-progress-nav .list-group-item');
+        const sectionEls = secciones.map(id => document.getElementById(id));
+        function mostrarSeccionPorIndice(idx) {
+            sectionEls.forEach((seccion, i) => {
+                if (seccion) {
+                    seccion.style.display = (i === idx) ? '' : 'none';
+                }
+            });
+            navItems.forEach((item, i) => {
+                const seccionId = secciones[i];
+                item.classList.remove('active');
+                const circle = item.querySelector('.step-circle');
+                if (circle) {
+                    circle.setAttribute('data-status', 'restante');
+                }
+                if (estadosCaptura[seccionId] && estadosCaptura[seccionId].estado === true) {
+                    if (circle) circle.setAttribute('data-status', 'terminado');
+                }
+                if (i === idx) {
+                    item.classList.add('active');
+                    if (circle) circle.setAttribute('data-status', 'actual');
+                }
+            });
+        }
+        // Índice de la sección actual (primera no terminada)
+        let idxActual = secciones.findIndex(id => estadosCaptura[id] && estadosCaptura[id].estado === false);
+        if (idxActual === -1) idxActual = 0;
+        mostrarSeccionPorIndice(idxActual);
+        // Navegación solo a terminadas o actual
+        navItems.forEach((item, i) => {
+            item.addEventListener('click', function () {
+                const seccionId = secciones[i];
+                if ((estadosCaptura[seccionId] && estadosCaptura[seccionId].estado === true) || i === idxActual) {
+                    mostrarSeccionPorIndice(i);
+                }
+            });
+        });
+        // Botones Siguiente
+        document.querySelectorAll('.guardar-seccion').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const nextStep = btn.getAttribute('data-next-step');
+                const idx = secciones.indexOf(nextStep);
+                if (idx !== -1) {
+                    estadosCaptura[secciones[idx-1]].estado = true;
+                    estadosCaptura[nextStep].estado = true;
+                    mostrarSeccionPorIndice(idx);
+                }
+            });
+        });
+    }
+    document.addEventListener('DOMContentLoaded', inicializarNavegacionSeccionesGrupos);
+</script>
+@endpush
 
 @endsection
 
@@ -184,7 +279,6 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar el calendario cuando se abra el modal
         let calendar;
         $('#modalFullCalendar').on('shown.bs.modal', function() {
             if (!calendar) {

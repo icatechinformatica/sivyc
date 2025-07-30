@@ -36,7 +36,6 @@
                     <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18" required>
                     <div class="input-group-append">
                         <button class="btn btn-primary mr-2 rounded" type="submit" name="action" value="agregar">Agregar</button>
-                        <button class="btn btn-success rounded" type="submit" name="action" value="registrar">Registrar</button>
                     </div>
                 </div>
             </form>

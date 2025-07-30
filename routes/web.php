@@ -1114,9 +1114,18 @@ Route::get('/dummy/test', 'App\Http\Controllers\DummyController@index');
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'alumnos'], function () {
     Route::get('/cosulta', [AlumnoController::class, 'index'])->name('alumnos.consulta.alumno');
+    Route::post('/guardar', [AlumnoController::class, 'store'])->name('alumnos.store');
+    Route::post('/consultar_curp', [AlumnoController::class, 'consultarCurp'])->name('alumnos.consultar.curp');
+    Route::post('/obtener/datos/curp/{encodeCURP}', [AlumnoController::class, 'obtenerDatosCurp'])->name('alumnos.obtener.datos.curp');
+
+    Route::get('/registro/alumno/{encodeCURP}', [AlumnoController::class, 'verRegistroAlumno'])->name('alumnos.ver.registro.alumno');
+    Route::get('/registro/nuevo/alumno/{encodeCURP}', [AlumnoController::class, 'nuevoRegistroAlumno'])->name('alumnos.nuevo.registro.alumno');
+
+    Route::post('/guardar/seccion/alumno', [AlumnoController::class, 'guardarSeccionAlumno'])->name('alumnos.guardar.seccion.alumno');
 });
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'grupos'], function () {
+    Route::get('/inicio', [GrupoController::class, 'index'])->name('grupos.index');
     Route::get('/crear', [GrupoController::class, 'create'])->name('grupos.crear');
     Route::get('/registrar', [GrupoController::class, 'store'])->name('grupos.store');
     Route::get('/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar.alumnos');
