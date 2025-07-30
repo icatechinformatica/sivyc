@@ -78,6 +78,9 @@
         <script src="{{ asset('js/validate/numberTostring.js') }}"></script>
         <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
 
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
 
         @yield('script_content_js')
         @stack('script_sign')

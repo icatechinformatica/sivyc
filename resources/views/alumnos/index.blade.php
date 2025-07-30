@@ -140,4 +140,64 @@
 
 @push('script_sign')
 <script src="{{ asset('js/alumnos/consulta.js') }}"></script>
+<script>
+$(document).ready(function() {
+    // Inicializar validación para el formulario de CURP
+    var form = $("form[action='{{ route('alumnos.consultar.curp') }}']");
+    var notyf = new Notyf({ duration: 5000, position: { x: 'right', y: 'top' } });
+    form.validate({
+        rules: {
+            curp: {
+                required: true,
+                minlength: 18,
+                maxlength: 18
+            }
+        },
+        messages: {
+            curp: {
+                required: "Ingrese la CURP a 18 caracteres.",
+                minlength: "La CURP debe tener 18 caracteres.",
+                maxlength: "La CURP debe tener 18 caracteres."
+            }
+        },
+        errorPlacement: function(error, element) {
+            // No mostrar mensajes inline
+        },
+        invalidHandler: function(event, validator) {
+            if (validator.errorList.length) {
+                notyf.dismissAll();
+                validator.errorList.forEach(function(err) {
+                    notyf.error(err.message);
+                });
+            }
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    // Mostrar input y botón de registro al dar click en "Nuevo registro"
+    $('#btn_nuevo_registro_curp').on('click', function() {
+        $('#registro_curp').removeClass('d-none').focus();
+        $('#btn_iniciar_registro_curp, #btn_cerrar_registro_curp').removeClass('d-none');
+        $(this).addClass('d-none');
+    });
+    // Ocultar input y botones al cerrar
+    $('#btn_cerrar_registro_curp').on('click', function() {
+        $('#registro_curp').addClass('d-none').val('');
+        $('#btn_iniciar_registro_curp, #btn_cerrar_registro_curp').addClass('d-none');
+        $('#btn_nuevo_registro_curp').removeClass('d-none');
+    });
+    // Validar antes de enviar
+    $('#btn_iniciar_registro_curp').on('click', function(e) {
+        if(!form.valid()) {
+            e.preventDefault();
+            // Los mensajes ya se muestran con Notyf en invalidHandler
+        }
+    });
+});
+</script>
 @endpush

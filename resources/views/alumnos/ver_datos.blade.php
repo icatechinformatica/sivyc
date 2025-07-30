@@ -157,7 +157,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
-                            {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('validar-datos-personales')->type('button')->attribute('data-seccion', 'datos-personales') }}
+                            {{ html()->button('Guardar datos personales')->class('btn btn-primary float-end guardar-seccion rounded')->id('validar-datos-personales')->type('button')->attribute('data-seccion', 'datos-personales') }}
                         </div>
                     </div>
                 </div>
@@ -548,6 +548,13 @@
 @endsection
 
 @push('script_sign')
+<script>
+    // Variables globales para la obtención de la CURP JS
+    window.registroBladeVars = {
+        routeCurp: '{{ route("alumnos.obtener.datos.curp", ":encodecurp") }}',
+        csrfToken: '{{ csrf_token() }}'
+    };
+</script>
 <script src="{{ asset('js/alumnos/consulta.js') }}"></script>
 <script src="{{ asset('js/alumnos/registro_validaciones.js') }}"></script>
 <script src="{{ asset('js/alumnos/registro.js') }}"></script>
