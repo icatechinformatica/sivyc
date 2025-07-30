@@ -6,6 +6,18 @@
 <link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <link rel="stylesheet" href="{{ asset('css/alumnos/consulta.css') }}" />
 <link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
+<style>
+.notyf-warning {
+    background-color: #fedc2e !important;
+    color: #fff !important;
+    border: 1px solid #ffe58f !important;
+    font-size: 1.2em !important;
+    font-weight: bold;
+    text-shadow: 0 1px 2px #ad8b00;
+    padding: 18px 28px;
+    border-radius: 10px;
+}
+</style>
 @endpush
 
 @section('content')
@@ -551,6 +563,7 @@
 <script>
     // Variables globales para la obtención de la CURP JS
     window.registroBladeVars = {
+        esNuevoRegistro: {{ $esNuevoRegistro ? 'true' : 'false' }},
         routeCurp: '{{ route("alumnos.obtener.datos.curp", ":encodecurp") }}',
         csrfToken: '{{ csrf_token() }}'
     };

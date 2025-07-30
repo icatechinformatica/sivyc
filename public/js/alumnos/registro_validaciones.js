@@ -46,6 +46,14 @@ $("#form-alumno").validate({
             maxlength: "La CURP debe tener 16 caracteres.",
             alphanumeric: "La CURP solo puede contener letras y números."
         },
+        documento_curp: {
+            required: "El documento CURP es obligatorio.",
+            extension: "El archivo debe ser un PDF."
+        },
+        fecha_documento_curp: {
+            required: "La fecha del documento CURP es obligatoria.",
+            date: "Ingrese una fecha válida."
+        },
         nombre_s: "El nombre es obligatorio.",
         primer_apellido: "El primer apellido es obligatorio.",
         segundo_apellido: "El segundo apellido es obligatorio.",

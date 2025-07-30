@@ -117,11 +117,32 @@ function obtenerDatosCurp(curp) {
         },
         success: function (response) {
             if (response.success) {
+                const notyf = new Notyf({
+                    position: { x: 'right', y: 'top' },
+                    dismissible: true,
+                    duration: 0
+                });
+
+                if (response.data.error) {
+                    notyf.open(
+                        {
+                            type: 'warning', className: 'notyf-warning',
+                            message: 'Ha sucedido un error al obtener los datos de la CURP, puede proseguir con el registro manualmente.'
+                        }
+                    );
+                    return;
+                }
                 guardarDatosCurpEnCampos(response.data);
                 localStorage.setItem('curp_datos_' + curp, JSON.stringify(response.data));
                 localStorage.setItem('curp_actual', curp);
                 deshabilitarCampos();
                 $('#spinner-curp').removeClass('d-none');
+                notyf.open(
+                    {
+                        type: 'success', className: 'notyf-success',
+                        message: 'Los datos de la CURP se han obtenido correctamente.'
+                    }
+                );
             } else {
                 alert('No se encontraron datos para la CURP proporcionada.');
             }
