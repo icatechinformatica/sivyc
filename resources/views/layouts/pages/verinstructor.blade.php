@@ -1601,7 +1601,7 @@
                     <div class="pull-left">
                         <a class="btn mr-sm-4 mt-3" href="{{URL::previous()}}">REGRESAR</a>
                     </div>
-                    @if($roluser->role_id == 39)
+                    @if($roluser->role_id == 61)
                     </form>
                     <form action="{{ route('movimiento-retorno') }}" enctype="multipart/form-data" method="post">
                         @csrf
