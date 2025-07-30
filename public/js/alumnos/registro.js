@@ -189,3 +189,21 @@ if (chk && datos) {
     chk.addEventListener('change', toggleDatosEmpleo);
     toggleDatosEmpleo();
 }
+
+const grupos_vulnerables = Array.from(document.getElementsByName('grupos_vulnerables[]'));
+
+// Iniciar con 'sin_grupo_vulnerable' checked
+const sinGrupo = document.getElementById('grupo_vulnerable_sin_grupo');
+if (sinGrupo) sinGrupo.checked = true;
+
+grupos_vulnerables.forEach(grupo => {
+    grupo.addEventListener('change', function () {
+        if (this.value === 'sin_grupo_vulnerable') {
+            grupos_vulnerables.forEach(g => {
+                if (g !== this) g.checked = false;
+            });
+        } else {
+            if (sinGrupo) sinGrupo.checked = false;
+        }
+    });
+});

@@ -517,7 +517,7 @@
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">
                         {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-    {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-empleado')->attribute('data-next-step', 'empleado')->type('button')->attribute('data-seccion', 'empleado') }}
+                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-empleado')->attribute('data-next-step', 'empleado')->type('button')->attribute('data-seccion', 'empleado') }}
                     </div>
                 </div>
             </div>
