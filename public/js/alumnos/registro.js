@@ -5,21 +5,19 @@ function inicializarNavegacionSecciones() {
         'contacto',
         'grupos-vulnerables',
         'capacitacion',
-        'documentacion',
         'empleado',
         'cerss'
     ];
 
     // Simulación de obtener los datos de captura
     const estadosCaptura = {
-        'datos-personales': { estado: true, id: 1 },
-        'domicilio': { estado: true, id: 2 },
-        'contacto': { estado: true, id: 3 },
-        'grupos-vulnerables': { estado: true, id: 4 },
-        'capacitacion': { estado: true, id: 5 },
-        'documentacion': { estado: true, id: 6 },
-        'empleado': { estado: true, id: 7 },
-        'cerss': { estado: true, id: 8 }
+        'datos-personales': { estado: true },
+        'domicilio': { estado: true },
+        'contacto': { estado: true },
+        'grupos-vulnerables': { estado: true },
+        'capacitacion': { estado: true },
+        'empleado': { estado: true },
+        'cerss': { estado: true }
     };
 
     const navItems = document.querySelectorAll('.step-progress-nav .list-group-item');

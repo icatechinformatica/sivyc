@@ -24,35 +24,31 @@
                 <ul class="list-group list-group-flush step-progress-nav">
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="datos-personales">
                         <span class="step-circle mr-2" data-status="terminado">1</span>
-                        <span class="fw-bold text-black">Datos personales</span>
+                        <span class="fw-bold text-black text-uppercase">DATOS PERSONALES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="domicilio">
                         <span class="step-circle mr-2" data-status="restante">2</span>
-                        <span class="fw-bold">Domicilio</span>
+                        <span class="fw-bold text-uppercase">DOMICILIO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="contacto">
                         <span class="step-circle mr-2" data-status="restante">3</span>
-                        <span class="fw-bold">Contacto</span>
+                        <span class="fw-bold text-uppercase">CONTACTO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="grupos-vulnerables">
                         <span class="step-circle mr-2" data-status="restante">4</span>
-                        <span class="fw-bold">Grupos vulnerables</span>
+                        <span class="fw-bold text-uppercase">GRUPOS VULNERABLES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="capacitacion">
                         <span class="step-circle mr-2" data-status="restante">5</span>
-                        <span class="fw-bold">Capacitación</span>
-                    </li>
-                    <li class="list-group-item py-3 d-flex align-items-center" data-step="documentacion">
-                        <span class="step-circle mr-2" data-status="restante">6</span>
-                        <span class="fw-bold">Documentación</span>
+                        <span class="fw-bold text-uppercase">CAPACITACIÓN</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="empleado">
-                        <span class="step-circle mr-2" data-status="restante">7</span>
-                        <span class="fw-bold">Empleado</span>
+                        <span class="step-circle mr-2" data-status="restante">6</span>
+                        <span class="fw-bold text-uppercase">EMPLEADO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="cerss">
-                        <span class="step-circle mr-2" data-status="restante">8</span>
-                        <span class="fw-bold">CERSS</span>
+                        <span class="step-circle mr-2" data-status="restante">7</span>
+                        <span class="fw-bold text-uppercase">CERSS</span>
                     </li>
                 </ul>
             </nav>
@@ -72,7 +68,22 @@
                                 {!! html()->text('curp')->class('form-control')->id('curp')->value($curp)->isReadonly(true) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-3 mb-3">
+                            {!! html()->label('Adjuntar Documento CURP')->for('documento_curp') !!}
+                            <div class="input-group mb-3">
+                                {!! html()->file('documento_curp')->class('form-control')->id('documento_curp')->attribute('aria-label', 'Adjuntar Documento CURP')->attribute('aria-describedby', 'documento-curp-addon') !!}
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            {!! html()->label('Fecha de Expedición CURP')->for('fecha_documento_curp') !!}
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="fecha-curp-addon"><i class="bi bi-calendar"></i></span>
+                                </div>
+                                {!! html()->date('fecha_documento_curp')->class('form-control')->id('fecha_documento_curp')->attribute('aria-label', 'Fecha de Expedición CURP')->attribute('aria-describedby', 'fecha-curp-addon') !!}
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
                             {!! html()->label('Nombre')->for('nombre_s') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -81,7 +92,7 @@
                                 {!! html()->text('nombre_s')->class('form-control')->id('nombre_s')->attribute('aria-label', 'Nombre') !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             {!! html()->label('Primer Apellido')->for('primer_apellido') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -90,7 +101,7 @@
                                 {!! html()->text('primer_apellido')->class('form-control')->id('primer_apellido')->attribute('aria-label', 'Primer Apellido')->attribute('aria-describedby', 'primer-apellido-addon') !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             {!! html()->label('Segundo Apellido')->for('segundo_apellido') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -221,7 +232,7 @@
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
                             {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-    {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-domicilio')->attribute('data-next-step', 'domicilio')->type('button')->attribute('data-seccion', 'domicilio') }}
+                            {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-domicilio')->attribute('data-next-step', 'domicilio')->type('button')->attribute('data-seccion', 'domicilio') }}
                         </div>
                     </div>
                 </div>
@@ -271,8 +282,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="mb-3 d-flex align-items-center"
-                                style="background: #fffbe6; border: 2px solid #ffe58f; border-radius: 8px; padding: 12px;">
+                            <div class="mb-3 d-flex align-items-center" style="background: #fffbe6; border: 2px solid #ffe58f; border-radius: 8px; padding: 12px;">
                                 {!! html()->label('¿Usted autoriza dar su número de celular para alguna oportunidad en la Bolsa de Trabajo?')
                                                 ->for('autoriza_bolsa_trabajo')->class('fw-bold me-3 mb-0')->style('color: #ad8b00; font-size: 1.1em;') !!}
                                 <div class="form-check ml-2">
@@ -283,7 +293,7 @@
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
                             {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-    {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-contacto')->attribute('data-next-step', 'contacto')->type('button')->attribute('data-seccion', 'contacto') }}
+                            {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-contacto')->attribute('data-next-step', 'contacto')->type('button')->attribute('data-seccion', 'contacto') }}
                         </div>
                     </div>
                 </div>
@@ -364,7 +374,7 @@
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
                             {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-    {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-grupos-vulnerables')->attribute('data-next-step', 'grupos-vulnerables')->type('button')->attribute('data-seccion', 'grupos-vulnerables') }}
+                            {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-grupos-vulnerables')->attribute('data-next-step', 'grupos-vulnerables')->type('button')->attribute('data-seccion', 'grupos-vulnerables') }}
                         </div>
                     </div>
                 </div>
@@ -376,7 +386,7 @@
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-info-circle mr-2"></i>DE LA CAPACITACIÓN
                     </h5>
                     <div class="row">
-                        <div class="col-md-9 mb-3">
+                        <div class="col-md-3 mb-3">
                             {!! html()->label('ULTIMO GRADO DE ESTUDIOS')->for('ultimo_grado_estudios') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -386,6 +396,28 @@
                                             ->class('form-control')->id('ultimo_grado_estudios')
                                             ->attribute('aria-label', 'Ultimo Grado de Estudios')
                                             ->attribute('aria-describedby', 'grado-estudios-addon') !!}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {!! html()->label('DOCUMENTO DEL ULTIMO GRADO DE ESTUDIOS')->for('documento_ultimo_grado') !!}
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-file-earmark-text"></i></span>
+                                </div>
+                                {!! html()->file('documento_ultimo_grado')->class('form-control')->id('documento_ultimo_grado')
+                                            ->attribute('aria-label', 'Documento del Ultimo Grado de Estudios')
+                                            ->attribute('aria-describedby', 'documento-grado-addon') !!}
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            {!! html()->label('FECHA DEL DOCUMENTO')->for('fecha_documento_ultimo_grado') !!}
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="fecha-documento-addon"><i class="bi bi-calendar"></i></span>
+                                </div>
+                                {!! html()->date('fecha_documento_ultimo_grado')->class('form-control')->id('fecha_documento_ultimo_grado')
+                                            ->attribute('aria-label', 'Fecha del Documento')
+                                            ->attribute('aria-describedby', 'fecha-documento-addon') !!}
                             </div>
                         </div>
                         <div class="col-md-9 mb-3">
@@ -426,65 +458,8 @@
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
                             {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-    {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-capacitacion')->attribute('data-next-step', 'capacitacion')->type('button')->attribute('data-seccion', 'capacitacion') }}
+                            {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-capacitacion')->attribute('data-next-step', 'capacitacion')->type('button')->attribute('data-seccion', 'capacitacion') }}
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- * Sección: Documentación Requerida  --}}
-            <div class="col-12 mb-4 step-section" id="documentacion">
-                <div class="p-3 mb-2">
-                    <h5 class="fw-bold pb-1 mb-3"><i class="bi bi-file-earmark-text"></i> Documentación Requerida</h5>
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead class="">
-                                <tr>
-                                    <th>Documento</th>
-                                    <th>Fecha de expedición</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="p-4">
-                                        <div class="form-check">
-                                            {!! html()->checkbox('documento_curp')->id('documento_curp') !!}
-                                            {!! html()->label('CURP')->for('documento_curp')->class('form-check-label ml-2') !!}
-                                        </div>
-                                    </td>
-                                    <td class="p-4"> {!! html()->date('fecha_documento_curp')->class('form-control')->id('fecha_documento_curp') !!} </td>
-                                </tr>
-                                <tr>
-                                    <td class="p-4">
-                                        <div class="form-check">
-                                            {!! html()->checkbox('documento_ultimo_grado')->id('documento_ultimo_grado') !!}
-                                            {!! html()->label('Ultimo Grado de estudios')->for('documento_ultimo_grado')->class('form-check-label ml-2') !!}
-                                        </div>
-                                    </td>
-                                    <td class="p-4"> {!! html()->date('fecha_documento_ultimo_grado')->class('form-control')->id('fecha_documento_ultimo_grado') !!} </td>
-                                </tr>
-                                <tr>
-                                    <td class="p-4">
-                                        <div class="form-check">
-                                            {!! html()->checkbox('documento_ficha_cerss')->id('documento_ficha_cerss') !!}
-                                            {!! html()->label('Ficha CERSS')->for('documento_ficha_cerss')->class('form-check-label ml-2') !!}
-                                        </div>
-                                    </td>
-                                    <td class="p-4">
-                                        {!! html()->date('fecha_documento_ficha_cerss')->class('form-control')->id('fecha_documento_ficha_cerss') !!}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mt-3">
-                        <label for="archivo_requisito" class="form-label">Adjuntar un solo PDF los requisitos en el orden especificado:</label>
-                        <input type="file" name="archivo_requisito" id="archivo_requisito" class="form-control" accept=".pdf">
-                        <small class="text-muted">Solo se permite subir un archivo PDF.</small>
-                    </div>
-                    <div class="col-md-12 d-flex justify-content-end">
-                        {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-    {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-documentacion')->attribute('data-next-step', 'documentacion')->type('button')->attribute('data-seccion', 'documentacion') }}
                     </div>
                 </div>
             </div>
@@ -531,9 +506,20 @@
                         {!! html()->label('Si el aspirante pertenece a algún CERSS, marcar esta casilla.')->for('aspirante_cerss')->class('form-check-label ml-2') !!}
                     </div>
                     <div class="row mt-3" id="datos-cerss">
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-6 mb-3">
                             {!! html()->label('NUMERO DE EXPEDIENTE')->for('numero_expediente') !!}
                             {!! html()->text('numero_expediente')->class('form-control')->id('numero_expediente')->placeholder('Número de expediente') !!}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {!! html()->label('FICHA CERSS')->for('documento_ficha_cerss') !!}
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-file-earmark-text"></i></span>
+                                </div>
+                                {!! html()->file('documento_ficha_cerss')->class('form-control')->id('documento_ficha_cerss')->class('py-0')
+                                        ->attribute('aria-label', 'Documento de la Ficha CERSS')
+                                        ->attribute('aria-describedby', 'documento-grado-addon') !!}
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">

@@ -6,6 +6,14 @@ $("#form-alumno").validate({
             maxlength: 18,
             alphanumeric: true
         },
+        documento_curp: {
+            required: true,
+            extension: "pdf"
+        },
+        fecha_documento_curp: {
+            required: true,
+            date: true
+        },
         nombre_s: {
             required: true
         },
