@@ -189,7 +189,6 @@ return [
         App\Providers\UsuarioServiceProvider::class,
         App\Providers\PreinscripcionServiceProvider::class,
         App\Providers\AlumnoServiceProvider::class,
-        App\Providers\AlumnoTempServiceProvider::class,
     ],
 
     /*

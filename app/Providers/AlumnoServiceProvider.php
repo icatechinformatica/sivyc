@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Interfaces\AlumnosInterface;
 use App\Repositories\AlumnosRepository;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\AlumnoSeccionesRepository;
+use App\Repositories\AlumnoSeccionesRepositoryInterface;
 
 class AlumnoServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,7 @@ class AlumnoServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(AlumnosInterface::class, AlumnosRepository::class);
+        $this->app->bind(AlumnoSeccionesRepositoryInterface::class, AlumnoSeccionesRepository::class);
     }
 
     /**

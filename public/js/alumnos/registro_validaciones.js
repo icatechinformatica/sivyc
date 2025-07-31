@@ -7,7 +7,9 @@ $("#form-alumno").validate({
             alphanumeric: true
         },
         documento_curp: {
-            required: true,
+            required: function() {
+                return esNuevoRegistro === true;
+            },
             extension: "pdf"
         },
         fecha_documento_curp: {
@@ -24,15 +26,15 @@ $("#form-alumno").validate({
             required: true
         },
         entidad_de_nacimiento: {
-            required: true
+            required: false
         },
         fecha_de_nacimiento: {
             required: true
         },
-        sexo: {
+        sexo_input: {
             required: true
         },
-        nacionalidad: {
+        nacionalidad_input: {
             required: true
         },
         estado_civil: {
@@ -59,8 +61,8 @@ $("#form-alumno").validate({
         segundo_apellido: "El segundo apellido es obligatorio.",
         entidad_de_nacimiento: "La entidad de nacimiento es obligatoria.",
         fecha_de_nacimiento: "La fecha de nacimiento es obligatoria.",
-        sexo: "El sexo es obligatorio.",
-        nacionalidad: "La nacionalidad es obligatoria.",
+        sexo_input: "El sexo es obligatorio.",
+        nacionalidad_input: "La nacionalidad es obligatoria.",
         estado_civil: "El estado civil es obligatorio."
     },
     errorElement: 'div',

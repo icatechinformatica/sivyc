@@ -21,6 +21,10 @@
 @endpush
 
 @section('content')
+<input type="hidden" id="esNuevoRegistro" value="{{ $esNuevoRegistro ? 'true' : 'false' }}" />
+@php
+    $documentos = $esNuevoRegistro ? [] : json_decode($datos->archivos_documentos ?? '[]', true);
+@endphp
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-12">
         <span>{{ $esNuevoRegistro ? 'Registrar nuevo alumno' : 'Editar alumno' }}</span>
@@ -29,6 +33,7 @@
 
 <div class="card card-body" id="formulario-alumno">
     {!! html()->form('POST', route('alumnos.store'))->id('form-alumno')->open() !!}
+    {{ html()->hidden('id_usuario_captura', auth()->user()->id) }}
     <div class="row">
         <!-- Step Progress y contenido principal -->
         <div class="col-md-3 d-none d-md-block">
@@ -77,14 +82,25 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="curp-addon"><i class="bi bi-credit-card-2-front"></i></span>
                                 </div>
-                                {!! html()->text('curp')->class('form-control')->id('curp')->value($curp)->isReadonly(true) !!}
+                                {!! html()->text('curp')->class('form-control')->id('curp')->isReadonly(true)
+                                        ->value($esNuevoRegistro ? $curp : $datos->curp) !!}
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
                             {!! html()->label('Adjuntar Documento CURP')->for('documento_curp') !!}
                             <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="documento-curp-addon"><i class="bi bi-file-earmark-text"></i></span>
+                                </div>
                                 {!! html()->file('documento_curp')->class('form-control')->id('documento_curp')->attribute('aria-label', 'Adjuntar Documento CURP')->attribute('aria-describedby', 'documento-curp-addon') !!}
                             </div>
+
+                            {{-- Input para mostrar el documento CURP existente --}}
+                            @if(!empty($documentos['curp']))
+                                <small class="form-text text-muted mt-1">
+                                    <a href="{{ asset('storage/' . $documentos['curp']['ruta'] ) }}" target="_blank" class="text-primary text-decoration-underline">Ver documento CURP</a>
+                                </small>
+                            @endif
                         </div>
                         <div class="col-md-3 mb-3">
                             {!! html()->label('Fecha de Expedición CURP')->for('fecha_documento_curp') !!}
@@ -92,7 +108,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="fecha-curp-addon"><i class="bi bi-calendar"></i></span>
                                 </div>
-                                {!! html()->date('fecha_documento_curp')->class('form-control')->id('fecha_documento_curp')->attribute('aria-label', 'Fecha de Expedición CURP')->attribute('aria-describedby', 'fecha-curp-addon') !!}
+                                {!! html()->date('fecha_documento_curp')->class('form-control')->id('fecha_documento_curp')->attribute('aria-label', 'Fecha de Expedición CURP')->attribute('aria-describedby', 'fecha-curp-addon')
+                                        ->value(!$esNuevoRegistro && !empty($documentos['curp']['fecha_expedicion']) ? date('Y-m-d', strtotime($documentos['curp']['fecha_expedicion'])) : '') !!}
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -101,7 +118,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nombre-addon"><i class="bi bi-person"></i></span>
                                 </div>
-                                {!! html()->text('nombre_s')->class('form-control')->id('nombre_s')->attribute('aria-label', 'Nombre') !!}
+                                {!! html()->text('nombre_s')->class('form-control')->id('nombre_s')->attribute('aria-label', 'Nombre')
+                                    ->value(!$esNuevoRegistro ? $datos->nombre : '') !!}
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -110,7 +128,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="primer-apellido-addon"><i class="bi bi-person-lines-fill"></i></span>
                                 </div>
-                                {!! html()->text('primer_apellido')->class('form-control')->id('primer_apellido')->attribute('aria-label', 'Primer Apellido')->attribute('aria-describedby', 'primer-apellido-addon') !!}
+                                {!! html()->text('primer_apellido')->class('form-control')->id('primer_apellido')->attribute('aria-label', 'Primer Apellido')->attribute('aria-describedby', 'primer-apellido-addon') 
+                                        ->value(!$esNuevoRegistro ? $datos->apellido_paterno : '') !!}
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -119,7 +138,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="segundo-apellido-addon"><i class="bi bi-person-lines-fill"></i></span>
                                 </div>
-                                {!! html()->text('segundo_apellido')->class('form-control')->id('segundo_apellido')->attribute('aria-label', 'Segundo Apellido')->attribute('aria-describedby', 'segundo-apellido-addon') !!}
+                                {!! html()->text('segundo_apellido')->class('form-control')->id('segundo_apellido')->attribute('aria-label', 'Segundo Apellido')->attribute('aria-describedby', 'segundo-apellido-addon') 
+                                ->value(!$esNuevoRegistro ? $datos->apellido_materno : '') !!}
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
@@ -129,6 +149,7 @@
                                     <span class="input-group-text" id="entidad-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
                                 {!! html()->text('entidad_de_nacimiento')->class('form-control')->id('entidad_de_nacimiento')->attribute('aria-label', 'Entidad de Nacimiento')->attribute('aria-describedby', 'entidad-addon') !!}
+                                {{-- ! PENDIENTE --}}
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
@@ -137,7 +158,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="fecha-addon"><i class="bi bi-calendar-date"></i></span>
                                 </div>
-                                {!! html()->text('fecha_de_nacimiento')->class('form-control')->id('fecha_de_nacimiento')->attribute('aria-label', 'Fecha de Nacimiento')->attribute('aria-describedby', 'fecha-addon') !!}
+                                {!! html()->text('fecha_de_nacimiento')->class('form-control')->id('fecha_de_nacimiento')->attribute('aria-label', 'Fecha de Nacimiento')->attribute('aria-describedby', 'fecha-addon') 
+                                    ->value(!$esNuevoRegistro ? $datos->fecha_nacimiento : '') !!}
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
@@ -146,7 +168,11 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="sexo-addon"><i class="bi bi-gender-ambiguous"></i></span>
                                 </div>
-                                {!! html()->text('sexo')->class('form-control')->id('sexo')->attribute('aria-label', 'Sexo')->attribute('aria-describedby', 'sexo-addon') !!}
+
+                                {!! html()->select('sexo_select', [null => 'SELECCIONE EL SEXO'] + $sexos->pluck('sexo', 'id')->toArray())->class('form-control')->id('sexo_select')->attribute('aria-label', 'Sexo')->attribute('aria-describedby', 'sexo-addon') 
+                                            ->value(!$esNuevoRegistro ? $datos->sexo->id : '') !!}
+                                {!! html()->text('sexo_input')->id('sexo_input')->class('form-control')
+                                    ->value(!$esNuevoRegistro ? $datos->sexo->sexo : '') !!}
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
@@ -155,7 +181,10 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nacionalidad-addon"><i class="bi bi-flag"></i></span>
                                 </div>
-                                {!! html()->text('nacionalidad')->class('form-control')->id('nacionalidad')->attribute('aria-label', 'Nacionalidad')->attribute('aria-describedby', 'nacionalidad-addon') !!}
+                                {!! html()->select('nacionalidad_select', [null => 'SELECCIONE LA NACIONALIDAD'] + $nacionalidades->pluck('nacionalidad', 'id_nacionalidad')->toArray())->class('form-control')->id('nacionalidad_select')->attribute('aria-label', 'Nacionalidad')->attribute('aria-describedby', 'nacionalidad-addon') 
+                                            ->value(!$esNuevoRegistro ? $datos->nacionalidad->id_nacionalidad : '') !!}
+                                {!! html()->text('nacionalidad_input')->id('nacionalidad_input')->class('form-control')
+                                    ->value(!$esNuevoRegistro ? $datos->nacionalidad->nacionalidad : '') !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -164,12 +193,17 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="estado-civil-addon"><i class="bi bi-people"></i></span>
                                 </div>
-                                {!! html()->select('estado_civil',
-                                [null => 'SELECCIONA ESTADO CIVL', 'soltero'=>'Soltero','casado'=>'Casado','otro'=>'Otro'])->class('form-control')->id('estado_civil')->attribute('aria-label', 'Estado Civil')->attribute('aria-describedby', 'estado-civil-addon') !!}
+                                {!! html()->select('estado_civil_select', ['' => 'Seleccionar'] + $estadosCiviles->pluck('nombre', 'id')->toArray())
+                                    ->class('form-control')
+                                    ->id('estado_civil')
+                                    ->attribute('aria-label', 'Estado Civil')
+                                    ->attribute('aria-describedby', 'estado-civil-addon')
+                                    ->attribute('required', true) 
+                                    ->value(!$esNuevoRegistro ? $datos->estadoCivil->id : '') !!}
                             </div>
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
-                            {{ html()->button('Guardar datos personales')->class('btn btn-primary float-end guardar-seccion rounded')->id('validar-datos-personales')->type('button')->attribute('data-seccion', 'datos-personales') }}
+                            {{ html()->button('Guardar datos personales')->class('btn btn-primary float-end guardar-seccion rounded')->id('validar-datos-personales')->type('button') }}
                         </div>
                     </div>
                 </div>
@@ -579,15 +613,5 @@
     };
 
     inicializarNavegacionSecciones();
-
-    // Evento para botones de guardar sección
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.guardar-seccion').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                const seccion = btn.getAttribute('data-seccion');
-                console.log('Guardando seccion ' + seccion);
-            });
-        });
-    });
 </script>
 @endpush

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Alumnopre;
+use App\Models\Alumno;
 use App\Interfaces\AlumnosInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -10,7 +10,7 @@ class AlumnosRepository implements AlumnosInterface
 {
     protected $alumno;
 
-    public function __construct(Alumnopre $alumno)
+    public function __construct(Alumno $alumno)
     {
         $this->alumno = $alumno;
     }
@@ -46,8 +46,11 @@ class AlumnosRepository implements AlumnosInterface
 
     public function buscarPorCURP($curp)
     {
-        // return $this->alumno->where('curp', $curp)->first();
-        return DB::table('tbl_alumnos')->where('curp', $curp)->first();
+        $alumno = $this->alumno->where('curp', $curp)->first();
+        if ($alumno) {
+            $alumno->load('sexo', 'nacionalidad', 'estadoCivil');
+        }
+        return $alumno;
     }
 
     public function crear(array $data)

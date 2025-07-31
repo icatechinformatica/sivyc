@@ -41,7 +41,7 @@ return new class extends Migration
             $table->string('medio_entero', 100)->nullable();
             $table->string('medio_confirmacion', 100)->nullable();
 
-            $table->json('archivos_documentos');
+            $table->json('archivos_documentos')->nullable();
             $table->json('cerss')->nullable();
             $table->json('vulnerable')->nullable();
             $table->json('datos_alfa')->nullable();

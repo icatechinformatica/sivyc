@@ -66,5 +66,20 @@ class Alumno extends Model
         return $this->belongsToMany(GrupoVulnerable::class, 'tbl_alumno_grupo_vulnerable
         ', 'alumno_id', 'grupo_vulnerable_id');
     }
+
+    public function nacionalidad()
+    {
+        return $this->belongsTo(Nacionalidad::class, 'id_nacionalidad');
+    }
+
+    public function sexo()
+    {
+        return $this->belongsTo(Sexo::class, 'id_sexo');
+    }
+
+    public function estadoCivil()
+    {
+        return $this->belongsTo(estado_civil::class, 'id_estado_civil');
+    }
     
 }

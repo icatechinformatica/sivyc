@@ -67,8 +67,8 @@ function inicializarNavegacionSecciones() {
 }
 
 const curp = $('#curp').val();
-
-if (curp) {
+const esNuevoRegistro = $('#esNuevoRegistro').val() === 'true' ? true : false;
+if (curp && esNuevoRegistro) {
     const datosGuardados = localStorage.getItem('curp_datos_' + curp);
     const curpActual = localStorage.getItem('curp_actual');
     if (datosGuardados && curpActual === curp) {
@@ -83,6 +83,8 @@ if (curp) {
     } else {
         obtenerDatosCurp(curp);
     }
+} else if (!esNuevoRegistro) {
+    deshabilitarCampos();
 }
 
 function guardarDatosCurpEnCampos(data) {
@@ -91,8 +93,13 @@ function guardarDatosCurpEnCampos(data) {
     $('#segundo_apellido').val(data.segundo_apellido);
     $('#entidad_de_nacimiento').val(data.entidad_de_nacimiento);
     $('#fecha_de_nacimiento').val(data.fecha_de_nacimiento);
-    $('#sexo').val(data.sexo);
-    $('#nacionalidad').val(data.nacionalidad);
+    
+    // * Sección de selects
+    $('#sexo_select').val(data.sexo === 'MUJER' ? '2' : data.sexo === 'HOMBRE' ? '1' : '');
+    $('#sexo_input').val(data.sexo === 'MUJER' ? 'FEMENINO' : data.sexo === 'HOMBRE' ? 'MASCULINO' : '');
+
+    $('#nacionalidad_select').val(data.nacionalidad === 'MEXICO' ? '1' : '');
+    $('#nacionalidad_input').val(data.nacionalidad === 'MEXICO' ? 'MEXICANA' : '');
 }
 
 function deshabilitarCampos() {
@@ -101,8 +108,15 @@ function deshabilitarCampos() {
     $('#segundo_apellido').prop('readonly', true);
     $('#entidad_de_nacimiento').prop('readonly', true);
     $('#fecha_de_nacimiento').prop('readonly', true);
-    $('#sexo').prop('readonly', true);
-    $('#nacionalidad').prop('readonly', true);
+    
+    // * Sección de selects
+    $('#sexo_select').prop('disabled', true);
+    $('#sexo_select').hide();
+    $('#sexo_input').prop('readonly', true);
+
+    $('#nacionalidad_select').prop('disabled', true);
+    $('#nacionalidad_select').hide();
+    $('#nacionalidad_input').prop('readonly', true);
 }
 
 
@@ -160,37 +174,54 @@ function obtenerDatosCurp(curp) {
 const datos_personales = $('#validar-datos-personales'); // * Btn para validar datos personales
 datos_personales.on('click', function () {
     if ($('#form-alumno').valid()) {
-        const datos_personales = {
-            finalizado: true,
-            datos: {
-                curp: $('#curp').val(),
-                nombre_s: $('#nombre_s').val(),
-                primer_apellido: $('#primer_apellido').val(),
-                segundo_apellido: $('#segundo_apellido').val(),
-                entidad_de_nacimiento: $('#entidad_de_nacimiento').val(),
-                fecha_de_nacimiento: $('#fecha_de_nacimiento').val(),
-                sexo: $('#sexo').val(),
-                nacionalidad: $('#nacionalidad').val(),
-                estado_civil: $('#estado_civil').val()
-            }
-        };
-        const datosJson = JSON.stringify(datos_personales);
-        guardarSeccion('datos_personales', datosJson);
+        const id_usuario_captura = $('#id_usuario_captura').val();
+        const formData = new FormData();
+        formData.append('seccion', 'datos_personales');
+        formData.append('nombre', $('#nombre_s').val());
+        formData.append('apellido_paterno', $('#primer_apellido').val());
+        formData.append('curp', $('#curp').val());
+        formData.append('apellido_materno', $('#segundo_apellido').val());
+        formData.append('fecha_de_nacimiento', $('#fecha_de_nacimiento').val());
+        formData.append('entidad_de_nacimiento', $('#entidad_de_nacimiento').val());
+        formData.append('id_sexo', $('#sexo_select').val());
+        formData.append('id_nacionalidad', $('#nacionalidad_select').val());
+        formData.append('id_estado_civil', $('#estado_civil').val());
+        formData.append('id_funcionario_realizo', id_usuario_captura);
+        // Adjuntar archivo si existe
+        const fileInput = $('#documento_curp')[0];
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append('documento_curp', fileInput.files[0]);
+        }
+        formData.append('fecha_documento_curp', $('#fecha_documento_curp').val());
+
+        formData.append('_token', registroBladeVars.csrfToken);
+        guardarSeccion(formData);
     }
 });
 
-// ! Ajax para guardar los datos del formulario
-const guardarSeccion = (seccion, datos) => {
+// ! Ajax para guardar los datos del formulario (ahora soporta archivos)
+const guardarSeccion = (formData) => {
     $.ajax({
         url: '/alumnos/guardar/seccion/alumno',
         method: 'POST',
-        data: {
-            seccion: seccion,
-            datos: datos,
-            _token: registroBladeVars.csrfToken
-        },
+        data: formData,
+        processData: false,
+        contentType: false,
         success: function (response) {
             console.log(response);
+            if(response.success) {
+                const notyf = new Notyf({
+                    position: { x: 'right', y: 'top' },
+                    dismissible: true,
+                    duration: 0
+                });
+                notyf.open(
+                    {
+                        type: 'success', className: 'notyf-success',
+                        message: 'Sección guardada correctamente.'
+                    }
+                );
+            }
         },
         error: function (error) {
             console.error('Error al guardar la sección:', error);
