@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Alumno;
 
+use App\Models\pais;
 use App\Models\Sexo;
-use App\Services\Alumno\GuardarSeccionService;
+use App\Models\Estado;
+use App\Models\Municipio;
+use App\Models\GradoEstudio;
 use App\Models\Nacionalidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -11,6 +14,8 @@ use App\Http\Controllers\Controller;
 use App\Services\ConsultaDatosCURPService;
 use App\Models\estado_civil as EstadoCivil;
 use App\Services\Alumno\AlumnoConsultaService;
+use App\Services\Alumno\GuardarSeccionService;
+use App\Services\Estatus\ActualizarEstatusService;
 
 class AlumnoController extends Controller
 {
@@ -18,12 +23,14 @@ class AlumnoController extends Controller
     protected $consultaDatosCURPService;
     protected $registroTempService;
     protected $guardarSeccionService;
+    protected $actualizarEstatusService;
 
-    public function __construct(AlumnoConsultaService $alumnoConsultaService, ConsultaDatosCURPService $consultaDatosCURPService, GuardarSeccionService $guardarSeccionService)
+    public function __construct(AlumnoConsultaService $alumnoConsultaService, ConsultaDatosCURPService $consultaDatosCURPService, GuardarSeccionService $guardarSeccionService, ActualizarEstatusService $actualizarEstatusService)
     {
         $this->alumnoConsultaService = $alumnoConsultaService;
         $this->consultaDatosCURPService = $consultaDatosCURPService;
         $this->guardarSeccionService = $guardarSeccionService;
+        $this->actualizarEstatusService = $actualizarEstatusService;
     }
 
     public function index(Request $request)
@@ -59,7 +66,12 @@ class AlumnoController extends Controller
         $sexos = Sexo::all();
         $nacionalidades = Nacionalidad::all();
         $estadosCiviles = EstadoCivil::all();
-        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles'));
+        $paises = pais::all();
+        $estados = Estado::all();
+        $municipios = Municipio::all();
+        $gradoEstudios = GradoEstudio::all();
+
+        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios'));
     }
 
     public function nuevoRegistroAlumno($encodeCURP)
@@ -68,9 +80,13 @@ class AlumnoController extends Controller
         $sexos = Sexo::all();
         $nacionalidades = Nacionalidad::all();
         $estadosCiviles = EstadoCivil::all();
+        $paises = pais::all();
+        $estados = Estado::all();
+        $municipios = Municipio::all();
+        $gradoEstudios = GradoEstudio::all();
 
         $esNuevoRegistro = true;
-        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'sexos', 'nacionalidades', 'estadosCiviles'));
+        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios'));
     }
 
     // * Función que sera llamada desde la vista para obtener los datos del CURP
@@ -97,8 +113,10 @@ class AlumnoController extends Controller
             $seccion = $request->input('seccion');
             $datos = $request->except(['_token', 'documento_curp']);
             $archivoCurp = $request->file('documento_curp');
-            $resultado = $this->guardarSeccionService->obtenerSeccion($seccion, $datos, $archivoCurp);
-            if ($resultado) {
+            $alumno = $this->guardarSeccionService->obtenerSeccion($seccion, $datos, $archivoCurp);
+            if ($alumno) {
+                $alumnoId = $alumno->id;
+                $this->actualizarEstatusService->actualizarAlumnoEstatus($alumnoId, 1, $seccion); // * 1 Es En Captura
                 return response()->json(['success' => true, 'message' => 'Datos del alumno guardados correctamente.']);
             } else {
                 return response()->json(['success' => false, 'error' => 'No se pudo guardar los datos del alumno.'], 500);

@@ -92,7 +92,17 @@ class GuardarSeccionService
     }
     private function guardarDomicilio($datos)
     {
-        // Lógica para guardar el domicilio
+        $curp = strtoupper($datos['curp']);
+        $domicilio = [
+            'curp' => $curp,
+            'id_pais' => $datos['id_pais'] ?? null,
+            'id_estado' => $datos['id_estado'] ?? null,
+            'id_municipio' => $datos['id_municipio'] ?? null,
+            'clave_localidad' => $datos['clave_localidad'] ?? null,
+            'cp' => $datos['cp'] ?? null,
+            'id_funcionario_realizo' => $datos['id_funcionario_realizo'] ?? null
+        ];
+        return $this->alumnoRepository->actualizarOrCrearPorCURP($domicilio);
     }
     private function guardarContacto($datos)
     {

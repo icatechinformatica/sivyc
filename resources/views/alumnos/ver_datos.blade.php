@@ -32,39 +32,38 @@
 </div>
 
 <div class="card card-body" id="formulario-alumno">
-    {!! html()->form('POST', route('alumnos.store'))->id('form-alumno')->open() !!}
-    {{ html()->hidden('id_usuario_captura', auth()->user()->id) }}
+    {{-- Formulario de Datos Personales --}}
     <div class="row">
         <!-- Step Progress y contenido principal -->
         <div class="col-md-3 d-none d-md-block">
             <nav id="step-progress" class="nav-sticky">
                 <ul class="list-group list-group-flush step-progress-nav">
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="datos-personales">
-                        <span class="step-circle mr-2" data-status="terminado">1</span>
+                        <span class="step-circle mr-2">1</span>
                         <span class="fw-bold text-black text-uppercase">DATOS PERSONALES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="domicilio">
-                        <span class="step-circle mr-2" data-status="restante">2</span>
+                        <span class="step-circle mr-2">2</span>
                         <span class="fw-bold text-uppercase">DOMICILIO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="contacto">
-                        <span class="step-circle mr-2" data-status="restante">3</span>
+                        <span class="step-circle mr-2">3</span>
                         <span class="fw-bold text-uppercase">CONTACTO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="grupos-vulnerables">
-                        <span class="step-circle mr-2" data-status="restante">4</span>
+                        <span class="step-circle mr-2">4</span>
                         <span class="fw-bold text-uppercase">GRUPOS VULNERABLES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="capacitacion">
-                        <span class="step-circle mr-2" data-status="restante">5</span>
+                        <span class="step-circle mr-2">5</span>
                         <span class="fw-bold text-uppercase">CAPACITACIÓN</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="empleado">
-                        <span class="step-circle mr-2" data-status="restante">6</span>
+                        <span class="step-circle mr-2">6</span>
                         <span class="fw-bold text-uppercase">EMPLEADO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="cerss">
-                        <span class="step-circle mr-2" data-status="restante">7</span>
+                        <span class="step-circle mr-2">7</span>
                         <span class="fw-bold text-uppercase">CERSS</span>
                     </li>
                 </ul>
@@ -72,6 +71,8 @@
         </div>
         <div class="col-md-9">
             {{--  * Sección: Datos personales  --}}
+            {!! html()->form()->id('form-datos-personales')->open() !!}
+            {{ html()->hidden('id_usuario_captura', auth()->user()->id) }}
             <div class="col-12 mb-4 step-section" id="datos-personales">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-person-vcard mr-2"></i>Datos personales</h5>
@@ -195,7 +196,7 @@
                                 </div>
                                 {!! html()->select('estado_civil_select', ['' => 'Seleccionar'] + $estadosCiviles->pluck('nombre', 'id')->toArray())
                                     ->class('form-control')
-                                    ->id('estado_civil')
+                                    ->id('estado_civil_select')
                                     ->attribute('aria-label', 'Estado Civil')
                                     ->attribute('aria-describedby', 'estado-civil-addon')
                                     ->attribute('required', true) 
@@ -208,7 +209,10 @@
                     </div>
                 </div>
             </div>
-            {{-- * Sección: Domicilio  --}}
+            {!! html()->form()->close() !!}
+
+            {{-- * Formulario de Domicilio --}}
+            {!! html()->form()->id('form-domicilio')->open() !!}
             <div class="col-12 mb-4 step-section" id="domicilio">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-house-door mr-2"></i>Domicilio</h5>
@@ -219,7 +223,10 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="pais-addon"><i class="bi bi-globe2"></i></span>
                                 </div>
-                                {!! html()->text('pais')->class('form-control')->id('pais')->attribute('aria-label', 'País')->attribute('aria-describedby', 'pais-addon') !!}
+                                {!! html()->select('pais_select', [null => 'SELECCIONE EL PAÍS'] + $paises->pluck('nombre', 'id')->toArray())
+                                    ->class('form-control')
+                                    ->id('pais_select')
+                                    ->value(!$esNuevoRegistro ? $datos->pais->id : '') !!}
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -228,7 +235,12 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="estado-addon"><i class="bi bi-map"></i></span>
                                 </div>
-                                {!! html()->text('estado')->class('form-control')->id('estado')->attribute('aria-label', 'Estado')->attribute('aria-describedby', 'estado-addon') !!}
+                                {!! html()->select('estado_select', [null => 'SELECCIONE EL ESTADO'] + $estados->pluck('nombre', 'id')->toArray())
+                                    ->class('form-control')
+                                    ->id('estado_select')
+                                    ->attribute('aria-label', 'Estado')
+                                    ->attribute('aria-describedby', 'estado-addon')
+                                    ->value(!$esNuevoRegistro ? $datos->estado->id : '') !!}
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -237,7 +249,12 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="municipio-addon"><i class="bi bi-building"></i></span>
                                 </div>
-                                {!! html()->text('municipio')->class('form-control')->id('municipio')->attribute('aria-label', 'Municipio')->attribute('aria-describedby', 'municipio-addon') !!}
+                                {!! html()->select('municipio_select', [null => 'SELECCIONE EL MUNICIPIO'] + $municipios->pluck('muni', 'id')->toArray())
+                                    ->class('form-control')
+                                    ->id('municipio_select')
+                                    ->attribute('aria-label', 'Municipio')
+                                    ->attribute('aria-describedby', 'municipio-addon')
+                                    ->value(!$esNuevoRegistro ? $datos->municipio->id : '') !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -277,14 +294,15 @@
                             </div>
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
-                            {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-                            {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-domicilio')->attribute('data-next-step', 'domicilio')->type('button')->attribute('data-seccion', 'domicilio') }}
+                            {{ html()->button('Guardar domicilio')->class('btn btn-primary float-end')->id('validar-domicilio')->type('button') }}
                         </div>
                     </div>
                 </div>
             </div>
+            {!! html()->form()->close() !!}
 
-            {{-- * Sección: Contacto  --}}
+            {{-- * Formulario de Contacto --}}
+            {!! html()->form()->id('form-contacto')->open() !!}
             <div class="col-12 mb-4 step-section" id="contacto">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-telephone mr-2"></i>Contacto</h5>
@@ -295,7 +313,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tel-casa-addon"><i class="bi bi-telephone"></i></span>
                                 </div>
-                                {!! html()->text('telefono_casa')->class('form-control')->id('telefono_casa')->attribute('aria-label', 'Teléfono Casa')->attribute('aria-describedby', 'tel-casa-addon') !!}
+                                {!! html()->number('telefono_casa')->class('form-control')->id('telefono_casa')->attribute('aria-label', 'Teléfono Casa')->attribute('aria-describedby', 'tel-casa-addon')->attribute('maxlength', '10') !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -304,7 +322,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tel-cel-addon"><i class="bi bi-phone"></i></span>
                                 </div>
-                                {!! html()->text('telefono_celular')->class('form-control')->id('telefono_celular')->attribute('aria-label', 'Teléfono Celular')->attribute('aria-describedby', 'tel-cel-addon') !!}
+                                {!! html()->number('telefono_celular')->class('form-control')->id('telefono_celular')->attribute('aria-label', 'Teléfono Celular')->attribute('aria-describedby', 'tel-cel-addon')->attribute('maxlength', '10') !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -338,14 +356,15 @@
                             </div>
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
-                            {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-                            {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-contacto')->attribute('data-next-step', 'contacto')->type('button')->attribute('data-seccion', 'contacto') }}
+                            {{ html()->button('Guardar contacto')->class('btn btn-primary float-end')->id('validar-contacto')->type('button') }}
                         </div>
                     </div>
                 </div>
             </div>
-
-            {{-- * Sección: Grupos vulnerables  --}}
+            {!! html()->form()->close() !!}
+            
+            {{-- * Formulario de Grupos Vulnerables --}}
+            {!! html()->form()->id('form-grupos-vulnerables')->open() !!}
             <div class="col-12 mb-4 step-section" id="grupos-vulnerables">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-exclamation-triangle mr-2"></i>Grupos vulnerables</h5>
@@ -419,14 +438,15 @@
                             </div>
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
-                            {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-                            {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-grupos-vulnerables')->attribute('data-next-step', 'grupos-vulnerables')->type('button')->attribute('data-seccion', 'grupos-vulnerables') }}
+                            {{ html()->button('Guardar grupos vulnerables')->class('btn btn-primary float-end')->id('validar-grupos-vulnerables')->type('button') }}
                         </div>
                     </div>
                 </div>
             </div>
+            {!! html()->form()->close() !!}
 
-            {{-- * Sección: Capacitación  --}}
+            {{-- * Formulario de Capacitación --}}
+            {!! html()->form()->id('form-capacitacion')->open() !!}
             <div class="col-12 mb-4 step-section" id="capacitacion">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-info-circle mr-2"></i>DE LA CAPACITACIÓN
@@ -438,10 +458,11 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="grado-estudios-addon"><i class="bi bi-book"></i></span>
                                 </div>
-                                {!! html()->select('ultimo_grado_estudios', ['ninguno'=>'Ninguno','primaria'=>'Primaria','secundaria'=>'Secundaria','preparatoria'=>'Preparatoria','licenciatura'=>'Licenciatura','posgrado'=>'Posgrado'])
+                                {!! html()->select('ultimo_grado_estudios', ['' => 'SELECCIONE EL GRADO'] + $gradoEstudios->pluck('grado_estudio', 'id_grado_estudio')->toArray())
                                             ->class('form-control')->id('ultimo_grado_estudios')
                                             ->attribute('aria-label', 'Ultimo Grado de Estudios')
-                                            ->attribute('aria-describedby', 'grado-estudios-addon') !!}
+                                            ->attribute('aria-describedby', 'grado-estudios-addon') 
+                                            ->value(!$esNuevoRegistro ? $datos->ultimoGradoEstudios->id : '') !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -472,7 +493,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="medio-enterado-addon"><i class="bi bi-megaphone"></i></span>
                                 </div>
-                                {!! html()->select('medio_enterado_sistema', ['internet'=>'INTERNET','prensa' =>'PRENSA','radio'=>'RADIO','television'=>'TELEVISIÓN','papel' => 'FOLLETOS, CARTELES, VOLANTES.', 'otros'=>'OTROS'])
+                                {!! html()->select('medio_enterado_sistema', ['' => 'SELECCIONA UN MEDIO', 'internet' => 'INTERNET','prensa' => 'PRENSA','radio' => 'RADIO','television' => 'TELEVISIÓN','papel' => 'FOLLETOS, CARTELES, VOLANTES.','otros' => 'OTROS'])
                                             ->class('form-control')->id('medio_enterado_sistema')
                                             ->attribute('aria-label', 'Medio por el que se enteró del sistema')
                                             ->attribute('aria-describedby', 'medio-enterado-addon') !!}
@@ -484,7 +505,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="motivo-eleccion-addon"><i class="bi bi-list-check"></i></span>
                                 </div>
-                                {!! html()->select('motivo_eleccion_capacitacion', ['emplearse_autoemplearse_1' => 'PARA EMPLEARSE O AUTOEMPLEARSE','emplearse_autoemplearse_2' => 'PARA EMPLEARSE O AUTOEMPLEARSE','ahorrar_gastos' => 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR','espera_incorporarse' => 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓNEDUCATIVA','mejorar_trabajo' => 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO','tiempo_libre' => 'POR DISPOSICIÓN DE TIEMPO LIBRE','otro' => 'OTRO' ])
+                                {!! html()->select('motivo_eleccion_capacitacion', ['' => 'SELECCIONA UN MOTIVO', 'emplearse_autoemplearse_1' => 'PARA EMPLEARSE O AUTOEMPLEARSE','emplearse_autoemplearse_2' => 'PARA EMPLEARSE O AUTOEMPLEARSE','ahorrar_gastos' => 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR','espera_incorporarse' => 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓNEDUCATIVA','mejorar_trabajo' => 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO','tiempo_libre' => 'POR DISPOSICIÓN DE TIEMPO LIBRE','otro' => 'OTRO' ])
                                             ->class('form-control')->id('motivo_eleccion_capacitacion')
                                             ->attribute('aria-label', 'Motivos de elección del sistema de capacitación')
                                             ->attribute('aria-describedby', 'motivo-eleccion-addon') !!}
@@ -496,21 +517,22 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="medio-confirmacion-addon"><i class="bi bi-chat-dots"></i></span>
                                 </div>
-                                {!! html()->select('medio_confirmacion', ['Whatsapp' => 'WHATSAPP','Mensaje de Texto' => 'MENSAJE DE TEXTO','Correo Electrónico' => 'CORREO ELECTRÓNICO','Facebook' => 'FACEBOOK','Instagram' => 'INSTAGRAM','x' => 'X (Antes Twitter)','Telegram' => 'TELEGRAM',])
+                                {!! html()->select('medio_confirmacion', ['' => 'SELECCIONA UN MEDIO', 'Whatsapp' => 'WHATSAPP','Mensaje de Texto' => 'MENSAJE DE TEXTO','Correo Electrónico' => 'CORREO ELECTRÓNICO','Facebook' => 'FACEBOOK','Instagram' => 'INSTAGRAM','x' => 'X (Antes Twitter)','Telegram' => 'TELEGRAM',])
                                             ->class('form-control')->id('medio_confirmacion')
                                             ->attribute('aria-label', 'Medio de confirmación')
                                             ->attribute('aria-describedby', 'medio-confirmacion-addon') !!}
                             </div>
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
-                            {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-                            {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-capacitacion')->attribute('data-next-step', 'capacitacion')->type('button')->attribute('data-seccion', 'capacitacion') }}
+                            {{ html()->button('Guardar capacitación')->class('btn btn-primary float-end')->id('validar-capacitacion')->type('button') }}
                         </div>
                     </div>
                 </div>
             </div>
+            {!! html()->form()->close() !!}
 
-            {{-- * Sección: Alumno Empleado  --}}
+            {{-- * Formulario de Alumno Empleado --}}
+            {!! html()->form()->id('form-empleado')->open() !!}
             <div class="col-12 mb-4 step-section" id="empleado">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-file-earmark-text"></i> ¿Está empleado el aspirante?</h5>
@@ -537,13 +559,14 @@
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">
-                        {{ html()->button('Siguiente')->class('btn btn-primary float-end')->id('btn-siguiente-datos-personales')->attribute('data-next-step', 'domicilio')->type('button') }}
-                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-empleado')->attribute('data-next-step', 'empleado')->type('button')->attribute('data-seccion', 'empleado') }}
+                        {{ html()->button('Guardar empleo')->class('btn btn-primary float-end')->id('validar-empleo')->type('button') }}
                     </div>
                 </div>
             </div>
+            {!! html()->form()->close() !!}
 
-            {{-- * Sección: Alumno CERSS --}}
+            {{-- * Formulario de CERSS --}}
+            {!! html()->form()->id('form-cerss')->open() !!}
             <div class="col-12 mb-4 step-section" id="cerss">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-shield-lock"></i> ¿El aspirante pertenece a algún CERSS?</h5>
@@ -569,11 +592,11 @@
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">
-                        {{ html()->button('Terminar')->class('btn btn-primary float-end')->id('btn-terminar-registro')->type('button') }}
-                        {{ html()->button('Terminar')->class('btn btn-primary float-end guardar-seccion')->id('btn-terminar-registro')->type('button')->attribute('data-seccion', 'cerss') }}
+                        {{ html()->button('Guardar CERSS')->class('btn btn-primary float-end')->id('validar-cerss')->type('button') }}
                     </div>
                 </div>
             </div>
+            {!! html()->form()->close() !!}
         </div>
     </div>  <!-- fin row principal -->
 
@@ -611,7 +634,5 @@
         routeCurp: '{{ route("alumnos.obtener.datos.curp", ":encodecurp") }}',
         csrfToken: '{{ csrf_token() }}'
     };
-
-    inicializarNavegacionSecciones();
 </script>
 @endpush

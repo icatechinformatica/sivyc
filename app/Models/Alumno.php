@@ -81,5 +81,25 @@ class Alumno extends Model
     {
         return $this->belongsTo(estado_civil::class, 'id_estado_civil');
     }
-    
+
+    // Relación N:M con Estatus
+    public function estatus()
+    {
+        return $this->belongsToMany(Estatus::class, 'tbl_alumno_estatus', 'id_alumno', 'id_estatus');
+    }
+
+    public function pais()
+    {
+        return $this->belongsTo(pais::class, 'id_pais');
+    }
+
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'id_estado');
+    }
+
+    public function gradoEstudio()
+    {
+        return $this->belongsTo(GradoEstudio::class, 'id_grado_estudio');
+    }
 }
