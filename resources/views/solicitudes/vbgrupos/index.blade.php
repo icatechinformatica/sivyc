@@ -154,7 +154,7 @@
         {{ Form::open(['route' => 'solicitudes.vb.grupos', 'method' => 'post', 'id'=>'frm']) }}
             <div class="row form-inline">
                 <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-left">
-                    {{ Form::text('clave', $clave ?? '', ['id'=>'clave', 'class' => 'form-control', 'placeholder' => 'CURSO / INSTRUCTOR / UNIDAD', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 60]) }}
+                    {{ Form::text('clave', $clave ?? '', ['id'=>'clave', 'class' => 'form-control', 'placeholder' => 'GRUPO / MEMORÁNDUM / CURSO / INSTRUCTOR / UNIDAD', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 60]) }}
                 </div>
                 <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-end pr-4">
                     @foreach ($estatus as $key => $value)
