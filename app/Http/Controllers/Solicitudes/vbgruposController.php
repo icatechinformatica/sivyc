@@ -41,7 +41,7 @@ class vbgruposController extends Controller
         if($status == "AUTORIZADOS") $data = $data->where('vb_dg', true);
         else  $data = $data->where('clave','0')->where('turnado','VoBo')->where('vb_dg', false);
 
-        if($clave) $data = $data->where(DB::raw("CONCAT(nombre,curso,unidad)"),'like','%'.$clave.'%');
+        if($clave) $data = $data->where(DB::raw("CONCAT(nombre,curso,unidad,folio_grupo,munidad)"),'like','%'.$clave.'%');
         $data = $data->orderby('inicio','DESC')->paginate(15);
 
         if(!$data) $message = "No se encontraron registros.";
