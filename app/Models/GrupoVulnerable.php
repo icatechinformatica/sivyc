@@ -9,7 +9,7 @@ class GrupoVulnerable extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_aux_grupo_vulnerable';
+    protected $table = 'grupos_vulnerables';
 
     public function alumnos()
     {

@@ -63,8 +63,7 @@ class Alumno extends Model
 
     public function gruposVulnerables()
     {
-        return $this->belongsToMany(GrupoVulnerable::class, 'tbl_alumno_grupo_vulnerable
-        ', 'alumno_id', 'grupo_vulnerable_id');
+        return $this->belongsToMany(GrupoVulnerable::class, 'tbl_alumno_grupo_vulnerable', 'alumno_id', 'grupo_vulnerable_id');
     }
 
     public function nacionalidad()
@@ -98,6 +97,11 @@ class Alumno extends Model
         return $this->belongsTo(Estado::class, 'id_estado');
     }
 
+    public function municipio()
+    {
+        return $this->belongsTo(Municipio::class, 'id_municipio');
+    }
+
     public function gradoEstudio()
     {
         return $this->belongsTo(GradoEstudio::class, 'id_grado_estudio');
@@ -107,4 +111,11 @@ class Alumno extends Model
     {
         return $this->belongsTo(User::class, 'id_usuario_realizo');
     }
+
+    public function discapacidad()
+    {
+        return $this->belongsTo(Discapacidad::class, 'id_discapacidad');
+    }
+
+
 }
