@@ -226,7 +226,7 @@
                                 {!! html()->select('pais_select', [null => 'SELECCIONE EL PAÍS'] + $paises->pluck('nombre', 'id')->toArray())
                                     ->class('form-control')
                                     ->id('pais_select')
-                                    ->value(!$esNuevoRegistro ? $datos->pais->id : '') !!}
+                                    ->value(!$esNuevoRegistro && $datos->pais ? $datos->pais->id : '') !!}
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -240,7 +240,7 @@
                                     ->id('estado_select')
                                     ->attribute('aria-label', 'Estado')
                                     ->attribute('aria-describedby', 'estado-addon')
-                                    ->value(!$esNuevoRegistro ? $datos->estado->id : '') !!}
+                                    ->value(!$esNuevoRegistro && $datos->estado ? $datos->estado->id : '') !!}
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -254,7 +254,7 @@
                                     ->id('municipio_select')
                                     ->attribute('aria-label', 'Municipio')
                                     ->attribute('aria-describedby', 'municipio-addon')
-                                    ->value(!$esNuevoRegistro ? $datos->municipio->id : '') !!}
+                                    ->value(!$esNuevoRegistro && $datos->municipio ? $datos->municipio->id : '') !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -462,7 +462,7 @@
                                             ->class('form-control')->id('ultimo_grado_estudios')
                                             ->attribute('aria-label', 'Ultimo Grado de Estudios')
                                             ->attribute('aria-describedby', 'grado-estudios-addon') 
-                                            ->value(!$esNuevoRegistro ? $datos->ultimoGradoEstudios->id : '') !!}
+                                            ->value(!$esNuevoRegistro && $datos->ultimoGradoEstudios ? $datos->ultimoGradoEstudios->id : '') !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">

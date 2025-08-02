@@ -152,11 +152,11 @@ function deshabilitarCampos() {
 
     // * Sección de selects
     $('#sexo_select').prop('disabled', true);
-    // $('#sexo_select').hide();
+    $('#sexo_select').hide();
     $('#sexo_input').prop('readonly', true);
 
     $('#nacionalidad_select').prop('disabled', true);
-    // $('#nacionalidad_select').hide();
+    $('#nacionalidad_select').hide();
     $('#nacionalidad_input').prop('readonly', true);
 }
 

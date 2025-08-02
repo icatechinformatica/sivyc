@@ -41,7 +41,7 @@ class GuardarSeccionService
             'apellido_materno' => strtoupper($datos['apellido_materno']),
             'apellido_paterno' => strtoupper($datos['apellido_paterno']),
             'curp' => $curp,
-            'fecha_nacimiento' => date('Y-m-d', strtotime($datos['fecha_de_nacimiento'])),
+            'fecha_nacimiento' => $datos['fecha_de_nacimiento'],
             'id_estado_civil' => $datos['id_estado_civil'],
             'id_usuario_realizo' => $datos['id_usuario_realizo'],
             'id_sexo' => $datos['id_sexo'],
