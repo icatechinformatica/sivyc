@@ -12,7 +12,7 @@ validar_cerss.on('click', function () {
             formData.append('numero_expediente', $('#numero_expediente').val());
             formData.append('fecha_ingreso', $('#fecha_ingreso').val());
             formData.append('fecha_egreso', $('#fecha_egreso').val());
-            formData.append('id_funcionario_realizo', id_usuario_captura);
+            formData.append('id_usuario_realizo', id_usuario_captura);
             formData.append('_token', registroBladeVars.csrfToken);
             guardarSeccion(formData);
         }
@@ -21,7 +21,7 @@ validar_cerss.on('click', function () {
         const formData = new FormData();
         formData.append('seccion', 'cerss');
         formData.append('aspirante_cerss', 0);
-        formData.append('id_funcionario_realizo', id_usuario_captura);
+        formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
     }
@@ -43,11 +43,12 @@ validar_capacitacion.on('click', function () {
         formData.append('medio_enterado_sistema', $('#medio_enterado_sistema').val());
         formData.append('motivo_eleccion_capacitacion', $('#motivo_eleccion_capacitacion').val());
         formData.append('medio_confirmacion', $('#medio_confirmacion').val());
-        formData.append('id_funcionario_realizo', id_usuario_captura);
+        formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
     }
 });
+
 // ! Validaciones - GRUPOS VULNERABLES
 const validar_grupos_vulnerables = $('#validar-grupos-vulnerables'); // * Btn para validar grupos vulnerables
 validar_grupos_vulnerables.on('click', function () {
@@ -61,7 +62,7 @@ validar_grupos_vulnerables.on('click', function () {
             gruposSeleccionados.push($(this).val());
         });
         formData.append('grupos_vulnerables', JSON.stringify(gruposSeleccionados));
-        formData.append('id_funcionario_realizo', id_usuario_captura);
+        formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
     }
@@ -79,7 +80,7 @@ validar_contacto.on('click', function () {
         formData.append('correo_electronico', $('#correo_electronico').val());
         formData.append('facebook', $('#facebook').val());
         formData.append('autoriza_bolsa_trabajo', $('#autoriza_bolsa_trabajo').is(':checked') ? 1 : 0);
-        formData.append('id_funcionario_realizo', id_usuario_captura);
+        formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
     }
@@ -151,11 +152,11 @@ function deshabilitarCampos() {
 
     // * Sección de selects
     $('#sexo_select').prop('disabled', true);
-    $('#sexo_select').hide();
+    // $('#sexo_select').hide();
     $('#sexo_input').prop('readonly', true);
 
     $('#nacionalidad_select').prop('disabled', true);
-    $('#nacionalidad_select').hide();
+    // $('#nacionalidad_select').hide();
     $('#nacionalidad_input').prop('readonly', true);
 }
 
@@ -226,7 +227,7 @@ datos_personales.on('click', function () {
         formData.append('id_sexo', $('#sexo_select').val());
         formData.append('id_nacionalidad', $('#nacionalidad_select').val());
         formData.append('id_estado_civil', $('#estado_civil_select').val());
-        formData.append('id_funcionario_realizo', id_usuario_captura);
+        formData.append('id_usuario_realizo', id_usuario_captura);
         // Adjuntar archivo si existe
         const fileInput = $('#documento_curp')[0];
         if (fileInput && fileInput.files.length > 0) {
@@ -256,7 +257,7 @@ validar_empleado.on('click', function () {
             formData.append('puesto', $('#puesto').val());
             formData.append('antiguedad', $('#antiguedad').val());
             formData.append('horario_trabajo', $('#horario_trabajo').val());
-            formData.append('id_funcionario_realizo', id_usuario_captura);
+            formData.append('id_usuario_realizo', id_usuario_captura);
             formData.append('_token', registroBladeVars.csrfToken);
             guardarSeccion(formData);
         }
@@ -265,7 +266,7 @@ validar_empleado.on('click', function () {
         const formData = new FormData();
         formData.append('seccion', 'empleado');
         formData.append('empleado_aspirante', 0);
-        formData.append('id_funcionario_realizo', id_usuario_captura);
+        formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
     }
@@ -284,7 +285,7 @@ validar_domicilio.on('click', function () {
         formData.append('id_municipio', $('#municipio_select').val());
         formData.append('clave_localidad', $('#localidad').val());
         formData.append('cp', $('#codigo_postal').val());
-        formData.append('id_funcionario_realizo', id_usuario_captura);
+        formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
     }

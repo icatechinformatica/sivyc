@@ -41,11 +41,9 @@ class funcionario extends Model
                     case 'nombre':
                         # el tipo
                         return $query->WHERE('tbl_funcionario.nombre_trabajador', 'LIKE', '%'.$buscar.'%');
-                        break;
                     case 'no_enlace':
                         # el tipo
                         return $query->WHERE('tbl_funcionario.clave_empleado', '=', $buscar);
-                    break;
                 }
             }
         }

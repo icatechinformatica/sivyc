@@ -51,7 +51,7 @@ class Alumno extends Model
         'id_discapacidad',
         'id_ultimo_grado_estudios',
         'id_nacionalidad',
-        'id_funcionario_realizo',
+        'id_usuario_realizo',
     ];
 
     public $timestamps = false;
@@ -101,5 +101,10 @@ class Alumno extends Model
     public function gradoEstudio()
     {
         return $this->belongsTo(GradoEstudio::class, 'id_grado_estudio');
+    }
+
+    public function usuarioRealizo()
+    {
+        return $this->belongsTo(User::class, 'id_usuario_realizo');
     }
 }

@@ -177,7 +177,7 @@
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
-                            {!! html()->label('Nacionalidad')->for('nacionalidad') !!}
+                            {!! html()->label('Nacionalidad')->for('nacionalidad_select') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nacionalidad-addon"><i class="bi bi-flag"></i></span>

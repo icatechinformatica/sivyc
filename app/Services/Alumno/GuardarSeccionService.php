@@ -43,7 +43,7 @@ class GuardarSeccionService
             'curp' => $curp,
             'fecha_nacimiento' => date('Y-m-d', strtotime($datos['fecha_de_nacimiento'])),
             'id_estado_civil' => $datos['id_estado_civil'],
-            'id_funcionario_realizo' => $datos['id_funcionario_realizo'],
+            'id_usuario_realizo' => $datos['id_usuario_realizo'],
             'id_sexo' => $datos['id_sexo'],
             'id_nacionalidad' => $datos['id_nacionalidad']
         ];
@@ -100,7 +100,7 @@ class GuardarSeccionService
             'id_municipio' => $datos['id_municipio'] ?? null,
             'clave_localidad' => $datos['clave_localidad'] ?? null,
             'cp' => $datos['cp'] ?? null,
-            'id_funcionario_realizo' => $datos['id_funcionario_realizo'] ?? null
+            'id_usuario_realizo' => $datos['id_usuario_realizo'] ?? null
         ];
         return $this->alumnoRepository->actualizarOrCrearPorCURP($domicilio);
     }
