@@ -71,6 +71,8 @@ class AlumnoController extends Controller
         $municipios = Municipio::all();
         $gradoEstudios = GradoEstudio::all();
 
+        // dd($datos->gradoEstudio); // * Para depuración, eliminar en producción
+
         return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios'));
     }
 
@@ -112,8 +114,10 @@ class AlumnoController extends Controller
         try {
             $seccion = $request->input('seccion');
             $datos = $request->except(['_token', 'documento_curp']);
-            $archivoCurp = $request->file('documento_curp');
-            $alumno = $this->guardarSeccionService->obtenerSeccion($seccion, $datos, $archivoCurp);
+
+            $archivo = $seccion === 'datos_personales' ? $request->file('documento_curp') : ($seccion === 'capacitacion' ? $request->file('documento_ultimo_grado') : ($seccion === 'cerss' ? $request->file('documento_ficha_cerss') : null));
+
+            $alumno = $this->guardarSeccionService->obtenerSeccion($seccion, $datos, $archivo);
             if ($alumno) {
                 $alumnoId = $alumno->id;
                 $this->actualizarEstatusService->actualizarAlumnoEstatus($alumnoId, 1, $seccion); // * 1 Es En Captura

@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Services\Alumno;
+
 use App\Repositories\AlumnoSeccionesRepositoryInterface;
 
 class GuardarSeccionService
@@ -11,19 +13,19 @@ class GuardarSeccionService
         $this->alumnoRepository = $alumnoRepository;
     }
 
-    public function obtenerSeccion($seccion, $datos, $archivoCurp = null)
+    public function obtenerSeccion($seccion, $datos, $archivo = null)
     {
         switch ($seccion) {
             case 'datos_personales':
-                return $this->guardarDatosPersonales($datos, $archivoCurp);
+                return $this->guardarDatosPersonales($datos, $archivo);
             case 'domicilio':
                 return $this->guardarDomicilio($datos);
             case 'contacto':
                 return $this->guardarContacto($datos);
             case 'grupos_vulnerables':
                 return $this->guardarGruposVulnerables($datos);
-            case 'capacitaciones':
-                return $this->guardarCapacitaciones($datos);
+            case 'capacitacion':
+                return $this->guardarCapacitacion($datos, $archivo);
             case 'empleado':
                 return $this->guardarEmpleado($datos);
             case 'cerss':
@@ -98,6 +100,8 @@ class GuardarSeccionService
             'id_pais' => $datos['id_pais'] ?? null,
             'id_estado' => $datos['id_estado'] ?? null,
             'id_municipio' => $datos['id_municipio'] ?? null,
+            'domicilio' => $datos['domicilio'] ?? null,
+            'colonia' => $datos['colonia'] ?? null,
             'clave_localidad' => $datos['clave_localidad'] ?? null,
             'cp' => $datos['cp'] ?? null,
             'id_usuario_realizo' => $datos['id_usuario_realizo'] ?? null
@@ -106,7 +110,17 @@ class GuardarSeccionService
     }
     private function guardarContacto($datos)
     {
-        // Lógica para guardar el contacto
+        $curp = strtoupper($datos['curp']);
+        $contacto = [
+            'curp' => $curp,
+            'correo' => $datos['correo_electronico'] ?? null,
+            'telefono_celular' => $datos['telefono_celular'] ?? null,
+            'telefono_casa' => $datos['telefono_casa'] ?? null,
+            'facebook' => $datos['facebook'] ?? null,
+            'check_bolsa' => $datos['autoriza_bolsa_trabajo'] == 1 ? true : false,
+            'id_usuario_realizo' => $datos['id_usuario_realizo'] ?? null,
+        ];
+        return $this->alumnoRepository->actualizarOrCrearPorCURP($contacto);
     }
 
     private function guardarGruposVulnerables($datos)
@@ -114,9 +128,59 @@ class GuardarSeccionService
         // Lógica para guardar los grupos vulnerables
     }
 
-    private function guardarCapacitaciones($datos)
+    private function guardarCapacitacion($datos, $archivoUltimoGrado = null)
     {
-        // Lógica para guardar las capacitaciones
+        $curp = strtoupper($datos['curp']);
+        $capacitaciones = [
+            'curp' => $curp,
+            'medio_entero' => $datos['medio_enterado_sistema'] ?? null,
+            'sistema_capacitacion_especificar' => $datos['motivo_eleccion_capacitacion'] ?? null,
+            'medio_confirmacion' => $datos['medio_confirmacion'] ?? null,
+            'id_ultimo_grado_estudios' => $datos['ultimo_grado_estudios'] ?? null,
+            'id_usuario_realizo' => $datos['id_usuario_realizo'] ?? null
+        ];
+
+        // Manejo de archivos_documentos JSON
+        $archivos_documentos = [];
+        
+        // Obtener archivos_documentos actuales (incluye curp si existe)
+        $archivos_documentos_actual = $this->alumnoRepository->obtenerArchivosDocumentos($curp);
+        if ($archivos_documentos_actual) {
+            $archivos_documentos = is_array($archivos_documentos_actual) ? $archivos_documentos_actual : json_decode($archivos_documentos_actual, true) ?? [];
+        }
+
+        // Si se sube archivo del último grado de estudio
+        if ($archivoUltimoGrado && $archivoUltimoGrado->isValid()) {
+            $anio = '2026';
+            $carpeta = "{$anio}/AlumnosRegistro/{$curp}";
+            $fecha = now()->format('Ymd_His');
+            $nombreArchivo = "ULTIMO_GRADO_ESTUDIO_{$curp}_{$fecha}." . $archivoUltimoGrado->getClientOriginalExtension();
+            $ruta = $archivoUltimoGrado->storeAs($carpeta, $nombreArchivo);
+
+            $archivos_documentos['ultimo_grado_estudio'] = [
+                'capturado' => true,
+                'ruta' => $ruta,
+                'fecha_expedicion' => $datos['fecha_documento_ultimo_grado'] ?? null
+            ];
+        } elseif (isset($datos['fecha_documento_ultimo_grado'])) {
+            if (isset($archivos_documentos['ultimo_grado_estudio'])) {
+                // Mantener todos los datos actuales y solo actualizar la fecha de expedición
+                $archivos_documentos['ultimo_grado_estudio']['fecha_expedicion'] = $datos['fecha_documento_ultimo_grado'];
+            } else {
+                // Si no existe registro previo, crear uno nuevo solo con la fecha
+                $archivos_documentos['ultimo_grado_estudio'] = [
+                    'capturado' => true,
+                    'ruta' => null,
+                    'fecha_expedicion' => $datos['fecha_documento_ultimo_grado']
+                ];
+            }
+        }
+
+        if (!empty($archivos_documentos)) {
+            $capacitaciones['archivos_documentos'] = json_encode($archivos_documentos);
+        }
+
+        return $this->alumnoRepository->actualizarOrCrearPorCURP($capacitaciones);
     }
 
     private function guardarEmpleado($datos)

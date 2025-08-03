@@ -48,7 +48,7 @@ class AlumnosRepository implements AlumnosInterface
     {
         $alumno = $this->alumno->where('curp', $curp)->first();
         if ($alumno) {
-            $alumno->load('sexo', 'nacionalidad', 'estadoCivil', 'estado', 'municipio', 'gradoEstudio', 'discapacidad', 'gruposVulnerables');
+            $alumno->load('sexo', 'nacionalidad', 'estadoCivil', 'pais', 'estado', 'municipio', 'gradoEstudio', 'discapacidad', 'gruposVulnerables');
         }
         return $alumno;
     }

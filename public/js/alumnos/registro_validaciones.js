@@ -5,13 +5,13 @@ $("#form-capacitacion").validate({
         },
         documento_ultimo_grado: {
             required: function () {
-                return $('#ultimo_grado_estudios').val() !== '1'; // 1 Es NO ESPECIFICADO
+                return $('#ultimo_grado_estudios').val() !== '1' && esNuevoRegistro === true; // 1 Es NO ESPECIFICADO
             },
             extension: "pdf"
         },
         fecha_documento_ultimo_grado: {
             required: function () {
-                return $('#ultimo_grado_estudios').val() !== '1'; // 1 Es NO ESPECIFICADO
+                return $('#ultimo_grado_estudios').val() !== '1' && esNuevoRegistro === true; // 1 Es NO ESPECIFICADO
             },
             date: true
         },

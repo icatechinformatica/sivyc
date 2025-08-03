@@ -95,13 +95,13 @@
                                 </div>
                                 {!! html()->file('documento_curp')->class('form-control')->id('documento_curp')->attribute('aria-label', 'Adjuntar Documento CURP')->attribute('aria-describedby', 'documento-curp-addon') !!}
                             </div>
-
-                            {{-- Input para mostrar el documento CURP existente --}}
-                            @if(!empty($documentos['curp']))
-                                <small class="form-text text-muted mt-1">
-                                    <a href="{{ asset('storage/' . $documentos['curp']['ruta'] ) }}" target="_blank" class="text-primary text-decoration-underline">Ver documento CURP</a>
-                                </small>
-                            @endif
+                            
+                                {{-- Input para mostrar el documento CURP existente --}}
+                                @if(!empty($documentos['curp']))
+                                    <small class="form-text text-muted mt-1">
+                                        <a href="{{ asset('storage/' . $documentos['curp']['ruta'] ) }}" target="_blank" class="text-primary text-decoration-underline">Ver documento CURP</a>
+                                    </small>
+                                @endif
                         </div>
                         <div class="col-md-3 mb-3">
                             {!! html()->label('Fecha de Expedición CURP')->for('fecha_documento_curp') !!}
@@ -213,7 +213,7 @@
 
             {{-- * Formulario de Domicilio --}}
             {!! html()->form()->id('form-domicilio')->open() !!}
-            <div class="col-12 mb-4 step-section" id="domicilio">
+            <div class="col-12 mb-4 step-section" id="domicilio_section">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-house-door mr-2"></i>Domicilio</h5>
                     <div class="row">
@@ -263,7 +263,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="localidad-addon"><i class="bi bi-geo"></i></span>
                                 </div>
-                                {!! html()->text('localidad')->class('form-control')->id('localidad')->attribute('aria-label', 'Localidad')->attribute('aria-describedby', 'localidad-addon') !!}
+                                {!! html()->text('localidad')->class('form-control')->id('localidad')->attribute('aria-label', 'Localidad')->attribute('aria-describedby', 'localidad-addon') 
+                                            ->value($esNuevoRegistro ? '' : $datos->clave_localidad) !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -272,7 +273,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="cp-addon"><i class="bi bi-mailbox"></i></span>
                                 </div>
-                                {!! html()->text('codigo_postal')->class('form-control')->id('codigo_postal')->attribute('aria-label', 'Código Postal')->attribute('aria-describedby', 'cp-addon') !!}
+                                {!! html()->text('codigo_postal')->class('form-control')->id('codigo_postal')->attribute('aria-label', 'Código Postal')->attribute('aria-describedby', 'cp-addon') 
+                                            ->value($esNuevoRegistro ? '' : $datos->cp) !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -281,7 +283,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="domicilio-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
-                                {!! html()->text('domicilio')->class('form-control')->id('domicilio')->attribute('aria-label', 'Domicilio')->attribute('aria-describedby', 'domicilio-addon') !!}
+                                {!! html()->text('domicilio')->class('form-control')->id('domicilio')->attribute('aria-label', 'Domicilio')->attribute('aria-describedby', 'domicilio-addon') 
+                                            ->value($esNuevoRegistro ? '' : $datos->domicilio) !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -290,7 +293,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="colonia-addon"><i class="bi bi-signpost"></i></span>
                                 </div>
-                                {!! html()->text('colonia')->class('form-control')->id('colonia')->attribute('aria-label', 'Colonia')->attribute('aria-describedby', 'colonia-addon') !!}
+                                {!! html()->text('colonia')->class('form-control')->id('colonia')->attribute('aria-label', 'Colonia')->attribute('aria-describedby', 'colonia-addon') 
+                                        ->value($esNuevoRegistro ? '' : $datos->colonia) !!}
                             </div>
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
@@ -313,7 +317,9 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tel-casa-addon"><i class="bi bi-telephone"></i></span>
                                 </div>
-                                {!! html()->number('telefono_casa')->class('form-control')->id('telefono_casa')->attribute('aria-label', 'Teléfono Casa')->attribute('aria-describedby', 'tel-casa-addon')->attribute('maxlength', '10') !!}
+                                {!! html()->number('telefono_casa')->class('form-control')->id('telefono_casa')->attribute('aria-label', 'Teléfono Casa')->attribute('aria-describedby', 'tel-casa-addon')->attribute('maxlength', '10')
+                                        ->value($esNuevoRegistro ? '' : $datos->telefono_casa) !!}
+
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -322,7 +328,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tel-cel-addon"><i class="bi bi-phone"></i></span>
                                 </div>
-                                {!! html()->number('telefono_celular')->class('form-control')->id('telefono_celular')->attribute('aria-label', 'Teléfono Celular')->attribute('aria-describedby', 'tel-cel-addon')->attribute('maxlength', '10') !!}
+                                {!! html()->number('telefono_celular')->class('form-control')->id('telefono_celular')->attribute('aria-label', 'Teléfono Celular')->attribute('aria-describedby', 'tel-cel-addon')->attribute('maxlength', '10')
+                                        ->value($esNuevoRegistro ? '' : $datos->telefono_celular) !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -331,7 +338,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="correo-addon"><i class="bi bi-envelope"></i></span>
                                 </div>
-                                {!! html()->email('correo_electronico')->class('form-control')->id('correo_electronico')->attribute('aria-label', 'Correo Electrónico')->attribute('aria-describedby', 'correo-addon') !!}
+                                {!! html()->email('correo_electronico')->class('form-control')->id('correo_electronico')->attribute('aria-label', 'Correo Electrónico')->attribute('aria-describedby', 'correo-addon')
+                                        ->value($esNuevoRegistro ? '' : $datos->correo) !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -340,7 +348,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="facebook-addon"><i class="bi bi-facebook"></i></span>
                                 </div>
-                                {!! html()->text('facebook')->class('form-control')->id('facebook')->attribute('aria-label', 'Facebook')->attribute('aria-describedby', 'facebook-addon') !!}
+                                {!! html()->text('facebook')->class('form-control')->id('facebook')->attribute('aria-label', 'Facebook')->attribute('aria-describedby', 'facebook-addon')
+                                        ->value($esNuevoRegistro ? '' : $datos->facebook) !!}
                             </div>
                         </div>
                     </div>
@@ -350,7 +359,7 @@
                                 {!! html()->label('¿Usted autoriza dar su número de celular para alguna oportunidad en la Bolsa de Trabajo?')
                                                 ->for('autoriza_bolsa_trabajo')->class('fw-bold me-3 mb-0')->style('color: #ad8b00; font-size: 1.1em;') !!}
                                 <div class="form-check ml-2">
-                                    {!! html()->checkbox('autoriza_bolsa_trabajo', false, 1)->class('form-check-input')->id('autoriza_bolsa_trabajo') !!}
+                                    {!! html()->checkbox('autoriza_bolsa_trabajo', false, 1)->class('form-check-input')->id('autoriza_bolsa_trabajo')->checked($esNuevoRegistro ? false : $datos->check_bolsa) !!}
                                     {!! html()->label('Sí')->for('autoriza_bolsa_trabajo')->class('form-check-label') !!}
                                 </div>
                             </div>
@@ -462,7 +471,7 @@
                                             ->class('form-control')->id('ultimo_grado_estudios')
                                             ->attribute('aria-label', 'Ultimo Grado de Estudios')
                                             ->attribute('aria-describedby', 'grado-estudios-addon') 
-                                            ->value(!$esNuevoRegistro && $datos->ultimoGradoEstudios ? $datos->ultimoGradoEstudios->id : '') !!}
+                                            ->value(!$esNuevoRegistro && $datos->gradoEstudio ? $datos->gradoEstudio->id_grado_estudio : '') !!}
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -475,6 +484,11 @@
                                             ->attribute('aria-label', 'Documento del Ultimo Grado de Estudios')
                                             ->attribute('aria-describedby', 'documento-grado-addon') !!}
                             </div>
+                                @if(!empty($documentos['ultimo_grado_estudio']))
+                                    <small class="form-text text-muted mt-1">
+                                        <a href="{{ url('storage/' . $documentos['ultimo_grado_estudio']['ruta']) }}" target="_blank" class="text-primary text-decoration-underline">Ver documento del Ultimo Grado de Estudios</a>
+                                    </small>
+                                @endif
                         </div>
                         <div class="col-md-3 mb-3">
                             {!! html()->label('FECHA DEL DOCUMENTO')->for('fecha_documento_ultimo_grado') !!}
@@ -484,7 +498,9 @@
                                 </div>
                                 {!! html()->date('fecha_documento_ultimo_grado')->class('form-control')->id('fecha_documento_ultimo_grado')
                                             ->attribute('aria-label', 'Fecha del Documento')
-                                            ->attribute('aria-describedby', 'fecha-documento-addon') !!}
+                                            ->attribute('aria-describedby', 'fecha-documento-addon')
+                                             ->value(!$esNuevoRegistro && !empty($documentos['ultimo_grado_estudio']['fecha_expedicion']) ? date('Y-m-d', strtotime($documentos['ultimo_grado_estudio']['fecha_expedicion'])) : '') !!}
+
                             </div>
                         </div>
                         <div class="col-md-9 mb-3">
@@ -493,10 +509,11 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="medio-enterado-addon"><i class="bi bi-megaphone"></i></span>
                                 </div>
-                                {!! html()->select('medio_enterado_sistema', ['' => 'SELECCIONA UN MEDIO', 'internet' => 'INTERNET','prensa' => 'PRENSA','radio' => 'RADIO','television' => 'TELEVISIÓN','papel' => 'FOLLETOS, CARTELES, VOLANTES.','otros' => 'OTROS'])
+                                {!! html()->select('medio_enterado_sistema', ['' => 'SELECCIONA UN MEDIO', 1 => 'INTERNET', 2 => 'PRENSA', 3 => 'RADIO', 4 => 'TELEVISIÓN', 5 => 'FOLLETOS, CARTELES, VOLANTES.', 6 => 'OTROS'])
                                             ->class('form-control')->id('medio_enterado_sistema')
                                             ->attribute('aria-label', 'Medio por el que se enteró del sistema')
-                                            ->attribute('aria-describedby', 'medio-enterado-addon') !!}
+                                            ->attribute('aria-describedby', 'medio-enterado-addon')
+                                            ->value(!$esNuevoRegistro && !empty($datos->medio_entero) ? $datos->medio_entero : '') !!}
                             </div>
                         </div>
                         <div class="col-md-9 mb-3">
@@ -505,10 +522,11 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="motivo-eleccion-addon"><i class="bi bi-list-check"></i></span>
                                 </div>
-                                {!! html()->select('motivo_eleccion_capacitacion', ['' => 'SELECCIONA UN MOTIVO', 'emplearse_autoemplearse_1' => 'PARA EMPLEARSE O AUTOEMPLEARSE','emplearse_autoemplearse_2' => 'PARA EMPLEARSE O AUTOEMPLEARSE','ahorrar_gastos' => 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR','espera_incorporarse' => 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓNEDUCATIVA','mejorar_trabajo' => 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO','tiempo_libre' => 'POR DISPOSICIÓN DE TIEMPO LIBRE','otro' => 'OTRO' ])
+                                {!! html()->select('motivo_eleccion_capacitacion', ['' => 'SELECCIONA UN MOTIVO', 1 => 'PARA EMPLEARSE O AUTOEMPLEARSE', 2 => 'PARA EMPLEARSE O AUTOEMPLEARSE', 3 => 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR', 4 => 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓNEDUCATIVA', 5 => 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO', 6 => 'POR DISPOSICIÓN DE TIEMPO LIBRE', 7 => 'OTRO'])
                                             ->class('form-control')->id('motivo_eleccion_capacitacion')
                                             ->attribute('aria-label', 'Motivos de elección del sistema de capacitación')
-                                            ->attribute('aria-describedby', 'motivo-eleccion-addon') !!}
+                                            ->attribute('aria-describedby', 'motivo-eleccion-addon')
+                                            ->value(!$esNuevoRegistro && !empty($datos->sistema_capacitacion_especificar) ? $datos->sistema_capacitacion_especificar : '') !!}
                             </div>
                         </div>
                         <div class="col-md-9 mb-3">
@@ -517,10 +535,11 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="medio-confirmacion-addon"><i class="bi bi-chat-dots"></i></span>
                                 </div>
-                                {!! html()->select('medio_confirmacion', ['' => 'SELECCIONA UN MEDIO', 'Whatsapp' => 'WHATSAPP','Mensaje de Texto' => 'MENSAJE DE TEXTO','Correo Electrónico' => 'CORREO ELECTRÓNICO','Facebook' => 'FACEBOOK','Instagram' => 'INSTAGRAM','x' => 'X (Antes Twitter)','Telegram' => 'TELEGRAM',])
+                                {!! html()->select('medio_confirmacion', ['' => 'SELECCIONA UN MEDIO', 1 => 'WHATSAPP', 2 => 'MENSAJE DE TEXTO', 3 => 'CORREO ELECTRÓNICO', 4 => 'FACEBOOK', 5 => 'INSTAGRAM', 6 => 'X (Antes Twitter)', 7 => 'TELEGRAM'])
                                             ->class('form-control')->id('medio_confirmacion')
                                             ->attribute('aria-label', 'Medio de confirmación')
-                                            ->attribute('aria-describedby', 'medio-confirmacion-addon') !!}
+                                            ->attribute('aria-describedby', 'medio-confirmacion-addon')
+                                            ->value(!$esNuevoRegistro && !empty($datos->medio_confirmacion) ? $datos->medio_confirmacion : '') !!}
                             </div>
                         </div>
                         <div class="col-md-12 d-flex justify-content-end">
@@ -601,9 +620,6 @@
     </div>  <!-- fin row principal -->
 
     {{-- ! Se cierra el div ROW --}}
-</div>
-
-{!! html()->form()->close() !!}
 </div>
 
 <!-- Spinner de carga pantalla completa -->

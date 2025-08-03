@@ -45,8 +45,9 @@ class Alumno extends Model
         'check_bolsa',
         'esta_activo',
         'id_sexo',
-        'id_municipio',
+        'id_pais',
         'id_estado',
+        'id_municipio',
         'id_estado_civil',
         'id_discapacidad',
         'id_ultimo_grado_estudios',
@@ -104,7 +105,7 @@ class Alumno extends Model
 
     public function gradoEstudio()
     {
-        return $this->belongsTo(GradoEstudio::class, 'id_grado_estudio');
+        return $this->belongsTo(GradoEstudio::class, 'id_ultimo_grado_estudios');
     }
 
     public function usuarioRealizo()

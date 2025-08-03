@@ -19,6 +19,6 @@ class GradoEstudio extends Model
 
     public function alumnos()
     {
-        return $this->hasMany(Alumno::class, 'id_grado_estudio', 'id_grado_estudio');
+        return $this->hasMany(Alumno::class, 'id_ultimo_grado_estudios', 'id_grado_estudio');
     }
 }

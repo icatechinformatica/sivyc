@@ -1,48 +1,67 @@
-// ! Validaciones - CERSS
-const validar_cerss = $('#validar-cerss'); // * Btn para validar CERSS
-validar_cerss.on('click', function () {
-    const id_usuario_captura = $('#id_usuario_captura').val();
-    const checkCerss = $('#aspirante_cerss').is(':checked');
-    if (checkCerss) {
-        if ($('#form-cerss').valid()) {
-            const formData = new FormData();
-            formData.append('seccion', 'cerss');
-            formData.append('aspirante_cerss', 1);
-            formData.append('nombre_cerss', $('#nombre_cerss').val());
-            formData.append('numero_expediente', $('#numero_expediente').val());
-            formData.append('fecha_ingreso', $('#fecha_ingreso').val());
-            formData.append('fecha_egreso', $('#fecha_egreso').val());
-            formData.append('id_usuario_realizo', id_usuario_captura);
-            formData.append('_token', registroBladeVars.csrfToken);
-            guardarSeccion(formData);
-        }
-    } else {
-        // Solo enviar el check en false
+// ! Validaciones - DATOS PERSONALES
+const datos_personales = $('#validar-datos-personales'); // * Btn para validar datos personales
+datos_personales.on('click', function () {
+    if ($('#form-datos-personales').valid()) {
+        const id_usuario_captura = $('#id_usuario_captura').val();
         const formData = new FormData();
-        formData.append('seccion', 'cerss');
-        formData.append('aspirante_cerss', 0);
+        formData.append('seccion', 'datos_personales');
+        formData.append('nombre', $('#nombre_s').val());
+        formData.append('apellido_paterno', $('#primer_apellido').val());
+        formData.append('curp', $('#curp').val());
+        formData.append('apellido_materno', $('#segundo_apellido').val());
+        formData.append('fecha_de_nacimiento', $('#fecha_de_nacimiento').val());
+        formData.append('entidad_de_nacimiento', $('#entidad_de_nacimiento').val());
+        formData.append('id_sexo', $('#sexo_select').val());
+        formData.append('id_nacionalidad', $('#nacionalidad_select').val());
+        formData.append('id_estado_civil', $('#estado_civil_select').val());
+        formData.append('id_usuario_realizo', id_usuario_captura);
+        // Adjuntar archivo si existe
+        const fileInput = $('#documento_curp')[0];
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append('documento_curp', fileInput.files[0]);
+        }
+        formData.append('fecha_documento_curp', $('#fecha_documento_curp').val());
+
+        formData.append('_token', registroBladeVars.csrfToken);
+        guardarSeccion(formData);
+    }
+});
+
+// ! Validaciones - DOMICILIO
+const validar_domicilio = $('#validar-domicilio'); // * Btn para validar domicilio
+validar_domicilio.on('click', function () {
+    console.log($('#domicilio').val());
+    if ($('#form-domicilio').valid()) {
+        const id_usuario_captura = $('#id_usuario_captura').val();
+        const formData = new FormData();
+        formData.append('curp', $('#curp').val());
+        formData.append('seccion', 'domicilio');
+        formData.append('id_pais', $('#pais_select').val());
+        formData.append('id_estado', $('#estado_select').val());
+        formData.append('id_municipio', $('#municipio_select').val());
+        formData.append('domicilio', $('#domicilio').val());
+        formData.append('clave_localidad', $('#localidad').val());
+        formData.append('cp', $('#codigo_postal').val());
+        formData.append('colonia', $('#colonia').val());
         formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
     }
 });
 
-// ! Validaciones - CAPACITACION
-const validar_capacitacion = $('#validar-capacitacion'); // * Btn para validar capacitación
-validar_capacitacion.on('click', function () {
-    if ($('#form-capacitacion').valid()) {
+// ! Validaciones - CONTACTO
+const validar_contacto = $('#validar-contacto'); // * Btn para validar contacto
+validar_contacto.on('click', function () {
+    if ($('#form-contacto').valid()) {
         const id_usuario_captura = $('#id_usuario_captura').val();
         const formData = new FormData();
-        formData.append('seccion', 'capacitacion');
-        formData.append('ultimo_grado_estudios', $('#ultimo_grado_estudios').val());
-        const fileInput = $('#documento_ultimo_grado')[0];
-        if (fileInput && fileInput.files.length > 0) {
-            formData.append('documento_ultimo_grado', fileInput.files[0]);
-        }
-        formData.append('fecha_documento_ultimo_grado', $('#fecha_documento_ultimo_grado').val());
-        formData.append('medio_enterado_sistema', $('#medio_enterado_sistema').val());
-        formData.append('motivo_eleccion_capacitacion', $('#motivo_eleccion_capacitacion').val());
-        formData.append('medio_confirmacion', $('#medio_confirmacion').val());
+        formData.append('curp', $('#curp').val());
+        formData.append('seccion', 'contacto');
+        formData.append('telefono_casa', $('#telefono_casa').val());
+        formData.append('telefono_celular', $('#telefono_celular').val());
+        formData.append('correo_electronico', $('#correo_electronico').val());
+        formData.append('facebook', $('#facebook').val());
+        formData.append('autoriza_bolsa_trabajo', $('#autoriza_bolsa_trabajo').is(':checked') ? 1 : 0);
         formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
@@ -68,18 +87,85 @@ validar_grupos_vulnerables.on('click', function () {
     }
 });
 
-// ! Validaciones - CONTACTO
-const validar_contacto = $('#validar-contacto'); // * Btn para validar contacto
-validar_contacto.on('click', function () {
-    if ($('#form-contacto').valid()) {
+// ! Validaciones - CAPACITACION
+const validar_capacitacion = $('#validar-capacitacion'); // * Btn para validar capacitación
+validar_capacitacion.on('click', function () {
+    if ($('#form-capacitacion').valid()) {
         const id_usuario_captura = $('#id_usuario_captura').val();
         const formData = new FormData();
-        formData.append('seccion', 'contacto');
-        formData.append('telefono_casa', $('#telefono_casa').val());
-        formData.append('telefono_celular', $('#telefono_celular').val());
-        formData.append('correo_electronico', $('#correo_electronico').val());
-        formData.append('facebook', $('#facebook').val());
-        formData.append('autoriza_bolsa_trabajo', $('#autoriza_bolsa_trabajo').is(':checked') ? 1 : 0);
+
+        formData.append('seccion', 'capacitacion');
+        formData.append('ultimo_grado_estudios', $('#ultimo_grado_estudios').val());
+        const fileInput = $('#documento_ultimo_grado')[0];
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append('documento_ultimo_grado', fileInput.files[0]);
+        }
+        formData.append('fecha_documento_ultimo_grado', $('#fecha_documento_ultimo_grado').val());
+        formData.append('medio_enterado_sistema', $('#medio_enterado_sistema').val());
+        formData.append('motivo_eleccion_capacitacion', $('#motivo_eleccion_capacitacion').val());
+        formData.append('medio_confirmacion', $('#medio_confirmacion').val());
+        formData.append('id_usuario_realizo', id_usuario_captura);
+        formData.append('curp', $('#curp').val());
+        formData.append('_token', registroBladeVars.csrfToken);
+        guardarSeccion(formData);
+    }
+});
+
+// ! Validaciones - EMPLEADO
+const validar_empleado = $('#validar-empleo'); // * Btn para validar empleado
+validar_empleado.on('click', function () {
+    console.log('Validando sección empleado');
+    const id_usuario_captura = $('#id_usuario_captura').val();
+    const checkEmpleado = $('#empleado_aspirante').is(':checked');
+    if (checkEmpleado) {
+        if ($('#form-empleado').valid()) {
+            const formData = new FormData();
+            formData.append('curp', $('#curp').val());
+            formData.append('seccion', 'empleado');
+            formData.append('empleado_aspirante', 1);
+            formData.append('nombre_empresa', $('#nombre_empresa').val());
+            formData.append('giro_empresa', $('#giro_empresa').val());
+            formData.append('puesto', $('#puesto').val());
+            formData.append('antiguedad', $('#antiguedad').val());
+            formData.append('horario_trabajo', $('#horario_trabajo').val());
+            formData.append('id_usuario_realizo', id_usuario_captura);
+            formData.append('_token', registroBladeVars.csrfToken);
+            guardarSeccion(formData);
+        }
+    } else {
+        // Solo enviar el check en false
+        const formData = new FormData();
+        formData.append('seccion', 'empleado');
+        formData.append('empleado_aspirante', 0);
+        formData.append('id_usuario_realizo', id_usuario_captura);
+        formData.append('_token', registroBladeVars.csrfToken);
+        guardarSeccion(formData);
+    }
+});
+
+// ! Validaciones - CERSS
+const validar_cerss = $('#validar-cerss'); // * Btn para validar CERSS
+validar_cerss.on('click', function () {
+    const id_usuario_captura = $('#id_usuario_captura').val();
+    const checkCerss = $('#aspirante_cerss').is(':checked');
+    if (checkCerss) {
+        if ($('#form-cerss').valid()) {
+            const formData = new FormData();
+            formData.append('seccion', 'cerss');
+            formData.append('aspirante_cerss', 1);
+            formData.append('nombre_cerss', $('#nombre_cerss').val());
+            formData.append('numero_expediente', $('#numero_expediente').val());
+            formData.append('fecha_ingreso', $('#fecha_ingreso').val());
+            formData.append('fecha_egreso', $('#fecha_egreso').val());
+            formData.append('id_usuario_realizo', id_usuario_captura);
+            formData.append('_token', registroBladeVars.csrfToken);
+            guardarSeccion(formData);
+        }
+    } else {
+        // Solo enviar el check en false
+        const formData = new FormData();
+        formData.append('seccion', 'cerss');
+        formData.append('aspirante_cerss', 0);
         formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
@@ -211,85 +297,6 @@ function obtenerDatosCurp(curp) {
     });
 }
 
-// ! Validaciones - DATOS PERSONALES
-const datos_personales = $('#validar-datos-personales'); // * Btn para validar datos personales
-datos_personales.on('click', function () {
-    if ($('#form-datos-personales').valid()) {
-        const id_usuario_captura = $('#id_usuario_captura').val();
-        const formData = new FormData();
-        formData.append('seccion', 'datos_personales');
-        formData.append('nombre', $('#nombre_s').val());
-        formData.append('apellido_paterno', $('#primer_apellido').val());
-        formData.append('curp', $('#curp').val());
-        formData.append('apellido_materno', $('#segundo_apellido').val());
-        formData.append('fecha_de_nacimiento', $('#fecha_de_nacimiento').val());
-        formData.append('entidad_de_nacimiento', $('#entidad_de_nacimiento').val());
-        formData.append('id_sexo', $('#sexo_select').val());
-        formData.append('id_nacionalidad', $('#nacionalidad_select').val());
-        formData.append('id_estado_civil', $('#estado_civil_select').val());
-        formData.append('id_usuario_realizo', id_usuario_captura);
-        // Adjuntar archivo si existe
-        const fileInput = $('#documento_curp')[0];
-        if (fileInput && fileInput.files.length > 0) {
-            formData.append('documento_curp', fileInput.files[0]);
-        }
-        formData.append('fecha_documento_curp', $('#fecha_documento_curp').val());
-
-        formData.append('_token', registroBladeVars.csrfToken);
-        guardarSeccion(formData);
-    }
-});
-
-// ! Validaciones - EMPLEADO
-const validar_empleado = $('#validar-empleo'); // * Btn para validar empleado
-validar_empleado.on('click', function () {
-    console.log('Validando sección empleado');
-    const id_usuario_captura = $('#id_usuario_captura').val();
-    const checkEmpleado = $('#empleado_aspirante').is(':checked');
-    if (checkEmpleado) {
-        if ($('#form-empleado').valid()) {
-            const formData = new FormData();
-            formData.append('curp', $('#curp').val());
-            formData.append('seccion', 'empleado');
-            formData.append('empleado_aspirante', 1);
-            formData.append('nombre_empresa', $('#nombre_empresa').val());
-            formData.append('giro_empresa', $('#giro_empresa').val());
-            formData.append('puesto', $('#puesto').val());
-            formData.append('antiguedad', $('#antiguedad').val());
-            formData.append('horario_trabajo', $('#horario_trabajo').val());
-            formData.append('id_usuario_realizo', id_usuario_captura);
-            formData.append('_token', registroBladeVars.csrfToken);
-            guardarSeccion(formData);
-        }
-    } else {
-        // Solo enviar el check en false
-        const formData = new FormData();
-        formData.append('seccion', 'empleado');
-        formData.append('empleado_aspirante', 0);
-        formData.append('id_usuario_realizo', id_usuario_captura);
-        formData.append('_token', registroBladeVars.csrfToken);
-        guardarSeccion(formData);
-    }
-});
-
-// ! Validaciones - DOMICILIO
-const validar_domicilio = $('#validar-domicilio'); // * Btn para validar domicilio
-validar_domicilio.on('click', function () {
-    if ($('#form-domicilio').valid()) {
-        const id_usuario_captura = $('#id_usuario_captura').val();
-        const formData = new FormData();
-        formData.append('curp', $('#curp').val());
-        formData.append('seccion', 'domicilio');
-        formData.append('id_pais', $('#pais_select').val());
-        formData.append('id_estado', $('#estado_select').val());
-        formData.append('id_municipio', $('#municipio_select').val());
-        formData.append('clave_localidad', $('#localidad').val());
-        formData.append('cp', $('#codigo_postal').val());
-        formData.append('id_usuario_realizo', id_usuario_captura);
-        formData.append('_token', registroBladeVars.csrfToken);
-        guardarSeccion(formData);
-    }
-});
 
 // ! Ajax para guardar los datos del formulario
 const guardarSeccion = (formData) => {
