@@ -557,7 +557,7 @@
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-file-earmark-text"></i> ¿Está empleado el aspirante?</h5>
                     <div class="form-check mb-3">
-                        {!! html()->checkbox('empleado_aspirante')->id('empleado_aspirante')->checked($datos->empleado)->class('form-check-input') !!}
+                        {!! html()->checkbox('empleado_aspirante')->id('empleado_aspirante')->checked(!$esNuevoRegistro ? $datos->empleado : false)->class('form-check-input') !!}
                         {!! html()->label('Si el aspirante es empleado, marcar esta casilla.')->for('empleado_aspirante')->class('form-check-label ml-2') !!}
                     </div>
                     <div class="row mt-3 d-none" id="datos-empleo">

@@ -79,6 +79,11 @@ class AlumnoController extends Controller
     public function nuevoRegistroAlumno($encodeCURP)
     {
         $curp = base64_decode(urldecode($encodeCURP));
+        $existeRegistroAlumno = $this->alumnoConsultaService->obtenerAlumnoPorCURP($curp);
+        $encodeCURP = urlencode(base64_encode($curp));
+        if ($existeRegistroAlumno) {
+            return redirect()->route('alumnos.ver.registro.alumno', $encodeCURP); // * Redirige al método verRegistroAlumno
+        }
         $sexos = Sexo::all();
         $nacionalidades = Nacionalidad::all();
         $estadosCiviles = EstadoCivil::all();
