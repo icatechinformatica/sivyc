@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Alumno;
 use Illuminate\Support\Facades\Log;
+use App\Repositories\AlumnoSeccionesRepositoryInterface;
 
 class AlumnoSeccionesRepository implements AlumnoSeccionesRepositoryInterface
 {
@@ -44,5 +45,14 @@ class AlumnoSeccionesRepository implements AlumnoSeccionesRepositoryInterface
             Log::error('Error al obtener archivos documentos: ' . $e->getMessage());
             throw new \Exception('Error al obtener los archivos documentos del alumno');
         }
+    }
+
+
+    public function obtenerCERSSPorCURP($curp)
+    {
+        return Alumno::query()
+            ->select('cerss')
+            ->where('curp', $curp)
+            ->first();
     }
 }

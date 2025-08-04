@@ -12,4 +12,5 @@ interface AlumnoSeccionesRepositoryInterface
      */
     public function actualizarOrCrearPorCURP(array $datos);
     public function obtenerArchivosDocumentos($curp);
+    public function obtenerCERSSPorCURP($curp);
 }

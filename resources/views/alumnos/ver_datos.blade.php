@@ -24,6 +24,7 @@
 <input type="hidden" id="esNuevoRegistro" value="{{ $esNuevoRegistro ? 'true' : 'false' }}" />
 @php
     $documentos = $esNuevoRegistro ? [] : json_decode($datos->archivos_documentos ?? '[]', true);
+    $datosCerss = $esNuevoRegistro ? [] : json_decode($datos->cerss ?? '[]', true);
 @endphp
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-12">
@@ -42,7 +43,7 @@
                         <span class="step-circle mr-2">1</span>
                         <span class="fw-bold text-black text-uppercase">DATOS PERSONALES</span>
                     </li>
-                    <li class="list-group-item py-3 d-flex align-items-center" data-step="domicilio">
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="domicilio_section">
                         <span class="step-circle mr-2">2</span>
                         <span class="fw-bold text-uppercase">DOMICILIO</span>
                     </li>
@@ -556,25 +557,29 @@
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-file-earmark-text"></i> ¿Está empleado el aspirante?</h5>
                     <div class="form-check mb-3">
-                        {!! html()->checkbox('empleado_aspirante')->id('empleado_aspirante') !!}
+                        {!! html()->checkbox('empleado_aspirante')->id('empleado_aspirante')->checked($datos->empleado)->class('form-check-input') !!}
                         {!! html()->label('Si el aspirante es empleado, marcar esta casilla.')->for('empleado_aspirante')->class('form-check-label ml-2') !!}
                     </div>
                     <div class="row mt-3 d-none" id="datos-empleo">
                         <div class="col-md-4 mb-3">
                             {!! html()->label('Empresa donde trabaja')->for('empresa_trabaja') !!}
-                            {!! html()->text('empresa_trabaja')->class('form-control')->id('empresa_trabaja')->placeholder('Nombre de la empresa') !!}
+                            {!! html()->text('empresa_trabaja')->class('form-control')->id('empresa_trabaja')->placeholder('Nombre de la empresa')
+                            ->value($esNuevoRegistro ? '' : $datos->empresa_trabaja) !!}
                         </div>
                         <div class="col-md-4 mb-3">
                             {!! html()->label('Puesto')->for('puesto_trabajo') !!}
-                            {!! html()->text('puesto_trabajo')->class('form-control')->id('puesto_trabajo')->placeholder('Puesto que desempeña') !!}
+                            {!! html()->text('puesto_trabajo')->class('form-control')->id('puesto_trabajo')->placeholder('Puesto que desempeña')
+                            ->value($esNuevoRegistro ? '' : $datos->puesto_empresa) !!}
                         </div>
                         <div class="col-md-2 mb-3">
                             {!! html()->label('Antigüedad')->for('antiguedad_trabajo') !!}
-                            {!! html()->text('antiguedad_trabajo')->class('form-control')->id('antiguedad_trabajo')->placeholder('Años/Meses') !!}
+                            {!! html()->text('antiguedad_trabajo')->class('form-control')->id('antiguedad_trabajo')->placeholder('Años/Meses')
+                            ->value($esNuevoRegistro ? '' : $datos->antiguedad) !!}
                         </div>
                         <div class="col-md-6 mb-3">
                             {!! html()->label('Dirección de la empresa')->for('direccion_trabajo') !!}
-                            {!! html()->text('direccion_trabajo')->class('form-control')->id('direccion_trabajo')->placeholder('Dirección completa') !!}
+                            {!! html()->text('direccion_trabajo')->class('form-control')->id('direccion_trabajo')->placeholder('Dirección completa')
+                            ->value($esNuevoRegistro ? '' : $datos->direccion_empresa) !!}
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">
@@ -590,13 +595,14 @@
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-shield-lock"></i> ¿El aspirante pertenece a algún CERSS?</h5>
                     <div class="form-check mb-3">
-                        {!! html()->checkbox('aspirante_cerss')->id('aspirante_cerss') !!}
+                        {!! html()->checkbox('aspirante_cerss')->id('aspirante_cerss')->checked(!$esNuevoRegistro && !empty($datosCerss['aspirante_cerss']) && $datosCerss['aspirante_cerss'] == '1') !!}
                         {!! html()->label('Si el aspirante pertenece a algún CERSS, marcar esta casilla.')->for('aspirante_cerss')->class('form-check-label ml-2') !!}
                     </div>
                     <div class="row mt-3" id="datos-cerss">
                         <div class="col-md-6 mb-3">
                             {!! html()->label('NUMERO DE EXPEDIENTE')->for('numero_expediente') !!}
-                            {!! html()->text('numero_expediente')->class('form-control')->id('numero_expediente')->placeholder('Número de expediente') !!}
+                            {!! html()->text('numero_expediente')->class('form-control')->id('numero_expediente')->placeholder('Número de expediente')
+                                ->value(!$esNuevoRegistro && !empty($datosCerss['numero_expediente']) ? $datosCerss['numero_expediente'] : '') !!}
                         </div>
                         <div class="col-md-6 mb-3">
                             {!! html()->label('FICHA CERSS')->for('documento_ficha_cerss') !!}
@@ -608,6 +614,11 @@
                                         ->attribute('aria-label', 'Documento de la Ficha CERSS')
                                         ->attribute('aria-describedby', 'documento-grado-addon') !!}
                             </div>
+                            @if(!$esNuevoRegistro && !empty($datosCerss['ficha_cerss']))
+                                <small class="form-text text-muted mt-1">
+                                    <a href="{{ asset('storage/' . $datosCerss['ficha_cerss']) }}" target="_blank" class="text-primary text-decoration-underline">Ver documento CERSS</a>
+                                </small>
+                            @endif
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">

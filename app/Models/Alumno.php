@@ -27,6 +27,7 @@ class Alumno extends Model
         'clave_localidad',
         'facebook',
         'empresa_trabaja',
+        'puesto_empresa',
         'antiguedad',
         'direccion_empresa',
         'sistema_capacitacion_especificar',

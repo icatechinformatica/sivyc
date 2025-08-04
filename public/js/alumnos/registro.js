@@ -123,11 +123,10 @@ validar_empleado.on('click', function () {
             formData.append('curp', $('#curp').val());
             formData.append('seccion', 'empleado');
             formData.append('empleado_aspirante', 1);
-            formData.append('nombre_empresa', $('#nombre_empresa').val());
-            formData.append('giro_empresa', $('#giro_empresa').val());
-            formData.append('puesto', $('#puesto').val());
-            formData.append('antiguedad', $('#antiguedad').val());
-            formData.append('horario_trabajo', $('#horario_trabajo').val());
+            formData.append('nombre_empresa', $('#empresa_trabaja').val());
+            formData.append('puesto_trabajo', $('#puesto_trabajo').val());
+            formData.append('antiguedad', $('#antiguedad_trabajo').val());
+            formData.append('direccion_trabajo', $('#direccion_trabajo').val());
             formData.append('id_usuario_realizo', id_usuario_captura);
             formData.append('_token', registroBladeVars.csrfToken);
             guardarSeccion(formData);
@@ -135,6 +134,7 @@ validar_empleado.on('click', function () {
     } else {
         // Solo enviar el check en false
         const formData = new FormData();
+        formData.append('curp', $('#curp').val());
         formData.append('seccion', 'empleado');
         formData.append('empleado_aspirante', 0);
         formData.append('id_usuario_realizo', id_usuario_captura);
@@ -151,19 +151,25 @@ validar_cerss.on('click', function () {
     if (checkCerss) {
         if ($('#form-cerss').valid()) {
             const formData = new FormData();
+            formData.append('curp', $('#curp').val());
             formData.append('seccion', 'cerss');
             formData.append('aspirante_cerss', 1);
-            formData.append('nombre_cerss', $('#nombre_cerss').val());
             formData.append('numero_expediente', $('#numero_expediente').val());
-            formData.append('fecha_ingreso', $('#fecha_ingreso').val());
-            formData.append('fecha_egreso', $('#fecha_egreso').val());
             formData.append('id_usuario_realizo', id_usuario_captura);
             formData.append('_token', registroBladeVars.csrfToken);
+
+            // Adjuntar archivo si existe
+            const fileInput = $('#documento_ficha_cerss')[0];
+            if (fileInput && fileInput.files.length > 0) {
+                formData.append('documento_ficha_cerss', fileInput.files[0]);
+            }
+
             guardarSeccion(formData);
         }
     } else {
         // Solo enviar el check en false
         const formData = new FormData();
+        formData.append('curp', $('#curp').val());
         formData.append('seccion', 'cerss');
         formData.append('aspirante_cerss', 0);
         formData.append('id_usuario_realizo', id_usuario_captura);

@@ -29,7 +29,7 @@ class GuardarSeccionService
             case 'empleado':
                 return $this->guardarEmpleado($datos);
             case 'cerss':
-                return $this->guardarCerss($datos);
+                return $this->guardarCerss($datos, $archivo);
             default:
                 throw new \Exception('Sección no reconocida');
         }
@@ -142,7 +142,7 @@ class GuardarSeccionService
 
         // Manejo de archivos_documentos JSON
         $archivos_documentos = [];
-        
+
         // Obtener archivos_documentos actuales (incluye curp si existe)
         $archivos_documentos_actual = $this->alumnoRepository->obtenerArchivosDocumentos($curp);
         if ($archivos_documentos_actual) {
@@ -185,11 +185,60 @@ class GuardarSeccionService
 
     private function guardarEmpleado($datos)
     {
-        // Lógica para guardar el empleado
+        $curp = strtoupper($datos['curp']);
+
+        $empleado = [
+            'curp' => $curp,
+            'empleado' => $datos['empleado_aspirante'] ?? null,
+            'id_usuario_realizo' => $datos['id_usuario_realizo'] ?? null
+        ];
+
+        if ($datos['empleado_aspirante'] == 1) {
+            $empleado['empresa_trabaja'] = $datos['nombre_empresa'] ?? null;
+            $empleado['puesto_empresa'] = $datos['puesto_trabajo'] ?? null;
+            $empleado['antiguedad'] = $datos['antiguedad'] ?? null;
+            $empleado['direccion_empresa'] = $datos['direccion_trabajo'] ?? null;
+        }
+        return $this->alumnoRepository->actualizarOrCrearPorCURP($empleado);
     }
 
-    private function guardarCerss($datos)
+    private function guardarCerss($datos, $documento_ficha_cerss = null)
     {
-        // Lógica para guardar el CERS
+        $curp = strtoupper($datos['curp']);
+        
+        // Crear estructura JSON directa para cerss
+        $cerss_data = [
+            'aspirante_cerss' => $datos['aspirante_cerss'] ?? null,
+            'numero_expediente' => $datos['numero_expediente'] ?? null,
+            'id_usuario_realizo' => $datos['id_usuario_realizo'] ?? null,
+            'ficha_cerss' => null
+        ];
+
+        // Manejo de archivo ficha_cerss
+        if ($documento_ficha_cerss && $documento_ficha_cerss->isValid()) {
+            $anio = '2026';
+            $carpeta = "{$anio}/AlumnosRegistro/{$curp}";
+            $fecha = now()->format('Ymd_His');
+            $nombreArchivo = "FICHA_CERSS_{$curp}_{$fecha}." . $documento_ficha_cerss->getClientOriginalExtension();
+            $ruta = $documento_ficha_cerss->storeAs($carpeta, $nombreArchivo);
+
+            $cerss_data['ficha_cerss'] = $ruta;
+        } elseif (isset($datos['ficha_cerss'])) {
+            // Si ficha_cerss ya está definido en los datos, usarlo directamente
+            $cerss_data['ficha_cerss'] = $datos['ficha_cerss'];
+        } elseif (isset($datos['fecha_documento_ficha_cerss'])) {
+            $cerss_actual = $this->alumnoRepository->obtenerCERSSPorCURP($curp);
+            if (isset($cerss_actual['ficha_cerss'])) {
+                // Mantener la ruta actual si existe
+                $cerss_data['ficha_cerss'] = $cerss_actual['ficha_cerss'];
+            }
+        }
+
+        $cerss = [
+            'curp' => $curp,
+            'cerss' => json_encode($cerss_data)
+        ];
+
+        return $this->alumnoRepository->actualizarOrCrearPorCURP($cerss);
     }
 }
