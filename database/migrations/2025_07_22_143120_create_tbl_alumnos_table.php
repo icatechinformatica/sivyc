@@ -32,8 +32,12 @@ return new class extends Migration
             $table->string('cp', 5)->nullable();
             $table->string('clave_localidad', 100)->nullable();
             $table->string('facebook', 100)->nullable();
+            $table->boolean('recibir_publicaciones')->default(false);
+            $table->boolean('check_bolsa')->default(false);
 
+            $table->boolean('empleado')->default(false);
             $table->string('empresa_trabaja', 100)->nullable();
+            $table->string('puesto_empresa', 100)->nullable();
             $table->string('antiguedad', 100)->nullable();
             $table->string('direccion_empresa', 100)->nullable();
             $table->string('sistema_capacitacion_especificar')->nullable();
@@ -48,13 +52,8 @@ return new class extends Migration
             $table->json('datos_incorporacion')->nullable();
             $table->jsonb('movimientos')->nullable();
 
-            $table->boolean('recibir_publicaciones')->default(false);
-            $table->boolean('empleado')->default(false);
             $table->boolean('curso_extra')->default(false);
             $table->boolean('servidor_publico')->default(false);
-            $table->boolean('check_bolsa')->default(false);
-            $table->boolean('esta_activo')->default(true);
-
 
             $table->foreignId('id_sexo')->nullable()->references('id')->on('tbl_sexo')->onDelete('set null');
             $table->foreignId('id_pais')->nullable()->references('id')->on('tbl_paises')->onDelete('set null');
@@ -65,6 +64,8 @@ return new class extends Migration
             $table->foreignId('id_ultimo_grado_estudios')->nullable()->references('id_grado_estudio')->on('tbl_cat_grado_estudios')->onDelete('set null');
             $table->foreignId('id_nacionalidad')->references('id_nacionalidad')->on('tbl_cat_nacionalidades')->onDelete('set null');
             $table->foreignId('id_funcionario_realizo')->nullable()->references('id')->on('tbl_funcionarios')->onDelete('set null');
+
+            $table->boolean('esta_activo')->default(true);
         });
     }
 
