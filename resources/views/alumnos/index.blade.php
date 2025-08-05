@@ -17,7 +17,7 @@
         <form class="w-100 m-0 p-0" style="display: contents;" method="POST" action="{{ route('alumnos.consultar.curp') }}">
             @csrf
             {{-- * INPUT CURP --}}
-            <input type="text" class="form-control d-none" placeholder="Ingrese la CURP" id="registro_curp" name="curp">
+            <input type="text" class="form-control d-none" placeholder="Ingrese la CURP" id="registro_curp" name="curp" maxlength="18">
             {{-- * DESPLIEGUE NUEVO REGISTRO --}}
             <button class="btn btn-white btn-nuevo text-dark align-items-center" title="Crear nuevo registro"
                 type="button" id="btn_nuevo_registro_curp">

@@ -625,7 +625,7 @@
         tieneDocumentoCURP: {{ !empty($documentos['curp']) ? 'true' : 'false' }},
         tieneDocumentoUltimoGrado: {{ !empty($documentos['ultimo_grado_estudio']) ? 'true' : 'false' }},
         tieneDocumentoFichaCerss: {{ !empty($documentos['ficha_cerss']) ? 'true' : 'false' }},
-        ultimaSeccionGuardada: {!! json_encode($secciones->pivot['secciones'], JSON_UNESCAPED_UNICODE) !!}
+        ultimaSeccionGuardada: {!! $secciones ? json_encode($secciones->pivot['secciones'], JSON_UNESCAPED_UNICODE) : 'null' !!}
     };
 </script>
 <script src="{{ asset('js/alumnos/consulta.js') }}"></script>
