@@ -16,6 +16,11 @@
             <strong>{{ Session::get('success') }}</strong>
         </div>
     @endif
+    @if (Session::has('error'))
+        <div class="alert alert-danger alert-block">
+            <strong>{{ Session::get('error') }}</strong>
+        </div>
+    @endif
     {{ Form::open(['route' => 'prevalidar-ins', 'method' => 'GET', 'id'=>'frm']) }}
         @csrf
         <div class="form-row">
