@@ -1075,6 +1075,10 @@ class InstructorController extends Controller
         {
             foreach ($especialidades AS $key => $cadwell)
             {
+                if(is_null($cadwell->memorandum_validacion))
+                {
+                    return back()->with('error','Error al intentar registrar el numero de memorandum de validación, favor de volver a generar el documento de validacion, verificar que los datos sean correctos y volver a intentar.');
+                }
                 if(in_array($cadwell->status, $arrtemp) || ($regimen_actual != $saveInstructor->tipo_honorario && $cadwell->status != 'BAJA'))
                 {
                     $hvalidacion = $cadwell->hvalidacion;
@@ -1228,6 +1232,9 @@ class InstructorController extends Controller
             $copiaDataEspecialidad = $instructor->data_especialidad;
             foreach ($copiaDataEspecialidad as $key => $data) {
                 $hvalidacion = $data['hvalidacion'];
+                if (is_string($hvalidacion)) {
+                    $hvalidacion = json_decode($hvalidacion, true);
+                }
                 // Verificar si hay elementos en hvalidacion
                 if (count($hvalidacion) > 0) {
                     // Obtener el último elemento
@@ -4750,33 +4757,6 @@ class InstructorController extends Controller
                 $upd_curso->soportes_instructor = $instructor->soportesInstructor();
                 $upd_curso->save();
             }
-        }
-
-         //Create the user here
-
-        $userInstructor = DB::Connection('mysql')->Table('users')->Where('curp', $instructor->curp)->First();
-        if(is_null($userInstructor)) {
-            $userId = DB::Connection('mysql')->Table('users')->InsertGetId([
-                'name' => $instructor->nombre . ' ' . $instructor->apellidoPaterno . ' ' . $instructor->apellidoMaterno,
-                'email' => $instructor->correo,
-                'password' => Hash::make($instructor->rfc), // Always hash passwords!
-                'created_at' => now(),
-                'updated_at' => now(),
-                'tipo_usuario' => '3',
-                'curp' => $instructor->curp,
-                'id_sivyc' => $instructor->id
-            ]);
-
-                $infowhats = [
-                'nombre' => $instructor->nombre . ' ' . $instructor->apellidoPaterno . ' ' . $instructor->apellidoMaterno,
-                'correo' => $instructor->correo,
-                'pwd' => $instructor->rfc,
-                'telefono' => $instructor->telefono,
-                'sexo' => $instructor->sexo
-            ];
-
-            $response = $this->whatsapp_alta_usuario_msg($infowhats, app(WhatsAppService::class));
-            //end of create user
         }
 
         return $instructor;

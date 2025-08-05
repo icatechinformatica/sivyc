@@ -1683,11 +1683,11 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputarea_carrera">Area de la carrera</label>
-                                <input name="area_carrera" id="area_carrera" type="text" class="form-control" aria-required="true">
+                                <input name="area_carrera" id="area_carrera" type="text" class="form-control" aria-required="true" maxlength="50">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputgrado_prof">Nombre de la Carrera</label>
-                                <input name="carrera" id="carrera" type="text" class="form-control" aria-required="true">
+                                <input name="carrera" id="carrera" type="text" class="form-control" aria-required="true" maxlength="50">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputestatus">Documento Obtenido</label>
@@ -1717,11 +1717,11 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputinstitucion_nombre">Nombre de la Institución Educativa</label>
-                                <input name="institucion_nombre" id="institucion_nombre" type="text" class="form-control" aria-required="true">
+                                <input name="institucion_nombre" id="institucion_nombre" type="text" class="form-control" aria-required="true" maxlength="50">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputfecha_documento">Fecha de Expedicion del Documento</label>
-                                <input name="fecha_documento" id="fecha_documento" type="date" class="form-control" aria-required="true">
+                                <input name="fecha_documento" id="fecha_documento" type="date" class="form-control" aria-required="true" maxlength="50">
                             </div>
                         </div>
                         <div class="form-row">
