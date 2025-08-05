@@ -14,10 +14,12 @@
     </div>
 
     <div class="col-md-4 curp-nuevo-compacto justify-content-end">
-        <form class="w-100 m-0 p-0" style="display: contents;" method="POST" action="{{ route('alumnos.consultar.curp') }}">
+        <form class="w-100 m-0 p-0" style="display: contents;" method="POST"
+            action="{{ route('alumnos.consultar.curp') }}">
             @csrf
             {{-- * INPUT CURP --}}
-            <input type="text" class="form-control d-none" placeholder="Ingrese la CURP" id="registro_curp" name="curp" maxlength="18">
+            <input type="text" class="form-control d-none" placeholder="Ingrese la CURP" id="registro_curp" name="curp"
+                maxlength="18">
             {{-- * DESPLIEGUE NUEVO REGISTRO --}}
             <button class="btn btn-white btn-nuevo text-dark align-items-center" title="Crear nuevo registro"
                 type="button" id="btn_nuevo_registro_curp">
@@ -71,10 +73,9 @@
         <table class="table table-hover">
             <thead class="">
                 <tr>
-                    <th>NOMBRE COMPLETO</th>
+                    <th>NOMBRE</th>
                     <th>CURP</th>
-                    <th class="text-center">FECHA ACTUALIZACIÓN</th>
-                    <th>ACTUALIZADO POR</th>
+                    <th>MATRICULA</th>
                     <th class="text-center">DOCUMENTOS</th>
                     <th class="text-center">EDITAR</th>
                     <th class="text-center">CURSO EXTRA</th>
@@ -82,26 +83,42 @@
             </thead>
             <tbody>
                 @forelse($alumnos as $alumno)
+                @php
+                $documentos = json_decode($alumno->archivos_documentos, true);
+                $cerss = json_decode($alumno->cerss, true);
+                @endphp
                 <tr>
                     <td>{{ $alumno->nombre }} {{ $alumno->apellido_paterno }} {{ $alumno->apellido_materno }}</td>
                     <td>{{ $alumno->curp }}</td>
-                    <td class="text-center">{{ $alumno->updated_at ? $alumno->updated_at->format('d-m-Y') : '' }}</td>
-                    <td class="text-uppercase">{{ $alumno->realizo}}</td>
+                    <td>{{ $alumno->matricula ?? 'SIN ASIGNAR' }}</td>
                     <td class="text-center">
-                        @if(!empty($alumno->requisitos['documento']))
-                        <a href="{{ $alumno->requisitos['documento'] }}"
-                            class="btn btn-sm btn-outline-danger d-flex justify-content-between align-items-center px-2 py-1 shadow-sm"
-                            target="_blank" title="Ver documentos PDF">
-                            <i class="fas fa-file-pdf"></i>
-                            <span class="d-none d-md-inline ml-2 flex-grow-1 text-end">DOCS</span>
-                        </a>
-                        @else
-                        <span class="text-muted">Sin documento</span>
-                        @endif
+                        <div class="d-flex justify-content-center flex-wrap">
+                            @if($documentos && isset($documentos['curp']['ruta']))
+                            <a href="{{ asset('storage/' . $documentos['curp']['ruta']) }}" target="_blank"
+                                class="btn btn-xs btn-primary doc-btn mr-1" title="Ver CURP" data-bs-toggle="tooltip">
+                                <i class="fas fa-id-card"></i>
+                            </a>
+                            @endif
+
+                            @if($documentos && isset($documentos['ultimo_grado_estudio']['ruta']))
+                            <a href="{{ asset('storage/' . $documentos['ultimo_grado_estudio']['ruta']) }}"
+                                target="_blank" class="btn btn-xs btn-info doc-btn mr-1" title="Ver último grado de estudio"
+                                data-bs-toggle="tooltip">
+                                <i class="fas fa-graduation-cap"></i>
+                            </a>
+                            @endif
+
+                            @if($cerss && isset($cerss['ficha_cerss']))
+                            <a href="{{ asset('storage/' . $cerss['ficha_cerss']) }}" target="_blank"
+                                class="btn btn-xs btn-secondary doc-btn" title="Ver CERSS" data-bs-toggle="tooltip">
+                                <i class="fas fa-file"></i>
+                            </a>
+                            @endif
+                        </div>
                     </td>
                     <td>
-                        <a href=""
-                            class="btn btn-sm btn-outline-warning d-flex justify-content-between align-items-center px-2 py-1 shadow-sm"
+                        <a href="{{ route('alumnos.ver.registro.alumno', urlencode(base64_encode($alumno->curp))) }}"
+                            class="btn btn-sm btn-success d-flex justify-content-between align-items-center p-2 shadow-sm"
                             title="Editar información del alumno">
                             <i class="fas fa-edit"></i>
                             <span class="d-none d-md-inline ml-2 flex-grow-1 text-end">Editar</span>
@@ -109,10 +126,10 @@
                     </td>
                     <td>
                         <a href=""
-                            class="btn btn-sm btn-outline-success d-flex justify-content-between align-items-center px-2 py-1 shadow-sm"
+                            class="btn btn-sm btn-danger d-flex justify-content-between align-items-center p-2 shadow-sm"
                             title="Ver cursos extra del alumno">
                             <i class="fas fa-graduation-cap"></i>
-                            <span class="d-none d-md-inline ml-2 flex-grow-1 text-end">Extra</span>
+                            <span class="d-none d-md-inline ml-2 flex-grow-1 text-end">INACTIVO</span>
                         </a>
                     </td>
                 </tr>
@@ -141,7 +158,7 @@
 @push('script_sign')
 <script src="{{ asset('js/alumnos/consulta.js') }}"></script>
 <script>
-$(document).ready(function() {
+    $(document).ready(function() {
     // Inicializar validación para el formulario de CURP
     var form = $("form[action='{{ route('alumnos.consultar.curp') }}']");
     var notyf = new Notyf({ duration: 5000, position: { x: 'right', y: 'top' } });
