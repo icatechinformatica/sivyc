@@ -25,6 +25,12 @@
 @php
     $documentos = $esNuevoRegistro ? [] : json_decode($datos->archivos_documentos ?? '[]', true);
     $datosCerss = $esNuevoRegistro ? [] : json_decode($datos->cerss ?? '[]', true);
+    
+    // Obtener grupos vulnerables seleccionados del alumno
+    $gruposVulnerablesSeleccionados = [];
+    if (!$esNuevoRegistro && $datos) {
+        $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vulnerable')->toArray();
+    }
 @endphp
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-12">
@@ -381,72 +387,32 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-check my-4 border-bottom pb-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'sin_grupo_vulnerable')->class('form-check-input')->id('grupo_vulnerable_sin_grupo') !!}
-                                {!! html()->label('NO PERTENEZCO A UN GRUPO VULNERABLE')->for('grupo_vulnerable_sin_grupo')->class('form-check-label ml-2') !!}
+                                {!! html()->checkbox('pertenece_a_grupo_vulnerable')->class('form-check-input')->id('pertenece_a_grupo_vulnerable')
+                                        ->checked($esNuevoRegistro ? false : (!$datos->vulnerable && empty($gruposVulnerablesSeleccionados))) !!}
+                                {!! html()->label('NO PERTENEZCO A UN GRUPO VULNERABLE')->for('pertenece_a_grupo_vulnerable')->class('form-check-label ml-2') !!}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'lgbttti')->class('form-check-input')->id('grupo_vulnerable_lgbttti') !!}
-                                {!! html()->label('LGBTTTI+')->for('grupo_vulnerable_lgbttti')->class('form-check-label ml-2') !!}
+                        {{-- Generar checkboxes dinámicamente en 3 columnas --}}
+                        @php
+                            $gruposChunks = $gruposVulnerables->chunk(ceil($gruposVulnerables->count() / 3));
+                        @endphp
+                        
+                        @foreach($gruposChunks as $chunk)
+                            <div class="col-md-4">
+                                @foreach($chunk as $grupo)
+                                    <div class="form-check my-4">
+                                        {!! html()->checkbox('grupos_vulnerables[]')
+                                            ->value($grupo->id_grupo_vulnerable)
+                                            ->class('form-check-input')
+                                            ->id('grupo_vulnerable_' . $grupo->id_grupo_vulnerable)
+                                            ->checked(in_array($grupo->id_grupo_vulnerable, $gruposVulnerablesSeleccionados)) !!}
+                                        {!! html()->label(strtoupper($grupo->grupo_vulnerable))
+                                            ->for('grupo_vulnerable_' . $grupo->id_grupo_vulnerable)
+                                            ->class('form-check-label ml-2') !!}
+                                    </div>
+                                @endforeach
                             </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'persona_afroamericana')->class('form-check-input')->id('grupo_vulnerable_persona_afroamericana') !!}
-                                {!! html()->label('PERSONA AFROAMERICANA')->for('grupo_vulnerable_persona_afroamericana')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'persona_indigena')->class('form-check-input')->id('grupo_vulnerable_persona_indigena') !!}
-                                {!! html()->label('PERSONA INDÍGENA')->for('grupo_vulnerable_persona_indigena')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'persona_adulta_mayor')->class('form-check-input')->id('grupo_vulnerable_persona_adulta_mayor') !!}
-                                {!! html()->label('PERSONA ADULTA MAYOR')->for('grupo_vulnerable_persona_adulta_mayor')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'trabajadora_sexual')->class('form-check-input')->id('grupo_vulnerable_trabajadora_sexual') !!}
-                                {!! html()->label('TRABAJADORA SEXUAL')->for('grupo_vulnerable_trabajadora_sexual')->class('form-check-label ml-2') !!}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'discapacidad_para_oir')->class('form-check-input')->id('grupo_vulnerable_discapacidad_para_oir') !!}
-                                {!! html()->label('DISCAPACIDAD PARA OÍR')->for('grupo_vulnerable_discapacidad_para_oir')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'discapacidad_intelectual')->class('form-check-input')->id('grupo_vulnerable_discapacidad_intelectual') !!}
-                                {!! html()->label('DISCAPACIDAD INTELECTUAL')->for('grupo_vulnerable_discapacidad_intelectual')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'madre_jefa_familia')->class('form-check-input')->id('grupo_vulnerable_madre_jefa_familia') !!}
-                                {!! html()->label('MADRE JEFA DE FAMILIA')->for('grupo_vulnerable_madre_jefa_familia')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'discapacidad_para_hablar')->class('form-check-input')->id('grupo_vulnerable_discapacidad_para_hablar') !!}
-                                {!! html()->label('DISCAPACIDAD PARA HABLAR')->for('grupo_vulnerable_discapacidad_para_hablar')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'mujeres_embarazadas')->class('form-check-input')->id('grupo_vulnerable_mujeres_embarazadas') !!}
-                                {!! html()->label('MUJERES EMBARAZADAS')->for('grupo_vulnerable_mujeres_embarazadas')->class('form-check-label ml-2') !!}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'persona_migrante')->class('form-check-input')->id('grupo_vulnerable_persona_migrante') !!}
-                                {!! html()->label('PERSONA MIGRANTE')->for('grupo_vulnerable_persona_migrante')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'persona_privada_libertad')->class('form-check-input')->id('grupo_vulnerable_persona_privada_libertad') !!}
-                                {!! html()->label('PERSONA PRIVADA DE LA LIBERTAD')->for('grupo_vulnerable_persona_privada_libertad')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'discapacidad_visual')->class('form-check-input')->id('grupo_vulnerable_discapacidad_visual') !!}
-                                {!! html()->label('DISCAPACIDAD VISUAL')->for('grupo_vulnerable_discapacidad_visual')->class('form-check-label ml-2') !!}
-                            </div>
-                            <div class="form-check my-4">
-                                {!! html()->checkbox('grupos_vulnerables[]', false, 'discapacidad_motriz')->class('form-check-input')->id('grupo_vulnerable_discapacidad_motriz') !!}
-                                {!! html()->label('DISCAPACIDAD MOTRIZ')->for('grupo_vulnerable_discapacidad_motriz')->class('form-check-label ml-2') !!}
-                            </div>
-                        </div>
+                        @endforeach
                         <div class="col-md-12 d-flex justify-content-end">
                             {{ html()->button('Guardar grupos vulnerables')->class('btn btn-primary float-end')->id('validar-grupos-vulnerables')->type('button') }}
                         </div>
@@ -622,7 +588,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">
-                        {{ html()->button('Guardar CERSS')->class('btn btn-primary float-end')->id('validar-cerss')->type('button') }}
+                        {{ html()->button('Guardar CERSS y Finalizar Registro')->class('btn btn-primary float-end')->id('validar-cerss')->type('button') }}
                     </div>
                 </div>
             </div>
@@ -649,17 +615,14 @@
     window.registroBladeVars = {
         esNuevoRegistro: {{ $esNuevoRegistro ? 'true' : 'false' }},
         routeCurp: '{{ route("alumnos.obtener.datos.curp", ":encodecurp") }}',
-        csrfToken: '{{ csrf_token() }}'
+        csrfToken: '{{ csrf_token() }}',
+        tieneDocumentoCURP: {{ !empty($documentos['curp']) ? 'true' : 'false' }},
+        tieneDocumentoUltimoGrado: {{ !empty($documentos['ultimo_grado_estudio']) ? 'true' : 'false' }},
+        tieneDocumentoFichaCerss: {{ !empty($documentos['ficha_cerss']) ? 'true' : 'false' }},
+        ultimaSeccionGuardada: {!! json_encode($secciones, JSON_UNESCAPED_UNICODE) !!}
     };
 </script>
 <script src="{{ asset('js/alumnos/consulta.js') }}"></script>
 <script src="{{ asset('js/alumnos/registro_validaciones.js') }}"></script>
 <script src="{{ asset('js/alumnos/registro.js') }}"></script>
-<script>
-    // Variables globales para la obtención de la CURP JS
-    window.registroBladeVars = {
-        routeCurp: '{{ route("alumnos.obtener.datos.curp", ":encodecurp") }}',
-        csrfToken: '{{ csrf_token() }}'
-    };
-</script>
 @endpush

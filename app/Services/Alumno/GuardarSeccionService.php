@@ -126,7 +126,42 @@ class GuardarSeccionService
 
     private function guardarGruposVulnerables($datos)
     {
-        // Lógica para guardar los grupos vulnerables
+        $curp = strtoupper($datos['curp']);
+        
+        // Determinar si es vulnerable basado en si tiene grupos vulnerables seleccionados
+        $tieneGruposVulnerables = isset($datos['grupos_vulnerables']) && 
+                                  is_array($datos['grupos_vulnerables']) && 
+                                  !empty($datos['grupos_vulnerables']);
+        
+        // El checkbox "pertenece_a_grupo_vulnerable" significa "NO PERTENEZCO A UN GRUPO VULNERABLE"
+        // Si está marcado, vulnerable debe ser false (0)
+        $noEsVulnerable = isset($datos['pertenece_a_grupo_vulnerable']) && $datos['pertenece_a_grupo_vulnerable'];
+        
+        // Es vulnerable si tiene grupos específicos seleccionados Y NO está marcado el checkbox de "no pertenezco"
+        $esVulnerable = $tieneGruposVulnerables && !$noEsVulnerable;
+        
+        $grupos_vulnerables = [
+            'curp' => $curp,
+            'vulnerable' => $esVulnerable ? 1 : 0,
+            'id_usuario_realizo' => $datos['id_usuario_realizo'] ?? null
+        ];
+
+        // Guardar los datos principales del alumno
+        $alumno = $this->alumnoRepository->actualizarOrCrearPorCURP($grupos_vulnerables);
+
+        // Buscar el modelo Alumno por CURP para sincronizar grupos vulnerables
+        $alumnoModel = \App\Models\Alumno::where('curp', $curp)->first();
+        if ($alumnoModel) {
+            // Si hay grupos vulnerables específicos seleccionados Y no está marcado "no pertenezco", sincronizarlos
+            if ($tieneGruposVulnerables && !$noEsVulnerable) {
+                $alumnoModel->gruposVulnerables()->sync($datos['grupos_vulnerables']);
+            } else {
+                // Si no hay grupos específicos o está marcado "no pertenezco", limpiar la relación
+                $alumnoModel->gruposVulnerables()->sync([]);
+            }
+        }
+
+        return $alumno;
     }
 
     private function guardarCapacitacion($datos, $archivoUltimoGrado = null)

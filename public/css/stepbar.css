@@ -15,10 +15,19 @@
     .step-circle[data-status="actual"] {
         background: #008878;
         border-color: #008878;
+        color: #fff;
     }
 
     .step-circle[data-status="restante"] {
         border-color: #e075ab;
+        background: transparent;
+        color: #e075ab;
+    }
+
+    .step-circle[data-status="pendiente"] {
+        border-color: #ccc;
+        background: transparent;
+        color: #ccc;
     }
 
     .step-progress-nav .list-group-item {
@@ -43,6 +52,21 @@
 
     .step-progress-nav .list-group-item.active .step-circle {
         color: #fff;
+    }
+
+    .step-progress-nav .list-group-item.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+
+    .step-progress-nav .list-group-item.completed {
+        cursor: pointer;
+    }
+
+    .step-progress-nav .list-group-item.current {
+        font-weight: bold;
+        cursor: pointer;
     }
 
     .card.card-body,

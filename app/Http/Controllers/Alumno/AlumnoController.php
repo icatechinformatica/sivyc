@@ -70,10 +70,10 @@ class AlumnoController extends Controller
         $estados = Estado::all();
         $municipios = Municipio::all();
         $gradoEstudios = GradoEstudio::all();
+        $gruposVulnerables = \App\Models\GrupoVulnerable::orderBy('grupo_vulnerable')->get();
 
-        // dd($datos->gradoEstudio); // * Para depuración, eliminar en producción
-
-        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios'));
+        $secciones = $datos->estatus[0]->pivot['secciones'];
+        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
     }
 
     public function nuevoRegistroAlumno($encodeCURP)
@@ -91,9 +91,11 @@ class AlumnoController extends Controller
         $estados = Estado::all();
         $municipios = Municipio::all();
         $gradoEstudios = GradoEstudio::all();
+        $gruposVulnerables = \App\Models\GrupoVulnerable::orderBy('grupo_vulnerable')->get();
 
         $esNuevoRegistro = true;
-        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios'));
+        $secciones = []; // Para nuevo registro, no hay secciones completadas
+        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
     }
 
     // * Función que sera llamada desde la vista para obtener los datos del CURP

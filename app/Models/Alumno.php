@@ -86,7 +86,8 @@ class Alumno extends Model
     // Relación N:M con Estatus
     public function estatus()
     {
-        return $this->belongsToMany(Estatus::class, 'tbl_alumno_estatus', 'id_alumno', 'id_estatus');
+        return $this->belongsToMany(Estatus::class, 'tbl_alumno_estatus', 'id_alumno', 'id_estatus')
+                    ->withPivot('secciones');
     }
 
     public function pais()

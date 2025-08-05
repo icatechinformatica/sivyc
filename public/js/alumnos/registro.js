@@ -30,7 +30,6 @@ datos_personales.on('click', function () {
 // ! Validaciones - DOMICILIO
 const validar_domicilio = $('#validar-domicilio'); // * Btn para validar domicilio
 validar_domicilio.on('click', function () {
-    console.log($('#domicilio').val());
     if ($('#form-domicilio').valid()) {
         const id_usuario_captura = $('#id_usuario_captura').val();
         const formData = new FormData();
@@ -74,13 +73,28 @@ validar_grupos_vulnerables.on('click', function () {
     if ($('#form-grupos-vulnerables').valid()) {
         const id_usuario_captura = $('#id_usuario_captura').val();
         const formData = new FormData();
+        formData.append('curp', $('#curp').val());
         formData.append('seccion', 'grupos_vulnerables');
-        // Obtener todos los grupos seleccionados
+
+        // Verificar si se marcó el checkbox general de pertenece a grupo vulnerable
+        const perteneceGrupoVulnerable = $('#pertenece_a_grupo_vulnerable').is(':checked');
+        if (perteneceGrupoVulnerable) {
+            formData.append('pertenece_a_grupo_vulnerable', '1');
+        }
+
+        // Obtener los grupos vulnerables específicos seleccionados
         const gruposSeleccionados = [];
         $('input[name="grupos_vulnerables[]"]:checked').each(function () {
             gruposSeleccionados.push($(this).val());
         });
-        formData.append('grupos_vulnerables', JSON.stringify(gruposSeleccionados));
+
+        // Solo enviar grupos vulnerables si hay alguno seleccionado
+        if (gruposSeleccionados.length > 0) {
+            gruposSeleccionados.forEach(function (grupo, index) {
+                formData.append(`grupos_vulnerables[${index}]`, grupo);
+            });
+        }
+
         formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
@@ -114,7 +128,6 @@ validar_capacitacion.on('click', function () {
 // ! Validaciones - EMPLEADO
 const validar_empleado = $('#validar-empleo'); // * Btn para validar empleado
 validar_empleado.on('click', function () {
-    console.log('Validando sección empleado');
     const id_usuario_captura = $('#id_usuario_captura').val();
     const checkEmpleado = $('#empleado_aspirante').is(':checked');
     if (checkEmpleado) {
@@ -163,7 +176,6 @@ validar_cerss.on('click', function () {
             if (fileInput && fileInput.files.length > 0) {
                 formData.append('documento_ficha_cerss', fileInput.files[0]);
             }
-
             guardarSeccion(formData);
         }
     } else {
@@ -177,27 +189,6 @@ validar_cerss.on('click', function () {
         guardarSeccion(formData);
     }
 });
-
-const secciones = [
-    'datos-personales',
-    'domicilio',
-    'contacto',
-    'grupos-vulnerables',
-    'capacitacion',
-    'empleado',
-    'cerss'
-];
-
-// Simulación de obtener los datos de captura
-const estadosCaptura = {
-    'datos-personales': { estado: true },
-    'domicilio': { estado: true },
-    'contacto': { estado: true },
-    'grupos-vulnerables': { estado: true },
-    'capacitacion': { estado: true },
-    'empleado': { estado: true },
-    'cerss': { estado: true }
-};
 
 const curp = $('#curp').val();
 const esNuevoRegistro = $('#esNuevoRegistro').val() === 'true' ? true : false;
@@ -306,6 +297,8 @@ function obtenerDatosCurp(curp) {
 
 // ! Ajax para guardar los datos del formulario
 const guardarSeccion = (formData) => {
+    const seccionActual = formData.get('seccion');
+
     $.ajax({
         url: '/alumnos/guardar/seccion/alumno',
         method: 'POST',
@@ -313,7 +306,6 @@ const guardarSeccion = (formData) => {
         processData: false,
         contentType: false,
         success: function (response) {
-            console.log(response);
             if (response.success) {
                 const notyf = new Notyf({
                     position: { x: 'right', y: 'top' },
@@ -325,6 +317,22 @@ const guardarSeccion = (formData) => {
                         message: 'Sección guardada correctamente.'
                     }
                 );
+
+                // Convertir nombre de sección del backend al frontend
+                const mapeoSecciones = {
+                    'datos_personales': 'datos-personales',
+                    'domicilio': 'domicilio',
+                    'contacto': 'contacto',
+                    'grupos_vulnerables': 'grupos-vulnerables',
+                    'capacitacion': 'capacitacion',
+                    'empleado': 'empleado',
+                    'cerss': 'cerss'
+                };
+
+                const seccionFrontend = mapeoSecciones[seccionActual] || seccionActual;
+
+                // Mover a la siguiente sección
+                moverSiguienteSeccion(seccionFrontend);
             }
         },
         error: function (error) {
@@ -356,19 +364,21 @@ if (chkCerss && datosCerss) {
 }
 
 const grupos_vulnerables = Array.from(document.getElementsByName('grupos_vulnerables[]'));
+const perteneceGrupo = document.getElementById('pertenece_a_grupo_vulnerable');
 
-// Iniciar con 'sin_grupo_vulnerable' checked
-const sinGrupo = document.getElementById('grupo_vulnerable_sin_grupo');
-if (sinGrupo) sinGrupo.checked = true;
+// Si se selecciona perteneceGrupo, deselecciona todos los grupos vulnerables
+if (perteneceGrupo) {
+    perteneceGrupo.addEventListener('change', function () {
+        if (this.checked) {
+            grupos_vulnerables.forEach(g => g.checked = false);
+        }
+    });
+}
 
 grupos_vulnerables.forEach(grupo => {
     grupo.addEventListener('change', function () {
-        if (this.value === 'sin_grupo_vulnerable') {
-            grupos_vulnerables.forEach(g => {
-                if (g !== this) g.checked = false;
-            });
-        } else {
-            if (sinGrupo) sinGrupo.checked = false;
+        if (this.checked) {
+            if (perteneceGrupo) perteneceGrupo.checked = false;
         }
     });
 });
@@ -380,34 +390,311 @@ seccionesPasos.forEach(paso => {
     });
 });
 
-function moverSiguienteSeccion() {
-
-}
-
 function mostrarSeccion(paso) {
+    // Verificar si el paso está habilitado
+    if (paso.classList.contains('disabled')) {
+        console.log('Este paso está bloqueado');
+        return;
+    }
+
     const seccion = paso.getAttribute('data-step');
+
     const secciones = document.querySelectorAll('.step-section');
     secciones.forEach(sec => {
         sec.classList.add('d-none');
     });
 
-    const seccionMostrar = document.getElementById(seccion);
+    let seccionMostrar = document.getElementById(seccion);
+
+    // Manejar caso especial de domicilio
+    if (seccion === 'domicilio_section') {
+        seccionMostrar = document.getElementById('domicilio_section');
+    } else if (seccion === 'domicilio' && !seccionMostrar) {
+        seccionMostrar = document.getElementById('domicilio_section');
+    }
+
     if (seccionMostrar) {
         seccionMostrar.classList.remove('d-none');
+    } else {
+        console.error('No se pudo encontrar el elemento con ID:', seccion);
     }
 
     cambiarPaso(paso);
 }
 
 function cambiarPaso(paso) {
+    // Solo cambiar el estado activo, manteniendo los demás estados
     const todosPasos = document.querySelectorAll('.step-progress-nav li');
     todosPasos.forEach(p => {
         p.classList.remove('active');
+
+        // Quitar data-status="actual" de TODOS los círculos
         const circulo = p.querySelector('.step-circle');
-        circulo.setAttribute('data-status', 'completado');
+        if (circulo.getAttribute('data-status') === 'actual') {
+            // Si era actual, determinar su nuevo estado basado en las clases del paso
+            if (p.classList.contains('completed')) {
+                circulo.setAttribute('data-status', 'terminado');
+            } else if (p.classList.contains('disabled')) {
+                circulo.setAttribute('data-status', 'pendiente');
+            } else {
+                // Fallback para otros casos
+                circulo.setAttribute('data-status', 'restante');
+            }
+        }
     });
-    const circulo = paso.querySelector('.step-circle');
-    paso.classList.add('active');
-    circulo.setAttribute('data-status', 'actual');
-    console.log('cambiarPaso', circulo);
+
+    // Marcar el paso actual como activo solo si no está disabled
+    if (!paso.classList.contains('disabled')) {
+        paso.classList.add('active');
+        const circulo = paso.querySelector('.step-circle');
+        // SIEMPRE establecer como actual el paso seleccionado
+        circulo.setAttribute('data-status', 'actual');
+    }
+}
+
+const secciones = [
+    'datos-personales',
+    'domicilio',
+    'contacto',
+    'grupos-vulnerables',
+    'capacitacion',
+    'empleado',
+    'cerss'
+];
+
+function generarEstadosCaptura(seccionesFinalizadas) {
+    const estadosCaptura = {};
+
+    // Si no hay secciones finalizadas, todas están en false
+    if (!seccionesFinalizadas || Object.keys(seccionesFinalizadas).length === 0) {
+        secciones.forEach(seccion => {
+            estadosCaptura[seccion] = { estado: false };
+        });
+        return estadosCaptura;
+    }
+
+    // Mapeo de nombres de backend a frontend
+    const mapeoSecciones = {
+        'datos_personales': 'datos-personales',
+        'domicilio': 'domicilio',
+        'contacto': 'contacto',
+        'grupos_vulnerables': 'grupos-vulnerables',
+        'capacitacion': 'capacitacion',
+        'empleado': 'empleado',
+        'cerss': 'cerss'
+    };
+
+    // Busca la última sección marcada como finalizada
+    let ultimaFinalizadaIndex = -1;
+    for (let i = 0; i < secciones.length; i++) {
+        const seccionFrontend = secciones[i];
+
+        // Buscar la sección correspondiente en el backend
+        const seccionBackend = Object.keys(mapeoSecciones).find(
+            key => mapeoSecciones[key] === seccionFrontend
+        );
+
+        if (
+            seccionBackend &&
+            seccionesFinalizadas[seccionBackend] &&
+            seccionesFinalizadas[seccionBackend].finalizada === true
+        ) {
+            ultimaFinalizadaIndex = i;
+        }
+    }
+
+    // Marca como true hasta la última finalizada (inclusive), false las demás
+    secciones.forEach((seccion, index) => {
+        estadosCaptura[seccion] = {
+            estado: index <= ultimaFinalizadaIndex
+        };
+    });
+
+    return estadosCaptura;
+}
+
+// Parsear el JSON string a objeto JavaScript
+let seccionesFinalizadas = {};
+try {
+    if (typeof registroBladeVars.ultimaSeccionGuardada === 'string') {
+        seccionesFinalizadas = JSON.parse(registroBladeVars.ultimaSeccionGuardada);
+    } else {
+        seccionesFinalizadas = registroBladeVars.ultimaSeccionGuardada || {};
+    }
+} catch (e) {
+    console.error('Error al parsear ultimaSeccionGuardada:', e);
+    seccionesFinalizadas = {};
+}
+
+const estadosCaptura = generarEstadosCaptura(seccionesFinalizadas);
+
+// Variable global para mantener el estado actualizado
+window.estadosCaptura = estadosCaptura;
+
+// Aplicar estados a los pasos del formulario PRIMERO
+aplicarEstadosPasos(estadosCaptura);
+
+// DESPUÉS mostrar la sección actual
+mostrarSeccionActual(estadosCaptura);
+
+// Función para aplicar estados a los pasos de navegación
+function aplicarEstadosPasos(estadosCaptura) {
+    const pasos = document.querySelectorAll('.step-progress-nav li');
+
+    // Encontrar la siguiente sección disponible (primera con estado false)
+    let siguienteSeccionIndex = -1;
+    for (let i = 0; i < secciones.length; i++) {
+        if (!estadosCaptura[secciones[i]]?.estado) {
+            siguienteSeccionIndex = i;
+            break;
+        }
+    }
+
+    // PRIMERO: Limpiar todos los estados
+    pasos.forEach((paso, index) => {
+        paso.classList.remove('completed', 'current', 'disabled', 'active');
+        const circulo = paso.querySelector('.step-circle');
+        circulo.removeAttribute('data-status');
+    });
+
+    // SEGUNDO: Aplicar los nuevos estados
+    pasos.forEach((paso, index) => {
+        const seccion = secciones[index];
+        const circulo = paso.querySelector('.step-circle');
+        const isEnabled = estadosCaptura[seccion]?.estado || false;
+
+        if (isEnabled) {
+            // Esta sección está completada/terminada
+            paso.classList.add('completed');
+            circulo.setAttribute('data-status', 'terminado');
+
+            // Habilitar click para poder regresar
+            paso.style.pointerEvents = 'auto';
+            paso.style.opacity = '1';
+        } else if (index === siguienteSeccionIndex) {
+            // Esta es la siguiente sección disponible (actual)
+            paso.classList.add('current', 'active');
+            circulo.setAttribute('data-status', 'actual');
+
+            // Habilitar click
+            paso.style.pointerEvents = 'auto';
+            paso.style.opacity = '1';
+        } else {
+            // Paso bloqueado/pendiente
+            paso.classList.add('disabled');
+            circulo.setAttribute('data-status', 'pendiente');
+
+            // Deshabilitar click
+            paso.style.pointerEvents = 'none';
+            paso.style.opacity = '0.5';
+        }
+    });
+
+    // Si todas las secciones están completadas, marcar la última como actual
+    const todasCompletadas = secciones.every(seccion => estadosCaptura[seccion]?.estado);
+    if (todasCompletadas) {
+        const ultimoPaso = pasos[pasos.length - 1];
+        const ultimoCirculo = ultimoPaso.querySelector('.step-circle');
+
+        ultimoPaso.classList.remove('completed');
+        ultimoPaso.classList.add('current', 'active');
+        ultimoCirculo.setAttribute('data-status', 'actual');
+    }
+}
+
+function mostrarSeccionActual(estadosCaptura) {
+    // Ocultar todas las secciones
+    const todasLasSecciones = document.querySelectorAll('.step-section');
+    todasLasSecciones.forEach(sec => {
+        sec.classList.add('d-none');
+    });
+
+    // Encontrar el paso que está marcado como activo (actual)
+    const pasoActivo = document.querySelector('.step-progress-nav li.active');
+    let seccionAMostrar = secciones[0]; // Por defecto la primera
+
+    if (pasoActivo) {
+        // Si hay un paso activo, usar su data-step
+        const dataStep = pasoActivo.getAttribute('data-step');
+        seccionAMostrar = dataStep;
+    } else {
+        // Fallback: encontrar la primera sección no completada
+        for (let i = 0; i < secciones.length; i++) {
+            const seccion = secciones[i];
+            if (!estadosCaptura[seccion]?.estado) {
+                seccionAMostrar = seccion;
+                break;
+            }
+            // Si llegamos al final y todas están completadas, mostrar la última
+            if (i === secciones.length - 1) {
+                seccionAMostrar = seccion;
+            }
+        }
+    }
+
+    // Mostrar la sección correspondiente
+    let seccionElemento = document.getElementById(seccionAMostrar);
+
+    // Manejar caso especial de domicilio
+    if (seccionAMostrar === 'domicilio_section') {
+        seccionElemento = document.getElementById('domicilio_section');
+    } else if (seccionAMostrar === 'domicilio' && !seccionElemento) {
+        seccionElemento = document.getElementById('domicilio_section');
+    }
+
+
+    if (seccionElemento) {
+        seccionElemento.classList.remove('d-none');
+    } else {
+        todasLasSecciones.forEach(sec => {
+            console.log('- ID:', sec.id, 'Classes:', sec.className);
+        });
+    }
+}
+
+// Función para mover a la siguiente sección después de guardar
+function moverSiguienteSeccion(seccionActual) {
+    const indiceActual = secciones.indexOf(seccionActual);
+
+    if (indiceActual < secciones.length - 1) {
+        const siguienteSeccion = secciones[indiceActual + 1];
+
+        // Actualizar estados globales
+        // Marcar la sección actual como completada
+        window.estadosCaptura[seccionActual] = { estado: true };
+        
+        // Aplicar nuevos estados (esto calculará automáticamente cuál debe ser "actual")
+        aplicarEstadosPasos(window.estadosCaptura);
+
+        // Mostrar siguiente sección
+        const todasLasSecciones = document.querySelectorAll('.step-section');
+        todasLasSecciones.forEach(sec => sec.classList.add('d-none'));
+
+        let siguienteElemento = document.getElementById(siguienteSeccion);
+
+        // Manejar caso especial de domicilio
+        if (siguienteSeccion === 'domicilio' && !siguienteElemento) {
+            siguienteElemento = document.getElementById('domicilio_section');
+        }
+
+        if (siguienteElemento) {
+            siguienteElemento.classList.remove('d-none');
+        } else {
+            console.error('No se encontró el elemento para la siguiente sección:', siguienteSeccion);
+        }
+    } else {
+        // Si es la última sección, marcarla como completada también
+        window.estadosCaptura[seccionActual] = { estado: true };
+        aplicarEstadosPasos(window.estadosCaptura);
+        
+        const notyf = new Notyf({
+            position: { x: 'right', y: 'top' },
+            duration: 5000,
+        });
+        notyf.open({
+            type: 'success',
+            className: 'notyf-success',
+            message: '¡Registro completado exitosamente!'
+        });
+    }
 }

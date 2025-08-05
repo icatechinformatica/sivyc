@@ -12,4 +12,5 @@ interface ActualizarEstatusRepositoryInterface
      * @return bool
      */
     public function actualizarEstatus(int $alumnoId, int $nuevoEstatus, ?string $seccion = null): bool;
+    public function obtenerUltimoEstatus(int $alumnoId);
 }

@@ -44,10 +44,10 @@ return new class extends Migration
 
             $table->string('medio_entero', 100)->nullable();
             $table->string('medio_confirmacion', 100)->nullable();
+            $table->boolean('vulnerable')->nullable();
 
             $table->json('archivos_documentos')->nullable();
             $table->json('cerss')->nullable();
-            $table->json('vulnerable')->nullable();
             $table->json('datos_alfa')->nullable();
             $table->json('datos_incorporacion')->nullable();
             $table->jsonb('movimientos')->nullable();
@@ -63,8 +63,7 @@ return new class extends Migration
             $table->foreignId('id_discapacidad')->nullable()->references('id_discapacidad')->on('tbl_cat_discapacidades')->onDelete('set null');
             $table->foreignId('id_ultimo_grado_estudios')->nullable()->references('id_grado_estudio')->on('tbl_cat_grado_estudios')->onDelete('set null');
             $table->foreignId('id_nacionalidad')->references('id_nacionalidad')->on('tbl_cat_nacionalidades')->onDelete('set null');
-            $table->foreignId('id_funcionario_realizo')->nullable()->references('id')->on('tbl_funcionarios')->onDelete('set null');
-
+            $table->foreignId('id_usuario_realizo')->nullable()->references('id')->on('users')->onDelete('set null');
             $table->boolean('esta_activo')->default(true);
         });
     }

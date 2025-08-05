@@ -9,7 +9,14 @@ class GrupoVulnerable extends Model
 {
     use HasFactory;
 
-    protected $table = 'grupos_vulnerables';
+    protected $table = 'tbl_aux_grupo_vulnerable';
+    protected $primaryKey = 'id_grupo_vulnerable';
+    
+    public $timestamps = false;
+
+    protected $fillable = [
+        'grupo_vulnerable'
+    ];
 
     public function alumnos()
     {

@@ -5,13 +5,13 @@ $("#form-capacitacion").validate({
         },
         documento_ultimo_grado: {
             required: function () {
-                return $('#ultimo_grado_estudios').val() !== '1' && esNuevoRegistro === true; // 1 Es NO ESPECIFICADO
+                return $('#ultimo_grado_estudios').val() !== '1' && !registroBladeVars.tieneDocumentoUltimoGrado; // 1 Es NO ESPECIFICADO
             },
             extension: "pdf"
         },
         fecha_documento_ultimo_grado: {
             required: function () {
-                return $('#ultimo_grado_estudios').val() !== '1' && esNuevoRegistro === true; // 1 Es NO ESPECIFICADO
+                return $('#ultimo_grado_estudios').val() !== '1' && !registroBladeVars.tieneDocumentoUltimoGrado; // 1 Es NO ESPECIFICADO
             },
             date: true
         },
@@ -63,7 +63,10 @@ $("#form-capacitacion").validate({
 $("#form-grupos-vulnerables").validate({
     rules: {
         'grupos_vulnerables[]': {
-            required: true
+            required: function () {
+                // Solo es requerido si el checkbox NO está seleccionado
+                return !$('#pertenece_a_grupo_vulnerable').is(':checked');
+            }
         }
     },
     messages: {
@@ -196,7 +199,7 @@ $("#form-datos-personales").validate({
         },
         documento_curp: {
             required: function () {
-                return esNuevoRegistro === true;
+                return esNuevoRegistro === true && !registroBladeVars.tieneDocumentoCURP;
             },
             extension: "pdf"
         },
@@ -407,10 +410,8 @@ $("#form-cerss").validate({
             digits: true
         },
         documento_ficha_cerss: {
-            required: {
-                depends: function () {
-                    return $('#aspirante_cerss').is(':checked');
-                }
+            required: function() {
+                return $('#aspirante_cerss').is(':checked') && !registroBladeVars.tieneDocumentoFichaCerss;
             },
             extension: "pdf"
         }

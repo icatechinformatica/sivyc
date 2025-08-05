@@ -15,8 +15,8 @@ class ActualizarEstatusRepository implements ActualizarEstatusRepositoryInterfac
         try {
 
             $alumno = Alumno::find($alumnoId);
-            
-            if (!$alumno) return false; 
+
+            if (!$alumno) return false;
 
             $alumno->estatus()->sync([$nuevoEstatus]);
             if ($seccion) {
@@ -28,6 +28,18 @@ class ActualizarEstatusRepository implements ActualizarEstatusRepositoryInterfac
         } catch (\Exception $e) {
             Log::error('Error al actualizar estatus: ' . $e->getMessage());
             return false;
+        }
+    }
+
+    public function obtenerUltimoEstatus(int $alumnoId)
+    {
+        try {
+            $alumno = Alumno::with('estatus')->find($alumnoId);
+
+            return $alumno;
+        } catch (\Exception $e) {
+            Log::error('Error al obtener el último estatus: ' . $e->getMessage());
+            return null;
         }
     }
 }
