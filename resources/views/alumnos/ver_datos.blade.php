@@ -590,6 +590,12 @@
                     <div class="col-md-12 d-flex justify-content-end">
                         {{ html()->button('Guardar CERSS y Finalizar Registro')->class('btn btn-primary float-end')->id('validar-cerss')->type('button') }}
                     </div>
+
+                    @if($secciones && $secciones->id == 5)
+                    <div class="col-md-12 d-flex justify-content-end mt-5">
+                        <a href="{{ route('alumnos.consulta.alumno') }}" class="btn btn-secondary float-start" id="regresar-inicio">Regresar al inicio</a>
+                    </div>
+                    @endif
                 </div>
             </div>
             {!! html()->form()->close() !!}
@@ -619,7 +625,7 @@
         tieneDocumentoCURP: {{ !empty($documentos['curp']) ? 'true' : 'false' }},
         tieneDocumentoUltimoGrado: {{ !empty($documentos['ultimo_grado_estudio']) ? 'true' : 'false' }},
         tieneDocumentoFichaCerss: {{ !empty($documentos['ficha_cerss']) ? 'true' : 'false' }},
-        ultimaSeccionGuardada: {!! json_encode($secciones, JSON_UNESCAPED_UNICODE) !!}
+        ultimaSeccionGuardada: {!! json_encode($secciones->pivot['secciones'], JSON_UNESCAPED_UNICODE) !!}
     };
 </script>
 <script src="{{ asset('js/alumnos/consulta.js') }}"></script>

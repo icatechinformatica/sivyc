@@ -72,7 +72,7 @@ class AlumnoController extends Controller
         $gradoEstudios = GradoEstudio::all();
         $gruposVulnerables = \App\Models\GrupoVulnerable::orderBy('grupo_vulnerable')->get();
 
-        $secciones = $datos->estatus[0]->pivot['secciones'];
+        $secciones = $datos->estatus[0];
         return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
     }
 

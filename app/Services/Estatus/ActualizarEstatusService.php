@@ -33,7 +33,7 @@ class ActualizarEstatusService
 
         // Obtener el último estatus del alumno
         $ultimoEstatus = $this->estatusRepository->obtenerUltimoEstatus($alumnoId);
-        
+
         if (!$ultimoEstatus || !$ultimoEstatus->estatus || $ultimoEstatus->estatus->isEmpty()) {
             // Si no hay estatus previo, permitir la actualización
             return $this->estatusRepository->actualizarEstatus($alumnoId, $nuevoEstatus, $seccion);
@@ -42,7 +42,7 @@ class ActualizarEstatusService
         // Obtener las secciones del último estatus
         $estatusActual = $ultimoEstatus->estatus->first();
         $seccionesGuardadas = [];
-        
+
         if ($estatusActual && $estatusActual->pivot && $estatusActual->pivot->secciones) {
             $seccionesGuardadas = json_decode($estatusActual->pivot->secciones, true) ?: [];
         }
@@ -51,17 +51,22 @@ class ActualizarEstatusService
         if ($seccionIndex !== null && $seccionesGuardadas) {
             foreach ($seccionesGuardadas as $seccionGuardada => $datos) {
                 $seccionGuardadaIndex = array_search($seccionGuardada, $secciones);
-                
+
                 // Si encontramos una sección finalizada con índice mayor, no permitimos actualizar una sección menor
-                if ($seccionGuardadaIndex !== false && 
-                    isset($datos['finalizada']) && 
-                    $datos['finalizada'] === true && 
-                    $seccionIndex < $seccionGuardadaIndex) {
-                    
+                if (
+                    $seccionGuardadaIndex !== false &&
+                    isset($datos['finalizada']) &&
+                    $datos['finalizada'] === true &&
+                    $seccionIndex < $seccionGuardadaIndex
+                ) {
+
                     // No actualizar si el ID de la sección es menor que una ya finalizada
                     return false;
                 }
             }
+        }
+        if ($seccion === 'cerss') {
+            $nuevoEstatus = 5;  // Finalizo
         }
 
         return $this->estatusRepository->actualizarEstatus($alumnoId, $nuevoEstatus, $seccion);

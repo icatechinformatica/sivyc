@@ -331,6 +331,9 @@ const guardarSeccion = (formData) => {
 
                 const seccionFrontend = mapeoSecciones[seccionActual] || seccionActual;
 
+                if(seccionActual === 'cerss') {
+                    window.location.reload();
+                }
                 // Mover a la siguiente sección
                 moverSiguienteSeccion(seccionFrontend);
             }
