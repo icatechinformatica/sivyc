@@ -41,7 +41,7 @@ class ValidacionServicioVb
                         ->whereDate('agenda.start', '<=', $fechaStr)
                         ->whereDate('agenda.end', '>=', $fechaStr)
                         ->where(function ($query) {
-                            $query->where('tbl_cursos.status', '=', 'VALIDADO')
+                            $query->where('tbl_cursos.status_curso', '=', 'AUTORIZADO')
                                 ->orWhere('tbl_cursos.vb_dg', '=', true);
                         })
                         ->get();
@@ -116,7 +116,7 @@ class ValidacionServicioVb
                     FROM agenda
                     LEFT JOIN tbl_cursos ON agenda.id_curso = tbl_cursos.folio_grupo
                     WHERE agenda.id_instructor = {$instructor->id}
-                        AND (tbl_cursos.status = 'VALIDADO' OR tbl_cursos.vb_dg = true)
+                        AND (tbl_cursos.status_curso = 'AUTORIZADO' OR tbl_cursos.vb_dg = true)
                 ) as t"))
                 ->whereBetween('dia', [$semanaInicio->format('Y-m-d'), $semanaFin->format('Y-m-d')])
                 ->value(DB::raw('SUM(EXTRACT(hour FROM duracion) * 60 + EXTRACT(minute FROM duracion))'));
@@ -148,7 +148,7 @@ class ValidacionServicioVb
             $cursos = DB::table('tbl_cursos as tc')
                 ->where('tc.id_instructor', $instructor->id)
                 ->where(function ($query) {
-                        $query->where('tc.status', '=', 'VALIDADO')
+                        $query->where('tc.status_curso', '=', 'AUTORIZADO')
                         ->orWhere('tc.vb_dg', '=', true);
                 })
                 // ->where(function ($query) use ($folio_grupo) {
@@ -198,24 +198,135 @@ class ValidacionServicioVb
 
 
     ### Funcion para verificar si el instructor no tiene detalles al estar llevando otro curso en las mismos tiempos
+    // public function InstNoTraslapeFechaHoraConOtroCurso($instructores, $grupos)
+    // {
+    //     $newArray = [];
+
+    //     $idsInstructores = collect($instructores)->pluck('id')->all();
+
+    //     // Preconsulta todas las agendas relevantes
+    //     $agendaExistente = DB::table('agenda as a')
+    //         ->leftJoin('tbl_cursos as tc', 'a.id_curso', '=', 'tc.folio_grupo')
+    //         ->select(
+    //             'a.id_instructor',
+    //             'a.start as start',
+    //             'a.end as end'
+    //         )
+    //         ->whereIn('a.id_instructor', $idsInstructores)
+    //         // ->where('tc.status', '=', 'VALIDADO')
+    //         ->where(function ($query) {
+    //             $query->where('tc.status_curso', '=', 'VALIDADO')
+    //                 ->orWhere('tc.vb_dg', '=', true);
+    //         })
+    //         ->get()
+    //         ->groupBy('id_instructor');
+
+    //     foreach ($instructores as $instructor) {
+    //         $traslape = false;
+    //         $actividades = $agendaExistente->get($instructor->id, collect());
+
+    //         foreach ($grupos as $grupo) {
+    //             $grupoInicio = Carbon::parse($grupo->start);
+    //             $grupoFin = Carbon::parse($grupo->end);
+
+    //             foreach ($actividades as $actividad) {
+    //                 $actividadInicio = Carbon::parse($actividad->start);
+    //                 $actividadFin = Carbon::parse($actividad->end);
+
+    //                 // Validación de traslape: [start1 < end2] && [start2 < end1]
+    //                 if ($grupoInicio < $actividadFin && $actividadInicio < $grupoFin) {
+    //                     $traslape = true;
+    //                     break 2; // Salir de los dos ciclos
+    //                 }
+    //             }
+    //         }
+
+    //         if (!$traslape) {
+    //             $newArray[] = $instructor;
+    //         }
+    //     }
+
+    //     return $newArray;
+    // }
+
+    // public function InstNoTraslapeFechaHoraConOtroCurso($instructores, $grupos)
+    // {
+    //     $newArray = [];
+    //     $idsInstructores = collect($instructores)->pluck('id')->all();
+
+    //     // Preconsulta todas las agendas de instructores con cursos validados
+    //     $agendaExistente = DB::table('agenda as a')
+    //         ->leftJoin('tbl_cursos as tc', 'a.id_curso', '=', 'tc.folio_grupo')
+    //         ->select(
+    //             'a.id_instructor',
+    //             'a.start',
+    //             'a.end',
+    //             'a.id_curso'
+    //         )
+    //         ->whereIn('a.id_instructor', $idsInstructores)
+    //         ->where(function ($query) {
+    //             $query->where('tc.status_curso', '=', 'VALIDADO')
+    //                 ->orWhere('tc.vb_dg', '=', true);
+    //         })
+    //         ->get()
+    //         ->groupBy('id_instructor');
+
+    //     foreach ($instructores as $instructor) {
+    //         $traslape = false;
+
+    //         $actividades = $agendaExistente->get($instructor->id, collect());
+
+    //         // Filtrar solo los grupos que están asignados a este instructor
+    //         $gruposDelInstructor = collect($grupos)->filter(function ($grupo) use ($instructor) {
+    //             return $grupo->id_instructor == $instructor->id;
+    //         });
+
+    //         foreach ($gruposDelInstructor as $grupo) {
+    //             $grupoInicio = Carbon::parse($grupo->start);
+    //             $grupoFin = Carbon::parse($grupo->end);
+
+    //             foreach ($actividades as $actividad) {
+    //                 // Omitimos comparación contra el mismo curso (folio_grupo / id_curso)
+    //                 if ($grupo->id_curso == $actividad->id_curso) {
+    //                     continue;
+    //                 }
+
+    //                 $actividadInicio = Carbon::parse($actividad->start);
+    //                 $actividadFin = Carbon::parse($actividad->end);
+
+    //                 // Regla de traslape
+    //                 if ($grupoInicio < $actividadFin && $actividadInicio < $grupoFin) {
+    //                     $traslape = true;
+    //                     break 2; // Rompe ambos foreach
+    //                 }
+    //             }
+    //         }
+
+    //         if (!$traslape) {
+    //             $newArray[] = $instructor;
+    //         }
+    //     }
+
+    //     return $newArray;
+    // }
+
     public function InstNoTraslapeFechaHoraConOtroCurso($instructores, $grupos)
     {
         $newArray = [];
-
         $idsInstructores = collect($instructores)->pluck('id')->all();
 
-        // Preconsulta todas las agendas relevantes
+        // Actividades validadas
         $agendaExistente = DB::table('agenda as a')
             ->leftJoin('tbl_cursos as tc', 'a.id_curso', '=', 'tc.folio_grupo')
             ->select(
                 'a.id_instructor',
-                'a.start as start',
-                'a.end as end'
+                'a.start',
+                'a.end',
+                'a.id_curso'
             )
             ->whereIn('a.id_instructor', $idsInstructores)
-            // ->where('tc.status', '=', 'VALIDADO')
             ->where(function ($query) {
-                $query->where('tc.status', '=', 'VALIDADO')
+                $query->where('tc.status_curso', '=', 'AUTORIZADO')
                     ->orWhere('tc.vb_dg', '=', true);
             })
             ->get()
@@ -230,13 +341,39 @@ class ValidacionServicioVb
                 $grupoFin = Carbon::parse($grupo->end);
 
                 foreach ($actividades as $actividad) {
+                    if ($grupo->id_curso == $actividad->id_curso) {
+                        continue;
+                    }
+
                     $actividadInicio = Carbon::parse($actividad->start);
                     $actividadFin = Carbon::parse($actividad->end);
 
-                    // Validación de traslape: [start1 < end2] && [start2 < end1]
-                    if ($grupoInicio < $actividadFin && $actividadInicio < $grupoFin) {
-                        $traslape = true;
-                        break 2; // Salir de los dos ciclos
+                    // Rango de fechas que se superponen (para iterar día por día)
+                    $fechaInicioMax = $grupoInicio->copy()->greaterThan($actividadInicio) ? $grupoInicio->copy() : $actividadInicio->copy();
+                    $fechaFinMin = $grupoFin->copy()->lessThan($actividadFin) ? $grupoFin->copy() : $actividadFin->copy();
+
+                    // Solo si hay días en común, se evalúa día por día
+                    if ($fechaInicioMax->lte($fechaFinMin)) {
+                        // Comparar día por día
+                        $fechaActual = $fechaInicioMax->copy();
+
+                        while ($fechaActual->lte($fechaFinMin)) {
+                            // Hora del grupo
+                            $horaGrupoInicio = $grupoInicio->format('H:i:s');
+                            $horaGrupoFin = $grupoFin->format('H:i:s');
+
+                            // Hora de la actividad
+                            $horaActividadInicio = $actividadInicio->format('H:i:s');
+                            $horaActividadFin = $actividadFin->format('H:i:s');
+
+                            // Validar traslape en horas del mismo día
+                            if ($horaGrupoInicio < $horaActividadFin && $horaActividadInicio < $horaGrupoFin) {
+                                $traslape = true;
+                                break 2;
+                            }
+
+                            $fechaActual->addDay();
+                        }
                     }
                 }
             }
@@ -248,6 +385,7 @@ class ValidacionServicioVb
 
         return $newArray;
     }
+
 
     ##Funcion para validar si el instructor ALFA
     public function InstAlfaNoBecados($instructores){
