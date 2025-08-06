@@ -20,4 +20,10 @@ class Estatus extends Model
     {
         return $this->belongsToMany(Alumno::class, 'tbl_alumno_estatus', 'id_estatus', 'id_alumno');
     }
+
+    // Relación N:M con Grupo
+    public function grupos()
+    {
+        return $this->belongsToMany(Grupo::class, 'tbl_grupo_estatus', 'id_estatus', 'id_grupo');
+    }
 }

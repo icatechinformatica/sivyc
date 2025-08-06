@@ -17,9 +17,7 @@ class AlumnosRepository implements AlumnosInterface
 
     public function obtenerTodos($registrosPorPagina = 15)
     {
-        return $this->alumno
-                        ->orderBy('id', 'desc')
-                        ->paginate($registrosPorPagina);
+        return $this->alumno->orderBy('id', 'desc')->paginate($registrosPorPagina);
     }
 
     public function buscarPaginado($busqueda = null, $registrosPorPagina = 15)

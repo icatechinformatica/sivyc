@@ -38,7 +38,7 @@
     <div class="row mb-3 align-items-start" style="min-height: 48px;">
         <div class="col-md-12 d-flex align-items-center" style="gap: 1.5rem;">
             <p class="text-muted mb-0">
-                Mostrando {{ $data->firstItem() }} a {{ $data->lastItem() }} de {{ $data->total() }} registros
+                Mostrando {{ $grupos->firstItem() }} a {{ $grupos->lastItem() }} de {{ $grupos->total() }} registros
                 @if(request('valor_buscar'))
                 <span class="badge bg-danger ms-3 ml-3">Filtrado por: "{{ request('valor_buscar') }}"</span>
                 @endif
@@ -54,12 +54,11 @@
                     <th>CURSO</th>
                     <th>UNIDAD</th>
                     <th>INSTRUCTOR</th>
-                    <th>TURNAR</th>
-                    <th>ESTADO</th>
+                    <th>ESTATUS</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($data as $grupo)
+                @forelse($grupos as $grupo)
                 <tr>
                     <td>{{ $grupo->folio_grupo }}</td>
                     <td>{{ $grupo->curso }}</td>
@@ -87,7 +86,7 @@
 
     <!-- Enlaces de paginación -->
     <div class="d-flex justify-content-center">
-        {{ $data->appends(request()->query())->links('pagination::bootstrap-4') }}
+        {{ $grupos->appends(request()->query())->links('pagination::bootstrap-4') }}
     </div>
 </div>
 @endsection
