@@ -20,9 +20,12 @@ return new class extends Migration
             $table->foreignId('id_instructor')->constrained('tbl_instructores');
 
             $table->string('clave_grupo', 10)->unique();
-            $table->foreignId('id_modalidad_curso')->constrained('tbl_aux_modalidad_curso')->onDelete('set null');
             $table->foreignId('id_curso')->constrained('cursos')->onDelete('set null');
-            $table->foreignId('id_modalidad_capacitacion')->constrained('tbl_modalidades_cursos')->onDelete('set null');
+
+            $table->foreignId('id_modalidad')->constrained('tbl_aux_modalidades')->onDelete('set null'); // * CAE y EXT
+            $table->foreignId('id_imparticion')->constrained('tbl_aux_imparticiones')->onDelete('set null'); // * Presencial y A Distancia
+            $table->foreignId('id_servicio')->constrained('tbl_aux_servicios')->onDelete('set null'); // * Curso y Certificación
+
             $table->foreignId('id_organismo_publico')->constrained('organismos_publicos')->onDelete('set null');
             $table->foreignId('id_municipio')->constrained('tbl_municipios')->onDelete('set null');
             $table->foreignId('id_localidad')->constrained('tbl_localidades')->onDelete('set null');

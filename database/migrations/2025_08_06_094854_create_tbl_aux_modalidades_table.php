@@ -13,10 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_modalidades_cursos', function (Blueprint $table) {
+        Schema::create('tbl_aux_modalidades', function (Blueprint $table) {
             $table->id();
-            $table->string('modalidad_capacitacion', 50)->unique();
-            $table->timestamps();
+            $table->string('modalidad'); // * CAE y EXT
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_modalidades_cursos');
+        Schema::dropIfExists('tbl_aux_modalidades');
     }
 };

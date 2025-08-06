@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_aux_modalidad_curso', function (Blueprint $table) {
+        Schema::create('tbl_aux_servicios', function (Blueprint $table) {
             $table->id();
-            $table->string('modalidad_curso', 10);
+            $table->string('servicio'); // * Curso y Certificación
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_aux_modalidad_curso');
+        Schema::dropIfExists('tbl_aux_servicios');
     }
 };
