@@ -255,6 +255,7 @@ function obtenerDatosCurp(curp) {
         },
         success: function (response) {
             if (response.success) {
+                console.log(response.data);
                 const notyf = new Notyf({
                     position: { x: 'right', y: 'top' },
                     dismissible: true,
