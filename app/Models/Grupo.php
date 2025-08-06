@@ -55,4 +55,14 @@ class Grupo extends Model
     {
         return $this->belongsToMany(Estatus::class, 'tbl_grupo_estatus', 'id_grupo', 'id_estatus');
     }
+
+    public function tipoImparticion()
+    {
+        return $this->belongsTo(TipoImparticion::class, 'id_tipo_imparticion');
+    }
+
+    public function modalidad()
+    {
+        return $this->belongsTo(ModalidadGrupo::class, 'id_modalidad_curso');
+    }
 }

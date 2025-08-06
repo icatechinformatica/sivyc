@@ -52,20 +52,30 @@
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Información general</h5>
                     <div class="row my-1">
-                        <div class="form-group col-md-6 mb-1">
+                        <div class="form-group col-md-4 mb-1">
                             {{ html()->label('IMPARTICIÓN', 'imparticion')->class('form-label mb-1') }}
-                            {{ html()->select('imparticion', ['' => 'SELECCIONAR', 1 => 'PRESENCIAL', 2 =>'A DISTANCIA'])->class('form-control form-control-sm')->required() }}
+                            {{ html()->select('imparticion', [null => 'SELECCIONE EL TIPO DE IMPARTICIÓN'] + $tiposImparticion->pluck('imparticion', 'id')->toArray())->class('form-control')->required() }}
                         </div>
-                        <div class="form-group col-md-6 mb-1">
-                            {{ html()->label('TIPO CURSO', 'tipo')->class('form-label mb-1') }}
-                            {{ html()->select('tipo', ['' => 'SELECCIONAR', 1 => 'CURSO', 2 => 'CERTIFICACIÓN'])->class('form-control form-control-sm')->required() }}
+                        <div class="form-group col-md-4 mb-1">
+                            {{ html()->label('MODALIDAD', 'modalidad')->class('form-label mb-1') }}
+                            {{ html()->select('modalidad', [null => 'SELECCIONAR MODALIDAD'] + $modalidades->pluck('modalidad', 'id')->toArray())->class('form-control ')->required() }}
+                        </div>
+                        <div class="form-group col-md-4 mb-1">
+                            {{ html()->label('UNIDAD/ACCIÓN MÓVIL', 'unidad_accion_movil')->class('form-label mb-1') }}
+                            {{ html()->select('unidad_accion_movil', [null => 'SELECCIONAR'] + $unidades->pluck('unidad', 'id')->toArray())->class('form-control ')->required() }}
                         </div>
                     </div>
-                    <div class="form-group mb-1">
-                        {{ html()->label('CURSO', 'curso')->class('form-label mb-1') }}
-                        {{ html()->select('curso', ['' => 'SELECCIONAR', 1 => 'CURSO 1', 2 => 'CURSO 2'])->class('form-control form-control-sm')->required() }}
+                    <div class="row my-1">
+                        <div class="form-group col-md-3 mb-1">
+                            {{ html()->label('SERVICIO', 'servicio')->class('form-label mb-1') }}
+                            {{ html()->select('servicio', [null => 'SELECCIONAR'] + $servicios->pluck('servicio', 'id')->toArray())->class('form-control ')->required() }}
+                        </div>
+                        <div class="form-group col-md-9 mb-1">
+                            {{ html()->label('CURSO', 'curso')->class('form-label mb-1') }}
+                            {{ html()->select('curso', [null => 'SELECCIONA CURSO'] + $cursos->pluck('nombre_curso', 'id')->toArray())->class('form-control ')->required() }}
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end mt-3">
                         {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-info-general')->attribute('data-next-step', 'ubicacion')->type('button')->attribute('data-seccion', 'info-general') }}
                     </div>
                 </div>
@@ -76,43 +86,33 @@
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Ubicación</h5>
                     <div class="row my-1">
                         <div class="form-group col-md-6 mb-1">
-                            {{ html()->label('UNIDAD/ACCIÓN MÓVIL', 'unidad_accion_movil')->class('form-label mb-1') }}
-                            {{ html()->select('unidad_accion_movil', ['' => 'SELECCIONAR', 1 => 'UNIDAD 1', 2 => 'UNIDAD 2'])->class('form-control form-control-sm')->required() }}
-                        </div>
-                        <div class="form-group col-md-6 mb-1">
                             {{ html()->label('MUNICIPIO', 'municipio')->class('form-label mb-1') }}
-                            {{ html()->select('municipio', ['' => 'SELECCIONAR', 1 => 'MUNICIPIO 1', 2 => 'MUNICIPIO 2'])->class('form-control form-control-sm')->required() }}
+                            {{ html()->select('municipio', [null => 'SELECCIONAR'] + $municipios->pluck('muni', 'id')->toArray())->class('form-control')->id('municipio-select')->required() }}
                         </div>
-                    </div>
-                    <div class="row my-1">
                         <div class="form-group col-md-6 mb-1">
                             {{ html()->label('LOCALIDAD', 'localidad')->class('form-label mb-1') }}
-                            {{ html()->select('localidad', ['' => 'SELECCIONAR', 1 => 'LOCALIDAD 1', 2 => 'LOCALIDAD 2'])->class('form-control form-control-sm')->required() }}
-                        </div>
-                        <div class="form-group col-md-6 mb-1">
-                            {{ html()->label('MODALIDAD', 'modalidad')->class('form-label mb-1') }}
-                            {{ html()->select('modalidad', ['' => 'SELECCIONAR', 1 => 'EXTENCIÓN', 2 => 'CAE'])->class('form-control form-control-sm')->required() }}
+                            {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO PRIMERO'])->class('form-control')->id('localidad-select')->disabled()->required() }}
                         </div>
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('LUGAR DONDE SE IMPARTIRÁ', 'nombre_lugar')->class('form-label mb-1') }}
-                        {{ html()->text('nombre_lugar')->class('form-control form-control-sm')->required() }}
+                        {{ html()->text('nombre_lugar')->class('form-control ')->required() }}
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('CALLE Y NÚMERO', 'calle_numero')->class('form-label mb-1') }}
-                        {{ html()->text('calle_numero')->class('form-control form-control-sm')->required() }}
+                        {{ html()->text('calle_numero')->class('form-control ')->required() }}
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('COLONIA O BARRIO', 'colonia')->class('form-label mb-1') }}
-                        {{ html()->text('colonia')->class('form-control form-control-sm')->required() }}
+                        {{ html()->text('colonia')->class('form-control ')->required() }}
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('CÓDIGO POSTAL', 'codigo_postal')->class('form-label mb-1') }}
-                        {{ html()->text('codigo_postal')->class('form-control form-control-sm') }}
+                        {{ html()->text('codigo_postal')->class('form-control ') }}
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('REFERENCIAS ADICIONALES', 'referencias')->class('form-label mb-1') }}
-                        {{ html()->textarea('referencias')->class('form-control form-control-sm')->rows(2) }}
+                        {{ html()->textarea('referencias')->class('form-control ')->rows(2) }}
                     </div>
                     <div class="d-flex justify-content-end">
                         {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-ubicacion')->attribute('data-next-step', 'representante')->type('button')->attribute('data-seccion', 'ubicacion') }}
@@ -125,16 +125,16 @@
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Representante y organización</h5>
                     <div class="row mt-2">
                         <div class="form-group col-md-12 mb-2">
-                            {{ html()->label('ORGANIZO PUBLICO', 'organizo_publico')->class('form-label mb-1') }}
-                            {{ html()->select('organizo_publico', ['' => 'SELECCIONAR', 1 => 'ORGANIZO 1', 2 => 'ORGANIZO 2'])->class('form-control form-control-sm')->required() }}
+                            {{ html()->label('ORGANISMO PUBLICO', 'organismo_publico')->class('form-label mb-1') }}
+                            {{ html()->select('organismo_publico', ['' => 'SELECCIONAR'] + $organismos_publicos->pluck('organismo', 'id')->toArray())->class('form-control ')->required() }}
                         </div>
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('NOMBRE DEL REPRESENTANTE', 'nombre_representante')->class('form-label mb-1') }}
-                            {{ html()->text('nombre_representante')->class('form-control form-control-sm')->required() }}
+                            {{ html()->text('nombre_representante')->class('form-control ')->required() }}
                         </div>
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('TELÉFONO DEL REPRESENTANTE', 'telefono_representante')->class('form-label mb-1') }}
-                            {{ html()->text('telefono_representante')->class('form-control form-control-sm')->required() }}
+                            {{ html()->text('telefono_representante')->class('form-control ')->required() }}
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
@@ -150,19 +150,19 @@
                         <div class="col-md-12">
                             <div class="mb-2">
                                 {{ html()->label('MEDIO VIRTUAL', 'medio_virtual')->class('form-label mb-1') }}
-                                {{ html()->select('medio_virtual', ['' => 'SELECCIONAR', 1 => 'VIRTUAL 1', 2 => 'VIRTUAL 2'])->class('form-control form-control-sm')->disabled() }}
+                                {{ html()->select('medio_virtual', ['' => 'SELECCIONAR', 1 => 'VIRTUAL 1', 2 => 'VIRTUAL 2'])->class('form-control ')->disabled() }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('ENLACE VIRTUAL', 'enlace_virtual')->class('form-label mb-1') }}
-                                {{ html()->text('enlace_virtual')->class('form-control form-control-sm')->disabled() }}
+                                {{ html()->text('enlace_virtual')->class('form-control ')->disabled() }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('CONVENIO ESPECIFICO', 'convenio_especifico')->class('form-label') }}
-                                {{ html()->text('convenio_especifico')->class('form-control form-control-sm')->disabled() }}
+                                {{ html()->text('convenio_especifico')->class('form-control ')->disabled() }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('FECHA DE CONVENIO ESPECIFICO', 'fecha_convenio')->class('form-label mb-1') }}
-                                {{ html()->text('fecha_convenio')->class('form-control form-control-sm')->disabled() }}
+                                {{ html()->text('fecha_convenio')->class('form-control ')->disabled() }}
                             </div>
                         </div>
                     </div>
@@ -264,6 +264,79 @@
         });
     }
     document.addEventListener('DOMContentLoaded', inicializarNavegacionSeccionesGrupos);
+
+    // Filtro dinámico de localidades por municipio
+    $(document).ready(function() {
+        $('#municipio-select').on('change', function() {
+            const municipioId = $(this).val();
+            const localidadSelect = $('#localidad-select');
+            
+            if (municipioId) {
+                // Mostrar loading
+                localidadSelect.html('<option value="">Cargando...</option>').prop('disabled', true);
+                
+                // Hacer petición AJAX
+                $.ajax({
+                    url: `/grupos/localidades/${municipioId}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        localidadSelect.html('<option value="">SELECCIONAR LOCALIDAD</option>');
+                        
+                        if (data.length > 0) {
+                            $.each(data, function(index, localidad) {
+                                localidadSelect.append(`<option value="${localidad.id}">${localidad.localidad}</option>`);
+                            });
+                            localidadSelect.prop('disabled', false);
+                        } else {
+                            localidadSelect.html('<option value="">No hay localidades disponibles</option>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al cargar localidades:', error);
+                        localidadSelect.html('<option value="">Error al cargar localidades</option>');
+                    }
+                });
+            } else {
+                // Si no hay municipio seleccionado, resetear localidades
+                localidadSelect.html('<option value="">SELECCIONAR MUNICIPIO PRIMERO</option>').prop('disabled', true);
+            }
+        });
+    });
+
+    // Relleno automático de representante al seleccionar organismo público
+    $('#organismo_publico').on('change', function() {
+        const organismoId = $(this).val();
+        const nombreRepresentante = $('#nombre_representante');
+        const telefonoRepresentante = $('#telefono_representante');
+        
+        if (organismoId) {
+            // Mostrar loading
+            nombreRepresentante.val('Cargando...').prop('disabled', true);
+            telefonoRepresentante.val('Cargando...').prop('disabled', true);
+            
+            // Hacer petición AJAX
+            $.ajax({
+                url: `/grupos/organismo/${organismoId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    nombreRepresentante.val(data.nombre_titular || '').prop('disabled', false);
+                    telefonoRepresentante.val(data.telefono || '').prop('disabled', false);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error al cargar información del organismo:', error);
+                    nombreRepresentante.val('').prop('disabled', false);
+                    telefonoRepresentante.val('').prop('disabled', false);
+                    alert('Error al cargar la información del representante. Por favor, intente nuevamente.');
+                }
+            });
+        } else {
+            // Si no hay organismo seleccionado, limpiar campos y habilitar edición manual
+            nombreRepresentante.val('').prop('disabled', false);
+            telefonoRepresentante.val('').prop('disabled', false);
+        }
+    });
 </script>
 @endpush
 

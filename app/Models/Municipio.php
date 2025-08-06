@@ -19,4 +19,10 @@ class Municipio extends Model
     {
         return $this->hasMany(Alumno::class, 'id_municipio', 'id');
     }
+
+    public function localidades()
+    {
+        return $this->hasMany(localidad::class, 'clave_municipio', 'id');
+    }
+
 }
