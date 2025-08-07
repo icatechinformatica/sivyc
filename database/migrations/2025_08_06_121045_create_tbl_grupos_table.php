@@ -27,6 +27,9 @@ return new class extends Migration
             $table->foreignId('id_servicio')->nullable()->constrained('tbl_aux_servicios')->onDelete('set null'); // * Curso y Certificación
 
             $table->foreignId('id_organismo_publico')->nullable()->constrained('organismos_publicos')->onDelete('set null');
+            $table->string('organismo_representante', 255)->nullable();
+            $table->string('organismo_telefono_representante', 255)->nullable();
+
             $table->foreignId('id_municipio')->nullable()->constrained('tbl_municipios')->onDelete('set null');
             $table->foreignId('id_localidad')->nullable()->constrained('tbl_localidades')->onDelete('set null');
             $table->string('programa')->nullable();
