@@ -17,9 +17,8 @@
 
 
 <div class="card card-body">
-    {{ html()->form('POST', route('grupos.store'))->open() }}
     <div class="row">
-        <!-- Barra de pasos lateral -->
+        {{-- * Barra de pasos lateral --}}
         <div class="col-md-3 d-none d-md-block">
             <nav id="step-progress" class="nav-sticky">
                 <ul class="list-group list-group-flush step-progress-nav">
@@ -31,9 +30,9 @@
                         <span class="step-circle mr-2" data-status="restante">2</span>
                         <span class="fw-bold">Ubicación</span>
                     </li>
-                    <li class="list-group-item py-3 d-flex align-items-center" data-step="representante">
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="organismo">
                         <span class="step-circle mr-2" data-status="restante">3</span>
-                        <span class="fw-bold">Representante</span>
+                        <span class="fw-bold">Organismo Publico</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="opciones">
                         <span class="step-circle mr-2" data-status="restante">4</span>
@@ -47,8 +46,9 @@
             </nav>
         </div>
         <div class="col-md-9">
-            <!-- Sección: Información general -->
+            {{-- * Sección: Información general --> --}}
             <div class="col-12 mb-4 step-section" id="info-general">
+                {{ html()->form('POST')->id('info_general_form')->open() }}
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Información general</h5>
                     <div class="row my-1">
@@ -76,12 +76,14 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
-                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-info-general')->attribute('data-next-step', 'ubicacion')->type('button')->attribute('data-seccion', 'info-general') }}
+                        {{ html()->button('Guardar Info. General')->class('btn btn-primary float-end rounded')->id('guardar_info_general')->type('button') }}
                     </div>
+                    {{ html()->form()->close() }}
                 </div>
             </div>
-            <!-- Sección: Ubicación -->
+            {{-- * Sección: Ubicación --> --}}
             <div class="col-12 mb-4 step-section" id="ubicacion" style="display:none;">
+                {{ html()->form('POST')->id('ubicacion_form')->open() }}
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Ubicación</h5>
                     <div class="row my-1">
@@ -108,21 +110,23 @@
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('CÓDIGO POSTAL', 'codigo_postal')->class('form-label mb-1') }}
-                        {{ html()->text('codigo_postal')->class('form-control ') }}
+                        {{ html()->number('codigo_postal')->class('form-control ')->maxlength(5)->minlength(5)->required() }}
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('REFERENCIAS ADICIONALES', 'referencias')->class('form-label mb-1') }}
                         {{ html()->textarea('referencias')->class('form-control ')->rows(2) }}
                     </div>
                     <div class="d-flex justify-content-end">
-                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-ubicacion')->attribute('data-next-step', 'representante')->type('button')->attribute('data-seccion', 'ubicacion') }}
+                        {{ html()->button('Guardar Ubicación')->class('btn btn-primary float-end guardar-seccion')->id('guardar_ubicacion')->type('button') }}
                     </div>
                 </div>
+                 {{ html()->form()->close() }}
             </div>
-            <!-- Sección: Representante y organización -->
-            <div class="col-12 mb-4 step-section" id="representante" style="display:none;">
+            {{-- * Sección: ORGANISMO PUBLICO --}}
+            <div class="col-12 mb-4 step-section" id="organismo" style="display:none;">
+                {{ html()->form('POST')->id('organismo_form')->open() }}
                 <div class="p-3 mb-2">
-                    <h5 class="fw-bold border-bottom pb-1 mb-3">Representante y organización</h5>
+                    <h5 class="fw-bold border-bottom pb-1 mb-3">Organismo Publico</h5>
                     <div class="row mt-2">
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('ORGANISMO PUBLICO', 'organismo_publico')->class('form-label mb-1') }}
@@ -138,13 +142,16 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-representante')->attribute('data-next-step', 'opciones')->type('button')->attribute('data-seccion', 'representante') }}
+                        {{ html()->button('Guardar Organismo')->class('btn btn-primary float-end guardar-seccion')->id("guardar_organismo") }}
                     </div>
                 </div>
+                {{ html()->form()->close() }}
             </div>
-            <!-- Sección: Opciones adicionales -->
+
+            {{-- * Sección: Opciones adicionales --}}
             <div class="col-12 mb-4 step-section" id="opciones" style="display:none;">
                 <div class="p-3 mb-2">
+                    {{ html()->form('POST')->id('opciones_form')->open() }}
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Opciones adicionales</h5>
                     <div class="row mt-2">
                         <div class="col-md-12">
@@ -158,17 +165,18 @@
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('CONVENIO ESPECIFICO', 'convenio_especifico')->class('form-label') }}
-                                {{ html()->text('convenio_especifico')->class('form-control ')->disabled() }}
+                                {{ html()->text('convenio_especifico')->class('form-control ') }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('FECHA DE CONVENIO ESPECIFICO', 'fecha_convenio')->class('form-label mb-1') }}
-                                {{ html()->text('fecha_convenio')->class('form-control ')->disabled() }}
+                                {{ html()->date('fecha_convenio')->class('form-control ') }}
                             </div>
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        {{ html()->button('Siguiente')->class('btn btn-primary float-end guardar-seccion')->id('btn-siguiente-opciones')->attribute('data-next-step', 'agenda')->type('button')->attribute('data-seccion', 'opciones') }}
+                        {{ html()->button('Guardar')->class('btn btn-primary float-end guardar-seccion')->id("guardar_opciones") }}
                     </div>
+                    {{ html()->form()->close() }}
                 </div>
             </div>
             <!-- Sección: Agenda -->
@@ -189,7 +197,6 @@
             </div>
         </div>
     </div>
-    {{ html()->form()->close() }}
 </div>
 @push('content_css_sign')
 <link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
@@ -201,7 +208,7 @@
         const secciones = [
             'info-general',
             'ubicacion',
-            'representante',
+            'organismo',
             'opciones',
             'agenda'
         ];
@@ -209,7 +216,7 @@
         const estadosCaptura = {
             'info-general': { estado: true },
             'ubicacion': { estado: true },
-            'representante': { estado: true },
+            'organismo': { estado: true },
             'opciones': { estado: true },
             'agenda': { estado: false }
         };
@@ -264,79 +271,6 @@
         });
     }
     document.addEventListener('DOMContentLoaded', inicializarNavegacionSeccionesGrupos);
-
-    // Filtro dinámico de localidades por municipio
-    $(document).ready(function() {
-        $('#municipio-select').on('change', function() {
-            const municipioId = $(this).val();
-            const localidadSelect = $('#localidad-select');
-            
-            if (municipioId) {
-                // Mostrar loading
-                localidadSelect.html('<option value="">Cargando...</option>').prop('disabled', true);
-                
-                // Hacer petición AJAX
-                $.ajax({
-                    url: `/grupos/localidades/${municipioId}`,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        localidadSelect.html('<option value="">SELECCIONAR LOCALIDAD</option>');
-                        
-                        if (data.length > 0) {
-                            $.each(data, function(index, localidad) {
-                                localidadSelect.append(`<option value="${localidad.id}">${localidad.localidad}</option>`);
-                            });
-                            localidadSelect.prop('disabled', false);
-                        } else {
-                            localidadSelect.html('<option value="">No hay localidades disponibles</option>');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error al cargar localidades:', error);
-                        localidadSelect.html('<option value="">Error al cargar localidades</option>');
-                    }
-                });
-            } else {
-                // Si no hay municipio seleccionado, resetear localidades
-                localidadSelect.html('<option value="">SELECCIONAR MUNICIPIO PRIMERO</option>').prop('disabled', true);
-            }
-        });
-    });
-
-    // Relleno automático de representante al seleccionar organismo público
-    $('#organismo_publico').on('change', function() {
-        const organismoId = $(this).val();
-        const nombreRepresentante = $('#nombre_representante');
-        const telefonoRepresentante = $('#telefono_representante');
-        
-        if (organismoId) {
-            // Mostrar loading
-            nombreRepresentante.val('Cargando...').prop('disabled', true);
-            telefonoRepresentante.val('Cargando...').prop('disabled', true);
-            
-            // Hacer petición AJAX
-            $.ajax({
-                url: `/grupos/organismo/${organismoId}`,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    nombreRepresentante.val(data.nombre_titular || '').prop('disabled', false);
-                    telefonoRepresentante.val(data.telefono || '').prop('disabled', false);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error al cargar información del organismo:', error);
-                    nombreRepresentante.val('').prop('disabled', false);
-                    telefonoRepresentante.val('').prop('disabled', false);
-                    alert('Error al cargar la información del representante. Por favor, intente nuevamente.');
-                }
-            });
-        } else {
-            // Si no hay organismo seleccionado, limpiar campos y habilitar edición manual
-            nombreRepresentante.val('').prop('disabled', false);
-            telefonoRepresentante.val('').prop('disabled', false);
-        }
-    });
 </script>
 @endpush
 
@@ -350,152 +284,7 @@
 
 @push('script_sign')
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let calendar;
-        $('#modalFullCalendar').on('shown.bs.modal', function() {
-            if (!calendar) {
-                var calendarEl = document.getElementById('calendar');
-                calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-                    locale: 'es',
-                    height: 500
-                });
-                calendar.render();
-            }
-        });
-    });
-
-    $(document).on('click', '#btn-guardar', function() {
-        window.location.href = "{!! route('grupos.asignar.alumnos') !!}";
-    });
-
-    // Mostrar el modal al hacer clic en el botón AGENDA
-    $(document).on('click', '#btn-agenda', function() {
-        $('#modalFullCalendar').modal('show');
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        let calendar;
-        $('#modalFullCalendar').on('shown.bs.modal', function() {
-            if (!calendar) {
-                var calendarEl = document.getElementById('calendar');
-                calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    },
-                    views: {
-                        dayGridMonth: {
-                            titleFormat: {
-                                year: 'numeric',
-                                month: 'long'
-                            }
-                        },
-                        timeGridWeek: {
-                            titleFormat: {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric'
-                            }
-                        },
-                        timeGridDay: {
-                            titleFormat: {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                weekday: 'long'
-                            }
-                        }
-                    },
-                    locale: 'es',
-                    firstDay: 7,
-                    height: 'auto',
-                    buttonText: {
-                        today: 'Hoy',
-                        month: 'Mes',
-                        week: 'Semana',
-                        day: 'Día'
-                    },
-                    events: [{
-                            title: 'Reunión de trabajo',
-                            start: '2024-01-15',
-                            color: '#007bff'
-                        },
-                        {
-                            title: 'Cita médica',
-                            start: '2024-01-20T10:00:00',
-                            end: '2024-01-20T11:00:00',
-                            color: '#28a745'
-                        },
-                        {
-                            title: 'Evento de todo el día',
-                            start: '2024-01-25',
-                            allDay: true,
-                            color: '#ffc107'
-                        }
-                    ],
-                    selectable: true,
-                    selectMirror: true,
-                    select: function(arg) {
-                        var title = prompt('Título del evento:');
-                        if (title) {
-                            calendar.addEvent({
-                                title: title,
-                                start: arg.start,
-                                end: arg.end,
-                                allDay: arg.allDay
-                            });
-                        }
-                        calendar.unselect();
-                    },
-                    eventClick: function(arg) {
-                        if (confirm('¿Eliminar evento "' + arg.event.title + '"?')) {
-                            arg.event.remove();
-                        }
-                    },
-                    editable: true,
-                    dayCellDidMount: function(arg) {
-                        arg.el.addEventListener('mouseenter', function() {
-                            arg.el.style.backgroundColor = '#f8f9fa';
-                            arg.el.style.cursor = 'pointer';
-                        });
-                        arg.el.addEventListener('mouseleave', function() {
-                            arg.el.style.backgroundColor = '';
-                            arg.el.style.cursor = '';
-                        });
-                    },
-                    eventMouseEnter: function(info) {
-                        info.el.style.transform = 'scale(1.05)';
-                        info.el.style.transition = 'transform 0.2s';
-                        info.el.style.zIndex = '999';
-                        info.el.title = `${info.event.title}\nInicio: ${info.event.start.toLocaleString()}`;
-                    },
-                    eventMouseLeave: function(info) {
-                        info.el.style.transform = 'scale(1)';
-                        info.el.style.zIndex = '';
-                    },
-                    dateClick: function(arg) {
-                        arg.dayEl.style.backgroundColor = '#e3f2fd';
-                        setTimeout(function() {
-                            arg.dayEl.style.backgroundColor = '';
-                        }, 1000);
-                    },
-                    eventDrop: function(info) {
-                        alert(`Evento "${info.event.title}" movido a ${info.event.start.toLocaleDateString()}`);
-                    },
-                    eventResize: function(info) {
-                        alert(`Evento "${info.event.title}" redimensionado`);
-                    },
-                    datesSet: function(info) {
-                        // Puedes agregar lógica aquí si necesitas reaccionar al cambio de vista
-                    }
-                });
-                calendar.render();
-            }
-        });
-    });
-</script>
+<script src="{{ asset('js/grupos/registro_validaciones.js') }}"></script>
+<script src="{{ asset('js/grupos/registro.js') }}"></script>
+<script src="{{ asset('js/grupos/agenda.js') }}"></script>
 @endpush
