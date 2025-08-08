@@ -15,15 +15,15 @@ class Grupo extends Model
         'id_unidad',
         'id_instructor',
         'clave_grupo',
-        'id_modalidad_curso',
+        'id_modalidad',
         'id_curso',
-        'id_modalidad_capacitacion',
         'id_organismo_publico',
         'id_municipio',
         'id_localidad',
         'programa',
         'efisico',
         'cespecifico',
+        'fecha_cespecifico',
         'id_tipo_exoneracion',
         'medio_virtual',
         'link_virtual',
@@ -34,7 +34,18 @@ class Grupo extends Model
         'num_revision_arc02',
         'evidencia_fotografica',
         'vb_dg',
+        'id_imparticion',
+        'organismo_representante',
+        'organismo_telefono_representante',
+        'nombre_lugar',
+        'colonia',
+        'calle_numero',
+        'codigo_postal',
+        'referencias',
+        'id_servicio',
     ];
+
+    public $timestamps = false;
 
     public function unidad()
     {
@@ -53,16 +64,36 @@ class Grupo extends Model
 
     public function estatus()
     {
-        return $this->belongsToMany(Estatus::class, 'tbl_grupo_estatus', 'id_grupo', 'id_estatus');
+        return $this->belongsToMany(Estatus::class, 'tbl_grupo_estatus', 'id_grupo', 'id_estatus')
+                    ->withPivot('created_at', 'updated_at');
+    }
+
+    /**
+     * Obtener el estatus actual (más reciente) del grupo
+     */
+    public function estatusActual()
+    {
+        return $this->estatus()
+                    ->orderBy('tbl_grupo_estatus.updated_at', 'desc')
+                    ->orderBy('tbl_grupo_estatus.created_at', 'desc')
+                    ->first();
+    }
+
+    /**
+     * Verificar si el grupo tiene un estatus específico
+     */
+    public function tieneEstatus($nombreEstatus)
+    {
+        return $this->estatus()->where('estatus', $nombreEstatus)->exists();
     }
 
     public function tipoImparticion()
     {
-        return $this->belongsTo(TipoImparticion::class, 'id_tipo_imparticion');
+        return $this->belongsTo(ImparticionCurso::class, 'id_tipo_imparticion');
     }
 
     public function modalidad()
     {
-        return $this->belongsTo(ModalidadGrupo::class, 'id_modalidad_curso');
+        return $this->belongsTo(ModalidadCurso::class, 'id_modalidad_curso');
     }
 }

@@ -36,6 +36,7 @@ return new class extends Migration
 
             $table->string('efisico', 255)->nullable();
             $table->string('cespecifico', 60)->nullable();
+            $table->date('fecha_cespecifico')->nullable();
             $table->foreignId('id_tipo_exoneracion')->nullable()->constrained('tbl_exoneraciones')->onDelete('set null');
             $table->string('medio_virtual', 25)->nullable();
             $table->string('link_virtual', 255)->nullable();

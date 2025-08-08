@@ -25,4 +25,9 @@ class Municipio extends Model
         return $this->hasMany(localidad::class, 'clave_municipio', 'id');
     }
 
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'id_estado', 'id');
+    }
+
 }

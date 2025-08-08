@@ -1127,10 +1127,13 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'alumnos'], function () {
 Route::group(['middleware' => ['auth'], 'prefix' => 'grupos'], function () {
     Route::get('/inicio', [GrupoController::class, 'index'])->name('grupos.index');
     Route::get('/crear', [GrupoController::class, 'create'])->name('grupos.crear');
+    Route::get('/editar/{id}', [GrupoController::class, 'editarGrupo'])->name('grupos.editar');
     Route::post('/registrar', [GrupoController::class, 'store'])->name('grupos.store');
     Route::get('/localidades/{municipioId}', [GrupoController::class, 'getLocalidades'])->name('grupos.localidades');
     Route::get('/organismo/{organismoId}', [GrupoController::class, 'getOrganismoInfo'])->name('grupos.organismo.info');
     Route::get('/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar.alumnos');
+
+    Route::post('/guardar/seccion/grupo', [GrupoController::class, 'guardarSeccionGrupo'])->name('grupos.guardar.seccion.grupo');
 });
 
 Route::get('/mi/rol', function () {

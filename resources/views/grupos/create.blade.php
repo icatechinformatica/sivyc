@@ -11,7 +11,7 @@
 @section('content')
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-8">
-        <span>Grupos / Registro</span>
+        <span>Grupos / {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span>
     </div>
 </div>
 
@@ -22,7 +22,7 @@
         <div class="col-md-3 d-none d-md-block">
             <nav id="step-progress" class="nav-sticky">
                 <ul class="list-group list-group-flush step-progress-nav">
-                    <li class="list-group-item py-3 d-flex align-items-center" data-step="info-general">
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="info_general">
                         <span class="step-circle mr-2" data-status="actual">1</span>
                         <span class="fw-bold text-black">Información general</span>
                     </li>
@@ -47,32 +47,41 @@
         </div>
         <div class="col-md-9">
             {{-- * Sección: Información general --> --}}
-            <div class="col-12 mb-4 step-section" id="info-general">
+            <div class="col-12 mb-4 step-section" id="info_general">
                 {{ html()->form('POST')->id('info_general_form')->open() }}
+                <input type="hidden" id="esNuevoRegistro" value="{{ $esNuevoRegistro ? 'true' : 'false' }}" />
+                @if (!$esNuevoRegistro)
+                    <input type="hidden" name="id_grupo" id="id_grupo" value="{{ $grupo->id }}" />
+                @endif
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Información general</h5>
                     <div class="row my-1">
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('IMPARTICIÓN', 'imparticion')->class('form-label mb-1') }}
-                            {{ html()->select('imparticion', [null => 'SELECCIONE EL TIPO DE IMPARTICIÓN'] + $tiposImparticion->pluck('imparticion', 'id')->toArray())->class('form-control')->required() }}
+                            {{ html()->select('imparticion', [null => 'SELECCIONE EL TIPO DE IMPARTICIÓN'] + $tiposImparticion->pluck('imparticion', 'id')->toArray())->class('form-control')->required()
+                                ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
                         </div>
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('MODALIDAD', 'modalidad')->class('form-label mb-1') }}
-                            {{ html()->select('modalidad', [null => 'SELECCIONAR MODALIDAD'] + $modalidades->pluck('modalidad', 'id')->toArray())->class('form-control ')->required() }}
+                            {{ html()->select('modalidad', [null => 'SELECCIONAR MODALIDAD'] + $modalidades->pluck('modalidad', 'id')->toArray())->class('form-control ')->required()
+                                ->value($esNuevoRegistro ? null : $grupo->id_modalidad) }}
                         </div>
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('UNIDAD/ACCIÓN MÓVIL', 'unidad_accion_movil')->class('form-label mb-1') }}
-                            {{ html()->select('unidad_accion_movil', [null => 'SELECCIONAR'] + $unidades->pluck('unidad', 'id')->toArray())->class('form-control ')->required() }}
+                            {{ html()->select('unidad_accion_movil', [null => 'SELECCIONAR'] + $unidades->pluck('unidad', 'id')->toArray())->class('form-control ')->required()
+                            ->value($esNuevoRegistro ? null : $grupo->id_unidad) }}
                         </div>
                     </div>
                     <div class="row my-1">
                         <div class="form-group col-md-3 mb-1">
                             {{ html()->label('SERVICIO', 'servicio')->class('form-label mb-1') }}
-                            {{ html()->select('servicio', [null => 'SELECCIONAR'] + $servicios->pluck('servicio', 'id')->toArray())->class('form-control ')->required() }}
+                            {{ html()->select('servicio', [null => 'SELECCIONAR'] + $servicios->pluck('servicio', 'id')->toArray())->class('form-control ')->required()
+                                ->value($esNuevoRegistro ? null : $grupo->id_servicio) }}
                         </div>
                         <div class="form-group col-md-9 mb-1">
                             {{ html()->label('CURSO', 'curso')->class('form-label mb-1') }}
-                            {{ html()->select('curso', [null => 'SELECCIONA CURSO'] + $cursos->pluck('nombre_curso', 'id')->toArray())->class('form-control ')->required() }}
+                            {{ html()->select('curso', [null => 'SELECCIONA CURSO'] + $cursos->pluck('nombre_curso', 'id')->toArray())->class('form-control ')->required()
+                                ->value($esNuevoRegistro ? null : $grupo->id_curso) }}
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
@@ -89,13 +98,25 @@
                     <div class="row my-1">
                         <div class="form-group col-md-6 mb-1">
                             {{ html()->label('MUNICIPIO', 'municipio')->class('form-label mb-1') }}
-                            {{ html()->select('municipio', [null => 'SELECCIONAR'] + $municipios->pluck('muni', 'id')->toArray())->class('form-control')->id('municipio-select')->required() }}
+                            {{ html()->select('municipio', [null => 'SELECCIONAR'] + $municipios->pluck('muni', 'id')->toArray())->class('form-control')->id('municipio-select')->required()
+                            ->value($esNuevoRegistro ? null : $grupo->id_municipio) }}
                         </div>
                         <div class="form-group col-md-6 mb-1">
                             {{ html()->label('LOCALIDAD', 'localidad')->class('form-label mb-1') }}
+                            @if($esNuevoRegistro)
                             {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO PRIMERO'])->class('form-control')->id('localidad-select')->disabled()->required() }}
+                            @else
+                            {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO'] + $localidades->pluck('localidad', 'id')->toArray())->class('form-control')->id('localidad-select')->disabled($esNuevoRegistro)->required()
+                                    ->value($esNuevoRegistro ? null : $grupo->id_localidad) }}
+                            @endif
                         </div>
                     </div>
+                    @if(!$esNuevoRegistro && $grupo->efisico)
+                    <div class="form-group mb-1">
+                        {{ html()->label('DIRECCIÓN ACTUAL', 'localidad')->class('form-label mb-1') }}
+                        {{ html()->text('localidad')->class('form-control')->value($grupo->efisico)->disabled() }}
+                    </div>
+                    @endif
                     <div class="form-group mb-1">
                         {{ html()->label('LUGAR DONDE SE IMPARTIRÁ', 'nombre_lugar')->class('form-label mb-1') }}
                         {{ html()->text('nombre_lugar')->class('form-control ')->required() }}
@@ -130,15 +151,18 @@
                     <div class="row mt-2">
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('ORGANISMO PUBLICO', 'organismo_publico')->class('form-label mb-1') }}
-                            {{ html()->select('organismo_publico', ['' => 'SELECCIONAR'] + $organismos_publicos->pluck('organismo', 'id')->toArray())->class('form-control ')->required() }}
+                            {{ html()->select('organismo_publico', ['' => 'SELECCIONAR'] + $organismos_publicos->pluck('organismo', 'id')->toArray())->class('form-control ')->required()
+                                ->value($esNuevoRegistro ? null : $grupo->id_organismo_publico) }}
                         </div>
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('NOMBRE DEL REPRESENTANTE', 'nombre_representante')->class('form-label mb-1') }}
-                            {{ html()->text('nombre_representante')->class('form-control ')->required() }}
+                            {{ html()->text('nombre_representante')->class('form-control ')->required()
+                                ->value($esNuevoRegistro ? null : $grupo->organismo_representante) }}
                         </div>
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('TELÉFONO DEL REPRESENTANTE', 'telefono_representante')->class('form-label mb-1') }}
-                            {{ html()->text('telefono_representante')->class('form-control ')->required() }}
+                            {{ html()->text('telefono_representante')->class('form-control ')->required()
+                                ->value($esNuevoRegistro ? null : $grupo->organismo_telefono_representante) }}
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
@@ -157,19 +181,23 @@
                         <div class="col-md-12">
                             <div class="mb-2">
                                 {{ html()->label('MEDIO VIRTUAL', 'medio_virtual')->class('form-label mb-1') }}
-                                {{ html()->select('medio_virtual', ['' => 'SELECCIONAR', 1 => 'VIRTUAL 1', 2 => 'VIRTUAL 2'])->class('form-control ')->disabled() }}
+                                {{ html()->select('medio_virtual', ['' => 'SELECCIONAR', 1 => 'VIRTUAL 1', 2 => 'VIRTUAL 2'])->class('form-control ')->disabled(!$esNuevoRegistro && !$grupo->id_imparticion == 2)
+                                    ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('ENLACE VIRTUAL', 'enlace_virtual')->class('form-label mb-1') }}
-                                {{ html()->text('enlace_virtual')->class('form-control ')->disabled() }}
+                                {{ html()->text('enlace_virtual')->class('form-control ')->disabled(!$esNuevoRegistro && !$grupo->id_imparticion == 2)
+                                    ->value($esNuevoRegistro ? null : $grupo->link_virtual) }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('CONVENIO ESPECIFICO', 'convenio_especifico')->class('form-label') }}
-                                {{ html()->text('convenio_especifico')->class('form-control ') }}
+                                {{ html()->text('convenio_especifico')->class('form-control ')
+                                    ->value($esNuevoRegistro ? null : $grupo->cespecifico) }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('FECHA DE CONVENIO ESPECIFICO', 'fecha_convenio')->class('form-label mb-1') }}
-                                {{ html()->date('fecha_convenio')->class('form-control ') }}
+                                {{ html()->date('fecha_convenio')->class('form-control ')
+                                    ->value($esNuevoRegistro ? null : $grupo->fecha_cespecifico) }}
                             </div>
                         </div>
                     </div>
@@ -179,7 +207,7 @@
                     {{ html()->form()->close() }}
                 </div>
             </div>
-            <!-- Sección: Agenda -->
+            {{--  * Sección: Agenda  --}}
             <div class="col-12 mb-4 step-section" id="agenda" style="display:none;">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Agenda</h5>
@@ -203,10 +231,17 @@
 @endpush
 @push('script_sign')
 <script>
+    // Variables globales para la obtención de la CURP JS
+    window.registroBladeVars = {
+        esNuevoRegistro: {{ $esNuevoRegistro ? 'true' : 'false' }},
+        csrfToken: '{{ csrf_token() }}',
+    };
+</script>
+<script>
     // Secciones del formulario de grupos
     function inicializarNavegacionSeccionesGrupos() {
         const secciones = [
-            'info-general',
+            'info_general',
             'ubicacion',
             'organismo',
             'opciones',
@@ -214,7 +249,7 @@
         ];
         // Simulación de estados de captura
         const estadosCaptura = {
-            'info-general': { estado: true },
+            'info_general': { estado: true },
             'ubicacion': { estado: true },
             'organismo': { estado: true },
             'opciones': { estado: true },
