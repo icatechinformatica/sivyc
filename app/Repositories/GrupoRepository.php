@@ -19,7 +19,10 @@ class GrupoRepository implements GrupoRepositoryInterface
     }
     public function obtenerTodos($registrosPorPagina)
     {
-        return $this->grupo->orderBy('id', 'desc')->paginate($registrosPorPagina);
+        return $this->grupo
+            ->with(['curso', 'unidad', 'instructor', 'estatus'])
+            ->orderBy('id', 'desc')
+            ->paginate($registrosPorPagina);
     }
 
     public function buscarPaginado($busqueda, $registrosPorPagina = 15)

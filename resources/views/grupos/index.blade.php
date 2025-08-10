@@ -54,20 +54,26 @@
                     <th>CURSO</th>
                     <th>UNIDAD</th>
                     <th>INSTRUCTOR</th>
-                    <th>ESTATUS</th>
+                    <th class="text-center">ESTATUS</th>
+                    <th class="text-center">Editar</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($grupos as $grupo)
                 <tr>
-                    <td>{{ $grupo->folio_grupo }}</td>
-                    <td>{{ $grupo->curso }}</td>
-                    <td>{{ $grupo->unidad }}</td>
-                    <td>{{ $grupo->id_instructor }}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary">Enviar a DTA</button>
+                    <td>{{ $grupo->clave_grupo ?? 'SIN ASIGNAR' }}</td>
+                    <td>{{ $grupo->curso->nombre_curso }}</td>
+                    <td>{{ $grupo->unidad->unidad }}</td>
+                    <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
+                    <td class="text-center">
+                        {{-- <button class="btn btn-sm btn-primary">Enviar a DTA</button> --}}
+                        <span class="badge {{ $grupo->estatus->last()->estatus == 'EN CAPTURA' ? 'bg-warning' : 'bg-success' }}">{{ $grupo->estatus->last()->estatus ?? 'SIN ASIGNAR' }}</span>
                     </td>
-                    <td>{{ $grupo->turnado == 'DTA' ? 'EN REVISION' : $grupo->turnado }}</td>
+                    <td class="text-center">
+                        <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
                 </tr>
                 @empty
                 <tr>

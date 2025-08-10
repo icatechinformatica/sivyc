@@ -59,7 +59,8 @@ class Grupo extends Model
 
     public function curso()
     {
-        return $this->belongsTo(Curso::class, 'id_curso');
+    // El modelo definido es App\Models\curso (minúsculas). Ajustamos la referencia.
+    return $this->belongsTo(curso::class, 'id_curso');
     }
 
     public function estatus()
