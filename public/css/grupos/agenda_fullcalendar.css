@@ -1,12 +1,7 @@
 /* Contenedor principal del calendario */
-.fc {
-    /* Estilos generales del calendario */
-}
+/* (Regla general removida por estar vacía) */
 
-/* Header del calendario */
-.fc-header-toolbar {
-    /* Barra de herramientas superior */
-}
+/* Header del calendario (sin reglas específicas) */
 
 .fc-toolbar-title {
     /* Título del calendario (mes/año) */
@@ -33,10 +28,7 @@
     background-color: #007bff;
 }
 
-/* Vista mensual */
-.fc-daygrid {
-    /* Grid de días */
-}
+/* Vista mensual (sin reglas específicas) */
 
 .fc-daygrid-day {
     /* Cada celda de día */
@@ -84,10 +76,17 @@
 
 /* Eventos */
 .fc-event {
-    /* Eventos generales */
-    background-color: #c90166 !important;
-    border-color: #c90166 !important;
+    /* Eventos generales: usar colores dinámicos (JS aplica inline o variables) */
+    background-color: var(--agenda-event-bg, #c90166);
+    border-color: var(--agenda-event-bg, #c90166);
     border-radius: 3px;
+}
+
+/* Color de texto del evento controlado por variable */
+.fc-event,
+.fc-event .fc-event-title,
+.fc-event .fc-event-time {
+    color: var(--agenda-event-text, #fff);
 }
 
 .fc-event-title {
@@ -96,14 +95,23 @@
 }
 
 .fc-event:hover {
-    /* Hover sobre eventos */
-    background-color: #0056b3;
+    /* Hover sobre eventos: ligero oscurecimiento, respetando color dinámico */
+    filter: brightness(0.95);
 }
 
-/* Vista semanal y diaria */
-.fc-timegrid {
-    /* Grid de tiempo */
+/* En vista mensual, ocultar el punto para que el "badge" pinte el fondo completo */
+.fc-daygrid-event-dot {
+    display: none !important;
 }
+
+/* Eliminar indentación extra cuando se oculta el punto */
+.fc-daygrid-dot-event .fc-event-time,
+.fc-daygrid-dot-event .fc-event-title {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+/* Vista semanal y diaria (sin reglas específicas para el contenedor) */
 
 .fc-timegrid-slot {
     /* Franjas horarias */

@@ -2,14 +2,20 @@
 
 namespace App;
 
+use App\Models\Grupo;
 use Illuminate\Database\Eloquent\Model;
 
 class Agenda extends Model
 {
-    protected $table = 'agenda';
+    protected $table = 'tbl_grupo_agenda';
 
-    protected $fillable = ['id','title', 'start', 'end', 'textColor', 'observaciones', 'id_curso', 'id_instructor',
-    'id_unidad', 'id_municipio', 'iduser_created', 'iduser_updated'];
+    protected $fillable = ['id','id_grupo', 'fecha_inicio', 'fecha_fin'];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    public $timestamps = false;
+
+    public function grupo()
+    {
+        return $this->belongsTo(Grupo::class, 'id_grupo');
+    }
+
 }

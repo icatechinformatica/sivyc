@@ -243,7 +243,7 @@
                     </div>
                     <div class="d-flex justify-content-end mt-4">
                         {!! html()->button('<i class="fa fa-save me-2"></i> Guardar grupo y asignar alumnos',
-                        'submit')->class('btn btn-primary btn-lg rounded')->id('btn-guardar')->toHtml() !!}
+                        'submit')->class('btn btn-primary btn-lg rounded')->id('btn-guardar')->attribute('data-redirect', route('grupos.asignar.alumnos'))->toHtml() !!}
                     </div>
                 </div>
             </div>
@@ -275,6 +275,21 @@
     window.gruposStepVars = {
         ultimaSeccion: @json($ultimaSeccion ?? null),
         ordenSecciones: ['info_general','ubicacion','organismo','opciones','agenda']
+    };
+</script>
+<script>
+    // Configuración para Agenda del Grupo
+    window.GrupoAgenda = {
+        grupoId: @json(isset($grupo) ? $grupo->id : null),
+    // Horas máximas del curso (decimal). Usado para calcular horas restantes en la UI.
+    maxHoras: @json(isset($grupo) && isset($grupo->curso) ? $grupo->curso->horas : null),
+        // Plantillas de rutas (coinciden con routes/web.php)
+        routes: {
+            index: function(grupoId){ return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null; },
+            store: function(grupoId){ return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null; },
+            update: function(grupoId, agendaId){ return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null; },
+            destroy: function(grupoId, agendaId){ return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null; }
+        }
     };
 </script>
 <script src="{{ asset('js/grupos/stepbar.js') }}"></script>

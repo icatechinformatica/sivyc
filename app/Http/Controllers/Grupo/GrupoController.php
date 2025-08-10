@@ -14,6 +14,10 @@ use App\Models\organismosPublicos;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Grupo\GrupoService;
+use App\Models\Grupo;
+use App\Agenda;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class GrupoController extends Controller
 {
@@ -139,5 +143,138 @@ class GrupoController extends Controller
     public function asignarAlumnos()
     {
         return view('grupos.asignar_alumnos');
+    }
+
+    /**
+     * Obtener agenda (eventos) del grupo en formato FullCalendar
+     */
+    public function getAgenda(Grupo $grupo)
+    {
+        try {
+            $eventos = $grupo->fechasAgenda()->get()->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'title' => 'Sesión',
+                    'start' => Carbon::parse($item->fecha_inicio)->toIso8601String(),
+                    'end' => Carbon::parse($item->fecha_fin)->toIso8601String(),
+                ];
+            });
+            return response()->json($eventos);
+        } catch (\Exception $e) {
+            Log::error('Error al obtener agenda: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al obtener agenda'], 500);
+        }
+    }
+
+    /**
+     * Crear un evento de agenda para el grupo
+     */
+    public function storeAgenda(Request $request, Grupo $grupo)
+    {
+        try {
+            $data = $request->only(['start', 'end']);
+            $validator = Validator::make($data, [
+                'start' => 'required|date',
+                'end' => 'required|date|after:start',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['message' => 'Datos inválidos', 'errors' => $validator->errors()], 422);
+            }
+
+            $start = Carbon::parse($data['start']);
+            $end = Carbon::parse($data['end']);
+
+            // Validar traslape (end exclusivo)
+            $existeTraslape = Agenda::where('id_grupo', $grupo->id)
+                ->where(function ($q) use ($start, $end) {
+                    $q->where('fecha_inicio', '<', $end)
+                      ->where('fecha_fin', '>', $start);
+                })
+                ->exists();
+
+            if ($existeTraslape) {
+                return response()->json(['message' => 'El horario seleccionado se traslapa con otro existente.'], 422);
+            }
+
+            $agenda = Agenda::create([
+                'id_grupo' => $grupo->id,
+                'fecha_inicio' => $start,
+                'fecha_fin' => $end,
+            ]);
+
+            return response()->json([
+                'id' => $agenda->id,
+                'title' => 'Sesión',
+                'start' => $agenda->fecha_inicio,
+                'end' => $agenda->fecha_fin,
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('Error al crear evento de agenda: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al crear evento'], 500);
+        }
+    }
+
+    /**
+     * Actualizar un evento de agenda (drag/resize)
+     */
+    public function updateAgenda(Request $request, Grupo $grupo, Agenda $agenda)
+    {
+        try {
+            if ($agenda->id_grupo !== $grupo->id) {
+                return response()->json(['message' => 'No encontrado'], 404);
+            }
+
+            $data = $request->only(['start', 'end']);
+            $validator = Validator::make($data, [
+                'start' => 'required|date',
+                'end' => 'required|date|after:start',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['message' => 'Datos inválidos', 'errors' => $validator->errors()], 422);
+            }
+
+            $start = Carbon::parse($data['start']);
+            $end = Carbon::parse($data['end']);
+
+            // Validar traslape con otros eventos, excluyendo el actual
+            $existeTraslape = Agenda::where('id_grupo', $grupo->id)
+                ->where('id', '<>', $agenda->id)
+                ->where(function ($q) use ($start, $end) {
+                    $q->where('fecha_inicio', '<', $end)
+                      ->where('fecha_fin', '>', $start);
+                })
+                ->exists();
+
+            if ($existeTraslape) {
+                return response()->json(['message' => 'El horario seleccionado se traslapa con otro existente.'], 422);
+            }
+
+            $agenda->update([
+                'fecha_inicio' => $start,
+                'fecha_fin' => $end,
+            ]);
+
+            return response()->json(['message' => 'Actualizado']);
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar evento de agenda: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al actualizar evento'], 500);
+        }
+    }
+
+    /**
+     * Eliminar un evento de agenda
+     */
+    public function destroyAgenda(Grupo $grupo, Agenda $agenda)
+    {
+        try {
+            if ($agenda->id_grupo !== $grupo->id) {
+                return response()->json(['message' => 'No encontrado'], 404);
+            }
+            $agenda->delete();
+            return response()->json(['message' => 'Eliminado']);
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar evento de agenda: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al eliminar evento'], 500);
+        }
     }
 }

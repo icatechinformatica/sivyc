@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Agenda;
+use Carbon\Carbon;
 
 class Grupo extends Model
 {
@@ -59,8 +61,8 @@ class Grupo extends Model
 
     public function curso()
     {
-    // El modelo definido es App\Models\curso (minúsculas). Ajustamos la referencia.
-    return $this->belongsTo(curso::class, 'id_curso');
+        // El modelo definido es App\Models\curso (minúsculas). Ajustamos la referencia.
+        return $this->belongsTo(curso::class, 'id_curso');
     }
 
     public function estatus()
@@ -74,9 +76,9 @@ class Grupo extends Model
     public function estatusActual()
     {
         return $this->estatus()
-                    ->orderBy('tbl_grupo_estatus.updated_at', 'desc')
-                    ->orderBy('tbl_grupo_estatus.created_at', 'desc')
-                    ->first();
+            ->orderBy('tbl_grupo_estatus.updated_at', 'desc')
+            ->orderBy('tbl_grupo_estatus.created_at', 'desc')
+            ->first();
     }
 
     /**
@@ -95,5 +97,43 @@ class Grupo extends Model
     public function modalidad()
     {
         return $this->belongsTo(ModalidadCurso::class, 'id_modalidad_curso');
+    }
+
+    public function fechasAgenda()
+    {
+        return $this->hasMany(Agenda::class, 'id_grupo');
+    }
+
+    public function horasTotales()
+    {
+        // Suma la diferencia en horas entre fecha_inicio y fecha_fin de cada evento de agenda
+        $minutos = $this->fechasAgenda()
+            ->get()
+            ->reduce(function ($carry, $agenda) {
+                if (empty($agenda->fecha_inicio) || empty($agenda->fecha_fin)) {
+                    return $carry;
+                }
+
+                $inicio = Carbon::parse($agenda->fecha_inicio);
+                $fin = Carbon::parse($agenda->fecha_fin);
+
+                if ($fin->lessThanOrEqualTo($inicio)) {
+                    return $carry; // Ignora rangos inválidos
+                }
+
+                return $carry + $inicio->diffInMinutes($fin);
+            }, 0);
+
+        return $minutos / 60; // Horas totales (puede ser decimal)
+    }
+
+    public function fechasSeleccionadas()
+    {
+        return $this->hasMany(Agenda::class, 'id_grupo')->whereNotNull('fecha_inicio')->whereNotNull('fecha_fin');
+    }
+
+    public function contarFechasSeleccionadas()
+    {
+        return $this->fechasSeleccionadas()->count();
     }
 }
