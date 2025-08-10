@@ -170,13 +170,11 @@ function obtenerImparticion() {
     if (this.value == 2) {
         medio_virtual.prop('disabled', false);
         enlace_virtual.prop('disabled', false);
-        console.log('Impartición a distancia seleccionada');
     } else {
         medio_virtual.prop('disabled', true);
         enlace_virtual.prop('disabled', true);
         medio_virtual.val('');
         enlace_virtual.val('');
-        console.log('Impartición presencial seleccionada, campos deshabilitados');
     }
 }
 
