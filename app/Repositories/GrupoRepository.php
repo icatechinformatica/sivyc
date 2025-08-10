@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Grupo;
+use App\Models\Estatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\Repositories\GrupoRepositoryInterface;
@@ -78,7 +79,7 @@ class GrupoRepository implements GrupoRepositoryInterface
         return $this->grupo->with(['curso', 'unidad', 'instructor', 'estatus'])->find($id);
     }
 
-    public function actualizarEstatus($grupoId, $nombreEstatus)
+    public function actualizarEstatus($grupoId, $seccion, $nombreEstatus)
     {
         try {
             $grupo = $this->grupo->find($grupoId);
@@ -86,102 +87,21 @@ class GrupoRepository implements GrupoRepositoryInterface
                 throw new \Exception('Grupo no encontrado');
             }
 
-            // Obtener o crear el estatus por nombre
-            $estatus = \App\Models\Estatus::firstOrCreate(['estatus' => $nombreEstatus]);
+            // * Comprobar que existe el estatus 
+            $estatus = Estatus::where('estatus', $nombreEstatus)->firstOrFail();
 
-            // NO desvinculamos estatus anteriores para mantener el historial
-            // Verificar si ya existe este estatus para evitar duplicados
-            $existeRelacion = $grupo->estatus()->where('id_estatus', $estatus->id)->exists();
-            
-            if (!$existeRelacion) {
-                // Agregar el nuevo estatus manteniendo el historial
-                $grupo->estatus()->attach($estatus->id, [
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-            } else {
-                // Si ya existe esta relación, solo actualizar el timestamp
-                $grupo->estatus()->updateExistingPivot($estatus->id, [
-                    'updated_at' => now()
-                ]);
-            }
+            // ! Agregar nuevo estatus NO ACTUALIZAR
+            $grupo->estatus()->attach($estatus->id, [
+                'id_usuario' => auth()->id(),
+                'seccion' => $seccion,
+                'fecha_cambio' => now(),
+                'es_ultimo_estatus' => false
+            ]);
 
             return $grupo;
         } catch (\Exception $e) {
             Log::error('Error al actualizar el estatus del grupo: ' . $e->getMessage());
             throw new \Exception('Error al actualizar el estatus del grupo: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Obtener el estatus actual de un grupo (el más reciente del historial)
-     */
-    public function obtenerEstatusActual($grupoId)
-    {
-        try {
-            $grupo = $this->grupo->find($grupoId);
-            if (!$grupo) {
-                throw new \Exception('Grupo no encontrado');
-            }
-
-            // Retornar el último estatus basado en el timestamp más reciente de la tabla pivote
-            return $grupo->estatus()
-                        ->orderBy('tbl_grupo_estatus.updated_at', 'desc')
-                        ->orderBy('tbl_grupo_estatus.created_at', 'desc')
-                        ->first();
-        } catch (\Exception $e) {
-            Log::error('Error al obtener el estatus actual del grupo: ' . $e->getMessage());
-            throw new \Exception('Error al obtener el estatus actual del grupo');
-        }
-    }
-
-    /**
-     * Agregar un estatus sin eliminar los anteriores (para historial)
-     */
-    public function agregarEstatus($grupoId, $nombreEstatus)
-    {
-        try {
-            $grupo = $this->grupo->find($grupoId);
-            if (!$grupo) {
-                throw new \Exception('Grupo no encontrado');
-            }
-
-            $estatus = \App\Models\Estatus::firstOrCreate(['estatus' => $nombreEstatus]);
-
-            // Solo agregar si no existe ya
-            if (!$grupo->estatus()->where('id_estatus', $estatus->id)->exists()) {
-                $grupo->estatus()->attach($estatus->id, [
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-            }
-
-            return $grupo;
-        } catch (\Exception $e) {
-            Log::error('Error al agregar estatus al grupo: ' . $e->getMessage());
-            throw new \Exception('Error al agregar estatus al grupo');
-        }
-    }
-
-    /**
-     * Obtener todo el historial de estatus de un grupo
-     */
-    public function obtenerHistorialEstatus($grupoId)
-    {
-        try {
-            $grupo = $this->grupo->find($grupoId);
-            if (!$grupo) {
-                throw new \Exception('Grupo no encontrado');
-            }
-
-            // Retornar todos los estatus ordenados cronológicamente
-            return $grupo->estatus()
-                        ->withPivot('created_at', 'updated_at')
-                        ->orderBy('tbl_grupo_estatus.created_at', 'asc')
-                        ->get();
-        } catch (\Exception $e) {
-            Log::error('Error al obtener el historial de estatus del grupo: ' . $e->getMessage());
-            throw new \Exception('Error al obtener el historial de estatus del grupo');
         }
     }
 }

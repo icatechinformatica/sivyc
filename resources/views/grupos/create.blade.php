@@ -238,75 +238,14 @@
     };
 </script>
 <script>
-    // Secciones del formulario de grupos
-    function inicializarNavegacionSeccionesGrupos() {
-        const secciones = [
-            'info_general',
-            'ubicacion',
-            'organismo',
-            'opciones',
-            'agenda'
-        ];
-        // Simulación de estados de captura
-        const estadosCaptura = {
-            'info_general': { estado: true },
-            'ubicacion': { estado: true },
-            'organismo': { estado: true },
-            'opciones': { estado: true },
-            'agenda': { estado: false }
-        };
-        const navItems = document.querySelectorAll('.step-progress-nav .list-group-item');
-        const sectionEls = secciones.map(id => document.getElementById(id));
-        function mostrarSeccionPorIndice(idx) {
-            sectionEls.forEach((seccion, i) => {
-                if (seccion) {
-                    seccion.style.display = (i === idx) ? '' : 'none';
-                }
-            });
-            navItems.forEach((item, i) => {
-                const seccionId = secciones[i];
-                item.classList.remove('active');
-                const circle = item.querySelector('.step-circle');
-                if (circle) {
-                    circle.setAttribute('data-status', 'restante');
-                }
-                if (estadosCaptura[seccionId] && estadosCaptura[seccionId].estado === true) {
-                    if (circle) circle.setAttribute('data-status', 'terminado');
-                }
-                if (i === idx) {
-                    item.classList.add('active');
-                    if (circle) circle.setAttribute('data-status', 'actual');
-                }
-            });
-        }
-        // Índice de la sección actual (primera no terminada)
-        let idxActual = secciones.findIndex(id => estadosCaptura[id] && estadosCaptura[id].estado === false);
-        if (idxActual === -1) idxActual = 0;
-        mostrarSeccionPorIndice(idxActual);
-        // Navegación solo a terminadas o actual
-        navItems.forEach((item, i) => {
-            item.addEventListener('click', function () {
-                const seccionId = secciones[i];
-                if ((estadosCaptura[seccionId] && estadosCaptura[seccionId].estado === true) || i === idxActual) {
-                    mostrarSeccionPorIndice(i);
-                }
-            });
-        });
-        // Botones Siguiente
-        document.querySelectorAll('.guardar-seccion').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                const nextStep = btn.getAttribute('data-next-step');
-                const idx = secciones.indexOf(nextStep);
-                if (idx !== -1) {
-                    estadosCaptura[secciones[idx-1]].estado = true;
-                    estadosCaptura[nextStep].estado = true;
-                    mostrarSeccionPorIndice(idx);
-                }
-            });
-        });
-    }
-    document.addEventListener('DOMContentLoaded', inicializarNavegacionSeccionesGrupos);
+    // Variables específicas para la stepbar de grupos.
+    // Se pasa únicamente la última sección finalizada ($ultimaSeccion) como string.
+    window.gruposStepVars = {
+        ultimaSeccion: @json($ultimaSeccion ?? null),
+        ordenSecciones: ['info_general','ubicacion','organismo','opciones','agenda']
+    };
 </script>
+<script src="{{ asset('js/grupos/stepbar.js') }}"></script>
 @endpush
 
 @endsection

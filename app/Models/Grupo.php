@@ -64,8 +64,7 @@ class Grupo extends Model
 
     public function estatus()
     {
-        return $this->belongsToMany(Estatus::class, 'tbl_grupo_estatus', 'id_grupo', 'id_estatus')
-                    ->withPivot('created_at', 'updated_at');
+        return $this->belongsToMany(Estatus::class, 'tbl_grupo_estatus', 'id_grupo', 'id_estatus')->withPivot('seccion', 'observaciones', 'memorandum', 'ruta_documento', 'fecha_cambio', 'es_ultimo_estatus');
     }
 
     /**

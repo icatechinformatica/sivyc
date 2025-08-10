@@ -9,8 +9,7 @@ interface GrupoRepositoryInterface
     public function actualizarOrCrear(array $datos);
     public function obtenerPorId($id);
 
-    public function actualizarEstatus($grupoId, $nombreEstatus);
-    public function obtenerEstatusActual($grupoId);
-    public function agregarEstatus($grupoId, $nombreEstatus);
-    public function obtenerHistorialEstatus($grupoId);
+    public function actualizarEstatus($grupoId, $seccion, $nombreEstatus);
+    // public function obtenerEstatusActual($grupoId);
+    // public function agregarEstatus($grupoId, $nombreEstatus);
 }

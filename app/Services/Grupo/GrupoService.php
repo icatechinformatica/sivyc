@@ -47,12 +47,6 @@ class GrupoService
         }
     }
 
-    // Validar: Tipo de imparticion : id_imparticion
-    // Validar: Modalidad : id_modalidad
-    // Validar: Servicio : id_servicio
-    // Validar: Unidad : id_unidad
-    // Validar: Curso : id_curso
-
     public function guardarInfoGeneral($datos, $id_grupo = null)
     {
         $infoGeneral = [
@@ -147,43 +141,14 @@ class GrupoService
 
     public function actualizarEstatusGrupo($grupoId, $seccion)
     {
-        // Determinar el estatus según la sección
         $nombreEstatus = $seccion === 'REVISION' ? 'EN REVISION' : 'EN CAPTURA';
-        
-        return $this->grupoRepository->actualizarEstatus($grupoId, $nombreEstatus);
+        return $this->grupoRepository->actualizarEstatus($grupoId, $seccion, $nombreEstatus);
     }
 
-    /**
-     * Obtener el estatus actual de un grupo
-     */
-    public function obtenerEstatusActual($grupoId)
-    {
-        return $this->grupoRepository->obtenerEstatusActual($grupoId);
-    }
-
-    /**
-     * Obtener todo el historial de estatus de un grupo
-     */
-    public function obtenerHistorialEstatus($grupoId)
-    {
-        return $this->grupoRepository->obtenerHistorialEstatus($grupoId);
-    }
-
-    /**
-     * Finalizar captura de un grupo y moverlo a revisión
-     */
-    public function finalizarCaptura($grupoId)
-    {
-        return $this->grupoRepository->actualizarEstatus($grupoId, 'EN REVISION');
-    }
-
-    /**
-     * Validar si todas las secciones del grupo están completas
-     */
     public function validarSeccionesCompletas($grupoId)
     {
         $grupo = $this->grupoRepository->obtenerPorId($grupoId);
-        
+
         if (!$grupo) {
             return false;
         }
@@ -191,7 +156,7 @@ class GrupoService
         // Validar que todos los campos requeridos estén presentes
         $camposRequeridos = [
             'id_imparticion',
-            'id_modalidad', 
+            'id_modalidad',
             'id_unidad',
             'id_servicio',
             'id_curso',

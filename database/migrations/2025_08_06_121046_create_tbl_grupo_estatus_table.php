@@ -18,10 +18,11 @@ return new class extends Migration
             $table->foreignId('id_grupo')->constrained('tbl_grupos')->onDelete('cascade');
             $table->foreignId('id_estatus')->constrained('tbl_aux_estatus')->onDelete('set null');
             $table->foreignId('id_usuario')->constrained('tblz_usuarios')->onDelete('set null');
+            $table->string('seccion')->nullable();
             $table->string('observaciones')->nullable();
             $table->string('memorandum')->nullable();
             $table->string('ruta_documento')->nullable();
-            $table->date('fecha_cambio')->nullable();
+            $table->datetime('fecha_cambio')->nullable();
             $table->boolean('es_ultimo_estatus')->default(false);
         });
     }

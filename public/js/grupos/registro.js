@@ -200,7 +200,11 @@ const guardarSeccion = (formData) => {
                         message: 'Sección guardada correctamente.'
                     }
                 );
-
+                // Avanzar a la siguiente sección en la stepbar reutilizando lógica global
+                const seccionActual = formData.get('seccion');
+                if (typeof window.moverSiguienteSeccionGrupo === 'function') {
+                    window.moverSiguienteSeccionGrupo(seccionActual);
+                }
             }
         },
         error: function (error) {

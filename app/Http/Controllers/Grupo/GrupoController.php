@@ -51,8 +51,10 @@ class GrupoController extends Controller
         $localidades = localidad::where('clave_municipio', $grupo->id_municipio)->get();
         $municipios = Municipio::where('id_estado', 7)->get(); // CHIAPAS FIJO
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
-        // dd($grupo);
-        return view('grupos.create', compact('tiposImparticion', 'grupo', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro'));
+
+        $ultimoEstatus = $grupo->estatus()->orderBy('fecha_cambio', 'desc')->first();
+        $ultimaSeccion = $ultimoEstatus ? $ultimoEstatus->pivot->seccion : null;
+        return view('grupos.create', compact('tiposImparticion', 'grupo', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion'));
     }
 
     public function create(Request $request)
@@ -72,7 +74,8 @@ class GrupoController extends Controller
         $esNuevoRegistro = true;
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
 
-        return view('grupos.create', compact('tiposImparticion', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro'));
+        $ultimaSeccion = null; // No hay avance todavía
+        return view('grupos.create', compact('tiposImparticion', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro', 'ultimaSeccion'));
     }
 
     public function getLocalidades($municipioId)
@@ -121,55 +124,16 @@ class GrupoController extends Controller
 
             $grupo = $this->grupoService->obtenerSeccion($seccion, $datos, $id_grupo);
 
-            if ($grupo) {
-                $grupo_id = $grupo->id;
-                return response()->json(['success' => true, 'message' => 'Datos del grupo guardados correctamente.', 'grupo_id' => $grupo_id]);
-            } else {
+            if (!$grupo) {
                 return response()->json(['error' => 'No se pudo guardar la sección del grupo'], 500);
             }
+
+            $grupo_id = $grupo->id;
+            return response()->json(['success' => true, 'message' => 'Datos del grupo guardados correctamente.', 'grupo_id' => $grupo_id]);
         } catch (\Exception $e) {
             Log::error('Error al guardar sección de grupo: ' . $e->getMessage());
             return response()->json(['error' => 'Error al guardar sección'], 500);
         }
-    }
-
-    /**
-     * Obtener el historial de estatus de un grupo
-     */
-    public function obtenerHistorialEstatus($id)
-    {
-        try {
-            $historialEstatus = $this->grupoService->obtenerHistorialEstatus($id);
-            return response()->json([
-                'success' => true,
-                'historial' => $historialEstatus
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error al obtener historial de estatus: ' . $e->getMessage());
-            return response()->json(['error' => 'Error al obtener historial de estatus'], 500);
-        }
-    }
-
-    /**
-     * Obtener el estatus actual de un grupo
-     */
-    public function obtenerEstatusActual($id)
-    {
-        try {
-            $estatusActual = $this->grupoService->obtenerEstatusActual($id);
-            return response()->json([
-                'success' => true,
-                'estatus_actual' => $estatusActual
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error al obtener estatus actual: ' . $e->getMessage());
-            return response()->json(['error' => 'Error al obtener estatus actual'], 500);
-        }
-    }
-
-    public function store()
-    {
-        dd('Registrando grupo...');
     }
 
     public function asignarAlumnos()
