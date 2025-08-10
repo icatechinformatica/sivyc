@@ -122,10 +122,6 @@ $('#municipio-select').on('change', function () {
 const municipioPreseleccionado = $('#municipio-select').val();
 const localidadPreseleccionada = $('#localidad-select').val();
 
-if (municipioPreseleccionado) {
-
-}
-
 // ! Relleno automático de representante al seleccionar organismo público
 $('#organismo_publico').on('change', function () {
     const organismoId = $(this).val();
@@ -161,19 +157,28 @@ $('#organismo_publico').on('change', function () {
 });
 
 // ! Manejo de Imparticion a DISTANCIA: MEDIO VIRTUAL y ENLACE VIRTUAL
-const medio_virtual = $('#medio_virtual');
-const enlace_virtual = $('#enlace_virtual');
+obtenerImparticion();
+
 $('#imparticion').on('change', function () {
+    obtenerImparticion();
+});
+
+function obtenerImparticion() {
+    const medio_virtual = $('#medio_virtual');
+    const enlace_virtual = $('#enlace_virtual');
+
     if (this.value == 2) {
         medio_virtual.prop('disabled', false);
         enlace_virtual.prop('disabled', false);
+        console.log('Impartición a distancia seleccionada');
     } else {
         medio_virtual.prop('disabled', true);
         enlace_virtual.prop('disabled', true);
         medio_virtual.val('');
         enlace_virtual.val('');
+        console.log('Impartición presencial seleccionada, campos deshabilitados');
     }
-});
+}
 
 
 // ! Ajax para guardar los datos del formulario
