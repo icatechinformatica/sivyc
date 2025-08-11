@@ -30,8 +30,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php $i = 1; @endphp
-                    @foreach ($aperturas as $item)
+                    @php 
+                        $i = 1; 
+                        $currentPage = request()->get('page', 1);
+                        $perPage = 50;
+                        $startIndex = ($currentPage - 1) * $perPage;                    
+                    @endphp
+
+                    @foreach ($aperturas as $index => $item)
                         @php
                             $pdf = $rojo = null;
                             if ($item->pdf_curso) {
@@ -42,9 +48,10 @@
                             if (($item->status_solicitud=='TURNADO') OR ($item->status_curso=='SOLICITADO') OR ($item->status_curso=='EN FIRMA')) {
                                 $rojo = true;
                             }
+                            $i = $startIndex + $index + 1;
                         @endphp
                         <tr @if($rojo)class='text-danger' @endif>
-                            <td class="text-center">{{$i++}}</td>
+                            <td class="text-center">{{$i}}</td>
                             <td class="text-center">{{$item->unidad}}</td>
                             <td class="text-center">{{$item->num_revision}}</td>
                             <td class="text-center">{{$item->munidad}}</td>

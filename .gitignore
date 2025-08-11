@@ -1,7 +1,13 @@
-/node_modules
 /public/hot
 /public/storage
+#Ignorar archivos de cache y logs
 /storage/*.key
+!/storage/public
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+
 /vendor
 .env
 .env.backup
@@ -16,4 +22,17 @@ yarn-error.log
 /config/app.php
 /app/Providers/AppServiceProvider.php
 /app/Providers/RouteServiceProvider.php
+#Ignorar archivos de usuarios subidos (si aplica)
+/public/assets/*
+/public/storage
+/public/img
 composer.lock
+
+#Ignorar dependencias y archivos generados
+node_modules/
+vendor/
+package-lock.json
+
+#Ignorar archivos de compilación y minificación
+/css/*.min.css
+/js/*.min.js

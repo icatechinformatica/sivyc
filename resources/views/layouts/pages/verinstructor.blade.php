@@ -1601,23 +1601,7 @@
                     <div class="pull-left">
                         <a class="btn mr-sm-4 mt-3" href="{{URL::previous()}}">REGRESAR</a>
                     </div>
-                    @if($roluser->role_id == 39)
-                    </form>
-                    <form action="{{ route('movimiento-retorno') }}" enctype="multipart/form-data" method="post">
-                        @csrf
-                        <div class="pull-right form-group col-md-2">
-                            <label>Status: {{$datainstructor->status}}</label>
-                            <button type="submit" class="btn btn-danger form-control" id="enviarMovimiento">ACEPTAR</button>
-                        </div>
-                        <div class="pull-right form-group">
-                            <label>MOVIMIENTO</label>
-                            <select class="form-control" name="movimiento" id="movimiento">
-                                <option value="sin especificar">SELECCIONE</option>
-                                <option value="retornar en firma">RETORNAR A FIRMA</option>
-                                <option value="retornar a captura">RETORNAR A CAPTURA</option>
-                            </select>
-                        </div>
-                    @endif
+                    @if($roluser->role_id == 61)
                     <input type="hidden" name="id" id="id" value="{{$id}}">
                     @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                         <div class="pull-right">
@@ -1630,6 +1614,39 @@
                                 </div>
                             </div>
                         </div>
+                    @endif
+                    <input type="hidden" name="id" id="id" value="{{$id}}">
+                    </form>
+                    <form action="{{ route('movimiento-retorno') }}" enctype="multipart/form-data" method="post">
+                        @csrf
+                        <div class="pull-right form-group">
+                            <label>MOVIMIENTO</label>
+                            <select class="form-control" name="movimiento" id="movimiento">
+                                <option value="sin especificar">SELECCIONE</option>
+                                <option value="retornar en firma">RETORNAR A FIRMA</option>
+                                <option value="retornar a captura">RETORNAR A CAPTURA</option>
+                            </select>
+                        </div>
+                         <div class="pull-right form-group col-md-2">
+                            <label>Status: {{$datainstructor->status}}</label>
+                            <button type="submit" class="btn btn-danger form-control" id="enviarMovimiento">ACEPTAR</button>
+                        </div>
+                        <input type="hidden" name="id" id="id" value="{{$id}}">
+                    @else
+                        <input type="hidden" name="id" id="id" value="{{$id}}">
+                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
+                            <div class="pull-right">
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        @can('instructor.editar_fase2')
+                                            {{-- <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">ENVIAR A DTA</button> --}}
+                                            <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">GUARDAR CAMBIOS</button>
+                                        @endcan
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                        <input type="hidden" name="id" id="id" value="{{$id}}">
                     @endif
                 </div>
             </div>
@@ -1666,11 +1683,11 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputarea_carrera">Area de la carrera</label>
-                                <input name="area_carrera" id="area_carrera" type="text" class="form-control" aria-required="true">
+                                <input name="area_carrera" id="area_carrera" type="text" class="form-control" aria-required="true" maxlength="50">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputgrado_prof">Nombre de la Carrera</label>
-                                <input name="carrera" id="carrera" type="text" class="form-control" aria-required="true">
+                                <input name="carrera" id="carrera" type="text" class="form-control" aria-required="true" maxlength="50">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputestatus">Documento Obtenido</label>
@@ -1700,11 +1717,11 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputinstitucion_nombre">Nombre de la Institución Educativa</label>
-                                <input name="institucion_nombre" id="institucion_nombre" type="text" class="form-control" aria-required="true">
+                                <input name="institucion_nombre" id="institucion_nombre" type="text" class="form-control" aria-required="true" maxlength="50">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputfecha_documento">Fecha de Expedicion del Documento</label>
-                                <input name="fecha_documento" id="fecha_documento" type="date" class="form-control" aria-required="true">
+                                <input name="fecha_documento" id="fecha_documento" type="date" class="form-control" aria-required="true" maxlength="50">
                             </div>
                         </div>
                         <div class="form-row">

@@ -219,7 +219,7 @@ class aperturaController extends Controller
             })
             ->leftjoin('cursos as c','c.id','ar.id_curso')
             ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')
-            ->where('ar.turnado','=','UNIDAD')
+            ->where('ar.turnado','!=','VINCULACION')
             ->orderby('ar.id_vulnerable','DESC')
             ->first();
 //dd($grupo);
