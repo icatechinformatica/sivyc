@@ -6,6 +6,7 @@ use App\Models\Estatus;
 use App\Models\Municipio;
 use App\Repositories\GrupoRepository;
 use App\Interfaces\Repositories\GrupoRepositoryInterface;
+use App\Models\Grupo;
 
 class GrupoService
 {
@@ -133,7 +134,14 @@ class GrupoService
 
     public function guardarAgenda($datos, $id_grupo = null)
     {
-        $grupo = $this->grupoRepository->actualizarOrCrear($datos);
+        // Corroborar que las horas del grupo sean las definidas por el curso
+        $grupo = Grupo::find($id_grupo);
+        $horasCurso = $grupo ? $grupo->curso->horas : null;
+
+        if ($grupo->horasTotales() !== $horasCurso) {
+            return response()->json(['mensaje' => 'No cubre las horas totales del grupo']);
+        }
+        
         $id_grupo = $grupo->id ?? $id_grupo;
         $this->actualizarEstatusGrupo($id_grupo, 'agenda');
         return $grupo;

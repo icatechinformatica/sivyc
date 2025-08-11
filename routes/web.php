@@ -9,18 +9,6 @@ use App\Http\Controllers\Grupo\GrupoController;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Http\Controllers\webController\InstructorController;
 
-// Rutas de Agenda de Grupos (preinscripción)
-Route::prefix('grupos')->name('grupos.')->group(function () {
-    // Vista para asignar alumnos (si no existe aún la ruta nombrada)
-    Route::get('/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('asignar.alumnos');
-
-    // Endpoints de Agenda del Grupo
-    Route::get('{grupo}/agenda', [GrupoController::class, 'getAgenda'])->name('agenda.index');
-    Route::post('{grupo}/agenda', [GrupoController::class, 'storeAgenda'])->name('agenda.store');
-    Route::put('{grupo}/agenda/{agenda}', [GrupoController::class, 'updateAgenda'])->name('agenda.update');
-    Route::delete('{grupo}/agenda/{agenda}', [GrupoController::class, 'destroyAgenda'])->name('agenda.destroy');
-});
-
 
 /*
 |--------------------------------------------------------------------------
@@ -1146,6 +1134,18 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos'], function () {
     Route::get('/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar.alumnos');
 
     Route::post('/guardar/seccion/grupo', [GrupoController::class, 'guardarSeccionGrupo'])->name('grupos.guardar.seccion.grupo');
+});
+
+// Rutas de Agenda de Grupos (preinscripción)
+Route::prefix('grupos')->name('grupos.')->group(function () {
+    // Vista para asignar alumnos (si no existe aún la ruta nombrada)
+    Route::get('/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('asignar.alumnos');
+
+    // Endpoints de Agenda del Grupo
+    Route::get('{grupo}/agenda', [GrupoController::class, 'getAgenda'])->name('agenda.index');
+    Route::post('{grupo}/agenda', [GrupoController::class, 'storeAgenda'])->name('agenda.store');
+    Route::put('{grupo}/agenda/{agenda}', [GrupoController::class, 'updateAgenda'])->name('agenda.update');
+    Route::delete('{grupo}/agenda/{agenda}', [GrupoController::class, 'destroyAgenda'])->name('agenda.destroy');
 });
 
 Route::get('/mi/rol', function () {

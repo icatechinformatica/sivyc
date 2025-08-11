@@ -3,7 +3,7 @@
     if (!window.gruposStepVars) return;
 
     const ORDEN = window.gruposStepVars.ordenSecciones || [
-        'info_general', 'ubicacion', 'organismo', 'opciones', 'agenda'
+        'info_general', 'ubicacion', 'organismo', 'opciones', 'agenda', 'alumnos'
     ];
 
     // Última sección finalizada como string (puede ser null/undefined si ninguna)

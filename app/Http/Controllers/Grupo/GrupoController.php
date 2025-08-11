@@ -132,6 +132,10 @@ class GrupoController extends Controller
                 return response()->json(['error' => 'No se pudo guardar la sección del grupo'], 500);
             }
 
+            if ($grupo instanceof \Illuminate\Http\JsonResponse) {
+                return $grupo;
+            }
+
             $grupo_id = $grupo->id;
             return response()->json(['success' => true, 'message' => 'Datos del grupo guardados correctamente.', 'grupo_id' => $grupo_id]);
         } catch (\Exception $e) {

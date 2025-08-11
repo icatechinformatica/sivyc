@@ -11,7 +11,7 @@
 @section('content')
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-8">
-        <span>Grupos / {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span>
+        <span>Grupos / {{ $esNuevoRegistro ? 'Registro' : 'Edición' }} - Grupo ID: {{ $grupo->id }}</span>
     </div>
 </div>
 
@@ -42,17 +42,21 @@
                         <span class="step-circle mr-2" data-status="restante">5</span>
                         <span class="fw-bold">Agenda</span>
                     </li>
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="Alumnos">
+                        <span class="step-circle mr-2" data-status="restante">6</span>
+                        <span class="fw-bold">Alumnos</span>
+                    </li>
                 </ul>
             </nav>
         </div>
+        <input type="hidden" id="esNuevoRegistro" value="{{ $esNuevoRegistro ? 'true' : 'false' }}" />
+        @if (!$esNuevoRegistro)
+        <input type="hidden" name="id_grupo" id="id_grupo" value="{{ $grupo->id }}" />
+        @endif
         <div class="col-md-9">
             {{-- * Sección: Información general --> --}}
             <div class="col-12 mb-4 step-section" id="info_general">
                 {{ html()->form('POST')->id('info_general_form')->open() }}
-                <input type="hidden" id="esNuevoRegistro" value="{{ $esNuevoRegistro ? 'true' : 'false' }}" />
-                @if (!$esNuevoRegistro)
-                <input type="hidden" name="id_grupo" id="id_grupo" value="{{ $grupo->id }}" />
-                @endif
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Información general</h5>
                     <div class="row my-1">
@@ -231,6 +235,7 @@
             </div>
             {{-- * Sección: Agenda --}}
             <div class="col-12 mb-4 step-section" id="agenda" style="display:none;">
+                {{ html()->form()->id('form-agenda')->open() }}
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Agenda</h5>
                     <div class="form-row mt-2">
@@ -242,10 +247,13 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-4">
-                        {!! html()->button('<i class="fa fa-save me-2"></i> Guardar grupo y asignar alumnos',
-                        'submit')->class('btn btn-primary btn-lg rounded')->id('btn-guardar')->attribute('data-redirect', route('grupos.asignar.alumnos'))->toHtml() !!}
+                        {{ html()->button('Guardar Agenda')->class('btn btn-primary float-end guardar-seccion')->id("guardar_agenda")->type('button') }}
                     </div>
                 </div>
+                {{ html()->form()->close() }}
+            </div>
+            <div class="col-12 mb-4 step-section" id="alumnos" style="display: none;">
+                <h1>Hola</h1>
             </div>
         </div>
     </div>
@@ -274,7 +282,7 @@
     // Se pasa únicamente la última sección finalizada ($ultimaSeccion) como string.
     window.gruposStepVars = {
         ultimaSeccion: @json($ultimaSeccion ?? null),
-        ordenSecciones: ['info_general','ubicacion','organismo','opciones','agenda']
+        ordenSecciones: ['info_general','ubicacion','organismo','opciones','agenda', 'alumnos']
     };
 </script>
 <script>

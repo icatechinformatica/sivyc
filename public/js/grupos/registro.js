@@ -76,6 +76,18 @@ $("#guardar_opciones").on('click', function (e) {
     }
 });
 
+// ! Agenda 
+$("#guardar_agenda").on('click', function (e) {
+    const formData = new FormData();
+    if ($('#id_grupo').val()) {
+        formData.append('id_grupo', $('#id_grupo').val());
+    }
+    formData.append('seccion', 'agenda');
+    formData.append('_token', registroBladeVars.csrfToken);
+    guardarSeccion(formData);
+});
+
+
 // ! Filtro dinámico de localidades por municipio
 function cargarLocalidades(municipioId, localidadSeleccionada = null) {
     const localidadSelect = $('#localidad-select');
@@ -208,6 +220,18 @@ const guardarSeccion = (formData) => {
                 if (typeof window.moverSiguienteSeccionGrupo === 'function') {
                     window.moverSiguienteSeccionGrupo(seccionActual);
                 }
+            }
+            if (response.mensaje) {
+                const notyf = new Notyf({
+                    position: { x: 'right', y: 'top' },
+                    duration: 3000,
+                });
+                notyf.open(
+                    {
+                        type: 'error', className: 'notyf-error',
+                        message: response.mensaje
+                    }
+                );
             }
         },
         error: function (error) {
