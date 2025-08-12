@@ -136,4 +136,13 @@ class Grupo extends Model
     {
         return $this->fechasSeleccionadas()->count();
     }
+
+    /**
+     * Relación N:M con Alumnos mediante la tabla pivote tbl_alumno_grupo
+     */
+    public function alumnos()
+    {
+        return $this->belongsToMany(Alumno::class, 'tbl_alumno_grupo', 'grupo_id', 'alumno_id')
+            ->withPivot('costo', 'comprobante_pago', 'tinscripcion', 'abrinscri', 'folio_pago', 'fecha_pago', 'id_folio');
+    }
 }

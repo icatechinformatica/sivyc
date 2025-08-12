@@ -11,7 +11,7 @@
 @section('content')
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-8">
-        <span>Grupos / {{ $esNuevoRegistro ? 'Registro' : 'Edición' }} - Grupo ID: {{ $grupo->id }}</span>
+        <span>Grupos / {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span>
     </div>
 </div>
 
@@ -42,7 +42,7 @@
                         <span class="step-circle mr-2" data-status="restante">5</span>
                         <span class="fw-bold">Agenda</span>
                     </li>
-                    <li class="list-group-item py-3 d-flex align-items-center" data-step="Alumnos">
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="alumnos">
                         <span class="step-circle mr-2" data-status="restante">6</span>
                         <span class="fw-bold">Alumnos</span>
                     </li>
@@ -247,20 +247,81 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-4">
-                        {{ html()->button('Guardar Agenda')->class('btn btn-primary float-end guardar-seccion')->id("guardar_agenda")->type('button') }}
+                        {{ html()->button('Guardar Agenda')->class('btn btn-primary float-end
+                        guardar-seccion')->id("guardar_agenda")->type('button') }}
                     </div>
                 </div>
                 {{ html()->form()->close() }}
             </div>
-            <div class="col-12 mb-4 step-section" id="alumnos" style="display: none;">
-                <h1>Hola</h1>
+
+            {{-- * Sección: Alumnos --}}
+            <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
+                <div class="card card-body mt-3 shadow-none p-0">
+                    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
+                        <div class="flex-grow-1">
+                            <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos') }}">
+                                @csrf
+                                <div class="input-group" style="width: 400px;">
+                                    @if(!$esNuevoRegistro && $grupo)
+                                    <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
+                                    @endif
+                                    <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP"
+                                        maxlength="18" required style="flex: 1 1 auto; min-width: 0;">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary mr-2 rounded" type="submit" name="action"
+                                            value="agregar">Agregar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Curp</th>
+                                    <th>Matrícula</th>
+                                    <th>Nombre</th>
+                                    <th>Sexo</th>
+                                    <th>Edad</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
+                                <tr>
+                                    <td colspan="6" class="text-center">No hay alumnos asignados aún</td>
+                                </tr>
+                                @else
+                                @foreach($grupo->alumnos as $alumno)
+                                <tr>
+                                    <td>{{ $alumno->curp }}</td>
+                                    <td>{{ $alumno->matricula }}</td>
+                                    <td>{{ $alumno->nombreCompleto() }}</td>
+                                    <td>{{ $alumno->sexo->sexo }}</td>
+                                    <td>{{ $alumno->edad }}</td>
+                                    <td>
+                                        <form method="POST" action="">
+                                            @csrf
+                                            <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
+                                            <button class="btn btn-danger btn-sm" type="submit" name="action"
+                                                value="eliminar">Eliminar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
+@if(!$esNuevoRegistro && isset($grupo) && $grupo->id))
 @include('grupos.partials.modal_fullcalendar')
-
+@endif
 {{-- * CSS --}}
 @push('content_css_sign')
 <link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />

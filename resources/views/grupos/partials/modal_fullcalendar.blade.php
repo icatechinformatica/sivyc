@@ -18,11 +18,13 @@
                         <div class="card h-100 border shadow-sm">
                             <div class="align-items-center p-3">
                                 <div>
-                                    <input type="color" id="color_fondo" name="color_fondo" value="#ff0000" class="select-color">
+                                    <input type="color" id="color_fondo" name="color_fondo" value="#ff0000"
+                                        class="select-color">
                                     <span class="ml-2">Color de fondo</span>
                                 </div>
                                 <div>
-                                    <input type="color" id="color_texto" name="color_texto" value="#ff0000" class="select-color">
+                                    <input type="color" id="color_texto" name="color_texto" value="#ff0000"
+                                        class="select-color">
                                     <span class="ml-2">Color del texo</span>
                                 </div>
                             </div>
@@ -31,13 +33,18 @@
                                     <i class="fa fa-info-circle mr-2"></i>Datos del grupo
                                 </h5>
                                 <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-secondary mr-2">Horas del curso</span>
+                                        <span id="fc-horas-maximas" class="fw-bold fs-5 text-dark">{{
+                                            decimal_a_hora($grupo->curso->horas) }}</span>
+                                    </div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="text-secondary mr-2">Horas totales del grupo</span>
+                                        <span class="text-secondary mr-2">Horas agendadasN</span>
                                         <span id="fc-horas-totales" class="fw-bold fs-5 text-dark">{{
                                             decimal_a_hora($grupo->horasTotales()) }}</span>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="text-secondary mr-2">Días seleccionados/hora</span>
+                                        <span class="text-secondary mr-2">Dias totales</span>
                                         <span id="fc-dias-horas" class="fw-bold fs-5 text-dark">{{
                                             $grupo->contarFechasSeleccionadas() }}</span>
                                     </div>
@@ -46,11 +53,7 @@
                                         <span id="fc-horas-restantes" class="fw-bold fs-5 text-dark">{{
                                             decimal_a_hora($grupo->curso->horas - $grupo->horasTotales()) }}</span>
                                     </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-secondary mr-2">Horas máximas del curso</span>
-                                        <span id="fc-horas-maximas" class="fw-bold fs-5 text-dark">{{
-                                            decimal_a_hora($grupo->curso->horas) }}</span>
-                                    </div>
+
                                 </div>
                                 <hr>
                                 <div class="text-center small text-muted">

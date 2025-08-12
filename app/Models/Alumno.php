@@ -87,7 +87,7 @@ class Alumno extends Model
     public function estatus()
     {
         return $this->belongsToMany(Estatus::class, 'tbl_alumno_estatus', 'id_alumno', 'id_estatus')
-                    ->withPivot('secciones');
+            ->withPivot('secciones');
     }
 
     public function pais()
@@ -120,5 +120,42 @@ class Alumno extends Model
         return $this->belongsTo(Discapacidad::class, 'id_discapacidad');
     }
 
+    public function nombreCompleto()
+    {
+        return trim("{$this->nombre} {$this->apellido_paterno} {$this->apellido_materno}");
+    }
 
+    public function getEdadAttribute()
+    {
+        return $this->fecha_nacimiento ? \Carbon\Carbon::parse($this->fecha_nacimiento)->age : null;
+    }
+
+    /**
+     * Relación N:M con Grupos mediante la tabla pivote tbl_alumno_grupo
+     */
+    public function grupos()
+    {
+        return $this->belongsToMany(Grupo::class, 'tbl_alumno_grupo', 'alumno_id', 'grupo_id')
+            ->withPivot('costo', 'comprobante_pago', 'tinscripcion', 'abrinscri', 'folio_pago', 'fecha_pago', 'id_folio');
+    }
+
+    public function registroCompleto()
+    {
+        try {
+            return $this->estatus()
+                ->whereJsonContains('tbl_alumno_estatus.secciones->cerss->finalizada', true)
+                ->exists();
+        } catch (\Throwable $e) {
+            foreach ($this->estatus as $estatus) {
+                $secciones = $estatus->pivot->secciones ?? null;
+                if (is_string($secciones)) {
+                    $secciones = json_decode($secciones, true);
+                }
+                if (is_array($secciones) && data_get($secciones, 'cerss.finalizada') === true) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }

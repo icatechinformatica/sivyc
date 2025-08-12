@@ -1131,9 +1131,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos'], function () {
     Route::post('/registrar', [GrupoController::class, 'store'])->name('grupos.store');
     Route::get('/localidades/{municipioId}', [GrupoController::class, 'getLocalidades'])->name('grupos.localidades');
     Route::get('/organismo/{organismoId}', [GrupoController::class, 'getOrganismoInfo'])->name('grupos.organismo.info');
-    Route::get('/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar.alumnos');
-
     Route::post('/guardar/seccion/grupo', [GrupoController::class, 'guardarSeccionGrupo'])->name('grupos.guardar.seccion.grupo');
+    
+    Route::match(['get', 'post'], '/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar.alumnos');
+
+    // Eliminar alumno del grupo
+    Route::delete('/{grupo}/alumnos/{alumno}', [GrupoController::class, 'eliminarAlumno'])->name('grupos.alumnos.eliminar');
 });
 
 // Rutas de Agenda de Grupos (preinscripción)

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Grupo;
 
+use App\Agenda;
+use Carbon\Carbon;
 use App\Models\curso;
+use App\Models\Grupo;
+use App\Models\Alumno;
 use App\Models\Unidad;
 use App\Models\localidad;
 use App\Models\Municipio;
@@ -14,9 +18,6 @@ use App\Models\organismosPublicos;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Grupo\GrupoService;
-use App\Models\Grupo;
-use App\Agenda;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class GrupoController extends Controller
@@ -77,7 +78,6 @@ class GrupoController extends Controller
         $localidades = []; // Inicialmente vacío
         $esNuevoRegistro = true;
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
-
         $ultimaSeccion = null; // No hay avance todavía
         return view('grupos.create', compact('tiposImparticion', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro', 'ultimaSeccion'));
     }
@@ -144,9 +144,85 @@ class GrupoController extends Controller
         }
     }
 
-    public function asignarAlumnos()
+    public function asignarAlumnos(Request $request)
     {
-        return view('grupos.asignar_alumnos');
+        // Vista simple opcional si es GET
+        if (!$request->isMethod('post')) {
+            return view('grupos.asignar_alumnos');
+        }
+
+        // POST: asignar por CURP
+        $validator = Validator::make($request->all(), [
+            'grupo_id' => 'required|exists:tbl_grupos,id',
+            'curp' => 'required|string|size:18',
+        ], [
+            'curp.size' => 'La CURP debe tener 18 caracteres.'
+        ]);
+
+        if ($validator->fails()) {
+            $gid = $request->input('grupo_id');
+            return redirect()->route('grupos.editar', $gid)
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $grupoId = (int) $request->input('grupo_id');
+        $curp = strtoupper(trim($request->input('curp')));
+
+        $grupo = Grupo::find($grupoId);
+        if (!$grupo) {
+            return redirect()->route('grupos.editar', $grupoId)
+                ->with('error', 'Grupo no encontrado.');
+        }
+
+        $alumno = Alumno::where('curp', $curp)->first();
+        if (!$alumno) {
+            return redirect()->route('grupos.editar', $grupoId)
+                ->with('error', 'Alumno no encontrado con la CURP proporcionada.');
+        }
+
+        // Evitar duplicados
+        $existe = $grupo->alumnos()->where('tbl_alumnos.id', $alumno->id)->exists();
+        if ($existe) {
+            return redirect()->route('grupos.editar', $grupoId)
+                ->with('info', 'El alumno ya está asignado a este grupo.');
+        }
+
+        try {
+            $grupo->alumnos()->attach($alumno->id);
+            // Actualiza estatus de sección
+            $this->grupoService->actualizarEstatusGrupo($grupoId, 'alumnos');
+            return redirect()->route('grupos.editar', $grupoId)
+                ->with('success', 'Alumno agregado al grupo.');
+        } catch (\Throwable $e) {
+            Log::error('Error asignando alumno al grupo', [
+                'grupo_id' => $grupoId,
+                'alumno_id' => $alumno->id,
+                'error' => $e->getMessage(),
+            ]);
+            return redirect()->route('grupos.editar', $grupoId)
+                ->with('error', 'No se pudo agregar el alumno al grupo.');
+        }
+    }
+
+    /**
+     * Eliminar un alumno del grupo
+     */
+    public function eliminarAlumno(Grupo $grupo, Alumno $alumno)
+    {
+        try {
+            $grupo->alumnos()->detach($alumno->id);
+            return redirect()->route('grupos.editar', $grupo->id)
+                ->with('success', 'Alumno eliminado del grupo.');
+        } catch (\Throwable $e) {
+            Log::error('Error al eliminar alumno del grupo', [
+                'grupo_id' => $grupo->id,
+                'alumno_id' => $alumno->id,
+                'error' => $e->getMessage(),
+            ]);
+            return redirect()->route('grupos.editar', $grupo->id)
+                ->with('error', 'No se pudo eliminar el alumno del grupo.');
+        }
     }
 
     /**
@@ -192,7 +268,7 @@ class GrupoController extends Controller
             $existeTraslape = Agenda::where('id_grupo', $grupo->id)
                 ->where(function ($q) use ($start, $end) {
                     $q->where('fecha_inicio', '<', $end)
-                      ->where('fecha_fin', '>', $start);
+                        ->where('fecha_fin', '>', $start);
                 })
                 ->exists();
 
@@ -245,7 +321,7 @@ class GrupoController extends Controller
                 ->where('id', '<>', $agenda->id)
                 ->where(function ($q) use ($start, $end) {
                     $q->where('fecha_inicio', '<', $end)
-                      ->where('fecha_fin', '>', $start);
+                        ->where('fecha_fin', '>', $start);
                 })
                 ->exists();
 
