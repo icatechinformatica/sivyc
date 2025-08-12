@@ -58,7 +58,7 @@ class GrupoController extends Controller
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
 
         $ultimoEstatus = $grupo->estatus()->orderBy('fecha_cambio', 'desc')->first();
-        $ultimaSeccion = $ultimoEstatus ? $ultimoEstatus->pivot->seccion : null;
+        $ultimaSeccion = $grupo->seccion_captura ?? null;
         return view('grupos.create', compact('tiposImparticion', 'grupo', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion'));
     }
 
@@ -191,7 +191,7 @@ class GrupoController extends Controller
         try {
             $grupo->alumnos()->attach($alumno->id);
             // Actualiza estatus de sección
-            $this->grupoService->actualizarEstatusGrupo($grupoId, 'alumnos');
+            // $this->grupoService->actualizarEstatusGrupo($grupoId, 'alumnos'); // ! PENDIENTE REVISAR
             return redirect()->route('grupos.editar', $grupoId)
                 ->with('success', 'Alumno agregado al grupo.');
         } catch (\Throwable $e) {

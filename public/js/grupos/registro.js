@@ -169,20 +169,22 @@ $('#organismo_publico').on('change', function () {
 });
 
 // ! Manejo de Imparticion a DISTANCIA: MEDIO VIRTUAL y ENLACE VIRTUAL
-obtenerImparticion();
+obtenerImparticion($('#imparticion').val());
 
 $('#imparticion').on('change', function () {
-    obtenerImparticion();
+    obtenerImparticion(this.value);
 });
 
-function obtenerImparticion() {
+function obtenerImparticion(imparticion) {
     const medio_virtual = $('#medio_virtual');
     const enlace_virtual = $('#enlace_virtual');
 
-    if (this.value == 2) {
+    if (imparticion == 2) {
+        console.log('Impartición a distancia seleccionada');
         medio_virtual.prop('disabled', false);
         enlace_virtual.prop('disabled', false);
     } else {
+        console.log('Impartición a presencial seleccionada');
         medio_virtual.prop('disabled', true);
         enlace_virtual.prop('disabled', true);
         medio_virtual.val('');

@@ -82,7 +82,7 @@ class GrupoRepository implements GrupoRepositoryInterface
         return $this->grupo->with(['curso', 'unidad', 'instructor', 'estatus'])->find($id);
     }
 
-    public function actualizarEstatus($grupoId, $seccion, $nombreEstatus)
+    public function actualizarEstatus($grupoId, $nombreEstatus)
     {
         try {
             $grupo = $this->grupo->find($grupoId);
@@ -96,7 +96,6 @@ class GrupoRepository implements GrupoRepositoryInterface
             // ! Agregar nuevo estatus NO ACTUALIZAR
             $grupo->estatus()->attach($estatus->id, [
                 'id_usuario' => auth()->id(),
-                'seccion' => $seccion,
                 'fecha_cambio' => now(),
                 'es_ultimo_estatus' => false
             ]);

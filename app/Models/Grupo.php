@@ -45,6 +45,7 @@ class Grupo extends Model
         'codigo_postal',
         'referencias',
         'id_servicio',
+    'seccion_captura',
     ];
 
     public $timestamps = false;
@@ -67,7 +68,7 @@ class Grupo extends Model
 
     public function estatus()
     {
-        return $this->belongsToMany(Estatus::class, 'tbl_grupo_estatus', 'id_grupo', 'id_estatus')->withPivot('seccion', 'observaciones', 'memorandum', 'ruta_documento', 'fecha_cambio', 'es_ultimo_estatus');
+        return $this->belongsToMany(Estatus::class, 'tbl_grupo_estatus', 'id_grupo', 'id_estatus')->withPivot('observaciones', 'memorandum', 'ruta_documento', 'fecha_cambio', 'es_ultimo_estatus');
     }
 
     /**

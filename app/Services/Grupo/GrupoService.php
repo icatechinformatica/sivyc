@@ -11,6 +11,8 @@ use App\Models\Grupo;
 class GrupoService
 {
 
+    protected $ordenSecciones = ['info_general', 'ubicacion', 'organismo', 'opciones', 'agenda', 'alumnos'];
+
     public function __construct(private GrupoRepositoryInterface $grupoRepository)
     {
         $this->grupoRepository = $grupoRepository;
@@ -61,9 +63,13 @@ class GrupoService
         if ($id_grupo) {
             $infoGeneral['id'] = $id_grupo;
         }
+
+        // Avanza seccion_captura solo si corresponde
+        $infoGeneral['seccion_captura'] = $this->obtenerSeccionCaptura($id_grupo, 'info_general');
+
         $grupo = $this->grupoRepository->actualizarOrCrear($infoGeneral);
         $id_grupo = $grupo->id ?? $id_grupo;
-        $this->actualizarEstatusGrupo($id_grupo, 'info_general');
+        $this->actualizarEstatusGrupo($id_grupo, 'EN CAPTURA');
         return $grupo;
     }
 
@@ -85,9 +91,12 @@ class GrupoService
         // * Lugar, Colonia, Calle y Número, Código Postal, Municipio, Estado y Referencias adicionales.
         $ubicacion['efisico'] = $datos['nombre_lugar'] . ', ' . $datos['colonia'] . ', ' .  $datos['calle_numero']  . ', ' .  'C.P.' . ' ' . $datos['codigo_postal'] . ', ' .  ($municipio ? $municipio->muni : '') . ', ' .  ($estado ? $estado->nombre : '') .  ', ' . ($datos['referencias'] ?? '') . '.';
 
+        // Avanza seccion_captura solo si corresponde
+        $ubicacion['seccion_captura'] = $this->obtenerSeccionCaptura($id_grupo, 'ubicacion');
+
         $grupo = $this->grupoRepository->actualizarOrCrear($ubicacion);
         $id_grupo = $grupo->id ?? $id_grupo;
-        $this->actualizarEstatusGrupo($id_grupo, 'ubicacion');
+        $this->actualizarEstatusGrupo($id_grupo, 'EN CAPTURA');
         return $grupo;
     }
 
@@ -104,9 +113,12 @@ class GrupoService
             $organismo['id'] = $id_grupo;
         }
 
+        // Avanza seccion_captura solo si corresponde
+        $organismo['seccion_captura'] = $this->obtenerSeccionCaptura($id_grupo, 'organismo');
+
         $grupo = $this->grupoRepository->actualizarOrCrear($organismo);
         $id_grupo = $grupo->id ?? $id_grupo;
-        $this->actualizarEstatusGrupo($id_grupo, 'organismo');
+        $this->actualizarEstatusGrupo($id_grupo, 'EN CAPTURA');
         return $grupo;
     }
 
@@ -126,9 +138,12 @@ class GrupoService
             $opciones['id'] = $id_grupo;
         }
 
+        // Avanza seccion_captura solo si corresponde
+        $opciones['seccion_captura'] = $this->obtenerSeccionCaptura($id_grupo, 'opciones');
+
         $grupo = $this->grupoRepository->actualizarOrCrear($opciones);
         $id_grupo = $grupo->id ?? $id_grupo;
-        $this->actualizarEstatusGrupo($id_grupo, 'opciones');
+        $this->actualizarEstatusGrupo($id_grupo, 'EN CAPTURA');
         return $grupo;
     }
 
@@ -141,46 +156,50 @@ class GrupoService
         if ($grupo->horasTotales() !== $horasCurso) {
             return response()->json(['mensaje' => 'No cubre las horas totales del grupo']);
         }
-        
+
+        // Si cubre las horas, avanza seccion_captura solo si corresponde
+        if ($grupo) {
+            $this->grupoRepository->actualizarOrCrear([
+                'id' => $grupo->id,
+                'seccion_captura' => $this->obtenerSeccionCaptura($grupo->id, 'agenda')
+            ]);
+        }
+
         $id_grupo = $grupo->id ?? $id_grupo;
-        $this->actualizarEstatusGrupo($id_grupo, 'agenda');
-        return $grupo;
+        $this->actualizarEstatusGrupo($id_grupo, 'EN CAPTURA');
+        return $grupo?->fresh();
     }
 
-    public function actualizarEstatusGrupo($grupoId, $seccion)
+    private function obtenerSeccionCaptura($id_grupo, string $nuevaSeccion)
     {
-        $nombreEstatus = $seccion === 'REVISION' ? 'EN REVISION' : 'EN CAPTURA';
-        return $this->grupoRepository->actualizarEstatus($grupoId, $seccion, $nombreEstatus);
+        // Validar que la nueva sección exista en el orden
+        $indiceNueva = array_search($nuevaSeccion, $this->ordenSecciones, true);
+        if ($indiceNueva === false) {
+            throw new \InvalidArgumentException('Sección no reconocida');
+        }
+
+        // Si no hay grupo aún, se inicia con la nueva sección
+        if (empty($id_grupo)) {
+            return $nuevaSeccion;
+        }
+
+        $grupo = Grupo::find($id_grupo);
+        $actual = $grupo?->seccion_captura;
+
+        // Si no hay sección actual o no es válida, colocar la nueva
+        $indiceActual = $actual ? array_search($actual, $this->ordenSecciones, true) : false;
+        if ($indiceActual === false) {
+            return $nuevaSeccion;
+        }
+
+        // Solo avanzar si la nueva es posterior a la actual
+        return $indiceNueva > $indiceActual ? $nuevaSeccion : $actual;
     }
 
-    public function validarSeccionesCompletas($grupoId)
+    public function actualizarEstatusGrupo($id_grupo, $estatus)
     {
-        $grupo = $this->grupoRepository->obtenerPorId($grupoId);
-
-        if (!$grupo) {
-            return false;
-        }
-
-        // Validar que todos los campos requeridos estén presentes
-        $camposRequeridos = [
-            'id_imparticion',
-            'id_modalidad',
-            'id_unidad',
-            'id_servicio',
-            'id_curso',
-            'id_municipio',
-            'id_localidad',
-            'efisico',
-            'id_organismo_publico',
-            'organismo_representante',
-        ];
-
-        foreach ($camposRequeridos as $campo) {
-            if (empty($grupo->$campo)) {
-                return false;
-            }
-        }
-
-        return true;
+        // Lógica para actualizar el estatus del grupo
+        $grupo = Grupo::find($id_grupo);
+        $this->grupoRepository->actualizarEstatus($grupo->id, $estatus);
     }
 }
