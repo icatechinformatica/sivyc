@@ -48,7 +48,8 @@ class GuardarSeccionService
             'id_estado_civil' => $datos['id_estado_civil'],
             'id_usuario_realizo' => $datos['id_usuario_realizo'],
             'id_sexo' => $datos['id_sexo'],
-            'id_nacionalidad' => $datos['id_nacionalidad']
+            'id_nacionalidad' => $datos['id_nacionalidad'],
+            'id_entidad_nacimiento' => $datos['id_entidad_nacimiento']
         ];
 
         // Manejo de archivos_documentos JSON

@@ -58,6 +58,8 @@ return new class extends Migration
             $table->foreignId('id_sexo')->nullable()->references('id')->on('tbl_sexo')->onDelete('set null');
             $table->foreignId('id_pais')->nullable()->references('id')->on('tbl_paises')->onDelete('set null');
             $table->foreignId('id_estado')->nullable()->references('id')->on('estados')->onDelete('set null');
+            $table->foreignId('id_entidad_nacimiento')->nullable()->references('id')->on('estados')->onDelete('set null');
+            
             $table->foreignId('id_municipio')->nullable()->references('id')->on('tbl_municipios')->onDelete('set null');
             $table->foreignId('id_estado_civil')->nullable()->references('id')->on('estado_civil')->onDelete('set null');
             $table->foreignId('id_discapacidad')->nullable()->references('id_discapacidad')->on('tbl_cat_discapacidades')->onDelete('set null');

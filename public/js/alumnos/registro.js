@@ -10,7 +10,7 @@ datos_personales.on('click', function () {
         formData.append('curp', $('#curp').val());
         formData.append('apellido_materno', $('#segundo_apellido').val());
         formData.append('fecha_de_nacimiento', $('#fecha_de_nacimiento').val());
-        formData.append('entidad_de_nacimiento', $('#entidad_de_nacimiento').val());
+        formData.append('id_entidad_nacimiento', $('#entidad_de_nacimiento_select').val());
         formData.append('id_sexo', $('#sexo_select').val());
         formData.append('id_nacionalidad', $('#nacionalidad_select').val());
         formData.append('id_estado_civil', $('#estado_civil_select').val());
@@ -211,11 +211,62 @@ if (curp && esNuevoRegistro) {
     deshabilitarCampos();
 }
 
+// Utilidad: normaliza texto (quita acentos, mayúsculas, espacios extra)
+function normalizaTexto(str) {
+    return (str || '')
+        .toString()
+        .trim()
+        .toUpperCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+}
+
+// Utilidad: selecciona una opción de un <select> comparando por texto visible
+function seleccionarOpcionPorTexto(selectSelector, textoBuscado) {
+    const select = $(selectSelector);
+    if (!select || select.length === 0) return;
+
+    const buscado = normalizaTexto(textoBuscado);
+    if (!buscado) return false;
+
+    let valorEncontrado = null;
+    select.find('option').each(function () {
+        const $opt = $(this);
+        const txt = normalizaTexto($opt.text());
+        // También considerar atributos alternos si existen
+        const dataNombre = normalizaTexto($opt.attr('data-nombre'));
+        const dataSigla = normalizaTexto($opt.attr('data-sigla'));
+        if (txt === buscado || (dataNombre && dataNombre === buscado) || (dataSigla && dataSigla === buscado)) {
+            valorEncontrado = $opt.val();
+            return false; // break
+        }
+    });
+
+    if (valorEncontrado !== null) {
+        select.val(valorEncontrado).trigger('change');
+        return true;
+    }
+    // Intento de coincidencia parcial como respaldo (por si hay pequeñas diferencias)
+    select.find('option').each(function () {
+        if (valorEncontrado !== null) return;
+        const $opt = $(this);
+        const txt = normalizaTexto($opt.text());
+        if (txt.includes(buscado) || buscado.includes(txt)) {
+            valorEncontrado = $opt.val();
+        }
+    });
+    if (valorEncontrado !== null) {
+        select.val(valorEncontrado).trigger('change');
+        return true;
+    }
+    console.warn('No se encontró coincidencia para', textoBuscado, 'en', selectSelector);
+    return false;
+}
+
 function guardarDatosCurpEnCampos(data) {
     $('#nombre_s').val(data.nombre_s_);
     $('#primer_apellido').val(data.primer_apellido);
     $('#segundo_apellido').val(data.segundo_apellido);
-    $('#entidad_de_nacimiento').val(data.entidad_de_nacimiento);
     $('#fecha_de_nacimiento').val(data.fecha_de_nacimiento);
 
     // * Sección de selects
@@ -224,6 +275,10 @@ function guardarDatosCurpEnCampos(data) {
 
     $('#nacionalidad_select').val(data.nacionalidad === 'MEXICO' ? '1' : '');
     $('#nacionalidad_input').val(data.nacionalidad === 'MEXICO' ? 'MEXICANA' : '');
+
+    // Nuevo: seleccionar entidad de nacimiento en el select por coincidencia de texto
+    seleccionarOpcionPorTexto('#entidad_de_nacimiento_select', data.entidad_de_nacimiento);
+    $('#entidad_de_nacimiento').val(data.entidad_de_nacimiento);
 }
 
 function deshabilitarCampos() {
@@ -241,6 +296,9 @@ function deshabilitarCampos() {
     $('#nacionalidad_select').prop('disabled', true);
     $('#nacionalidad_select').hide();
     $('#nacionalidad_input').prop('readonly', true);
+
+    $('#entidad_de_nacimiento_select').hide();
+    $('#entidad_de_nacimiento').prop('readonly', true);
 }
 
 
@@ -322,7 +380,7 @@ const guardarSeccion = (formData) => {
                 // Convertir nombre de sección del backend al frontend
                 const mapeoSecciones = {
                     'datos_personales': 'datos-personales',
-                    'domicilio': 'domicilio',
+                    'domicilio': 'domicilio_section',
                     'contacto': 'contacto',
                     'grupos_vulnerables': 'grupos-vulnerables',
                     'capacitacion': 'capacitacion',
@@ -458,7 +516,7 @@ function cambiarPaso(paso) {
 
 const secciones = [
     'datos-personales',
-    'domicilio',
+    'domicilio_section',
     'contacto',
     'grupos-vulnerables',
     'capacitacion',
@@ -480,7 +538,7 @@ function generarEstadosCaptura(seccionesFinalizadas) {
     // Mapeo de nombres de backend a frontend
     const mapeoSecciones = {
         'datos_personales': 'datos-personales',
-        'domicilio': 'domicilio',
+        'domicilio': 'domicilio_section',
         'contacto': 'contacto',
         'grupos_vulnerables': 'grupos-vulnerables',
         'capacitacion': 'capacitacion',

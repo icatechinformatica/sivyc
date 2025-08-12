@@ -48,6 +48,7 @@ class Alumno extends Model
         'id_sexo',
         'id_pais',
         'id_estado',
+        'id_entidad_nacimiento',
         'id_municipio',
         'id_estado_civil',
         'id_discapacidad',

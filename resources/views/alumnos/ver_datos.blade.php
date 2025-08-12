@@ -151,13 +151,15 @@
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
-                            {!! html()->label('Entidad de Nacimiento')->for('entidad_de_nacimiento') !!}
+                            {!! html()->label('Entidad de Nacimiento')->for('entidad_de_nacimiento_select') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="entidad-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
+                                {!! html()->select('entidad_de_nacimiento_select', [null => 'SELECCIONE LA ENTIDAD'] + $entidades->pluck('nombre', 'id')->toArray())->class('form-control')->id('entidad_de_nacimiento_select')->attribute('aria-label', 'Entidad de Nacimiento')->attribute('aria-describedby', 'entidad-addon') 
+                                            ->value(!$esNuevoRegistro ? $datos->entidad_de_nacimiento : '') !!}
                                 {!! html()->text('entidad_de_nacimiento')->class('form-control')->id('entidad_de_nacimiento')->attribute('aria-label', 'Entidad de Nacimiento')->attribute('aria-describedby', 'entidad-addon') !!}
-                                {{-- ! PENDIENTE --}}
+
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
@@ -489,7 +491,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="motivo-eleccion-addon"><i class="bi bi-list-check"></i></span>
                                 </div>
-                                {!! html()->select('motivo_eleccion_capacitacion', ['' => 'SELECCIONA UN MOTIVO', 1 => 'PARA EMPLEARSE O AUTOEMPLEARSE', 2 => 'PARA EMPLEARSE O AUTOEMPLEARSE', 3 => 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR', 4 => 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓNEDUCATIVA', 5 => 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO', 6 => 'POR DISPOSICIÓN DE TIEMPO LIBRE', 7 => 'OTRO'])
+                                {!! html()->select('motivo_eleccion_capacitacion', ['' => 'SELECCIONA UN MOTIVO', 1 => 'PARA EMPLEARSE O AUTOEMPLEARSE', 3 => 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR', 4 => 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓNEDUCATIVA', 5 => 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO', 6 => 'POR DISPOSICIÓN DE TIEMPO LIBRE', 7 => 'OTRO'])
                                             ->class('form-control')->id('motivo_eleccion_capacitacion')
                                             ->attribute('aria-label', 'Motivos de elección del sistema de capacitación')
                                             ->attribute('aria-describedby', 'motivo-eleccion-addon')

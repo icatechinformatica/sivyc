@@ -9,6 +9,7 @@ use App\Models\Municipio;
 use App\Models\GradoEstudio;
 use App\Models\Nacionalidad;
 use Illuminate\Http\Request;
+use App\Models\GrupoVulnerable;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\ConsultaDatosCURPService;
@@ -68,12 +69,13 @@ class AlumnoController extends Controller
         $estadosCiviles = EstadoCivil::all();
         $paises = pais::all();
         $estados = Estado::all();
+        $entidades = $estados;
         $municipios = Municipio::all();
         $gradoEstudios = GradoEstudio::all();
-        $gruposVulnerables = \App\Models\GrupoVulnerable::orderBy('grupo_vulnerable')->get();
+        $gruposVulnerables = GrupoVulnerable::orderBy('grupo_vulnerable')->get();
 
         $secciones = $datos->estatus[0];
-        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
+        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'entidades', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
     }
 
     public function nuevoRegistroAlumno($encodeCURP)
@@ -89,13 +91,14 @@ class AlumnoController extends Controller
         $estadosCiviles = EstadoCivil::all();
         $paises = pais::all();
         $estados = Estado::all();
+        $entidades = $estados;
         $municipios = Municipio::all();
         $gradoEstudios = GradoEstudio::all();
-        $gruposVulnerables = \App\Models\GrupoVulnerable::orderBy('grupo_vulnerable')->get();
+        $gruposVulnerables = GrupoVulnerable::orderBy('grupo_vulnerable')->get();
 
         $esNuevoRegistro = true;
         $secciones = []; // Para nuevo registro, no hay secciones completadas
-        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
+        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'entidades', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
     }
 
     // * Función que sera llamada desde la vista para obtener los datos del CURP
