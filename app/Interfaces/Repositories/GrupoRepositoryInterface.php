@@ -8,6 +8,5 @@ interface GrupoRepositoryInterface
     public function obtenerTodos($registrosPorPagina);
     public function actualizarOrCrear(array $datos);
     public function obtenerPorId($id);
-
     public function actualizarEstatus($grupoId, $nombreEstatus);
 }

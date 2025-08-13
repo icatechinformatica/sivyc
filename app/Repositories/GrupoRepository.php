@@ -85,22 +85,41 @@ class GrupoRepository implements GrupoRepositoryInterface
     public function actualizarEstatus($grupoId, $nombreEstatus)
     {
         try {
-            $grupo = $this->grupo->find($grupoId);
-            if (!$grupo) {
-                throw new \Exception('Grupo no encontrado');
-            }
+            return DB::transaction(function () use ($grupoId, $nombreEstatus) {
+                $grupo = $this->grupo->find($grupoId);
+                if (!$grupo) {
+                    throw new \Exception('Grupo no encontrado');
+                }
 
-            // * Comprobar que existe el estatus 
-            $estatus = Estatus::where('estatus', $nombreEstatus)->firstOrFail();
+                // Validar que el estatus exista
+                $estatus = Estatus::where('estatus', $nombreEstatus)->firstOrFail();
 
-            // ! Agregar nuevo estatus NO ACTUALIZAR
-            $grupo->estatus()->attach($estatus->id, [
-                'id_usuario' => auth()->id(),
-                'fecha_cambio' => now(),
-                'es_ultimo_estatus' => false
-            ]);
+                // Obtener el estatus actual marcado como último (si existe)
+                $estatusActual = $grupo->estatus()
+                    ->wherePivot('es_ultimo_estatus', true)
+                    ->orderByDesc('tbl_grupo_estatus.id')
+                    ->first();
 
-            return $grupo;
+                // Si no hay cambio de estatus, no hacer nada
+                if ($estatusActual && (int) $estatusActual->id === (int) $estatus->id) {
+                    return $grupo;
+                }
+
+                // Desmarcar cualquier último estatus previo
+                DB::table('tbl_grupo_estatus')
+                    ->where('id_grupo', $grupo->id)
+                    ->where('es_ultimo_estatus', true)
+                    ->update(['es_ultimo_estatus' => false]);
+
+                // Adjuntar el nuevo estatus como último
+                $grupo->estatus()->attach($estatus->id, [
+                    'id_usuario' => auth()->id(),
+                    'fecha_cambio' => now(),
+                    'es_ultimo_estatus' => true,
+                ]);
+
+                return $grupo;
+            });
         } catch (\Exception $e) {
             Log::error('Error al actualizar el estatus del grupo: ' . $e->getMessage());
             throw new \Exception('Error al actualizar el estatus del grupo: ' . $e->getMessage());
