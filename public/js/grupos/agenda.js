@@ -97,11 +97,11 @@
 
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
+                headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
                 locale: 'es',
                 firstDay: 0, // domingo
                 height: 'auto',
-                buttonText: { today: 'Hoy', month: 'Mes', week: 'Semana', day: 'Día' },
+                buttonText: { today: 'Hoy'},
                 selectable: true,
                 selectMirror: true,
                 editable: true,
@@ -111,16 +111,16 @@
                     dayGridMonth: { eventDisplay: 'block' }
                 },
                 // eventDidMount sin estilos inline para permitir cambios dinámicos por CSS vars
-                eventDidMount: function(info) { /* no-op */ },
-        // Refrescar indicadores al ajustar el conjunto de eventos
-        eventsSet: function() { actualizarIndicadoresAgenda(); },
+                eventDidMount: function (info) { /* no-op */ },
+                // Refrescar indicadores al ajustar el conjunto de eventos
+                eventsSet: function () { actualizarIndicadoresAgenda(); },
                 // Cargar eventos desde backend
                 events: function (fetchInfo, success, failure) {
                     if (!grupoId || !routes.index) { success([]); return; }
                     $.ajax({
                         url: routes.index(grupoId),
                         method: 'GET',
-            success: function (data) { success(data || []); },
+                        success: function (data) { success(data || []); },
                         error: function () { failure('No se pudo cargar la agenda'); }
                     });
                 },
@@ -162,12 +162,12 @@
                     });
                 },
                 // Drag & drop
-                eventDrop: function(info){ persistMoveOrResize(info); actualizarIndicadoresAgenda(); },
-                eventResize: function(info){ persistMoveOrResize(info); actualizarIndicadoresAgenda(); },
+                eventDrop: function (info) { persistMoveOrResize(info); actualizarIndicadoresAgenda(); },
+                eventResize: function (info) { persistMoveOrResize(info); actualizarIndicadoresAgenda(); },
                 // Cambios directos sobre props del evento
-                eventAdd: function(){ actualizarIndicadoresAgenda(); },
-                eventChange: function(){ actualizarIndicadoresAgenda(); },
-                eventRemove: function(){ actualizarIndicadoresAgenda(); },
+                eventAdd: function () { actualizarIndicadoresAgenda(); },
+                eventChange: function () { actualizarIndicadoresAgenda(); },
+                eventRemove: function () { actualizarIndicadoresAgenda(); },
             });
 
             calendar.render();
@@ -245,7 +245,7 @@ function agendaColores() {
 
     // Forzar actualización de eventos existentes
     try {
-        cal.getEvents().forEach(function(evt) {
+        cal.getEvents().forEach(function (evt) {
             // Estas props afectan al render del evento actual
             evt.setProp('backgroundColor', color_fondo);
             evt.setProp('borderColor', color_fondo);

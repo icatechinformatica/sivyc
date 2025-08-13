@@ -39,7 +39,7 @@
                                             decimal_a_hora($grupo->curso->horas) }}</span>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="text-secondary mr-2">Horas agendadasN</span>
+                                        <span class="text-secondary mr-2">Horas agendadas</span>
                                         <span id="fc-horas-totales" class="fw-bold fs-5 text-dark">{{
                                             decimal_a_hora($grupo->horasTotales()) }}</span>
                                     </div>
