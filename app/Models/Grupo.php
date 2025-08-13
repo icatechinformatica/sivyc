@@ -107,22 +107,31 @@ class Grupo extends Model
 
     public function horasTotales()
     {
-        // Suma la diferencia en horas entre fecha_inicio y fecha_fin de cada evento de agenda
+        // Para cada evento, si abarca varios días, contar solo las horas por día
         $minutos = $this->fechasAgenda()
             ->get()
             ->reduce(function ($carry, $agenda) {
-                if (empty($agenda->fecha_inicio) || empty($agenda->fecha_fin)) {
+                if (empty($agenda->fecha_inicio) || empty($agenda->fecha_fin) || empty($agenda->hora_inicio) || empty($agenda->hora_fin)) {
                     return $carry;
                 }
 
-                $inicio = Carbon::parse($agenda->fecha_inicio);
-                $fin = Carbon::parse($agenda->fecha_fin);
-
-                if ($fin->lessThanOrEqualTo($inicio)) {
-                    return $carry; // Ignora rangos inválidos
+                $horaIni = Carbon::createFromFormat('H:i:s', $agenda->hora_inicio);
+                $horaFin = Carbon::createFromFormat('H:i:s', $agenda->hora_fin);
+                if ($horaFin->lessThanOrEqualTo($horaIni)) {
+                    return $carry; // Horario inválido
                 }
 
-                return $carry + $inicio->diffInMinutes($fin);
+                $minPorDia = $horaIni->diffInMinutes($horaFin);
+
+                $fIni = Carbon::parse($agenda->fecha_inicio)->startOfDay();
+                $fFin = Carbon::parse($agenda->fecha_fin)->startOfDay();
+                if ($fFin->lessThan($fIni)) {
+                    return $carry; // Rango inválido
+                }
+
+                // Días inclusivos
+                $dias = $fIni->diffInDays($fFin) + 1;
+                return $carry + ($dias * $minPorDia);
             }, 0);
 
         return $minutos / 60; // Horas totales (puede ser decimal)
@@ -130,12 +139,23 @@ class Grupo extends Model
 
     public function fechasSeleccionadas()
     {
-        return $this->hasMany(Agenda::class, 'id_grupo')->whereNotNull('fecha_inicio')->whereNotNull('fecha_fin');
+        return $this->hasMany(Agenda::class, 'id_grupo')
+            ->whereNotNull('fecha_inicio')
+            ->whereNotNull('fecha_fin')
+            ->whereNotNull('hora_inicio')
+            ->whereNotNull('hora_fin');
     }
 
     public function contarFechasSeleccionadas()
     {
-        return $this->fechasSeleccionadas()->count();
+        // Suma de días (inclusive) por cada periodo
+        return $this->fechasAgenda()->get()->reduce(function ($carry, $agenda) {
+            if (empty($agenda->fecha_inicio) || empty($agenda->fecha_fin)) return $carry;
+            $fIni = Carbon::parse($agenda->fecha_inicio)->startOfDay();
+            $fFin = Carbon::parse($agenda->fecha_fin)->startOfDay();
+            if ($fFin->lessThan($fIni)) return $carry;
+            return $carry + ($fIni->diffInDays($fFin) + 1);
+        }, 0);
     }
 
     /**

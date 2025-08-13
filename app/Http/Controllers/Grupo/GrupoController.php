@@ -232,11 +232,13 @@ class GrupoController extends Controller
     {
         try {
             $eventos = $grupo->fechasAgenda()->get()->map(function ($item) {
+                $start = Carbon::parse($item->fecha_inicio . ' ' . $item->hora_inicio);
+                $end = Carbon::parse($item->fecha_fin . ' ' . $item->hora_fin);
                 return [
                     'id' => $item->id,
                     'title' => 'Sesión',
-                    'start' => Carbon::parse($item->fecha_inicio)->toIso8601String(),
-                    'end' => Carbon::parse($item->fecha_fin)->toIso8601String(),
+                    'start' => $start->toIso8601String(),
+                    'end' => $end->toIso8601String(),
                 ];
             });
             return response()->json($eventos);
@@ -251,6 +253,7 @@ class GrupoController extends Controller
      */
     public function storeAgenda(Request $request, Grupo $grupo)
     {
+        // return response()->json(['message' => 'Hora inicio: ' . $request->input('start') . ' Hora fin: ' . $request->input('end')], 201);
         try {
             $data = $request->only(['start', 'end']);
             $validator = Validator::make($data, [
@@ -264,13 +267,16 @@ class GrupoController extends Controller
             $start = Carbon::parse($data['start']);
             $end = Carbon::parse($data['end']);
 
-            // Validar traslape (end exclusivo)
-            $existeTraslape = Agenda::where('id_grupo', $grupo->id)
-                ->where(function ($q) use ($start, $end) {
-                    $q->where('fecha_inicio', '<', $end)
-                        ->where('fecha_fin', '>', $start);
-                })
-                ->exists();
+                        // Caso: si start y end caen en el mismo día, es un periodo de 1 día.
+                        // Si no, se considera un periodo multi-día, y guardaremos un solo registro desde start hasta end.
+
+                        // Validar traslape (end exclusivo)
+                        $existeTraslape = Agenda::where('id_grupo', $grupo->id)
+                                ->where(function ($q) use ($start, $end) {
+                                        $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
+                                            ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
+                                })
+                                ->exists();
 
             if ($existeTraslape) {
                 return response()->json(['message' => 'El horario seleccionado se traslapa con otro existente.'], 422);
@@ -278,15 +284,17 @@ class GrupoController extends Controller
 
             $agenda = Agenda::create([
                 'id_grupo' => $grupo->id,
-                'fecha_inicio' => $start,
-                'fecha_fin' => $end,
+                                'fecha_inicio' => $start->toDateString(),
+                                'hora_inicio' => $start->format('H:i:s'),
+                                'fecha_fin' => $end->toDateString(),
+                                'hora_fin' => $end->format('H:i:s'),
             ]);
 
             return response()->json([
                 'id' => $agenda->id,
                 'title' => 'Sesión',
-                'start' => $agenda->fecha_inicio,
-                'end' => $agenda->fecha_fin,
+                                'start' => Carbon::parse($agenda->fecha_inicio . ' ' . $agenda->hora_inicio)->toIso8601String(),
+                                'end' => Carbon::parse($agenda->fecha_fin . ' ' . $agenda->hora_fin)->toIso8601String(),
             ], 201);
         } catch (\Exception $e) {
             Log::error('Error al crear evento de agenda: ' . $e->getMessage());
@@ -320,8 +328,8 @@ class GrupoController extends Controller
             $existeTraslape = Agenda::where('id_grupo', $grupo->id)
                 ->where('id', '<>', $agenda->id)
                 ->where(function ($q) use ($start, $end) {
-                    $q->where('fecha_inicio', '<', $end)
-                        ->where('fecha_fin', '>', $start);
+                                        $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
+                                            ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
                 })
                 ->exists();
 
@@ -330,8 +338,10 @@ class GrupoController extends Controller
             }
 
             $agenda->update([
-                'fecha_inicio' => $start,
-                'fecha_fin' => $end,
+                'fecha_inicio' => $start->toDateString(),
+                'hora_inicio' => $start->format('H:i:s'),
+                'fecha_fin' => $end->toDateString(),
+                'hora_fin' => $end->format('H:i:s'),
             ]);
 
             return response()->json(['message' => 'Actualizado']);

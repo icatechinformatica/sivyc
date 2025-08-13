@@ -319,7 +319,7 @@
         </div>
     </div>
 </div>
-@if(!$esNuevoRegistro && isset($grupo) && $grupo->id))
+@if(!$esNuevoRegistro && isset($grupo) && $grupo->id)
 @include('grupos.partials.modal_fullcalendar')
 @endif
 {{-- * CSS --}}

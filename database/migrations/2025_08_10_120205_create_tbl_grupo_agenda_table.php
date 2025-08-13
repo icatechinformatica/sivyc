@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('tbl_grupo_agenda', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_grupo')->constrained('tbl_grupos')->onDelete('cascade');
-            $table->datetime('fecha_inicio');
-            $table->datetime('fecha_fin');
+            $table->date('fecha_inicio');
+            $table->time('hora_inicio');
+            $table->date('fecha_fin');
+            $table->time('hora_fin');   
         });
     }
 
