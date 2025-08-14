@@ -259,12 +259,18 @@
                                     @endif
                                 @break
                             @endswitch
+                            <a class="btn btn-primary btn-circle m-1 btn-circle-sm" title="Ver Instructor" href="{{ route('instructor-ver', ['id' => $itemData->id_instructor]) }}" target="_blank">
+                                <i class="fa fa-user"></i>
+                            </a>
                         </td>
                         <td style="font-size: 13px">
                             @php
                                 if(isset($itemData->soportes_instructor)){
                                     $itemData->soportes_instructor = json_decode($itemData->soportes_instructor);
-                                    $itemData->archivo_ine = $itemData->soportes_instructor->archivo_ine;
+                                    // $itemData->archivo_ine = $itemData->soportes_instructor->archivo_ine;
+                                    if (strpos($itemData->soportes_instructor->archivo_ine, 'storage') === false) {
+                                        $itemData->archivo_ine = 'storage' . $itemData->soportes_instructor->archivo_ine;
+                                    }
                                     $itemData->archivo_rfc = $itemData->soportes_instructor->archivo_rfc;
                                     $itemData->archivo_bancario = $itemData->soportes_instructor->archivo_bancario;
                                     $itemData->archivo_domicilio = $itemData->soportes_instructor->archivo_domicilio;
