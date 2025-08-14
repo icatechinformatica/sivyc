@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Services\ValidacionServicioVb;
 use App\Services\WhatsAppService;
+use Illuminate\Support\Facades\Hash;
 
 class vbgruposController extends Controller
 {
@@ -487,6 +488,41 @@ class vbgruposController extends Controller
                     return redirect()->route('solicitudes.vb.grupos')
                         ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
                 }
+
+                //envio de credenciales de instructor para Efirma
+                $userInstructor = DB::Connection('mysql')->Table('users')->Where('curp', $dataInstructor->curp)->First();//se checa si existe el usuario
+                if(is_null($userInstructor)) {
+                    $userId = DB::Connection('mysql')->Table('users')->InsertGetId([
+                        'name' => $dataInstructor->instructor,
+                        'email' => $dataInstructor->correo,
+                        'password' => Hash::make($dataInstructor->rfc), // Always hash passwords!
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'tipo_usuario' => '3',
+                        'curp' => $dataInstructor->curp,
+                        'id_sivyc' => $dataInstructor->id
+                    ]);
+                    //end of create user
+                } else {
+                    DB::Connection('mysql')->Table('users')
+                        ->where('curp', $dataInstructor->curp)
+                        ->update(['password' => Hash::make($dataInstructor->rfc)]);
+                }
+                $infowhats = [
+                    'nombre' => $dataInstructor->instructor,
+                    'correo' => $dataInstructor->correo,
+                    'pwd' => $dataInstructor->rfc,
+                    'telefono' => $dataInstructor->telefono,
+                    'sexo' => $dataInstructor->sexo
+                ];
+
+                $response = $this->whatsapp_alta_usuario_msg($infowhats, app(WhatsAppService::class));
+
+                if (isset($response['status']) && $response['status'] === false) {
+                    // Handle the error as you wish
+                    return redirect()->route('solicitudes.vb.grupos')
+                        ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
+                }
                 // termina el envio de mensaje de WhatsApp
 
                 $message = 'El Curso => '.$dataCurso->curso.' ha sido autorizado '.'con el Instructor => '.$dataInstructor->instructor;
@@ -501,7 +537,6 @@ class vbgruposController extends Controller
         }
 
     }
-
     ###Funcion de obtener datos del instructor
     public function InstObtenerDatos($idInstrcutor, $dataCurso){
         try {
@@ -519,7 +554,7 @@ class vbgruposController extends Controller
                 'especialidad_instructores.criterio_pago_id as cp',
                 'tipo_identificacion',
                 'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
-                'banco','no_cuenta','interbancaria','tipo_honorario','telefono'
+                'banco','no_cuenta','interbancaria','tipo_honorario','telefono', 'correo'
                 )
             ->WHERE('instructores.status', '=', 'VALIDADO')
             ->where('instructores.nombre', '!=', '')
@@ -670,6 +705,27 @@ class vbgruposController extends Controller
         }
 
         $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
+
+        return $callback;
+    }
+
+    private function whatsapp_alta_usuario_msg($instructor, WhatsAppService $whatsapp)
+    {
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'alta_efirma_instructores')->First();
+        // Reemplazar variables en plantilla
+        $mensaje = str_replace(
+            ['{{nombre}}', '{{correo}}', '{{pwd}}','\n'],
+            [$instructor['nombre'], $instructor['correo'], $instructor['pwd'],"\n"],
+            $plantilla->plantilla
+        );
+
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
+        }
+
+         $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
 
         return $callback;
     }
