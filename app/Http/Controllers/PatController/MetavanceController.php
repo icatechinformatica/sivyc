@@ -84,7 +84,7 @@ class MetavanceController extends Controller
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $organismo)
             ->where('activo', '=', 'true')
-            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
+            // ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
 
@@ -467,7 +467,7 @@ class MetavanceController extends Controller
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $id_organismo)
             ->where('activo', '=', 'true')
-            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
+            // ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
         //CONSULTA DE PROCEDIMIENTOS POR FUNCION
