@@ -269,7 +269,7 @@
                                     $itemData->soportes_instructor = json_decode($itemData->soportes_instructor);
                                     // $itemData->archivo_ine = $itemData->soportes_instructor->archivo_ine;
                                     if (strpos($itemData->soportes_instructor->archivo_ine, 'storage') === false) {
-                                        $itemData->archivo_ine = 'storage' . $itemData->soportes_instructor->archivo_ine;
+                                        $itemData->archivo_ine = asset('storage' . $itemData->soportes_instructor->archivo_ine);
                                     }
                                     $itemData->archivo_rfc = $itemData->soportes_instructor->archivo_rfc;
                                     $itemData->archivo_bancario = $itemData->soportes_instructor->archivo_bancario;
