@@ -127,10 +127,36 @@
             if (!cal) return;
 
             const eventos = cal.getEvents().filter(function (e) { return !esConector(e); });
-            const minutosTotales = eventos.reduce((acc, evt) => {
-                return acc + minutosEntre(evt.start, evt.end || evt.start);
-            }, 0);
-            const horasTotales = minutosTotales / 60;
+
+            // Para eventos que abarcan varios días, NO debemos tomar la diferencia directa end - start
+            // (eso contaría noches completas). En su lugar: minutosPorDía x númeroDeDías (inclusive).
+            const MS_PER_DAY = 24 * 60 * 60 * 1000;
+            const diffDiasInclusivo = function (s, e) {
+                const ds = new Date(s.getFullYear(), s.getMonth(), s.getDate());
+                const de = new Date(e.getFullYear(), e.getMonth(), e.getDate());
+                const d = Math.round((de - ds) / MS_PER_DAY) + 1;
+                return Math.max(1, d);
+            };
+            const minutosPorDia = function (s, e) {
+                // Usa horas:minutos de start y end como franja diaria
+                const ini = (s.getHours() * 60) + s.getMinutes();
+                const fin = (e.getHours() * 60) + e.getMinutes();
+                return Math.max(0, fin - ini);
+            };
+
+            const acum = eventos.reduce((acc, evt) => {
+                const s = evt.start;
+                const e = evt.end || evt.start;
+                if (!(s instanceof Date) || !(e instanceof Date)) return acc;
+                const minsDia = minutosPorDia(s, e);
+                const dias = diffDiasInclusivo(s, e);
+                return {
+                    minutos: acc.minutos + (minsDia * dias),
+                    dias: acc.dias + dias
+                };
+            }, { minutos: 0, dias: 0 });
+
+            const horasTotales = acum.minutos / 60;
 
             const $horasTotales = document.getElementById('fc-horas-totales');
             const $diasHoras = document.getElementById('fc-dias-horas');
@@ -144,7 +170,8 @@
             }
 
             if ($horasTotales) $horasTotales.textContent = decimalAHora(horasTotales);
-            if ($diasHoras) $diasHoras.textContent = String(eventos.length);
+            // Mostrar días totales reales (suma de días de cada evento)
+            if ($diasHoras) $diasHoras.textContent = String(acum.dias);
 
             if ($horasRestantes && isFinite(maxHoras)) {
                 const restantes = Math.max(0, maxHoras - horasTotales);

@@ -45,7 +45,8 @@ class Grupo extends Model
         'codigo_postal',
         'referencias',
         'id_servicio',
-    'seccion_captura',
+        'seccion_captura',
+        'id_usuario_captura',
     ];
 
     public $timestamps = false;
@@ -107,34 +108,37 @@ class Grupo extends Model
 
     public function horasTotales()
     {
-        // Para cada evento, si abarca varios días, contar solo las horas por día
-        $minutos = $this->fechasAgenda()
-            ->get()
-            ->reduce(function ($carry, $agenda) {
-                if (empty($agenda->fecha_inicio) || empty($agenda->fecha_fin) || empty($agenda->hora_inicio) || empty($agenda->hora_fin)) {
-                    return $carry;
-                }
+        // Minutos por día x días (inclusive) por cada registro
+        $totalMin = $this->fechasAgenda()->get()->reduce(function ($carry, $agenda) {
+            if (empty($agenda->fecha_inicio) || empty($agenda->fecha_fin) || empty($agenda->hora_inicio) || empty($agenda->hora_fin)) {
+                return $carry;
+            }
 
-                $horaIni = Carbon::createFromFormat('H:i:s', $agenda->hora_inicio);
-                $horaFin = Carbon::createFromFormat('H:i:s', $agenda->hora_fin);
-                if ($horaFin->lessThanOrEqualTo($horaIni)) {
-                    return $carry; // Horario inválido
-                }
+            // Normaliza horas a H:i:s (acepta también H:i)
+            $hIni = (string) $agenda->hora_inicio;
+            $hFin = (string) $agenda->hora_fin;
+            if (strlen($hIni) === 5) { $hIni .= ':00'; }
+            if (strlen($hFin) === 5) { $hFin .= ':00'; }
 
-                $minPorDia = $horaIni->diffInMinutes($horaFin);
+            $horaIni = Carbon::createFromFormat('H:i:s', $hIni);
+            $horaFin = Carbon::createFromFormat('H:i:s', $hFin);
+            if ($horaFin->lessThanOrEqualTo($horaIni)) {
+                return $carry; // Horario inválido
+            }
 
-                $fIni = Carbon::parse($agenda->fecha_inicio)->startOfDay();
-                $fFin = Carbon::parse($agenda->fecha_fin)->startOfDay();
-                if ($fFin->lessThan($fIni)) {
-                    return $carry; // Rango inválido
-                }
+            $minPorDia = $horaIni->diffInMinutes($horaFin);
 
-                // Días inclusivos
-                $dias = $fIni->diffInDays($fFin) + 1;
-                return $carry + ($dias * $minPorDia);
-            }, 0);
+            $fIni = Carbon::parse($agenda->fecha_inicio)->startOfDay();
+            $fFin = Carbon::parse($agenda->fecha_fin)->startOfDay();
+            if ($fFin->lessThan($fIni)) {
+                return $carry; // Rango inválido
+            }
 
-        return $minutos / 60; // Horas totales (puede ser decimal)
+            $dias = $fIni->diffInDays($fFin) + 1; // inclusivo
+            return $carry + ($dias * $minPorDia);
+        }, 0);
+
+        return $totalMin / 60; // Horas totales (puede ser decimal)
     }
 
     public function fechasSeleccionadas()

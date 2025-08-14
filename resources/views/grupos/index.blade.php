@@ -60,21 +60,23 @@
             </thead>
             <tbody>
                 @forelse($grupos as $grupo)
-                <tr>
-                    <td>{{ $grupo->clave_grupo ?? 'SIN ASIGNAR' }}</td>
-                    <td>{{ $grupo->curso->nombre_curso }}</td>
-                    <td>{{ $grupo->unidad->unidad }}</td>
-                    <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
-                    <td class="text-center">
-                        {{-- <button class="btn btn-sm btn-primary">Enviar a DTA</button> --}}
-                        <span class="badge {{ $grupo->estatus->last()->estatus == 'EN CAPTURA' ? 'bg-warning' : 'bg-success' }}">{{ $grupo->estatus->last()->estatus ?? 'SIN ASIGNAR' }}</span>
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </td>
-                </tr>
+                    @if(auth()->user()->can('ver-cursos-todos') || auth()->user()->id == $grupo->id_usuario_captura)
+                    <tr>
+                        <td>{{ $grupo->clave_grupo ?? 'SIN ASIGNAR' }}</td>
+                        <td>{{ $grupo->curso->nombre_curso }}</td>
+                        <td>{{ $grupo->unidad->unidad }}</td>
+                        <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
+                        <td class="text-center">
+                            {{-- <button class="btn btn-sm btn-primary">Enviar a DTA</button> --}}
+                            <span class="badge {{ $grupo->estatus->last()->estatus == 'EN CAPTURA' ? 'bg-warning' : 'bg-success' }}">{{ $grupo->estatus->last()->estatus ?? 'SIN ASIGNAR' }}</span>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    @endif
                 @empty
                 <tr>
                     <td colspan="5" class="text-center">
