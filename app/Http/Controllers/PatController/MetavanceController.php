@@ -2739,9 +2739,9 @@ class MetavanceController extends Controller
         $obj_documento = json_decode($documento->obj_documento, true);
 
         ##Validación de firma SAT
-        if(strlen($request->serieFirmante) != 20){
-            return redirect()->route('pat.metavance.mostrar', ['idorg' => $documento->numero_o_clave])->with('message', 'Error: El proceso de firma ha sido rechazado. Por favor, firme el documento utilizando su firma del SAT.');
-        }
+        // if(strlen($request->serieFirmante) != 20){
+        //     return redirect()->route('pat.metavance.mostrar', ['idorg' => $documento->numero_o_clave])->with('message', 'Error: El proceso de firma ha sido rechazado. Por favor, firme el documento utilizando su firma del SAT.');
+        // }
 
         if (empty($obj_documento['archivo']['_attributes']['md5_archivo'])) {
             $obj_documento['archivo']['_attributes']['md5_archivo'] = $documento->md5_file;
