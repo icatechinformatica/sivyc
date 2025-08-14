@@ -30,6 +30,12 @@ class WhatsAppService
             $telefono = '9612255159';
         }
 
+        if(str_contains($telefono, ' ')) {
+            // Eliminar espacios en blanco del número de teléfono
+            $telefono = str_replace(' ', '', $telefono);
+        }
+
+
         if(str_contains($mensaje,'\n')){
             $mensaje = str_replace(['\n'],["\n"],$mensaje);
         }
