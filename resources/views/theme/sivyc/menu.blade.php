@@ -93,6 +93,9 @@
                             @can('buzon.efirma.constancias')
                                 <a class="dropdown-item" href="{{ route('grupo.efirma.index') }}">eFirma Constancias</a>
                             @endcan
+                            @can('prevalidar_index-instructor')
+                                <a class="dropdown-item" href="{{ route('prevalidar-ins') }}">Turnar Instructor</a>
+                            @endcan
                         </div>
                     </li>
                 @endcanany
