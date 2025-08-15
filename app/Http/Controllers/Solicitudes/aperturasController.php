@@ -633,7 +633,7 @@ class aperturasController extends Controller
         if ($memo AND ($opt == 'ARC01' OR $opt == 'ARC02')) {
             switch($request->movimiento){
                 case "DESHACER": 
-                     $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['turnado' => 'DTA']);
+                     $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['turnado' => 'UNIDAD']);
                     if($result)$message = "SOLICITUD RETORNADA DE VoBo.";                  
                 break;
                 case "EDICION":
