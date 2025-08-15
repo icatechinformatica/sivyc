@@ -387,7 +387,7 @@ class EValsupreController extends Controller
                                     $body_html = $body_html .'</small></td>
                                     <td><small style="font-size: 8px;">'.number_format($item->importe_total, 2, '.', ',').'</small></td>';
                                 } else {
-                                    $body_html = $body_html .'<td><small style="font-size: 8px;">'.number_format($criterio->monto, 2, '.', ',').'</small></td>
+                                    $body_html = $body_html .'<td><small style="font-size: 8px;">'.number_format($item->importe_hora, 2, '.', ',').'</small></td>
                                     <td><small style="font-size: 8px;">'.number_format($item->importe_total, 2, '.', ',').'</small></td>
                                     <input id="hombre'.$key.'" name="hombre" hidden value="'.$item->hombre.'">
                                     <input id="mujer'.$key.'" name="mujer" hidden value="'.$item->mujer.'">
