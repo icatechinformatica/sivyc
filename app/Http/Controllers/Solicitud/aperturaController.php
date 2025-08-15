@@ -184,8 +184,7 @@ class aperturaController extends Controller
         $grupo =  DB::table('tbl_cursos as tc')->where('tc.folio_grupo', $folio_grupo)
             ->select(//DE LA APERTURA
                 'tc.*',
-                'c.costo as costo_individual',
-                DB::raw('ar.observaciones as obs_vincula'),
+                'c.costo as costo_individual',                
                 DB::raw("COALESCE(
                     CASE WHEN tc.hini LIKE '%p%' and SUBSTRING(tc.hini, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
                          ELSE SUBSTRING(tc.hini, 1, 5)
@@ -194,7 +193,6 @@ class aperturaController extends Controller
                     CASE WHEN tc.hfin LIKE '%p%' and SUBSTRING(tc.hfin, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hfin, 1, 5)::time+'12:00')::text
                          ELSE SUBSTRING(tc.hfin, 1, 5)
                     END,  SUBSTRING(ar.horario, 9, 5)) as hfin"),
-
                 DB::raw("CASE
                            WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)
                             WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_uploadFiles."',tc.comprobante_pago)
@@ -205,12 +203,14 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(tr.fecha_expedicion, COALESCE(tc.fecha_pago, ar.fecha_pago)) as fecha_pago'),
                 DB::raw("COALESCE(tc.solicita, CONCAT(tu.vinculacion,', ',pvinculacion)) as solicita"),
                 DB::raw('COALESCE(tc.tdias, null) as tdias'),
-                DB::raw('ar.turnado as  turnado_grupo'),
-                DB::raw('ar.observaciones as obs_vincula'),
+                DB::raw('ar.turnado as  turnado_grupo'),                
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
                 DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital"),
                 DB::raw("COALESCE(tc.clave, '0') as clave"),
-                DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
+                DB::raw('COALESCE(tc.vb_dg, false) as vb_dg'),//NUEVO VOBO
+                DB::raw('COALESCE(tc.mpreapertura, null) as mpreapertura'),
+                DB::raw('COALESCE(tc.fpreapertura, null) as fecha_turnado'),
+                DB::raw('COALESCE(tc.obs_preapertura, null) as obs_vincula')
             )
             ->leftjoin('alumnos_registro as ar','tc.folio_grupo','ar.folio_grupo')
             ->leftJoin('tbl_recibos as tr', function ($join) {
@@ -320,8 +320,8 @@ class aperturaController extends Controller
     public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio_grupo'] == $request->folio_grupo){
-            $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VINCULACION",'fecha_turnado' => null,'fmpreapertura'=>null]);
-            DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['fecha_arc01'=>null]);
+            $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VINCULACION", 'fecha_turnado'=>null]);
+            DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['fecha_arc01'=>null, 'fpreapertura'=>null]);
             if($result){
                 $message = "El grupo fué turnado correctamente a VINCULACIÓN";
                 unset($_SESSION['folio_grupo']);
@@ -353,6 +353,52 @@ class aperturaController extends Controller
             if ($result) $message = 'Operación Exitosa!!';
         }
         return redirect('solicitud/apertura')->with('message', $message);
+    }
+
+    public function guardar_preapertura(Request $request){
+        $folio_grupo = $request->folio;
+        $mpreapertura = $request->memo;
+        $fpreapertura = $request->fecha;
+        $obs_preapertura = $request->obs;
+        $message = "La operación ha fallado, favor de volver a intentar.";
+        try {
+            if($folio_grupo && $mpreapertura && $fpreapertura) {                
+                $result = DB::statement("
+                    UPDATE tbl_cursos
+                    SET
+                        mpreapertura = ?,
+                        fpreapertura = ?,
+                        obs_preapertura = ?,
+                        movimientos = COALESCE(movimientos, '[]'::jsonb)
+                            || jsonb_build_array(
+                                jsonb_build_object(
+                                    'UD-DA', jsonb_build_array(
+                                        jsonb_build_object(
+                                            'fecha',     ?::timestamp,
+                                            'usuario',   ?::text,
+                                            'operacion', 'CAMBIO NÚMERO O FECHA DE MEMORÁNDUM DE SOLICITUD DE APERTURA, REALIZADO POR EL DEPARTAMENTO ACADÉMICO.'
+                                        )
+                                    )
+                                )
+                            )
+                    WHERE folio_grupo = ?
+                ", [
+                    $mpreapertura,
+                    $fpreapertura,
+                    $obs_preapertura,
+                    Carbon::now()->format('Y-m-d H:i:s'),
+                    Auth::user()->name,
+                    $folio_grupo,
+                ]);
+
+                if($result) $message = "Operación Exitosa!";                 
+            }else $message = "Por favor, ingrese los datos requeridos.";
+            
+            return $message;
+
+        } catch (\Throwable $th) {
+            return redirect()->route('apertura.guardar_preapertura')->with(['error' => 'Error: '.$th->getMessage()]);
+        }
     }
 
    public function aperturar(Request $request){///PROCESO DE INSCRIPCION

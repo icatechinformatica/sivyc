@@ -144,7 +144,7 @@ class aperturasController extends Controller
                      $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
                 }
 
-                if($status_solicitud =='TURNADO' and $grupos[0]->motivo_vobo and $grupos[0]->vb_dg==false){ //RECHADADO VoBo
+                if($status_solicitud =='TURNADO' and $grupos[0]->motivo_vobo and $grupos[0]->vb_dg==false){ //RECHAZADO VoBo
                     $movimientos = ['' => '- SELECCIONAR -', 'PRETORNADO'=>'RETORNAR A UNIDAD'];
                 }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado!='VoBo' and $grupos[0]->vb_dg==false){ //TURNADO PRELIMINAR
                     $movimientos += ['' => '- SELECCIONAR -'];
@@ -154,6 +154,8 @@ class aperturasController extends Controller
                         //$movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
                         $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
                     }
+                }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado=='VoBo' and $grupos[0]->vb_dg==false){ //DESHACER ENVIO voBo
+                    $movimientos = ['' => '- SELECCIONAR -', 'DESHACER'=>'DESHACER MOVIMIENTO'];
                 }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG
                     $movimientos = ['' => '- SELECCIONAR -', 'VALIDADO'=>'TURNAR UNIDAD'];
                 }
@@ -623,12 +625,17 @@ class aperturasController extends Controller
         return ['users' => $usersNotification, 'data' => $dataNotification];
     }
 
-    public function validar_preliminar(Request $request){
+    public function validar_preliminar(Request $request){ 
         $memo = $request->memo;
         $opt = $request->opt;
-        $message = 'Operación fallida, vuelva a intentar..';
+        //$message = 'Operación fallida, vuelva a intentar..';
+        
         if ($memo AND ($opt == 'ARC01' OR $opt == 'ARC02')) {
             switch($request->movimiento){
+                case "DESHACER": 
+                     $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['turnado' => 'DTA']);
+                    if($result)$message = "SOLICITUD RETORNADA DE VoBo.";                  
+                break;
                 case "EDICION":
                     $result = DB::table('tbl_cursos')->where('nmunidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['status_curso' => 'EDICION']);
                     if($result)$message = "SOLICITUD ENVIADA PARA EDICION.";

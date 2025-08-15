@@ -125,6 +125,7 @@
                     <span>ORGANISMO PUBLICO: &nbsp;&nbsp;<strong>{{ $grupo->depen }}</strong></span>
                         
             </div>
+            
             <h5><b>DE LA APERTURA</b></h5>
             <hr />                           
             <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:2em; line-height: 3em;"> 
@@ -167,7 +168,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label>MEMOR&Aacute;NDUM DE APERTURA:</label>
+                    <label>MEMOR&Aacute;NDUM ARC-01:</label>
                     <input name='munidad' id='munidad' type="text" class="form-control" aria-required="true" value="@if($grupo->munidad){{$grupo->munidad}}@else{{old('munidad')}}@endif"/>
                 </div>
                 <div class="form-group col-md-3">
@@ -227,16 +228,28 @@
                      <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$grupo->link_virtual}}" {{$disabled}} />
                 </div>
             </div>
-            <div class="form-row" >
-                <div class="form-group col-md-12">
-                    <label>OBSERVACIONES DE VINCULACI&Oacute;N:</label>
-                    <textarea name='obs_vincu' id='obs_vincu'  class="form-control" rows="5" readonly>{{$grupo->obs_vincula}}</textarea>
-                </div>
+             <div class="form-row" >                
                 <div class="form-group col-md-12">
                     <label>OBSERVACIONES:</label>
                     <textarea name='observaciones' id='observaciones'  class="form-control" rows="5" >{{$grupo->nota}}</textarea>
                 </div>
             </div>
+
+            <br/>
+            <h5><b>DE VINCULACIÓN</b></h5>                  
+            <hr/>
+            <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 3.1em;">                
+                <span>MEMORÁNDUM DE APERTURA: &nbsp;&nbsp;{{ Form::text('mpreapertura', $grupo->mpreapertura ?? '', ['id'=>'mpreapertura', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM DE SOLICITUD DE APERTURA', 'aria-label' => 'No. Memorándum' , 'required' => 'required', 'style' => 'width: 300px; background-color: #ecececff;']) }} </span> 
+                <span>FECHA MEMO: &nbsp;&nbsp;{{ Form::date('fecha_turnado', $grupo->fecha_turnado ?? null , ['id'=>'fecha_turnado', 'class' => 'form-control datepicker mr-sm-2 mb-2 small', 'title' => 'FECHA DEL MEMORÁNDUM', 'required' => 'required' , 'style' => 'background-color: #ecececff;']) }}
+                <a onclick="guardar_preapertura('{{ $grupo->folio_grupo??null }}')" title="Guardar Cambios"><i class="fas fa-save fa-2x m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a></span>
+                <span class="mt-2">
+                    OBSERVACIONES:    &nbsp;&nbsp;
+                    <textarea name='obs_vincu' id='obs_vincu'  class="form-control col-md-12" rows="2" style="width:500px; background-color: #ecececff;" >{{$grupo->obs_vincula}}</textarea>
+                </span>
+            </div>
+            <br/>
+            <h5><b>DELEGACIÓN ADMINISTRATIVA</b></h5>                  
+            <hr/>
             <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for="">NO. RECIBO DE PAGO:</label>
@@ -390,6 +403,34 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
         <script language="javascript">
+             $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+            });
+
+            function guardar_preapertura(folio){
+                if (confirm("Está seguro guardar los cambios de fecha o memorándum?") == true) {                    
+                    var memo = $("#mpreapertura").val();
+                    var fecha = $("#fecha_turnado").val();
+                    var obs = $("#obs_vincu").val();                    
+                    $.ajax({
+                                url: "apertura/guardar_preapertura",
+                                method: 'POST',
+                                data: {
+                                    folio: folio,
+                                    memo: memo,
+                                    fecha: fecha,
+                                    obs: obs
+                                },
+                                success: function(data) {
+                                //$('#result_table').html(data);
+                                alert(data);
+                            }
+                    });
+                }
+            }
+            
             $(document).ready(function(){
                 $('#medio_virtual').editableSelect();
                 //Generar pdf soporte / Made by Jose Luis Moreno Arcos
