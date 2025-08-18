@@ -51,7 +51,7 @@ class turnarAperturaController extends Controller
         $ids_extemp = [];
         if($memo){
             $grupos = DB::table('tbl_cursos as tc')->select(
-                    'tc.*','tc.turnado as turnado_solicitud','tr.status_folio',
+                    'tc.*','tc.turnado as turnado_solicitud','tr.status_folio','tc.fecha_arc01',
                     DB::raw("(select sum(hours) from
                         (select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
                         ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )

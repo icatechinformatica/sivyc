@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
 
     <div class="card-header">
-        Solicitud / Turnar ARC
+        Solicitud / Turnar ARC 
     </div>
     <div class="card card-body" style=" min-height:450px;">
     {{ Form::open(['route' => 'solicitud.apertura.enviar', 'method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data']) }}
@@ -22,7 +22,7 @@
             </div>
             <div class="form-group col-md-2">
                     <label for="">FECHA:</label>
-                    <input type="date" id="fecha" name="fecha" class="form-control" value="{{date('Y-m-d')}}" readonly/>
+                    <input type="date" id="fecha" name="fecha" class="form-control" value="{{ $grupos[0]->fecha_arc01 ?? date('Y-m-d') }}" readonly/>
                 </div>
             <div class="form-group col-md-3 mt-4">
                 {{ Form::button('FILTRAR', ['id'=>'buscar','class' => 'btn']) }}
