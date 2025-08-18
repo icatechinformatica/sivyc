@@ -1077,7 +1077,7 @@ class InstructorController extends Controller
             {
                 if(in_array($cadwell->status, $arrtemp) || ($regimen_actual != $saveInstructor->tipo_honorario && $cadwell->status != 'BAJA'))
                 {
-                    if(is_null($cadwell->memorandum_validacion))
+                    if(is_null($cadwell->memorandum_validacion) || ($cadwell->status == 'BAJA EN FIRMA' && isset($cadwell->memorandum_baja) && is_null($cadwell->memorandum_baja)))
                     {
                         return back()->with('error','Error al intentar registrar el numero de memorandum de validación, favor de volver a generar el documento de validacion, verificar que los datos sean correctos y volver a intentar.');
                     }
