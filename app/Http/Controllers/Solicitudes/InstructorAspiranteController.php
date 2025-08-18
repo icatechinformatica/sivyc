@@ -34,6 +34,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\User;
 use Illuminate\Support\Facades\Http;
 use App\Services\WhatsAppService;
+use Illuminate\Support\Facades\Hash;
 class InstructorAspiranteController extends Controller
 {
     public function index(Request $request)
@@ -43,6 +44,7 @@ class InstructorAspiranteController extends Controller
         $total_aspirantes = pre_instructor::WhereNotNull('semaforo')->count();
         $total_enviados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->count();
         $total_convocados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->Where('status','EN CAPTURA')->count();
+        $total_convocados = pre_instructor::WhereRaw("semaforo::jsonb @> '[\"ENVIADO\"]'")->Where('status','EN CAPTURA')->count();
         $query = pre_instructor::whereIn('status', ['ENVIADO', 'PREVALIDADO', 'CONVOCADO']);
 
         if ($request->filled('unidad')) {
@@ -50,7 +52,9 @@ class InstructorAspiranteController extends Controller
         }
 
         $data = $query->OrderBy('nombre', 'ASC')->get();
+        $data = $query->OrderBy('nombre', 'ASC')->get();
 
+        return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades', 'total_aspirantes','total_enviados','total_convocados'));
         return view('solicitudes.instructorAspirante.buzoninstructoraspirante', compact('data', 'unidades','especialidades', 'total_aspirantes','total_enviados','total_convocados'));
     }
 
@@ -67,10 +71,54 @@ class InstructorAspiranteController extends Controller
     }
 
     public function convocar(Request $request)
+    public function convocar(Request $request)
     {
+        $direccionUnidad = null;
         $direccionUnidad = null;
         $id = $request->input('id');
         $aspirante = pre_instructor::find($id);
+        $ins_oficial = instructor::Where('curp', $aspirante->curp)->First();
+
+        $aspirante->status = $ins_oficial->status = 'EN CAPTURA';
+        $aspirante->turnado = $ins_oficial->turnado = 'UNIDAD';
+        $aspirante->fecha_entrevista = $request->input('fecha_entrevista');
+        $aspirante->numero_control = 'Pendiente';
+
+        $ins_oficial->nombre = $aspirante->nombre;
+        $ins_oficial->apellidoPaterno = $aspirante->apellidoPaterno;
+        $ins_oficial->apellidoMaterno = $aspirante->apellidoMaterno;
+        $ins_oficial->estado = TRUE;
+
+        //verifica que el id_oficial sea diferente de 0
+        if($aspirante->id_oficial == 0) {
+            if($ins_oficial) {
+                $aspirante->id_oficial = $ins_oficial->id;
+            }
+
+        }
+
+        //verifica si ya tiene especialidades validadas anteriormente y las cambia a REVALIDACION EN CAPTURA
+        if(!is_null($aspirante->data_especialidad)) {
+            $data = $aspirante->data_especialidad;
+            foreach($data as $key => $especialidad)
+            {
+                if($especialidad['status'] == 'VALIDADO') {
+                    $especialidad['status'] = 'REVALIDACION EN CAPTURA';
+                    $especialidad['fecha_solicitud'] = $especialidad['fecha_validacion'] = $especialidad['memorandum_solicitud'] = $especialidad['memorandum_validacion'] = null;
+                    $especialidad['unidad_solicita'] = $aspirante->unidad_asignada;
+                }
+                $data[$key] = $especialidad;
+            }
+            $aspirante->data_especialidad = $data;
+        }
+        // termina proceso de revalidacion de especialidades
+
+        //proceso para generar nrevision
+        $unidad_inicial = substr($aspirante->unidad_asignada,0,2);
+        if($unidad_inicial === 'SA') { $unidad_inicial = 'SC'; }
+        $last_nrevision = pre_instructor::Where('nrevision', 'like', $unidad_inicial.'-'.date('Y').'-%')
+            ->orderBy('nrevision', 'desc')
+            ->value('nrevision');
         $ins_oficial = instructor::Where('curp', $aspirante->curp)->First();
 
         $aspirante->status = $ins_oficial->status = 'EN CAPTURA';
@@ -117,6 +165,9 @@ class InstructorAspiranteController extends Controller
         if ($last_nrevision) {
             $last_consecutive = explode('-', $last_nrevision)[2];
             $consecutive = str_pad((int)$last_consecutive + 1, 4, '0', STR_PAD_LEFT);
+        if ($last_nrevision) {
+            $last_consecutive = explode('-', $last_nrevision)[2];
+            $consecutive = str_pad((int)$last_consecutive + 1, 4, '0', STR_PAD_LEFT);
         } else {
             $consecutive = '0001';
         }
@@ -139,30 +190,25 @@ class InstructorAspiranteController extends Controller
             'fecha' => $aspirante->fecha_entrevista,
             'telefono' => $aspirante->telefono,
             'direccionUnidad' => $direccionUnidad,
+            'sexo' => $aspirante->sexo,
+            'telefono_unidad' => tbl_unidades::where('unidad', $aspirante->unidad_asignada)->value('telefono'),
         ];
 
-        try {
-            $response = $this->whatsapp_convocado_msg($infowhats, app(WhatsAppService::class));
-            // Check if the response indicates an error
-            if (isset($response['status']) && $response['status'] === false) {
-                // Handle the error as you wish
-                return redirect()->route('aspirante.instructor.index')
-                    ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
-            }
-        } catch (\Exception $e) {
-            $response = [
-                'status' => false,
-                'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
-            ];
+        $response = $this->whatsapp_convocado_msg($infowhats, app(WhatsAppService::class));
+        // Check if the response indicates an error
+        if (isset($response['status']) && $response['status'] === false) {
+            // Handle the error as you wish
             return redirect()->route('aspirante.instructor.index')
-                ->with('error', 'Error al enviar mensaje de WhatsApp: ' . $e->getMessage());
+                ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
         }
         //termina proceso de envio de mensaje de WhatsApp
 
         $aspirante->save();
         $ins_oficial->save();
+        $ins_oficial->save();
 
         return redirect()->route('aspirante.instructor.index')
+            ->with('success', 'Aspirante convocado correctamente.');
             ->with('success', 'Aspirante convocado correctamente.');
     }
 
@@ -225,19 +271,14 @@ class InstructorAspiranteController extends Controller
             $infowhats = [
                 'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
                 'telefono' => $aspirante->telefono,
+                'sexo' => $aspirante->sexo,
             ];
-            try {
-                $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
-                // Check if the response indicates an error
-                if (isset($response['status']) && $response['status'] === false) {
-                    // Handle the error as you wish
-                    return redirect()->route('aspirante.instructor.index')
-                        ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
-                }
-            } catch (\Exception $e) {
-                // This only runs if an actual exception is thrown
+            $response = $this->whatsapp_rechazo_msg($infowhats, app(WhatsAppService::class));
+            // Check if the response indicates an error
+            if (isset($response['status']) && $response['status'] === false) {
+                // Handle the error as you wish
                 return redirect()->route('aspirante.instructor.index')
-                    ->with('error', 'Error al enviar mensaje de WhatsApp: ' . $e->getMessage());
+                    ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
             }
         }
         $aspirante->save();
@@ -308,46 +349,57 @@ class InstructorAspiranteController extends Controller
 
     public function whatsapp_convocado_msg($instructor, WhatsAppService $whatsapp)
     {
-        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\nEstimado(a) *{{nombre}}*, Aspirante a Instructor Externo del ICATECH:\n\nPor medio de la presente, le informamos que ha sido seleccionado(a) para continuar a la siguiente etapa del proceso de selección de instructores externos, la cual consiste en la entrevista personal y el cotejo de documentación en la *Unidad de Capacitación {{unidad}}*, con la finalidad de corroborar la documentación cargada en el sistema y con base en el soporte documental validar la especialidad que le corresponde.\nLe solicitamos presentarse el día *{{fecha}} a las {{horas}}* horas, en nuestras oficinas ubicadas en {{direccionUnidad}}\nDeberá llevar consigo en original y copia legible los siguientes documentos:\n[Lista de documentos requeridos: CV Personal, certificados de estudios (secundaria, preparatoria, licenciatura, maestría, doctorado), constancias de cursos, acta de nacimiento, Identificación oficial (Preferentemente INE), CURP (Del mes en curso), comprobante de domicilio, constancia de situación fiscal con Régimen de Sueldos y Salarios e Ingresos Asimilados a Salarios, con actividad económica Asalariado (Del mes en curso), Caratula del Estado de Cuenta Bancario, etc.]\nAgradecemos su interés en formar parte de nuestro equipo y le recordamos que la puntualidad y la presentación de la documentación completa son requisitos indispensables para continuar en el proceso.\nQuedamos atentos a cualquier duda. Sea usted bienvenido a esta familia Icatech.\n\nAtentamente\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
-        $resultados = [];
-
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'aspirante_instructor_convocado')->First();
         $fecha_formateada = Carbon::parse($instructor['fecha'])->translatedFormat('j \d\e F \d\e\l Y');
         $hora_formateada = Carbon::parse($instructor['fecha'])->format('H:i');
-        $telefono_formateado = '521'.$instructor['telefono'];
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
-            ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{horas}}', '{{direccionUnidad}}'],
-            [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $hora_formateada, $instructor['direccionUnidad']],
-            $plantilla
+            ['{{nombre}}', '{{unidad}}', '{{fecha}}', '{{horas}}', '{{direccionUnidad}}','{{telefono_unidad}}','\n'],
+            [$instructor['nombre'], $instructor['unidad'], $fecha_formateada, $hora_formateada, $instructor['direccionUnidad'], $instructor['telefono_unidad'],"\n"],
+            $plantilla->plantilla
         );
 
-        $callback = $whatsapp->send($telefono_formateado, $mensaje);
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
+        }
+
+        $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
 
         return $callback;
     }
     private function whatsapp_rechazo_msg($instructor, WhatsAppService $whatsapp)
     {
-        $plantilla = "Asunto: Resultado del Proceso de Selección de Instructores\n\n Estimado(a) *{{nombre}}*, Aspirante a Instructor Externo del ICATECH:\n\n Agradecemos sinceramente su interés y participación en la convocatoria para la selección de instructores externos del ICATECH. Después de revisar cuidadosamente los perfiles recibidos, lamentamos informarle que en esta ocasión no ha sido seleccionado(a) para continuar a la segunda etapa del proceso. Valoramos el tiempo y el esfuerzo que dedicó al presentar su postulación, y lo(a) invitamos cordialmente a participar en futuras convocatorias\n\nLe reiteramos nuestro agradecimiento por su disposición y compromiso con la formación y el desarrollo profesional. \n\nAtentamente\n\n*DR. CÉSAR ARTURO ESPINOSA MORALES*\nDIRECTOR GENERAL DEL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS";
-        $telefono_formateado = '521'.$instructor['telefono'];
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'aspirante_instructor_rechazado')->First();
 
         $mensaje = str_replace(
             ['{{nombre}}'],
             [$instructor['nombre']],
-            $plantilla
+            $plantilla->plantilla
         );
 
-        $callback = $whatsapp->send($telefono_formateado, $mensaje);
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
+        }
+
+        $callback = $whatsapp->cola($telefono_formateado, $mensaje, $plantilla->prueba);
 
         return $callback;
     }
 
     public function whatsapp_rechazo_masivo() {
-        $id_rechazados = []; //aqui meter los ids de los rechazados por tandas
-        $rechazados = pre_instructor::WhereIn('id',$id_rechazados)->Select('telefono','nombre',"apellidoPaterno","apellidoMaterno")->Get();
-        foreach($rechazados as $aspirante) {
+        set_time_limit(0);
+        $id_rechazados = [
+            ]; //aqui meter los ids de los rechazados por tandas
+        $rechazados = pre_instructor::WhereIn('id',$id_rechazados)->Select('id','telefono','nombre',"apellidoPaterno","apellidoMaterno",'sexo')->Get();
+        foreach($rechazados as $key => $aspirante) {
             $infowhats = [
                 'nombre' => $aspirante->nombre . ' ' . $aspirante->apellidoPaterno . ' ' . $aspirante->apellidoMaterno,
                 'telefono' => $aspirante->telefono,
+                'sexo' => $aspirante->sexo
             ];
 
             try {
@@ -357,10 +409,31 @@ class InstructorAspiranteController extends Controller
                     'status' => false,
                     'message' => 'Error al enviar mensaje: ' . $e->getMessage(),
                 ];
-                dd($response, $infowhats);
+
             }
+            sleep('5');
         }
         dd('complete');
+    }
+
+    //funcion que ira en el controlador de superadministrador para enviar mensajes de WhatsApp de restablecimiento de contraseña a los instructores
+    public function whatsapp_restablecer_pwd() {
+        dd('prueba');
+        $user = DB::Connection('mysql')->Table('users')->Where('curp', 'MAMG570608HCSTRL04')->First();
+        $instructor = DB::Table('instructores')->Where('curp', 'MAMG570608HCSTRL04')->Select('rfc','nombre',"apellidoPaterno","apellidoMaterno",'telefono')->First();
+        $user->password = Hash::make($instructor->rfc);
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'restablecer_pwd_instructor')->Value('plantilla');
+        $telefono_formateado = '521'.$instructor->telefono;
+
+        $mensaje = str_replace(
+            ['{{nombre}}','{{usuario}}','{{pwd}}','\n'],
+            [$instructor->nombre,$user->email,$instructor->rfc,"\n"],
+            $plantilla
+        );
+        $whatsapp = app(WhatsAppService::class);
+        $callback = $whatsapp->send($telefono_formateado, $mensaje);
+        dd($callback);
+        $user->save();
     }
 }
 

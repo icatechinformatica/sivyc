@@ -5,6 +5,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class curso extends Model
 {
@@ -67,23 +68,17 @@ class curso extends Model
                     case 'especialidad':
                         # code...
                         return $query->where('especialidades.nombre', 'LIKE', "%$buscar%");
-                        break;
                     case 'curso':
                         # code...
                         return $query->where( 'cursos.nombre_curso', 'LIKE', "%$buscar%");
-                        break;
                     case 'duracion':
                         return $query->where( 'cursos.horas', '=', "$buscar");
-                        break;
                     case 'modalidad':
                         return $query->where( 'cursos.modalidad', 'LIKE', "%$buscar%");
-                        break;
                     case 'clasificacion':
                         return $query->where( 'cursos.clasificacion', 'LIKE', "%$buscar%");
-                        break;
                     case 'anio':
-                        return $query->where(\DB::raw("date_part('year' , fecha_validacion )"), '=', "$buscar");
-                        break;
+                        return $query->where(DB::raw("date_part('year' , fecha_validacion )"), '=', "$buscar");
                     default:
                         # code...
                         break;
@@ -95,6 +90,11 @@ class curso extends Model
     public function especialidadinstructor()
     {
         return $this->belongsToMany(especialidad_instructor::class, 'especialidad_instructor_curso', 'curso_id', 'id_especialidad_instructor');
+    }
+
+    public function grupos()
+    {
+        return $this->hasMany(Grupo::class, 'id_curso');
     }
 
 }

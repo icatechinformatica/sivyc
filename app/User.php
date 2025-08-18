@@ -26,7 +26,6 @@ class User extends Authenticatable
         'id',
         'nombre',
         'email',
-        'unidad',
         'puesto',
         'token_movil',
         'correo_institucional',
@@ -55,15 +54,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function unidades()
-    {
-        return $this->belongsTo(Unidad::class, 'unidad');
-    }
+    // public function unidades()
+    // {
+    //     return $this->belongsTo(Unidad::class, 'unidad');
+    // }
 
-    public function unidadTo() //Romelia
-    {
-        return $this->belongsTo(Unidad::class, 'unidad');
-    }
+    // public function unidadTo() //Romelia
+    // {
+    //     return $this->belongsTo(Unidad::class, 'unidad');
+    // }
 
     public function scopeBusquedaPor($query, $tipo, $buscar)
     {
@@ -111,12 +110,6 @@ class User extends Authenticatable
         return $query;
     }
 
-    // public function registro()
-    // {
-    //     return $this->morphTo();
-    // }
-
-    // Accessor para obtener el nombre desde la tabla relacionada
     public function getNameAttribute()
     {
         return $this->registro ? $this->registro->nombre_trabajador : null;
@@ -165,8 +158,36 @@ class User extends Authenticatable
         return null;
     }
 
-    public function getPuestoAttribute()
+    public function getUnidadAttribute()
     {
-        return $this->registro ? $this->registro->puesto_estatal : null;
+        if (!$this->registro) {
+            return null;
+        }
+
+        // Si es funcionario
+        if ($this->registro_type === 'App\Models\funcionario') {
+            return $this->registro->getPrimeraUnidad()->id;
+        }
+
+        // Si es instructor y tiene relación con unidad
+        if (method_exists($this->registro, 'unidad')) {
+            return $this->registro->unidad;
+        }
+
+        return null;
+    }
+
+    // Método para obtener el ID de la unidad
+    public function getUnidadIdAttribute()
+    {
+        $unidad = $this->unidad;
+        return $unidad ? $unidad->id : null;
+    }
+
+    // Método para obtener el nombre de la unidad
+    public function getUnidadNombreAttribute()
+    {
+        $unidad = $this->unidad;
+        return $unidad ? $unidad->unidad : null;
     }
 }

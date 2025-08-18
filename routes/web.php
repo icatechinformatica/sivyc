@@ -1,11 +1,13 @@
 <?php
 //Rutas Orlando
 
-use App\Http\Controllers\webController\InstructorController;
 use GuzzleHttp\Middleware;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Alumno\AlumnoController;
+use App\Http\Controllers\Grupo\GrupoController;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Http\Controllers\webController\InstructorController;
 
 
 /*
@@ -18,7 +20,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+//reset password modal
+Route::post('/reset-password-modal', 'Auth\LoginController@resetPasswordModal')->name('reset.password.modal');
+Route::post('/get-telefono-by-email', 'Auth\LoginController@getTelefonoByEmail')->name('get.telefono.by.email');
 //Ruta Pago 25/09/2020
 Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@historial_validacion')->name('pago.historial-verificarpago');
 
@@ -230,9 +234,16 @@ Route::middleware(['auth'])->group(function () {
     //Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::post('/alumnos/exoneracion/permiso','webController\AlumnoController@activarPermiso')->name('activar.permiso.exo');
     Route::get('/alumnos/exoneracion/permiso/desactivar','webController\AlumnoController@quitarPermiso')->name('quitar.permiso.exo');
+    
+    // Nueva ruta para el controlador paginado
+    Route::get('/alumnos/paginado', [AlumnoController::class, 'index'])->name('alumnos.paginado')->middleware('can:alumnos.index');
+    
+    // Ruta original
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::get('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
     Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
+
+    Route::post('alumnos/valsid/registro/{curp}', 'webController\AlumnoController@redireccionAlumnoRegistro')->name('alumnos.vlid.registro');
     // Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.csid');
     Route::get('alumnos/sid', 'webController\AlumnoController@create')->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
     Route::get('alumnos/municipio_nov', 'webController\AlumnoController@showlm');
@@ -671,6 +682,7 @@ Route::middleware(['auth'])->group(function () {
     // ->middleware('can:preinscripcion.grupo');
     Route::get('/preinscripcion/grupo/cmbcursos', 'Preinscripcion\grupoController@cmbcursos')->name('preinscripcion.grupo.cmbcursos');
     Route::post('/preinscripcion/grupo/guardar', 'Preinscripcion\grupoController@save')->name('preinscripcion.grupo.save');
+    Route::get('/get/preinscripcion/grupo/guardar', 'Preinscripcion\grupoController@save')->name('preinscripcion.grupo.save.get');
     // ->middleware('can:preinscripcion.grupo.save');
     Route::post('/preinscripcion/grupo/update', 'Preinscripcion\grupoController@update')->name('preinscripcion.grupo.update');
     // ->middleware('can:preinscripcion.grupo.update');
@@ -687,6 +699,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/preinscripcion/grupo/cmbinstructor', 'Preinscripcion\grupoController@cmbinstructor')->name('preinscripcion.grupo.cmbinstructor');
     Route::get('/preinscripcion/grupo/cmbmuni', 'Preinscripcion\grupoController@cmbmuni')->name('preinscripcion.grupo.cmbmunicipio');
     Route::get('/preinscripcion/grupo/cmbrepre', 'Preinscripcion\grupoController@cmbrepre')->name('preinscripcion.grupo.cmbrepresentante');
+    //Consultar el total de instructores disponibles en el modulo de preinscripcion
+    Route::post('/preinscripcion/grupo/getinstruc', 'Preinscripcion\grupoController@consultar_instructores')->name('preinscripcion.grupo.intruc')->middleware('can:preinscripcion.grupo');
+
     /*VINCULACION->PREINSCRIPCION=>AGENDAR INSTRUCTOR*/
     Route::get('/preinscripcion/calendarioShow/{id}','Preinscripcion\grupoController@showCalendar');
     // ->middleware('can:preinscripcion.grupo');
@@ -762,6 +777,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01');
     Route::get('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01');
+    //visualizar instructores por ajax dentro del modulo arc01
+    Route::post('/solicitudes/aperturas/getinstruc', 'Solicitudes\aperturasController@modal_instructores')->name('solicitud.intruc.modal')->middleware('can:solicitudes.aperturas');
 
     Route::post('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
     Route::get('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
@@ -1093,6 +1110,50 @@ Route::get('/recursos-humanos/reporte/quincenal/detalles/{id}', 'RH\RHController
 Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
 Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->name('rh.agregar.justificante');
 
-Route::get('/test', function () {
-    dd('Test route is working!');
-})->name('cursos.archivado');
+Route::get('/dummy/test', 'App\Http\Controllers\DummyController@index');
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'alumnos'], function () {
+    Route::get('/cosulta', [AlumnoController::class, 'index'])->name('alumnos.consulta.alumno');
+    Route::post('/guardar', [AlumnoController::class, 'store'])->name('alumnos.store');
+    Route::post('/consultar_curp', [AlumnoController::class, 'consultarCurp'])->name('alumnos.consultar.curp');
+    Route::post('/obtener/datos/curp/{encodeCURP}', [AlumnoController::class, 'obtenerDatosCurp'])->name('alumnos.obtener.datos.curp');
+
+    Route::get('/registro/alumno/{encodeCURP}', [AlumnoController::class, 'verRegistroAlumno'])->name('alumnos.ver.registro.alumno');
+    Route::get('/registro/nuevo/alumno/{encodeCURP}', [AlumnoController::class, 'nuevoRegistroAlumno'])->name('alumnos.nuevo.registro.alumno');
+
+    Route::post('/guardar/seccion/alumno', [AlumnoController::class, 'guardarSeccionAlumno'])->name('alumnos.guardar.seccion.alumno');
+});
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'grupos'], function () {
+    Route::get('/inicio', [GrupoController::class, 'index'])->name('grupos.index');
+    Route::get('/crear', [GrupoController::class, 'create'])->name('grupos.crear');
+    Route::get('/editar/{id}', [GrupoController::class, 'editarGrupo'])->name('grupos.editar');
+    Route::post('/registrar', [GrupoController::class, 'store'])->name('grupos.store');
+    Route::get('/localidades/{municipioId}', [GrupoController::class, 'getLocalidades'])->name('grupos.localidades');
+    Route::get('/organismo/{organismoId}', [GrupoController::class, 'getOrganismoInfo'])->name('grupos.organismo.info');
+    Route::post('/guardar/seccion/grupo', [GrupoController::class, 'guardarSeccionGrupo'])->name('grupos.guardar.seccion.grupo');
+    
+    Route::match(['get', 'post'], '/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar.alumnos');
+
+    // Eliminar alumno del grupo
+    Route::delete('/{grupo}/alumnos/{alumno}', [GrupoController::class, 'eliminarAlumno'])->name('grupos.alumnos.eliminar');
+});
+
+// Rutas de Agenda de Grupos (preinscripción)
+Route::prefix('grupos')->name('grupos.')->group(function () {
+    // Vista para asignar alumnos (si no existe aún la ruta nombrada)
+    Route::get('/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('asignar.alumnos');
+
+    // Endpoints de Agenda del Grupo
+    Route::get('{grupo}/agenda', [GrupoController::class, 'getAgenda'])->name('agenda.index');
+    Route::post('{grupo}/agenda', [GrupoController::class, 'storeAgenda'])->name('agenda.store');
+    Route::put('{grupo}/agenda/{agenda}', [GrupoController::class, 'updateAgenda'])->name('agenda.update');
+    Route::delete('{grupo}/agenda/{agenda}', [GrupoController::class, 'destroyAgenda'])->name('agenda.destroy');
+
+    Route::post('{grupo_id}/turnar', [GrupoController::class, 'turnarGrupo'])->name('turnar');
+});
+
+Route::get('/mi/rol', function () {
+    $user = auth()->user();
+    dd($user->roles->first()->nombre);
+})->name('mi.rol')->middleware('auth');

@@ -208,7 +208,9 @@ class aperturaController extends Controller
                 DB::raw('ar.turnado as  turnado_grupo'),
                 DB::raw('ar.observaciones as obs_vincula'),
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
-                DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital")
+                DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital"),
+                DB::raw("COALESCE(tc.clave, '0') as clave"),
+                DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
             )
             ->leftjoin('alumnos_registro as ar','tc.folio_grupo','ar.folio_grupo')
             ->leftJoin('tbl_recibos as tr', function ($join) {
@@ -343,7 +345,8 @@ class aperturaController extends Controller
                     'nota' => $request->observaciones,
                     'realizo' => strtoupper($this->realizo),
                     'updated_at' => date('Y-m-d H:m:s'),
-                    'num_revision' => $request->munidad
+                    'num_revision' => $request->munidad,
+                    'status_solicitud' =>null
                 ]
             );
             if ($result) $message = 'Operación Exitosa!!';

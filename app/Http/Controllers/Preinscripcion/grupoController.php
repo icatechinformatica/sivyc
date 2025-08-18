@@ -4,16 +4,11 @@ namespace App\Http\Controllers\Preinscripcion;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\tbl_grupos;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Input;
 use App\Models\cat\catUnidades;
 use App\Models\cat\catApertura;
 use App\Models\Alumno;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 use App\Agenda;
@@ -21,18 +16,36 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
 use App\Models\ModelExpe\ExpeUnico;
-//use App\Models\Alumnopre;
-//use App\Models\Inscripcion;
 use App\Models\tbl_inscripcion;
 use App\Utilities\Algoritmo35;
 use App\Utilities\MyUtility;
 
-use function PHPSTORM_META\type;
+use App\Services\ValidacionServicioVb;
+use App\Services\Grupo\GrupoService;
+use App\Services\Curso\CursoService;
+use App\Services\Catalogo\CatalogoService;
+use App\Services\Instructor\InstructorService;
+use App\Services\Documentacion\DocumentacionService;
+use App\Services\Recibo\ReciboService;
 
 class grupoController extends Controller
 {
     use catUnidades;
     use catApertura;
+
+    protected $ejercicio;
+    protected $path;
+    protected $path_uploadFiles;
+    protected $path_files;
+    protected $path_files_cancelled;
+    protected $key;
+    protected $id_user;
+    protected $realizo;
+    protected $id_unidad;
+    protected $data;
+    protected $admin;
+    protected $activar;
+
     function __construct()
     {
         session_start();
@@ -55,170 +68,169 @@ class grupoController extends Controller
         });
     }
 
-    public function index(Request $request){
+    public function index(Request $request, GrupoService $grupoService, CursoService $cursoService, CatalogoService $catalogoService, InstructorService $instructorService, DocumentacionService $documentacionService, ReciboService $reciboService)
+    {
 
-        //$digitov = Algoritmo35::digito_verificador('2B25000100004');
+        // Inicialización de variables por defecto
+        $datos = $this->inicializarVariablesVista($request);
         
-
-        $curso = $cursos = $localidad  = $alumnos = $instructores = $instructor = $recibo =[];
-        $message = $comprobante = $folio_pago = $fecha_pago = $grupo = $ValidaInstructorPDF = $folio_grupo = NULL;
-        $es_vulnerable = $edicion_exo = false;
-
-        $unidades = $this->data['unidades'];
-        $unidad = $uni = $this->data['unidad'];
-        if(!$unidad) $unidad = $uni = $request->unidad;
-
-        if (isset($_SESSION['folio_grupo'])) { 
-
-            $folio_grupo = $_SESSION['folio_grupo'];
-
-            list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);
-            if (count($alumnos) > 0) {
-                $uni = $grupo->unidad;
-                $es_vulnerable = collect($alumnos)->contains(function ($value) {
-                    return $value->id_gvulnerable != '[]';
-                });
-
-
-                if (($grupo->turnado_grupo == 'VINCULACION' or  $grupo->status_curso=='EDICION' )and isset($this->data['cct_folio'])) $this->activar = true;
-                else $this->activar = false;
-                
-                $curso = DB::table('cursos')->where('id', $grupo->id_curso);
-                    if($grupo->status_curso!='AUTORIZADO') $curso = $curso->where('cursos.estado', true);
-                $curso = $curso->first();
-                //dd($curso);
-
-                //CATALOGOS
-                $tipo = $grupo->tcapacitacion;
-                $mod = $grupo->mod;
-                //dd($grupo);
-                $clave = DB::table('tbl_municipios')->where('id', $grupo->id_municipio)->value('clave');
-                $localidad = DB::table('tbl_localidades')->where('id_estado', '7')->where('clave_municipio', '=', $clave)->pluck('localidad', 'clave');
-                $cursos = DB::table('cursos')->where('tipo_curso','like',"%$tipo%");
-                    // ->Where('curso_alfa',true); //nueva linea para cursos alfa 08052025
-                    if($grupo->status_curso!='AUTORIZADO') $cursos = $cursos->where('cursos.estado', true);
-                    $cursos = $cursos->where('modalidad','like',"%$mod%")
-                    ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
-
-                if($grupo->status_curso =='AUTORIZADO')$cursos->put($grupo->id_curso, $grupo->nombre_curso);
-
-                //dd($grupo);
-                $instructores = $this->data_instructores($grupo);
-                //FIN CATALOGOS
-                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
-                //$grupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->first();
-                //dd($instructor_mespecialidad);
-                $edicion_exo = DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','EDICION')->exists();
-                if($grupo->id_especialidad){
-                    $instructor_mespecialidad = $grupo->instructor_mespecialidad;
-                    $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
-                        ->where('id_instructor', $grupo->id_instructor)
-                        ->whereExists(function ($query) use ($instructor_mespecialidad){
-                            $query->select(\DB::raw("elem->>'arch_val'"))
-                                ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
-                                ->where(\DB::raw("elem->>'memo_val'"), '=', $instructor_mespecialidad);
-                        })
-                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad') as pdfvalida"));
-                }
-            } else {
-                $message = "No hay registro qwue mostrar para Grupo No." . $folio_grupo;
-                $this->activar = true;
-                $_SESSION['folio_grupo'] = NULL;
-            }
+        // Obtener datos del grupo si existe folio en sesión
+        if (isset($_SESSION['folio_grupo'])) {
+            $datos = $this->procesarGrupoExistente($_SESSION['folio_grupo'], $datos, $grupoService, $cursoService, $instructorService);
         } else {
             $this->activar = true;
             $_SESSION['folio_grupo'] = NULL;
         }
 
-        $cerss = DB::table('cerss');
-            if ($unidad) $cerss = $cerss->where('id_unidad', $this->id_unidad)->where('activo', true);
-            $cerss = $cerss->orderby('nombre', 'ASC')->pluck('nombre', 'id');
-
-        $activar = $this->activar;
-
-        if(str_starts_with($this->data['cct'] ?? 0, '07000')) $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->orderby('muni')->pluck('muni', 'id');
-        else  $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$uni)->orderby('muni')->pluck('muni', 'id');
+        // Obtener catálogos
+        $catalogos = $this->obtenerCatalogos($catalogoService, $datos['unidad'], $datos['uni']);
         
-
-
+        // Obtener documentación y otros datos
+        $documentos = $documentacionService->obtenerDocumentosVinculacion($datos['folio_grupo']);
+        $recibo_nulo = $reciboService->verificarReciboNulo();
         
-        $dependencia = DB::table('organismos_publicos')
-            ->where('activo', true)
-            ->orderby('organismo')
-            ->pluck('organismo', 'organismo');
-        $grupo_vulnerable = DB::table('grupos_vulnerables')->orderBy('grupo')->pluck('grupo','id');
-        $medio_virtual = $this->medio_virtual();
-        if (session('message')) $message = session('message');
-        $tinscripcion = $this->tinscripcion();
+        // Preparar datos adicionales
+        $datosAdicionales = $this->prepararDatosAdicionales();
 
-        //By Jose Luis Moreno
-        $id_usuario = null;
-        if($this->admin['slug']) $id_usuario = $this->id_user;
-        $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '', "status_dpto" => 'INVALID');
-        try {
-            $jsonvincu = ExpeUnico::select('vinculacion')->where('folio_grupo', '=', $folio_grupo)->first();
-            if (isset($jsonvincu->vinculacion['doc_1']) && isset($jsonvincu->vinculacion['status_dpto'])) {
-                $docs_json = [$jsonvincu->vinculacion['doc_1']['url_pdf_acta'], $jsonvincu->vinculacion['doc_1']['url_pdf_convenio'],
-                $jsonvincu->vinculacion['doc_3']['url_documento'], $jsonvincu->vinculacion['doc_4']['url_documento']];
-                $linkPDF = array(
-                    "acta" => ($docs_json[0] != '') ? $this->path_uploadFiles.$docs_json[0] : "",
-                    "convenio" => ($docs_json[1] != '') ? $this->path_uploadFiles.$docs_json[1] : "",
-                    "soli_ape" => ($docs_json[2] != '') ? $this->path_uploadFiles.$docs_json[2] : "",
-                    "sid" => ($docs_json[3] != '') ? $this->path_uploadFiles.$docs_json[3] : "",
-                    "status_dpto" => ($jsonvincu->vinculacion['status_dpto'] != '') ? $jsonvincu->vinculacion['status_dpto'] : "INVALID"
-                );
-            }else{
-                $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '', "status_dpto" => 'INVALID');
-            }
-        } catch (\Throwable $th) {
-            dd("Error al cargar documentos ".$th->getMessage());
+        // Consolidar todos los datos para la vista
+        $vistaData = array_merge($datos, $catalogos, $datosAdicionales, [
+            'linkPDF' => $documentos,
+            'recibo_nulo' => $recibo_nulo,
+            'activar' => $this->activar,
+            'message' => session('message') ?: $datos['message']
+        ]);
+
+        return view('preinscripcion.index', $vistaData);
+    }
+
+    private function inicializarVariablesVista(Request $request)
+    {
+        return [
+            'curso' => [],
+            'cursos' => [],
+            'localidad' => [],
+            'alumnos' => [],
+            'instructores' => [],
+            'instructor' => null,
+            'recibo' => [],
+            'message' => null,
+            'folio_grupo' => null,
+            'grupo' => null,
+            'ValidaInstructorPDF' => null,
+            'es_vulnerable' => false,
+            'edicion_exo' => false,
+            'unidades' => $this->data['unidades'],
+            'unidad' => $this->data['unidad'] ?: $request->unidad,
+            'uni' => $this->data['unidad'] ?: $request->unidad,
+        ];
+    }
+
+     // * Procesa los datos cuando existe un grupo en sesión @Christopher
+    private function procesarGrupoExistente($folio_grupo, $datos, $grupoService, $cursoService, $instructorService)
+    {
+        $datos['folio_grupo'] = $folio_grupo;
+        list($grupo, $alumnos) = $grupoService->obtenerGrupoConAlumnos($folio_grupo);
+        
+        if (count($alumnos) > 0) {
+            $datos['grupo'] = $grupo;
+            $datos['alumnos'] = $alumnos;
+            $datos['uni'] = $grupo->unidad;
+            $datos['es_vulnerable'] = $grupoService->tieneAlumnosVulnerables($alumnos);
+            
+            // Determinar permisos de activación
+            $this->activar = $grupoService->puedeActivarGrupo($grupo, $this->data);
+            
+            // Obtener información del curso
+            $datos['curso'] = $cursoService->obtenerCursoPorId($grupo->id_curso, $grupo->status_curso);
+            
+            // Obtener cursos disponibles
+            $datos['cursos'] = $cursoService->obtenerCursosFiltrados(
+                $grupo->tcapacitacion, 
+                $grupo->mod, 
+                $grupo->unidad, 
+                $grupo->status_curso, 
+                $grupo->id_curso
+            );
+            
+            // Obtener localidades
+            $datos['localidad'] = $cursoService->obtenerLocalidadesPorMunicipio($grupo->id_municipio);
+            
+            // Obtener instructores
+            $datos['instructores'] = $instructorService->obtenerInstructoresPorEspecialidad($grupo);
+            $datos['instructor'] = $instructorService->obtenerInformacionBasicaInstructor($grupo->id_instructor);
+            
+            // Verificar exoneraciones y validaciones
+            $datos['edicion_exo'] = $grupoService->tieneExoneracionEnEdicion($folio_grupo);
+            $datos['ValidaInstructorPDF'] = $instructorService->obtenerValidacionInstructor($grupo);
+            
+        } else {
+            $datos['message'] = "No hay registro que mostrar para Grupo No." . $folio_grupo;
+            $this->activar = true;
+            $_SESSION['folio_grupo'] = NULL;
         }
+        
+        return $datos;
+    }
 
-        //$recibo = DB::table('tbl_recibos')->where('folio_grupo',$folio_grupo)->where('status_folio','ENVIADO')->first();
-        $ubicacion = DB::table('tbl_unidades')->where('id', Auth::user()->unidad)->value('ubicacion');
-        $recibo_nulo = DB::table('tbl_recibos')->whereNull('folio_recibo')->where('unidad',$ubicacion)->exists();
-        $programas = $this->programa();
-        $planteles = $this->plantel();
-        return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar',
-            'es_vulnerable', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','edicion_exo','instructores','instructor',
-            'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo','programas','planteles', 'message'));
+    private function obtenerCatalogos($catalogoService, $unidad, $uni)
+    {
+        return [
+            'cerss' => $catalogoService->obtenerCerss($unidad, $this->id_unidad),
+            'municipio' => $catalogoService->obtenerMunicipios($this->data['cct'] ?? 0, $uni),
+            'dependencia' => $catalogoService->obtenerDependencias(),
+            'grupo_vulnerable' => $catalogoService->obtenerGruposVulnerables(),
+        ];
+    }
+
+    /**
+     * ! Revisar que es
+     */
+    private function prepararDatosAdicionales()
+    {
+        return [
+            'medio_virtual' => $this->medio_virtual(),
+            'tinscripcion' => $this->tinscripcion(),
+            'programas' => $this->programa(),
+            'planteles' => $this->plantel(),
+            'id_usuario' => $this->admin['slug'] ? $this->id_user : null,
+        ];
     }
 
 
-    public function referencias($folio, $alumno =null){ 
+    public function referencias($folio, $alumno =null){
         if($alumno){
             $data  = DB::table('alumnos_registro as ar')
             ->select('ar.id_pre','ar.folio_grupo', DB::raw("CONCAT(nombre,' ',apellido_paterno,' ',apellido_materno) as alumno"), 'ar.costo', 'ar.inicio')
             ->where('folio_grupo',$folio)->get();
             $n=0;
             foreach ($data as $fila) {
-                $folio = $fila->folio_grupo.$fila->id_pre;                
+                $folio = $fila->folio_grupo.$fila->id_pre;
                 $f = str_replace('-','', $folio);
-                $data[$n++]->referencia =  $f.Algoritmo35::digito_verificador($folio);        
-            }  
+                $data[$n++]->referencia =  $f.Algoritmo35::digito_verificador($folio);
+            }
         }else{
             $f = $folio.'0000';
             $f = str_replace('-','', $f);
-            $referencia =  $f.Algoritmo35::digito_verificador($f);            
+            $referencia =  $f.Algoritmo35::digito_verificador($f);
             $costo = DB::table('alumnos_registro as ar')->where('folio_grupo',$folio)->sum('costo');
 
             $data[]  = DB::table('alumnos_registro as ar')
             ->select('ar.id_pre','ar.folio_grupo', DB::raw("CONCAT(nombre,' ',apellido_paterno,' ',apellido_materno) as alumno"), DB::raw("$costo as costo"), 'ar.inicio', DB::raw("'".$referencia."' as referencia"))
             ->where('folio_grupo',$folio)->orderby(DB::raw("CONCAT(apellido_paterno,' ',apellido_materno,' ',nombre)"),'ASC')->first();
-        }        
-        if($data ?? 0){            
+        }
+        if($data ?? 0){
             if($alumno) $nombre = 'Alumno';
             else $nombre = 'Representante';
-            
+
             $instituto = DB::table('tbl_instituto')->where('id',1)->value('name');
             $instituto = MyUtility::textoAltasBajas($instituto);
             $pdf = PDF::loadView('preinscripcion.grupo.pdfReferencia',compact('data','nombre','instituto'));
-            $pdf->setpaper('letter','portrait');            
+            $pdf->setpaper('letter','portrait');
             return $pdf->stream('$folio.pdf');
         }else return "No se encontraron datos que mostrar, por favor intente de nuevo.";
 
     }
-    
+
 
     private function data_instructores($data){
         $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
@@ -231,23 +243,24 @@ class grupoController extends Controller
         $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
         ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
         ->rightJoin('instructores','t.id_instructor','=','instructores.id')
-        ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-        ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-        ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+        ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
+        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+        ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
         //->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
         //->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
-        ->WHERE('estado',true)
-        ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
+        //->WHERE('estado',true)
+        //->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
         ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
         // ->Where('instructor_alfa', true) // nueva linea para instructores alfa 08/05/2025
         // ->WHERE(DB::raw("datos_alfa->'subproyectos'->>'chiapas puede'"), '=', 'no_voluntario') // nueva linea para instructores alfa 08/05/2025
         //->where('especialidad_instructor_curso.activo', true)
-        ->WHERE('fecha_validacion','<',$data->inicio)
-        ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
-        ->whereNotIn('instructores.id', $internos)
+        //->WHERE('fecha_validacion','<',$data->inicio)
+        //->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
+        //->whereNotIn('instructores.id', $internos)
         ->groupBy('t.id_instructor','instructores.id')
         ->orderBy('instructor')
-        ->get();
+        //VOBO ->get();
+        ->limit(1)->get(); //NUEVO
         return $instructores;
     }
 
@@ -263,94 +276,10 @@ class grupoController extends Controller
     }
 
 
-    private function grupo_alumnos($folio_grupo){
-        $grupo =  DB::table('alumnos_registro as ar')->where('ar.folio_grupo', $folio_grupo)
-            ->select(//DE LA APERTURA
-                DB::raw('COALESCE(tc.folio_grupo, ar.folio_grupo) as folio_grupo'),
-                DB::raw('COALESCE(tc.clave, null) as clave'),
-                DB::raw('COALESCE(tc.tdias, null) as tdias'),
-                DB::raw('COALESCE(tc.mexoneracion, null) as mexoneracion'),
-                DB::raw('COALESCE(tc.dia, null) as dia'),
-                DB::raw('COALESCE(tc.cgeneral, null) as cgeneral'),
-                DB::raw('COALESCE(tc.fcgen, null) as fcgen'),
-                DB::raw('COALESCE(tc.tipo, null) as tipo'),
-
-                //DEL GRUPO
-                DB::raw('COALESCE(tc.id_cerss, ar.id_cerss) as id_cerss'),
-                DB::raw('COALESCE(tc.inicio, ar.inicio) as inicio'),
-                DB::raw('COALESCE(tc.termino, ar.termino) as termino'),
-                DB::raw('COALESCE(tc.clave_localidad, ar.clave_localidad) as clave_localidad'),
-                DB::raw('COALESCE(tc.unidad, ar.unidad) as unidad'),
-                DB::raw('COALESCE(tc.id_gvulnerable, null) as id_gvulnerable'),
-                DB::raw('COALESCE(tc.efisico, ar.efisico) as efisico'),
-                DB::raw('COALESCE(tc.medio_virtual, ar.medio_virtual) as medio_virtual'),
-                DB::raw('COALESCE(tc.link_virtual, ar.link_virtual) as link_virtual'),
-                DB::raw('COALESCE(tc.cespecifico, ar.cespecifico) as cespecifico'),
-                DB::raw('COALESCE(tc.fcespe, ar.fcespe) as fcespe'),
-                DB::raw('COALESCE(tc.depen_representante, ar.depen_repre) as depen_repre'),
-                DB::raw('COALESCE(tc.depen_telrepre, ar.depen_telrepre) as depen_telrepre'),
-                DB::raw('COALESCE(tc.tcapacitacion, ar.tipo_curso) as tcapacitacion'),
-                DB::raw("SUBSTRING( COALESCE(
-                    CASE WHEN tc.hini LIKE '%p%' and SUBSTRING(tc.hini, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
-                         ELSE SUBSTRING(tc.hini, 1, 5)
-                    END, SUBSTRING(ar.horario, 1, 5)),1,5) as hini"),
-                DB::raw("SUBSTRING(COALESCE(
-                    CASE WHEN tc.hfin LIKE '%p%' and SUBSTRING(tc.hfin, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hfin, 1, 5)::time+'12:00')::text
-                         ELSE SUBSTRING(tc.hfin, 1, 5)
-                    END,  SUBSTRING(ar.horario, 9, 5)),1,5) as hfin"),
-
-                DB::raw('COALESCE(tc.id_municipio, ar.id_muni) as id_municipio'),
-                DB::raw('COALESCE(tc.depen, ar.organismo_publico) as depen'),
-                DB::raw('COALESCE(tc.depen_telrepre, ar.depen_telrepre) as depen_telrepre'),
-                DB::raw('COALESCE(tc.tipo_curso, ar.servicio) as tipo_curso'),
-                DB::raw("COALESCE(tc.id_especialidad, ar.id_especialidad) as id_especialidad"),
-                DB::raw("COALESCE(tc.instructor_mespecialidad, '') as instructor_mespecialidad"),
-                DB::raw('COALESCE(tc.mod, ar.mod) as mod'),
-                DB::raw('COALESCE(tc.status_curso, null) as status_curso'),
-                DB::raw('COALESCE(tc.unidad, ar.unidad) as unidad'),
-                DB::raw('COALESCE(tc.id_instructor, ar.id_instructor) as id_instructor'),
-                DB::raw('COALESCE(tc.plantel, null) as plantel'),
-                DB::raw('COALESCE(tc.programa, null) as programa'),
-                DB::raw("CASE
-                           WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)
-                            WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_uploadFiles."',tc.comprobante_pago)
-                            WHEN tr.file_pdf <> 'null' THEN concat('".$this->path_files."',tr.file_pdf)
-                        END as comprobante_pago"
-                        ),
-                DB::raw('COALESCE(tr.folio_recibo, COALESCE(tc.folio_pago, ar.folio_pago)) as folio_pago'),
-                DB::raw('COALESCE(tr.fecha_expedicion, COALESCE(tc.fecha_pago, ar.fecha_pago)) as fecha_pago'),
-                DB::raw("COALESCE(tc.solicita, CONCAT(tu.vinculacion,', ',pvinculacion)) as solicita"),
-                DB::raw('COALESCE(tc.tdias, null) as tdias'),
-                DB::raw('COALESCE(tc.id_curso, ar.id_curso) as id_curso'),
-                DB::raw('COALESCE(tc.curso, c.nombre_curso) as nombre_curso'),
-                DB::raw('COALESCE(tc.clave_localidad, ar.clave_localidad) as clave_localidad'),
-                ///DE OTRAS TABLAS
-                DB::raw('ar.mpreapertura'),
-                DB::raw('ar.turnado as  turnado_grupo'),
-                DB::raw('ar.observaciones as obs_vincula'),
-                DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
-                DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital"),
-                'exo.status as exo_status','exo.nrevision as exo_nrevision'
-
-            )
-            ->leftjoin('tbl_cursos as tc','tc.folio_grupo','ar.folio_grupo')
-            ->leftJoin('tbl_recibos as tr', function ($join) {
-                $join->on('tr.folio_grupo', '=', 'ar.folio_grupo')
-                     ->where('tr.status_folio','ENVIADO');
-            })
-            ->leftJoin('exoneraciones as exo', function ($join) {
-                $join->on('exo.folio_grupo', '=', 'ar.folio_grupo')
-                     ->where('exo.status','!=','CANCELADO');
-            })
-            ->leftjoin('cursos as c','c.id','ar.id_curso')
-            ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')
-            //->orderby('ar.id_vulnerable','DESC')
-            ->first();
-//dd($grupo);
-    $alumnos = Alumno::busqueda($folio_grupo,'grupo')->get();
-
-        if($grupo and $alumnos )  return [$grupo, $alumnos];
-        else return $message = "OPERACION NO VALIDA.";
+    private function grupo_alumnos($folio_grupo)
+    {
+        $grupoService = new GrupoService();
+        return $grupoService->obtenerGrupoConAlumnos($folio_grupo);
     }
 
 
@@ -378,7 +307,7 @@ class grupoController extends Controller
         if (isset($request->uni)) {
             if(str_starts_with($this->data['cct'] ?? 0, '07000')) $municipio = DB::table('tbl_municipios')->select('muni','id')->where('id_estado', '7')->orderby('muni')->get();
             else  $municipio = DB::table('tbl_municipios')->select('muni','id')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$request->uni)->orderby('muni')->get();
-            
+
             $json = json_encode($municipio);
         } else {
             $json = json_encode(["No hay registros que mostrar!"]);
@@ -476,7 +405,7 @@ class grupoController extends Controller
                                         $modalidad = $a_reg->mod;
                                         $folio_pago = $a_reg->folio_pago;
                                         $fecha_pago =  $a_reg->fecha_pago;
-                                        $instructor = $a_reg->id_instructor;
+                                        $instructor = $a_reg->id_instructor ?? 1;
                                         $efisico = $a_reg->efisico;
                                         $medio_virtual = $a_reg->medio_virtual;
                                         $link_virtual = $a_reg->link_virtual;
@@ -686,13 +615,14 @@ class grupoController extends Controller
                                     'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
                                     'banco','no_cuenta','interbancaria','tipo_honorario'
                                     )
-                                ->WHERE('estado', true)
-                                ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')->where('instructores.id', $request->instructor)
+                                //->WHERE('estado', true)
+                                //->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')
+                                ->where('instructores.id', $request->instructor)
                                 //->whereJsonContains('unidades_disponible', [$grupo->unidad])
-                                ->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
-                                ->WHERE('especialidad_instructores.activo', 'true')
-                                ->WHERE('fecha_validacion','<',$request->inicio)
-                                ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
+                                //->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
+                                //->WHERE('especialidad_instructores.activo', 'true')
+                                //->WHERE('fecha_validacion','<',$request->inicio)
+                                //->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
                                 ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
                                 ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                                 ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
@@ -855,7 +785,7 @@ class grupoController extends Controller
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
                                             'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago, 'status_solicitud' =>null
                                         ]);
                                       //  dd($instructor);
                                         if ($result_curso) $message = "Operación Exitosa!!";
@@ -896,7 +826,7 @@ class grupoController extends Controller
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
                                             'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>json_encode($soportes_instructor),
                                             'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel, 'status_solicitud' =>null
                                             //,'programa' => null,'nota' => null,'plantel' => null
                                             ]
                                         );
@@ -907,8 +837,13 @@ class grupoController extends Controller
                                 if ($result_alumnos) {
                                     if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
                                     ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {
+
+                                        DB::table('agenda')->where('id_curso',$folio)->update(['id_instructor' => $alus->id_instructor]); //NUEVO VOBO
+
+                                        /* VOBO
                                         DB::table('agenda')->where('id_curso', $folio)->delete();
                                         DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
+                                        */
                                     }
                                 }
 
@@ -974,8 +909,8 @@ class grupoController extends Controller
                                     $conteo += 1;
                                 }
                             }
-                            $instructor_valido = $this->valida_instructor($g->id_instructor);
-                            if($instructor_valido['valido']){
+                            //VOBO $instructor_valido = $this->valida_instructor($g->id_instructor);
+                            //VOBO if($instructor_valido['valido']){
                                 if($g->status_curso=="EDICION"){
                                     if($g->clave !='0') $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','!=','0')->update(['status_curso' => 'AUTORIZADO']);
                                     else $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','0')->update(['status_curso' => null]);
@@ -987,7 +922,7 @@ class grupoController extends Controller
                                     if($result) DB::table('instructores')->where('id',$g->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
                                     else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
                                 }
-                            }else return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
+                            //VOBO }else return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
                         } else {
                             $message = "Las horas agendadas no corresponden a la duración del curso..";
                             return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
@@ -1149,7 +1084,8 @@ class grupoController extends Controller
                         DB::raw("to_char(DATE (ar.inicio)::date, 'dd/mm/YYYY') as inicio"),
                         DB::raw("to_char(DATE (ar.termino)::date, 'dd/mm/YYYY') as termino"),
                         'ar.horario',
-                        'ar.mod', 'ar.costo','ar.tipo_curso','ar.organismo_publico as depe')
+                        'ar.mod', 'ar.costo','ar.tipo_curso','ar.organismo_publico as depe'
+                        )
                 ->leftJoin('alumnos_pre as ap','ar.id_pre','ap.id')
                 ->leftJoin('cursos as c','ar.id_curso','c.id')
                 ->leftJoin('tbl_cursos as tc','tc.folio_grupo','ar.folio_grupo')
@@ -1196,14 +1132,18 @@ class grupoController extends Controller
                     ->select(
                         'tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                         'tc.costo',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante as depen_repre',
-                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita'
+                        'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita',
+                        DB::raw('COALESCE(tc.vb_dg, false) as vb_dg'), //NUEVO VOBO
+                        DB::raw("COALESCE(tc.clave, '0') as clave") //NUEVO VOBO
                     )
                     ->leftJoin('alumnos_registro as ar', 'tc.folio_grupo', 'ar.folio_grupo')
                     ->where('ar.mpreapertura', $memo)
                     ->where('ar.eliminado', false)
                     ->groupBy('tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                     'tc.costo','tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante','tc.depen_telrepre','tc.nombre','ar.realizo',
-                    'ar.observaciones','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita')
+                    'ar.observaciones','ar.efisico','tc.unidad','ar.fecha_turnado','tc.solicita',
+                    'tc.vb_dg','tc.clave' //NUEVO VOBO
+                    )
                     ->orderBy('folio_grupo')
                     ->get(); //dd($cursos);
                 if (count($cursos) > 0) {
@@ -1248,6 +1188,8 @@ class grupoController extends Controller
                         $data[$key]['observaciones'] = $value->nota_vincu;
                         $data[$key]['efisico'] = $value->efisico;
                         $data[$key]['unidad'] = $value->unidad;
+                        $data[$key]['vb_dg'] = $value->vb_dg; //NUEVO VOBO
+                        $data[$key]['clave'] = $value->clave; //NUEVO VOBO
                     }
                 }// dd($cursos[0]->fecha_turnado);
                 if (count($data) > 0) {
@@ -1264,6 +1206,7 @@ class grupoController extends Controller
                         $reg_unidad->pvinculacion = mb_strtoupper($cargo, 'UTF-8');
                     }
                     $direccion = $reg_unidad->direccion;
+                    //dd($data);
                     $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion'));
                     $pdf->setpaper('letter', 'landscape');
                     return $pdf->stream('SOLICITUD.pdf');
@@ -1349,11 +1292,16 @@ class grupoController extends Controller
         if (count($alumnos_ocupados) > 0) {
             return "Alumno(s) no disponible en fecha y hora: ".json_encode($alumnos_ocupados);
         }
+
+        /* VOBO
         //CRITERIOS INSTRUCTOR ::
 
         // INSTRUCTORES INTERNOS,MÁXIMO 2 CURSOS EN EL MES y 5 MESES DE ACTIVIDAD
+
+
         $instructor_valido = $this->valida_instructor($id_instructor);
         if(!$instructor_valido['valido'])  return $instructor_valido['message'];
+
 
         //DISPONIBILIDAD FECHA Y HORA
         $duplicado = DB::table('agenda as a')
@@ -1522,6 +1470,7 @@ class grupoController extends Controller
                 }
             }
         }
+        FIN VOBO*/
 
         try {
             $titulo = $request->title;
@@ -1708,7 +1657,7 @@ class grupoController extends Controller
         $folio_grupo =  $_SESSION['folio_grupo'];
 
         //Busqueda 1,2,3
-        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino', 'efisico',
+        $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino', 'efisico', 'vb_dg', 'clave',
         DB::raw("extract(day from fcespe) as diaes, to_char(fcespe, 'TMmonth') as mes, extract(year from fcespe) as anio"),
         DB::raw("(hombre + mujer) as totalp"),
         DB::raw("extract(day from inicio) as diaini, to_char(inicio, 'TMmonth') as mesini, extract(year from inicio) as anioini"),
@@ -2220,6 +2169,37 @@ class grupoController extends Controller
 
         $json_vacios = [$vinculacion, $academico, $administrativa];
         return $json_vacios;
+    }
+
+    ##Función para la validacion de instructores
+    public function consultar_instructores (Request $request){
+        $folio_grupo = $request->folio_grupo;
+        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
+        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
+        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+        ->where('folio_grupo', $folio_grupo)->first();
+
+        // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+
+         #### Llamamos la validacion de instructor desde el servicio
+        $servicio = (new ValidacionServicioVb());
+        // $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
+
+        list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
+
+        //Validar si el array instructores esta vacio
+        if (count($instructores) === 0) {
+            return response()->json([
+                'status' => 500,
+                'mensaje' => $mensaje,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'mensaje' => $mensaje,
+        ]);
+
     }
 
 

@@ -183,10 +183,13 @@ return [
         App\Providers\CredencialProvider::class,
         App\Providers\MorphMapServiceProvider::class,
 
-        // * Providers para repositorios usando Clean Architecture
+        // * Providers para módulos específicos usando Clean Architecture
         App\Providers\FuncionariosServiceProvider::class,
         App\Providers\InstructorServiceProvider::class,
         App\Providers\UsuarioServiceProvider::class,
+        App\Providers\PreinscripcionServiceProvider::class,
+        App\Providers\AlumnoServiceProvider::class,
+        App\Providers\EstatusServiceProvider::class,
     ],
 
     /*

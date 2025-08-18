@@ -41,11 +41,9 @@ class funcionario extends Model
                     case 'nombre':
                         # el tipo
                         return $query->WHERE('tbl_funcionario.nombre_trabajador', 'LIKE', '%'.$buscar.'%');
-                        break;
                     case 'no_enlace':
                         # el tipo
                         return $query->WHERE('tbl_funcionario.clave_empleado', '=', $buscar);
-                    break;
                 }
             }
         }
@@ -87,7 +85,13 @@ class funcionario extends Model
     // Método auxiliar para obtener la primera unidad (si un funcionario puede tener múltiples organismos)
     public function getPrimeraUnidad()
     {
-        return $this->organismos()->with('unidad')->first()?->unidad;
+        $organismo = $this->organismos()->with('unidad')->first();
+        return $organismo?->unidad;
     }
 
+    // Método para obtener todas las unidades del funcionario
+    public function todasLasUnidades()
+    {
+        return $this->organismos()->with('unidad')->get()->pluck('unidad')->filter();
+    }
 }

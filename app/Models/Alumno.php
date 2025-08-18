@@ -2,110 +2,161 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\GrupoVulnerable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 
 class Alumno extends Model
 {
     //
-    protected $table = 'alumnos_registro';
+    protected $table = 'tbl_alumnos';
 
     protected $fillable = [
-        'no_control',
-        'fecha',
-        'numero_solicitud',
-        'id_pre',
-        'id_especialidad',
-        'id_curso',
-        'horario',
-        'grupo',
-        'unidad',
-        'tipo_curso',
-        'realizo',
-        'cerrs',
-        'etnia',
-        'estatus_modificacion',
-        'costo',
-        'tinscripcion'
+        'nombre',
+        'apellido_paterno',
+        'apellido_materno',
+        'curp',
+        'matricula',
+        'fecha_nacimiento',
+        'correo',
+        'telefono_celular',
+        'telefono_casa',
+        'domicilio',
+        'colonia',
+        'cp',
+        'clave_localidad',
+        'facebook',
+        'empresa_trabaja',
+        'puesto_empresa',
+        'antiguedad',
+        'direccion_empresa',
+        'sistema_capacitacion_especificar',
+        'medio_entero',
+        'medio_confirmacion',
+        'archivos_documentos',
+        'cerss',
+        'vulnerable',
+        'datos_alfa',
+        'datos_incorporacion',
+        'movimientos',
+        'recibir_publicaciones',
+        'empleado',
+        'curso_extra',
+        'servidor_publico',
+        'check_bolsa',
+        'esta_activo',
+        'id_sexo',
+        'id_pais',
+        'id_estado',
+        'id_entidad_nacimiento',
+        'id_municipio',
+        'id_estado_civil',
+        'id_discapacidad',
+        'id_ultimo_grado_estudios',
+        'id_nacionalidad',
+        'id_usuario_realizo',
     ];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    public $timestamps = false;
 
-    public function alumnospre() {
+    public function alumnospre()
+    {
         return $this->belongsTo(Alumnopre::class, 'id');
     }
 
-    // in your model
-    public function getMyDateFormat($value)
+    public function gruposVulnerables()
     {
-        return Carbon::parse($value)->format('d-m-Y');
+        return $this->belongsToMany(GrupoVulnerable::class, 'tbl_alumno_grupo_vulnerable', 'alumno_id', 'grupo_vulnerable_id');
     }
 
-    // scopes
-
-    public function scopeBusqueda($query, $buscar, $tipo=null)
+    public function nacionalidad()
     {
-        if (!empty(trim($buscar))) {
-            $result = $query->from('alumnos_registro as ar')
-                ->select('ar.id as id_reg', 'ap.id_gvulnerable',           
-                DB::raw('COALESCE(ti.curp, ar.curp) as curp'),
-                DB::raw('COALESCE(ti.matricula, ar.no_control) as matricula'),
-                DB::raw("COALESCE(ti.alumno, concat(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre)) as alumno"),
-                DB::raw('COALESCE(substring(ti.curp,11,1), substring(ar.curp,11,1)) as sexo'),
-                DB::raw("(CONCAT(
-                            CASE
-                                WHEN SUBSTRING( COALESCE(ti.curp, ar.curp), 5, 2) > TO_CHAR(NOW(), 'YY') THEN CONCAT('19', SUBSTRING(COALESCE(ti.curp, ar.curp), 5, 2))
-                                ELSE CONCAT('20', SUBSTRING(COALESCE(ti.curp, ar.curp), 5, 2))
-                            END,'-', SUBSTRING(COALESCE(ti.curp, ar.curp), 7, 2), '-', SUBSTRING(COALESCE(ti.curp, ar.curp), 9, 2) )
-                    ) as fecha_nacimiento"),
-                DB::raw('COALESCE(EXTRACT(year from (age(ti.inicio,ap.fecha_nacimiento))) , EXTRACT(year from (age(ar.inicio,ap.fecha_nacimiento))) ) as edad'),
-                DB::raw('COALESCE(ti.escolaridad, ar.escolaridad) as escolaridad'),
-                DB::raw("COALESCE(
-                    CASE WHEN ti.id_gvulnerable IS NULL THEN NULL
-                        ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ti.id_gvulnerable) AS bigint)))
-                    END,
-                    CASE WHEN ap.id_gvulnerable IS NULL THEN NULL
-                        ELSE ( SELECT STRING_AGG(grupo, ', ') FROM grupos_vulnerables WHERE id IN ( SELECT CAST(jsonb_array_elements_text(ap.id_gvulnerable) AS bigint)))
-                    END) as grupos"),
-                DB::raw('COALESCE(ti.inmigrante, ap.inmigrante) as inmigrante'),
-                DB::raw('ap.es_cereso'),
-                DB::raw('COALESCE(ti.familia_migrante, ap.familia_migrante) as familia_migrante'),
-                DB::raw('COALESCE(ti.madre_soltera, ap.madre_soltera) as madre_soltera'),
-                DB::raw('COALESCE(ti.lgbt, ap.lgbt) as lgbt'),
-                DB::raw('COALESCE(ti.nacionalidad, ap.nacionalidad) as nacionalidad'),
-                DB::raw('COALESCE(ti.tinscripcion, ar.tinscripcion) as tinscripcion'),
-                DB::raw('COALESCE(ti.costo, ar.costo) as costo'),
-                DB::raw("COALESCE(ti.requisitos::jsonb->'documento', COALESCE(ar.requisitos::jsonb->'documento', ap.requisitos::jsonb->'documento')) as doc_requisitos"),
-                DB::raw(" CASE WHEN  id_folio is not null and ti.status='EDICION' THEN  'FOLIO' ELSE ti.status END status")                
-            ) 
-            ->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')
-            ->leftJoin('tbl_unidades as tu', 'ar.unidad', '=', 'tu.unidad')
-            ->leftJoin('tbl_inscripcion as ti', function ($join) {
-                $join->on('ti.folio_grupo', '=', 'ar.folio_grupo')
-                    ->on('ti.curp','ar.curp');
-            });
+        return $this->belongsTo(Nacionalidad::class, 'id_nacionalidad');
+    }
 
-            if ($tipo=='grupo') {
-                $query->where('ar.folio_grupo', $buscar); //dd("pasa");
-            } else {
-                $query->addSelect('ar.horario','tf.folio',
-                DB::raw('COALESCE(tc.curso, c.nombre_curso) as nombre_curso'),
-                DB::raw('COALESCE(tc.folio_grupo, ar.folio_grupo) as folio_grupo'),
-                DB::raw('COALESCE(tc.clave, null) as clave'),
-                DB::raw('COALESCE(tc.inicio, ar.inicio) as inicio'),
-                DB::raw('COALESCE(tc.termino, ar.termino) as termino')); 
+    public function sexo()
+    {
+        return $this->belongsTo(Sexo::class, 'id_sexo');
+    }
 
-                $query->where(DB::raw(
-                    "CONCAT(ar.folio_grupo, ar.no_control, ar.apellido_paterno, ' ',ar.apellido_materno,' ',ar.nombre,
-                     ar.curp)") , 'LIKE', "%$buscar%"    
-                ); 
-                $query->leftjoin('tbl_cursos as tc','tc.folio_grupo','ar.folio_grupo')
-                    ->leftjoin('tbl_folios as tf', 'tf.id', '=', 'ti.id_folio')
-                    ->leftjoin('cursos as c','c.id','ar.id_curso');
+    public function estadoCivil()
+    {
+        return $this->belongsTo(estado_civil::class, 'id_estado_civil');
+    }
+
+    // Relación N:M con Estatus
+    public function estatus()
+    {
+        return $this->belongsToMany(Estatus::class, 'tbl_alumno_estatus', 'id_alumno', 'id_estatus')
+            ->withPivot('secciones');
+    }
+
+    public function pais()
+    {
+        return $this->belongsTo(pais::class, 'id_pais');
+    }
+
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'id_estado');
+    }
+
+    public function municipio()
+    {
+        return $this->belongsTo(Municipio::class, 'id_municipio');
+    }
+
+    public function gradoEstudio()
+    {
+        return $this->belongsTo(GradoEstudio::class, 'id_ultimo_grado_estudios');
+    }
+
+    public function usuarioRealizo()
+    {
+        return $this->belongsTo(User::class, 'id_usuario_realizo');
+    }
+
+    public function discapacidad()
+    {
+        return $this->belongsTo(Discapacidad::class, 'id_discapacidad');
+    }
+
+    public function nombreCompleto()
+    {
+        return trim("{$this->nombre} {$this->apellido_paterno} {$this->apellido_materno}");
+    }
+
+    public function getEdadAttribute()
+    {
+        return $this->fecha_nacimiento ? \Carbon\Carbon::parse($this->fecha_nacimiento)->age : null;
+    }
+
+    /**
+     * Relación N:M con Grupos mediante la tabla pivote tbl_alumno_grupo
+     */
+    public function grupos()
+    {
+        return $this->belongsToMany(Grupo::class, 'tbl_alumno_grupo', 'alumno_id', 'grupo_id')
+            ->withPivot('costo', 'comprobante_pago', 'tinscripcion', 'abrinscri', 'folio_pago', 'fecha_pago', 'id_folio');
+    }
+
+    public function registroCompleto()
+    {
+        try {
+            return $this->estatus()
+                ->whereJsonContains('tbl_alumno_estatus.secciones->cerss->finalizada', true)
+                ->exists();
+        } catch (\Throwable $e) {
+            foreach ($this->estatus as $estatus) {
+                $secciones = $estatus->pivot->secciones ?? null;
+                if (is_string($secciones)) {
+                    $secciones = json_decode($secciones, true);
+                }
+                if (is_array($secciones) && data_get($secciones, 'cerss.finalizada') === true) {
+                    return true;
+                }
             }
-            
-            $query->orderBy(DB::raw("CONCAT(ar.apellido_paterno, ' ',ar.apellido_materno,' ',ar.nombre)"), 'ASC');
-            return $result;
+            return false;
         }
     }
 }

@@ -38,7 +38,14 @@ input[type=text], select, textarea {
 th{ font-size: 13px; }
 td{ font-size: 13px; }
 
-.btn, .btn:focus{ color: white; background: #008878; font-size: 14px; border-color: #008878; margin: 0 5px 0 5px; padding: 11px 14px 11px 14px; }
+.btn, .btn:focus {
+    color: white;
+    background: #008878;
+    /* font-size: 14px; */
+    border-color: #008878;
+    margin: 0 5px 0 5px;
+    padding: 11px 14px 11px 14px;
+}
 .btn:hover { color: white; background: #009885; border-color: #12322b; }
 
 .pagination { justify-content: center;}

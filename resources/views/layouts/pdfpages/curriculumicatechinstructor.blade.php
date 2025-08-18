@@ -53,7 +53,7 @@
         <div>
             @if($data->archivo_fotografia != FALSE)
                 {{-- <img class="derechaf img-thumbnail mb-3" src="{{ asset($data->archivo_fotografia) }}"> --}}
-                <img style="border: 2px solid black; margin-top: 0px; margin-right: 30px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
+                <img style="border: 2px solid black; margin-top: 0px; margin-right: 30px;" class="pull-right" @if(str_contains($data->archivo_fotografia, 'http')) src="{{ asset($data->archivo_fotografia) }}" @else  src="{{ asset('storage'.$data->archivo_fotografia) }}" @endif alt="foto" width="75" height="75">
             @endif
             <br><br><br><br>
             <table class="tablaz" style="border-color: black">
@@ -148,7 +148,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{$data->localidad}}. {{$data->municipio}}, {{$data->entidad}}</td>
+                            <td>{{$data->municipio}}, {{$data->entidad}}</td>
                             <td>{{$data->codigo_postal}}</td>
                         </tr>
                     </tbody>
