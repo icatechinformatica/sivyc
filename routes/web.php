@@ -1149,6 +1149,8 @@ Route::prefix('grupos')->name('grupos.')->group(function () {
     Route::post('{grupo}/agenda', [GrupoController::class, 'storeAgenda'])->name('agenda.store');
     Route::put('{grupo}/agenda/{agenda}', [GrupoController::class, 'updateAgenda'])->name('agenda.update');
     Route::delete('{grupo}/agenda/{agenda}', [GrupoController::class, 'destroyAgenda'])->name('agenda.destroy');
+
+    Route::post('{grupo_id}/turnar', [GrupoController::class, 'turnarGrupo'])->name('turnar');
 });
 
 Route::get('/mi/rol', function () {

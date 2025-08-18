@@ -22,8 +22,8 @@
     <div class="row mb-3">
         <div class="col-md-12">
             <form method="GET" class="d-flex align-items-center gap-2 buscador-form">
-                <input type="text" name="valor_buscar" class="form-control"
-                    placeholder="Buscar por grupo o curso..." value="{{ request('valor_buscar') }}">
+                <input type="text" name="valor_buscar" class="form-control" placeholder="Buscar por grupo o curso..."
+                    value="{{ request('valor_buscar') }}">
                 <button type="submit" class="btn btn-primary" title="Buscar">
                     <i class="fas fa-search"></i>
                 </button>
@@ -55,28 +55,38 @@
                     <th>UNIDAD</th>
                     <th>INSTRUCTOR</th>
                     <th class="text-center">ESTATUS</th>
+                    <th>Turnar a:</th>
                     <th class="text-center">Editar</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($grupos as $grupo)
-                    @if(auth()->user()->can('ver-cursos-todos') || auth()->user()->id == $grupo->id_usuario_captura)
-                    <tr>
-                        <td>{{ $grupo->clave_grupo ?? 'SIN ASIGNAR' }}</td>
-                        <td>{{ $grupo->curso->nombre_curso }}</td>
-                        <td>{{ $grupo->unidad->unidad }}</td>
-                        <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
-                        <td class="text-center">
-                            {{-- <button class="btn btn-sm btn-primary">Enviar a DTA</button> --}}
-                            <span class="badge {{ $grupo->estatus->last()->estatus == 'EN CAPTURA' ? 'bg-warning' : 'bg-success' }}">{{ $grupo->estatus->last()->estatus ?? 'SIN ASIGNAR' }}</span>
-                        </td>
-                        <td class="text-center">
-                            <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded" title="Editar">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    @endif
+                @if(auth()->user()->can('ver-cursos-todos') || auth()->user()->id == $grupo->id_usuario_captura)
+                <tr>
+                    <td>{{ $grupo->clave_grupo ?? 'SIN ASIGNAR' }}</td>
+                    <td>{{ $grupo->curso->nombre_curso }}</td>
+                    <td>{{ $grupo->unidad->unidad }}</td>
+                    <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
+                    <td class="text-center">
+                        <span
+                            class="badge {{ $grupo->estatus->last()->estatus == 'EN CAPTURA' ? 'bg-warning' : 'bg-success' }}">{{
+                            $grupo->estatus->last()->estatus ?? 'SIN ASIGNAR' }}</span>
+                    </td>
+                    <td>
+                        @foreach ($grupo->estatusAdyacentes() as $estatus)
+                            @if($estatus->id != $grupo->estatusActual()->id)
+                                <button class="btn btn-sm turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
+                            @endif
+                        @endforeach
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded"
+                            title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+                @endif
                 @empty
                 <tr>
                     <td colspan="5" class="text-center">
@@ -100,5 +110,10 @@
 @endsection
 
 @push('script_sign')
-<script src="{{ asset('js/grupos/agenda_fullcalendar.js') }}"></script>
+<script>
+    window.registroBladeVars = {
+        csrfToken: '{{ csrf_token() }}',
+    };
+</script>
+<script src="{{ asset('js/grupos/turnar.js') }}"></script>
 @endpush

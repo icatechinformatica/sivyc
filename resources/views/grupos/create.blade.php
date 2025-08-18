@@ -314,6 +314,16 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="row col-md-12 justify-content-end">
+                            <p class="mx-4">Turnar a:</p>
+                            @foreach ($grupo->estatusAdyacentes() as $estatus)
+                                @if($estatus->id != $ultimoEstatus->id)
+                                    <button class="btn btn-sm turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
+                                @endif
+                            @endforeach
+                        </div>  
+                    </div>
                 </div>
             </div>
         </div>
@@ -366,6 +376,7 @@
 <script src="{{ asset('js/grupos/registro_validaciones.js') }}"></script>
 <script src="{{ asset('js/grupos/registro.js') }}"></script>
 <script src="{{ asset('js/grupos/agenda.js') }}"></script>
+<script src="{{ asset('js/grupos/turnar.js') }}"></script>
 @endpush
 
 @endsection

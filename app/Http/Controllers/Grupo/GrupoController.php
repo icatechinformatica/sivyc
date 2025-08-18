@@ -8,6 +8,7 @@ use App\Models\curso;
 use App\Models\Grupo;
 use App\Models\Alumno;
 use App\Models\Unidad;
+use App\Models\Estatus;
 use App\Models\localidad;
 use App\Models\Municipio;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ use App\Models\ImparticionCurso;
 use App\Models\organismosPublicos;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Services\Grupo\GrupoEstatusService;
 use App\Services\Grupo\GrupoService;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,10 +26,12 @@ class GrupoController extends Controller
 {
 
     protected $grupoService;
+    protected $grupoEstatusService;
 
-    public function __construct(GrupoService $grupoService)
+    public function __construct(GrupoService $grupoService, GrupoEstatusService $grupoEstatusService)
     {
         $this->grupoService = $grupoService;
+        $this->grupoEstatusService = $grupoEstatusService;
     }
 
     public function index(Request $request)
@@ -56,8 +60,7 @@ class GrupoController extends Controller
         $localidades = localidad::where('clave_municipio', $grupo->id_municipio)->get();
         $municipios = Municipio::where('id_estado', 7)->get(); // CHIAPAS FIJO
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
-
-        $ultimoEstatus = $grupo->estatus()->orderBy('fecha_cambio', 'desc')->first();
+        $ultimoEstatus = $grupo->estatusActual();
         $ultimaSeccion = $grupo->seccion_captura ?? null;
         return view('grupos.create', compact('tiposImparticion', 'grupo', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion'));
     }
@@ -267,16 +270,16 @@ class GrupoController extends Controller
             $start = Carbon::parse($data['start']);
             $end = Carbon::parse($data['end']);
 
-                        // Caso: si start y end caen en el mismo día, es un periodo de 1 día.
-                        // Si no, se considera un periodo multi-día, y guardaremos un solo registro desde start hasta end.
+            // Caso: si start y end caen en el mismo día, es un periodo de 1 día.
+            // Si no, se considera un periodo multi-día, y guardaremos un solo registro desde start hasta end.
 
-                        // Validar traslape (end exclusivo)
-                        $existeTraslape = Agenda::where('id_grupo', $grupo->id)
-                                ->where(function ($q) use ($start, $end) {
-                                        $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
-                                            ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
-                                })
-                                ->exists();
+            // Validar traslape (end exclusivo)
+            $existeTraslape = Agenda::where('id_grupo', $grupo->id)
+                ->where(function ($q) use ($start, $end) {
+                    $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
+                        ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
+                })
+                ->exists();
 
             if ($existeTraslape) {
                 return response()->json(['message' => 'El horario seleccionado se traslapa con otro existente.'], 422);
@@ -284,17 +287,17 @@ class GrupoController extends Controller
 
             $agenda = Agenda::create([
                 'id_grupo' => $grupo->id,
-                                'fecha_inicio' => $start->toDateString(),
-                                'hora_inicio' => $start->format('H:i:s'),
-                                'fecha_fin' => $end->toDateString(),
-                                'hora_fin' => $end->format('H:i:s'),
+                'fecha_inicio' => $start->toDateString(),
+                'hora_inicio' => $start->format('H:i:s'),
+                'fecha_fin' => $end->toDateString(),
+                'hora_fin' => $end->format('H:i:s'),
             ]);
 
             return response()->json([
                 'id' => $agenda->id,
                 'title' => 'Sesión',
-                                'start' => Carbon::parse($agenda->fecha_inicio . ' ' . $agenda->hora_inicio)->toIso8601String(),
-                                'end' => Carbon::parse($agenda->fecha_fin . ' ' . $agenda->hora_fin)->toIso8601String(),
+                'start' => Carbon::parse($agenda->fecha_inicio . ' ' . $agenda->hora_inicio)->toIso8601String(),
+                'end' => Carbon::parse($agenda->fecha_fin . ' ' . $agenda->hora_fin)->toIso8601String(),
             ], 201);
         } catch (\Exception $e) {
             Log::error('Error al crear evento de agenda: ' . $e->getMessage());
@@ -328,8 +331,8 @@ class GrupoController extends Controller
             $existeTraslape = Agenda::where('id_grupo', $grupo->id)
                 ->where('id', '<>', $agenda->id)
                 ->where(function ($q) use ($start, $end) {
-                                        $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
-                                            ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
+                    $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
+                        ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
                 })
                 ->exists();
 
@@ -365,6 +368,26 @@ class GrupoController extends Controller
         } catch (\Exception $e) {
             Log::error('Error al eliminar evento de agenda: ' . $e->getMessage());
             return response()->json(['message' => 'Error al eliminar evento'], 500);
+        }
+    }
+
+    public function turnarGrupo(Request $request)
+    {
+        try {
+
+            $grupo = Grupo::find($request->grupo_id);
+            $nuevo_estatus_id = $request->estatus_id;
+
+            if (!$grupo) {
+                return response()->json(['message' => 'Grupo no encontrado'], 404);
+            }
+
+            // Retornar la respuesta correspondiente del servicio (incluye códigos 200/400/404)
+            $seccion = $request->input('seccion');
+            return $this->grupoEstatusService->cambiarEstatus($grupo, (int) $nuevo_estatus_id, $seccion);
+        } catch (\Exception $e) {
+            Log::error('Error al turnar grupo: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al turnar grupo'], 500);
         }
     }
 }

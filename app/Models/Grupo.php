@@ -69,7 +69,8 @@ class Grupo extends Model
 
     public function estatus()
     {
-        return $this->belongsToMany(Estatus::class, 'tbl_grupo_estatus', 'id_grupo', 'id_estatus')->withPivot('observaciones', 'memorandum', 'ruta_documento', 'fecha_cambio', 'es_ultimo_estatus');
+        return $this->belongsToMany(Estatus::class, 'tbl_grupo_estatus', 'id_grupo', 'id_estatus')
+            ->withPivot('observaciones', 'memorandum', 'ruta_documento', 'fecha_cambio', 'es_ultimo_estatus', 'id_usuario');
     }
 
     /**
@@ -78,8 +79,7 @@ class Grupo extends Model
     public function estatusActual()
     {
         return $this->estatus()
-            ->orderBy('tbl_grupo_estatus.updated_at', 'desc')
-            ->orderBy('tbl_grupo_estatus.created_at', 'desc')
+            ->orderBy('tbl_grupo_estatus.fecha_cambio', 'desc')
             ->first();
     }
 
@@ -89,6 +89,18 @@ class Grupo extends Model
     public function tieneEstatus($nombreEstatus)
     {
         return $this->estatus()->where('estatus', $nombreEstatus)->exists();
+    }
+
+    /**
+     * Obtiene los estatus adyacentes del estatus actual del grupo.
+     * Si no tiene estatus, devuelve colección vacía.
+     * @param bool $incluirFinales Si false, excluye estatus finales.
+     */
+    public function estatusAdyacentes(bool $incluirFinales = true)
+    {
+        $actual = $this->estatusActual();
+        if (!$actual) return collect();
+        return Estatus::adyacentesDeId($actual->id, $incluirFinales);
     }
 
     public function tipoImparticion()
@@ -117,8 +129,12 @@ class Grupo extends Model
             // Normaliza horas a H:i:s (acepta también H:i)
             $hIni = (string) $agenda->hora_inicio;
             $hFin = (string) $agenda->hora_fin;
-            if (strlen($hIni) === 5) { $hIni .= ':00'; }
-            if (strlen($hFin) === 5) { $hFin .= ':00'; }
+            if (strlen($hIni) === 5) {
+                $hIni .= ':00';
+            }
+            if (strlen($hFin) === 5) {
+                $hFin .= ':00';
+            }
 
             $horaIni = Carbon::createFromFormat('H:i:s', $hIni);
             $horaFin = Carbon::createFromFormat('H:i:s', $hFin);
