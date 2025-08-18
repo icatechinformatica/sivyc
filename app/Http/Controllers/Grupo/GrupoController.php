@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Grupo\GrupoEstatusService;
 use App\Services\Grupo\GrupoService;
+use Google\Service\ServiceControl\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class GrupoController extends Controller
@@ -55,7 +56,9 @@ class GrupoController extends Controller
         $cursos = curso::limit(100)->get();
         $tiposImparticion = ImparticionCurso::all();
         $modalidades = ModalidadCurso::all();
-        $unidades = Unidad::all();
+        $unidadUsuario = auth()->user()->unidad;
+        $unidad_disponible = $unidadUsuario?->unidad;
+        $unidades = Unidad::where('ubicacion', $unidad_disponible)->get();
         $servicios = ServicioCurso::all();
         $localidades = localidad::where('clave_municipio', $grupo->id_municipio)->get();
         $municipios = Municipio::where('id_estado', 7)->get(); // CHIAPAS FIJO
