@@ -84,7 +84,7 @@ class MetavanceController extends Controller
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $organismo)
             ->where('activo', '=', 'true')
-            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
+            // ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
 
@@ -467,7 +467,7 @@ class MetavanceController extends Controller
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $id_organismo)
             ->where('activo', '=', 'true')
-            ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
+            // ->where(DB::raw("date_part('year' , created_at )"), '=', '2023')
             ->orderBy('funciones_proced.id')->get();
 
         //CONSULTA DE PROCEDIMIENTOS POR FUNCION
@@ -2739,9 +2739,9 @@ class MetavanceController extends Controller
         $obj_documento = json_decode($documento->obj_documento, true);
 
         ##Validación de firma SAT
-        if(strlen($request->serieFirmante) != 20){
-            return redirect()->route('pat.metavance.mostrar', ['idorg' => $documento->numero_o_clave])->with('message', 'Error: El proceso de firma ha sido rechazado. Por favor, firme el documento utilizando su firma del SAT.');
-        }
+        // if(strlen($request->serieFirmante) != 20){
+        //     return redirect()->route('pat.metavance.mostrar', ['idorg' => $documento->numero_o_clave])->with('message', 'Error: El proceso de firma ha sido rechazado. Por favor, firme el documento utilizando su firma del SAT.');
+        // }
 
         if (empty($obj_documento['archivo']['_attributes']['md5_archivo'])) {
             $obj_documento['archivo']['_attributes']['md5_archivo'] = $documento->md5_file;
