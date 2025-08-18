@@ -20,11 +20,31 @@ class GrupoService
 
     public function obtenerGrupos($registrosPorPagina = 15, $busqueda = null)
     {
-        if ($busqueda) {
-            return $this->grupoRepository->buscarPaginado($busqueda, $registrosPorPagina);
+        $usuario = auth()->user();
+        $tieneAllAccess = false;
+        if ($usuario) {
+            $roles = $usuario->roles ?? collect();
+            // Si es colección (N:M), buscar alguno con especial='all-access'
+            if ($roles instanceof \Illuminate\Support\Collection) {
+                $tieneAllAccess = $roles->contains('especial', 'all-access');
+            } elseif (is_object($roles)) { // Por si fuera 1:1 en algún caso
+                $tieneAllAccess = ($roles->especial ?? null) === 'all-access';
+            }
         }
 
-        return $this->grupoRepository->obtenerTodos($registrosPorPagina);
+        if ($tieneAllAccess) {
+            if ($busqueda) {
+                return $this->grupoRepository->buscarPaginado($busqueda, $registrosPorPagina);
+            }
+
+            return $this->grupoRepository->obtenerTodos($registrosPorPagina);
+        }
+
+        if ($busqueda) {
+            return $this->grupoRepository->buscarPaginadoPorUnidad($busqueda, $registrosPorPagina);
+        }
+
+        return $this->grupoRepository->obtenerTodosPorUnidad($registrosPorPagina);
     }
 
     public function obtenerGrupoPorId($id)

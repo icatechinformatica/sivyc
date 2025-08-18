@@ -77,7 +77,9 @@ class GrupoController extends Controller
         $cursos = curso::limit(100)->get();
         $tiposImparticion = ImparticionCurso::all();
         $modalidades = ModalidadCurso::all();
-        $unidades = Unidad::all();
+        $unidadUsuario = auth()->user()->unidad;
+        $unidad_disponible = $unidadUsuario?->unidad;
+        $unidades = Unidad::where('ubicacion', $unidad_disponible)->get();
         $servicios = ServicioCurso::all();
 
         $municipios = Municipio::where('id_estado', 7)->get(); // CHIAPAS FIJO
