@@ -10,7 +10,7 @@
 @section('content')
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-8">
-        <span>Registro de grupos</span>
+        <span>Registro de grupos | Unidad: {{ auth()->user()->unidad->unidad }}</span>
     </div>
     <div class="col-md-4 d-flex justify-content-end">
         {{-- * INPUT NUEVO GRUPO --}}
