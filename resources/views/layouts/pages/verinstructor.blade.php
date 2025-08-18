@@ -1152,7 +1152,7 @@
                         <td id="center" width="50px">
                             @if(is_null($dataVal))
                                 <i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i>
-                            @else
+                            @elseif(isset($dataVal->arch_val))
                                 <a href={{$dataVal->arch_val}} target="_blank"><i  class="far fa-file-pdf  fa-2x fa-lg text-danger from-control"></i></a>
                             @endif
                         </td>
