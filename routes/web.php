@@ -1112,7 +1112,6 @@ Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->nam
 
 Route::get('/dummy/test', 'App\Http\Controllers\DummyController@index');
 
-// Rutas de Alumnos y Grupos están definidas en routes/alumnos y routes/grupos
 
 Route::get('/mi/rol', function () {
     $user = auth()->user();
