@@ -68,14 +68,12 @@
                     <td>{{ $grupo->unidad->unidad }}</td>
                     <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
                     <td class="text-center">
-                        <span
-                            class="badge {{ $grupo->estatus->last()->estatus == 'EN CAPTURA' ? 'bg-warning' : 'bg-success' }}">{{
-                            $grupo->estatus->last()->estatus ?? 'SIN ASIGNAR' }}</span>
+                        <span class="badge {{ $grupo->estatus->last()->estatus == 'EN CAPTURA' ? 'bg-warning' : 'bg-success' }}">{{ $grupo->estatus->last()->estatus ?? 'SIN ASIGNAR' }}</span>
                     </td>
-                    <td>
+                    <td class="text-center">
                         @foreach ($grupo->estatusAdyacentes() as $estatus)
                             @if($estatus->id != $grupo->estatusActual()->id)
-                                <button class="btn btn-sm turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
+                                <button class="btn btn-sm btn-info turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
                             @endif
                         @endforeach
                     </td>
