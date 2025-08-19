@@ -234,10 +234,10 @@ Route::middleware(['auth'])->group(function () {
     //Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::post('/alumnos/exoneracion/permiso','webController\AlumnoController@activarPermiso')->name('activar.permiso.exo');
     Route::get('/alumnos/exoneracion/permiso/desactivar','webController\AlumnoController@quitarPermiso')->name('quitar.permiso.exo');
-    
+
     // Nueva ruta para el controlador paginado
     Route::get('/alumnos/paginado', [AlumnoController::class, 'index'])->name('alumnos.paginado')->middleware('can:alumnos.index');
-    
+
     // Ruta original
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::get('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
@@ -1112,6 +1112,44 @@ Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->nam
 
 Route::get('/dummy/test', 'App\Http\Controllers\DummyController@index');
 
+Route::group(['middleware' => ['auth'], 'prefix' => 'alumnos'], function () {
+    Route::get('/cosulta', [AlumnoController::class, 'index'])->name('alumnos.consulta.alumno');
+    Route::post('/guardar', [AlumnoController::class, 'store'])->name('alumnos.store');
+    Route::post('/consultar_curp', [AlumnoController::class, 'consultarCurp'])->name('alumnos.consultar.curp');
+    Route::post('/obtener/datos/curp/{encodeCURP}', [AlumnoController::class, 'obtenerDatosCurp'])->name('alumnos.obtener.datos.curp');
+
+    Route::get('/registro/alumno/{encodeCURP}', [AlumnoController::class, 'verRegistroAlumno'])->name('alumnos.ver.registro.alumno');
+    Route::get('/registro/nuevo/alumno/{encodeCURP}/{grupoId?}', [AlumnoController::class, 'nuevoRegistroAlumno'])->name('alumnos.nuevo.registro.alumno');
+
+    Route::post('/guardar/seccion/alumno', [AlumnoController::class, 'guardarSeccionAlumno'])->name('alumnos.guardar.seccion.alumno');
+});
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'grupos'], function () {
+    Route::get('/inicio', [GrupoController::class, 'index'])->name('grupos.index');
+    Route::get('/crear', [GrupoController::class, 'create'])->name('grupos.crear');
+    Route::get('/editar/{id}', [GrupoController::class, 'editarGrupo'])->name('grupos.editar');
+    Route::post('/registrar', [GrupoController::class, 'store'])->name('grupos.store');
+    Route::get('/localidades/{municipioId}', [GrupoController::class, 'getLocalidades'])->name('grupos.localidades');
+    Route::get('/organismo/{organismoId}', [GrupoController::class, 'getOrganismoInfo'])->name('grupos.organismo.info');
+    Route::post('/guardar/seccion/grupo', [GrupoController::class, 'guardarSeccionGrupo'])->name('grupos.guardar.seccion.grupo');
+
+    Route::match(['get', 'post'], '/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar.alumnos');
+
+    // Eliminar alumno del grupo
+    Route::delete('/{grupo}/alumnos/{alumno}', [GrupoController::class, 'eliminarAlumno'])->name('grupos.alumnos.eliminar');
+});
+
+// Rutas de Agenda de Grupos (preinscripción)
+Route::prefix('grupos')->name('grupos.')->group(function () {
+    // Vista para asignar alumnos (si no existe aún la ruta nombrada)
+    Route::get('/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('asignar.alumnos');
+
+    // Endpoints de Agenda del Grupo
+    Route::get('{grupo}/agenda', [GrupoController::class, 'getAgenda'])->name('agenda.index');
+    Route::post('{grupo}/agenda', [GrupoController::class, 'storeAgenda'])->name('agenda.store');
+    Route::put('{grupo}/agenda/{agenda}', [GrupoController::class, 'updateAgenda'])->name('agenda.update');
+    Route::delete('{grupo}/agenda/{agenda}', [GrupoController::class, 'destroyAgenda'])->name('agenda.destroy');
+});
 
 Route::get('/mi/rol', function () {
     $user = auth()->user();
