@@ -7,6 +7,7 @@ use App\Models\Municipio;
 use App\Repositories\GrupoRepository;
 use App\Interfaces\Repositories\GrupoRepositoryInterface;
 use App\Models\Grupo;
+use App\Models\Unidad;
 
 class GrupoService
 {
@@ -90,6 +91,7 @@ class GrupoService
         $grupo = $this->grupoRepository->actualizarOrCrear($infoGeneral);
         $id_grupo = $grupo->id ?? $id_grupo;
         $this->actualizarEstatusGrupo($id_grupo, 'EN CAPTURA');
+        $this->generarFolio($id_grupo);
         return $grupo;
     }
 
@@ -221,5 +223,57 @@ class GrupoService
         // Lógica para actualizar el estatus del grupo
         $grupo = Grupo::find($id_grupo);
         $this->grupoRepository->actualizarEstatus($grupo->id, $estatus);
+    }
+
+    public function generarFolio($id_grupo)
+    {
+        // Folio = CCT-EJERCICIO-CONSECUTIVO
+        // Folio = XX-YYZZZZ
+        $grupo = Grupo::find($id_grupo);
+        if (!$grupo) {
+            return null;
+        }
+
+        // Si ya tiene folio/clave asignado, no reemplazar
+        if (!empty($grupo->clave_grupo)) {
+            return $grupo->clave_grupo;
+        }
+
+        // Recuperar unidad (relación o búsqueda por id)
+        $unidad = $grupo->unidad ?: Unidad::find($grupo->id_unidad);
+        if (!$unidad || empty($unidad->cct)) {
+            // No es posible generar sin CCT
+            return null;
+        }
+
+        $cct = substr($unidad->cct, -2);
+        $ejercicio = date('y');
+
+        // Prefijo: XX-YY
+        $prefijo = strtoupper($cct) . '-' . $ejercicio;
+
+        // Buscar el último folio existente con ese prefijo y obtener su consecutivo
+        $ultimo = Grupo::where('clave_grupo', 'like', $prefijo . '%')
+            ->orderBy('clave_grupo', 'desc')
+            ->first();
+
+        $siguiente = 1;
+        if ($ultimo && !empty($ultimo->clave_grupo)) {
+            $num = (int) substr($ultimo->clave_grupo, -4);
+            $siguiente = $num + 1;
+        }
+
+        if ($siguiente > 9999) {
+            // Sin espacio para más consecutivos en el ejercicio actual
+            throw new \RuntimeException('Se alcanzó el límite de consecutivos para el ejercicio ' . $ejercicio);
+        }
+
+        $folio = $prefijo . str_pad((string) $siguiente, 4, '0', STR_PAD_LEFT);
+
+        // Asignar y guardar
+        $grupo->clave_grupo = $folio;
+        $grupo->save();
+
+        return $folio;
     }
 }
