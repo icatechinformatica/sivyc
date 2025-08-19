@@ -946,12 +946,7 @@ class supreController extends Controller
                     }
                     else
                     {
-                        if($Cursos->cp == 12)
-                        {
-                            array_push($total, $criterio->monto);
-                        } else {
-                            array_push($total, $criterio->monto * $Cursos->dura);
-                        }
+                        array_push($total, $criterio->monto * $Cursos->dura);
                         array_push($total, $Cursos->modinstructor);
                     }
                 }

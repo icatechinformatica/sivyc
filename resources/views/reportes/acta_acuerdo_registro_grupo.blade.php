@@ -100,7 +100,7 @@
                 AL {{sprintf("%02d", $diafin)}} DE {{strtoupper($mesfin)}} DEL AÑO {{$aniofin.','}} </span> EN EL HORARIO DE <span class="color_dina">{{date("H:i", strtotime($hini))}} A {{date("H:i", strtotime($hfin))}}</span>
                 HORAS, SEDE DEL CURSO
                 @if ($tcapacitacion == 'PRESENCIAL')
-                {{' CON DOMICILIO EN '.$efisico.', '}}
+                {{' CON DOMICILIO '.$efisico.', '}}
                 @elseif($tcapacitacion == 'A DISTANCIA')
                 {{' PLATAFORMA VIRTUAL, '}}
                 @endif
