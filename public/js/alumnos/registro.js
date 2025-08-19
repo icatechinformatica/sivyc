@@ -125,9 +125,9 @@ validar_capacitacion.on('click', function () {
     }
 });
 
-// ! Validaciones - EMPLEADO
-const validar_empleado = $('#validar-empleo'); // * Btn para validar empleado
-validar_empleado.on('click', function () {
+// ! Validaciones - LABORAL
+const validar_laboral = $('#validar-empleo'); // * Btn para validar laboral
+validar_laboral.on('click', function () {
     const id_usuario_captura = $('#id_usuario_captura').val();
     const checkEmpleado = $('#empleado_aspirante').is(':checked');
     if (checkEmpleado) {
