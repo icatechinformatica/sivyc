@@ -211,6 +211,157 @@ if (curp && esNuevoRegistro) {
     deshabilitarCampos();
 }
 
+// =====================
+// Domicilio: Selects dinámicos País -> Estado -> Municipio
+// =====================
+const $pais = $('#pais_select');
+const $estado = $('#estado_select');
+const $municipio = $('#municipio_select');
+
+// Heurística ligera: nombre que identifica México en tu catálogo
+function esPaisMexicoNombre(nombre) {
+    if (!nombre) return false;
+    const n = nombre.toString().trim().toUpperCase();
+    return n === 'MEXICO' || n === 'MÉXICO' || n === 'MEXICO (MX)' || n === 'MEX' || n.includes('MEXIC');
+}
+
+function actualizarValidacionDomicilioPorPais() {
+    const paisTexto = $pais.find('option:selected').text();
+    const esMexico = esPaisMexicoNombre(paisTexto);
+
+    // Habilitar/Deshabilitar selects
+    $estado.prop('disabled', !esMexico);
+    $municipio.prop('disabled', !esMexico);
+
+    // Limpiar opciones si no es México
+    if (!esMexico) {
+        $estado.val('');
+        $municipio.val('');
+    } else {
+        // Si es México y hay país seleccionado, intentar cargar estados si aún no hay
+        if ($pais.val() && $estado.find('option').length <= 1) {
+            cargarEstados($pais.val());
+        }
+    }
+
+    // Ajustar reglas de validación dinamicamente
+    try {
+        const va = $('#form-domicilio').validate();
+        va.settings.rules.estado_select = { required: esMexico };
+        va.settings.rules.municipio_select = { required: esMexico };
+        // Forzar revalidación de campos afectados
+        $estado.valid && $estado.valid();
+        $municipio.valid && $municipio.valid();
+    } catch (e) { /* si aún no está cargado el validador, se ignorará */ }
+}
+
+function cargarEstados(paisId, preselect = null) {
+    if (!paisId) return;
+    $estado.html('<option value="">Cargando estados...</option>');
+    $municipio.html('<option value="">-- Selecciona un municipio --</option>');
+    $.ajax({
+        url: registroBladeVars.routeEstadosPorPais,
+        type: 'POST',
+        data: { pais_id: paisId, _token: registroBladeVars.csrfToken },
+        success: function (res) {
+            $estado.empty().append('<option value="">-- Selecciona un estado --</option>');
+            if (Array.isArray(res)) {
+                res.forEach(function (e) {
+                    // Soportar diferentes nombres de propiedades
+                    const id = (e && (e.id ?? e.id_estado ?? e.cve_estado ?? e.clave ?? e.codigo));
+                    const texto = (e && (e.nombre ?? e.estado ?? e.entidad ?? e.nombre_estado ?? ''));
+                    if (id != null) {
+                        $estado.append('<option value="' + id + '">' + texto + '</option>');
+                    }
+                });
+            }
+        const selectedEstado = preselect || $estado.attr('data-selected-estado') || $estado.data('selectedEstado');
+            if (selectedEstado) {
+                $estado.val(String(selectedEstado));
+                if ($estado.val()) {
+            const muniSel = $municipio.attr('data-selected-municipio') || $municipio.data('selectedMunicipio') || null;
+            cargarMunicipios($estado.val(), muniSel);
+                }
+            }
+        },
+        error: function () {
+            $estado.html('<option value="">No se pudieron cargar estados</option>');
+        }
+    });
+}
+
+function cargarMunicipios(estadoId, preselect = null) {
+    if (!estadoId) return;
+    $municipio.html('<option value="">Cargando municipios...</option>');
+    $.ajax({
+        url: registroBladeVars.routeMunicipiosPorEstado,
+        type: 'POST',
+        data: { estado_id: estadoId, _token: registroBladeVars.csrfToken },
+        success: function (res) {
+            $municipio.empty().append('<option value="">-- Selecciona un municipio --</option>');
+            if (Array.isArray(res)) {
+                res.forEach(function (m) {
+                    const id = m.id;
+                    const texto = m.muni;
+                    if (id != null) {
+                        $municipio.append('<option value="' + id + '">' + texto + '</option>');
+                    }
+                });
+            }
+            const selectedMunicipio = preselect || $municipio.attr('data-selected-municipio') || $municipio.data('selectedMunicipio');
+            if (selectedMunicipio) {
+                $municipio.val(String(selectedMunicipio));
+            }
+        },
+        error: function () {
+            $municipio.html('<option value="">No se pudieron cargar municipios</option>');
+        }
+    });
+}
+
+// Eventos de cambio
+$pais.on('change', function () {
+    actualizarValidacionDomicilioPorPais();
+    const paisId = $(this).val();
+    const paisTexto = $(this).find('option:selected').text();
+    if (paisId && esPaisMexicoNombre(paisTexto)) {
+        cargarEstados(paisId);
+    } else {
+        $estado.empty().append('<option value="">-- Selecciona un estado --</option>');
+        $municipio.empty().append('<option value="">-- Selecciona un municipio --</option>');
+    }
+});
+
+$estado.on('change', function () {
+    const estadoId = $(this).val();
+    if (estadoId) {
+        cargarMunicipios(estadoId);
+    } else {
+        $municipio.empty().append('<option value="">-- Selecciona un municipio --</option>');
+    }
+});
+
+// Inicialización al cargar la página (edición o creación)
+$(function () {
+    // Establecer validación inicial según país actual
+    actualizarValidacionDomicilioPorPais();
+
+    // Si ya hay un país seleccionado y es México, y faltan opciones de estado, cargarlas
+    const paisIdInit = $pais.val();
+    const paisTextoInit = $pais.find('option:selected').text();
+    const esMexicoInit = esPaisMexicoNombre(paisTextoInit);
+    if (paisIdInit && esMexicoInit) {
+        // Si ya tenemos estados renderizados (edición), no recargar; pero sí cargar municipios si ya hay estado
+        const estadoSel = $estado.attr('data-selected-estado') || $estado.data('selectedEstado') || $estado.val();
+        if ($estado.find('option').length <= 1) {
+            cargarEstados(paisIdInit, estadoSel || null);
+        } else if (estadoSel) {
+            const muniSelInit = $municipio.attr('data-selected-municipio') || $municipio.data('selectedMunicipio') || null;
+            cargarMunicipios(estadoSel, muniSelInit);
+        }
+    }
+});
+
 // Utilidad: normaliza texto (quita acentos, mayúsculas, espacios extra)
 function normalizaTexto(str) {
     return (str || '')

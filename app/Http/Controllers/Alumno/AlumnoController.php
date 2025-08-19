@@ -67,10 +67,13 @@ class AlumnoController extends Controller
         $sexos = Sexo::all();
         $nacionalidades = Nacionalidad::all();
         $estadosCiviles = EstadoCivil::all();
+        
         $paises = pais::all();
-        $estados = Estado::all();
+
+        $estados = Estado::where('id_pais', $datos->id_pais)->get();
         $entidades = $estados;
-        $municipios = Municipio::all();
+
+        $municipios = Municipio::where('id_estado', $datos->id_estado)->get();
         $gradoEstudios = GradoEstudio::all();
         $gruposVulnerables = GrupoVulnerable::orderBy('grupo_vulnerable')->get();
 
@@ -148,5 +151,19 @@ class AlumnoController extends Controller
             Log::error('Error al guardar los datos del alumno: ' . $e->getMessage());
             return response()->json(['success' => false, 'error' => 'Error al guardar los datos del alumno.'], 500);
         }
+    }
+
+    public function estadosPorPais(Request $request)
+    {
+        $paisId = $request->input('pais_id');
+        $estados = Estado::where('id_pais', $paisId)->get();
+        return response()->json($estados);
+    }
+
+    public function municipiosPorEstado(Request $request)
+    {
+        $estadoId = $request->input('estado_id');
+        $municipios = Municipio::where('id_estado', $estadoId)->get();
+        return response()->json($municipios);
     }
 }

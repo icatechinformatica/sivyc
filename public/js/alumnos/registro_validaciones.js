@@ -279,10 +279,17 @@ $("#form-domicilio").validate({
             required: true
         },
         estado_select: {
-            required: true
+            required: function () {
+                // Requerido solo si el país seleccionado es México
+                var txt = $('#pais_select option:selected').text().toUpperCase();
+                return txt.includes('MEXIC');
+            }
         },
         municipio_select: {
-            required: true
+            required: function () {
+                var txt = $('#pais_select option:selected').text().toUpperCase();
+                return txt.includes('MEXIC');
+            }
         },
         localidad: {
             required: true
@@ -302,8 +309,8 @@ $("#form-domicilio").validate({
     },
     messages: {
         pais_select: "El país es obligatorio.",
-        estado_select: "El estado es obligatorio.",
-        municipio_select: "El municipio es obligatorio.",
+        estado_select: "El estado es obligatorio para México.",
+        municipio_select: "El municipio es obligatorio para México.",
         localidad: "La localidad es obligatoria.",
         codigo_postal: {
             required: "El código postal es obligatorio.",
