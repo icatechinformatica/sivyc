@@ -10,7 +10,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'alumnos'], function () {
     Route::post('/obtener/datos/curp/{encodeCURP}', [AlumnoController::class, 'obtenerDatosCurp'])->name('alumnos.obtener.datos.curp');
 
     Route::get('/registro/alumno/{encodeCURP}', [AlumnoController::class, 'verRegistroAlumno'])->name('alumnos.ver.registro.alumno');
-    Route::get('/registro/nuevo/alumno/{encodeCURP}', [AlumnoController::class, 'nuevoRegistroAlumno'])->name('alumnos.nuevo.registro.alumno');
+    Route::get('/registro/nuevo/alumno/{encodeCURP}/{grupoId?}', [AlumnoController::class, 'nuevoRegistroAlumno'])->name('alumnos.nuevo.registro.alumno');
 
     Route::post('/guardar/seccion/alumno', [AlumnoController::class, 'guardarSeccionAlumno'])->name('alumnos.guardar.seccion.alumno');
 });
