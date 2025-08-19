@@ -52,7 +52,7 @@
                     </li>
                 @endcan
                 @canany(['solicitud.apertura', 'solicitud.exoneracion', 'supre.index', 'contratos.index', 'pagos.inicio',
-                    'prevalidar_index-instructor', 'metasavances.index', 'solicitud.rf001', 'vobo.rf001'])
+                     'metasavances.index', 'solicitud.rf001', 'vobo.rf001'])
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-2025--hover" href="#" id="navbarDropdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -80,9 +80,6 @@
                             @can('pagos.inicio')
                                 <a class="dropdown-item" href="{{ route('pago-inicio') }}">Pagos</a>
                             @endcan
-                            @can('prevalidar_index-instructor')
-                                <a class="dropdown-item" href="{{ route('prevalidar-ins') }}">Turnar Instructor</a>
-                            @endcan
                             @can('metasavances.index')
                                 <a class="dropdown-item" href="{{ route('pat.metavance.mostrar') }}">Registro de Metas y Avances
                                     PAT</a>
@@ -95,6 +92,9 @@
                             @endcanany
                             @can('buzon.efirma.constancias')
                                 <a class="dropdown-item" href="{{ route('grupo.efirma.index') }}">eFirma Constancias</a>
+                            @endcan
+                            @can('prevalidar_index-instructor')
+                                <a class="dropdown-item" href="{{ route('prevalidar-ins') }}">Turnar Instructor</a>
                             @endcan
                         </div>
                     </li>
@@ -243,6 +243,9 @@
                             @endcan
                             @can('solicitudes.vb.grupos')
                                 <a href="{{ route('solicitudes.vb.grupos') }}">VB.- Grupos de Capacitación</a>
+                            @endcan
+                            @can('prevalidar_index-instructor')
+                                <a class="dropdown-item" href="{{ route('prevalidar-ins') }}">Turnar Instructor</a>
                             @endcan
                         </div>
                     </li>
