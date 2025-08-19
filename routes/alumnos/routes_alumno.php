@@ -13,4 +13,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'alumnos'], function () {
     Route::get('/registro/nuevo/alumno/{encodeCURP}/{grupoId?}', [AlumnoController::class, 'nuevoRegistroAlumno'])->name('alumnos.nuevo.registro.alumno');
 
     Route::post('/guardar/seccion/alumno', [AlumnoController::class, 'guardarSeccionAlumno'])->name('alumnos.guardar.seccion.alumno');
+
+    // Endpoints para selects dinámicos de domicilio
+    Route::post('/estados', [AlumnoController::class, 'estadosPorPais'])->name('alumnos.estados.pais');
+    Route::post('/municipios', [AlumnoController::class, 'municipiosPorEstado'])->name('alumnos.municipios.estado');
 });
