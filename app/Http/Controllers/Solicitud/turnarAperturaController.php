@@ -166,8 +166,7 @@ class turnarAperturaController extends Controller
                         $file = $request->file('file_autorizacion'); //dd($name_file);
                         $file_result = $this->upload_file($file,$name_file);
                         $url_file = $file_result["url_file"];
-                        if($file_result['up']){
-                            $movimientos =
+                        if($file_result['up']){                            
                             $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','ACEPTADO')
                             ->update(['status_curso' => 'AUTORIZADO',
                                 'movimientos' => DB::raw("

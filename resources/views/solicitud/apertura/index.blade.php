@@ -27,39 +27,7 @@
                 else 
                     if ($exonerado)  $disabled = 'readonly';
             }
-                    
-                
-        /*
-            $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = $inco = $folio_pago = $fecha_pago = NULL;
-            $activar = true;
-            if(isset($grupo)){
-                $inco = $grupo->inicio;
-                $valor = $grupo->folio_grupo;
-                $modalidad = $grupo->mod;
-                $hfin = substr($grupo->horario, 8, 5);
-                $hini = substr($grupo->horario, 0, 5);
-                if(isset($grupo->munidad)) $munidad = $grupo->munidad;
-                if($grupo->tcapacitacion=='PRESENCIAL'){
-                    $disabled = 'disabled';
-                    $grupo->medio_virtual='';
-                    $grupo->link_virtual='';
-                }  else {
-                    if ($exonerado) {
-                        $disabled = 'readonly';
-                    }
-                }
-            }
-            if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;
-            if($recibo){
-                $comprobante = env('APP_URL')."/storage/".$recibo->file_pdf;
-                $folio_pago = $recibo->folio_recibo;
-                $fecha_pago = $recibo->fecha_expedicion;
-            }elseif(isset($grupo)) {
-                $folio_pago = $grupo->folio_pago;
-                $fecha_pago = $grupo->fecha_pago;
-            }
-                */
-    @endphp
+        @endphp
     {{ Form::open(['route' => 'solicitud.apertura', 'method' => 'post', 'id'=>'frm']) }}
         @csrf
          <div class="row">
