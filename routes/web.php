@@ -234,10 +234,10 @@ Route::middleware(['auth'])->group(function () {
     //Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::post('/alumnos/exoneracion/permiso','webController\AlumnoController@activarPermiso')->name('activar.permiso.exo');
     Route::get('/alumnos/exoneracion/permiso/desactivar','webController\AlumnoController@quitarPermiso')->name('quitar.permiso.exo');
-    
+
     // Nueva ruta para el controlador paginado
     Route::get('/alumnos/paginado', [AlumnoController::class, 'index'])->name('alumnos.paginado')->middleware('can:alumnos.index');
-    
+
     // Ruta original
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::get('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
@@ -1119,7 +1119,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'alumnos'], function () {
     Route::post('/obtener/datos/curp/{encodeCURP}', [AlumnoController::class, 'obtenerDatosCurp'])->name('alumnos.obtener.datos.curp');
 
     Route::get('/registro/alumno/{encodeCURP}', [AlumnoController::class, 'verRegistroAlumno'])->name('alumnos.ver.registro.alumno');
-    Route::get('/registro/nuevo/alumno/{encodeCURP}', [AlumnoController::class, 'nuevoRegistroAlumno'])->name('alumnos.nuevo.registro.alumno');
+    Route::get('/registro/nuevo/alumno/{encodeCURP}/{grupoId?}', [AlumnoController::class, 'nuevoRegistroAlumno'])->name('alumnos.nuevo.registro.alumno');
 
     Route::post('/guardar/seccion/alumno', [AlumnoController::class, 'guardarSeccionAlumno'])->name('alumnos.guardar.seccion.alumno');
 });
@@ -1132,7 +1132,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos'], function () {
     Route::get('/localidades/{municipioId}', [GrupoController::class, 'getLocalidades'])->name('grupos.localidades');
     Route::get('/organismo/{organismoId}', [GrupoController::class, 'getOrganismoInfo'])->name('grupos.organismo.info');
     Route::post('/guardar/seccion/grupo', [GrupoController::class, 'guardarSeccionGrupo'])->name('grupos.guardar.seccion.grupo');
-    
+
     Route::match(['get', 'post'], '/asignar/alumnos', [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar.alumnos');
 
     // Eliminar alumno del grupo

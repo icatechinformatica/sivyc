@@ -175,10 +175,15 @@ class GrupoController extends Controller
                 ->with('error', 'Grupo no encontrado.');
         }
 
+        // verifica la existencia del alumno por CURP
+
         $alumno = Alumno::where('curp', $curp)->first();
         if (!$alumno) {
             return redirect()->route('grupos.editar', $grupoId)
-                ->with('error', 'Alumno no encontrado con la CURP proporcionada.');
+                ->with('error', 'Alumno no encontrado con la CURP proporcionada.')
+                ->with('curp', $curp)
+                ->with('bandera', true)
+                ->with('grupo_id', $grupoId);
         }
 
         // Evitar duplicados

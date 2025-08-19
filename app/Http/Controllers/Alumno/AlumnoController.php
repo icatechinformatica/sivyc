@@ -78,7 +78,7 @@ class AlumnoController extends Controller
         return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'entidades', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
     }
 
-    public function nuevoRegistroAlumno($encodeCURP)
+    public function nuevoRegistroAlumno($encodeCURP, $grupoId = null)
     {
         $curp = base64_decode(urldecode($encodeCURP));
         $existeRegistroAlumno = $this->alumnoConsultaService->obtenerAlumnoPorCURP($curp);
@@ -98,7 +98,16 @@ class AlumnoController extends Controller
 
         $esNuevoRegistro = true;
         $secciones = []; // Para nuevo registro, no hay secciones completadas
-        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'entidades', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
+        $viewData = compact('esNuevoRegistro', 'curp', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'entidades', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones');
+        // Si no hay grupo_id en sesión y $grupoId no es nulo, guardar en sesión
+        if (!session()->has('grupo_id') && !empty($grupoId)) {
+            session(['grupo_id' => base64_decode($grupoId)]);
+        }
+        // Asignar grupoId desde la sesión si existe
+        if (session()->has('grupo_id')) {
+            $viewData['grupoId'] = session('grupo_id');
+        }
+        return view('alumnos.ver_datos', $viewData);
     }
 
     // * Función que sera llamada desde la vista para obtener los datos del CURP
