@@ -4,16 +4,11 @@ namespace App\Http\Controllers\Preinscripcion;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\tbl_grupos;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Input;
 use App\Models\cat\catUnidades;
 use App\Models\cat\catApertura;
 use App\Models\Alumno;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 use App\Agenda;
@@ -21,20 +16,36 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
 use App\Models\ModelExpe\ExpeUnico;
-//use App\Models\Alumnopre;
-//use App\Models\Inscripcion;
 use App\Models\tbl_inscripcion;
 use App\Utilities\Algoritmo35;
 use App\Utilities\MyUtility;
 
-use function PHPSTORM_META\type;
-use App\Http\Controllers\Solicitudes\vbgruposController;
 use App\Services\ValidacionServicioVb;
+use App\Services\Grupo\GrupoService;
+use App\Services\Curso\CursoService;
+use App\Services\Catalogo\CatalogoService;
+use App\Services\Instructor\InstructorService;
+use App\Services\Documentacion\DocumentacionService;
+use App\Services\Recibo\ReciboService;
 
 class grupoController extends Controller
 {
     use catUnidades;
     use catApertura;
+
+    protected $ejercicio;
+    protected $path;
+    protected $path_uploadFiles;
+    protected $path_files;
+    protected $path_files_cancelled;
+    protected $key;
+    protected $id_user;
+    protected $realizo;
+    protected $id_unidad;
+    protected $data;
+    protected $admin;
+    protected $activar;
+
     function __construct()
     {
         session_start();
@@ -57,138 +68,132 @@ class grupoController extends Controller
         });
     }
 
-    public function index(Request $request){
+    public function index(Request $request, GrupoService $grupoService, CursoService $cursoService, CatalogoService $catalogoService, InstructorService $instructorService, DocumentacionService $documentacionService, ReciboService $reciboService)
+    {
 
-        //$digitov = Algoritmo35::digito_verificador('2B25000100004');
-        /*
-        $inst = (new vbgruposController());
-        $instructores = $inst->modal_instructores($request);
-        dd($instructores);
-*/
-        $curso = $cursos = $localidad  = $alumnos = $instructores = $instructor = $recibo =[];
-        $message = $comprobante = $folio_pago = $fecha_pago = $grupo = $ValidaInstructorPDF = $folio_grupo = NULL;
-        $es_vulnerable = $edicion_exo = false;
+        // Inicialización de variables por defecto
+        $datos = $this->inicializarVariablesVista($request);
 
-        $unidades = $this->data['unidades'];
-        $unidad = $uni = $this->data['unidad'];
-        if(!$unidad) $unidad = $uni = $request->unidad;
-
+        // Obtener datos del grupo si existe folio en sesión
         if (isset($_SESSION['folio_grupo'])) {
-
-            $folio_grupo = $_SESSION['folio_grupo'];
-
-            list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);
-            if (count($alumnos) > 0) {
-                $uni = $grupo->unidad;
-                $es_vulnerable = collect($alumnos)->contains(function ($value) {
-                    return $value->id_gvulnerable != '[]';
-                });
-
-
-                if (($grupo->turnado_grupo == 'VINCULACION' or  $grupo->status_curso=='EDICION' )and isset($this->data['cct_folio'])) $this->activar = true;
-                else $this->activar = false;
-
-                $curso = DB::table('cursos')->where('id', $grupo->id_curso);
-                    if($grupo->status_curso!='AUTORIZADO') $curso = $curso->where('cursos.estado', true);
-                $curso = $curso->first();
-                //dd($curso);
-
-                //CATALOGOS
-                $tipo = $grupo->tcapacitacion;
-                $mod = $grupo->mod;
-                //dd($grupo);
-                $clave = DB::table('tbl_municipios')->where('id', $grupo->id_municipio)->value('clave');
-                $localidad = DB::table('tbl_localidades')->where('id_estado', '7')->where('clave_municipio', '=', $clave)->pluck('localidad', 'clave');
-                $cursos = DB::table('cursos')->where('tipo_curso','like',"%$tipo%");
-                    // ->Where('curso_alfa',true); //nueva linea para cursos alfa 08052025
-                    if($grupo->status_curso!='AUTORIZADO') $cursos = $cursos->where('cursos.estado', true);
-                    $cursos = $cursos->where('modalidad','like',"%$mod%")
-                    ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
-
-                if($grupo->status_curso =='AUTORIZADO')$cursos->put($grupo->id_curso, $grupo->nombre_curso);
-
-                //dd($grupo);
-                $instructores = $this->data_instructores($grupo);
-                //FIN CATALOGOS
-                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
-
-
-                //$grupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->first();
-                //dd($instructor_mespecialidad);
-                $edicion_exo = DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','EDICION')->exists();
-                if($grupo->id_especialidad){
-                    $instructor_mespecialidad = $grupo->instructor_mespecialidad;
-                    $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
-                        ->where('id_instructor', $grupo->id_instructor)
-                        ->whereExists(function ($query) use ($instructor_mespecialidad){
-                            $query->select(\DB::raw("elem->>'arch_val'"))
-                                ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
-                                ->where(\DB::raw("elem->>'memo_val'"), '=', $instructor_mespecialidad);
-                        })
-                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad') as pdfvalida"));
-                }
-            } else {
-                $message = "No hay registro qwue mostrar para Grupo No." . $folio_grupo;
-                $this->activar = true;
-                $_SESSION['folio_grupo'] = NULL;
-            }
+            $datos = $this->procesarGrupoExistente($_SESSION['folio_grupo'], $datos, $grupoService, $cursoService, $instructorService);
         } else {
             $this->activar = true;
             $_SESSION['folio_grupo'] = NULL;
         }
 
-        $cerss = DB::table('cerss');
-            if ($unidad) $cerss = $cerss->where('id_unidad', $this->id_unidad)->where('activo', true);
-            $cerss = $cerss->orderby('nombre', 'ASC')->pluck('nombre', 'id');
+        // Obtener catálogos
+        $catalogos = $this->obtenerCatalogos($catalogoService, $datos['unidad'], $datos['uni']);
 
-        $activar = $this->activar;
+        // Obtener documentación y otros datos
+        $documentos = $documentacionService->obtenerDocumentosVinculacion($datos['folio_grupo']);
+        $recibo_nulo = $reciboService->verificarReciboNulo();
 
-        if(str_starts_with($this->data['cct'] ?? 0, '07000')) $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->orderby('muni')->pluck('muni', 'id');
-        else  $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$uni)->orderby('muni')->pluck('muni', 'id');
+        // Preparar datos adicionales
+        $datosAdicionales = $this->prepararDatosAdicionales();
 
+        // Consolidar todos los datos para la vista
+        $vistaData = array_merge($datos, $catalogos, $datosAdicionales, [
+            'linkPDF' => $documentos,
+            'recibo_nulo' => $recibo_nulo,
+            'activar' => $this->activar,
+            'message' => session('message') ?: $datos['message']
+        ]);
 
+        return view('preinscripcion.index', $vistaData);
+    }
 
+    private function inicializarVariablesVista(Request $request)
+    {
+        return [
+            'curso' => [],
+            'cursos' => [],
+            'localidad' => [],
+            'alumnos' => [],
+            'instructores' => [],
+            'instructor' => null,
+            'recibo' => [],
+            'message' => null,
+            'folio_grupo' => null,
+            'grupo' => null,
+            'ValidaInstructorPDF' => null,
+            'es_vulnerable' => false,
+            'edicion_exo' => false,
+            'unidades' => $this->data['unidades'],
+            'unidad' => $this->data['unidad'] ?: $request->unidad,
+            'uni' => $this->data['unidad'] ?: $request->unidad,
+        ];
+    }
 
-        $dependencia = DB::table('organismos_publicos')
-            ->where('activo', true)
-            ->orderby('organismo')
-            ->pluck('organismo', 'organismo');
-        $grupo_vulnerable = DB::table('grupos_vulnerables')->orderBy('grupo')->pluck('grupo','id');
-        $medio_virtual = $this->medio_virtual();
-        if (session('message')) $message = session('message');
-        $tinscripcion = $this->tinscripcion();
+     // * Procesa los datos cuando existe un grupo en sesión @Christopher
+    private function procesarGrupoExistente($folio_grupo, $datos, $grupoService, $cursoService, $instructorService)
+    {
+        $datos['folio_grupo'] = $folio_grupo;
+        list($grupo, $alumnos) = $grupoService->obtenerGrupoConAlumnos($folio_grupo);
 
-        //By Jose Luis Moreno
-        $id_usuario = null;
-        if($this->admin['slug']) $id_usuario = $this->id_user;
-        $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '', "status_dpto" => 'INVALID');
-        try {
-            $jsonvincu = ExpeUnico::select('vinculacion')->where('folio_grupo', '=', $folio_grupo)->first();
-            if (isset($jsonvincu->vinculacion['doc_1']) && isset($jsonvincu->vinculacion['status_dpto'])) {
-                $docs_json = [$jsonvincu->vinculacion['doc_1']['url_pdf_acta'], $jsonvincu->vinculacion['doc_1']['url_pdf_convenio'],
-                $jsonvincu->vinculacion['doc_3']['url_documento'], $jsonvincu->vinculacion['doc_4']['url_documento']];
-                $linkPDF = array(
-                    "acta" => ($docs_json[0] != '') ? $this->path_uploadFiles.$docs_json[0] : "",
-                    "convenio" => ($docs_json[1] != '') ? $this->path_uploadFiles.$docs_json[1] : "",
-                    "soli_ape" => ($docs_json[2] != '') ? $this->path_uploadFiles.$docs_json[2] : "",
-                    "sid" => ($docs_json[3] != '') ? $this->path_uploadFiles.$docs_json[3] : "",
-                    "status_dpto" => ($jsonvincu->vinculacion['status_dpto'] != '') ? $jsonvincu->vinculacion['status_dpto'] : "INVALID"
-                );
-            }else{
-                $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '', "status_dpto" => 'INVALID');
-            }
-        } catch (\Throwable $th) {
-            dd("Error al cargar documentos ".$th->getMessage());
+        if (count($alumnos) > 0) {
+            $datos['grupo'] = $grupo;
+            $datos['alumnos'] = $alumnos;
+            $datos['uni'] = $grupo->unidad;
+            $datos['es_vulnerable'] = $grupoService->tieneAlumnosVulnerables($alumnos);
+
+            // Determinar permisos de activación
+            $this->activar = $grupoService->puedeActivarGrupo($grupo, $this->data);
+
+            // Obtener información del curso
+            $datos['curso'] = $cursoService->obtenerCursoPorId($grupo->id_curso, $grupo->status_curso);
+
+            // Obtener cursos disponibles
+            $datos['cursos'] = $cursoService->obtenerCursosFiltrados(
+                $grupo->tcapacitacion,
+                $grupo->mod,
+                $grupo->unidad,
+                $grupo->status_curso,
+                $grupo->id_curso
+            );
+
+            // Obtener localidades
+            $datos['localidad'] = $cursoService->obtenerLocalidadesPorMunicipio($grupo->id_municipio);
+
+            // Obtener instructores
+            $datos['instructores'] = $instructorService->obtenerInstructoresPorEspecialidad($grupo);
+            $datos['instructor'] = $instructorService->obtenerInformacionBasicaInstructor($grupo->id_instructor);
+
+            // Verificar exoneraciones y validaciones
+            $datos['edicion_exo'] = $grupoService->tieneExoneracionEnEdicion($folio_grupo);
+            $datos['ValidaInstructorPDF'] = $instructorService->obtenerValidacionInstructor($grupo);
+
+        } else {
+            $datos['message'] = "No hay registro que mostrar para Grupo No." . $folio_grupo;
+            $this->activar = true;
+            $_SESSION['folio_grupo'] = NULL;
         }
 
-        //$recibo = DB::table('tbl_recibos')->where('folio_grupo',$folio_grupo)->where('status_folio','ENVIADO')->first();
-        $ubicacion = DB::table('tbl_unidades')->where('id', Auth::user()->unidad)->value('ubicacion');
-        $recibo_nulo = DB::table('tbl_recibos')->whereNull('folio_recibo')->where('unidad',$ubicacion)->exists();
-        $programas = $this->programa();
-        $planteles = $this->plantel();
-        return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar',
-            'es_vulnerable', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','edicion_exo','instructores','instructor',
-            'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo','programas','planteles', 'message'));
+        return $datos;
+    }
+
+    private function obtenerCatalogos($catalogoService, $unidad, $uni)
+    {
+        return [
+            'cerss' => $catalogoService->obtenerCerss($unidad, $this->id_unidad),
+            'municipio' => $catalogoService->obtenerMunicipios($this->data['cct'] ?? 0, $uni),
+            'dependencia' => $catalogoService->obtenerDependencias(),
+            'grupo_vulnerable' => $catalogoService->obtenerGruposVulnerables(),
+        ];
+    }
+
+    /**
+     * ! Revisar que es
+     */
+    private function prepararDatosAdicionales()
+    {
+        return [
+            'medio_virtual' => $this->medio_virtual(),
+            'tinscripcion' => $this->tinscripcion(),
+            'programas' => $this->programa(),
+            'planteles' => $this->plantel(),
+            'id_usuario' => $this->admin['slug'] ? $this->id_user : null,
+        ];
     }
 
 
@@ -271,96 +276,10 @@ class grupoController extends Controller
     }
 
 
-    private function grupo_alumnos($folio_grupo){
-        $grupo =  DB::table('alumnos_registro as ar')->where('ar.folio_grupo', $folio_grupo)
-            ->select(//DE LA APERTURA
-                DB::raw('COALESCE(tc.folio_grupo, ar.folio_grupo) as folio_grupo'),
-                DB::raw("COALESCE(tc.clave, '0') as clave"),
-                DB::raw('COALESCE(tc.tdias, null) as tdias'),
-                DB::raw('COALESCE(tc.mexoneracion, null) as mexoneracion'),
-                DB::raw('COALESCE(tc.dia, null) as dia'),
-                DB::raw('COALESCE(tc.cgeneral, null) as cgeneral'),
-                DB::raw('COALESCE(tc.fcgen, null) as fcgen'),
-                DB::raw('COALESCE(tc.tipo, null) as tipo'),
-
-                //DEL GRUPO
-                DB::raw('COALESCE(tc.id_cerss, ar.id_cerss) as id_cerss'),
-                DB::raw('COALESCE(tc.inicio, ar.inicio) as inicio'),
-                DB::raw('COALESCE(tc.termino, ar.termino) as termino'),
-                DB::raw('COALESCE(tc.clave_localidad, ar.clave_localidad) as clave_localidad'),
-                DB::raw('COALESCE(tc.unidad, ar.unidad) as unidad'),
-                DB::raw('COALESCE(tc.id_gvulnerable, null) as id_gvulnerable'),
-                DB::raw('COALESCE(tc.efisico, ar.efisico) as efisico'),
-                DB::raw('COALESCE(tc.medio_virtual, ar.medio_virtual) as medio_virtual'),
-                DB::raw('COALESCE(tc.link_virtual, ar.link_virtual) as link_virtual'),
-                DB::raw('COALESCE(tc.cespecifico, ar.cespecifico) as cespecifico'),
-                DB::raw('COALESCE(tc.fcespe, ar.fcespe) as fcespe'),
-                DB::raw('COALESCE(tc.depen_representante, ar.depen_repre) as depen_repre'),
-                DB::raw('COALESCE(tc.depen_telrepre, ar.depen_telrepre) as depen_telrepre'),
-                DB::raw('COALESCE(tc.tcapacitacion, ar.tipo_curso) as tcapacitacion'),
-                DB::raw("SUBSTRING( COALESCE(
-                    CASE WHEN tc.hini LIKE '%p%' and SUBSTRING(tc.hini, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
-                         ELSE SUBSTRING(tc.hini, 1, 5)
-                    END, SUBSTRING(ar.horario, 1, 5)),1,5) as hini"),
-                DB::raw("SUBSTRING(COALESCE(
-                    CASE WHEN tc.hfin LIKE '%p%' and SUBSTRING(tc.hfin, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hfin, 1, 5)::time+'12:00')::text
-                         ELSE SUBSTRING(tc.hfin, 1, 5)
-                    END,  SUBSTRING(ar.horario, 9, 5)),1,5) as hfin"),
-
-                DB::raw('COALESCE(tc.id_municipio, ar.id_muni) as id_municipio'),
-                DB::raw('COALESCE(tc.depen, ar.organismo_publico) as depen'),
-                DB::raw('COALESCE(tc.depen_telrepre, ar.depen_telrepre) as depen_telrepre'),
-                DB::raw('COALESCE(tc.tipo_curso, ar.servicio) as tipo_curso'),
-                DB::raw("COALESCE(tc.id_especialidad, ar.id_especialidad) as id_especialidad"),
-                DB::raw("COALESCE(tc.instructor_mespecialidad, '') as instructor_mespecialidad"),
-                DB::raw('COALESCE(tc.mod, ar.mod) as mod'),
-                DB::raw('COALESCE(tc.status_curso, null) as status_curso'),
-                DB::raw('COALESCE(tc.unidad, ar.unidad) as unidad'),
-                DB::raw('COALESCE(tc.id_instructor, ar.id_instructor) as id_instructor'),
-                DB::raw('COALESCE(tc.plantel, null) as plantel'),
-                DB::raw('COALESCE(tc.programa, null) as programa'),
-                DB::raw("CASE
-                           WHEN tr.status_folio='CANCELADO' THEN concat('".$this->path_files_cancelled."',tr.folio_recibo)
-                            WHEN tc.comprobante_pago <> 'null' THEN concat('".$this->path_uploadFiles."',tc.comprobante_pago)
-                            WHEN tr.file_pdf <> 'null' THEN concat('".$this->path_files."',tr.file_pdf)
-                        END as comprobante_pago"
-                        ),
-                DB::raw('COALESCE(tr.folio_recibo, COALESCE(tc.folio_pago, ar.folio_pago)) as folio_pago'),
-                DB::raw('COALESCE(tr.fecha_expedicion, COALESCE(tc.fecha_pago, ar.fecha_pago)) as fecha_pago'),
-                DB::raw("COALESCE(tc.solicita, CONCAT(tu.vinculacion,', ',pvinculacion)) as solicita"),
-                DB::raw('COALESCE(tc.tdias, null) as tdias'),
-                DB::raw('COALESCE(tc.id_curso, ar.id_curso) as id_curso'),
-                DB::raw('COALESCE(tc.curso, c.nombre_curso) as nombre_curso'),
-                DB::raw('COALESCE(tc.clave_localidad, ar.clave_localidad) as clave_localidad'),
-                DB::raw('COALESCE(tc.mpreapertura, null) as mpreapertura'),
-                DB::raw('COALESCE(tc.fpreapertura, null) as fpreapertura'),
-                DB::raw('COALESCE(tc.obs_preapertura, null) as obs_vincula'),
-                ///DE OTRAS TABLAS
-                DB::raw('ar.turnado as  turnado_grupo'),                
-                DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
-                DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital"),
-                'exo.status as exo_status','exo.nrevision as exo_nrevision',
-                DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
-
-            )
-            ->leftjoin('tbl_cursos as tc','tc.folio_grupo','ar.folio_grupo')
-            ->leftJoin('tbl_recibos as tr', function ($join) {
-                $join->on('tr.folio_grupo', '=', 'ar.folio_grupo')
-                     ->where('tr.status_folio','ENVIADO');
-            })
-            ->leftJoin('exoneraciones as exo', function ($join) {
-                $join->on('exo.folio_grupo', '=', 'ar.folio_grupo')
-                     ->where('exo.status','!=','CANCELADO');
-            })
-            ->leftjoin('cursos as c','c.id','ar.id_curso')
-            ->leftjoin('tbl_unidades as tu','ar.unidad','tu.unidad')
-            //->orderby('ar.id_vulnerable','DESC')
-            ->first();
-//dd($grupo);
-    $alumnos = Alumno::busqueda($folio_grupo,'grupo')->get();
-
-        if($grupo and $alumnos )  return [$grupo, $alumnos];
-        else return $message = "OPERACION NO VALIDA.";
+    private function grupo_alumnos($folio_grupo)
+    {
+        $grupoService = new GrupoService();
+        return $grupoService->obtenerGrupoConAlumnos($folio_grupo);
     }
 
 
@@ -917,9 +836,9 @@ class grupoController extends Controller
                                 ///AGREGAR PARA TODOS LOS CRITERIOS
                                 if ($result_alumnos) {
                                     if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
-                                    ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {                                        
+                                    ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {
                                         DB::table('agenda')->where('id_curso', $folio)->delete();
-                                        DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);                                        
+                                        DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
                                     }
                                 }
 

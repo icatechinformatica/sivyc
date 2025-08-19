@@ -146,7 +146,6 @@ return [
         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
         Illuminate\Cookie\CookieServiceProvider::class,
         Illuminate\Database\DatabaseServiceProvider::class,
-        // Spatie\Permission\PermissionServiceProvider::class,
         Illuminate\Encryption\EncryptionServiceProvider::class,
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
@@ -181,8 +180,16 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         App\Providers\ReporteRf001Provider::class,
         App\Providers\DocumentacionPagoInstructorProvider::class,
-        // App\Providers\StorageServiceProvider::class,
         App\Providers\CredencialProvider::class,
+        App\Providers\MorphMapServiceProvider::class,
+
+        // * Providers para módulos específicos usando Clean Architecture
+        App\Providers\FuncionariosServiceProvider::class,
+        App\Providers\InstructorServiceProvider::class,
+        App\Providers\UsuarioServiceProvider::class,
+        App\Providers\PreinscripcionServiceProvider::class,
+        App\Providers\AlumnoServiceProvider::class,
+        App\Providers\EstatusServiceProvider::class,
     ],
 
     /*
@@ -234,7 +241,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class,
+        // 'PDF' => Barryvdh\DomPDF\Facade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 

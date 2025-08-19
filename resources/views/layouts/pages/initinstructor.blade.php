@@ -4,6 +4,7 @@
 @section('title', 'Instructor | SIVyC Icatech')
 @section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         .form-check-input{
             width:22px;
@@ -26,36 +27,50 @@
             <div class="col-lg-12 margin-tb">
                 {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                     {{ Form::select('tipo_busqueda_instructor', $tipo_busqueda, $old['tipo_busqueda_instructor']??0 ,['id'=>'tipo_busqueda_instructor','class' => 'form-control mr-sm-2','title' => 'BUSCAR POR','placeholder' => '- BUSCAR POR -']) }}
+            <div class="col-lg-12 margin-tb">
+                {!! html()->form('GET', route('instructor-inicio'))->class('form-inline')->open() !!}
+                    <select name="tipo_busqueda_instructor" id="tipo_busqueda_instructor" class="form-control mr-sm-2" title="BUSCAR POR">
+                        <option value="" disabled selected>- BUSCAR POR -</option>
+                        @foreach($tipo_busqueda as $key => $value)
+                            <option value="{{ $key }}" @if(($old['tipo_busqueda_instructor'] ?? 0) == $key) selected @endif>{{ $value }}</option>
+                        @endforeach
+                    </select>
                     <Div id="divcampo" name="divcampo" class="form-inline" style="width:300px">
-                        {!! Form::text('busquedaPorInstructor', $busquedaPorInstructor??null, ['class' => 'form-control mr-sm-2 w-100', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR','id' => 'busquedaPorInstructor']) !!}
+                        {!! html()->text('busquedaPorInstructor', $busquedaPorInstructor ?? null)
+                            ->class('form-control mr-sm-2 w-100')
+                            ->placeholder('BUSCAR')
+                            ->attribute('aria-label', 'BUSCAR')
+                            ->id('busquedaPorInstructor') !!}
                     </Div>
-                        <Div id="divstat" name="divstat" class="d-none d-print-none">
-                            <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
-                                <option value="">BUSQUEDA POR STATUS</option>
-                                <option value="EN CAPTURA">EN CAPTURA</option>
-                                <option value="PREVALIDACION">PREVALIDACION</option>
-                                <option value="EN FIRMA">EN FIRMA</option>
-                                <option value="VALIDADO">VALIDADO</option>
-                                <option value="RETORNO">RETORNO</option>
-                            </select>
-                        </Div>
-                        <Div id="divespecialidad" name="divespecialidad" class="d-none d-print-none">
-                            <select name="tipo_especialidad" class="form-control mr-sm-2" id="tipo_especialidad">
-                                <option value="">BUSQUEDA POR ESPECIALIDAD</option>
-                                @foreach ($especialidades as $moist)
-                                    <option value="{{$moist->id}}">{{$moist->nombre}}</option>
-                                @endforeach
-                            </select>
-                        </Div>
-                        <button class="btn my-2 my-sm-0 ml-3" type="submit">BUSCAR</button>
+                    <Div id="divstat" name="divstat" class="d-none d-print-none">
+                        <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
+                            <option value="">BUSQUEDA POR STATUS</option>
+                            <option value="EN CAPTURA">EN CAPTURA</option>
+                            <option value="PREVALIDACION">PREVALIDACION</option>
+                            <option value="EN FIRMA">EN FIRMA</option>
+                            <option value="VALIDADO">VALIDADO</option>
+                            <option value="RETORNO">RETORNO</option>
+                        </select>
+                    </Div>
+                    <Div id="divespecialidad" name="divespecialidad" class="d-none d-print-none">
+                        <select name="tipo_especialidad" class="form-control mr-sm-2" id="tipo_especialidad">
+                            <option value="">BUSQUEDA POR ESPECIALIDAD</option>
+                            @foreach ($especialidades as $moist)
+                                <option value="{{$moist->id}}">{{$moist->nombre}}</option>
+                            @endforeach
+                        </select>
+                    </Div>
+                    <button class="btn my-2 my-sm-0 ml-3" type="submit">BUSCAR</button>
                     @can('instructor.create')
                         <a class="btn ml-3" href="{{route('instructor-crear')}}"> Nuevo</a>
                     @endcan
                     @can('academico.exportar.instructores')
+                    @can('academico.exportar.instructores')
                         <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores')}}">CATÁLOGO XLS</a>
                         <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores.activos')}}">ACTIVOS XLS</a>
+                        <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores.activos')}}">ACTIVOS XLS</a>
                     @endcan
-                {!! Form::close() !!}
+                {!! html()->form()->close() !!}
             </div>
         </div>
         <table  id="table-instructor" class="table table-bordered table-responsive-md">
@@ -69,13 +84,16 @@
                     <th scope="col">TELEFONO</th>
                     <th scope="col">ESTATUS</th>
                     <th scope="col">FEC.VALIDA</th>
+                    <th scope="col">FEC.VALIDA</th>
                     <th>VALIDACIÓN</th>
                     @can('only.admin') <th class="text-center">EXTRA</th> @endcan
+                    @can('instructor.validar')
                     @can('instructor.validar')
                         <th class="text-center">VISIBLE</th>
                         <th class="text-center">CURSO</th>
                     @endcan
                     <th width="160px" class="text-center">ACCIONES</th>
+
 
                 </tr>
             </thead>
@@ -171,13 +189,14 @@
                             @endif
                         </td>
 
+
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="5">
-                        {{ $data->appends(request()->query())->links() }}
+                    <td colspan="10">
+                        {{ $data->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </td>
                 </tr>
             </tfoot>
@@ -242,6 +261,8 @@
 
         function cambia_estado(id, status, obj){
             if (confirm("Está seguro de realizar el cambio?") == true) {
+        function cambia_estado(id, status, obj){
+            if (confirm("Está seguro de realizar el cambio?") == true) {
                 $.ajax({
                     method: "POST",
                     url: "estado",
@@ -269,6 +290,7 @@
                             buscar: request.term,
                             tipo: $('#tipo_busqueda_instructor').val()
                         },
+                        success: function( data ) {
                         success: function( data ) {
                             //console.log(data);
                             response( data );

@@ -48,10 +48,24 @@ class AlumnoController extends Controller {
         }
 
         $retrieveAlumnos = Alumnopre::busquedapor($tipo, $buscar_aspirante)
-        ->leftjoin('users','users.id','iduser_updated')
-        ->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')
-        ->PAGINATE(25, ['alumnos_pre.id', 'nombre', 'apellido_paterno', 'apellido_materno', 'alumnos_pre.curp', 'es_cereso','matricula','curso_extra',
-            DB::raw("requisitos->>'documento' as documento"),'name','alumnos_pre.updated_at']);
+            ->leftJoin('tblz_usuarios', 'tblz_usuarios.id', '=', 'alumnos_pre.iduser_updated')
+            ->orderBy('alumnos_pre.apellido_paterno', 'ASC')
+            ->orderBy('alumnos_pre.apellido_materno', 'ASC')
+            ->orderBy('alumnos_pre.nombre', 'ASC')
+            ->paginate(25, [
+                'alumnos_pre.id',
+                'alumnos_pre.nombre',
+                'alumnos_pre.apellido_paterno',
+                'alumnos_pre.apellido_materno',
+                'alumnos_pre.curp',
+                'alumnos_pre.es_cereso',
+                'alumnos_pre.matricula',
+                'alumnos_pre.curso_extra',
+                DB::raw("alumnos_pre.requisitos->>'documento' as documento"),
+                'tblz_usuarios.nombre as usuario_actualiza',
+                'alumnos_pre.updated_at',
+            ]);
+
         //dd($retrieveAlumnos);
         $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador','buscar_aspirante'));

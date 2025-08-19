@@ -57,13 +57,13 @@ class ContratoController extends Controller
             ->GET();
         if($request->ejercicio == NULL)
         {
-            $año_referencia = '01-01-' . CARBON::now()->format('Y');
-            $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
+            $año_referencia = CARBON::now()->format('Y') . '-01-01';
+            $año_referencia2 = CARBON::now()->format('Y') . '-12-31';
         }
         else
         {
-            $año_referencia = '01-01-' . $request->ejercicio;
-            $año_referencia2 = '31-12-' . $request->ejercicio;
+            $año_referencia = $request->ejercicio . '-01-01';
+            $año_referencia2 = $request->ejercicio . '-12-31';
             $año_pointer = $request->ejercicio;
         }
 

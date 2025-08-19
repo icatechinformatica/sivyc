@@ -1,0 +1,159 @@
+/* Contenedor principal del calendario */
+/* (Regla general removida por estar vacía) */
+
+/* Header del calendario (sin reglas específicas) */
+
+.fc-toolbar-title {
+    /* Título del calendario (mes/año) */
+    font-size: 1.75em;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Botones de navegación */
+.fc-button {
+    /* Botones generales */
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.fc-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.fc-button-primary {
+    /* Botón activo */
+    background-color: #007bff;
+}
+
+/* Vista mensual (sin reglas específicas) */
+
+.fc-daygrid-day {
+    /* Cada celda de día */
+    border: 1px solid #ddd;
+}
+
+.fc-daygrid-day-number {
+    /* Número del día */
+    font-weight: bold;
+    color: #333;
+}
+
+.fc-day-today {
+    /* Día actual */
+    background-color: #009885 !important;
+}
+
+.fc-daygrid-day-number.fc-day-today {
+    /* Número del día actual */
+    color: white !important;
+    font-weight: bold;
+}
+
+/* Selectores adicionales para mayor especificidad */
+.fc-day-today .fc-daygrid-day-number {
+    color: white !important;
+}
+
+.fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+    color: white !important;
+}
+
+/* Días de la semana */
+.fc-col-header-cell {
+    /* Header de columnas (Lun, Mar, etc.) */
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.fc-col-header-cell-cushion {
+    /* Texto del header de columnas */
+    color: #495057;
+    padding: 8px;
+}
+
+/* Eventos */
+.fc-event {
+    /* Eventos generales: usar colores dinámicos (JS aplica inline o variables) */
+    background-color: var(--agenda-event-bg, #c90166);
+    border-color: var(--agenda-event-bg, #c90166);
+    border-radius: 3px;
+}
+
+/* Color de texto del evento controlado por variable */
+.fc-event,
+.fc-event .fc-event-title,
+.fc-event .fc-event-time {
+    color: var(--agenda-event-text, #fff);
+}
+
+.fc-event-title {
+    /* Título del evento */
+    font-weight: 500;
+}
+
+.fc-event:hover {
+    /* Hover sobre eventos: ligero oscurecimiento, respetando color dinámico */
+    filter: brightness(0.95);
+}
+
+/* En vista mensual, ocultar el punto para que el "badge" pinte el fondo completo */
+.fc-daygrid-event-dot {
+    display: none !important;
+}
+
+/* Eliminar indentación extra cuando se oculta el punto */
+.fc-daygrid-dot-event .fc-event-time,
+.fc-daygrid-dot-event .fc-event-title {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+/* Vista semanal y diaria (sin reglas específicas para el contenedor) */
+
+.fc-timegrid-slot {
+    /* Franjas horarias */
+    border-bottom: 1px solid #ddd;
+}
+
+.fc-timegrid-slot-label {
+    /* Etiquetas de hora */
+    font-size: 0.85em;
+    color: #666;
+}
+
+/* Días no pertenecientes al mes actual */
+.fc-daygrid-day.fc-day-other {
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+/* Estilos personalizados adicionales */
+.fc-daygrid-event {
+    /* Eventos en vista mensual */
+    margin: 1px 2px;
+    padding: 1px 3px;
+}
+
+.fc-more-link {
+    /* Enlace "más eventos" */
+    color: #007bff;
+    font-weight: 500;
+}
+
+.btn-agenda {
+    /* Botón de agenda */
+    background-color: #038f18;
+    color: white;
+    border-radius: 5px;
+}
+
+.btn-regresar {
+    color: #0d6efd;
+    border-radius: 5px;
+    border: 1px solid #0d6efd;
+    padding: 5px 10px;
+    background-color: white
+}

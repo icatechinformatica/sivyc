@@ -58,17 +58,15 @@ class supreController extends Controller
         $tipoStatus = $request->get('tipo_status');
         $unidad = $request->get('unidad');
 
-        if($request->ejercicio == NULL)
-        {
-            $año_referencia = '01-01-' . CARBON::now()->format('Y');
-            $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
-        }
-        else
-        {
-            $año_referencia = '01-01-' . $request->ejercicio;
-            $año_referencia2 = '31-12-' . $request->ejercicio;
+        if ($request->ejercicio == NULL) {
+            $año_pointer = CARBON::now()->format('Y');
+        } else {
             $año_pointer = $request->ejercicio;
         }
+
+        $año_referencia = $año_pointer . '-01-01';
+        $año_referencia2 = $año_pointer . '-12-31';
+
 
         for($x = 2020; $x <= intval(CARBON::now()->format('Y')); $x++)
         {

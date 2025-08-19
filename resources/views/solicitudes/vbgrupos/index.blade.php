@@ -137,6 +137,7 @@
         <div id="mensajeInstructor" style="display: none;">
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <button type="button" class="close" onclick="$('#mensajeInstructor').hide();">
+                <button type="button" class="close" onclick="$('#mensajeInstructor').hide();">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <strong id="textoMensajeInstructor"></strong>
@@ -365,7 +366,22 @@
                                     width: '100%',
                                     placeholder: "Seleccionar Instructor"
                                 });
+                                // Inicializar o reinicializar Select2
+                                $(".sel_instructor").select2({
+                                    dropdownParent: $('#modalElegirInstruc'), // Importante si el select está en un modal
+                                    width: '100%',
+                                    placeholder: "Seleccionar Instructor"
+                                });
 
+                                $("#val_folio_grupo").val(folio_grupo);
+                                $("#modalElegirInstruc").modal("show");
+                            }else{
+                                // if (data.instructores.length === 0) {
+                                $('#textoMensajeInstructor').text(data.mensaje);
+                                $('#mensajeInstructor').show();
+                                return;
+                                // }
+                            }
                                 $("#val_folio_grupo").val(folio_grupo);
                                 $("#modalElegirInstruc").modal("show");
                             }else{

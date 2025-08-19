@@ -1,7 +1,7 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Convenios | SIVyC Icatech')
 @section('content_script_css')
-    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         .custom-file-label::after {
             content: "Examinar";
@@ -15,7 +15,7 @@
         }
     </style>
 @endsection
-@section('content')       
+@section('content')
     <div class="card-header">
         Catálogos / Convenios
     </div>
@@ -25,24 +25,35 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
-        <div class="form-row">            
+        <div class="form-row">
             <div class="form-inline">
-                {!! Form::open(['method' => 'GET', 'id' => 'frm_one', 'class' => 'form-inline']) !!}
-                {{ Form::select('busqueda', ['no_convenio'=>'N° DE CONVENIO','institucion'=>'INSTITUCIÓN','tipo_convenio'=>'TIPO DE CONVENIO','sector'=>'SECTOR', 'fechas'=>'FECHA'], $request->busqueda ,['id'=>'busqueda','class' => 'form-control mr-sm-2','title' => 'BUSCAR POR TIPO','placeholder' => 'BUSCAR POR TIPO', 'onchange' => 'selectOp()']) }}
-                {!! Form::text('busqueda_conveniopor', $request->busqueda_conveniopor, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR',
-                'aria-label' => 'BUSCAR', 'id' => 'busqueda_conveniopor']) !!}
+                {!! html()->form('GET')->id('frm_one')->class('form-inline')->open() !!}
+                <select name="busqueda" id="busqueda" class="form-control mr-sm-2" title="BUSCAR POR TIPO" placeholder="BUSCAR POR TIPO" onchange="selectOp()">
+                    <option value="no_convenio" @if($request->busqueda == 'no_convenio') selected @endif>N° DE CONVENIO</option>
+                    <option value="institucion" @if($request->busqueda == 'institucion') selected @endif>INSTITUCIÓN</option>
+                    <option value="tipo_convenio" @if($request->busqueda == 'tipo_convenio') selected @endif>TIPO DE CONVENIO</option>
+                    <option value="sector" @if($request->busqueda == 'sector') selected @endif>SECTOR</option>
+                    <option value="fechas" @if($request->busqueda == 'fechas') selected @endif>FECHA</option>
+                </select>
+                {!! html()->text('busqueda_conveniopor', $request->busqueda_conveniopor)
+                    ->class('form-control mr-sm-2')
+                    ->placeholder('BUSCAR')
+                    ->attribute('aria-label', 'BUSCAR')
+                    ->id('busqueda_conveniopor') !!}
                 {{-- cajas para fechas --}}
-                {{ Form::date('fecha1', $request->fecha1, ['id'=>'fecha1', 'class' => 'form-control datepicker  mr-sm-3 d-none', 'placeholder' => 'FECHA INICIO', 'title' => 'FECHA INICO']) }}
-                {{ Form::date('fecha2', $request->fecha2, ['id'=>'fecha2', 'class' => 'form-control datepicker  mr-sm-3 d-none', 'placeholder' => 'FECHA TERMINO', 'title' => 'FECHA TERMINO']) }}
-                {{ Form::button('BUSCAR', ['id' => 'botonBUSCAR', 'name'=> 'boton', 'value' => 'BUSCAR', 'class' => 'btn btn-outline-primary']) }}
+                <input type="date" name="fecha1" id="fecha1" value="{{ $request->fecha1 }}" class="form-control datepicker mr-sm-3 d-none" placeholder="FECHA INICIO" title="FECHA INICIO">
+                <input type="date" name="fecha2" id="fecha2" value="{{ $request->fecha2 }}" class="form-control datepicker mr-sm-3 d-none" placeholder="FECHA TERMINO" title="FECHA TERMINO">
+                <button id="botonBUSCAR" name="boton" value="BUSCAR" class="btn btn-outline-primary" type="submit">BUSCAR</button>
                 @can('convenios.edit')
-                {{ Form::button('EXPORTAR REGISTROS <i class="far fa-file-excel fa-2x fa-lg text-dark ml-1"></i>', ['id' => 'botonGENEXCEL', 'value' => 'EXPORTAR REGISTROS2', 'class' => 'btn btn-warning text-dark']) }}
+                    <button id="botonGENEXCEL" value="EXPORTAR REGISTROS2" class="btn btn-warning text-dark" type="button">
+                        EXPORTAR REGISTROS <i class="far fa-file-excel fa-2x fa-lg text-dark ml-1"></i>
+                    </button>
                 @endcan
-                {!! Form::close() !!}
+                {!! html()->form()->close() !!}
                 @can('convenios.create')
-                    
+
                     <a class="form-control btn" href="{{ route('convenio.create') }}"> NUEVO</a>
-                    
+
                 @endcan
             </div>
         </div>
@@ -99,7 +110,7 @@
 
     <div class="row py-4">
         <div class="col d-flex justify-content-center">
-            {{$data->appends(request()->query())->links()}}
+            {{ $data->appends(request()->query())->links('pagination::bootstrap-5') }}
         </div>
     </div>
 
