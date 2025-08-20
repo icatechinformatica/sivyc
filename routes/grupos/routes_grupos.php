@@ -8,7 +8,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos', 'as' => 'grupos.']
     // Gestión general de grupos
     Route::get('/inicio', [GrupoController::class, 'index'])->name('index');
     Route::get('/crear', [GrupoController::class, 'create'])->name('crear');
-    Route::get('/editar/{id}', [GrupoController::class, 'editarGrupo'])->name('editar');
+    Route::get('/editar/{id}/{curp?}', [GrupoController::class, 'editarGrupo'])->name('editar');
     Route::post('/registrar', [GrupoController::class, 'store'])->name('store');
     Route::get('/localidades/{municipioId}', [GrupoController::class, 'getLocalidades'])->name('localidades');
     Route::get('/organismo/{organismoId}', [GrupoController::class, 'getOrganismoInfo'])->name('organismo.info');

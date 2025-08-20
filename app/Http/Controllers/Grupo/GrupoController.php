@@ -49,7 +49,7 @@ class GrupoController extends Controller
         }
     }
 
-    public function editarGrupo($id)
+    public function editarGrupo($id, $curp = null)
     {
         $esNuevoRegistro = false;
         $grupo = $this->grupoService->obtenerGrupoPorId($id);
@@ -63,19 +63,22 @@ class GrupoController extends Controller
         // $unidades = $this->unidadesService->obtenerUnidadesPorUsuario();
 
         $unidadUsuario = auth()->user()->unidad;
-        $unidades_del_usuario = $unidadUsuario?->unidad; // Usar nullsafe para evitar errores donde el usuario no tenga unidad
-        $unidades = Unidad::where('ubicacion', $unidades_del_usuario)->get(); // ? Variable que se pasa al BLade
+        $unidad_disponible = $unidadUsuario?->unidad;
+        $unidades = Unidad::where('ubicacion', $unidad_disponible)->get();
+        $servicios = ServicioCurso::all();
+        $localidades = localidad::where('clave_municipio', $grupo->id_municipio)->get();
+        $municipios = Municipio::where('id_estado', 7)->get(); // CHIAPAS FIJO
+        $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
+        $ultimoEstatus = $grupo->estatusActual();
+        $ultimaSeccion = $grupo->seccion_captura ?? null;
+        $compactObject = compact('tiposImparticion', 'grupo', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion');
 
-        $grupo_unidad = $grupo->unidad?->unidad;
-        $municipios = Municipio::whereRaw("(unidad_disponible::jsonb) @> ?", [json_encode([$grupo_unidad])])->get(); // ? Variable que se pasa al BLade
-
-        $servicios = ServicioCurso::all(); // ? Variable que se pasa al BLade
-        $localidades = localidad::where('clave_municipio', $grupo->id_municipio)->get(); // ? Variable que se pasa al BLade
-
-        $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get(); // ? Variable que se pasa al BLade
-        $ultimoEstatus = $grupo->estatusActual(); // ? Variable que se pasa al BLade
-        $ultimaSeccion = $grupo->seccion_captura ?? null; // ? Variable que se pasa al BLade
-        return view('grupos.create', compact('tiposImparticion', 'grupo', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion'));
+        if (!empty($curp)) {
+            # si no está vacio el grupo procedemos a cargarlo en el compact
+            $uncodeCurp = base64_decode($curp);
+            $compactObject['uncodeCurp'] = $uncodeCurp;
+        }
+        return view('grupos.create', $compactObject);
     }
 
     public function create(Request $request)

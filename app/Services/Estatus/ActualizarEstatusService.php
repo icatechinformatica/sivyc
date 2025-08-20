@@ -67,6 +67,11 @@ class ActualizarEstatusService
         }
         if ($seccion === 'cerss') {
             $nuevoEstatus = 5;  // Finalizo
+            $resultado = $this->estatusRepository->actualizarEstatus($alumnoId, $nuevoEstatus, $seccion);
+            return [
+                'success' => $resultado,
+                'finalizado' => true
+            ];
         }
 
         return $this->estatusRepository->actualizarEstatus($alumnoId, $nuevoEstatus, $seccion);

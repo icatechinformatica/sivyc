@@ -78,7 +78,13 @@ class AlumnoController extends Controller
         $gruposVulnerables = GrupoVulnerable::orderBy('grupo_vulnerable')->get();
 
         $secciones = $datos->estatus[0];
-        return view('alumnos.ver_datos', compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'entidades', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones'));
+        $viewData = compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'entidades', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones');
+        # checar la si hay una variable de sesión
+        if (session()->has('grupo_id')) {
+            // asignar la variable de session a compact
+            $viewData['grupoId'] = session('grupo_id');
+        }
+        return view('alumnos.ver_datos', $viewData);
     }
 
     public function nuevoRegistroAlumno($encodeCURP, $grupoId = null)
@@ -103,12 +109,19 @@ class AlumnoController extends Controller
         $secciones = []; // Para nuevo registro, no hay secciones completadas
         $viewData = compact('esNuevoRegistro', 'curp', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'entidades', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones');
         // Si no hay grupo_id en sesión y $grupoId no es nulo, guardar en sesión
-        if (!session()->has('grupo_id') && !empty($grupoId)) {
-            session(['grupo_id' => base64_decode($grupoId)]);
-        }
-        // Asignar grupoId desde la sesión si existe
-        if (session()->has('grupo_id')) {
-            $viewData['grupoId'] = session('grupo_id');
+        if (!empty($grupoId)) {
+            # si la variable no está vacia checar si no se encuentra la variable de sesión vacia
+            if (!session()->has('grupo_id')) {
+                session(['grupo_id' => base64_decode($grupoId)]);
+                // se crea variable de sesión y se asigna al compact
+                $viewData['grupoId'] = session('grupo_id');
+            }
+        } else {
+            # checar la si hay una variable de sesión
+            if (session()->has('grupo_id')) {
+                // asignar la variable de session a compact
+                $viewData['grupoId'] = session('grupo_id');
+            }
         }
         return view('alumnos.ver_datos', $viewData);
     }
@@ -142,8 +155,12 @@ class AlumnoController extends Controller
             $alumno = $this->guardarSeccionService->obtenerSeccion($seccion, $datos, $archivo);
             if ($alumno) {
                 $alumnoId = $alumno->id;
-                $this->actualizarEstatusService->actualizarAlumnoEstatus($alumnoId, 1, $seccion); // * 1 Es En Captura
-                return response()->json(['success' => true, 'message' => 'Datos del alumno guardados correctamente.']);
+                $estatusResult = $this->actualizarEstatusService->actualizarAlumnoEstatus($alumnoId, 1, $seccion); // * 1 Es En Captura
+                $response = ['success' => true, 'message' => 'Datos del alumno guardados correctamente.'];
+                if (is_array($estatusResult) && isset($estatusResult['finalizado']) && $estatusResult['finalizado'] === true) {
+                    $response['finalizado'] = true;
+                }
+                return response()->json($response);
             } else {
                 return response()->json(['success' => false, 'error' => 'No se pudo guardar los datos del alumno.'], 500);
             }
