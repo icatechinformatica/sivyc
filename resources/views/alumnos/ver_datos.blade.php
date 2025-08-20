@@ -563,16 +563,25 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                         {{ html()->button('Guardar CERSS y Finalizar Registro')->class('btn btn-primary float-end')->id('validar-cerss')->type('button') }}
                     </div>
 
-                    @if ($secciones && $secciones->id == 5)
-                    <div class="col-md-12 d-flex justify-content-end mt-5">
-                        <a href="{{ route('alumnos.consulta.alumno') }}" class="btn btn-secondary float-start" id="regresar-inicio">Regresar al inicio</a>
+                        @if ($secciones && $secciones->id == 5)
+                            @if (isset($grupoId))
+                                <div class="col-md-12 d-flex justify-content-end mt-5">
+                                    <a href="{{ route('grupos.editar', ['id' => $grupoId, 'curp' => base64_encode($datos->curp)]) }}" class="btn btn-warning float-start"
+                                        id="enviarGrupo">Cargar en Grupo</a>
+                                </div>
+                            @else
+                                <div class="col-md-12 d-flex justify-content-end mt-5">
+                                    <a href="{{ route('alumnos.consulta.alumno') }}" class="btn btn-secondary float-start"
+                                        id="regresar-inicio">Regresar al inicio</a>
+                                </div>
+                            @endif
+
+                        @endif
                     </div>
-                    @endif
                 </div>
+                {!! html()->form()->close() !!}
             </div>
-            {!! html()->form()->close() !!}
-        </div>
-    </div> <!-- fin row principal -->
+        </div> <!-- fin row principal -->
 
     {{-- ! Se cierra el div ROW --}}
 </div>

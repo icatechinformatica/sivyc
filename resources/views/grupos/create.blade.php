@@ -228,67 +228,69 @@
                 {{ html()->form()->close() }}
             </div>
 
-            {{-- * Sección: Alumnos --}}
-            <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
-                <div class="card card-body mt-3 shadow-none p-0">
-                    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
-                        <div class="flex-grow-1">
-                            <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos') }}">
-                                @csrf
-                                <div class="input-group" style="width: 400px;">
-                                    @if (!$esNuevoRegistro && $grupo)
-                                    <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
-                                    @endif
-                                    <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP"
-                                        maxlength="18" required style="flex: 1 1 auto; min-width: 0;">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary mr-2 rounded" type="submit" name="action"
-                                            value="agregar">Agregar</button>
+                {{-- * Sección: Alumnos --}}
+                <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
+                    <div class="card card-body mt-3 shadow-none p-0">
+                        <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
+                            <div class="flex-grow-1">
+                                <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos') }}">
+                                    @csrf
+                                    <div class="input-group" style="width: 400px;">
+                                        @if (!$esNuevoRegistro && $grupo)
+                                            <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
+                                        @endif
+                                        <input type="text" name="curp" class="form-control"
+                                            placeholder="Ingrese CURP" maxlength="18" required
+                                            style="flex: 1 1 auto; min-width: 0;"
+                                            value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary mr-2 rounded" type="submit" name="action"
+                                                value="agregar">Agregar</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>Curp</th>
-                                    <th>Matrícula</th>
-                                    <th>Nombre</th>
-                                    <th>Sexo</th>
-                                    <th>Edad</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
-                                <tr>
-                                    <td colspan="6" class="text-center">No hay alumnos asignados aún</td>
-                                </tr>
-                                @else
-                                @foreach ($grupo->alumnos as $alumno)
-                                <tr>
-                                    <td>{{ $alumno->curp }}</td>
-                                    <td>{{ $alumno->matricula }}</td>
-                                    <td>{{ $alumno->nombreCompleto() }}</td>
-                                    <td>{{ $alumno->sexo->sexo }}</td>
-                                    <td>{{ $alumno->edad }}</td>
-                                    <td>
-                                        <form method="POST" action="">
-                                            @csrf
-                                            <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
-                                            <button class="btn btn-danger btn-sm" type="submit" name="action"
-                                                value="eliminar">Eliminar</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                                @endif
-                            </tbody>
-                        </table>
-                    </div>
-                    @if (isset($grupo) && $grupo->id)
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Curp</th>
+                                        <th>Matrícula</th>
+                                        <th>Nombre</th>
+                                        <th>Sexo</th>
+                                        <th>Edad</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
+                                        <tr>
+                                            <td colspan="6" class="text-center">No hay alumnos asignados aún</td>
+                                        </tr>
+                                    @else
+                                        @foreach ($grupo->alumnos as $alumno)
+                                            <tr>
+                                                <td>{{ $alumno->curp }}</td>
+                                                <td>{{ $alumno->matricula }}</td>
+                                                <td>{{ $alumno->nombreCompleto() }}</td>
+                                                <td>{{ $alumno->sexo->sexo }}</td>
+                                                <td>{{ $alumno->edad }}</td>
+                                                <td>
+                                                    <form method="POST" action="">
+                                                        @csrf
+                                                        <input type="hidden" name="alumno_id"
+                                                            value="{{ $alumno->id }}">
+                                                        <button class="btn btn-danger btn-sm" type="submit"
+                                                            name="action" value="eliminar">Eliminar</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div class="row col-md-12 justify-content-end">
                             <p class="mx-4">Turnar a:</p>

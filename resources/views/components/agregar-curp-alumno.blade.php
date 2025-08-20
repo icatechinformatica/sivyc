@@ -16,7 +16,7 @@
                     </div>
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Curp:</label>
-                        <input type="text" class="form-control" name="curpAConsultar" id="curpAConsultar"
+                        <input type="text" class="form-control" name="curpAConsultar" id="curpAConsultar" disabled
                             value="{{ $curp }}">
                     </div>
                     <input type="hidden" name="grupo_id" id="grupo_id" value="{{ $grupoId }}">
