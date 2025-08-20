@@ -264,7 +264,8 @@
                                         @endif
                                         <input type="text" name="curp" class="form-control"
                                             placeholder="Ingrese CURP" maxlength="18" required
-                                            style="flex: 1 1 auto; min-width: 0;">
+                                            style="flex: 1 1 auto; min-width: 0;"
+                                            value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
                                         <div class="input-group-append">
                                             <button class="btn btn-primary mr-2 rounded" type="submit" name="action"
                                                 value="agregar">Agregar</button>
@@ -321,7 +322,7 @@
                                     <button class="btn btn-sm turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
                                 @endif
                             @endforeach
-                        </div>  
+                        </div>
                     </div>
                     </div>
                 </div>

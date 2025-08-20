@@ -49,7 +49,7 @@ class GrupoController extends Controller
         }
     }
 
-    public function editarGrupo($id)
+    public function editarGrupo($id, $curp = null)
     {
         $grupo = $this->grupoService->obtenerGrupoPorId($id);
         $esNuevoRegistro = false;
@@ -65,7 +65,14 @@ class GrupoController extends Controller
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
         $ultimoEstatus = $grupo->estatusActual();
         $ultimaSeccion = $grupo->seccion_captura ?? null;
-        return view('grupos.create', compact('tiposImparticion', 'grupo', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion'));
+        $compactObject = compact('tiposImparticion', 'grupo', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion');
+
+        if (!empty($curp)) {
+            # si no está vacio el grupo procedemos a cargarlo en el compact
+            $uncodeCurp = base64_decode($curp);
+            $compactObject['uncodeCurp'] = $uncodeCurp;
+        }
+        return view('grupos.create', $compactObject);
     }
 
     public function create(Request $request)

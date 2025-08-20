@@ -610,10 +610,18 @@
                         </div>
 
                         @if ($secciones && $secciones->id == 5)
-                            <div class="col-md-12 d-flex justify-content-end mt-5">
-                                <a href="{{ route('alumnos.consulta.alumno') }}" class="btn btn-secondary float-start"
-                                    id="regresar-inicio">Regresar al inicio</a>
-                            </div>
+                            @if (isset($grupoId))
+                                <div class="col-md-12 d-flex justify-content-end mt-5">
+                                    <a href="{{ route('grupos.editar', ['id' => $grupoId, 'curp' => base64_encode($datos->curp)]) }}" class="btn btn-warning float-start"
+                                        id="enviarGrupo">Cargar en Grupo</a>
+                                </div>
+                            @else
+                                <div class="col-md-12 d-flex justify-content-end mt-5">
+                                    <a href="{{ route('alumnos.consulta.alumno') }}" class="btn btn-secondary float-start"
+                                        id="regresar-inicio">Regresar al inicio</a>
+                                </div>
+                            @endif
+
                         @endif
                     </div>
                 </div>

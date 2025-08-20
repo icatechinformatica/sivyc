@@ -365,6 +365,7 @@ const guardarSeccion = (formData) => {
         processData: false,
         contentType: false,
         success: function (response) {
+            console.log('Respuesta del servidor:', response);
             if (response.success) {
                 const notyf = new Notyf({
                     position: { x: 'right', y: 'top' },
@@ -724,7 +725,7 @@ function moverSiguienteSeccion(seccionActual) {
         // Actualizar estados globales
         // Marcar la sección actual como completada
         window.estadosCaptura[seccionActual] = { estado: true };
-        
+
         // Aplicar nuevos estados (esto calculará automáticamente cuál debe ser "actual")
         aplicarEstadosPasos(window.estadosCaptura);
 
@@ -748,7 +749,7 @@ function moverSiguienteSeccion(seccionActual) {
         // Si es la última sección, marcarla como completada también
         window.estadosCaptura[seccionActual] = { estado: true };
         aplicarEstadosPasos(window.estadosCaptura);
-        
+
         const notyf = new Notyf({
             position: { x: 'right', y: 'top' },
             duration: 5000,
