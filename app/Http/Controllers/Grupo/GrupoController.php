@@ -59,8 +59,8 @@ class GrupoController extends Controller
         $tiposImparticion = ImparticionCurso::all(); // ? Variable que se pasa al BLade
 
         $modalidades = ModalidadCurso::all(); // ? Variable que se pasa al BLade
-        
-        $unidades = $this->unidadesService->obtenerUnidadesPorUsuario();
+
+        // $unidades = $this->unidadesService->obtenerUnidadesPorUsuario();
 
         $unidadUsuario = auth()->user()->unidad;
         $unidades_del_usuario = $unidadUsuario?->unidad; // Usar nullsafe para evitar errores donde el usuario no tenga unidad
