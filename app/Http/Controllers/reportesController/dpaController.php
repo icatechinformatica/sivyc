@@ -65,7 +65,7 @@ class dpaController extends Controller
                 //->selectRaw("((EXTRACT(MONTH FROM tc.fecha_turnado) - 1) * 2 + CEIL(EXTRACT(DAY FROM tc.fecha_turnado) / 15.0)) AS nqna")
                 ->selectRaw("((EXTRACT(MONTH FROM tc.fecha_turnado) - 1) * 2 + 
                     CASE 
-                        WHEN EXTRACT(DAY FROM tc.fecha_turnado) <= 15 THEN 1 
+                        WHEN EXTRACT(DAY FROM tc.fecha_turnado) <= 20 THEN 1 
                         ELSE 2 
                     END) AS nqna")
                 ->selectRaw("'ICAT' as subsistema, 'CHIAPAS' as entidad")
@@ -111,16 +111,5 @@ class dpaController extends Controller
             return $data;                            
         }else $message["ERROR"] = "SE REQUIERE QUE SELECCIONE LA FECHA INICIAL Y FECHA FINAL PARA GENERAR EL REPORTE.";        
         if($message) return $message;
-    }
-
-
-    function obtenerNumeroQuincena($fecha)  {
-        //$fecha = "2025-04-10";                            
-        $date = new DateTime(strtotime($fecha));
-        $mes = $date->format('m');
-        $diaDelMes = $date->format('d');        
-        $quincenaConsecutiva = ($mes - 1) * 2 + ceil($diaDelMes / 15);        
-        return $quincenaConsecutiva;
-    }
-    
+    }    
 }
