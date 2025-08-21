@@ -53,7 +53,7 @@ class GrupoController extends Controller
     {
         $esNuevoRegistro = false;
         $grupo = $this->grupoService->obtenerGrupoPorId($id);
-        
+
         $cursos = curso::limit(100)->get(); // ? Variable que se pasa al BLade
 
         $tiposImparticion = ImparticionCurso::all(); // ? Variable que se pasa al BLade
@@ -215,7 +215,17 @@ class GrupoController extends Controller
         }
 
         try {
-            $grupo->alumnos()->attach($alumno->id);
+
+            $idsGruposVulnerables = $alumno->gruposVulnerables()->pluck('grupo_vulnerable_id')->toArray();
+
+            $grupo->alumnos()->attach($alumno->id, [
+                'id_ultimo_grado' => $alumno->id_ultimo_grado_estudios,
+                'grupos_vulnerables' => json_encode($idsGruposVulnerables),
+                'medio_entero' => $alumno->medio_entero,
+                'medio_confirmacion' => $alumno->medio_confirmacion,
+            ]);
+            // eliminar variable de sesión si existe
+            session()->forget('grupo_id');
             // Actualiza estatus de sección
             // $this->grupoService->actualizarEstatusGrupo($grupoId, 'alumnos'); // ! PENDIENTE REVISAR
             return redirect()->route('grupos.editar', $grupoId)

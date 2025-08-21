@@ -1,3 +1,11 @@
+// BLOQUE DE VALIDACIÓN
+$.validator.addMethod('filesize', function (value, element, param) {
+    if (!element || !element.files || element.files.length === 0) {
+        return true;
+    }
+    return element.files[0].size <= param;
+}, 'El archivo no debe superar los 3 MB.');
+
 $("#form-capacitacion").validate({
     rules: {
         ultimo_grado_estudios: {
@@ -7,7 +15,8 @@ $("#form-capacitacion").validate({
             required: function () {
                 return $('#ultimo_grado_estudios').val() !== '1' && !registroBladeVars.tieneDocumentoUltimoGrado; // 1 Es NO ESPECIFICADO
             },
-            extension: "pdf"
+            extension: "pdf",
+            filesize: 3 * 1024 * 1024 // 3MB
         },
         fecha_documento_ultimo_grado: {
             required: function () {
@@ -31,7 +40,8 @@ $("#form-capacitacion").validate({
             required: function () {
                 return $('#ultimo_grado_estudios').val() !== '1' ? "El documento del último grado de estudios es obligatorio." : "";
             },
-            extension: "El archivo debe ser un PDF."
+            extension: "El archivo debe ser un PDF.",
+            filesize: "El archivo no debe superar los 3 MB."
         },
         fecha_documento_ultimo_grado: {
             required: function () {
@@ -201,7 +211,8 @@ $("#form-datos-personales").validate({
             required: function () {
                 return esNuevoRegistro === true && !registroBladeVars.tieneDocumentoCURP;
             },
-            extension: "pdf"
+            extension: "pdf",
+            filesize: 3 * 1024 * 1024 // 3MB
         },
         fecha_documento_curp: {
             required: true,
@@ -241,20 +252,38 @@ $("#form-datos-personales").validate({
         },
         documento_curp: {
             required: "El documento CURP es obligatorio.",
-            extension: "El archivo debe ser un PDF."
+            extension: "El archivo debe ser PDF.",
+            filesize: "El archivo no debe superar los 3 MB."
         },
         fecha_documento_curp: {
             required: "La fecha del documento CURP es obligatoria.",
             date: "Ingrese una fecha válida."
         },
-        nombre_s: "El nombre es obligatorio.",
-        primer_apellido: "El primer apellido es obligatorio.",
-        segundo_apellido: "El segundo apellido es obligatorio.",
-        entidad_de_nacimiento: "La entidad de nacimiento es obligatoria.",
-        fecha_de_nacimiento: "La fecha de nacimiento es obligatoria.",
-        sexo_input: "El sexo es obligatorio.",
-        nacionalidad_input: "La nacionalidad es obligatoria.",
-        estado_civil_select: "El estado civil es obligatorio."
+        nombre_s: {
+            required: "El nombre es obligatorio."
+        },
+        primer_apellido: {
+            required: "El primer apellido es obligatorio."
+        },
+        segundo_apellido: {
+            required: "El segundo apellido es obligatorio."
+        },
+        entidad_de_nacimiento: {
+            required: "La entidad de nacimiento es obligatoria."
+        },
+        fecha_de_nacimiento: {
+            required: "La fecha de nacimiento es obligatoria.",
+            date: "Ingrese una fecha válida."
+        },
+        sexo_input: {
+            required: "El sexo es obligatorio."
+        },
+        nacionalidad_input: {
+            required: "La nacionalidad es obligatoria."
+        },
+        estado_civil_select: {
+            required: "El estado civil es obligatorio."
+        }
     },
     errorElement: 'div',
     errorClass: 'invalid-feedback',
@@ -338,8 +367,8 @@ $("#form-domicilio").validate({
     }
 });
 
-// Validación para la sección Alumno Empleado
-$("#form-empleado").validate({
+// Validación para la sección Alumno Laboral
+$("#form-laboral").validate({
     rules: {
         empleado_aspirante: {
             required: false

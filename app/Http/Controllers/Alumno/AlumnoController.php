@@ -67,7 +67,7 @@ class AlumnoController extends Controller
         $sexos = Sexo::all();
         $nacionalidades = Nacionalidad::all();
         $estadosCiviles = EstadoCivil::all();
-        
+
         $paises = pais::all();
 
         $estados = Estado::where('id_pais', $datos->id_pais)->get();
@@ -93,6 +93,8 @@ class AlumnoController extends Controller
         $existeRegistroAlumno = $this->alumnoConsultaService->obtenerAlumnoPorCURP($curp);
         $encodeCURP = urlencode(base64_encode($curp));
         if ($existeRegistroAlumno) {
+            // eliminar variable de sesión si existe
+            session()->forget('grupo_id');
             return redirect()->route('alumnos.ver.registro.alumno', $encodeCURP); // * Redirige al método verRegistroAlumno
         }
         $sexos = Sexo::all();
@@ -119,8 +121,8 @@ class AlumnoController extends Controller
         } else {
             # checar la si hay una variable de sesión
             if (session()->has('grupo_id')) {
-                // asignar la variable de session a compact
-                $viewData['grupoId'] = session('grupo_id');
+                // eliminar variable de sesión si existe
+                session()->forget('grupo_id');
             }
         }
         return view('alumnos.ver_datos', $viewData);
