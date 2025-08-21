@@ -5,6 +5,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class instructor extends Model
 {
@@ -84,18 +85,14 @@ class instructor extends Model
                     case 'clave_instructor':
                         # code...
                         return $query->where('numero_control', '=', $buscar);
-                        break;
                     case 'nombre_instructor':
                         # code...
-                        return $query->where( \DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',nombre)'), 'LIKE', "%$buscar%");
-                        break;
+                        return $query->where( DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',nombre)'), 'LIKE', "%$buscar%");
                     case 'curp':
                             # code...
                             return $query->where('curp', '=', $buscar);
-                            break;
                     case 'telefono_instructor':
                         return $query->where( 'telefono', 'LIKE', "%$buscar%");
-                        break;
                     default:
                         # code...
                         break;
@@ -125,6 +122,12 @@ class instructor extends Model
     public function user()
     {
         return $this->morphOne(User::class, 'registro', 'registro_type', 'registro_id');
+    }
+
+
+    public function grupos()
+    {
+        return $this->hasMany(Grupo::class, 'id_instructor');
     }
 
 }

@@ -56,7 +56,8 @@
         ],
         "files": [
             "app/Helpers/functionFormatoT.php",
-            "app/Helpers/notificationMovil.php"
+            "app/Helpers/notificationMovil.php",
+            "app/Helpers/FormatoTiempoHelper.php"
         ]
     },
     "autoload-dev": {

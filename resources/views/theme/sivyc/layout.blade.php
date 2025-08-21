@@ -16,6 +16,9 @@
         <link rel="stylesheet" href="{{asset('vendor/bootstrap/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{asset('css/icon-hs/style.css') }}">
 
+        <!-- Bootstrap Icons CDN -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 
         <link rel="stylesheet" href="{{asset('css/unify-core.css') }}">
         <link rel="stylesheet" href="{{asset('css/unify-components.css') }}">
@@ -74,6 +77,9 @@
         <script src="{{ asset('js/validate/conversor.js') }}"></script>
         <script src="{{ asset('js/validate/numberTostring.js') }}"></script>
         <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 
 
         @yield('script_content_js')

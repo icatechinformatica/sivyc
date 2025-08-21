@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Rol extends Model
 {
     //
-    protected $table = 'roles';
+    protected $table = 'tblz_roles';
 
     protected $fillable = [
         'id','name','slug', 'description', 'special'

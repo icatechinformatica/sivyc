@@ -11,11 +11,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
+use App\Utilities\MyUtility;
 use App\Models\cat\catUnidades;
 use App\Models\Permission;
 use App\Models\tbl_curso;
 use App\User;
 use PDF;
+use App\Services\ValidacionServicioVb;
 
 class aperturasController extends Controller
 {
@@ -40,7 +42,7 @@ class aperturasController extends Controller
         });
     }
 
-    public function index(Request $request){ 
+    public function index(Request $request){
         $opt = $memo = $message = $file = $status_solicitud = $extemporaneo = $motivo_soporte = NULL;
 
         if($request->memo)  $memo = $request->memo;
@@ -55,8 +57,13 @@ class aperturasController extends Controller
         //echo $memo;
         $path = $this->path_files;
         if($memo){
-            $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo','tc.fecha_arc01','tc.status_curso')
+            $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'tc.turnado as turnado_solicitud',
+                'tc.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo','tr.file_pdf','tr.status_folio','tr.motivo','tc.fecha_arc01',
+                DB::raw("COALESCE(tc.status_curso, tc.status_solicitud) as status_curso"),
+                DB::raw("COALESCE(tc.movimientos->'VoBo'->0->>'motivo', null) as motivo_vobo"),
+                DB::raw("COALESCE(tc.clave, '0') as clave"),///NUEVO VOBO
+                DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
+                )
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                 ->leftjoin('convenios','convenios.no_convenio','=','tc.cgeneral')
                 ->leftJoin('exoneraciones as e','tc.mexoneracion','=','e.no_memorandum')
@@ -135,31 +142,43 @@ class aperturasController extends Controller
                     if(!$movimientos) $movimientos []='- SELECCIONAR -';
                      $movimientos['ACEPTADO'] = 'AUTORIZAR REEMPLAZO DE SOPORTE DE PAGO';
                      $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
-                } 
-                //dd($status_solicitud);
-                if($status_solicitud =='TURNADO'){ //TURNADO PRELIMINAR
-                    $movimientos += ['' => '- SELECCIONAR -']; 
-                    if($grupos[0]->arc == '02')  $movimientos += ['EDICION' =>'AUTORIZAR EDICION']; 
-                     $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'];
                 }
-                
+
+                if($status_solicitud =='TURNADO' and $grupos[0]->motivo_vobo and $grupos[0]->vb_dg==false){ //RECHADADO VoBo
+                    $movimientos = ['' => '- SELECCIONAR -', 'PRETORNADO'=>'RETORNAR A UNIDAD'];
+                }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado!='VoBo' and $grupos[0]->vb_dg==false){ //TURNADO PRELIMINAR
+                    $movimientos += ['' => '- SELECCIONAR -'];
+                    if($grupos[0]->arc == '02'){
+                        $movimientos += ['EDICION' =>'AUTORIZAR EDICION', 'PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
+                    }else{
+                        //$movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
+                        $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
+                    }
+                }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG
+                    $movimientos = ['' => '- SELECCIONAR -', 'VALIDADO'=>'TURNAR UNIDAD'];
+                }
+
             }else $message = "No se encuentran registros que mostrar.";
         }
-
+//dd($grupos);
         if(session('message')) $message = session('message');
-        //var_dump($grupos);exit;
+
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo','motivo_soporte'));
     }
 
     public function search(Request $request){
-        $_SESSION = null;
+        $_SESSION = $ejercicio = null;
+        if($request->ejercicio)$ejercicio = $request->ejercicio;
+        else  $ejercicio = date('Y');
         $aperturas = DB::table('tbl_cursos as tc')
             ->select('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
             ->leftJoin('alumnos_registro as a','tc.folio_grupo','=','a.folio_grupo')
             ->where('a.turnado','!=','VINCULACION')
+            ->whereYear('tc.created_at', $ejercicio)
             ->where(function($query) {
                 $query->where('status_curso','!=',null)
-                      ->orWhere('status_solicitud','=','TURNADO');
+                      ->orWhere('status_solicitud','=','TURNADO')
+                      ->orWhere('tc.turnado','=','DGA');
             });
         if ($request->valor) {
             $aperturas = $aperturas->where('tc.munidad',$request->valor)
@@ -167,8 +186,9 @@ class aperturasController extends Controller
         }
         $aperturas = $aperturas->groupBy('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
             ->orderBy('tc.fecha_apertura','desc')
-            ->paginate(50);
-        return view('solicitudes.aperturas.buzon',compact('aperturas'));
+            ->paginate(50)->appends(['ejercicio' => $ejercicio]);
+        $anios = MyUtility::ejercicios();
+        return view('solicitudes.aperturas.buzon',compact('aperturas','anios','ejercicio'));
     }
 
     public function autorizar(Request $request){ //ENVIAR PDF DE AUTORIZACIÓN Y CAMBIAR ESTATUS A AUTORIZADO
@@ -536,10 +556,14 @@ class aperturasController extends Controller
         $opt = $request->opt;
         $message = 'Operación fallida, vuelva a intentar..';
         if ($memo AND ($opt == 'ARC01' OR $opt == 'ARC02')) {
-            switch($request->pmovimiento){
+            switch($request->movimiento){
                 case "EDICION":
                     $result = DB::table('tbl_cursos')->where('nmunidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['status_curso' => 'EDICION']);
                     if($result)$message = "SOLICITUD ENVIADA PARA EDICION.";
+                break;
+                case "VoBo":
+                    $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['turnado' => 'VoBo']);
+                    if($result)$message = "SOLICITUD ENVIADA PARA VoBo.";
                 break;
                 default:
                     if ($opt == 'ARC01') {
@@ -550,7 +574,7 @@ class aperturasController extends Controller
                         $llave = 'nmunidad';
                     }
                     $ids = array_keys($request->prespuesta);
-                    $result = DB::table('tbl_cursos')->where($llave,$memo)->wherein('id',$ids)->update([$status => 'VALIDADO', 'obspreliminar' => null]);
+                    $result = DB::table('tbl_cursos')->where($llave,$memo)->wherein('id',$ids)->update([$status => 'VALIDADO', 'turnado'=>'UNIDAD', 'obspreliminar' => null]);
                     if ($result){
                             $result2 = DB::table('tbl_cursos_history')
                                 ->where($llave,$memo)
@@ -584,7 +608,7 @@ class aperturasController extends Controller
                 $result = DB::table('tbl_cursos')
                     ->where($llave,$memo)
                     ->where('id',$key)
-                    ->update([$status => 'RETORNO', 'obspreliminar' => $value]);
+                    ->update([$status => 'RETORNO', 'obspreliminar' => $value ,'turnado'=>'UNIDAD']);
                 if ($result) {
                     $result2 = DB::table('tbl_cursos_history')
                         ->where($llave,$memo)
@@ -616,8 +640,8 @@ class aperturasController extends Controller
         else return false;
 
     }
-     
-    public function guardar_fecha(Request $request){ 
+
+    public function guardar_fecha(Request $request){
         $message = "Operación fallida, por favor intente de nuevo.";
         if($request->fecha AND $request->memo){
             $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->whereNotNull('fecha_arc01')
@@ -638,10 +662,129 @@ class aperturasController extends Controller
                     )
                 ")
             ]);
-            if($result) $message = "Operación Exitosa!";            
+            if($result) $message = "Operación Exitosa!";
         }else $message = "Por favor, ingrese una fecha válida.";
         return $message;
 
     }
 
+    ##Funcion para mostrar la lista de instructores validados
+    public function modal_instructores(Request $request) {
+
+        $folio_grupo = $request->folio_grupo;
+        $totalInstruc = 0;
+        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
+        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'tbl_cursos.id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad', 'cursos.curso_alfa')
+            ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+            ->JOIN('cursos', 'cursos.id', '=' ,'tbl_cursos.id_curso')
+            ->where('folio_grupo', $folio_grupo)->first();
+
+        // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+
+         #### Llamamos la validacion de instructor desde el servicio
+        $servicio = (new ValidacionServicioVb());
+        // $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
+
+        list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
+
+        // Ordenar por nombre y unidad
+        if (!empty($grupo->unidad)) {
+            ##Otro ordenamiento por total de cursos y unidad
+            try {
+                $unidad_prioritaria = $grupo->unidad;
+
+                $instructores = collect($instructores)->sort(function ($a, $b) use ($unidad_prioritaria) {
+                    $a_es_prioritario = $a->unidad === $unidad_prioritaria;
+                    $b_es_prioritario = $b->unidad === $unidad_prioritaria;
+
+                    if ($a_es_prioritario && !$b_es_prioritario) {
+                        return -1;
+                    }
+                    if (!$a_es_prioritario && $b_es_prioritario) {
+                        return 1;
+                    }
+
+                    if ($a->unidad === $b->unidad) {
+                        return $a->total_cursos <=> $b->total_cursos;
+                    }
+                    return strcmp($a->unidad, $b->unidad);
+                })->values();
+
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => 500,
+                    'mensaje' => 'Error al ordenar la lista de instructores: ' . $th->getMessage()
+                ]);
+            }
+        }
+
+        //Validar si el array instructores esta vacio
+        if (count($instructores) === 0) {
+            return response()->json([
+                'status' => 500,
+                'mensaje' => $mensaje,
+                'totalInstruc' => count($instructores)
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'instructores' => $instructores,
+            'mensaje' => $mensaje,
+            'totalInstruc' => count($instructores)
+        ]);
+    }
+
+    public function pdfAgendaAnexo(Request $request){
+        if($request->memo){
+            $data = DB::table('tbl_cursos as tc')->select('tc.folio_grupo','tc.unidad','tc.curso',
+               DB::raw("
+                    (
+                        SELECT json_agg(
+                            json_build_object(
+                                'fecha', 
+                                CASE 
+                                    WHEN DATE(start) = DATE(\"end\") THEN 
+                                        TO_CHAR(DATE(start), 'DD/MM/YYYY')
+                                    ELSE 
+                                        TO_CHAR(DATE(start), 'DD/MM/YYYY') || ' AL ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                                END,
+                                'horario',
+                                'DE ' || TO_CHAR(start, 'HH24:MI') || ' A ' || TO_CHAR(\"end\", 'HH24:MI') || ' HRS.',
+                                'horas',
+                                ROUND(EXTRACT(EPOCH FROM (\"end\" - start)) / 3600, 2)
+
+                            )
+                            ORDER BY DATE(start)
+                        )
+                        FROM agenda
+                        WHERE id_curso = tc.folio_grupo
+                    ) AS agenda
+                "),
+                DB::raw("
+                    (
+                        SELECT SUM(EXTRACT(EPOCH FROM (\"end\" - start)) / 3600)
+                        FROM agenda
+                        WHERE id_curso = tc.folio_grupo
+                    ) AS total_horas
+                ")
+            );    
+         
+            if($request->opt=='ARC01'){
+                $data = $data->where('tc.munidad', $request->memo);
+            }elseif($request->opt=='ARC02'){
+                $data = $data->where('tc.nmunidad', $request->memo);
+            }            
+            $data = $data->get(); //dd($data);
+        }
+        
+        if($data){
+            $direccion = null;
+            $pdf = PDF::loadView('solicitudes.aperturas.pdfAgendaAnexo',compact('data','direccion'));
+            $pdf->setpaper('letter','landscape');
+            return $pdf->stream('Agenda-Anexo.pdf');
+        }else return "MEMORÁNDUM NO VÁLIDO";
+        
+    }
+    
 }

@@ -273,11 +273,23 @@ class asignarfoliosController extends Controller
             list($firm_academico, $firm_director) = $data;
 
             ##Consulta de alumnos foliados con efirma
-            $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','i.curp','f.folio','f.fecha_expedicion','f.movimiento','f.motivo', 'bf.mod')
-                        ->where('i.status','INSCRITO')->where('f.motivo', 'ACREDITADO')->leftjoin('tbl_folios as f','f.id','i.id_folio')
-                        ->join('tbl_banco_folios as bf', 'bf.id', 'f.id_banco_folios')->where('bf.mod', 'EFIRMA');
-                        if($matricula)$alumnos = $alumnos->where('i.matricula',$matricula);
-                        $alumnos = $alumnos->where('i.id_curso', $curso->id)->orderby('i.alumno')->get(); //limit de 5 pesonas por el momento ->limit(5)
+            // $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','i.curp','f.folio','f.fecha_expedicion','f.movimiento','f.motivo', 'bf.mod')
+            //             ->where('i.status','INSCRITO')->where('f.motivo', 'ACREDITADO')->leftjoin('tbl_folios as f','f.id','i.id_folio')
+            //             ->join('tbl_banco_folios as bf', 'bf.id', 'f.id_banco_folios')->where('bf.mod', 'EFIRMA');
+            //             if($matricula)$alumnos = $alumnos->where('i.matricula',$matricula);
+            //             $alumnos = $alumnos->where('i.id_curso', $curso->id)->orderby('i.alumno')->get(); //limit de 5 pesonas por el momento ->limit(5)
+
+            // Consulta mejorada para consultar a los alumnos que se generarán sus documentos xml para constancias
+            $alumnos = DB::table('tbl_cursos as tc')->select('ti.matricula', 'ti.alumno', 'ti.curp', 'tf.folio')
+            ->join('tbl_folios as tf', 'tc.id', 'tf.id_curso')
+            ->join('tbl_banco_folios as bf', 'bf.id', 'tf.id_banco_folios')
+            ->join('tbl_inscripcion as ti', 'ti.matricula', 'tf.matricula')
+            ->where('bf.mod', 'EFIRMA')
+            ->where('ti.status','INSCRITO')
+            ->where('tf.motivo', 'ACREDITADO');
+            if($matricula)$alumnos = $alumnos->where('tf.matricula',$matricula);
+            $alumnos = $alumnos->where('tc.id', $curso->id)->groupBy('ti.matricula', 'ti.alumno', 'ti.curp', 'tf.folio')->orderby('ti.alumno')->get();
+
 
             if($firm_academico && $firm_director && $alumnos){
                 $status_efirma = '';

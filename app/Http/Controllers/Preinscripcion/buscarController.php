@@ -68,7 +68,6 @@ class buscarController extends Controller
             ->orderBy('ar.folio_grupo', 'DESC')
             ->paginate(15);
         return view('preinscripcion.buscar.index',compact('data','activar','anios','parameters'));
-
     }
 
     public function show(Request $request){

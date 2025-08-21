@@ -50,19 +50,21 @@ class turnarAperturaController extends Controller
         $grupos = $mextemporaneo = [];
         $ids_extemp = [];
         if($memo){
-            $grupos = DB::table('tbl_cursos as tc')->select(db::raw("(select sum(hours) from
-			    (select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
-			    ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )
-			        as hours
- 			        from agenda
-			        where id_curso = tc.folio_grupo) as t) as horas_agenda"),
-                    'tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                    DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"),'tr.status_folio')
-                    ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
-                    ->leftJoin('tbl_recibos as tr', function ($join) {
-                        $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
-                             ->where('tr.status_folio','ENVIADO');
-                    });
+            $grupos = DB::table('tbl_cursos as tc')->select(
+                    'tc.*','tc.turnado as turnado_solicitud','tr.status_folio',
+                    DB::raw("(select sum(hours) from
+                        (select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
+                        ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )
+                        as hours from agenda where id_curso = tc.folio_grupo) as t) as horas_agenda"),
+                    DB::raw("'$opt' as option"),
+                    DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"),
+                    DB::raw("COALESCE(tc.status_curso, tc.status_solicitud) as status_sol")
+                )
+                ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
+                ->leftJoin('tbl_recibos as tr', function ($join) {
+                $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
+                    ->where('tr.status_folio','ENVIADO');
+                });
                 if($opt == 'ARC01'){
                    $grupos = $grupos->whereRaw("(tc.num_revision = '$memo' OR (tc.munidad = '$memo'))");
                    //->where('tc.munidad',$memo);
@@ -447,7 +449,10 @@ class turnarAperturaController extends Controller
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
                 DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
-                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01','status_solicitud');
+                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01','status_solicitud',
+                DB::raw("COALESCE(clave, '0') as clave"), //NUEVO VOBO
+                DB::raw('COALESCE(vb_dg, false) as vb_dg')//NUEVO VOBO
+                );
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
 
@@ -576,4 +581,6 @@ class turnarAperturaController extends Controller
                     ) as global WHERE now()::date>=fecha_extemp or now()::date>termino",[$memo]);
         return $resultArray = array_column(json_decode(json_encode($result), true),'id');
     }
+
+
 }

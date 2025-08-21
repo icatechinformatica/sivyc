@@ -29,7 +29,7 @@
                     </select>
                 </div>
             @endif
-            <div class="form-group col-md-2">
+            {{-- <div class="form-group col-md-2">
                     <select name="valor" class="form-control mr-sm-2" id="valor">
                         @if(isset($nrevisiones))
                             @foreach($nrevisiones AS $nrevision)
@@ -39,8 +39,7 @@
                             <option value="{{$valor}}">{{$valor}}</option>
                         @endif
                     </select>
-                    {{-- {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control', 'placeholder' => 'NUMERO DE REVISION', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 25]) }} --}}
-            </div>
+            </div> --}}
             <div class="form-group col-md-1">
                 <button type="submit" class="btn">BUSCAR</button>
             </div>
@@ -364,6 +363,7 @@
                     <table class="table table-responsive-md" id='tableperfiles'>
                         <thead>
                             <tr>
+                                <th scope="col">#</th>
                                 <th scope="col">INSTRUCTOR</th>
                                 <th scope="col">NUMERO DE REVISIÓN</th>
                                 <th scope="col">UNIDAD SOLICITA</th>
@@ -373,8 +373,10 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php $iteration1 = 0; @endphp
                             @foreach ($databuzon AS $rise)
                                 <tr>
+                                    <td>{{ ++$iteration1 }}</td>
                                     <td>{{ $rise->nombre }} {{$rise->apellidoPaterno}} {{$rise->apellidoMaterno}}</td>
                                     <td>{{ $rise->nrevision }}</td>
                                     <td>{{ $rise->unidad_solicita }}</td>
@@ -397,6 +399,7 @@
                     <table class="table table-responsive-md" id='tableperfiles'>
                         <thead>
                             <tr>
+                                <th scope="col">#</th>
                                 <th scope="col">INSTRUCTOR</th>
                                 <th scope="col">NUMERO DE REVISIÓN</th>
                                 <th scope="col">UNIDAD SOLICITA</th>
@@ -406,8 +409,10 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php $iteration = 0; @endphp
                             @foreach ($buzonhistory AS $rise)
                                 <tr>
+                                    <td>{{ ++$iteration }}</td>
                                     <td>{{ $rise->nombre }} {{$rise->apellidoPaterno}} {{$rise->apellidoMaterno}}</td>
                                     <td>{{ $rise->nrevision }}</td>
                                     <td>{{ $userunidad->ubicacion }}</td>

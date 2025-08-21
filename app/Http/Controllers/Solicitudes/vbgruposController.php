@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Services\ValidacionServicioVb;
+use App\Services\WhatsAppService;
 
 class vbgruposController extends Controller
 {
@@ -58,6 +59,7 @@ class vbgruposController extends Controller
                 $result =  DB::table('tbl_cursos')->where('id',$id)->whereNull('status_curso');
                 if($estado == true)
                     $result->update(['vb_dg' => $estado, 'turnado' => 'DGA']);
+                    $result->update(['vb_dg' => $estado, 'turnado' => 'DGA']);
                 else
                     $result->update(['vb_dg' => $estado, 'turnado' => 'VoBo']);
                 if($result){
@@ -79,14 +81,18 @@ class vbgruposController extends Controller
                 $result = DB::statement("
                     UPDATE tbl_cursos
                     SET
-                        turnado = 'UNIDAD', vb_dg = false,
-                        movimientos = COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                        turnado = 'DGA', vb_dg = false,
+                         movimientos =COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
                             jsonb_build_object(
-                                'fecha', ?::timestamp,
-                                'usuario', ?::text,
-                                'operacion', 'RECHAZO VISTO BUENO',
-                                'motivo', ?::text,
-                                'vb_dg', false
+                                'VoBo', jsonb_build_array(
+                                    jsonb_build_object(
+                                        'fecha',     ?::timestamp,
+                                        'usuario',   ?::text,
+                                        'operacion', 'RECHAZO VISTO BUENO',
+                                        'motivo',    ?::text,
+                                        'vb_dg',     false
+                                    )
+                                )
                             )
                         )
                     WHERE id = ?
@@ -304,64 +310,27 @@ class vbgruposController extends Controller
 
     ## Made by Jose Luis
     public function modal_instructores(Request $request) {
-        $folio_grupo = $request->folio_grupo;
-        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
-        $grupo = DB::table('tbl_cursos')->select('inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
-        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
-        ->where('folio_grupo', $folio_grupo)->first();
-        list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+        try {
+            #### Llamamos la validacion de instructor desde el servicio
+            $servicio = (new ValidacionServicioVb());
 
-        //Agregar en el array el instructor asigando por la unidad, en caso de que exista.
-        // if(!empty($grupo->id_instructor)){
-        //     $instructor_unidad = DB::Table('instructores')->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad')
-        //     ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-        //     ->Where('instructores.id', $grupo->id_instructor)->first();
+            $folio_grupo = $request->folio_grupo;
+            $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
+            $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'tbl_cursos.id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad', 'cursos.curso_alfa')
+            ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
+            ->JOIN('cursos', 'cursos.id', '=' ,'tbl_cursos.id_curso')
+            ->where('folio_grupo', $folio_grupo)->first();
 
-        //     if (!empty($instructor_unidad)) {
-        //         //Agregamos la instructor asignado por la unidad, al array de instructores
-        //         $nuevoInstructor = new \stdClass();
-        //         $nuevoInstructor->instructor = $instructor_unidad->instructor;
-        //         $nuevoInstructor->id = $instructor_unidad->id;
-        //         $nuevoInstructor->telefono = $instructor_unidad->telefono;
-        //         $nuevoInstructor->unidad = $instructor_unidad->unidad;
-        //         $instructores[] = $nuevoInstructor;
-        //     }
-        // }
+            list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
 
-        // if (!empty($grupo->unidad)) {
-        //     try {
-        //         $unidad_prioritaria = $grupo->unidad;
-        //         usort($instructores, function ($a, $b) use ($unidad_prioritaria) {
-        //             // Si ambos son de la unidad prioritaria o ambos no lo son, ordenar alfabéticamente por unidad
-        //             if (($a->unidad === $unidad_prioritaria) && ($b->unidad !== $unidad_prioritaria)) {
-        //                 return -1; // $a primero
-        //             }
-        //             if (($a->unidad !== $unidad_prioritaria) && ($b->unidad === $unidad_prioritaria)) {
-        //                 return 1; // $b primero
-        //             }
-        //             // Si ambos son iguales o ninguno es de la unidad prioritaria, ordenar por nombre de unidad
-        //             return strcmp($a->unidad, $b->unidad);
-        //         });
-        //     } catch (\Throwable $th) {
-        //         return response()->json([
-        //             'status' => 500,
-        //             'mensaje' => 'Error al ordenar la lista de instructores '.$th->getMessage()
-        //         ]);
-        //     }
-        // }
-
-
-        //Ordenar por nombre y unidad
-        if (!empty($grupo->unidad)) {
-            try {
+            // Ordenar por nombre y unidad
+            if (!empty($grupo->unidad)) {
+                ##Otro ordenamiento por total de cursos y unidad
                 $unidad_prioritaria = $grupo->unidad;
-
-                usort($instructores, function ($a, $b) use ($unidad_prioritaria) {
-                    // Verificar si alguno pertenece a la unidad prioritaria
+                $instructores = collect($instructores)->sort(function ($a, $b) use ($unidad_prioritaria) {
                     $a_es_prioritario = $a->unidad === $unidad_prioritaria;
                     $b_es_prioritario = $b->unidad === $unidad_prioritaria;
 
-                    // Priorizar unidad
                     if ($a_es_prioritario && !$b_es_prioritario) {
                         return -1;
                     }
@@ -369,22 +338,18 @@ class vbgruposController extends Controller
                         return 1;
                     }
 
-                    // Ambos son prioritarios o no lo son, ordenar por unidad
                     if ($a->unidad === $b->unidad) {
-                        // Misma unidad: ordenar por nombre
-                        return strcmp($a->instructor, $b->instructor);
+                        return $a->total_cursos <=> $b->total_cursos;
                     }
-
-                    // Diferente unidad (pero misma prioridad): ordenar por unidad
                     return strcmp($a->unidad, $b->unidad);
-                });
+                })->values();
+            }
 
-            } catch (\Throwable $th) {
+        } catch (\Throwable $th) {
                 return response()->json([
                     'status' => 500,
-                    'mensaje' => 'Error al ordenar la lista de instructores: ' . $th->getMessage()
+                    'mensaje' => 'Error al realizar el proceso: ' . $th->getMessage()
                 ]);
-            }
         }
 
 
@@ -403,84 +368,65 @@ class vbgruposController extends Controller
         ]);
     }
 
-    public function data_instructores($data, $agenda){
-        try {
-            $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
-            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
-            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($data->inicio)))
-            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($data->inicio)))
-            ->havingRaw('count(*) >= 2')
-            ->groupby('i.id');
+    // public function data_instructores($data, $agenda){
+    //     try {
 
-            $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad') //DB::raw('count(id_curso) as total')
-            ->rightJoin('instructores','t.id_instructor','=','instructores.id')
-            ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-            ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-            ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-            ->WHERE('estado',true)
-            ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
-            ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
-            ->WHERE('fecha_validacion','<',$data->inicio)
-            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
-            ->whereNotIn('instructores.id', $internos)
-            ->groupBy('t.id_instructor','instructores.id', 'instructores.telefono', 'tbl_unidades.unidad')
-            ->orderBy('instructor')
-            ->get();
+    //         #### Validacion de criterios de instructor
+    //         $servicio = (new ValidacionServicioVb());
+
+    //         ## Consulta general de instructores
+    //         $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
 
 
-            #### Validacion de criterios de instructor
-            $servicio = (new ValidacionServicioVb());
+    //         //Validar si el curso es ALFA
+    //         if ($data->programa == 'ALFA') {
+    //             $instructores = $servicio->InstAlfaNoBecados($instructores);
+    //             if (count($instructores) == 0) {
+    //                 return [[], 'No se encontraron Instructores Alfa'];
+    //             }
+    //         }
 
-            // //pruebas
-            // $respuesta = $servicio->InstNoRebase8Horas($instructores, $agenda);
-            // return [$respuesta, 'cero'.count($respuesta)];
+    //         if (count($instructores) == 0) {
+    //             return [[], 'No se encontraron instructores disponibles para este curso'];
+    //         }
 
-            //Validar si el curso es ALFA
-            if ($data->programa == 'ALFA') {
-                $instructores = $servicio->InstAlfaNoBecados($instructores);
-                if (count($instructores) == 0) {
-                    return [[], 'No se encontraron Instructores Alfa'];
-                }
-            }
+    //         //Primer criterio
+    //         $respuesta8Horas = $servicio->InstNoRebase8Horas($instructores, $agenda);
+    //         if (count($respuesta8Horas) > 0) {
 
-            //Primer criterio
-            $respuesta8Horas = $servicio->InstNoRebase8Horas($instructores, $agenda);
-            if (count($respuesta8Horas) > 0) {
+    //             //Segundo Criterio
+    //             $respuesta40Horas = $servicio->InstNoRebase40HorasSem($respuesta8Horas, $data->folio_grupo);
+    //             if (count($respuesta40Horas) > 0) {
 
-                //Segundo Criterio
-                $respuesta40Horas = $servicio->InstNoRebase40HorasSem($respuesta8Horas, $agenda);
-                if (count($respuesta40Horas) > 0) {
+    //                 //Tercer criterio
+    //                 $respuestaTraslape = $servicio->InstNoTraslapeFechaHoraConOtroCurso($respuesta40Horas, $agenda);
+    //                 if (count($respuestaTraslape) >0 ) {
 
-                    //Tercer criterio
-                    $respuestaTraslape = $servicio->InstNoTraslapeFechaHoraConOtroCurso($respuesta40Horas, $agenda);
-                    if (count($respuestaTraslape) >0 ) {
+    //                     //Cuarto Criterio
+    //                     $respuesta150dias = $servicio->InstValida150Dias($respuestaTraslape, $data->folio_grupo);
+    //                     if (count($respuesta150dias) > 0 ) {
 
-                        //Cuarto Criterio
-                        $respuesta150dias = $servicio->InstValida150Dias($respuestaTraslape, $data->folio_grupo);
-                        if (count($respuesta150dias) > 0 ) {
+    //                         return [$respuesta150dias , '']; //Retornamos la respuesta
 
-                            return [$respuesta150dias , '']; //Retornamos la respuesta
+    //                     }else{
+    //                         return [[], 'No se encontraron Instructores, Rebasan los 150 dias'];
+    //                     }
+    //                 }else{
+    //                     return [[], 'No se encontraron Instructores, Traslapa con otros cursos'];
+    //                 }
 
-                        }else{
-                            return [[], 'No se encontraron Instructores, Rebasan los 150 dias'];
-                        }
-                    }else{
-                        return [[], 'No se encontraron Instructores, Traslapa con otros cursos'];
-                    }
+    //             }else{
+    //                 return [[], 'No se encontraron Instructores, Rebasan las 40 Horas por Semana'];
+    //             }
 
-                }else{
-                    return [[], 'No se encontraron Instructores, Rebasan las 40 Horas por Semana'];
-                }
+    //         }else{
+    //             return [[], 'No se encontraron Instructores, Rebasan las 8 Horas Diarias'];
+    //         }
 
-            }else{
-                return [[], 'No se encontraron Instructores, Rebasan las 8 Horas Diarias'];
-            }
-
-        } catch (\Throwable $th) {
-            return [[], 'Error: '.$th->getMessage()];
-        }
-    }
+    //     } catch (\Throwable $th) {
+    //         return [[], 'Error: '.$th->getMessage()];
+    //     }
+    // }
 
     public function guardar_instructor(Request $request) {
         // En espera de soltar el guardado de datos
@@ -490,10 +436,6 @@ class vbgruposController extends Controller
         $id_instructor = $request->sel_instructor;
         $message = '';
 
-        //Pruebas
-        // $folio_grupo = '6Y-250063'; // de este grupo tiene como instructor al id 919 ZUART PONCE JOSE EDGARDO, cambiaremos de instructor al 1189  LOPEZ PASCACIO GILBERTO ANTONIO
-        // $id_instructor = 1189;
-
         ### Obtener los datos del curso y del instructor
         $dataCurso = DB::table('tbl_cursos')->where('folio_grupo', $folio_grupo)->first();
         $dataInstructor = $this->InstObtenerDatos($id_instructor, $dataCurso);
@@ -502,9 +444,37 @@ class vbgruposController extends Controller
             ## Realizar el guardado de datos a las tablas alumnos_registro, tbl_cursos, agenda
             $respuesta = $this->InstUpdateDatos($dataInstructor, $dataCurso);
             if ($respuesta) {
+                // función para enviar mensaje de WhatsApp
+                $infowhats = [
+                    'nombre' => $dataInstructor->instructor,
+                    'unidad' => $dataCurso->unidad,
+                    'curso' => $dataCurso->curso,
+                    'inicio' => $dataCurso->inicio,
+                    'termino' => $dataCurso->termino,
+                    'dias' => $dataCurso->dia,
+                    'hini' => $dataCurso->hini,
+                    'hfin' => $dataCurso->hfin,
+                    'telefono' => $dataInstructor->telefono,
+                    'direccion' => $dataCurso->efisico,
+                    'tcapacitacion' => $dataCurso->tcapacitacion,
+                    'mediovirtual' => $dataCurso->medio_virtual,
+                    'linkvirtual' => $dataCurso->link_virtual,
+                    'sexo' => $dataInstructor->sexo
+                ];
+
+                $response = $this->whatsapp_autorizar_msg($infowhats, app(WhatsAppService::class));
+                // Check if the response indicates an error
+                if (isset($response['status']) && $response['status'] === false) {
+                    // Handle the error as you wish
+                    return redirect()->route('solicitudes.vb.grupos')
+                        ->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
+                }
+                // termina el envio de mensaje de WhatsApp
+
                 $message = 'El Curso => '.$dataCurso->curso.' ha sido autorizado '.'con el Instructor => '.$dataInstructor->instructor;
                 return redirect()->route('solicitudes.vb.grupos')->with('success', $message);
             }else{
+                $message = 'Error al autorizar el curso y actualizar los datos del instructor.';
                 $message = 'Error al autorizar el curso y actualizar los datos del instructor.';
                 return redirect()->route('solicitudes.vb.grupos')->with('success', $message);
             }
@@ -532,7 +502,7 @@ class vbgruposController extends Controller
                 'especialidad_instructores.criterio_pago_id as cp',
                 'tipo_identificacion',
                 'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
-                'banco','no_cuenta','interbancaria','tipo_honorario'
+                'banco','no_cuenta','interbancaria','tipo_honorario','telefono'
                 )
             ->WHERE('instructores.status', '=', 'VALIDADO')
             ->where('instructores.nombre', '!=', '')
@@ -563,12 +533,24 @@ class vbgruposController extends Controller
 
             $cp = null;
             $curso = DB::table('cursos as c')->select('c.id','c.nombre_curso','c.horas','c.rango_criterio_pago_maximo as cp','c.costo','e.nombre as espe',
-                    'a.formacion_profesional as area','c.memo_validacion as mpaqueteria','e.clave as clave_especialidad')
+                    'a.formacion_profesional as area','c.memo_validacion as mpaqueteria','e.clave as clave_especialidad', 'c.curso_alfa')
                     ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')
                     ->where('c.id',$dataCurso->id_curso)->first();
 
+
             //Validar criterio de pago
-            $cp = ($dataInstructor->cp > $curso->cp) ? $curso->cp : $dataInstructor->cp;
+            if (!empty($curso) && !empty($dataInstructor)) {
+                $cp = ($dataInstructor->cp > $curso->cp) ? $curso->cp : $dataInstructor->cp;
+                // if ($curso->curso_alfa == true) {
+                //     $cp = 12;
+                // }else{
+                //     $cp = ($dataInstructor->cp > $curso->cp) ? $curso->cp : $dataInstructor->cp;
+                // }
+
+            }else{
+                throw new \Exception('Error en la obtención de informacion del curso e instructor');
+            }
+
 
             //Validar Honorario
             $tipo_honorario = ($dataInstructor->tipo_honorario == 'ASIMILADOS A SALARIOS') ? 'ASIMILADOS A SALARIOS' : 'HONORARIOS';
@@ -580,7 +562,7 @@ class vbgruposController extends Controller
             //Guarda datos del instructor en tbl_cursos
             $result_curso = DB::table('tbl_cursos')->where('folio_grupo', $dataCurso->folio_grupo)->whereNull('status_curso')->Update(
                 [
-                'id_instructor' => $dataInstructor->id,'modinstructor' => $tipo_honorario,
+                'id_instructor' => $dataInstructor->id,'modinstructor' => $tipo_honorario, 'cp' => $cp,
                 'nombre' => $dataInstructor->instructor,'curp' => $dataInstructor->curp,'rfc' => $dataInstructor->rfc,
                 'instructor_escolaridad' => $dataInstructor->escolaridad,'instructor_titulo' => $dataInstructor->titulo,'instructor_sexo' => $dataInstructor->sexo,
                 'instructor_mespecialidad' => $dataInstructor->mespecialidad,'instructor_tipo_identificacion' => $dataInstructor->tipo_identificacion,
@@ -632,6 +614,47 @@ class vbgruposController extends Controller
             return redirect()->route('solicitudes.vb.grupos')->with('error', $message);
         }
 
+    }
+
+    public function whatsapp_autorizar_msg($instructor, WhatsAppService $whatsapp)
+    {
+        if($instructor['tcapacitacion'] == 'PRESENCIAL') {
+            $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'asignacion_curso_presencial')->First();
+            $mensaje = str_replace(
+                ['{{direccion}}'],
+                [$instructor['direccion']],
+                $plantilla->plantilla
+            );
+        } else {
+            $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'asignacion_curso_virtual')->First();
+            $mensaje = str_replace(
+                ['{{mediovirtual}}', '{{linkvirtual}}'],
+                [$instructor['mediovirtual'], $instructor['linkvirtual']],
+                $plantilla->plantilla
+            );
+        }
+        $resultados = [];
+
+        $fechaini_formateada = Carbon::parse($instructor['inicio'])->translatedFormat('j \d\e F \d\e\l Y');
+        $fechater_formateada = Carbon::parse($instructor['termino'])->translatedFormat('j \d\e F \d\e\l Y');
+
+        // Reemplazar variables generales en plantilla
+        $mensaje = str_replace(
+            ['{{nombre}}', '{{curso}}', '{{unidad}}', '{{direccion}}', '{{inicio}}', '{{termino}}', '{{dias}}', '{{hini}}', '{{hfin}}','\n'],
+            [$instructor['nombre'], $instructor['curso'], $instructor['unidad'], $instructor['direccion'], $fechaini_formateada, $fechater_formateada, $instructor['dias'], $instructor['hini'], $instructor['hfin'],"\n"],
+            $mensaje
+        );
+
+        //cambiar pronombres por sexo
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','r'], $mensaje);
+        }
+
+        $callback = $whatsapp->cola($telefono_formateado, $mensaje, $plantilla->prueba);
+
+        return $callback;
     }
 
 }

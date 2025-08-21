@@ -4,6 +4,7 @@
 @section('title', 'Instructor | SIVyC Icatech')
 @section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         .form-check-input{
             width:22px;
@@ -23,6 +24,9 @@
             </div>
         @endif
         <div class="row">
+            <div class="col-lg-12 margin-tb">
+                {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                    {{ Form::select('tipo_busqueda_instructor', $tipo_busqueda, $old['tipo_busqueda_instructor']??0 ,['id'=>'tipo_busqueda_instructor','class' => 'form-control mr-sm-2','title' => 'BUSCAR POR','placeholder' => '- BUSCAR POR -']) }}
             <div class="col-lg-12 margin-tb">
                 {!! html()->form('GET', route('instructor-inicio'))->class('form-inline')->open() !!}
                     <select name="tipo_busqueda_instructor" id="tipo_busqueda_instructor" class="form-control mr-sm-2" title="BUSCAR POR">
@@ -61,7 +65,9 @@
                         <a class="btn ml-3" href="{{route('instructor-crear')}}"> Nuevo</a>
                     @endcan
                     @can('academico.exportar.instructores')
+                    @can('academico.exportar.instructores')
                         <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores')}}">CATÁLOGO XLS</a>
+                        <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores.activos')}}">ACTIVOS XLS</a>
                         <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores.activos')}}">ACTIVOS XLS</a>
                     @endcan
                 {!! html()->form()->close() !!}
@@ -71,26 +77,31 @@
             <caption>Catalogo de Instructrores</caption>
             <thead>
                 <tr>
+                    <th scope="col">#</th>
                     <th scope="col">CLAVE</th>
                     <th scope="col">INSTRUCTOR</th>
                     <th scope="col">CURP</th>
                     <th scope="col">TELEFONO</th>
                     <th scope="col">ESTATUS</th>
                     <th scope="col">FEC.VALIDA</th>
+                    <th scope="col">FEC.VALIDA</th>
                     <th>VALIDACIÓN</th>
                     @can('only.admin') <th class="text-center">EXTRA</th> @endcan
+                    @can('instructor.validar')
                     @can('instructor.validar')
                         <th class="text-center">VISIBLE</th>
                         <th class="text-center">CURSO</th>
                     @endcan
                     <th width="160px" class="text-center">ACCIONES</th>
 
+
                 </tr>
             </thead>
             <tbody>
                 @foreach ($data as $key => $itemData)
                     <tr>
-                    <th scope="row">{{$itemData->numero_control}}</th>
+                        <td>{{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}</td>
+                        <th scope="row">{{$itemData->numero_control}}</th>
                         <td>{{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}} {{$itemData->nombre}}</td>
                         <td>{{$itemData->curp}}</td>
                         <td>{{$itemData->telefono}}</td>
@@ -147,9 +158,9 @@
                                     <a class="btn btn-info" href="{{route('instructor-validar', ['id' => itemData->id])}}">Validar</a>
                                 @endcan --}}
                                 @if($itemData->numero_control == 'Pendiente')
-                                    @can('instructor.create')
+                                    {{-- @can('instructor.create') --}}
                                         <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
-                                    @endcan
+                                    {{-- @endcan --}}
                                 @else
                                     <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                 @endif
@@ -177,6 +188,7 @@
 
                             @endif
                         </td>
+
 
                     </tr>
                 @endforeach
@@ -249,6 +261,8 @@
 
         function cambia_estado(id, status, obj){
             if (confirm("Está seguro de realizar el cambio?") == true) {
+        function cambia_estado(id, status, obj){
+            if (confirm("Está seguro de realizar el cambio?") == true) {
                 $.ajax({
                     method: "POST",
                     url: "estado",
@@ -276,6 +290,7 @@
                             buscar: request.term,
                             tipo: $('#tipo_busqueda_instructor').val()
                         },
+                        success: function( data ) {
                         success: function( data ) {
                             //console.log(data);
                             response( data );

@@ -117,7 +117,7 @@
                             <th rowspan="2" class="text-center">CUPO</th>
                             <th colspan="2" class="text-center">SEXO</th>
                             <th colspan="2" class="text-center">FOLIAJE</th>
-                            <th rowspan="2" class="text-center">INSTRUCTOR</th>
+                            {{--<th rowspan="2" class="text-center">INSTRUCTOR</th>--}}
                             <th rowspan="2" class="text-center">EXO.</th>
                             <th rowspan="2" class="text-center">RED.</th>
                             <th rowspan="2" class="text-center">ESTATUS</th>
@@ -166,7 +166,7 @@
                                 <td class="text-center">{{$item->hombre}}</td>
                                 <td class="text-center">{{$item->fini}}</td>
                                 <td class="text-center">{{$item->ffin}}</td>
-                                <td class="text-center">{{$item->instructor}}</td>
+                                {{--<td class="text-center">{{$item->instructor}}</td>--}}
                                 <td class="text-center">@if ($item->tipo_exoneracion == 'EXO') {{"X"}}  @endif</td>
                                 <td class="text-center">@if ($item->tipo_exoneracion == 'EPAR') {{"X"}} @endif</td>
                                 <td class="text-center">{{$item->status}}</td>

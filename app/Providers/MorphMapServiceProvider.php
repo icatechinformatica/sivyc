@@ -28,6 +28,5 @@ class MorphMapServiceProvider extends ServiceProvider
             'funcionario' => \App\Models\funcionario::class,
             'instructor'  => \App\Models\instructor::class,
         ]);
-        \Log::info('✅ morphMap registrado correctamente');
     }
 }

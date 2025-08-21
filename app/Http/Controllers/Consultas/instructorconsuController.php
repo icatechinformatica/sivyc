@@ -45,7 +45,14 @@ class instructorconsuController extends Controller
         $consulta = null;
         if($unidad OR ($tipo AND $buscar) OR $fecha_inicio OR $fecha_termino){
             $consulta = DB::table('instructores')            
-            ->select('tc.nombre', 'unidad','folio_grupo','clave','munidad','curso','espe','tipo_curso','dura','tcapacitacion','status_curso',
+            ->select(
+                DB::raw("
+                    CASE 
+                    WHEN tc.vb_dg=true  or tc.clave!= '0' THEN  tc.nombre
+                    ELSE ''
+                    END as nombre
+                "),
+                'unidad','folio_grupo','clave','munidad','curso','espe','tipo_curso','dura','tcapacitacion','status_curso',
                 'inicio','termino','hini','hfin','dia',
                 DB::raw("
                     CASE 
