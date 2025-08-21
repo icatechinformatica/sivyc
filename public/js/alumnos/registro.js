@@ -131,7 +131,7 @@ validar_laboral.on('click', function () {
     const id_usuario_captura = $('#id_usuario_captura').val();
     const checkEmpleado = $('#empleado_aspirante').is(':checked');
     if (checkEmpleado) {
-        if ($('#form-empleado').valid()) {
+        if ($('#form-laboral').valid()) {
             const formData = new FormData();
             formData.append('curp', $('#curp').val());
             formData.append('seccion', 'empleado');
@@ -464,7 +464,6 @@ function obtenerDatosCurp(curp) {
         },
         success: function (response) {
             if (response.success) {
-                console.log(response.data);
                 const notyf = new Notyf({
                     position: { x: 'right', y: 'top' },
                     dismissible: true,
@@ -516,7 +515,6 @@ const guardarSeccion = (formData) => {
         processData: false,
         contentType: false,
         success: function (response) {
-            console.log('Respuesta del servidor:', response);
             if (response.success) {
                 const notyf = new Notyf({
                     position: { x: 'right', y: 'top' },
@@ -536,7 +534,7 @@ const guardarSeccion = (formData) => {
                     'contacto': 'contacto',
                     'grupos_vulnerables': 'grupos-vulnerables',
                     'capacitacion': 'capacitacion',
-                    'empleado': 'empleado',
+                    'laboral': 'laboral',
                     'cerss': 'cerss'
                 };
 

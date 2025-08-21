@@ -33,12 +33,6 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
 }
 @endphp
 
-@if (isset($grupoId))
-<div class="alert alert-info">
-    Grupo asignado: {{ $grupoId }}
-</div>
-@endif
-
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-12">
         <span>{{ $esNuevoRegistro ? 'Registrar nuevo alumno' : 'Editar alumno' }}</span>
@@ -107,7 +101,7 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="documento-curp-addon"><i class="bi bi-file-earmark-text"></i></span>
                                 </div>
-                                {!! html()->file('documento_curp')->class('form-control')->id('documento_curp')->attribute('aria-label', 'Adjuntar Documento CURP')->attribute('aria-describedby', 'documento-curp-addon') !!}
+                                {!! html()->file('documento_curp')->class('form-control')->id('documento_curp')->attribute('aria-label', 'Adjuntar Documento CURP')->attribute('aria-describedby', 'documento-curp-addon')->attribute('accept', '.pdf,application/pdf') !!}
                             </div>
 
                             {{-- * Input para mostrar el documento CURP existente --}}
@@ -434,7 +428,7 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-award"></i></span>
                                 </div>
-                                {!! html()->file('documento_ultimo_grado')->class('form-control')->id('documento_ultimo_grado')->attribute('aria-label', 'Documento del Ultimo Grado de Estudios')->attribute('aria-describedby', 'documento-grado-addon') !!}
+                                {!! html()->file('documento_ultimo_grado')->class('form-control')->id('documento_ultimo_grado')->attribute('aria-label', 'Documento del Ultimo Grado de Estudios')->attribute('aria-describedby', 'documento-grado-addon')->attribute('accept', '.pdf,application/pdf') !!}
                             </div>
                             @if (!empty($documentos['ultimo_grado_estudio']))
                             <small class="form-text text-muted mt-1">
@@ -564,14 +558,17 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
 
                         @if ($secciones && $secciones->id == 5)
                             @if (isset($grupoId))
+                                {{-- vamos a cambiar la forma en como se envia los datos al grupo --}}
                                 <div class="col-md-12 d-flex justify-content-end mt-5">
-                                    <a href="{{ route('grupos.editar', ['id' => $grupoId, 'curp' => base64_encode($datos->curp)]) }}" class="btn btn-warning float-start"
-                                        id="enviarGrupo">Cargar en Grupo</a>
+                                    <a href="#" class="btn btn-warning float-start"
+                                        id="enviarGrupo"
+                                        onclick="event.preventDefault(); enviarGrupoCurp('{{ $grupoId }}', '{{ $datos->curp }}');">
+                                            Cargar en Grupo
+                                    </a>
                                 </div>
                             @else
                                 <div class="col-md-12 d-flex justify-content-end mt-5">
-                                    <a href="{{ route('alumnos.consulta.alumno') }}" class="btn btn-secondary float-start"
-                                        id="regresar-inicio">Regresar al inicio</a>
+                                    <a href="{{ route('alumnos.consulta.alumno') }}" class="btn btn-secondary float-start" id="regresar-inicio">Regresar al inicio</a>
                                 </div>
                             @endif
 
@@ -613,5 +610,27 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
 <script src="{{ asset('js/alumnos/consulta.js') }}"></script>
 <script src="{{ asset('js/alumnos/registro_validaciones.js') }}"></script>
 <script src="{{ asset('js/alumnos/registro.js') }}"></script>
+<script type="text/javascript">
+    function enviarGrupoCurp(grupoId, curp)
+    {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route('grupos.asignar.alumnos') }}';
 
+        // CSRF Token
+        let csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = '{{ csrf_token() }}';
+        form.appendChild(csrf);
+
+        form.innerHTML += `
+            <input type="hidden" name="grupo_id" value="${grupoId}">
+            <input type="hidden" name="curp" value="${curp}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+</script>
 @endpush
