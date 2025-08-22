@@ -273,6 +273,10 @@
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
                         $('#frm').attr('target', '_self').submit();
                         break;
+                    case "RETORNO-VoBo":
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
+                        $('#frm').attr('target', '_self').submit();
+                        break;
                     case "VoBo":
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
                         $('#frm').attr('target', '_self').submit();
