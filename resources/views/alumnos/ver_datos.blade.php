@@ -29,7 +29,7 @@ $datosCerss = $esNuevoRegistro ? [] : json_decode($datos->cerss ?? '[]', true);
 // Obtener grupos vulnerables seleccionados del alumno
 $gruposVulnerablesSeleccionados = [];
 if (!$esNuevoRegistro && $datos) {
-$gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vulnerable')->toArray();
+    $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vulnerable')->toArray();
 }
 @endphp
 
@@ -492,7 +492,7 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                         {!! html()->checkbox('empleado_aspirante')->id('empleado_aspirante')->checked(!$esNuevoRegistro ? $datos->empleado : false)->class('form-check-input') !!}
                         {!! html()->label('Si el aspirante es empleado, marcar esta casilla.')->for('empleado_aspirante')->class('form-check-label ml-2') !!}
                     </div>
-                    <div class="row mt-3 d-none" id="datos-empleo">
+                    <div class="row mt-3 d-none" id="datos-laboral">
                         <div class="col-md-4 mb-3">
                             {!! html()->label('Empresa donde trabaja')->for('empresa_trabaja') !!}
                             {!! html()->text('empresa_trabaja')->class('form-control')->id('empresa_trabaja')->placeholder('Nombre de la empresa')
@@ -515,7 +515,7 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">
-                        {{ html()->button('Guardar empleo')->class('btn btn-primary float-end')->id('validar-empleo')->type('button') }}
+                        {{ html()->button('Guardar Laboral')->class('btn btn-primary float-end')->id('validar-empleo')->type('button') }}
                     </div>
                 </div>
             </div>
@@ -525,8 +525,7 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
             {!! html()->form()->id('form-cerss')->open() !!}
             <div class="col-12 mb-4 step-section" id="cerss">
                 <div class="p-3 mb-2">
-                    <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-shield-lock"></i> ¿El aspirante
-                        pertenece a algún CERSS?</h5>
+                    <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-shield-lock"></i> ¿El aspirante pertenece a algún CERSS?</h5>
                     <div class="form-check mb-3">
                         {!! html()->checkbox('aspirante_cerss')->id('aspirante_cerss')->checked(!$esNuevoRegistro && !empty($datosCerss['aspirante_cerss']) && $datosCerss['aspirante_cerss'] == '1') !!}
                         {!! html()->label('Si el aspirante pertenece a algún CERSS, marcar esta casilla.')->for('aspirante_cerss')->class('form-check-label ml-2') !!}

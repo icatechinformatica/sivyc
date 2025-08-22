@@ -27,7 +27,7 @@ class GuardarSeccionService
                 return $this->guardarGruposVulnerables($datos);
             case 'capacitacion':
                 return $this->guardarCapacitacion($datos, $archivo);
-            case 'empleado':
+            case 'laboral':
                 return $this->guardarEmpleado($datos);
             case 'cerss':
                 return $this->guardarCerss($datos, $archivo);

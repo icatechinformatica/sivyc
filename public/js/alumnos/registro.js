@@ -134,7 +134,7 @@ validar_laboral.on('click', function () {
         if ($('#form-laboral').valid()) {
             const formData = new FormData();
             formData.append('curp', $('#curp').val());
-            formData.append('seccion', 'empleado');
+            formData.append('seccion', 'laboral');
             formData.append('empleado_aspirante', 1);
             formData.append('nombre_empresa', $('#empresa_trabaja').val());
             formData.append('puesto_trabajo', $('#puesto_trabajo').val());
@@ -148,7 +148,7 @@ validar_laboral.on('click', function () {
         // Solo enviar el check en false
         const formData = new FormData();
         formData.append('curp', $('#curp').val());
-        formData.append('seccion', 'empleado');
+        formData.append('seccion', 'laboral');
         formData.append('empleado_aspirante', 0);
         formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
@@ -555,7 +555,7 @@ const guardarSeccion = (formData) => {
 
 // ! Despliega la captura de datos en la seccion de EMPLEADO
 var chkEmpleado = document.getElementById('empleado_aspirante');
-var datos = document.getElementById('datos-empleo');
+var datos = document.getElementById('datos-laboral');
 if (chkEmpleado && datos) {
     function toggleDatosEmpleo() {
         datos.classList.toggle('d-none', !chkEmpleado.checked);
@@ -670,7 +670,7 @@ const secciones = [
     'contacto',
     'grupos-vulnerables',
     'capacitacion',
-    'empleado',
+    'laboral',
     'cerss'
 ];
 
@@ -692,7 +692,7 @@ function generarEstadosCaptura(seccionesFinalizadas) {
         'contacto': 'contacto',
         'grupos_vulnerables': 'grupos-vulnerables',
         'capacitacion': 'capacitacion',
-        'empleado': 'empleado',
+        'laboral': 'laboral',
         'cerss': 'cerss'
     };
 

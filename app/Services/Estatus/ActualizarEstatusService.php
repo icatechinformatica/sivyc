@@ -21,7 +21,7 @@ class ActualizarEstatusService
             2 => 'contacto',
             3 => 'grupo_vulnerable',
             4 => 'capacitacion',
-            5 => 'empleado',
+            5 => 'laboral',
             6 => 'cerss',
         ];
 
