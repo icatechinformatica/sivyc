@@ -357,8 +357,7 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                         <div class="col-md-12">
                             <div class="mb-3 d-flex align-items-center"
                                 style="background: #fffbe6; border: 2px solid #ffe58f; border-radius: 8px; padding: 12px;">
-                                {!! html()->label('¿Usted autoriza dar su número de celular para alguna oportunidad en
-                                la Bolsa de Trabajo?')->for('autoriza_bolsa_trabajo')->class('fw-bold me-3
+                                {!! html()->label('¿AUTORIZA SU NÚMERO PARA ALGUNA OPORTUNIDAD EN LA BOLSA DE TRABAJO?')->for('autoriza_bolsa_trabajo')->class('fw-bold me-3
                                 mb-0')->style('color: #ad8b00; font-size: 1.1em;') !!}
                                 <div class="form-check ml-2">
                                     {!! html()->checkbox('autoriza_bolsa_trabajo', false, 1)->class('form-check-input')->id('autoriza_bolsa_trabajo')
@@ -423,7 +422,7 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                             {!! html()->label('ULTIMO GRADO DE ESTUDIOS')->for('ultimo_grado_estudios') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="grado-estudios-addon"><i class="bi bi-book"></i></span>
+                                    <span class="input-group-text" id="grado-estudios-addon"><i class="bi bi-mortarboard"></i></span>
                                 </div>
                                 {!! html()->select('ultimo_grado_estudios', ['' => 'SELECCIONE EL GRADO'] + $gradoEstudios->pluck('grado_estudio', 'id_grado_estudio')->toArray() )->class('form-control')->id('ultimo_grado_estudios')->attribute('aria-label', 'Ultimo Grado de Estudios')->attribute('aria-describedby', 'grado-estudios-addon')
                                         ->value(!$esNuevoRegistro && $datos->gradoEstudio ? $datos->gradoEstudio->id_grado_estudio : '') !!}
@@ -433,7 +432,7 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                             {!! html()->label('DOCUMENTO DEL ULTIMO GRADO DE ESTUDIOS')->for('documento_ultimo_grado') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-file-earmark-text"></i></span>
+                                    <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-award"></i></span>
                                 </div>
                                 {!! html()->file('documento_ultimo_grado')->class('form-control')->id('documento_ultimo_grado')->attribute('aria-label', 'Documento del Ultimo Grado de Estudios')->attribute('aria-describedby', 'documento-grado-addon') !!}
                             </div>

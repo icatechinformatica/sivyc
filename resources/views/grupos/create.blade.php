@@ -9,9 +9,26 @@
 @endpush
 
 @section('content')
-<div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
-    <div class="col-md-8">
-        <span>Grupos / {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span>
+<div class="card-header rounded-lg shadow d-flex align-items-center">
+    <div class="col-md-12 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-2 mb-md-0">
+            <h5 class="mb-0 font-weight-bold">
+                Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span>
+            </h5>
+        </div>
+        @if (!$esNuevoRegistro && isset($grupo))
+            @php($estatus = $grupo->estatusActual())
+            <div class="d-flex flex-wrap align-items-center">
+                <span class="badge badge-pill badge-light text-uppercase mr-2" style="font-weight: 600;">
+                    <i class="fa fa-hashtag mr-1" aria-hidden="true"></i>{{ $grupo->clave_grupo }}
+                </span>
+                @if ($estatus)
+                    <span class="badge badge-pill mr-0" style="background-color: {{ $estatus->color ?? '#6c757d' }}; color: #fff; font-weight: 600;">
+                        <i class="fa fa-info-circle mr-1" aria-hidden="true"></i>{{ $estatus->estatus }}
+                    </span>
+                @endif
+            </div>
+        @endif
     </div>
 </div>
 
@@ -228,76 +245,95 @@
                 {{ html()->form()->close() }}
             </div>
 
-                {{-- * Sección: Alumnos --}}
-                <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
-                    <div class="card card-body mt-3 shadow-none p-0">
-                        <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
-                            <div class="flex-grow-1">
-                                <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos') }}">
-                                    @csrf
-                                    <div class="input-group" style="width: 400px;">
-                                        @if (!$esNuevoRegistro && $grupo)
-                                            <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
-                                        @endif
-                                        <input type="text" name="curp" class="form-control"
-                                            placeholder="Ingrese CURP" maxlength="18" required
-                                            style="flex: 1 1 auto; min-width: 0;"
-                                            value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary mr-2 rounded" type="submit" name="action"
-                                                value="agregar">Agregar</button>
-                                        </div>
-                                    </div>
-                                </form>
+            {{-- * Sección: Alumnos --}}
+            <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
+                <div class="card card-body mt-3 shadow-none p-0">
+                    {{-- Mensajes flash para asignación/eliminación de alumnos --}} 
+                    <div class="my-2">
+                        @if (session('success'))
+                            <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+                        @endif
+                        @if (session('error'))
+                            <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+                        @endif
+                        @if (session('info'))
+                            <div class="alert alert-info" role="alert">{{ session('info') }}</div>
+                        @endif
+                        @if ($errors->any())
+                            <div class="alert alert-danger" role="alert">
+                                <ul class="mb-0 pl-3">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>Curp</th>
-                                        <th>Matrícula</th>
-                                        <th>Nombre</th>
-                                        <th>Sexo</th>
-                                        <th>Edad</th>
-                                        <th>Eliminar</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
-                                        <tr>
-                                            <td colspan="6" class="text-center">No hay alumnos asignados aún</td>
-                                        </tr>
-                                    @else
-                                        @foreach ($grupo->alumnos as $alumno)
-                                            <tr>
-                                                <td>{{ $alumno->curp }}</td>
-                                                <td>{{ $alumno->matricula }}</td>
-                                                <td>{{ $alumno->nombreCompleto() }}</td>
-                                                <td>{{ $alumno->sexo->sexo }}</td>
-                                                <td>{{ $alumno->edad }}</td>
-                                                <td>
-                                                    <form method="POST" action="">
-                                                        @csrf
-                                                        <input type="hidden" name="alumno_id"
-                                                            value="{{ $alumno->id }}">
-                                                        <button class="btn btn-danger btn-sm" type="submit"
-                                                            name="action" value="eliminar">Eliminar</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                        @endif
+                    </div>
+                    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
+                        <div class="flex-grow-1">
+                            <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos') }}">
+                                @csrf
+                                <div class="input-group" style="width: 400px;">
+                                    @if (!$esNuevoRegistro && $grupo)
+                                    <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
                                     @endif
-                                </tbody>
-                            </table>
+                                    <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18"
+                                        required style="flex: 1 1 auto; min-width: 0;"
+                                        value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary mr-2 rounded" type="submit" name="action"
+                                            value="agregar">Agregar</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Curp</th>
+                                    <th>Matrícula</th>
+                                    <th>Nombre</th>
+                                    <th>Sexo</th>
+                                    <th>Edad</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
+                                <tr>
+                                    <td colspan="6" class="text-center">No hay alumnos asignados aún</td>
+                                </tr>
+                                @else
+                                @foreach ($grupo->alumnos as $alumno)
+                                <tr>
+                                    <td>{{ $alumno->curp }}</td>
+                                    <td>{{ $alumno->matricula }}</td>
+                                    <td>{{ $alumno->nombreCompleto() }}</td>
+                                    <td>{{ $alumno->sexo->sexo }}</td>
+                                    <td>{{ $alumno->edad }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}">
+                                            @csrf
+                                            <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
+                                            <button class="btn btn-danger btn-sm" type="submit" name="action" value="eliminar">Eliminar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (!$esNuevoRegistro && isset($grupo))
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div class="row col-md-12 justify-content-end">
                             <p class="mx-4">Turnar a:</p>
                             @foreach ($grupo->estatusAdyacentes() as $estatus)
-                                @if($estatus->id != $ultimoEstatus->id)
-                                    <button class="btn btn-sm turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
-                                @endif
+                            @if($estatus->id != $ultimoEstatus->id)
+                            <button class="btn btn-md rounded turnar-btn" style="background-color: {{ $estatus->color }}; color: white; font-weight: 600; font-size: 0.95rem;" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}">{{ $estatus->estatus }}</button>
+                            @endif
                             @endforeach
                         </div>
                     </div>
@@ -335,41 +371,38 @@
 @endif
 <script>
     // Variables globales para la obtención de la CURP JS
-            window.registroBladeVars = {
-                esNuevoRegistro: {{ $esNuevoRegistro ? 'true' : 'false' }},
-                csrfToken: '{{ csrf_token() }}',
-            };
-</script>
-<script>
+    window.registroBladeVars = {
+        esNuevoRegistro: {{ $esNuevoRegistro ? 'true' : 'false' }},
+        csrfToken: '{{ csrf_token() }}',
+    };
+
     // Variables específicas para la stepbar de grupos.
-            // Se pasa únicamente la última sección finalizada ($ultimaSeccion) como string.
-            window.gruposStepVars = {
-                ultimaSeccion: @json($ultimaSeccion ?? null),
-                ordenSecciones: ['info_general', 'ubicacion', 'organismo', 'opciones', 'agenda', 'alumnos']
-            };
-</script>
-<script>
+    window.gruposStepVars = {
+        ultimaSeccion: @json($ultimaSeccion ?? null),
+        ordenSecciones: ['info_general', 'ubicacion', 'organismo', 'opciones', 'agenda', 'alumnos']
+    };
+    
     // Configuración para Agenda del Grupo
-            window.GrupoAgenda = {
-                grupoId: @json(isset($grupo) ? $grupo->id : null),
-                // Horas máximas del curso (decimal). Usado para calcular horas restantes en la UI.
-                maxHoras: @json(isset($grupo) && isset($grupo->curso) ? $grupo->curso->horas : null),
-                // Plantillas de rutas (coinciden con routes/web.php)
-                routes: {
-                    index: function(grupoId) {
-                        return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null;
-                    },
-                    store: function(grupoId) {
-                        return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null;
-                    },
-                    update: function(grupoId, agendaId) {
-                        return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null;
-                    },
-                    destroy: function(grupoId, agendaId) {
-                        return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null;
-                    }
-                }
-            };
+    window.GrupoAgenda = {
+        grupoId: @json(isset($grupo) ? $grupo->id : null),
+        // Horas máximas del curso (decimal). Usado para calcular horas restantes en la UI.
+        maxHoras: @json(isset($grupo) && isset($grupo->curso) ? $grupo->curso->horas : null),
+        // Plantillas de rutas (coinciden con routes/web.php)
+        routes: {
+            index: function(grupoId) {
+                return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null;
+            },
+            store: function(grupoId) {
+                return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null;
+            },
+            update: function(grupoId, agendaId) {
+                return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null;
+            },
+            destroy: function(grupoId, agendaId) {
+                return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null;
+            }
+        }
+    };
 </script>
 <script src="{{ asset('js/grupos/stepbar.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>

@@ -78,6 +78,7 @@ class AlumnoController extends Controller
         $gruposVulnerables = GrupoVulnerable::orderBy('grupo_vulnerable')->get();
 
         $secciones = $datos->estatus[0];
+        dd($secciones);
         $viewData = compact('esNuevoRegistro', 'curp', 'datos', 'sexos', 'nacionalidades', 'estadosCiviles', 'paises', 'estados', 'entidades', 'municipios', 'gradoEstudios', 'gruposVulnerables', 'secciones');
         # checar la si hay una variable de sesión
         if (session()->has('grupo_id')) {

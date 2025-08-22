@@ -8,7 +8,6 @@ use App\Models\curso;
 use App\Models\Grupo;
 use App\Models\Alumno;
 use App\Models\Unidad;
-use App\Models\Estatus;
 use App\Models\localidad;
 use App\Models\Municipio;
 use Illuminate\Http\Request;
@@ -18,21 +17,26 @@ use App\Models\ImparticionCurso;
 use App\Models\organismosPublicos;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Services\Grupo\GrupoEstatusService;
 use App\Services\Grupo\GrupoService;
-use Google\Service\ServiceControl\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Unidades\UnidadesService;
+use App\Services\Grupo\GrupoEstatusService;
+use App\Services\Municipio\MunicipioService;
 
 class GrupoController extends Controller
 {
 
     protected $grupoService;
     protected $grupoEstatusService;
+    protected $unidadesService;
+    protected $municipiosService;
 
-    public function __construct(GrupoService $grupoService, GrupoEstatusService $grupoEstatusService)
+    public function __construct(GrupoService $grupoService, GrupoEstatusService $grupoEstatusService, UnidadesService $unidadesService, MunicipioService $municipiosService)
     {
         $this->grupoService = $grupoService;
         $this->grupoEstatusService = $grupoEstatusService;
+        $this->unidadesService = $unidadesService;
+        $this->municipiosService = $municipiosService;
     }
 
     public function index(Request $request)
@@ -53,25 +57,21 @@ class GrupoController extends Controller
     {
         $esNuevoRegistro = false;
         $grupo = $this->grupoService->obtenerGrupoPorId($id);
-        
-        $cursos = curso::limit(100)->get(); // ? Variable que se pasa al BLade
 
+        $cursos = curso::limit(100)->get(); // ! Variable que se pasa al BLade
         $tiposImparticion = ImparticionCurso::all(); // ? Variable que se pasa al BLade
-
         $modalidades = ModalidadCurso::all(); // ? Variable que se pasa al BLade
-
-        // $unidades = $this->unidadesService->obtenerUnidadesPorUsuario();
-
-        $unidadUsuario = auth()->user()->unidad;
-        $unidad_disponible = $unidadUsuario?->unidad;
-        $unidades = Unidad::where('ubicacion', $unidad_disponible)->get();
         $servicios = ServicioCurso::all();
         $localidades = localidad::where('clave_municipio', $grupo->id_municipio)->get();
-        $municipios = Municipio::where('id_estado', 7)->get(); // CHIAPAS FIJO
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
+
+        $unidades = $this->unidadesService->obtenerUnidadesPorUsuario();
+        $municipios = $this->municipiosService->municipiosPorUnidadDisponible($grupo);
+        
         $ultimoEstatus = $grupo->estatusActual();
         $ultimaSeccion = $grupo->seccion_captura ?? null;
-        $compactObject = compact('tiposImparticion', 'grupo', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion');
+
+        $compactObject = compact('grupo', 'tiposImparticion', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion');
 
         if (!empty($curp)) {
             # si no está vacio el grupo procedemos a cargarlo en el compact
@@ -172,32 +172,16 @@ class GrupoController extends Controller
             return view('grupos.asignar_alumnos');
         }
 
-        // POST: asignar por CURP
-        $validator = Validator::make($request->all(), [
-            'grupo_id' => 'required|exists:tbl_grupos,id',
-            'curp' => 'required|string|size:18',
-        ], [
-            'curp.size' => 'La CURP debe tener 18 caracteres.'
-        ]);
-
-        if ($validator->fails()) {
-            $gid = $request->input('grupo_id');
-            return redirect()->route('grupos.editar', $gid)
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $grupoId = (int) $request->input('grupo_id');
+        $grupoId = $request->input('grupo_id');
         $curp = strtoupper(trim($request->input('curp')));
 
+        // * Verificar la existencia del grupo 
         $grupo = Grupo::find($grupoId);
         if (!$grupo) {
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('error', 'Grupo no encontrado.');
+            return redirect()->route('grupos.editar', $grupoId)->with('error', 'Grupo no encontrado.');
         }
 
-        // verifica la existencia del alumno por CURP
-
+        // * Verifica la existencia del alumno por CURP 
         $alumno = Alumno::where('curp', $curp)->first();
         if (!$alumno) {
             return redirect()->route('grupos.editar', $grupoId)
@@ -207,43 +191,38 @@ class GrupoController extends Controller
                 ->with('grupo_id', $grupoId);
         }
 
-        // Evitar duplicados
+        // * Evitar duplicados 
         $existe = $grupo->alumnos()->where('tbl_alumnos.id', $alumno->id)->exists();
         if ($existe) {
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('info', 'El alumno ya está asignado a este grupo.');
+            return redirect()->route('grupos.editar', $grupoId)->with('info', 'El alumno ya está asignado a este grupo.');
         }
 
         try {
             $grupo->alumnos()->attach($alumno->id);
-            // Actualiza estatus de sección
-            // $this->grupoService->actualizarEstatusGrupo($grupoId, 'alumnos'); // ! PENDIENTE REVISAR
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('success', 'Alumno agregado al grupo.');
+            return redirect()->route('grupos.editar', $grupoId)->with('success', 'Alumno agregado al grupo.');
         } catch (\Throwable $e) {
             Log::error('Error asignando alumno al grupo', [
                 'grupo_id' => $grupoId,
                 'alumno_id' => $alumno->id,
                 'error' => $e->getMessage(),
             ]);
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('error', 'No se pudo agregar el alumno al grupo.');
+            return redirect()->route('grupos.editar', $grupoId)->with('error', 'No se pudo agregar el alumno al grupo.');
         }
     }
 
     /**
      * Eliminar un alumno del grupo
      */
-    public function eliminarAlumno(Grupo $grupo, Alumno $alumno)
+    public function eliminarAlumno(Request $request, $grupo_id)
     {
         try {
+            $grupo = Grupo::findOrFail($grupo_id);
+            $alumno = Alumno::findOrFail($request->input('alumno_id'));
             $grupo->alumnos()->detach($alumno->id);
-            return redirect()->route('grupos.editar', $grupo->id)
-                ->with('success', 'Alumno eliminado del grupo.');
+            return redirect()->route('grupos.editar', $grupo->id)->with('success', 'Alumno eliminado del grupo.');
         } catch (\Throwable $e) {
             Log::error('Error al eliminar alumno del grupo', [
                 'grupo_id' => $grupo->id,
-                'alumno_id' => $alumno->id,
                 'error' => $e->getMessage(),
             ]);
             return redirect()->route('grupos.editar', $grupo->id)

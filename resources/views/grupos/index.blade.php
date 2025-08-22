@@ -68,7 +68,7 @@
                     <td>{{ $grupo->unidad->unidad }}</td>
                     <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
                     <td class="text-center">
-                        <span class="badge {{ $grupo->estatus->last()->estatus == 'EN CAPTURA' ? 'bg-warning' : 'bg-success' }}">{{ $grupo->estatus->last()->estatus ?? 'SIN ASIGNAR' }}</span>
+                        <span class="badge" style="background-color: {{ $grupo->estatus->last()->color ?? '#6c757d' }}">{{ $grupo->estatusActual()->estatus ?? 'SIN ASIGNAR' }}</span>
                     </td>
                     <td class="text-center">
                         @foreach ($grupo->estatusAdyacentes() as $estatus)

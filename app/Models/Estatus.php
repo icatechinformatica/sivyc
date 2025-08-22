@@ -39,12 +39,18 @@ class Estatus extends Model
      */
     public function adyacentes(bool $incluirFinales = true)
     {
-        $ids = [max(1, $this->id - 1), $this->id + 1];
-        $query = self::whereIn('id', $ids);
+        $prevQuery = self::where('id', '<', $this->id)->orderBy('id', 'desc');
+        $nextQuery = self::where('id', '>', $this->id)->orderBy('id', 'asc');
+
         if (!$incluirFinales) {
-            $query->where('final', false);
+            $prevQuery->where('final', false);
+            $nextQuery->where('final', false);
         }
-        return $query->get();
+
+        $prev = $prevQuery->first();
+        $next = $nextQuery->first();
+
+        return collect([$prev, $next])->filter();
     }
 
     /**

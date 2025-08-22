@@ -78,9 +78,7 @@ class Grupo extends Model
      */
     public function estatusActual()
     {
-        return $this->estatus()
-            ->orderBy('tbl_grupo_estatus.fecha_cambio', 'desc')
-            ->first();
+        return $this->estatus()->orderBy('tbl_grupo_estatus.fecha_cambio', 'desc')->first();
     }
 
     /**

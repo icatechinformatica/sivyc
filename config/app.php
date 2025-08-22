@@ -190,6 +190,8 @@ return [
         App\Providers\PreinscripcionServiceProvider::class,
         App\Providers\AlumnoServiceProvider::class,
         App\Providers\EstatusServiceProvider::class,
+        App\Providers\UnidadServiceProvider::class,
+        App\Providers\MunicipioServiceProvider::class,
     ],
 
     /*
