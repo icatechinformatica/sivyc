@@ -31,12 +31,12 @@
                             <div class="d-flex px-2">
                                 <div>
                                     <input type="color" id="color_fondo" name="color_fondo" value="#ff0000"
-                                    class="select-color">
+                                        class="select-color">
                                     <span class="ml-2">Color de fondo</span>
                                 </div>
                                 <div class="ml-2">
                                     <input type="color" id="color_texto" name="color_texto" value="#ff0000"
-                                    class="select-color">
+                                        class="select-color">
                                     <span class="ml-2">Color del texo</span>
                                 </div>
                             </div>
@@ -60,6 +60,12 @@
                                     </button>
                                     <div class="small text-muted mt-2">
                                         Selecciona uno o varios días en el calendario y luego aplica el horario.
+                                    </div>
+                                    <div class="form-check mt-1">
+                                        <input class="form-check-input" type="checkbox" value="" id="alimentos">
+                                        <label class="form-check-label" for="alimentos">
+                                            ¿Incluir hora de alimentos?
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -89,14 +95,7 @@
                                         <span id="fc-horas-restantes" class="fw-bold fs-5 text-dark">{{
                                             decimal_a_hora($grupo->curso->horas - $grupo->horasTotales()) }}</span>
                                     </div>
-
                                 </div>
-                                {{--
-                                <hr>
-                                <div class="text-center small text-muted">
-                                    <i class="fa fa-calendar-alt mr-2"></i>Actualiza los datos seleccionando días y
-                                    horas en el calendario
-                                </div> --}}
                             </div>
                         </div>
                     </div>
