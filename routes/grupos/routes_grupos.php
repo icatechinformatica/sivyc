@@ -12,6 +12,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos', 'as' => 'grupos.']
     Route::post('/editar/{grupo_id}', [GrupoController::class, 'eliminarAlumno'])->name('eliminar.alumno');
     Route::post('/registrar', [GrupoController::class, 'store'])->name('store');
     Route::get('/localidades/{municipioId}', [GrupoController::class, 'getLocalidades'])->name('localidades');
+
+    // GRUPOS – AJAX dependientes (municipios/localidades)
+    Route::get('/municipios', [GrupoController::class, 'getMunicipiosByUnidad'])->name('municipios.by_unidad');
     Route::get('/organismo/{organismoId}', [GrupoController::class, 'getOrganismoInfo'])->name('organismo.info');
     Route::post('/guardar/seccion/grupo', [GrupoController::class, 'guardarSeccionGrupo'])->name('guardar.seccion.grupo');
 

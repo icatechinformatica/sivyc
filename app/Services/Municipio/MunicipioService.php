@@ -23,4 +23,13 @@ class MunicipioService
         $grupo_unidad = $grupo->unidad?->unidad;
         return $this->municipioRepo->obtenerPorUnidadDisponible($grupo_unidad);
     }
+
+    /**
+     * Obtiene municipios filtrando por el nombre de la unidad disponible.
+     * Útil para peticiones AJAX cuando el usuario cambia la unidad en el formulario.
+     */
+    public function municipiosPorNombreUnidad(?string $nombreUnidad)
+    {
+        return $this->municipioRepo->obtenerPorUnidadDisponible($nombreUnidad);
+    }
 }
