@@ -198,8 +198,21 @@ class GrupoController extends Controller
         }
 
         try {
-            $grupo->alumnos()->attach($alumno->id);
-            return redirect()->route('grupos.editar', $grupoId)->with('success', 'Alumno agregado al grupo.');
+
+            $idsGruposVulnerables = $alumno->gruposVulnerables()->pluck('grupo_vulnerable_id')->toArray();
+
+            $grupo->alumnos()->attach($alumno->id, [
+                'id_ultimo_grado' => $alumno->id_ultimo_grado_estudios,
+                'grupos_vulnerables' => json_encode($idsGruposVulnerables),
+                'medio_entero' => $alumno->medio_entero,
+                'medio_confirmacion' => $alumno->medio_confirmacion,
+            ]);
+            // eliminar variable de sesión si existe
+            session()->forget('grupo_id');
+            // Actualiza estatus de sección
+            // $this->grupoService->actualizarEstatusGrupo($grupoId, 'alumnos'); // ! PENDIENTE REVISAR
+            return redirect()->route('grupos.editar', $grupoId)
+                ->with('success', 'Alumno agregado al grupo.');
         } catch (\Throwable $e) {
             Log::error('Error asignando alumno al grupo', [
                 'grupo_id' => $grupoId,
