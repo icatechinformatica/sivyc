@@ -19,6 +19,51 @@
         return `${hh}:${mm}`;
     }
 
+    // Horas máximas del curso como número decimal (p.ej. 40)
+    function obtenerMaxHoras() {
+        let maxHoras = parseFloat(getConfig().maxHoras);
+        if (!isFinite(maxHoras)) {
+            const $horasMaximas = document.getElementById('fc-horas-maximas');
+            if ($horasMaximas && $horasMaximas.textContent) {
+                maxHoras = horaADecimal(($horasMaximas.textContent || '').trim());
+            }
+        }
+        return isFinite(maxHoras) ? maxHoras : NaN;
+    }
+
+    // Cálculo de minutos de un evento múltiples días según franja diaria [start.hora, end.hora]
+    function minutosEvento(evt) {
+        const s = evt.start;
+        const e = evt.end || evt.start;
+        if (!(s instanceof Date) || !(e instanceof Date)) return 0;
+        const MS_PER_DAY = 24 * 60 * 60 * 1000;
+        const ds = new Date(s.getFullYear(), s.getMonth(), s.getDate());
+        const de = new Date(e.getFullYear(), e.getMonth(), e.getDate());
+        const dias = Math.max(1, Math.round((de - ds) / MS_PER_DAY) + 1);
+        const minsDia = Math.max(0, (e.getHours() * 60 + e.getMinutes()) - (s.getHours() * 60 + s.getMinutes()));
+        return dias * minsDia;
+    }
+
+    function minutosTotalesAgenda(cal) {
+        const eventos = (cal?.getEvents?.() || []).filter(function (e) { return !esConector(e); });
+        return eventos.reduce((acc, evt) => acc + minutosEvento(evt), 0);
+    }
+
+    // Minutos que aportaría una selección al aplicar horario HH:MM por día, desde start hasta endExclusive
+    function minutosDeSeleccion(startDate, endDateExclusive, horaInicio, horaFin) {
+        try {
+            const lastDay = new Date(endDateExclusive);
+            lastDay.setDate(lastDay.getDate() - 1);
+            if (lastDay < startDate) return 0;
+            const minsDia = Math.max(0, (parseInt(horaFin.slice(0,2))*60 + parseInt(horaFin.slice(3,5))) - (parseInt(horaInicio.slice(0,2))*60 + parseInt(horaInicio.slice(3,5))));
+            const MS_PER_DAY = 24 * 60 * 60 * 1000;
+            const ds = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+            const de = new Date(lastDay.getFullYear(), lastDay.getMonth(), lastDay.getDate());
+            const dias = Math.max(1, Math.round((de - ds) / MS_PER_DAY) + 1);
+            return minsDia * dias;
+        } catch (_) { return 0; }
+    }
+
     function horaADecimal(hhmm) {
         if (typeof hhmm !== 'string') return 0;
         const parts = hhmm.split(':');
@@ -279,9 +324,37 @@
                         }
                     } catch (_) { /* noop */ }
                 },
-                // Drag & drop
-                eventDrop: function (info) { if (esConector(info.event)) { info.revert(); return; } persistMoveOrResize(info); actualizarIndicadoresAgenda(); },
-                eventResize: function (info) { if (esConector(info.event)) { info.revert(); return; } persistMoveOrResize(info); actualizarIndicadoresAgenda(); },
+                // Drag & drop con validación de horas máximas
+                eventDrop: function (info) {
+                    if (esConector(info.event)) { info.revert(); return; }
+                    const maxHoras = obtenerMaxHoras();
+                    if (isFinite(maxHoras)) {
+                        const minutos = minutosTotalesAgenda(calendar);
+                        if (minutos > maxHoras * 60 + 0.5) { // tolerancia mínima
+                            alert('La modificación excede las horas máximas del curso.');
+                            info.revert();
+                            actualizarIndicadoresAgenda();
+                            return;
+                        }
+                    }
+                    persistMoveOrResize(info);
+                    actualizarIndicadoresAgenda();
+                },
+                eventResize: function (info) {
+                    if (esConector(info.event)) { info.revert(); return; }
+                    const maxHoras = obtenerMaxHoras();
+                    if (isFinite(maxHoras)) {
+                        const minutos = minutosTotalesAgenda(calendar);
+                        if (minutos > maxHoras * 60 + 0.5) {
+                            alert('La modificación excede las horas máximas del curso.');
+                            info.revert();
+                            actualizarIndicadoresAgenda();
+                            return;
+                        }
+                    }
+                    persistMoveOrResize(info);
+                    actualizarIndicadoresAgenda();
+                },
                 // Cambios directos sobre props del evento
                 eventAdd: function () { actualizarIndicadoresAgenda(); },
                 eventChange: function () { actualizarIndicadoresAgenda(); },
@@ -338,6 +411,18 @@
             const lastDay = new Date(endDateExclusive);
             lastDay.setDate(lastDay.getDate() - 1);
             if (lastDay < startDate) { alert('No hay días seleccionados.'); return; }
+
+            // Validación de horas máximas antes de enviar
+            const maxHoras = obtenerMaxHoras();
+            if (isFinite(maxHoras)) {
+                const minutosActuales = minutosTotalesAgenda(calendar);
+                const minutosNuevos = minutosDeSeleccion(startDate, endDateExclusive, horaInicio, horaFin);
+                if (minutosActuales + minutosNuevos > maxHoras * 60 + 0.5) {
+                    const restante = Math.max(0, maxHoras * 60 - minutosActuales);
+                    alert('La selección excede las horas máximas del curso. Restantes: ' + decimalAHora(restante/60));
+                    return;
+                }
+            }
             const y1 = startDate.getFullYear();
             const m1 = String(startDate.getMonth() + 1).padStart(2, '0');
             const d1 = String(startDate.getDate()).padStart(2, '0');

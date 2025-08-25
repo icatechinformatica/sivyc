@@ -192,6 +192,8 @@ return [
         App\Providers\EstatusServiceProvider::class,
         App\Providers\UnidadServiceProvider::class,
         App\Providers\MunicipioServiceProvider::class,
+        App\Providers\AgendaServiceProvider::class,
+
     ],
 
     /*

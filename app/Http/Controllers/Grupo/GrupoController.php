@@ -18,6 +18,7 @@ use App\Models\organismosPublicos;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Grupo\GrupoService;
+use App\Services\Grupo\AgendaService;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Unidades\UnidadesService;
 use App\Services\Grupo\GrupoEstatusService;
@@ -30,13 +31,15 @@ class GrupoController extends Controller
     protected $grupoEstatusService;
     protected $unidadesService;
     protected $municipiosService;
+    protected $agendaService;
 
-    public function __construct(GrupoService $grupoService, GrupoEstatusService $grupoEstatusService, UnidadesService $unidadesService, MunicipioService $municipiosService)
+    public function __construct(GrupoService $grupoService, GrupoEstatusService $grupoEstatusService, UnidadesService $unidadesService, MunicipioService $municipiosService, AgendaService $agendaService)
     {
         $this->grupoService = $grupoService;
         $this->grupoEstatusService = $grupoEstatusService;
         $this->unidadesService = $unidadesService;
         $this->municipiosService = $municipiosService;
+        $this->agendaService = $agendaService;
     }
 
     public function index(Request $request)
@@ -67,7 +70,7 @@ class GrupoController extends Controller
 
         $unidades = $this->unidadesService->obtenerUnidadesPorUsuario();
         $municipios = $this->municipiosService->municipiosPorUnidadDisponible($grupo);
-        
+
         $ultimoEstatus = $grupo->estatusActual();
         $ultimaSeccion = $grupo->seccion_captura ?? null;
 
@@ -264,16 +267,7 @@ class GrupoController extends Controller
     public function getAgenda(Grupo $grupo)
     {
         try {
-            $eventos = $grupo->fechasAgenda()->get()->map(function ($item) {
-                $start = Carbon::parse($item->fecha_inicio . ' ' . $item->hora_inicio);
-                $end = Carbon::parse($item->fecha_fin . ' ' . $item->hora_fin);
-                return [
-                    'id' => $item->id,
-                    'title' => 'Sesión',
-                    'start' => $start->toIso8601String(),
-                    'end' => $end->toIso8601String(),
-                ];
-            });
+            $eventos = $this->agendaService->obtenerEventosFullcalendar($grupo->id);
             return response()->json($eventos);
         } catch (\Exception $e) {
             Log::error('Error al obtener agenda: ' . $e->getMessage());
@@ -300,31 +294,9 @@ class GrupoController extends Controller
 
             $start = Carbon::parse($data['start']);
             $end = Carbon::parse($data['end']);
-            $horaAlimentos = $data['hora_alimentos'];
+            $horaAlimentos = (bool) ($data['hora_alimentos'] ?? false);
 
-            // Caso: si start y end caen en el mismo día, es un periodo de 1 día.
-            // Si no, se considera un periodo multi-día, y guardaremos un solo registro desde start hasta end.
-
-            // Validar traslape (end exclusivo)
-            $existeTraslape = Agenda::where('id_grupo', $grupo->id)
-                ->where(function ($q) use ($start, $end) {
-                    $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
-                        ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
-                })
-                ->exists();
-
-            if ($existeTraslape) {
-                return response()->json(['message' => 'El horario seleccionado se traslapa con otro existente.'], 422);
-            }
-
-            $agenda = Agenda::create([
-                'id_grupo' => $grupo->id,
-                'fecha_inicio' => $start->toDateString(),
-                'hora_inicio' => $start->format('H:i:s'),
-                'fecha_fin' => $end->toDateString(),
-                'hora_fin' => $end->format('H:i:s'),
-                'hora_alimentos' => $horaAlimentos
-            ]);
+            $agenda = $this->agendaService->crear($grupo->id, $start, $end, $horaAlimentos);
 
             return response()->json([
                 'id' => $agenda->id,
@@ -332,6 +304,8 @@ class GrupoController extends Controller
                 'start' => Carbon::parse($agenda->fecha_inicio . ' ' . $agenda->hora_inicio)->toIso8601String(),
                 'end' => Carbon::parse($agenda->fecha_fin . ' ' . $agenda->hora_fin)->toIso8601String(),
             ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
         } catch (\Exception $e) {
             Log::error('Error al crear evento de agenda: ' . $e->getMessage());
             return response()->json(['message' => 'Error al crear evento'], 500);
@@ -354,37 +328,22 @@ class GrupoController extends Controller
                 'end' => 'required|date|after:start',
                 'hora_alimentos' => 'sometimes|boolean',
             ]);
+
+
+
             if ($validator->fails()) {
-                
                 return response()->json(['message' => 'Datos inválidos', 'errors' => $validator->errors()], 422);
             }
 
             $start = Carbon::parse($data['start']);
             $end = Carbon::parse($data['end']);
-            $horaAlimentos = $data['hora_alimentos'];
+            $horaAlimentos = (bool) ($data['hora_alimentos'] ?? false);
 
-            // Validar traslape con otros eventos, excluyendo el actual
-            $existeTraslape = Agenda::where('id_grupo', $grupo->id)
-                ->where('id', '<>', $agenda->id)
-                ->where(function ($q) use ($start, $end) {
-                    $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
-                        ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
-                })
-                ->exists();
-
-            if ($existeTraslape) {
-                return response()->json(['message' => 'El horario seleccionado se traslapa con otro existente.'], 422);
-            }
-
-            $agenda->update([
-                'fecha_inicio' => $start->toDateString(),
-                'hora_inicio' => $start->format('H:i:s'),
-                'fecha_fin' => $end->toDateString(),
-                'hora_fin' => $end->format('H:i:s'),
-                'hora_alimentos' => $horaAlimentos
-            ]);
+            $this->agendaService->actualizar($agenda->id, $grupo->id, $start, $end, $horaAlimentos);
 
             return response()->json(['message' => 'Actualizado']);
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
         } catch (\Exception $e) {
             Log::error('Error al actualizar evento de agenda: ' . $e->getMessage());
             return response()->json(['message' => 'Error al actualizar evento'], 500);
@@ -400,7 +359,7 @@ class GrupoController extends Controller
             if ($agenda->id_grupo !== $grupo->id) {
                 return response()->json(['message' => 'No encontrado'], 404);
             }
-            $agenda->delete();
+            $this->agendaService->eliminar($agenda->id);
             return response()->json(['message' => 'Eliminado']);
         } catch (\Exception $e) {
             Log::error('Error al eliminar evento de agenda: ' . $e->getMessage());
