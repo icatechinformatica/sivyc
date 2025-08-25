@@ -320,6 +320,8 @@
 
             const horaInicio = document.getElementById('agenda_hora_inicio')?.value || '08:00';
             const horaFin = document.getElementById('agenda_hora_fin')?.value || '10:00';
+
+            const incluirHoraAlimentos = document.getElementById('alimentos')?.checked ? 1 : 0;
             // Validaciones básicas
             if (!/^\d{2}:\d{2}$/.test(horaInicio) || !/^\d{2}:\d{2}$/.test(horaFin)) { alert('Formato de hora inválido.'); return; }
             if (horaInicio >= horaFin) { alert('La hora fin debe ser mayor que la hora inicio.'); return; }
@@ -350,7 +352,7 @@
             $btn.prop('disabled', true).text('Aplicando...');
 
             // Enviar un solo registro por periodo
-            const payload = { start: startISO, end: endISO };
+            const payload = { start: startISO, end: endISO, hora_alimentos: incluirHoraAlimentos };
             $.ajax({
                 url: routes.store(grupoId),
                 method: 'POST',

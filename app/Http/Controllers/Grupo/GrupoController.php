@@ -288,10 +288,11 @@ class GrupoController extends Controller
     {
         // return response()->json(['message' => 'Hora inicio: ' . $request->input('start') . ' Hora fin: ' . $request->input('end')], 201);
         try {
-            $data = $request->only(['start', 'end']);
+            $data = $request->only(['start', 'end', 'hora_alimentos']);
             $validator = Validator::make($data, [
                 'start' => 'required|date',
                 'end' => 'required|date|after:start',
+                'hora_alimentos' => 'sometimes|boolean',
             ]);
             if ($validator->fails()) {
                 return response()->json(['message' => 'Datos inválidos', 'errors' => $validator->errors()], 422);
@@ -299,6 +300,7 @@ class GrupoController extends Controller
 
             $start = Carbon::parse($data['start']);
             $end = Carbon::parse($data['end']);
+            $horaAlimentos = $data['hora_alimentos'];
 
             // Caso: si start y end caen en el mismo día, es un periodo de 1 día.
             // Si no, se considera un periodo multi-día, y guardaremos un solo registro desde start hasta end.
@@ -321,6 +323,7 @@ class GrupoController extends Controller
                 'hora_inicio' => $start->format('H:i:s'),
                 'fecha_fin' => $end->toDateString(),
                 'hora_fin' => $end->format('H:i:s'),
+                'hora_alimentos' => $horaAlimentos
             ]);
 
             return response()->json([
@@ -345,17 +348,20 @@ class GrupoController extends Controller
                 return response()->json(['message' => 'No encontrado'], 404);
             }
 
-            $data = $request->only(['start', 'end']);
+            $data = $request->only(['start', 'end', 'hora_alimentos']);
             $validator = Validator::make($data, [
                 'start' => 'required|date',
                 'end' => 'required|date|after:start',
+                'hora_alimentos' => 'sometimes|boolean',
             ]);
             if ($validator->fails()) {
+                
                 return response()->json(['message' => 'Datos inválidos', 'errors' => $validator->errors()], 422);
             }
 
             $start = Carbon::parse($data['start']);
             $end = Carbon::parse($data['end']);
+            $horaAlimentos = $data['hora_alimentos'];
 
             // Validar traslape con otros eventos, excluyendo el actual
             $existeTraslape = Agenda::where('id_grupo', $grupo->id)
@@ -375,6 +381,7 @@ class GrupoController extends Controller
                 'hora_inicio' => $start->format('H:i:s'),
                 'fecha_fin' => $end->toDateString(),
                 'hora_fin' => $end->format('H:i:s'),
+                'hora_alimentos' => $horaAlimentos
             ]);
 
             return response()->json(['message' => 'Actualizado']);

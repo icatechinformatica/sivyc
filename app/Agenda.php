@@ -9,7 +9,7 @@ class Agenda extends Model
 {
     protected $table = 'tbl_grupo_agenda';
 
-    protected $fillable = ['id','id_grupo', 'fecha_inicio', 'hora_inicio', 'fecha_fin', 'hora_fin'];
+    protected $fillable = ['id','id_grupo', 'fecha_inicio', 'hora_inicio', 'fecha_fin', 'hora_fin', 'hora_alimentos'];
 
     public $timestamps = false;
 
