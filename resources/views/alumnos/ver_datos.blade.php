@@ -412,7 +412,7 @@ if (!$esNuevoRegistro && $datos) {
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-info-circle mr-2"></i>DE LA CAPACITACIÓN </h5>
                     <div class="row">
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-4 mb-3">
                             {!! html()->label('ULTIMO GRADO DE ESTUDIOS')->for('ultimo_grado_estudios') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -422,7 +422,7 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value(!$esNuevoRegistro && $datos->gradoEstudio ? $datos->gradoEstudio->id_grado_estudio : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-5 mb-3">
                             {!! html()->label('DOCUMENTO DEL ULTIMO GRADO DE ESTUDIOS')->for('documento_ultimo_grado') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">

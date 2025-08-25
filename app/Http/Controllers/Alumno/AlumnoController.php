@@ -118,12 +118,12 @@ class AlumnoController extends Controller
                 // se crea variable de sesión y se asigna al compact
                 $viewData['grupoId'] = session('grupo_id');
             }
+        } elseif (session()->has('grupo_id')) {
+            // Si no viene en la URL pero existe en sesión, úsalo
+            $grupoId = base64_encode(session('grupo_id'));
         } else {
-            # checar la si hay una variable de sesión
-            if (session()->has('grupo_id')) {
-                // eliminar variable de sesión si existe
-                session()->forget('grupo_id');
-            }
+            // Si no hay grupo_id en sesión ni en la URL, no asignar nada
+            $viewData['grupoId'] = null;
         }
         return view('alumnos.ver_datos', $viewData);
     }
