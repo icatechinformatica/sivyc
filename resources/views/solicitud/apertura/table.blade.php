@@ -55,6 +55,7 @@
 </div>
 @if (isset($grupo))
     {{-- @if($grupo->depen <> 'CAPACITACION ABIERTA') --}}
+        <br/>
         <h5><b>DEL OFICIO DE ENTREGA DE CONSTANCIAS</b></h5>
         <div class="row col-md-12 col-lg-12  bg-light p-4 mb-5 ">
             {{-- Formulario pdf generar soporte by Jose Luis Moreno Arcos  --}}
@@ -107,11 +108,11 @@
  <div class="col-md-12 col-lg-12 text-right mt-20">
     @if($grupo->clave=='0' AND !$grupo->status_curso AND (!$grupo->status_solicitud OR $grupo->status_solicitud=='RETORNO'))
         <button type="button" class="btn bg-danger" id="regresar" ><< REGRESAR A VINCULACI&Oacute;N</button>
-         {{--<button id="btnShowCalendarFlex" type="button" class="btn btn-amber">Agendar Horario Flexible</button>--}}
-        <button type="submit" class="btn" id="guardar" >GUARDAR SOLICITUD</button> &nbsp;&nbsp;
+         {{--<button id="btnShowCalendarFlex" type="button" class="btn btn-amber">Agendar Horario Flexible</button>--}}        
         @if ($instructor)
              <button id="btnShowCalendar" type="button" class="btn btn-info">Agendar</button>
         @endif
+        <button type="submit" class="btn" id="guardar" >GUARDAR SOLICITUD</button> &nbsp;&nbsp;
     @elseif($grupo->clave!='0' AND $grupo->status_curso=="AUTORIZADO" AND $grupo->status=="NO REPORTADO" AND $mov == "INSERT")
         <button type="button" class="btn bg-warning" id="inscribir" >ACEPTAR APERTURA </button>
     @endif

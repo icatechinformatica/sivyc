@@ -856,7 +856,7 @@ class grupoController extends Controller
 
                                     if ($result_alumnos) {
                                         $result_curso = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('id',$ID)
-                                            ->update(['comprobante_pago' => $url_comprobante, 'mpreapertura'=>$mapertura,
+                                            ->update(['comprobante_pago' => $url_comprobante, 'mpreapertura'=>$mapertura,'obs_preapertura'=>$request->observaciones,
                                             'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago, 'updated_at' => date('Y-m-d H:i:s'),
                                             'id_organismo' => $id_organismo,
                                             'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'cespecifico' => $request->cespecifico,'fcespe' => $request->fcespe,

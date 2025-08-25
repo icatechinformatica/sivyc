@@ -27,39 +27,7 @@
                 else
                     if ($exonerado)  $disabled = 'readonly';
             }
-
-
-        /*
-            $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = $inco = $folio_pago = $fecha_pago = NULL;
-            $activar = true;
-            if(isset($grupo)){
-                $inco = $grupo->inicio;
-                $valor = $grupo->folio_grupo;
-                $modalidad = $grupo->mod;
-                $hfin = substr($grupo->horario, 8, 5);
-                $hini = substr($grupo->horario, 0, 5);
-                if(isset($grupo->munidad)) $munidad = $grupo->munidad;
-                if($grupo->tcapacitacion=='PRESENCIAL'){
-                    $disabled = 'disabled';
-                    $grupo->medio_virtual='';
-                    $grupo->link_virtual='';
-                }  else {
-                    if ($exonerado) {
-                        $disabled = 'readonly';
-                    }
-                }
-            }
-            if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;
-            if($recibo){
-                $comprobante = env('APP_URL')."/storage/".$recibo->file_pdf;
-                $folio_pago = $recibo->folio_recibo;
-                $fecha_pago = $recibo->fecha_expedicion;
-            }elseif(isset($grupo)) {
-                $folio_pago = $grupo->folio_pago;
-                $fecha_pago = $grupo->fecha_pago;
-            }
-                */
-    @endphp
+        @endphp
     {{ Form::open(['route' => 'solicitud.apertura', 'method' => 'post', 'id'=>'frm']) }}
         @csrf
          <div class="row">
@@ -125,7 +93,7 @@
                     <span>ORGANISMO PUBLICO: &nbsp;&nbsp;<strong>{{ $grupo->depen }}</strong></span>
 
             </div>
-            
+
             <h5><b>DE LA APERTURA</b></h5>
             <hr />
             <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:2em; line-height: 3em;">
@@ -228,7 +196,7 @@
                      <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$grupo->link_virtual}}" {{$disabled}} />
                 </div>
             </div>
-             <div class="form-row" >                
+             <div class="form-row" >
                 <div class="form-group col-md-12">
                     <label>OBSERVACIONES:</label>
                     <textarea name='observaciones' id='observaciones'  class="form-control" rows="5" >{{$grupo->nota}}</textarea>
@@ -236,10 +204,10 @@
             </div>
 
             <br/>
-            <h5><b>DE VINCULACIÓN</b></h5>                  
+            <h5><b>DE VINCULACIÓN</b></h5>
             <hr/>
-            <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 3.1em;">                
-                <span>MEMORÁNDUM DE APERTURA: &nbsp;&nbsp;{{ Form::text('mpreapertura', $grupo->mpreapertura ?? '', ['id'=>'mpreapertura', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM DE SOLICITUD DE APERTURA', 'aria-label' => 'No. Memorándum' , 'required' => 'required', 'style' => 'width: 300px; background-color: #ecececff;']) }} </span> 
+            <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 3.1em;">
+                <span>MEMORÁNDUM DE APERTURA: &nbsp;&nbsp;{{ Form::text('mpreapertura', $grupo->mpreapertura ?? '', ['id'=>'mpreapertura', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM DE SOLICITUD DE APERTURA', 'aria-label' => 'No. Memorándum' , 'required' => 'required', 'style' => 'width: 300px; background-color: #ecececff;']) }} </span>
                 <span>FECHA MEMO: &nbsp;&nbsp;{{ Form::date('fecha_turnado', $grupo->fecha_turnado ?? null , ['id'=>'fecha_turnado', 'class' => 'form-control datepicker mr-sm-2 mb-2 small', 'title' => 'FECHA DEL MEMORÁNDUM', 'required' => 'required' , 'style' => 'background-color: #ecececff;']) }}
                 <a onclick="guardar_preapertura('{{ $grupo->folio_grupo??null }}')" title="Guardar Cambios"><i class="fas fa-save fa-2x m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a></span>
                 <span class="mt-2">
@@ -248,7 +216,7 @@
                 </span>
             </div>
             <br/>
-            <h5><b>DELEGACIÓN ADMINISTRATIVA</b></h5>                  
+            <h5><b>DELEGACIÓN ADMINISTRATIVA</b></h5>
             <hr/>
             <div class="form-row">
                 <div class="form-group col-md-2">
@@ -410,10 +378,10 @@
             });
 
             function guardar_preapertura(folio){
-                if (confirm("Está seguro guardar los cambios de fecha o memorándum?") == true) {                    
+                if (confirm("Está seguro guardar los cambios de fecha o memorándum?") == true) {
                     var memo = $("#mpreapertura").val();
                     var fecha = $("#fecha_turnado").val();
-                    var obs = $("#obs_vincu").val();                    
+                    var obs = $("#obs_vincu").val();
                     $.ajax({
                                 url: "apertura/guardar_preapertura",
                                 method: 'POST',
@@ -430,7 +398,7 @@
                     });
                 }
             }
-            
+
             $(document).ready(function(){
                 $('#medio_virtual').editableSelect();
                 //Generar pdf soporte / Made by Jose Luis Moreno Arcos

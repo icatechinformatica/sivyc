@@ -157,7 +157,7 @@ class aperturasController extends Controller
                 }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado=='VoBo' and $grupos[0]->vb_dg==false){ //DESHACER ENVIO voBo
                     $movimientos = ['' => '- SELECCIONAR -', 'DESHACER'=>'DESHACER MOVIMIENTO'];
                 }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG
-                    $movimientos = ['' => '- SELECCIONAR -', 'VALIDADO'=>'TURNAR UNIDAD'];
+                    $movimientos = ['' => '- SELECCIONAR -', 'VALIDADO'=>'TURNAR UNIDAD','RETORNO-VoBo'=>'RETORNAR VoBo'];
                 }
 
             }else $message = "No se encuentran registros que mostrar.";
@@ -640,8 +640,37 @@ class aperturasController extends Controller
                     $result = DB::table('tbl_cursos')->where('nmunidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['status_curso' => 'EDICION']);
                     if($result)$message = "SOLICITUD ENVIADA PARA EDICION.";
                 break;
+                case "RETORNO-VoBo":
+                    $result = DB::statement("
+                        UPDATE tbl_cursos
+                        SET
+                            turnado = ?,
+                            vb_dg = ?,                            
+                            movimientos = COALESCE(movimientos, '[]'::jsonb)
+                                || jsonb_build_array(
+                                    jsonb_build_object(
+                                        'DTA-GA', jsonb_build_array(
+                                            jsonb_build_object(
+                                                'fecha',     ?::timestamp,
+                                                'usuario',   ?::text,
+                                                'operacion', 'RETORNO A DG',
+                                                'motivo solicitud', 'SOLICITADO POR LA DG.'
+                                            )
+                                        )
+                                    )
+                                )
+                        WHERE munidad = ? AND status IN ('NO REPORTADO','RETORNO_UNIDAD')",
+                    [
+                        'VoBo',
+                        false,                        
+                        date('Y-m-d H:i:s'),
+                        Auth::user()->name,
+                        $memo,
+                    ]);
+                    if($result)$message = "SOLICITUD RETORNADA A DG.";
+                break;
                 case "VoBo":
-                    $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['turnado' => 'VoBo']);
+                    $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['turnado' => 'VoBo','vb_dg' => false]);
                     if($result)$message = "SOLICITUD ENVIADA PARA VoBo.";
                 break;
                 default:
