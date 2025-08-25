@@ -114,6 +114,21 @@ class GrupoController extends Controller
         }
     }
 
+    /**
+     * Devuelve los municipios disponibles para la unidad seleccionada (por nombre de unidad)
+     */
+    public function getMunicipiosByUnidad(Request $request)
+    {
+        try {
+            $nombreUnidad = $request->query('unidad');
+            $municipios = $this->municipiosService->municipiosPorNombreUnidad($nombreUnidad);
+            return response()->json($municipios);
+        } catch (\Exception $e) {
+            Log::error('Error al obtener municipios por unidad: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al obtener municipios'], 500);
+        }
+    }
+
     public function getOrganismoInfo($organismoId)
     {
         try {

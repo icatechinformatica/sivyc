@@ -134,6 +134,44 @@ $('#municipio-select').on('change', function () {
 const municipioPreseleccionado = $('#municipio-select').val();
 const localidadPreseleccionada = $('#localidad-select').val();
 
+// ! Filtro dinámico de municipios por unidad (cuando cambia Unidad/Acción móvil)
+$('#unidad_accion_movil').on('change', function () {
+    const unidadNombre = $(this).find('option:selected').text().trim();
+    const municipioSelect = $('#municipio-select');
+    const localidadSelect = $('#localidad-select');
+
+    // Resetear localidad
+    localidadSelect.html('<option value="">SELECCIONAR MUNICIPIO PRIMERO</option>').prop('disabled', true);
+
+    if (!unidadNombre) {
+        municipioSelect.html('<option value="">SELECCIONAR</option>');
+        return;
+    }
+
+    municipioSelect.prop('disabled', true).html('<option value="">Cargando municipios...</option>');
+    $.ajax({
+        url: '/grupos/municipios',
+        method: 'GET',
+        data: { unidad: unidadNombre },
+        dataType: 'json',
+        success: function (data) {
+            municipioSelect.html('<option value="">SELECCIONAR</option>');
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(function (mun) {
+                    municipioSelect.append('<option value="' + mun.id + '">' + (mun.muni || mun.nombre || mun.descripcion || ('Municipio #' + mun.id)) + '</option>');
+                });
+            } else {
+                municipioSelect.html('<option value="">Sin municipios</option>');
+            }
+            municipioSelect.prop('disabled', false);
+        },
+        error: function (xhr) {
+            console.error('Error obteniendo municipios:', xhr.responseText || xhr.statusText);
+            municipioSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
+        }
+    });
+});
+
 // ! Relleno automático de representante al seleccionar organismo público
 $('#organismo_publico').on('change', function () {
     const organismoId = $(this).val();
