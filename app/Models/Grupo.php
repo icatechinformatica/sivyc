@@ -194,4 +194,9 @@ class Grupo extends Model
     {
         return Agenda::where('id_grupo', $this->id)->orderBy('fecha_fin', 'desc')->value('fecha_fin');
     }
+
+    public function servicio()
+    {
+        return $this->belongsTo(ServicioCurso::class, 'id_servicio');
+    }
 }
