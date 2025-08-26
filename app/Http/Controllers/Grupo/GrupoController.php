@@ -209,6 +209,22 @@ class GrupoController extends Controller
                 ->with('grupo_id', $grupoId);
         }
 
+        // * Verificar que el registro del alumno este completo
+
+        if (!$alumno->registroCompleto()) {
+            return redirect()->route('grupos.editar', $grupoId)->with('error', 'El registro del alumno no está completo.');
+        }
+
+        // * Verificar que el alumno tenga 15 años a la fecha de inicio del grupo.
+        $fechaInicioGrupo = $grupo->fecha_inicio();
+        $fechaReferencia = $fechaInicioGrupo ? Carbon::parse($fechaInicioGrupo) : Carbon::now();
+        $edadAlumno = Carbon::parse($alumno->fecha_nacimiento)->diffInYears($fechaReferencia);
+
+        if ($edadAlumno < 15) {
+            return redirect()->route('grupos.editar', $grupoId)
+                ->with('error', 'El alumno debe tener al menos 15 años para ser asignado a este grupo.');
+        }
+
         // * Evitar duplicados 
         $existe = $grupo->alumnos()->where('tbl_alumnos.id', $alumno->id)->exists();
         if ($existe) {
