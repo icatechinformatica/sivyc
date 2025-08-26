@@ -72,7 +72,7 @@
                     </td>
                     <td class="text-center">
                         @foreach ($grupo->estatusAdyacentes() as $estatus)
-                            @if($estatus->id != $grupo->estatusActual()->id)
+                            @if($estatus->id != $grupo->estatusActual()->id && auth()->user()->can($estatus->permisos->pluck('ruta_corta')->toArray()))
                                 <button class="btn btn-sm btn-info turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
                             @endif
                         @endforeach

@@ -62,4 +62,9 @@ class Estatus extends Model
         if (!$estatus) return collect();
         return $estatus->adyacentes($incluirFinales);
     }
+
+    public function permisos()
+    {
+        return $this->belongsToMany(PermisoExt::class, 'tbl_estatus_permiso', 'estatus_id', 'permiso_id');
+    }
 }
