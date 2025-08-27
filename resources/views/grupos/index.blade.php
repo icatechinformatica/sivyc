@@ -61,30 +61,30 @@
             </thead>
             <tbody>
                 @forelse($grupos as $grupo)
-                @if(auth()->user()->can('ver-cursos-todos') || auth()->user()->id == $grupo->id_usuario_captura)
-                <tr>
-                    <td>{{ $grupo->clave_grupo ?? 'SIN ASIGNAR' }}</td>
-                    <td>{{ $grupo->curso->nombre_curso }}</td>
-                    <td>{{ $grupo->unidad->unidad }}</td>
-                    <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
-                    <td class="text-center">
-                        <span class="badge" style="background-color: {{ $grupo->estatus->last()->color ?? '#6c757d' }}">{{ $grupo->estatusActual()->estatus ?? 'SIN ASIGNAR' }}</span>
-                    </td>
-                    <td class="text-center">
-                        @foreach ($grupo->estatusAdyacentes() as $estatus)
-                            @if($estatus->id != $grupo->estatusActual()->id && auth()->user()->can($estatus->permisos->pluck('ruta_corta')->toArray()))
-                                <button class="btn btn-sm btn-info turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
-                            @endif
-                        @endforeach
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded"
-                            title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </td>
-                </tr>
-                @endif
+                    @if(auth()->user()->can('ver-cursos-todos') || auth()->user()->id == $grupo->id_usuario_captura)
+                    <tr>
+                        <td>{{ $grupo->clave_grupo ?? 'SIN ASIGNAR' }}</td>
+                        <td>{{ $grupo->curso->nombre_curso }}</td>
+                        <td>{{ $grupo->unidad->unidad }}</td>
+                        <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
+                        <td class="text-center">
+                            <span class="badge" style="background-color: {{ $grupo->estatusActual()->color ?? '#6c757d' }}">{{ $grupo->estatusActual()->estatus ?? 'SIN ASIGNAR' }}</span>
+                        </td>
+                        <td class="text-center">
+                            @foreach ($grupo->estatusAdyacentes() as $estatus)
+                                @if($estatus->id != $grupo->estatusActual()->id && auth()->user()->can($estatus->permisos->pluck('ruta_corta')->toArray()))
+                                    <button class="btn btn-sm turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}" style="background-color: {{ $estatus->color ?? '#007bff' }}; color: #fff;"> {{ $estatus->estatus }}</button>
+                                @endif
+                            @endforeach
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded"
+                                title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    @endif
                 @empty
                 <tr>
                     <td colspan="5" class="text-center">

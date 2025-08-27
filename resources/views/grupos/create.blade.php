@@ -271,18 +271,15 @@
                     </div>
                     <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
                         <div class="flex-grow-1">
-                            <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos') }}">
+                            <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos', $grupo) }}">
                                 @csrf
                                 <div class="input-group" style="width: 400px;">
                                     @if (!$esNuevoRegistro && $grupo)
                                     <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
                                     @endif
-                                    <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18"
-                                        required style="flex: 1 1 auto; min-width: 0;"
-                                        value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
+                                    <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18" required style="flex: 1 1 auto; min-width: 0;" value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
                                     <div class="input-group-append">
-                                        <button class="btn btn-primary mr-2 rounded" type="submit" name="action"
-                                            value="agregar">Agregar</button>
+                                        <button class="btn btn-primary mr-2 rounded" type="submit" name="action" value="agregar">Agregar</button>
                                     </div>
                                 </div>
                             </form>
@@ -291,6 +288,11 @@
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover">
                             <thead class="thead-dark">
+                                <tr>
+                                    <th colspan="6" class="text-right">
+                                        <a href="{{ route('grupos.asignar.alumnos', $grupo) }}" class="btn btn-sm btn-primary">Ver tabla detallada</a>
+                                    </th>
+                                </tr>
                                 <tr>
                                     <th>Curp</th>
                                     <th>Matrícula</th>
